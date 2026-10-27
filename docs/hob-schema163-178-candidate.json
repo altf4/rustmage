@@ -1,0 +1,38 @@
+{
+  "scope": "178 local HOB candidates; 15 gated. Entire193 and final published PR remain open.",
+  "schema": 163,
+  "schema_changes": [
+    "Gollum public entry parity kind/value",
+    "Supper optional AnimationView.food_only field and Food subtype value"
+  ],
+  "prior_release": {
+    "head": "2b4c499eee2ed2705d6b1a53aaaba646ef680814",
+    "report": "<cache>/rustmage-validation-3gnzpnow/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1142,
+    "python_passed": 8,
+    "terminal_receipt_reviews": "pending two independent auditors"
+  },
+  "cohorts": [
+    {
+      "card": "Gollum, Riddle Master",
+      "leaf": "306356e187f56f334c115de8d9751b31ab0c6fde",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 42
+    },
+    {
+      "card": "Supper for Spiders",
+      "leaf": "6b516b4c0be1c7193d6056c2c00b0989ff79a3f9",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 62,
+      "note": "Schema coordination corrected to 163; preserves exact BF-to-graveyard history and Food entry projection."
+    }
+  ],
+  "status": "Leaf reviews passed; combined focused tests, historical traces, integrated reviews, full release and whole-set acceptance remain open."
+}

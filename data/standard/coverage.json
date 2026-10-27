@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "62cb7bb968f1165a3854b24a1d709e270c1a29a0fecf828c51d56e34f59191a2",
+  "catalogue_version": "9846de3b5ea8409e7fc57bc08f07331a3c9a317f55fd9ea29019f0e41aef2b7b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2685,
-  "implemented_total": 2691,
+  "implemented_standard_cards": 2687,
+  "implemented_total": 2693,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 171,
-      "gated": 17
+      "complete": 173,
+      "gated": 15
     },
     "hoc": {
       "total": 5,
@@ -14828,8 +14828,8 @@
     {
       "name": "Gollum, Riddle Master",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/gollum_riddle_master.rs",
       "set": "hob"
     },
@@ -34316,8 +34316,8 @@
     {
       "name": "Supper for Spiders",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/supper_for_spiders.rs",
       "set": "hob"
     },
