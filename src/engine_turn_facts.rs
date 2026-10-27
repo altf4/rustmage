@@ -32,6 +32,7 @@ fn condition_uses_facts(condition: TriggerCondition) -> bool {
         | TriggerCondition::Granted(event)
         | TriggerCondition::OncePerTurn(event)
         | TriggerCondition::DuringOpponentsTurn(event)
+        | TriggerCondition::TreasureManaSpent(event)
         | TriggerCondition::ManaSpent { event, .. } => condition_uses_facts(*event),
         _ => false,
     }

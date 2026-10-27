@@ -695,6 +695,7 @@ impl Game {
                     TriggerCondition::SelfDiesWithCounters
                     | TriggerCondition::InZone { .. }
                     | TriggerCondition::ManaSpent { .. }
+                    | TriggerCondition::TreasureManaSpent(_)
                     | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
                     | TriggerCondition::DuringOpponentsTurn(_)
@@ -1336,6 +1337,7 @@ impl Game {
                 card: item.source_card,
                 controller: item.controller,
                 payment: cast.payment,
+                treasure_mana_spent: cast.treasure_mana_spent,
             })
         });
         let sources = self.indexed_trigger_sources(&self.state.cast_sources);
@@ -1388,6 +1390,7 @@ impl Game {
                         let chosen_x = stack.and_then(|i| self.state.stack[i].x);
                         self.state.pending_triggers.last_mut().unwrap().x = chosen_x;
                         if ability.condition.mana_spent_rule().is_some()
+                            || ability.condition.requires_treasure_mana()
                             || cast_symbol_quantities::selected(ability.program)
                             || ability.program.iter().any(|instruction| {
                                 matches!(
@@ -3781,18 +3784,29 @@ impl Game {
                 Instruction::AddColorlessScaled(amount) => {
                     let amount = u32::try_from(self.item_amount(amount, &item))
                         .capacity("mana representation exhausted");
-                    self.add_mana(item.controller, [0, 0, 0, 0, 0, amount]);
+                    let mana = [0, 0, 0, 0, 0, amount];
+                    let quality = self.item_mana_quality(&item, ManaProduction::Fixed(mana));
+                    if quality.is_some() {
+                        self.add_quality_mana(item.controller, mana, quality);
+                    } else {
+                        self.add_mana(item.controller, mana);
+                    }
                 }
                 Instruction::AddManaScaled { color, amount } => {
                     let amount = u32::try_from(self.item_amount(amount, &item))
                         .capacity("mana representation exhausted");
                     let mut mana = [0; 6];
                     mana[color.index()] = amount;
-                    self.add_mana(item.controller, mana);
+                    let quality = self.item_mana_quality(&item, ManaProduction::Fixed(mana));
+                    if quality.is_some() {
+                        self.add_quality_mana(item.controller, mana, quality);
+                    } else {
+                        self.add_mana(item.controller, mana);
+                    }
                 }
                 Instruction::AddMana(production) => {
                     let quality = self
-                        .mana_quality(production, item.card)
+                        .item_mana_quality(&item, production)
                         .map(|quality| quality.with_definition(item.source_card));
                     match production.base().in_world(self, item.card) {
                         ManaProduction::ChosenColor

@@ -99,6 +99,7 @@ impl Game {
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
+            | TriggerCondition::TreasureManaSpent(event)
             | TriggerCondition::ManaSpent { event, .. }
             | TriggerCondition::InterveningIf { event, .. } => {
                 self.trigger_time_guards_hold(*event, player, source, tapped)
@@ -119,6 +120,7 @@ impl Game {
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
+            | TriggerCondition::TreasureManaSpent(event)
             | TriggerCondition::ManaSpent { event, .. } => {
                 self.trigger_guards_hold(*event, player, source, tapped)
             }

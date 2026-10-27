@@ -3033,6 +3033,7 @@ pub(crate) enum TriggerCondition {
     Chapter {
         number: u16,
     },
+    TreasureManaSpent(&'static TriggerCondition),
     ManaSpent {
         minimum: u64,
         increment: bool,
@@ -3264,6 +3265,20 @@ pub(crate) enum TriggerCondition {
 }
 
 impl TriggerCondition {
+    pub(crate) fn requires_treasure_mana(self) -> bool {
+        match self {
+            Self::TreasureManaSpent(_) => true,
+            Self::InZone { event, .. }
+            | Self::Granted(event)
+            | Self::OncePerTurn(event)
+            | Self::DuringOpponentsTurn(event)
+            | Self::CastFromHand(event)
+            | Self::ManaSpent { event, .. }
+            | Self::When { event, .. }
+            | Self::InterveningIf { event, .. } => event.requires_treasure_mana(),
+            _ => false,
+        }
+    }
     pub(crate) fn requires_hand_cast(self) -> bool {
         match self {
             Self::CastFromHand(_) => true,
@@ -3271,6 +3286,7 @@ impl TriggerCondition {
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
+            | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_hand_cast(),
@@ -3284,6 +3300,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
+            | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.origin(),
@@ -3300,6 +3317,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::CastFromHand(e)
+            | Self::TreasureManaSpent(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. } => e.mana_spent_rule(),
             _ => None,
@@ -3315,6 +3333,7 @@ impl TriggerCondition {
             | Self::CastFromHand(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
+            | Self::TreasureManaSpent(e)
             | Self::ManaSpent { event: e, .. } => e.is_granted(),
             _ => false,
         }
@@ -3326,6 +3345,7 @@ impl TriggerCondition {
             | Self::CastFromHand(event)
             | Self::Granted(event)
             | Self::OncePerTurn(event)
+            | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_opponents_turn(),
@@ -3342,6 +3362,7 @@ impl TriggerCondition {
             | Self::CastFromHand(event)
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
+            | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. } => event.event(),
             event => event,
         }
@@ -3353,6 +3374,7 @@ impl TriggerCondition {
             | Self::Granted(event)
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
+            | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event) => event.once_per_turn(),

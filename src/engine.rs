@@ -951,6 +951,8 @@ pub struct CastInfo {
     pub physical_card: Option<Card>,
     /// Actual mana spent on this cast, including additional mana costs.
     pub payment: Mana,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub treasure_mana_spent: bool,
     pub origin: Zone,
     /// Counter qualification captured before the exile-to-stack transition.
     pub stash_origin: bool,
@@ -4994,13 +4996,20 @@ impl Game {
                 self.state.passes = 0;
             }
             Action::TapMana { card } => {
-                self.tap_objects(&[card]);
                 let color =
                     ability_world::CharacteristicWorld::intrinsic_mana_color(self, card).unwrap();
-                let pool = &mut self.state.players[actor.index()].mana[color];
-                *pool = pool
-                    .checked_add(1)
-                    .capacity("mana representation exhausted");
+                let mut production = [0; 6];
+                production[color] = 1;
+                let quality = self.mana_quality(ManaProduction::Fixed(production), card);
+                self.tap_objects(&[card]);
+                if quality.is_some() {
+                    self.add_quality_mana(actor, production, quality);
+                } else {
+                    let pool = &mut self.state.players[actor.index()].mana[color];
+                    *pool = pool
+                        .checked_add(1)
+                        .capacity("mana representation exhausted");
+                }
                 if self.state.activation_observers.is_some() {
                     self.creature_ability_activated(actor, self.is_creature(card));
                 }
@@ -5358,6 +5367,14 @@ impl Game {
                     if outcome.haste {
                         self.grant_stack_keywords(item.object, Keywords::HASTE);
                     }
+                    self.state
+                        .stack
+                        .last_mut()
+                        .unwrap()
+                        .cast
+                        .as_mut()
+                        .unwrap()
+                        .treasure_mana_spent |= outcome.treasure_spent;
                     self.state.stack.last_mut().unwrap().mana_copy_sources = outcome.copies;
                     self.state
                         .stack

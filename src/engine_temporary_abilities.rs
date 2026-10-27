@@ -64,6 +64,7 @@ impl Game {
                 card: item.source_card,
                 controller: item.controller,
                 payment: cast.payment,
+                treasure_mana_spent: cast.treasure_mana_spent,
             })
         });
         for grant in rows {

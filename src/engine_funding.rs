@@ -1079,12 +1079,7 @@ impl<'g> FundingState<'g> {
                         .contains(Keywords::HASTE))
             {
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, entry.id) {
-                    let quality = match grant.production {
-                        ManaProduction::Tagged { quality, .. } => {
-                            Some(mana_lots::Quality::capture(self, entry.id, *quality))
-                        }
-                        _ => None,
-                    };
+                    let quality = mana_lots::quality_from_world(self, grant.production, entry.id);
                     grant
                         .production
                         .in_world(self, entry.id)
@@ -1127,7 +1122,11 @@ impl<'g> FundingState<'g> {
                     payment: [0; 6],
                     counters: Counters::default(),
                     production,
-                    quality: None,
+                    quality: mana_lots::quality_from_world(
+                        self,
+                        ManaProduction::Fixed(production),
+                        entry.id,
+                    ),
                     allocation: Vec::new(),
                     external: None,
                     frozen: None,
@@ -1215,15 +1214,10 @@ impl<'g> FundingState<'g> {
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
                         });
                         let pool = mana_lots::available(self.mana, &self.lots, purpose);
-                        let quality = match production {
-                            ManaProduction::Tagged { quality, .. } => Some(
-                                mana_lots::Quality::capture(self, entry.id, *quality)
-                                    .with_definition(
-                                        borrowed.map_or(object.card, |a| a.definition),
-                                    ),
-                            ),
-                            _ => None,
-                        };
+                        let quality = mana_lots::quality_from_world(self, production, entry.id)
+                            .map(|q| {
+                                q.with_definition(borrowed.map_or(object.card, |a| a.definition))
+                            });
                         funding_cost_payments(pool, ability.cost, |payment| {
                             mana_lots::visit_allocations(
                                 self.mana,

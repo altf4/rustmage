@@ -1,0 +1,134 @@
+{
+  "card": "Smaug, Wicked Worm",
+  "base": "c6be758c",
+  "oracle": {
+    "mana": "{3}{B}{R}",
+    "types": "Legendary Creature — Dragon",
+    "stats": "5/5",
+    "obligations": [
+      "Flying.",
+      "On entry create tapped Treasures equal to artifacts opponents control when trigger resolves.",
+      "Whenever you cast a spell, if mana from a Treasure was spent to cast it, draw a card and lose 1 life."
+    ]
+  },
+  "source": "Complete Oracle and pinned XMage class and helpers recorded in paired JSON; source check passed for 5417 definitions and 1619 pinned blobs.",
+  "implementation": "Snapshot whether the actual mana producer is a Treasure into existing quality lots before its sacrifice or tap, including copied, granted and intrinsic mana sources. Keep distinct lots through funding, allocation and cast rollback; record actual selected Treasure spending on CastInfo and frozen CastPaymentEvent. Trigger qualification uses the actual cast event at both triggering and resolution. No new IDs; central schema 167 or later required for omitted-false mana lot and cast-event fields.",
+  "coverage": [
+    "Both seats: paid 5/5 flying Smaug, zero/two opponent artifact count, source departure and changed count before resolution, controller-owned artifacts excluded, tapped tokens and Doubling Season.",
+    "Both seats: Treasure source sacrificed before cast, partial same-color selection and unspent lot, copied Treasure/non-Treasure source, actual granted mana source, non-Treasure converter, opponent cast and spell copy; Smaug departure after triggering.",
+    "Actual failed cast with foreign Aura entry choice and retained versus reversed Treasure mana, owned raw/index branch/restore, subsequent cast with retained Treasure; affected generic funding, cast rollback, restricted mana and trigger regressions.",
+    "All-target Clippy and pinned source verification.",
+    "Exact source departure with synthetic queued ability: last battlefield Treasure type, including a later copied non-Treasure type, survives object departure. Scaled red and colorless mana production share the source-quality path; four existing scaled/delayed mana regressions pass."
+  ],
+  "limitations": [
+    "The departed-source type proof uses a synthetic queued activation and does not exercise a full printed delayed Treasure mana ability; independent review should inspect that path.",
+    "No direct scenario with two distinct Smaug providers or prevented/replaced Treasure creation beyond Doubling Season. Independent nonauthor reviews, central schema reconciliation, catalogue/module registration and release validation remain."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "result": "1/2: missing token alias in fixture; corrected after natural termination",
+      "report": "/home/altf4/.cache/rustmage-build-reports/832eb52ae26d4d2c9494158494bbd37c.json"
+    },
+    {
+      "run": 2,
+      "result": "3/4: copied basic land uses TapMana, not ActivateMana; corrected after natural termination",
+      "report": "/home/altf4/.cache/rustmage-build-reports/dc1ff736a0a74e2691ccd1585944df25.json"
+    },
+    {
+      "run": 3,
+      "result": "3/4: diagnostic identified copied Mountain TapMana; corrected after natural termination",
+      "report": "/home/altf4/.cache/rustmage-build-reports/fb69055b0ba0449ba41bdb90f568dc68.json"
+    },
+    {
+      "run": 4,
+      "result": "4/5: rollback fixture accidentally allowed Smaug as casualty; corrected after natural termination",
+      "report": "/home/altf4/.cache/rustmage-build-reports/0f915fa22c8f4c6f89cb697d90645096.json"
+    },
+    {
+      "run": 5,
+      "result": "4/6: token ceases to Outside, and chosen test spell unavailable; corrected after natural termination",
+      "report": "/home/altf4/.cache/rustmage-build-reports/139306c375584919b7a608e464fd491f.json"
+    },
+    {
+      "run": 6,
+      "result": "5/6: follow-up spell inherited casualty from rollback fixture; corrected after natural termination",
+      "report": "/home/altf4/.cache/rustmage-build-reports/86666137237d426881cd3dcab46351fc.json"
+    },
+    {
+      "run": 7,
+      "result": "6/6 card tests passed",
+      "report": "/home/altf4/.cache/rustmage-build-reports/e8d9ae8ed9774a8f84714b781351cb54.json"
+    },
+    {
+      "run": 8,
+      "result": "8/8 card tests passed",
+      "report": "/home/altf4/.cache/rustmage-build-reports/c790139f937447fabe33f259f44888aa.json"
+    },
+    {
+      "run": 9,
+      "result": "11 mana rollback, 13 Dáin funding and 20 Elrond tests passed; mana_lot and hob_uncover filters matched zero. Clippy compilation failed because example CastInfo initializer omitted new field; corrected after terminal.",
+      "clippy_report": "/home/altf4/.cache/rustmage-build-reports/4f9e51c5efee484a940298d4ec4535ab.json",
+      "logs": "/home/altf4/.cache/rustmage-authoring/hob-smaug-wicked/run-9"
+    },
+    {
+      "run": 10,
+      "result": "8 card, 6 cast rollback, 1 restricted mana and 1 Treasure regression passed; all-target Clippy passed",
+      "logs": "/home/altf4/.cache/rustmage-authoring/hob-smaug-wicked/run-10"
+    },
+    {
+      "run": 11,
+      "result": "8/9: opponent fixture had extra mana requiring allocation choice; corrected after natural termination",
+      "report": "/home/altf4/.cache/rustmage-build-reports/093a33733e3349bfa40978e2e2473527.json"
+    },
+    {
+      "run": 12,
+      "result": "8/9: follow-up Equipment spell costs two, fixture funded one; corrected after natural termination",
+      "report": "/home/altf4/.cache/rustmage-build-reports/9ffa1ad2b3ac4c20843b40a5d813da0b.json"
+    },
+    {
+      "run": 13,
+      "result": "9/9 final card tests passed",
+      "report": "/home/altf4/.cache/rustmage-build-reports/f5a38b816b9144a380b43ef47aded9f3.json"
+    },
+    {
+      "run": 14,
+      "result": "All-target Clippy passed on final sources",
+      "report": "/home/altf4/.cache/rustmage-build-reports/b114f131bc1f44268997697ddb603d86.json"
+    },
+    {
+      "run": 15,
+      "result": "10/10 focused tests passed including exact-source last-known type",
+      "report": "/home/altf4/.cache/rustmage-build-reports/792989f0c3b24a5898afa3b25360ce6c.json"
+    },
+    {
+      "run": 16,
+      "result": "11 mana rollback, 6 cast rollback and 1 restricted mana tests passed; molten_core filter matched zero. All-target Clippy passed.",
+      "logs": "/home/altf4/.cache/rustmage-authoring/hob-smaug-wicked/run-16",
+      "clippy_report": "/home/altf4/.cache/rustmage-build-reports/c39c7e4f77ca42d19f88827f1805c266.json"
+    },
+    {
+      "run": 17,
+      "result": "4 scaled/delayed mana tests passed",
+      "report": "/home/altf4/.cache/rustmage-build-reports/c452f6a7f6d443d2be4829b879956f1d.json"
+    }
+  ],
+  "receipts": "/home/altf4/.cache/rustmage-authoring/hob-smaug-wicked",
+  "source_sha256": {
+    "examples/standard_flashback.rs": "abe343c5f575589617c8f2490330e2d45f9cd7c9b5f21d990081191f6d077508",
+    "src/card_definitions/hob/smaug_wicked_worm.rs": "8f5c862754da7a36bc2792a6dc588ff2ffd51463a7cd16e48a05c40da14ad1a1",
+    "src/card_definitions/hob/smaug_wicked_worm.json": "fedcd7a509ae8f90dba4d0dc5b84ffcab013d519984a63d81d77b9c1a987317f",
+    "src/cards.rs": "dc4d441d88916ecc9d81a725f988ece561bcbdc0a71d91058134e28b66eec255",
+    "src/engine.rs": "f412dfde6eb73b6a4d793754ecfcb0d300dbb3b87551590afad8e5411c0b86cb",
+    "src/engine_cast_payments.rs": "eaffb376b48b04922a73ff4f8a60a6dd7d040d8b876b6bb13fc71f0101185091",
+    "src/engine_funding.rs": "87179de8e512d969c9a800bbb679ae14843b388f1bbdc11a341478ecd14e1731",
+    "src/engine_mana_lots.rs": "9a56e4822aee1ee6de71ec98f8b9b54816e9b0bc9dbc2a2148c692dc5f643860",
+    "src/engine_programs.rs": "9d7c450da8902124766887873782246613cf568f6e610b49c6da5478bb1658e5",
+    "src/engine_steps.rs": "3f87f433391ca5a97b5ac8d9ecc679a8b83af1310783ac79932670de4add0465",
+    "src/engine_targeting.rs": "c6a600d32410f5106d9601af171a19ccbdcbb405744540f67634878b0c84bcc7",
+    "src/engine_temporary_abilities.rs": "77c6a4e58b7b31377f462639a983a25a5649cae5475486a5f305be530fdda842",
+    "src/engine_turn_facts.rs": "f1b9f62edb17fbd0dd6401a4eed3a2a0f8d47d94ffe7de429671ffa2cee2685c",
+    "src/assurance/hob_smaug_wicked.rs": "674cb96b8c84b754001d53f38a6866776ac3714f179154773efb3cf7911b6c28",
+    "src/assurance/hob_smaug_wicked_rollback.rs": "3045db5529efb6bff742ab01be4a8df8d6f41d287651ca62f183b2587a4b1e9d"
+  }
+}

@@ -1460,6 +1460,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
+        item.cast.as_mut().unwrap().treasure_mana_spent |= outcome.treasure_spent;
         item.mana_copy_sources = outcome.copies;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
         item.cast.as_mut().unwrap().spend_any_mana = modifiers.0;
@@ -1506,6 +1507,7 @@ impl Game {
                 physical_card: None,
                 face: CastFace::Normal,
                 payment,
+                treasure_mana_spent: false,
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
@@ -1857,6 +1859,8 @@ impl Game {
                 if outcome.haste {
                     self.grant_stack_keywords(announcement.item.object, Keywords::HASTE);
                 }
+                announcement.item.cast.as_mut().unwrap().treasure_mana_spent =
+                    outcome.treasure_spent;
                 announcement.item.mana_copy_sources = outcome.copies;
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
