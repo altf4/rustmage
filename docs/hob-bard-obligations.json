@@ -1,0 +1,55 @@
+{
+  "card": "Bard, King of Dale",
+  "base": "0defaae8",
+  "oracle": {
+    "mana": "{4}{W}{U}",
+    "types": "Legendary Creature — Human Noble Archer",
+    "stats": "3/5",
+    "obligations": [
+      "Reach and vigilance.",
+      "Replace each controller draw except the first successful draw in each of their own draw steps with two draws.",
+      "Replace each token-creation event under controller with twice as many of each token."
+    ]
+  },
+  "source": "Full Oracle body and XMage class and helpers pinned in paired JSON; all seven blobs exactly matched revision 492369c7844b8d76479f0393ff9eb6b0b0cf30d7.",
+  "implementation": "Private per-player draw-step successful-draw state resets at each actual draw step; each logical draw freezes the combined replacement quantity, while owned deferred Miracle requests distinguish already-replaced draws from later original draws. Existing token replacement engine handles stacking and player ordering.",
+  "coverage": [
+    "Paid 3/5 body and keywords; both seats; first and subsequent draws and extra draw steps; two replacement providers; changed controller and suppressed source; empty draw does not consume first-draw exemption.",
+    "Miracle interruption, hidden observation, owned branch/restore and departed provider preserving the frozen event while later events re-evaluate.",
+    "Paid Snarl Song with Bard and Doubling Season, token replacement ordering and owned branch contract.",
+    "Nearby Miracle, existing draw ordinals, connive, token, Silvan and Balin tests."
+  ],
+  "limitations": [
+    "No other draw-event replacement or prevention provider is implemented in this base, so a separate card-to-card replacement-order interaction cannot yet be exercised. Empty-library failed draw is covered; source-departure during a paused replacement is tested as an isolated fixture.",
+    "Source is review-ready candidate, independent nonauthor reviews and centrally regenerated catalogue and release validation remain."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "result": "3 pass, 1 failed due to expected token count 4 instead of 8: Snarl Song creates two base tokens; corrected after natural termination.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/303d51b1b7534befa7bd523b82b79379.json"
+    },
+    {
+      "run": 2,
+      "result": "6 Bard, 10 Miracle, 4 fractal, 11 Silvan and 14 Balin tests passed; draw_events filter matched zero tests.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/73b330ffb84d4f2c9013be8cad8fe58c.json"
+    },
+    {
+      "run": 3,
+      "result": "4 inherited draw, 1 draw-trigger order and 1 connive draw-ordinal test passed.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/86db1a557ec345ef9866d86cd1107992.json"
+    }
+  ],
+  "receipts": "/home/altf4/.cache/rustmage-authoring/hob-bard",
+  "source_sha256": {
+    "src/ability_layers.rs": "e340a186dbcf53ffbcfe8dc9df13f0e338c4d86ecdd70a38029e8a0f4c95dba0",
+    "src/card_definitions/hob/bard_king_of_dale.rs": "3ca376629ba8a764ffcc8df5c4657ec98e0219413cb3c2afb42f0499c081a295",
+    "src/card_definitions/hob/bard_king_of_dale.json": "46939602e53317f1ea78cba1fd775b15226b3b9af26b4190bf4b104c34b15f46",
+    "src/engine.rs": "ec2c1062aa4279cb07674a19525eb4be76af6f57ecf1056c04460df22dc425b1",
+    "src/engine_draw_events.rs": "3d2e037f5f7813ff3c957257bbbf2fbe4499b53ab81f8d0906532843fe015ff3",
+    "src/engine_miracle.rs": "da52ae3550e0c228de4b83d9b029cd568f004af9c5903f9a30650d7bf3933ed4",
+    "src/engine_stats.rs": "1c65e053c5d0348c44f0026a5673bb89c867e375c1ac3f886ec92afd04921ee3",
+    "src/engine_steps.rs": "368b2e169b0d06cee46663f326c2aa6adcf2842678fe4f40c92449ef0417691a",
+    "src/assurance/hob_bard.rs": "49c3e3a463afd12070607f731895d52da855f0805bfdea896507335e5e9408c5"
+  }
+}

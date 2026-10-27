@@ -47,6 +47,8 @@ pub(crate) enum AdditionalTriggerScope {
 pub(crate) enum StaticAbilityFragment {
     /// Grants its controller the permanent enduring-story designation at threshold.
     Storied,
+    /// Replace each nonexempt controller draw with two draws.
+    DoubleDrawExceptFirst,
     /// Generic cost per creature declared attacking this source's controller.
     AttackControllerTax {
         amount: u32,

@@ -876,6 +876,7 @@ struct PlayerState {
     creature_spells_cast_this_turn: u64,
     equip_activated_this_turn: bool,
     cards_drawn_this_turn: u64,
+    drew_in_own_draw_step: bool,
     cards_discarded_this_turn: u64,
     card_left_graveyard_this_turn: bool,
     controlled_creature_died_this_turn: bool,
@@ -2583,6 +2584,7 @@ impl Game {
             creature_spells_cast_this_turn: 0,
             equip_activated_this_turn: false,
             cards_drawn_this_turn: 0,
+            drew_in_own_draw_step: false,
             cards_discarded_this_turn: 0,
             card_left_graveyard_this_turn: false,
             controlled_creature_died_this_turn: false,
@@ -5738,11 +5740,16 @@ impl Game {
     }
 
     fn draw(&mut self, p: Player) {
+        self.draw_many_interruptible(p, 1);
+    }
+    pub(super) fn draw_one_unreplaced(&mut self, p: Player) {
         match self.state.players[p.index()].library.last().copied() {
             Some(id) => {
-                self.move_object(id, Zone::Hand);
-                self.card_drawn(p);
-                self.offer_miracle_reveal(p, id);
+                let event = self.move_object(id, Zone::Hand);
+                if event.moved && event.destination == Zone::Hand {
+                    self.card_drawn(p);
+                    self.offer_miracle_reveal(p, id);
+                }
             }
             None => self.state.players[p.index()].attempted_empty_draw = true,
         }

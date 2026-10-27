@@ -1,16 +1,36 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete typed Oracle behavior; paired provenance pins the full source.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(3, 5),
     keywords: Keywords::REACH.union(Keywords::VIGILANCE),
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::REACH.union(Keywords::VIGILANCE),
+            )],
+        },
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::DoubleDrawExceptFirst],
+        },
+        StaticAbilityGroup {
+            line: 2,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::Replacement(
+                0,
+                ReplacementSpec::DoubleTokens {
+                    effects_only: false,
+                },
+            )],
+        },
+    ],
+    extras: &CardExtras {
+        replacement_effects: &[ReplacementSpec::DoubleTokens {
+            effects_only: false,
+        }],
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
