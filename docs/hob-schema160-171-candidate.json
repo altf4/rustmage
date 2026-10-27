@@ -50,7 +50,7 @@
       "finding": "Restricted-lot payment bug fixed and prior failing reproduction retained; tested integration with Were-Worm attack history."
     }
   ],
-  "status": "171-card full release passed at exact 5b359ef7; independent terminal receipt audits and whole193/final published PR acceptance remain open.",
+  "status": "171-card full release and independent terminal receipt audits passed; whole193/final published PR acceptance remains open.",
   "integrated_recording": {
     "head": "0defaae8ed343e68ff264ca6ec17c55b0c893999",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated171-1",
@@ -671,6 +671,9 @@
       "restore_ns": 167.00909,
       "seconds": 0.042357524
     },
-    "terminal_independent_reviews": "Pending two independent receipt audits."
+    "terminal_independent_reviews": [
+      "hob_review_rules: approved exact 5b359ef7 and all twelve immutable libraries",
+      "hob_review_contracts: approved exact 5b359ef7 and all twelve immutable libraries"
+    ]
   }
 }
