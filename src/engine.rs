@@ -522,6 +522,7 @@ define_actions! {
     FinishSaddle,
     ChooseLibraryDestination { object: ObjectRef, destination: LibraryDestination },
     ChooseManaValueParity { parity: ManaValueParity },
+    ChooseLinkedExile { object: ObjectRef },
     ChooseForageRoute { route: ForageRoute },
     ChooseForage { object: ObjectRef },
     DeclineForage,
@@ -1651,6 +1652,9 @@ enum Pending {
     ManaValueParity {
         player: Player,
     },
+    LinkedExile {
+        player: Player,
+    },
     ForageMethod {
         player: Player,
     },
@@ -1882,6 +1886,8 @@ struct State {
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
     #[allow(clippy::box_collection)]
     delayed_artifact_copies: Option<Box<Vec<SpellView>>>,
+    #[allow(clippy::box_collection)]
+    delayed_attack_this_turn: Option<Box<Vec<SpellView>>>,
     #[allow(
         clippy::box_collection,
         reason = "Rare delayed main-phase packets use one pointer in ordinary states"
@@ -2391,6 +2397,7 @@ pub struct Observation {
     pub improvise_choice: Option<ImproviseChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_artifact_copies: Vec<SpellView>,
+    pub delayed_attack_this_turn: Vec<SpellView>,
     pub delayed_main_mana: Vec<SpellView>,
     pub delayed_returns: Vec<DelayedReturnView>,
     /// Exact public exile objects awaiting immediate return after departure events.
@@ -2668,6 +2675,7 @@ impl Game {
                 nightmare_cull: None,
                 stack_copy_data: None,
                 delayed_artifact_copies: None,
+                delayed_attack_this_turn: None,
                 delayed_main_mana: None,
                 modal_history: None,
                 face_changes: None,
@@ -2868,6 +2876,7 @@ impl Game {
             | Pending::OrderTriggers { player }
             | Pending::TargetLibrary { player }
             | Pending::ManaValueParity { player }
+            | Pending::LinkedExile { player }
             | Pending::ForageMethod { player }
             | Pending::Forage { player }
             | Pending::EffectOptional { player, .. }
@@ -3292,6 +3301,14 @@ impl Game {
             Pending::Saddle { .. } => {
                 if self.visit_saddle_actions(&mut emit) {
                     return true;
+                }
+            }
+            Pending::LinkedExile { .. } => {
+                let source = s.resolving.as_ref().unwrap().item.object;
+                for object in self.linked_exile_candidates(source) {
+                    if emit(Action::ChooseLinkedExile { object }) {
+                        return true;
+                    }
                 }
             }
             Pending::ManaValueParity { .. } => {
@@ -4750,6 +4767,7 @@ impl Game {
                 destination,
             } => self.choose_library_destination(object, destination),
             Action::ChooseManaValueParity { parity } => self.choose_mana_value_parity(parity),
+            Action::ChooseLinkedExile { object } => self.choose_linked_exile(object),
             Action::ChooseForageRoute { route } => self.choose_forage_route(route),
             Action::ChooseForage { object } => self.choose_forage(object),
             Action::DeclineForage => self.decline_forage(),
@@ -6805,6 +6823,7 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        self.state.delayed_attack_this_turn = None;
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.additional_combats = 0;
@@ -7282,6 +7301,12 @@ impl Game {
                 .as_deref()
                 .cloned()
                 .unwrap_or_default(),
+            delayed_attack_this_turn: self
+                .state
+                .delayed_attack_this_turn
+                .as_deref()
+                .cloned()
+                .unwrap_or_default(),
             delayed_artifact_copies: self
                 .state
                 .delayed_artifact_copies
@@ -7431,6 +7456,7 @@ impl Game {
                 Pending::EffectOptional { .. } => "optional_effect",
                 Pending::TargetLibrary { .. } => "target_library",
                 Pending::ManaValueParity { .. } => "mana_value_parity",
+                Pending::LinkedExile { .. } => "linked_exile",
                 Pending::ForageMethod { .. } => "forage_method",
                 Pending::Forage { .. } => "forage",
                 Pending::EffectMana { .. } => "mana_choice",
@@ -7981,6 +8007,13 @@ impl Game {
             + copy_characteristics::cull_bytes(&s.nightmare_cull)
             + stack_copies::owned_bytes(&s.stack_copy_data)
             + s.delayed_artifact_copies.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<SpellView>>()
+                    + rows
+                        .iter()
+                        .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
+                        .sum::<usize>()
+            })
+            + s.delayed_attack_this_turn.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<SpellView>>()
                     + rows
                         .iter()

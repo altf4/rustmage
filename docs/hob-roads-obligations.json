@@ -1,0 +1,58 @@
+{
+  "card": "Roads Go Ever, Ever On",
+  "base": "2b4c499e",
+  "oracle": {
+    "mana": "{1}{W}",
+    "types": "Enchantment — Saga",
+    "obligations": [
+      "Chapter I searches for up to two basic Plains, exiles them, shuffles, then gains 2 life.",
+      "Chapters II and III each put one card exiled with this Saga into its owner’s hand.",
+      "Chapter IV creates a controller-duration trigger on each attack this turn, targeting a creature controlled by that player and granting +1/+1 per Plains controlled at resolution until end of turn."
+    ]
+  },
+  "source": "Complete Oracle body and pinned XMage absence plus analog helper sources recorded in paired provenance; source verification passed for 5417 definitions and 1604 source blobs.",
+  "implementation": "Exact-incarnation linked exile choice; a player-duration delayed trigger packet survives the Saga and fires once per nonempty attack declaration; generic scaled effect reads the Plains count at resolution. Public Action::ChooseLinkedExile, pending decision linked_exile and Observation.delayed_attack_this_turn require schema 163 or the next central schema.",
+  "coverage": [
+    "Actual paid cast, 0/1/2 basic Plains choices, Forest rejection, private search and publicly visible exile, individually selected return, both seats and owned branch/restore.",
+    "Chapter IV before and after Saga departure, two attacks, opponent and player target rejection, current Plains count including nonbasic Hallowed Fountain, Plains departure before resolution, cleanup expiry and owned branch/restore.",
+    "Search, attack declaration and trigger multiplicity regressions."
+  ],
+  "limitations": [
+    "No specific actual replacement interaction, invalidated target during resolution, cross-Saga link isolation, or controller change scenario is proven by these tests; independent review should examine these paths.",
+    "Independent nonauthor reviews, central catalogue/module regeneration and release validation remain. Schema 163 is a leaf proposal requiring central reconciliation."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "result": "2 card tests passed",
+      "report": "/home/altf4/.cache/rustmage-build-reports/b3af334966344ac28250ffc319279c5b.json"
+    },
+    {
+      "run": 2,
+      "result": "2 expanded card tests passed",
+      "report": "/home/altf4/.cache/rustmage-build-reports/556ee6ec07784eba8738530aa5c8ddab.json"
+    },
+    {
+      "run": 3,
+      "result": "29 search, 26 Desert Were-Worm, 13 Dáin, and 13 trigger multiplicity tests passed",
+      "reports": [
+        "/home/altf4/.cache/rustmage-build-reports/271b2021de8049bda1040ebd86b01a4a.json",
+        "/home/altf4/.cache/rustmage-build-reports/9d4e35fe5cc54a83bb4f84c17181ce32.json",
+        "/home/altf4/.cache/rustmage-build-reports/ace9434dfe47486eaebbbcc3031500e8.json",
+        "/home/altf4/.cache/rustmage-build-reports/1e79857c53804778838af00a7a0f7ce6.json"
+      ]
+    }
+  ],
+  "receipts": "/home/altf4/.cache/rustmage-authoring/hob-roads",
+  "source_sha256": {
+    "data/observation-schema.txt": "a0712feefe5a1f6d8376363fb8530f5b668989067683e5e475d385e4bc063257",
+    "src/cards.rs": "fb03153d2828d90b4e4128c0e6985935efb2cb7cc70e395bffbb805609e2b6df",
+    "src/engine.rs": "6198ae9a05ce37aa24fbac0f5dcaf68efe4a7250f5b2d12c454dcc39ccda7234",
+    "src/engine_linked_choices.rs": "fe809f13f0c5d8c311b23836b8476e409a141c76885b7d500501846860ffba98",
+    "src/engine_programs.rs": "4323928aeee738d65aba02edfb6d31e5f802d2ab75c9a2134bd82a30fb36638a",
+    "src/policy.rs": "19819e1abb70b4e18c844dbb984ffa15cc1ff2321b6310f361ed8f633d13fe72",
+    "src/card_definitions/hob/roads_go_ever_ever_on.rs": "e78c2b89aa55325a5b9e25b2cebcbf5e4ca404c8e260f6cb9f859d27d4437ee5",
+    "src/card_definitions/hob/roads_go_ever_ever_on.json": "2f6778e0c502b6771516982156cb57196fa5f6d96680e299177a7e288c84d471",
+    "src/assurance/hob_roads.rs": "10dfba21834d3f531980f12f05d07852c0c1b2db6aadc319e18bf0cfb022d318"
+  }
+}

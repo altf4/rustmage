@@ -1551,6 +1551,21 @@ impl Game {
     ) {
         self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
+        if !declared.is_empty() {
+            let packets: Vec<_> = self
+                .state
+                .delayed_attack_this_turn
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .filter(|item| item.controller == actor)
+                .cloned()
+                .collect();
+            for mut packet in packets {
+                packet.id = self.next_stack_id();
+                self.state.pending_triggers.push(packet);
+            }
+        }
         let sources: Vec<_> = self
             .state
             .attack_sources
@@ -2322,6 +2337,29 @@ impl Game {
                     }
                 }
                 Instruction::ReturnLinkedExileToHand => self.return_linked_exile(item.object),
+                Instruction::ReturnOneLinkedExileToHand => {
+                    if !self.linked_exile_candidates(item.object).is_empty() {
+                        self.state.pending = Pending::LinkedExile {
+                            player: item.controller,
+                        };
+                        return;
+                    }
+                }
+                Instruction::ScheduleAttackTriggerThisTurn { ability } => {
+                    let mut delayed = item.clone();
+                    delayed.id = self.next_stack_id();
+                    delayed.kind = StackKind::TriggeredAbility { ability };
+                    delayed.targets.clear();
+                    delayed.mode = None;
+                    delayed.cast = None;
+                    delayed.is_copy = false;
+                    delayed.related_stack = None;
+                    delayed.additional_triggers = 0;
+                    self.state
+                        .delayed_attack_this_turn
+                        .get_or_insert_default()
+                        .push(delayed);
+                }
                 Instruction::ScheduleSacrificedArtifactCopy { ability } => {
                     let mut delayed = item.clone();
                     delayed.id = self.next_stack_id();

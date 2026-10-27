@@ -498,6 +498,29 @@ impl Game {
         movement.controller = player;
         self.stage_entries(vec![movement], None);
     }
+    pub(super) fn linked_exile_candidates(&self, source: ObjectRef) -> Vec<ObjectRef> {
+        self.state
+            .linked_choices
+            .as_ref()
+            .map_or_else(Vec::new, |data| {
+                data.links
+                    .iter()
+                    .filter(|link| {
+                        link.source == source
+                            && self.object_ref(link.exiled.card) == link.exiled
+                            && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
+                    })
+                    .map(|link| link.exiled)
+                    .collect()
+            })
+    }
+    pub(super) fn choose_linked_exile(&mut self, object: ObjectRef) {
+        let source = self.state.resolving.as_ref().unwrap().item.object;
+        assert!(self.linked_exile_candidates(source).contains(&object));
+        let movement = self.entry_move(object.card, Zone::Hand, false);
+        self.stage_entries(vec![movement], None);
+        self.run_program();
+    }
     pub(super) fn return_linked_exile(&mut self, source: ObjectRef) {
         let Some(data) = self.state.linked_choices.as_ref() else {
             return;

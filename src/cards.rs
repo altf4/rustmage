@@ -996,6 +996,10 @@ pub(crate) enum Instruction {
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
+    ReturnOneLinkedExileToHand,
+    ScheduleAttackTriggerThisTurn {
+        ability: u16,
+    },
     BlinkImmediately {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
