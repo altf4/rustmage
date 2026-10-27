@@ -34,7 +34,7 @@
       "note": "Two zero-match legacy filters are excluded from pass counts."
     }
   ],
-  "status": "168-card full release passed at exact aaf694cc; independent terminal receipt audits and whole193/final published PR acceptance remain open.",
+  "status": "168-card full release and independent terminal receipt audits passed; whole193/final published PR acceptance remains open.",
   "integrated_recording": {
     "head": "9effb04527b270f2aa619f4bb9c0be06ea7b6332",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated168-1",
@@ -601,6 +601,9 @@
       "restore_ns": 190.07726,
       "seconds": 0.041274712
     },
-    "terminal_independent_reviews": "Pending two independent receipt audits."
+    "terminal_independent_reviews": [
+      "hob_review_rules: approved exact aaf694cc and all eleven immutable libraries",
+      "hob_review_contracts: approved exact aaf694cc and all eleven immutable libraries"
+    ]
   }
 }
