@@ -29,3 +29,11 @@ This is prototype evidence only: the full-pool admission check was disabled in
 those runs. It has since been restored, and a counter of rejected attack attempts
 added to the report. Both changes require verification on the final full-set head,
 including a separate benchmark and independent review, before set acceptance.
+
+Prototype run 6, with only the full-pool gate temporarily disabled, passed the
+corrected witness check: 24 natural terminals, 14,839 fully replayed decisions,
+717 sampled owned branches, seven rejected partial-attack attempts, all five
+spell colors and 92 printed landfall packets. The guarded run terminated with
+exit 0; receipt `<cache>/rustmage-build-reports/943460d630c745fda939efe834eded27.json`.
+The full-pool gate was restored after termination. This remains provisional until
+rerun on the final 193-card head with the gate enabled and independent review.
