@@ -37,7 +37,7 @@
       "note": "Schema coordination corrected to 163; preserves exact BF-to-graveyard history and Food entry projection."
     }
   ],
-  "status": "178-card full release passed at exact 243d8b94; independent terminal receipt audits and whole193/final published PR acceptance remain open.",
+  "status": "178-card full release and independent terminal receipt audits passed; whole193/final published PR acceptance remains open.",
   "integrated_recording": {
     "head": "5dfeb75fba650bff59e7599f30885e65dbabbfbe",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated178-1",
@@ -780,6 +780,9 @@
       "restore_ns": 194.39466,
       "seconds": 0.041880161
     },
-    "terminal_independent_reviews": "Pending two independent receipt audits."
+    "terminal_independent_reviews": [
+      "hob_review_rules: approved exact 243d8b94 and all fifteen immutable libraries",
+      "hob_review_contracts: approved exact 243d8b94 and all fifteen immutable libraries"
+    ]
   }
 }
