@@ -373,3 +373,85 @@ fn hob_friendship_x_is_zero_in_library_and_zero_toughness_entry_still_spends_cap
         }
     }
 }
+
+#[test]
+fn hob_friendship_synthetic_prevented_entry_excludes_chosen_card_and_preserves_legacy_remainder() {
+    // No admitted replacement currently forbids a library-to-battlefield entry.
+    // Inject the existing skipped-move outcome into a real staged entry batch;
+    // do not claim Adaptive Automaton or any fixture supplies prevention.
+    for p in [Player::P0, Player::P1] {
+        for friendship in [true, false] {
+            let mut g = scenario(p);
+            land(&mut g, p, 3);
+            let s = if friendship {
+                source(&mut g, p)
+            } else {
+                put(&mut g, p, "Loot, Exuberant Explorer", Zone::Battlefield)
+            };
+            top(&mut g, p, "Shock");
+            let c = top(&mut g, p, "Adaptive Automaton");
+            top(&mut g, p, "Forest");
+            top(&mut g, p, "Forest");
+            if friendship {
+                die(&mut g, p);
+                reveal(&mut g);
+            } else {
+                g.state.players[p.index()].mana = [0, 0, 0, 0, 2, 4];
+                choose(
+                    &mut g,
+                    |a| matches!(a,Action::AnnounceActivate{card,..} if *card==s),
+                );
+                pay(&mut g);
+                reveal(&mut g);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            }
+            let frame = g
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .selection
+                .as_ref()
+                .unwrap();
+            assert_eq!(frame.exclude_selected_from_remainder, friendship);
+            let mut remainder: Vec<_> = frame
+                .remaining
+                .iter()
+                .filter(|r| r.card != c)
+                .map(|r| r.card)
+                .collect();
+            if !friendship {
+                remainder.push(c);
+            }
+            let mut expected_rng = g.state.rng;
+            expected_rng.shuffle(&mut remainder);
+            let mut expected_library = g.state.players[p.index()].library.to_vec();
+            expected_library.retain(|id| !remainder.contains(id));
+            expected_library.splice(0..0, remainder.iter().rev().copied());
+            let incarnation = g.object_ref(c);
+            pick(&mut g, c);
+            assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+            let batch = g.state.entry_batch.as_mut().unwrap();
+            assert_eq!(batch.moves.len(), 1);
+            assert_eq!(batch.moves[0].before.reference, incarnation);
+            batch.moves[0].skipped = true; // Synthetic “can't enter” completed outcome.
+            contracts::branch_contract(g.clone());
+            choose(
+                &mut g,
+                |a| matches!(a,Action::ChooseEntryValue{value:EntryChoiceValue::CreatureType(t)} if t.name()=="Dwarf"),
+            );
+            finish(&mut g);
+            assert_eq!(g.object_view(c).zone, Zone::Library);
+            assert_eq!(g.object_ref(c), incarnation);
+            assert_eq!(
+                g.state.players[p.index()].library.to_vec(),
+                expected_library
+            );
+            assert_eq!(g.state.rng, expected_rng);
+            if friendship {
+                assert_eq!(g.state.players[p.index()].library.last(), Some(&c));
+            }
+            assert!(g.observe(p.other()).library_selection.is_none());
+        }
+    }
+}

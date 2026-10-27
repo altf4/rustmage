@@ -12,6 +12,8 @@ pub(super) struct LibrarySelection {
     pub entered: Option<ObjectRef>,
     pub transform_pending: bool,
     pub destination: LibraryPickDestination,
+    /// The selected card is excluded from “the rest” even if its move is prevented.
+    pub exclude_selected_from_remainder: bool,
     pub public: bool,
     pub entering: bool,
     pub remaining: Vec<ObjectRef>,
@@ -202,6 +204,10 @@ impl Game {
             entered: None,
             transform_pending: false,
             destination,
+            exclude_selected_from_remainder: matches!(
+                effect.destination,
+                LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(_)
+            ),
             public: effect.public,
             entering: false,
             remaining,
@@ -447,6 +453,7 @@ impl Game {
         f.remaining.retain(remains);
         f.bottom.retain(remains);
         if !f.random
+            && !f.exclude_selected_from_remainder
             && matches!(
                 f.destination,
                 LibraryPickDestination::Battlefield | LibraryPickDestination::BattlefieldTapped
