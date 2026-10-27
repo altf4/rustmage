@@ -1,5 +1,5 @@
 {
-  "scope": "193 local HOB candidates, zero gated; full-set behavior, integrated rules, games, performance and final published PR reviews remain open.",
+  "scope": "193 HOB candidates, zero gated; local release, gated gameplay and named benchmark passed with independent audits. Final published PR reviews remain open.",
   "schema": 168,
   "schema_changes": [
     "Eagles public delayed-upkeep token packet and optional observation"
@@ -51,14 +51,14 @@
       "hob_review_rules",
       "hob_review_contracts"
     ],
-    "status": "Provisional 24-game prototype passed with the full-pool gate temporarily disabled; final gated verification and separately measured benchmark remain required."
+    "status": "Provisional 24-game prototype passed with the full-pool gate temporarily disabled; subsequent full-pool gated verification and separate benchmark passed and are recorded below."
   },
   "status": "All 193 candidates linked, full release, gated game verification and named benchmark passed with independent local audits; single new PR and two independent nonauthor published-head reviews remain open.",
   "preliminary_clippy": {
     "head": "18be28ac0586027c962f364228c2b9449888c738",
     "report": "<cache>/rustmage-authoring/hob-complete-set/final-clippy/first.log",
     "guard": "<cache>/rustmage-build-reports/49f659e33446445bb77ae23c45e7bad0.json",
-    "result": "Natural exit 101 on match_like_matches_macro in game telemetry. The equivalent matches! expression replaces only this test/example predicate; full release remains required."
+    "result": "Natural exit 101 on match_like_matches_macro in game telemetry. The equivalent matches! expression replaced only this test/example predicate; subsequent guarded Clippy and full release passed."
   },
   "integrated_recording": {
     "head": "18be28ac0586027c962f364228c2b9449888c738",
