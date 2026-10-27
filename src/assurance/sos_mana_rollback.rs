@@ -261,3 +261,6 @@ mod bilbo_tests;
 
 #[path = "hob_thranduil_decree_rollback.rs"]
 mod decree_tests;
+
+#[path = "hob_gandalf_flameshape_rollback.rs"]
+mod gandalf_flameshape_tests;

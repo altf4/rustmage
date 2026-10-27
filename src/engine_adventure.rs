@@ -163,6 +163,7 @@ impl Game {
                         && r.player == actor
                         && r.object == self.object_ref(id)
                         && r.expiry.active(self.state.turn)
+                        && self.exile_permission_guard(r)
                 }));
         let generic_graveyard = self.has_graveyard_cast(actor, id, GraveyardCastKind::Cast);
         if object.zone != Zone::Hand && !generic_exile && !generic_graveyard {

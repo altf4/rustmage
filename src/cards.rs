@@ -940,6 +940,11 @@ pub(crate) enum Instruction {
         amount: u16,
     },
     RevealTopDrawIfArtifact,
+    /// Privately exile top cards; paid play remains conditional on a current subtype.
+    ExileTopFaceDownPlay {
+        amount: u16,
+        subtype: &'static str,
+    },
     ExileTopPlayBoostSourceIfSubtype {
         subtype: &'static str,
         power: i32,

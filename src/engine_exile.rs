@@ -19,6 +19,8 @@ pub struct ExilePlayPermission {
     /// This origin permission requires the free alternative, not a paid cast.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub without_paying_mana_cost: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requires_subtype: Option<&'static str>,
 }
 /// Deadline boundaries refer to actual turns, never to skipped turn candidates.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -57,6 +59,7 @@ impl Game {
                 && p.player == player
                 && p.object == self.object_ref(card)
                 && p.expiry.active(self.state.turn)
+                && self.exile_permission_guard(p)
         })
     }
     pub(super) fn can_play_exiled_land(&self, player: Player, card: CardId) -> bool {
@@ -67,6 +70,7 @@ impl Game {
                     && p.player == player
                     && p.object == self.object_ref(card)
                     && p.expiry.active(self.state.turn)
+                    && self.exile_permission_guard(p)
                     && !p.cast_only
             })
     }
@@ -81,6 +85,7 @@ impl Game {
                 row.player == player
                     && row.object == self.object_ref(card)
                     && row.expiry.active(self.state.turn)
+                    && self.exile_permission_guard(row)
             })
             .fold((false, false), |flags, row| {
                 (
@@ -171,6 +176,7 @@ impl Game {
                 exile_on_graveyard: false,
                 life_instead_of_mana: false,
                 without_paying_mana_cost: false,
+                requires_subtype: None,
             },
         );
     }
@@ -438,6 +444,7 @@ impl Game {
                     && p.player == player
                     && p.object == self.object_ref(card)
                     && p.expiry.active(self.state.turn)
+                    && self.exile_permission_guard(p)
             })
     }
     pub(super) fn grant_exile_free_permission(&mut self, player: Player, object: ObjectRef) {
@@ -470,6 +477,7 @@ impl Game {
                 exile_on_graveyard: false,
                 life_instead_of_mana: false,
                 without_paying_mana_cost: true,
+                requires_subtype: None,
             },
         );
     }
@@ -518,5 +526,60 @@ impl Game {
             }
         }
         false
+    }
+}
+
+impl Game {
+    pub(super) fn exile_permission_guard(&self, permission: &ExilePlayPermission) -> bool {
+        permission.requires_subtype.is_none_or(|subtype| {
+            self.state.objects.iter().enumerate().any(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == permission.player
+                    && self.has_subtype(id as CardId, subtype)
+            })
+        })
+    }
+    pub(super) fn exile_top_face_down_play(
+        &mut self,
+        item: &SpellView,
+        amount: u16,
+        subtype: &'static str,
+    ) {
+        let ids = top_library_cards(
+            &self.state.players[item.controller.index()].library,
+            u128::from(amount),
+        );
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if !event.moved || event.destination != Zone::Exile {
+                continue;
+            }
+            // Look access belongs to the captured player, independently of the
+            // source and the condition on future plays. Reuse exact hidden rows.
+            self.state
+                .linked_choices
+                .get_or_insert_default()
+                .hidden
+                .push((item.object, event.after, 1 << item.controller.index()));
+            let at = self
+                .state
+                .exile_permissions
+                .partition_point(|p| p.object.card < event.after.card);
+            self.state.exile_permissions.insert(
+                at,
+                ExilePlayPermission {
+                    object: event.after,
+                    player: item.controller,
+                    expiry: ExilePlayExpiry::WhileExiled,
+                    spend_any_mana: false,
+                    cast_only: false,
+                    exile_on_graveyard: false,
+                    life_instead_of_mana: false,
+                    without_paying_mana_cost: false,
+                    requires_subtype: Some(subtype),
+                },
+            );
+        }
+        self.finish_zone_events(&events, &[]);
     }
 }

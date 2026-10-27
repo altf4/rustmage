@@ -3895,6 +3895,9 @@ impl Game {
                     }
                 }
                 Instruction::RevealTopDrawIfArtifact => self.reveal_top_draw_if_artifact(&item),
+                Instruction::ExileTopFaceDownPlay { amount, subtype } => {
+                    self.exile_top_face_down_play(&item, amount, subtype)
+                }
                 Instruction::ExileTopPlayBoostSourceIfSubtype {
                     subtype,
                     power,

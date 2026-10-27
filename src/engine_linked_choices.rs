@@ -92,7 +92,10 @@ impl Game {
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
-            if data.links.is_empty() && data.hideaway_controllers.is_empty() {
+            if data.links.is_empty()
+                && data.hideaway_controllers.is_empty()
+                && data.hidden.is_empty()
+            {
                 self.state.linked_choices = None;
             }
         }

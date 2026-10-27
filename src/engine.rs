@@ -7639,7 +7639,12 @@ impl Game {
                 .map_or_else(Vec::new, |rows| rows.to_vec()),
             exile_links: s.exile_links.clone(),
             spell_characteristics: self.spell_characteristics(),
-            exile_permissions: s.exile_permissions.clone(),
+            exile_permissions: s
+                .exile_permissions
+                .iter()
+                .filter(|p| self.can_view_hideaway(viewer, p.object))
+                .copied()
+                .collect(),
             borrowed_abilities: self.borrowed_ability_views(),
             graveyard_borrowed_abilities: self.graveyard_borrowed_ability_views(),
             cascade: s
