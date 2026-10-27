@@ -845,9 +845,9 @@ impl Game {
                 };
                 (*payment, self.purpose_for_item(&a.item))
             }
-            Action::PayPlot { payment } | Action::PayResolutionMana { payment } => {
-                (*payment, Purpose::Other)
-            }
+            Action::PayPlot { payment }
+            | Action::PayResolutionMana { payment }
+            | Action::PayAttackCost { payment } => (*payment, Purpose::Other),
             _ => return true,
         };
         let pool = self.available_mana(actor, purpose);

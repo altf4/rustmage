@@ -1883,6 +1883,12 @@ impl Game {
             if self.restore_mana_announcement() {
                 return;
             }
+            if let Some(payment) = &self.state.attack_payment {
+                self.state.pending = Pending::AttackPayment {
+                    player: payment.player,
+                };
+                return;
+            }
         } else {
             if let Some(permission) = announcement.free_hand_permission.take() {
                 self.use_free_hand_permission(*permission);

@@ -1,0 +1,68 @@
+{
+  "card": "Dáin, Lord of the Iron Hills",
+  "base": "6eaa07a9",
+  "scope": "Whole card candidate; independent reviews and integrated schema159 acceptance remain",
+  "implementation": "Conditional cumulative tax only on creatures attacking the controller, locked after declaration taps; distinct owned payment phase, typed payment and cancellation actions, selective mana rollback and funding search. Zero-tax path retains existing attack commit.",
+  "wire": "Schema160: Pending attack_payment, public optional attack_payment player/generic, PayAttackCost(payment), AbortAttackPayment, CancelAttackDeclaration, mana-payment domain, selected declarations visible during locked payment.",
+  "source": "Complete Oracle body and pinned Java class and helpers in paired provenance; exact input files matched pinned revision. Rules CR508.1a-k and 508.4c govern payment timing, restrictions and entering attacking.",
+  "limitations": [
+    "Final inherited trace row audit and full release acceptance must be done at integration.",
+    "Independent reviewers must audit overlap with Were-Worm's postpayment combat event and the existing selective mana rollback and nested funding continuation.",
+    "The synthetic post-tap predicate checks the projection helper, rather than an authored continuous effect that grants a tax when another creature taps."
+  ],
+  "history": [
+    "Run1 naturally failed to compile because baseline policy needed exhaustive matches for the new actions; corrected only after exit.",
+    "Run2 naturally had one passing and one failing card scenario because a planeswalker fixture entered with zero loyalty; corrected after exit.",
+    "Run3 passed 5 card and 29 regressions.",
+    "Run4 naturally passed 6 card scenarios and failed one test using ActivateMana instead of the correct intrinsic TapMana action; corrected after exit.",
+    "Run5 passed 8 card and 29 regressions.",
+    "Run6 naturally failed its first card suite due to an incorrectly spelled Hydro-Channeler fixture; fixed after terminal.",
+    "Run7 failed closed before compilation because the driver was launched without the bounded wrapper; its receipt is retained.",
+    "Run8 passed ten card tests and 29 related trigger, mana rollback and equipment regressions after post-tap tax preview.",
+    "Run9 passed 11 card and 29 regression tests, including a copied provider and suppressed provider presence.",
+    "Repair run1: fixture erroneously treated a Satyr as an Elf and failed legality; corrected using a continuous Elf type.",
+    "Repair run2: two fixture failures (unauthenticated subtype row and omitted nested cost payment); corrected.",
+    "Repair run3: 13 Dáin scenarios passed with the allocation fix and nested foreign-choice rollback.",
+    "Repair run4: corrected two-seat restricted-allocation scenario fails naturally on unfixed implementation when the attack proposal rolls back before lot choice.",
+    "Repair run5: restored fix passes 13 Dáin scenarios and 29 trigger, mana rollback and equipment regressions, including nested foreign choice, reversible mana, irreversible Colossus sacrifice and owned branch contract."
+  ],
+  "test_source_sha256": "e60a6f094f316d914f28e076ee4af4c8abd335948333ec85252c205b3c5634b2",
+  "run8_resource_report": "/home/altf4/.cache/rustmage-build-reports/b507299c386543d19e2c3bca33598964.json",
+  "run9_resource_report": "/home/altf4/.cache/rustmage-build-reports/019d0dd4e3cd4434b89e8d7e5eeff146.json",
+  "run9_receipts": "/home/altf4/.cache/rustmage-authoring/hob-dain/run-9",
+  "source_sha256": {
+    "src/assurance/hob_dain.rs": "e60a6f094f316d914f28e076ee4af4c8abd335948333ec85252c205b3c5634b2",
+    "src/card_definitions/hob/dain_lord_of_the_iron_hills.rs": "15c14220ccf043d52dc039da1c5d0e79363a799a0a81cde56337b2a2da86401b",
+    "src/card_definitions/hob/dain_lord_of_the_iron_hills.json": "c5fc8fae570cd2b8d3b7e8da0c4af14ed6ef1fbfee493a7f04625fdf82438343",
+    "src/engine.rs": "7fc5e173a3fa2ad030cdd980cdc95bf8f57b244cb01d1c75289d19658865ab4d",
+    "src/engine_combat_restrictions.rs": "8bb39adb13e915deb30714fce5c67028fb42acc3efeac5cf06053b62f36c4156",
+    "src/engine_funding.rs": "a95ac6439920cf9288d3df178f7b95c36baef1161eb49cc54614b7f5811cf140",
+    "src/engine_mana_lots.rs": "022a57375906bcdf78700b917d46e9a970a3fe63055c6b0876e2232752b3a4e1",
+    "src/engine_cast_rollback.rs": "9072bd8a8116c0ef3c42fac6c3e97ffe0639c96894e0b9b6cf6c55f5e1735aa0",
+    "src/engine_stats.rs": "5e394668682267796f2ad8fe3f14758417017c1f9d89782b907908b14a7d7a3e",
+    "src/engine_targeting.rs": "c0ece94a1c20c1fd32aa34a7fded19684ed690ef4d4e9521baef6e118e45de2b",
+    "src/ability_layers.rs": "185eb9d1263354d079b4b16d414fb420a5798f38eec0b939647f85890d43f93e",
+    "src/policy.rs": "e2e712465baa4007b882beff65098d48a1b56eb29d00f58473e4c966a6ba2410",
+    "data/observation-schema.txt": "1cb3ae0c7cf44aff95d12f73a367a8a51aedeb2a2a4deb4f0c4cb72d5845d2f5",
+    "src/assurance/hob_desert_worm.rs": "60f06c9eb5c10f082b9df9c6b9b6a384e4f0b1ef68ed2aa35089cd588d6b3042"
+  },
+  "repair": {
+    "before_fix_receipt": "/home/altf4/.cache/rustmage-authoring/hob-dain-repair/run-4/output.log",
+    "before_fix_report": "/home/altf4/.cache/rustmage-build-reports/5170aed948a74908a1d1a8a97056784f.json",
+    "final_receipts": "/home/altf4/.cache/rustmage-authoring/hob-dain-repair/run-5",
+    "final_resource_report": "/home/altf4/.cache/rustmage-build-reports/3fa3ba51ee3f4682850600ef74c8b6d6.json",
+    "scope": "AttackPayment now supplies the locked generic goal to prepared mana allocations, preserving feasible restricted-lot plans through actual mana activation. Both seats exercise the nested foreign Aura entry, reversible Forest mana and mandatory retention of irreversible Colossus library shuffle; branch contracts cover choice and rollback windows.",
+    "schema": "Integration leaf updates schema 159 to 160; root coordinates any other schema 160 changes."
+  },
+  "integration": {
+    "base": "aaf694ccc6cf68b83652a930b4f993a58439373b",
+    "schema": 160,
+    "combat": "Record the signed AttackPowerEvent once after the final tax payment using surviving selected attackers; skip the second tap for paid declarations and retain Were-Worm declaration triggers.",
+    "assurance": "The Dáin suite is nested in the already registered hob_desert_worm module; no central registry change is required. Both-seat combined scenario checks abort preserving history, tapped-attacker handling, Mountain sacrifice changing Were-Worm power and sacrifice of a selected vigilant attacker.",
+    "run1": "Compile failed due to u32/u64 assertion mismatch; corrected after natural termination.",
+    "run2": "Compiled with 12 preexisting tests passing; Dáin cases failed because base generated catalogue did not admit Dáin. Locally regenerated with link_catalogue before run3; generated outputs are excluded from commit.",
+    "run3": "26 Dáin and Were-Worm tests passed; report /home/altf4/.cache/rustmage-build-reports/c1634ab864fb4ef482ab00bbb0342d89.json",
+    "run4": "20 Elrond, 4 Getaway, 13 Notary, 11 Silvan and 8 mana rollback tests passed; report /home/altf4/.cache/rustmage-build-reports/f52abc35c22f4a0ca67fce506491ef76.json",
+    "receipts": "/home/altf4/.cache/rustmage-authoring/hob-dain-integration"
+  }
+}

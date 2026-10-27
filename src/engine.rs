@@ -269,6 +269,7 @@ mod battlefield_groups;
 mod blocking;
 #[path = "engine_combat_restrictions.rs"]
 mod combat_restrictions;
+pub use combat_restrictions::AttackPaymentView;
 #[path = "engine_effect_choices.rs"]
 mod effect_choices;
 #[path = "engine_exile.rs"]
@@ -693,6 +694,9 @@ define_actions! {
         defender: ObjectRef,
     },
     FinishAttackers,
+    CancelAttackDeclaration,
+    PayAttackCost { payment: Mana },
+    AbortAttackPayment,
     Block {
         blocker: CardId,
         attacker: CardId,
@@ -1558,6 +1562,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    AttackPayment {
+        player: Player,
+    },
     SourceCounterAmount {
         player: Player,
     },
@@ -1818,6 +1825,7 @@ struct State {
     paradigm: Option<Box<paradigm::ParadigmState>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
+    attack_payment: Option<Box<combat_restrictions::AttackPayment>>,
     ending_turn: bool,
     turn_skips: Option<Box<[u64; 2]>>,
     player_control: Option<Box<player_control::PlayerControlState>>,
@@ -2317,6 +2325,8 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub attack_payment: Option<AttackPaymentView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub player_control: Option<PlayerControlView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub library_cast_look: Option<LibraryCastLookView>,
@@ -2635,6 +2645,7 @@ impl Game {
                 objects: objects.into(),
                 named_counters: None,
                 combat_rules: None,
+                attack_payment: None,
                 creature_damage_history: None,
                 tap_history: None,
                 counter_placement_history: None,
@@ -2817,6 +2828,7 @@ impl Game {
             | Pending::ConniveOrder { player }
             | Pending::ResolutionLife { player }
             | Pending::ResolutionMana { player }
+            | Pending::AttackPayment { player }
             | Pending::AdditionalCost { player }
             | Pending::EntryTimestamp { player }
             | Pending::EntryReplacement { player }
@@ -2949,6 +2961,7 @@ impl Game {
             if (self.state.resolving.is_some()
                 || self.miracle_choice_pending()
                 || self.plot_payment().is_some()
+                || self.state.attack_payment.is_some()
                 || self.state.announcing.is_some()
                 || self.state.entry_batch.is_some())
                 && (!self.state.objects.ptr_eq(&checkpoint.objects)
@@ -3053,6 +3066,11 @@ impl Game {
                         self.state.announcing.as_ref().and_then(|a| a.additional),
                         Some(*payment),
                     )
+            } else if let Action::PayAttackCost { payment } = &action {
+                matches!(self.state.pending, Pending::AttackPayment { .. })
+                    && self
+                        .mana_payment_domain()
+                        .is_some_and(|d| d.contains(*payment))
             } else if let Action::ChooseSourceCounterAmount { amount } = &action {
                 self.source_counter_choice()
                     .is_some_and(|domain| *amount <= domain.maximum)
@@ -3091,6 +3109,7 @@ impl Game {
                     && self.state.replacements.is_none()
                     && self.state.announcing.is_none()
                     && self.plot_payment().is_none()
+                    && self.state.attack_payment.is_none()
                 {
                     self.state_based_actions();
                     if self.state.entry_batch.is_some() {
@@ -3113,8 +3132,23 @@ impl Game {
                 .is_some_and(|r| r.capture.is_some())
                 && (self.state.entry_batch.is_some() || self.state.replacements.is_some()))
         {
-            let fundable = self.current_cast_costs_fundable();
+            let fundable = if self.state.announcing.is_some() {
+                self.current_cast_costs_fundable()
+            } else if let Some(payment) = &self.state.attack_payment {
+                self.attack_tax_fundable(payment.player, payment.generic)
+            } else {
+                self.current_cast_costs_fundable()
+            };
             self.finish_cast_rollback(fundable);
+        }
+        if matches!(self.state.pending, Pending::AttackPayment { .. })
+            && self
+                .state
+                .attack_payment
+                .as_ref()
+                .is_some_and(|p| !self.attack_tax_fundable(p.player, p.generic))
+        {
+            self.finish_cast_rollback(false);
         }
         self.finish_library_visibility();
         self.clear_finished_cast_rollback();
@@ -4211,7 +4245,16 @@ impl Game {
                 }
             }
             Pending::Attackers => {
-                if self.attack_declaration_complete(actor) && emit(Action::FinishAttackers) {
+                if self.attack_declaration_complete(actor)
+                    && self.attack_declaration_fundable(actor)
+                    && emit(Action::FinishAttackers)
+                {
+                    return true;
+                }
+                if !s.selected_attackers.is_empty()
+                    && self.has_attack_tax_provider()
+                    && emit(Action::CancelAttackDeclaration)
+                {
                     return true;
                 }
                 // Freeze the small defending set once, not one arena scan per
@@ -4246,6 +4289,11 @@ impl Game {
                             return true;
                         }
                     }
+                }
+            }
+            Pending::AttackPayment { .. } => {
+                if emit(Action::AbortAttackPayment) || self.visit_attack_tax_payment(&mut emit) {
+                    return true;
                 }
             }
             Pending::Blockers => {
@@ -5370,28 +5418,49 @@ impl Game {
                     blocked: false,
                 })
             }
+            Action::CancelAttackDeclaration => self.state.selected_attackers.clear(),
+            Action::AbortAttackPayment => self.finish_cast_rollback(false),
             Action::FinishAttackers => {
-                let first_attacks: Vec<_> = self
-                    .state
-                    .selected_attackers
+                if self.projected_attack_tax() == 0 {
+                    self.finish_attack_declaration(actor, false);
+                } else {
+                    self.begin_attack_rollback(actor);
+                    let attackers = self
+                        .state
+                        .selected_attackers
+                        .iter()
+                        .map(|a| self.object_ref(a.card))
+                        .collect();
+                    self.tap_selected_attackers();
+                    self.refresh_enduring_stories();
+                    let generic = self.selected_attack_tax();
+                    self.state.attack_payment =
+                        Some(Box::new(combat_restrictions::AttackPayment {
+                            player: actor,
+                            generic,
+                            attackers,
+                        }));
+                    self.state.pending = Pending::AttackPayment { player: actor };
+                }
+            }
+            Action::PayAttackCost { payment } => {
+                self.spend_mana_for(actor, payment, mana_lots::Purpose::Other);
+                let context = self.state.attack_payment.take().unwrap();
+                let live: Vec<_> = context
+                    .attackers
                     .iter()
-                    .filter(|a| {
-                        !self
-                            .state
-                            .attacked_this_turn
-                            .contains(&self.object_ref(a.card))
+                    .filter(|r| {
+                        self.on_battlefield(r.card)
+                            && self.object_ref(r.card) == **r
+                            && self.state.objects[r.card as usize].controller == actor
+                            && self.is_creature(r.card)
                     })
-                    .map(|a| a.card)
+                    .map(|r| r.card)
                     .collect();
-                let declared_count = self.state.selected_attackers.len();
-                self.commit_attackers_with(actor, |game, card| {
-                    game.attack_triggers_for_declaration(
-                        &game.object_view(card),
-                        declared_count,
-                        first_attacks.contains(&card),
-                    );
-                });
-                self.give_priority();
+                self.state
+                    .selected_attackers
+                    .retain(|a| live.contains(&a.card));
+                self.finish_attack_declaration(actor, true);
             }
             Action::Block { blocker, attacker } => {
                 self.state.selected_blocks.push((blocker, attacker))
@@ -6437,7 +6506,35 @@ impl Game {
 
     /// Complete the turn-based declaration before dispatching attack events.
     /// Keeping this boundary explicit also permits testing live trigger guards.
-    fn commit_attackers_with(&mut self, actor: Player, mut event: impl FnMut(&mut Self, CardId)) {
+    fn finish_attack_declaration(&mut self, actor: Player, pre_tapped: bool) {
+        let first_attacks: Vec<_> = self
+            .state
+            .selected_attackers
+            .iter()
+            .filter(|a| {
+                !self
+                    .state
+                    .attacked_this_turn
+                    .contains(&self.object_ref(a.card))
+            })
+            .map(|a| a.card)
+            .collect();
+        let declared_count = self.state.selected_attackers.len();
+        self.commit_attackers_with(actor, pre_tapped, |game, card| {
+            game.attack_triggers_for_declaration(
+                &game.object_view(card),
+                declared_count,
+                first_attacks.contains(&card),
+            );
+        });
+        self.give_priority();
+    }
+    fn commit_attackers_with(
+        &mut self,
+        actor: Player,
+        pre_tapped: bool,
+        mut event: impl FnMut(&mut Self, CardId),
+    ) {
         self.state.attack_declared = !self.state.selected_attackers.is_empty();
         self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
         let declared = std::mem::take(&mut self.state.selected_attackers);
@@ -6455,7 +6552,9 @@ impl Game {
             }
         }
         self.state.attackers.extend(declared.iter().cloned());
-        self.tap_objects(&to_tap);
+        if !pre_tapped {
+            self.tap_objects(&to_tap);
+        }
         let power_event = self.record_attack_turn_facts(actor, &declared);
         for attack in &declared {
             event(self, attack.card);
@@ -7048,6 +7147,10 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            attack_payment: s.attack_payment.as_ref().map(|p| AttackPaymentView {
+                player: p.player,
+                generic: p.generic,
+            }),
             player_control: self.player_control_view(),
             library_cast_look: self.library_cast_look_view(viewer),
             zone_search: self.zone_search_view(viewer),
@@ -7242,6 +7345,7 @@ impl Game {
                 Pending::Replacement { .. } => "replacement",
                 Pending::CreatedToken { .. } => "created_token",
                 Pending::ResolutionMana { .. } => "resolution_mana",
+                Pending::AttackPayment { .. } => "attack_payment",
                 Pending::ResolutionLife { .. } => "resolution_life",
                 Pending::ConniveOrder { .. } => "connive_order",
                 Pending::OpeningHand { .. } => "opening_hand",
@@ -7723,12 +7827,16 @@ impl Game {
                         .collect()
                 })
                 .unwrap_or_default(),
-            attackers: if owns_choice && s.pending == Pending::Attackers {
+            attackers: if (owns_choice && s.pending == Pending::Attackers)
+                || s.attack_payment.is_some()
+            {
                 s.selected_attackers.iter().map(|a| a.card).collect()
             } else {
                 s.attackers.iter().map(|a| a.card).collect()
             },
-            attack_declarations: if owns_choice && s.pending == Pending::Attackers {
+            attack_declarations: if (owns_choice && s.pending == Pending::Attackers)
+                || s.attack_payment.is_some()
+            {
                 s.selected_attackers.clone()
             } else {
                 s.attackers.clone()
@@ -7867,6 +7975,7 @@ impl Game {
                         .as_ref()
                         .map_or(0, |_| std::mem::size_of::<ObjectRef>())
             })
+            + s.attack_payment.as_ref().map_or(0, |p| p.bytes())
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
             + s.borrowed_uses.as_ref().map_or(0, |rows| {

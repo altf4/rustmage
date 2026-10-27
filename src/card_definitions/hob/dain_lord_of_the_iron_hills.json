@@ -1,12 +1,62 @@
 {
-  "name": "Dáin, Lord of the Iron Hills",
+  "name": "D\u00e1in, Lord of the Iron Hills",
   "catalogue_id": 1224,
   "oracle_id": "5b79b68a-db71-4638-824e-ab89b1716c86",
   "facts_sha256": "f28abf6f5ebbbba76c028bf544030658140e220ef2facbb940140e755f648e5e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "11fbb66ce97b324d467a57e1102dd00f43b86decb7f1561f8d60e65c3cc204e7"
   },
-  "physical_metadata_sha256": "f534a448772475b743728690da2f52beeb1dd8249fef0c9a41db9b6b54fedd22"
+  "physical_metadata_sha256": "f534a448772475b743728690da2f52beeb1dd8249fef0c9a41db9b6b54fedd22",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DainLordOfTheIronHills.java",
+  "java_sha256": "2c8286ecd516e583a4588929e73d24286c10134409f77b243ed4f69e8c9b4f72",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/EnduringStoryCondition.java",
+      "sha256": "65a28722b436134cc93b4e712ffb1654e9fed33f6cca4eb29db2ca2facb375de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StoriedAbility.java",
+      "sha256": "53a70872b58dc914e94e9795f666e20bc6a2fe7a2db4f555a69def1499a8fbd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalReplacementEffect.java",
+      "sha256": "9a4f9f2840d4050521075a4948d44161297bd65ab2f3dc6dd9b27fe52856019d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackYouUnlessPayAllEffect.java",
+      "sha256": "da1a28f8954b1cc4be2b846b8cc1f3ec963242f8b4c25b3624c31df21a8d03cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/PayCostToAttackBlockEffectImpl.java",
+      "sha256": "bd7d36ebd1705ab77bcafb32bfa4689354b0ede20722309e3e1d8b810f282e2f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/common/EnduringStoryHint.java",
+      "sha256": "ce139f9f47a1fbdba250418d1ce78771022609750b0788cf041dfac895530cbe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    }
+  ]
 }

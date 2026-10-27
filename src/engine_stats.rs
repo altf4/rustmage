@@ -195,6 +195,7 @@ impl Game {
                         fragment,
                         crate::cards::StaticAbilityFragment::Storied
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
+                            | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)

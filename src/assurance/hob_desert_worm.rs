@@ -449,3 +449,97 @@ fn hob_desert_worm_itself_can_supply_all_twelve_power_from_current_mountains() {
         }
     }
 }
+
+// This nested module avoids changing the centrally managed assurance registry.
+#[path = "hob_dain.rs"]
+mod hob_dain;
+
+#[test]
+fn hob_desert_worm_dain_tax_payment_records_live_attack_power_once() {
+    for p in [Player::P0, Player::P1] {
+        for (mountain_count, sacrifice_attacker) in [(5, false), (6, false), (6, true)] {
+            let mut g = board(p);
+            let worm = source(&mut g, p);
+            put(
+                &mut g,
+                p.other(),
+                "Dáin, Lord of the Iron Hills",
+                Zone::Battlefield,
+            );
+            put(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
+            put(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
+            g.refresh_enduring_stories();
+            let mountains: Vec<_> = (0..mountain_count)
+                .map(|_| put(&mut g, p, "Mountain", Zone::Battlefield))
+                .collect();
+            let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let mana_creature = if sacrifice_attacker {
+                bear
+            } else {
+                let mountain = mountains[0];
+                g.change_object_form(
+                    g.object_ref(mountain),
+                    crate::cards::AnimationSpec {
+                        base: Some((1, 1)),
+                        artifact: false,
+                        creature_types: crate::cards::AnimationCreatureTypes::Named(&[]),
+                        keywords: Keywords::NONE,
+                        duration: crate::cards::AnimationDuration::Permanent,
+                    },
+                    characteristic_layers::AnimationTypeMode::AddCreature,
+                );
+                mountain
+            };
+            if sacrifice_attacker {
+                g.add_counter(bear, CounterKind::Vigilance, 1);
+            }
+            let ring = put(&mut g, p, "Lotus Ring", Zone::Battlefield);
+            assert!(g.attach_equipment(g.object_ref(ring), g.object_ref(mana_creature)));
+            g.state.players[p.index()].mana = [0; 6];
+            combat(&mut g);
+            act(&mut g, Action::Attack { card: worm });
+            act(&mut g, Action::Attack { card: bear });
+            act(&mut g, Action::FinishAttackers);
+            assert_eq!(
+                maximum(&g, p),
+                None,
+                "proposed attackers are not a declaration"
+            );
+            contracts::branch_contract(g.clone());
+            act(&mut g, Action::AbortAttackPayment);
+            assert_eq!(
+                maximum(&g, p),
+                None,
+                "aborting cannot consume the first attack"
+            );
+            act(&mut g, Action::FinishAttackers);
+            let grantor = g.object_ref(ring);
+            act(
+                &mut g,
+                Action::TapGrantedMana {
+                    card: mana_creature,
+                    grantor,
+                    production: [0, 0, 3, 0, 0, 0],
+                },
+            );
+            act(
+                &mut g,
+                Action::PayAttackCost {
+                    payment: [0, 0, 2, 0, 0, 0],
+                },
+            );
+            let expected = if sacrifice_attacker {
+                12
+            } else {
+                (mountain_count as i128 - 1) * 2 + 2
+            };
+            assert_eq!(maximum(&g, p), Some(expected));
+            assert_eq!(
+                g.state.attackers.iter().any(|a| a.card == bear),
+                !sacrifice_attacker
+            );
+            drive(&mut g);
+            assert_eq!(g.observe(p).additional_combats, u64::from(expected >= 12));
+        }
+    }
+}

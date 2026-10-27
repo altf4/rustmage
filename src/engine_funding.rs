@@ -2677,6 +2677,17 @@ impl Game {
     }
     /// Complete coupled allocation constraints after every nonmana selection.
     pub fn mana_payment_domain(&self) -> Option<ManaPaymentDomain> {
+        if matches!(self.state.pending, Pending::AttackPayment { .. }) {
+            let request = self.state.attack_payment.as_ref()?;
+            let available = self.available_mana(request.player, mana_lots::Purpose::Other);
+            return payable(available.map(u128::from), [0; 6], request.generic).then_some(
+                ManaPaymentDomain {
+                    available,
+                    required: [0; 6],
+                    generic: request.generic,
+                },
+            );
+        }
         if !matches!(
             self.state.pending,
             Pending::PayCosts { .. } | Pending::Convoke { .. } | Pending::Improvise { .. }
@@ -3023,6 +3034,20 @@ impl Game {
                     a.evidence.as_ref().map(|e| e.threshold),
                 )
             }
+            Pending::AttackPayment { .. } => {
+                let request = self.state.attack_payment.as_ref().unwrap();
+                (
+                    FundingGoal {
+                        actor,
+                        required: [0; 6],
+                        generic: request.generic,
+                        reserve: None,
+                        source: None,
+                    },
+                    false,
+                    None,
+                )
+            }
             Pending::PlotPayment { .. } => {
                 let request = self.plot_payment().unwrap();
                 (
@@ -3259,3 +3284,51 @@ mod beorn_tests;
 #[cfg(test)]
 #[path = "assurance/hob_notary_funding.rs"]
 mod notary_tests;
+impl Game {
+    pub(super) fn attack_tax_fundable(&self, player: Player, generic: u32) -> bool {
+        let goal = FundingGoal {
+            reserve: None,
+            actor: player,
+            required: [0; 6],
+            generic,
+            source: None,
+        };
+        FundingState::from_game(self, &goal).reachable(&goal, &mut HashSet::new())
+    }
+    pub(super) fn visit_attack_tax_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let payment = self.state.attack_payment.as_ref().unwrap();
+        let goal = FundingGoal {
+            reserve: None,
+            actor: payment.player,
+            required: [0; 6],
+            generic: payment.generic,
+            source: None,
+        };
+        let state = FundingState::from_game(self, &goal);
+        let mut done = false;
+        funding_payments(
+            mana_lots::available(state.mana, &state.lots, state.purpose),
+            goal.required,
+            goal.generic,
+            |payment| {
+                if !done {
+                    done = emit(Action::PayAttackCost {
+                        payment: concrete_payment(payment),
+                    });
+                }
+            },
+        );
+        if done {
+            return true;
+        }
+        for step in state.moves(&goal) {
+            if state.visit_applied(&step, &mut |next| {
+                next.reachable(&goal, &mut HashSet::new())
+            }) && emit(state.action(&step))
+            {
+                return true;
+            }
+        }
+        false
+    }
+}

@@ -11,7 +11,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     // Preserve spare sources for later steps once those declarations are exhausted.
     let tap_for_payment = observation.announcing.is_some()
         || observation.plot_payment.is_some()
-        || observation.payment_request.is_some();
+        || observation.payment_request.is_some()
+        || observation.attack_payment.is_some();
     let resolution_mana_score = |payment: crate::Mana, production: crate::Mana| {
         let request = observation.resolution_payment.as_ref().unwrap();
         let pool = observation.players[request.payer.index()].mana;
@@ -308,7 +309,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceSelfGrantedAbility { .. }
             | Action::AnnounceBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. } | Action::AnnounceBorrowedMana { .. } => -2,
-            Action::PayCosts { .. } | Action::PayPlot { .. } => 100,
+            Action::PayCosts { .. } | Action::PayPlot { .. } | Action::PayAttackCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
@@ -545,6 +546,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseToken { .. } => 10,
+            Action::CancelAttackDeclaration | Action::AbortAttackPayment => -100,
             Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
         }
     };
