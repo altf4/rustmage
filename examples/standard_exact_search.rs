@@ -281,7 +281,7 @@ fn score(o: &Observation, a: &Action, i: usize, seed: usize, casts: &[[u64; 2]; 
             if (seed / 19).is_multiple_of(4)
                 || o.search_choice
                     .as_ref()
-                    .is_some_and(|f| f.selected.len() == usize::from(f.maximum))
+                    .is_some_and(|f| u64::try_from(f.selected.len()).is_ok_and(|n| n == f.maximum))
             {
                 1500
             } else {
@@ -378,7 +378,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     })
                     .collect::<BTreeSet<_>>();
-                let expected = if f.selected.len() < usize::from(f.maximum) {
+                let expected = if u64::try_from(f.selected.len()).is_ok_and(|n| n < f.maximum) {
                     f.cards
                         .iter()
                         .filter(|v| matches(v.card, f.filter) && !f.selected.contains(&v.id))

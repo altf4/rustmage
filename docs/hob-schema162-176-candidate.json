@@ -656,5 +656,13 @@
       "hob_review_rules: approved merged source and exact candidate adoption",
       "hob_review_contracts: approved merged source and exact candidate adoption"
     ]
-  }
+  },
+  "release_attempts": [
+    {
+      "head": "becd09c6",
+      "report": "<cache>/rustmage-validation-8hljk1db/report/result.json",
+      "result": "natural exit 1 at Clippy: example search comparisons still used usize::from on widened u64 maximum; no native or release phases executed",
+      "guard": "<cache>/rustmage-build-reports/c4f9b02c69f54630ac3bdb0a79ed9ee8.json"
+    }
+  ]
 }
