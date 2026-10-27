@@ -27,7 +27,7 @@ def descendants(pid):
         parent = pending.pop()
         try:
             children = Path(f'/proc/{parent}/task/{parent}/children').read_text().split()
-        except FileNotFoundError:
+        except (FileNotFoundError, ProcessLookupError):
             continue
         for raw in children:
             child = int(raw)
@@ -42,7 +42,7 @@ def process_running(pid):
         # The command name may contain spaces or parentheses.
         state = Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[0]
         return state not in ('Z', 'X')
-    except FileNotFoundError:
+    except (FileNotFoundError, ProcessLookupError):
         return False
 
 
@@ -62,7 +62,7 @@ def active_peers():
     while pid > 1:
         try:
             pid = int(Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[1])
-        except FileNotFoundError:
+        except (FileNotFoundError, ProcessLookupError):
             break
         ancestors.add(pid)
     return group_members() - ancestors
