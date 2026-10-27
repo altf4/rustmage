@@ -63,6 +63,39 @@ impl CostContext {
     }
 }
 impl FundingState<'_> {
+    /// A discard-or-life clause cannot become payable through ordinary mana
+    /// funding when no other card is in hand and life is already too low.
+    /// Linked returns and nested/entry continuations can change that hand, so
+    /// leave those worlds to the full ordered search.
+    pub(super) fn discard_or_life_deficit(&self) -> bool {
+        let Some(c) = &self.cast_costs else {
+            return false;
+        };
+        let Some(AdditionalCost {
+            kind: EffectChoiceKind::DiscardOrLife(life),
+            ..
+        }) = c.additional
+        else {
+            return false;
+        };
+        if self.life >= i128::from(life)
+            || !c
+                .clauses
+                .iter()
+                .any(|r| !r.paid && r.clause == CastCostClause::Additional)
+            || c.clauses.iter().any(|r| {
+                !r.paid && !matches!(r.clause, CastCostClause::Additional | CastCostClause::Mana)
+            })
+            || !self.game.state.exile_links.is_empty()
+            || self.continuation.is_some()
+            || self.entry_projection.is_some()
+        {
+            return false;
+        }
+        !self.resources.iter().any(|r| {
+            r.id != c.source.card && r.object.owner == c.actor && r.object.zone == Zone::Hand
+        })
+    }
     pub(super) fn set_cost_context(&mut self, a: Option<&Announcement>) {
         self.install_cost_context(a.and_then(CostContext::from_announcement));
         if let Some(a) = a.filter(|a| a.cast_costs.is_some())
