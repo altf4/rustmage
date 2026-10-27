@@ -46,7 +46,7 @@
     }
   ],
   "integration_note": "Reflexive constructor preserves both Dáin additional_objects and Thorin opt-in damage-actor capture. Gandalf hidden permission filtering is intentional privacy tightening and historical observations require full-row audit.",
-  "status": "188-card release passed; independent terminal receipt audits, whole193 and final published PR remain open.",
+  "status": "188-card release passed and two independent terminal receipt audits approved; whole193 and final published PR remain open.",
   "integration_attempts": [
     {
       "head": "b177e70574e621b35f1b353ecbeebe50069e059f",
@@ -934,6 +934,9 @@
       "games_per_second": 227.5127998132393,
       "scope": "Limited Freeform smoke, not HOB set-only throughput."
     },
-    "independent_receipt_audits": "pending"
+    "independent_receipt_audits": [
+      "hob_review_rules: approved exact terminal receipt and all eighteen immutable libraries",
+      "hob_review_contracts: approved exact terminal receipt and all eighteen immutable libraries"
+    ]
   }
 }
