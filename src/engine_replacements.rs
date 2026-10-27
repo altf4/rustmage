@@ -118,6 +118,10 @@ pub(super) enum TokenCompletion {
         item: Box<SpellView>,
         ability: u16,
     },
+    ReflexiveCreated {
+        item: Box<SpellView>,
+        ability: u16,
+    },
     JobAttach(ObjectRef),
     /// Creation precedes attachment; an absent/illegal recipient leaves tokens intact.
     AttachCreatedTo(ObjectRef),
@@ -221,7 +225,8 @@ impl ReplacementState {
                         std::mem::size_of::<Counters>() + counters.owned_bytes()
                     }
                     TokenCompletion::TemporaryCopy(item)
-                    | TokenCompletion::Reflexive { item, .. } => {
+                    | TokenCompletion::Reflexive { item, .. }
+                    | TokenCompletion::ReflexiveCreated { item, .. } => {
                         std::mem::size_of::<SpellView>() + item.owned_bytes()
                     }
                     TokenCompletion::RoleReflexive(c) => {
@@ -1511,6 +1516,7 @@ impl Game {
                                         | TokenCompletion::CounterSet(_)
                                         | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
+                                        | TokenCompletion::ReflexiveCreated { .. }
                                 );
                                 let created = match &batch.completion {
                                     TokenCompletion::RoleAttach(recipient) => self
@@ -1575,6 +1581,20 @@ impl Game {
                                     && !created.is_empty()
                                 {
                                     self.queue_reflexive(item, *ability, None);
+                                }
+                                if let TokenCompletion::ReflexiveCreated { item, ability } =
+                                    &batch.completion
+                                    && let Some((&first, rest)) = created.split_first()
+                                {
+                                    self.queue_reflexive(item, *ability, Some(first));
+                                    self.state
+                                        .pending_triggers
+                                        .last_mut()
+                                        .unwrap()
+                                        .reflexive_subject
+                                        .as_mut()
+                                        .unwrap()
+                                        .additional_objects = rest.to_vec();
                                 }
                                 if let TokenCompletion::RoleReflexive(c) = &batch.completion
                                     && created.iter().any(|r| {

@@ -90,8 +90,12 @@ impl Game {
         {
             reflexive.source_counter_lki = Some(facts);
         }
-        reflexive.reflexive_subject =
-            subject.map(|object| Box::new(ReflexiveSubjectView { object }));
+        reflexive.reflexive_subject = subject.map(|object| {
+            Box::new(ReflexiveSubjectView {
+                object,
+                additional_objects: Vec::new(),
+            })
+        });
         if reflexive
             .program()
             .is_some_and(|(_, program)| program.contains(&Instruction::EventObjectPowerDamage))

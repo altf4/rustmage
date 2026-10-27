@@ -2695,6 +2695,45 @@ impl Game {
                     self.start_resolution_forage(skip);
                     return;
                 }
+                Instruction::CreateTokensReflexiveWithSubjects {
+                    token,
+                    amount,
+                    ability,
+                } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        replacements::TokenCompletion::ReflexiveCreated {
+                            item: Box::new(item.clone()),
+                            ability,
+                        },
+                    );
+                }
+                Instruction::AttachReflexiveSubjects => {
+                    if self.attach_reflexive_subjects(&item) {
+                        return;
+                    }
+                }
+                Instruction::GrantEquippedAttackers(keywords) => {
+                    let recipients: Vec<_> = self
+                        .state
+                        .attackers
+                        .iter()
+                        .filter_map(|a| {
+                            let id = a.card;
+                            (self.on_battlefield(id)
+                                && self.is_creature(id)
+                                && self
+                                    .source_equipment_count(self.object_ref(id))
+                                    .unwrap_or(0)
+                                    > 0)
+                            .then_some(id)
+                        })
+                        .collect();
+                    self.grant_keyword_effects(&recipients, item.object, keywords);
+                }
                 Instruction::CreateTokensReflexive {
                     token,
                     amount,

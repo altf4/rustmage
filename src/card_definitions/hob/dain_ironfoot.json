@@ -1,12 +1,58 @@
 {
-  "name": "Dáin Ironfoot",
+  "name": "D\u00e1in Ironfoot",
   "catalogue_id": 1222,
   "oracle_id": "9924c189-3c82-431a-b570-7805b2a406f0",
   "facts_sha256": "b16f56dcefe5f11c8aa4b289942fc4ed93a848d5c5ecf83c13bc5518a5546815",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e6b77f33dd57127d7e8d9013e2e894d6451f178e8ea4286e2002d249ded64545"
   },
-  "physical_metadata_sha256": "c991a919c0e913a6453a2172ae14045aab8c85d624b801cbe7318a3f779ec6b9"
+  "physical_metadata_sha256": "c991a919c0e913a6453a2172ae14045aab8c85d624b801cbe7318a3f779ec6b9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DainIronfoot.java",
+  "java_sha256": "249afcbc4c4d3db09e9118e0e77bc96940b972001a7d2187d9f42e27256711f1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/AxeToken.java",
+      "sha256": "ed3443dd602e0daf20fa51a732e1c709c8b179a0ddf2b0f17c14a9dc0621355d"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf",
+    "section": "CR 111, 603.12, 608, 613.7, 614",
+    "notes": "Oracle says create then reflexively attach it. Replacement-expanded creation binds every created token; XMage class selects only its first created token, contrary to official replacement-token later-reference rulings such as Kiki-Jiki. Freeze matching equipped attacking creatures at resolution."
+  },
+  "replacement_ruling": "https://magic.wizards.com/en/news/feature/time-spiral-remastered-release-notes-2021-03-23"
 }

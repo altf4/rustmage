@@ -1115,6 +1115,14 @@ pub(crate) enum Instruction {
     SacrificeSourceIfAttachedCounters {
         minimum: u64,
     },
+    /// Capture all actual created tokens for one reflexive trigger.
+    CreateTokensReflexiveWithSubjects {
+        token: Card,
+        amount: u16,
+        ability: u16,
+    },
+    AttachReflexiveSubjects,
+    GrantEquippedAttackers(Keywords),
     CreateRoleReflexive {
         token: Card,
         ability: u16,

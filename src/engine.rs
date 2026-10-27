@@ -998,6 +998,8 @@ pub struct TriggerSourceMoveView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ReflexiveSubjectView {
     pub object: ObjectRef,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub additional_objects: Vec<ObjectRef>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -1184,10 +1186,10 @@ impl SpellView {
                 .source_move
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
-            + self
-                .reflexive_subject
-                .as_ref()
-                .map_or(0, |_| std::mem::size_of::<ReflexiveSubjectView>())
+            + self.reflexive_subject.as_ref().map_or(0, |v| {
+                std::mem::size_of::<ReflexiveSubjectView>()
+                    + v.additional_objects.len() * std::mem::size_of::<ObjectRef>()
+            })
             + self
                 .cast_event
                 .as_ref()

@@ -219,6 +219,7 @@ impl Game {
                                     .unwrap()
                                     .reflexive_subject = Some(Box::new(ReflexiveSubjectView {
                                     object: discarded.after,
+                                    additional_objects: Vec::new(),
                                 }));
                             }
                         }

@@ -1,16 +1,26 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete Oracle body and pinned XMage class; replacement-created tokens are all captured.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(1, 4),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateTokensReflexiveWithSubjects {
+                token: Card(5406),
+                amount: 1,
+                ability: 2,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SelfAttacks,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GrantEquippedAttackers(Keywords::DOUBLE_STRIKE)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::Single(TargetSpec::one(TargetRule::creature_you_control())),
+            program: &[Instruction::AttachReflexiveSubjects],
+        },
+    ],
     ..CardRules::EMPTY
 };

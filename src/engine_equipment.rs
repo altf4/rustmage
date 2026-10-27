@@ -53,6 +53,27 @@ impl Game {
         self.state.objects[source.card as usize].attached_to = Some(target);
         true
     }
+    pub(super) fn attach_reflexive_subjects(&mut self, item: &SpellView) -> bool {
+        let Some(recipient) = item
+            .targets
+            .iter()
+            .find(|b| b.group == 0 && self.same_target_object(**b))
+            .and_then(|b| b.object)
+        else {
+            return false;
+        };
+        let Some(subject) = item.reflexive_subject.as_ref() else {
+            return false;
+        };
+        let equipment: Vec<_> = std::iter::once(subject.object)
+            .chain(subject.additional_objects.iter().copied())
+            .filter(|&source| {
+                self.equipment_can_attach(source, recipient)
+                    && self.state.objects[source.card as usize].attached_to != Some(recipient)
+            })
+            .collect();
+        self.order_equipment_attachments(item, recipient, equipment)
+    }
     pub(super) fn attach_selected_equipment_to_attached(
         &mut self,
         item: &SpellView,

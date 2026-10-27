@@ -1,0 +1,56 @@
+{
+  "card": "Dáin Ironfoot",
+  "base": "7019c216",
+  "oracle": {
+    "mana": "{2}{R}",
+    "types": "Legendary Creature — Dwarf Warrior",
+    "stats": "1/4",
+    "obligations": [
+      "When Dáin enters, create an Axe Equipment token; when creation succeeds, attach it to target creature you control in a separate reflexive trigger.",
+      "Whenever Dáin attacks, each equipped attacking creature gains double strike until end of turn."
+    ]
+  },
+  "source": "Complete Oracle and pinned XMage card/helper sources in paired provenance; source check passed 5417 definitions and 1614 blobs. XMage selects the first replacement-expanded token; official replacement token subsequent-reference rulings support all created tokens.",
+  "implementation": "Capture all actual replacement-adjusted token incarnations on one reflexive packet; target is chosen only afterward, and legal surviving Equipment is attached with existing timestamp ordering. Snapshot the equipped attackers at attack-trigger resolution and grant them double strike until cleanup. Existing Axe token factory 5406 reused. Public ReflexiveSubjectView has omitted-empty additional_objects requiring central schema 166 or later after accepted 165; no central schema change here.",
+  "coverage": [
+    "Both seats: paid cast; actual Axe color, subtype, equipment bonus and paid equip; reflexive timing and mandatory own creature targeting; invalid target rejected transactionally; public single/multiple token observation and owned branch/restore.",
+    "Both seats: Doubling Season creates and attaches two tokens; control change and departed target invalidate target, departed Axe is skipped, originating Dáin leaves, and absent legal targets leave the Axe unattached.",
+    "Both seats: Dáin attacks with multiple creatures, equipment moved before trigger resolution selects current equipped attacker, source departure does not stop ability, nonattacker excluded, cleanup removes double strike.",
+    "Affected equipment attachment, token replacement and trigger multiplicity tests and all-target Clippy."
+  ],
+  "limitations": [
+    "No card-specific token-creation prevention provider, third-party token-replacement type substitution, or ward/hexproof test in this leaf; existing shared machinery and additional review cover these paths.",
+    "Independent nonauthor reviews, central schema reconciliation, catalogue/assurance regeneration and release validation remain."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "result": "3 card tests passed",
+      "report": "/home/altf4/.cache/rustmage-build-reports/b52446a1d90e4879b5a7dc61d08dddde.json"
+    },
+    {
+      "run": 2,
+      "result": "4 card, 15 Vow/Thorin attachment, 13 trigger multiplicity and 4 token replacement tests passed; all-target Clippy passed",
+      "reports": [
+        "/home/altf4/.cache/rustmage-build-reports/3911803eefbc42d9be41842bcd80f1df.json",
+        "/home/altf4/.cache/rustmage-build-reports/4d06f4e842cc4d6d904e2539974ba1a5.json",
+        "/home/altf4/.cache/rustmage-build-reports/c7fd9ee52e354bba9b069a6ed70d5562.json",
+        "/home/altf4/.cache/rustmage-build-reports/c2c3956a6ef147f6b5a0fca8b5bcb8ec.json",
+        "/home/altf4/.cache/rustmage-build-reports/aac0676d2c9a4441b431f6eba590914a.json"
+      ]
+    }
+  ],
+  "receipts": "/home/altf4/.cache/rustmage-authoring/hob-dain-ironfoot",
+  "source_sha256": {
+    "src/card_definitions/hob/dain_ironfoot.rs": "4d5de01fc88cc2b8003e6132ff7c074c07134e46ce33c7528f978b40936a5777",
+    "src/card_definitions/hob/dain_ironfoot.json": "3efc2a8bcad0e6b86cef63915a7c47744215a7f00b5d368674fbc9c3c8bc6b67",
+    "src/cards.rs": "42d680b6b58bc7d8367f456796dfb214540c7cac8fe685f6d04eb6c47523398f",
+    "src/engine.rs": "99a9dfef1c037260d54bda5978a7fcf8e4138e4b8eb647763691dd56a4e1aac7",
+    "src/engine_discard_events.rs": "939da9f31d7bbc454d42fececb733276b854f205f7c8859661bcea0174fc91d9",
+    "src/engine_equipment.rs": "89dbe6bad6af1135dc6e56cf00b40a7c2f9e97bba71c30d9f031624ea7733124",
+    "src/engine_programs.rs": "503a9f99fb3d861c00eee1114c7bdd4d08031a7ca50d088f0e0277d02eb0ab2e",
+    "src/engine_replacements.rs": "d2638b67fd1685237590a71d3fb1f48f29e58a9bfaf8103e9c258c70c31323d8",
+    "src/engine_roles.rs": "951eaa3b60f57094572c45eeb99403fa5c9d23587d81d4cc150c0963247e6c7f",
+    "src/assurance/hob_dain_ironfoot.rs": "5eb6b1a7c22e75af8827f1426f5d3d68f879c7bd55f1ec042b6b6373eb6e3882"
+  }
+}
