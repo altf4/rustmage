@@ -281,3 +281,34 @@ impl Game {
         })
     }
 }
+
+impl Game {
+    pub(super) fn record_control_exchange(&mut self, first: ObjectRef, second: ObjectRef) {
+        let controllers = [
+            self.state.objects[first.card as usize].controller,
+            self.state.objects[second.card as usize].controller,
+        ];
+        if controllers[0] == controllers[1] {
+            return;
+        }
+        self.ensure_control_base(first);
+        self.ensure_control_base(second);
+        let timestamp = self.next_role_timestamp();
+        for (object, controller) in [(first, controllers[1]), (second, controllers[0])] {
+            self.forget_temporary_control(object);
+            let state = self.state.controls.as_mut().unwrap();
+            state.effects.retain(|row| {
+                row.object != object
+                    || (row.expires_turn.is_none() && row.expires_after_next_turn.is_none())
+            });
+            state.effects.push(ControlEffect {
+                object,
+                controller,
+                timestamp,
+                expires_turn: None,
+                expires_after_next_turn: None,
+            });
+        }
+        self.refresh_controllers();
+    }
+}

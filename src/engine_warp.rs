@@ -91,6 +91,7 @@ impl Game {
                 borrowed_slot: None,
                 self_granted_activation: None,
                 target_controller_lki: None,
+                target_kinds_lki: None,
                 gift: None,
                 reflexive_subject: None,
                 delayed_warp_exile: Some(Box::new(view)),

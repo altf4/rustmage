@@ -1031,6 +1031,10 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub target_controller_lki: Option<Box<Vec<(ObjectRef, Player)>>>,
+    /// Internal exact departure facts for a relational card-type target constraint.
+    #[serde(skip)]
+    #[allow(clippy::box_collection)]
+    pub(crate) target_kinds_lki: Option<Box<Vec<(ObjectRef, u16)>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<Box<GiftContext>>,
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
@@ -1110,6 +1114,12 @@ pub struct SpellView {
 
 impl SpellView {
     fn needs_target_controller_lki(&self) -> bool {
+        self.needs_target_relation_lki(TargetGroupConstraint::DifferentControllers)
+    }
+    fn needs_target_kinds_lki(&self) -> bool {
+        self.needs_target_relation_lki(TargetGroupConstraint::SharedCardType)
+    }
+    fn needs_target_relation_lki(&self, required: TargetGroupConstraint) -> bool {
         // Legacy event packets can have no typed ability entry. They cannot
         // contain a typed relational target plan and must not enter program().
         match self.kind {
@@ -1137,9 +1147,9 @@ impl SpellView {
             matches!(
                 spec.rule,
                 TargetRule::Grouped {
-                    constraint: TargetGroupConstraint::DifferentControllers,
+                    constraint,
                     ..
-                }
+                } if constraint == required
             )
         };
         self.program().is_some_and(|(plan, _)| match plan {
@@ -1181,6 +1191,10 @@ impl SpellView {
             + self.source_counter_lki.as_ref().map_or(0, |facts| {
                 std::mem::size_of::<Vec<SourceCounterQuantityView>>()
                     + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
+            })
+            + self.target_kinds_lki.as_ref().map_or(0, |v| {
+                std::mem::size_of::<Vec<(ObjectRef, u16)>>()
+                    + v.len() * std::mem::size_of::<(ObjectRef, u16)>()
             })
             + self.target_controller_lki.as_ref().map_or(0, |v| {
                 std::mem::size_of::<Vec<(ObjectRef, Player)>>()
@@ -4612,16 +4626,19 @@ impl Game {
                                 announcement.group,
                                 &announcement.item.targets,
                                 target,
-                            ) && !announcement.item.targets.iter().any(|bound| {
-                                bound.group == announcement.group && bound.target == target
-                            }) && self.announcement_target_fundable(
-                                announcement,
-                                None,
-                                None,
-                                None,
-                                Some(target),
-                                false,
-                            ) && emit(Action::ChooseTarget { target })
+                            ) && self.shared_type_target_completion(announcement, target)
+                                && !announcement.item.targets.iter().any(|bound| {
+                                    bound.group == announcement.group && bound.target == target
+                                })
+                                && self.announcement_target_fundable(
+                                    announcement,
+                                    None,
+                                    None,
+                                    None,
+                                    Some(target),
+                                    false,
+                                )
+                                && emit(Action::ChooseTarget { target })
                         },
                     );
                 }
@@ -6483,6 +6500,22 @@ impl Game {
                         .map(|f| &mut f.announcement.item),
                 )
             {
+                if item.needs_target_kinds_lki()
+                    && item
+                        .targets
+                        .iter()
+                        .any(|bound| bound.object == Some(before.reference))
+                {
+                    let history = item
+                        .target_kinds_lki
+                        .get_or_insert_with(|| Box::new(Vec::new()));
+                    if !history
+                        .iter()
+                        .any(|(object, _)| *object == before.reference)
+                    {
+                        history.push((before.reference, before.kinds));
+                    }
+                }
                 if item.needs_target_controller_lki()
                     && item
                         .targets

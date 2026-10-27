@@ -143,6 +143,8 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    /// Pair shares at least one current card type, not a subtype or supertype.
+    SharedCardType,
     /// Controlled by the player chosen in a distinct target group.
     ControllerOfPlayerGroup(u16),
     /// Attached to the exact object selected in another target group.
@@ -1419,6 +1421,8 @@ pub(crate) enum Instruction {
         exile: bool,
     },
     /// Freeze a non-targeted battlefield group, then return it simultaneously.
+    /// An all-or-nothing, simultaneous fixed exchange of exactly two legal objects.
+    ExchangeControlTargets,
     GainControlUntilEndTurn,
     /// Lock control through your next turn when a controlled Villain has greater mana value.
     GainControlConditionalVillainManaValue,

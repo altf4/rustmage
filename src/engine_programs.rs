@@ -1075,6 +1075,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            target_kinds_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
@@ -3064,6 +3065,7 @@ impl Game {
                 Instruction::MoveBattlefield { filters, exile } => {
                     self.move_battlefield_group(&item, filters, exile);
                 }
+                Instruction::ExchangeControlTargets => self.exchange_control_targets(&item),
                 Instruction::GainControlUntilEndTurn => self.gain_control_until_end_turn(&item),
                 Instruction::GainControlConditionalVillainManaValue => {
                     self.gain_control_conditional_villain_mana_value(&item)

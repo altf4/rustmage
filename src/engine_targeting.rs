@@ -467,6 +467,7 @@ impl Game {
                 return true;
             }
             let mut count = [0usize; 2];
+            let mut seen_kinds = 0u16;
             self.visit_targets_without_hand(
                 spec.rule,
                 actor,
@@ -476,6 +477,21 @@ impl Game {
                 |target| {
                     if target == Target::Card(source.card) {
                         return false;
+                    }
+                    if matches!(
+                        spec.rule,
+                        TargetRule::Grouped {
+                            constraint: TargetGroupConstraint::SharedCardType,
+                            ..
+                        }
+                    ) {
+                        let Target::Card(id) = target else {
+                            return false;
+                        };
+                        let kinds = self.current_kinds(id);
+                        let available = seen_kinds & kinds != 0;
+                        seen_kinds |= kinds;
+                        return available;
                     }
                     let distinct = matches!(
                         spec.rule,
@@ -540,6 +556,7 @@ impl Game {
                 return true;
             }
             let mut count = [0usize; 2];
+            let mut seen_kinds = 0u16;
             self.visit_targets_without_hand(
                 spec.rule,
                 actor,
@@ -547,6 +564,21 @@ impl Game {
                 None,
                 qualification,
                 |target| {
+                    if matches!(
+                        spec.rule,
+                        TargetRule::Grouped {
+                            constraint: TargetGroupConstraint::SharedCardType,
+                            ..
+                        }
+                    ) {
+                        let Target::Card(id) = target else {
+                            return false;
+                        };
+                        let kinds = self.current_kinds(id);
+                        let available = seen_kinds & kinds != 0;
+                        seen_kinds |= kinds;
+                        return available;
+                    }
                     let distinct = matches!(
                         spec.rule,
                         TargetRule::Grouped {
@@ -643,10 +675,32 @@ impl Game {
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
+            TargetGroupConstraint::SharedCardType => object.zone == Zone::Battlefield && chosen.iter().filter(|b| b.group == group).all(|b| {
+                matches!(b.target, Target::Card(other) if self.same_target_object(*b) && self.on_battlefield(other) && self.current_kinds(other) & self.current_kinds(id) != 0)
+            }),
             TargetGroupConstraint::DifferentControllers => object.zone == Zone::Battlefield && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.controller != object.controller))
             }),
         }
+    }
+
+    pub(super) fn shared_type_target_completion(&self, a: &Announcement, target: Target) -> bool {
+        if !matches!(
+            a.spec.rule,
+            TargetRule::Grouped {
+                constraint: TargetGroupConstraint::SharedCardType,
+                ..
+            }
+        ) || a.item.targets.iter().any(|b| b.group == a.group)
+        {
+            return true;
+        }
+        let Target::Card(id) = target else {
+            return false;
+        };
+        self.visit_item_targets(&a.item, a.spec.rule, |other| {
+            matches!(other, Target::Card(other_id) if other_id != id && self.current_kinds(other_id) & self.current_kinds(id) != 0)
+        })
     }
 
     pub(super) fn resolution_target_relations_hold(
@@ -655,6 +709,40 @@ impl Game {
         bound: BoundTarget,
         plan: TargetPlan,
     ) -> bool {
+        if plan.group(bound.group).is_some_and(|g| {
+            matches!(
+                g.rule,
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::SharedCardType,
+                    ..
+                }
+            )
+        }) {
+            let Target::Card(id) = bound.target else {
+                return false;
+            };
+            let kinds = self.current_kinds(id);
+            return item
+                .targets
+                .iter()
+                .filter(|other| other.group == bound.group && other.target != bound.target)
+                .all(|other| {
+                    let Target::Card(other_id) = other.target else {
+                        return false;
+                    };
+                    let other_kinds =
+                        if self.same_target_object(*other) && self.on_battlefield(other_id) {
+                            Some(self.current_kinds(other_id))
+                        } else {
+                            item.target_kinds_lki.as_ref().and_then(|rows| {
+                                rows.iter().find_map(|(reference, kinds)| {
+                                    (Some(*reference) == other.object).then_some(*kinds)
+                                })
+                            })
+                        };
+                    other_kinds.is_some_and(|other| kinds & other != 0)
+                });
+        }
         if let Some(TargetSpec {
             rule:
                 TargetRule::Grouped {
@@ -1094,6 +1182,7 @@ impl Game {
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
+                    | TargetGroupConstraint::SharedCardType
                     | TargetGroupConstraint::ControllerOfPlayerGroup(_)
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
                     TargetGroupConstraint::OtherThanGroup(_)
@@ -1486,6 +1575,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            target_kinds_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
