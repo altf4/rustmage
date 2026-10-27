@@ -2397,6 +2397,7 @@ pub struct Observation {
     pub improvise_choice: Option<ImproviseChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_artifact_copies: Vec<SpellView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub delayed_attack_this_turn: Vec<SpellView>,
     pub delayed_main_mana: Vec<SpellView>,
     pub delayed_returns: Vec<DelayedReturnView>,

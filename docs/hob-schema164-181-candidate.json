@@ -50,5 +50,13 @@
       "note": "Paid resolution casting and nonhand reduction use actual chosen face and origin."
     }
   ],
-  "status": "Leaf reviews passed; combined focused tests, historical traces, integrated reviews, full release and whole-set acceptance remain open."
+  "status": "Leaf reviews passed; combined focused tests, historical traces, integrated reviews, full release and whole-set acceptance remain open.",
+  "integration_attempts": [
+    {
+      "head": "57f96ab6",
+      "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated181-1",
+      "result": "Guarded run naturally completed; full-row historical comparison found broad observation drift caused by newly serialized empty delayed_attack_this_turn on every state. Candidate not adopted.",
+      "remedy": "Omit the new field when empty; nonempty delayed attacks remain public under schema164. Rerun full comparison without stripping gameplay facts."
+    }
+  ]
 }
