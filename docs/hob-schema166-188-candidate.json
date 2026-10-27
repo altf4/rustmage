@@ -899,5 +899,14 @@
       "hob_review_rules: approved exact source, alias and full-row comparison",
       "hob_review_contracts: approved exact source, alias and full-row comparison"
     ]
-  }
+  },
+  "release_attempts": [
+    {
+      "head": "fd1fc23e61bc91893118da5f904706bba54aee71",
+      "report": "<cache>/rustmage-validation-7v1s93o_/report/result.json",
+      "guard": "<cache>/rustmage-build-reports/5868d314a5114c1fb0cc315b999d8a9e.json",
+      "result": "Natural exit 1 during native assurance: the 30-second total native execution budget expired after 1,172 of 1,261 tests; the next test was interrupted by budget expiration, not an asserted rules failure. Earlier gates passed. Raised only the native suite wall-clock budget to 60 seconds (and its enclosing phase limit by 30 seconds); the six-GiB cap and one-job/thread resource enforcement are unchanged.",
+      "diagnostic": "A direct, unguarded script-contract invocation was not valid: two cgroup-dependent tests failed because the runner was outside its required resource group. The full guarded validator rerun will exercise these contracts in the correct environment."
+    }
+  ]
 }

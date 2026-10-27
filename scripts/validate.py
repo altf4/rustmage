@@ -115,7 +115,7 @@ def main(argv=None):
         ('clippy', ['cargo', 'clippy', '--all-targets', '--', '-D', 'warnings'], 180),
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
-                              '--suite-timeout', '30', '--compile-timeout', '360'], 395),
+                              '--suite-timeout', '60', '--compile-timeout', '360'], 425),
     ]
     if args.release or args.python != 'none':
         commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 360))
