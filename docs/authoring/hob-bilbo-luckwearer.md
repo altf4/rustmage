@@ -127,3 +127,33 @@ Additional source audit pins (same XMage revision): full FilterNonlandPermanent 
 370a50d75c092a9cb5b0f3111af32fc2895479fb3f14f656267685bc9d09dea0  Mage/src/main/java/mage/cards/CardWithSpellOption.java
 c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105  Mage/src/main/java/mage/filter/StaticFilters.java
 ```
+
+## Post-review provenance correction
+
+All three original resource reports were confirmed naturally terminal before editing. Full `Mage/src/main/java/mage/target/TargetPermanent.java` was inspected at pinned XMage revision492369c7844b8d76479f0393ff9eb6b0b0cf30d7. SHA256 `1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb` matches the reviewer-supplied pin. Both paired records now explicitly include this directly inherited helper. Its constructor carries exact min/max, battlefield zone and real targeting; `canTarget` checks source spell/source permanent protections before the nonland filter. No additional rules discrepancy was found.
+
+This follow-up changes only the two provenance records and this ledger; card/engine/test Rust and metadata patch are byte-identical to3624b970. Link/source checks were refreshed:5420 definitions,1628 deduplicated source blobs, Java verified, catalogue version `252c7f1068898dfd666a7d1e861001df9856d155263ef4c9b92422d5092658f8`; diff-check passes. Native rules evidence remains the sealed89-scenario receipt above, whose compiled catalogue version was `4d2adf8a12acb3695cd8d93c05dd2ea788966d4837a6c33abaf961bbd5c83ca1`. No new native execution is claimed for the provenance-derived digest; root regeneration/full integrated acceptance remains required. Earlier source/receipt manifests remain historical exact pins rather than being silently rewritten.
+
+Current owned source/provenance/test/metadata-patch manifest (ledger excluded):
+
+```text
+28cd41d80ce68e1681d2931518ae67404b7bf54f658e65d0e0e05b353eec7a92  src/cards.rs
+36ea20a88e75089410065ff21423943a52f61fadfe07325eeb1643d46189f3aa  src/engine.rs
+dd654ca6e3fdecd4b098a22c77e230bd2c19d563864fd20e934d4aa9daab725e  src/engine_activations.rs
+56d111b411b1a391cb628773d8b4074070274f3be7dc09c6ba16412d92fcacda  src/engine_continuous_control.rs
+05575c945957df35cda1a1759a73893602ab1e3e8840f48583f4858c0850e0ef  src/engine_mobilize.rs
+5ba53bb1b82db7c26215ff34cbda2f0bb1d35149c700d845767d1e3ed2030be2  src/engine_paradigm.rs
+b160714774e5086c43bf073e00658714230a375e99e92b9907666bb59d97a6d2  src/engine_programs.rs
+45b71a8645df5f185098f065309a09fe9fb13b9ac37010d8681bc5129fa7e525  src/engine_stack_copies.rs
+46d9ff5699789e365c74b795a1ea7ced0c4c471bb614ff64a68cc686a3a4fb52  src/engine_targeting.rs
+ceb0eafeeef8c38b7cc3702ff494f32091cd6895d3ddcd1c21cf0fb6fb6089a0  src/engine_warp.rs
+6e85f485466dc202c7c206e1dca2764818e748afe453e00007541164b650c6f7  src/engine_zone_effects.rs
+07b129d7c0dec47cdcf98913812fe9b5de9c1837e330048656c555337e099105  src/card_definitions/hob/bilbo_luckwearer_burglar_s_plot.rs
+315a6ee60be7e3b4527daf70e596d5f6bc3c431f62b654cffd82734054c9e1ae  src/card_definitions/hob/bilbo_luckwearer_burglar_s_plot.json
+46f38706aee9cacac98db56766ed9ca8542e28054ba68e5fdfda13e1aa5de5d7  src/card_definitions/synthetic/burglar_s_plot.rs
+eb02a8ad4e0619f1160ec7d859888b3f6138ded0b7dbe74db740be3bb0298f06  src/card_definitions/synthetic/burglar_s_plot.json
+a029fbece4994d1206464fc54605184c80b1fbc216e81d42bc13d275d2facb45  src/assurance/hob_bilbo_luckwearer.rs
+d01e45741a37171978062aee2b4f39b1140e16596fbd023780aca36498c19eca  docs/authoring/hob-bilbo-luckwearer-metadata.patch
+```
+
+Current manifest SHA256 `00cceeafd0caf90ff674212668a32adaba8b4b9907579c4ae1a0924e55fe3da7`.

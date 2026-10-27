@@ -48,6 +48,11 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAdventureSpellEffect.java",
       "sha256": "1179b3251b410c7eec5e191159cf7e870e28a4839a833cb30fc4d829985c33c3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
     }
   ],
   "oracle_face": {
