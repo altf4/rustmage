@@ -1,0 +1,50 @@
+{
+  "scope": "176 local HOB candidates; 17 gated. Entire193 and final published PR remain open.",
+  "schema": 162,
+  "schema_changes": [
+    "Settle the Wreckage public search minimum/maximum numeric domain extends from u16 to u64",
+    "Old Fat Spider new public linked-effect and prevention enum values"
+  ],
+  "prior_release": {
+    "head": "96dcb190891ef9ba425ceeb99c3a4ca41e65a487",
+    "report": "<cache>/rustmage-validation-1zf4dism/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1116,
+    "python_passed": 8,
+    "terminal_receipt_reviews": "pending two independent auditors"
+  },
+  "cohorts": [
+    {
+      "card": "Settle the Wreckage",
+      "leaf": "8bdf3cdc292c8fa3c10c8084675adffcbdf11033",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 50,
+      "note": "Actual-count and zero-count optional search; redirected/prevented event proofs are synthetic in absence of an admitted provider."
+    },
+    {
+      "card": "Old Fat Spider Can't See Me",
+      "leaf": "f017ef7366299f3a111a874e006c73b40ccd74f0",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_executions": 25,
+      "unique_tests": 24,
+      "note": "Exact old damage-source incarnation retained until Saga leaves; zero-match filters excluded."
+    },
+    {
+      "card": "Eagle's Rescue",
+      "leaf": "bbe05a362097f3b2162d24cf1b5fd69163f69d84",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 24,
+      "note": "Atomic pre-entry attachment; no admitted Eagle-specific entry-choice fixture."
+    }
+  ],
+  "status": "Leaf reviews passed; combined focused tests, historical traces, integrated reviews, full release and whole-set acceptance remain open."
+}

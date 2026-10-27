@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8b67e3cef24244b22377a868234f1fa2c2a7f0d0b76a10b046b2a422d1eff4d3",
+  "catalogue_version": "62cb7bb968f1165a3854b24a1d709e270c1a29a0fecf828c51d56e34f59191a2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2682,
-  "implemented_total": 2688,
+  "implemented_standard_cards": 2685,
+  "implemented_total": 2691,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 168,
-      "gated": 20
+      "complete": 171,
+      "gated": 17
     },
     "hoc": {
       "total": 5,
@@ -10036,8 +10036,8 @@
     {
       "name": "Eagle's Rescue",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/eagle_s_rescue.rs",
       "set": "hob"
     },
@@ -24236,8 +24236,8 @@
     {
       "name": "Old Fat Spider Can't See Me",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/old_fat_spider_can_t_see_me.rs",
       "set": "hob"
     },
@@ -30604,8 +30604,8 @@
     {
       "name": "Settle the Wreckage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/settle_the_wreckage.rs",
       "set": "hob"
     },
