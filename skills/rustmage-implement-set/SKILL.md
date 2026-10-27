@@ -15,8 +15,9 @@ Inspect main, active branches, issues and open PRs before starting a batch.
 Preserve useful work. Identify shared rules missing from the selected cards and
 finish the relevant core implementations and their reviews before expanding the
 batch. Keep unrelated prepared card work parked in its own worktree. A core rule
-is finished when its meaningful interaction tests pass and its reviewed change
-is integrated, not when its happy path compiles. Keep the all-Standard goal open.
+is finished when its meaningful interaction tests pass and its change has been
+reviewed on the set branch, not when its happy path compiles. Include these
+dependencies in the single completed-set PR. Keep the all-Standard goal open.
 
 ## Select complete-card work
 
@@ -59,7 +60,14 @@ instruction handles them.
 
 ## Parallel ownership and integration
 
-Use GitHub issues and PRs and isolated worktrees. Assign agents disjoint card
+Use a GitHub tracking issue and isolated worktrees during implementation. Create
+exactly one PR for the selected set, only after the entire set passes full-set
+acceptance. Do not open draft, partial-batch, or intermediate shared-mechanic PRs
+for that set work. The completed-set PR must include an update to the card
+progress tracker in `README.md`, reflecting the final verified supported-card
+counts and set completion status.
+
+Assign agents disjoint card
 files and test modules; give a shared mechanic one owner. State each batch's
 base revision, source pins, dependencies and definition ownership. Let the
 integrator regenerate derived module links and catalogue artifacts instead of
@@ -94,12 +102,14 @@ Choose validation by changed behavior and integration state, not card count:
   chunk, agent handoff or progress update does not trigger full validation.
 - **Shared-rule checkpoint:** test the mechanic and its affected consumers/contracts
   before expanding dependent card work. Broaden to native assurance when impact is
-  wide or uncertain. Finish the core implementation's acceptance and reviews before
-  integrating it, as required above.
-- **Integrated PR acceptance:** assemble a useful, reviewable mechanic/card cohort,
-  regenerate links, freeze its inputs, then run the full release validator using
+  wide or uncertain. Finish the core implementation's acceptance and reviews on
+  the set branch before expanding dependent work, as required above.
+- **Completed-set PR acceptance:** assemble the entire completed set, including
+  its shared mechanics and README card progress tracker update, regenerate links,
+  freeze its inputs, then run the full release validator using
   the verified reusable-target mode, with any additional checks required by the
-  checkout. Every merge candidate needs passing acceptance for its final
+  checkout. Complete full-set acceptance before opening the single set PR.
+  Every merge candidate needs passing acceptance for its final
   executable inputs. Repair failures with focused
   tests first; repeat acceptance after substantive fixes are assembled. Reuse a
   successful report for the same frozen inputs instead of rerunning it for each
