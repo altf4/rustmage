@@ -57,7 +57,7 @@
       "note": "No admitted noncreature Dragon fixture exists; generic noncreature entry and actual Changeling are separately tested."
     }
   ],
-  "status": "185-card release passed; independent terminal receipt audits, whole193 and final published PR remain open.",
+  "status": "185-card release passed and two independent terminal receipt audits approved; whole193 and final published PR remain open.",
   "integrated_recording": {
     "head": "22d22c0f9deb9ae5efd1f92529b3e1c3a0372689",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated185-1",
@@ -873,6 +873,9 @@
       "games_per_second": 236.55535286441565,
       "scope": "Limited Freeform smoke, not HOB set-only throughput."
     },
-    "independent_receipt_audits": "pending"
+    "independent_receipt_audits": [
+      "hob_review_rules: approved exact terminal receipt and all seventeen immutable libraries",
+      "hob_review_contracts: approved exact terminal receipt and all seventeen immutable libraries"
+    ]
   }
 }
