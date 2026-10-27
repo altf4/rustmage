@@ -91,7 +91,7 @@ fn hob_decree_paid_instant_counters_opponent_permanent_and_free_cast_keeps_owner
         assert_eq!(view[0].player, p);
         assert_eq!(view[0].object, g.object_ref(bear));
         assert_eq!(view[0].expiry, ExilePlayExpiry::WhileExiled);
-        let json = serde_json::to_value(&view[0]).unwrap();
+        let json = serde_json::to_value(view[0]).unwrap();
         assert_eq!(json["without_paying_mana_cost"], true);
         assert_eq!(json["expiry"], "WhileExiled");
         assert!(!g.has_exile_free_permission(p.other(), bear));
@@ -306,7 +306,7 @@ fn hob_decree_new_free_route_and_existing_paid_life_and_land_routes_are_independ
                 .find(|r| !r.without_paying_mana_cost)
                 .unwrap();
             assert!(
-                serde_json::to_value(&*paid)
+                serde_json::to_value(*paid)
                     .unwrap()
                     .get("without_paying_mana_cost")
                     .is_none()

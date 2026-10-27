@@ -839,5 +839,13 @@
       "hob_review_rules: approved exact source and full-row comparison",
       "hob_review_contracts: approved exact source and full-row comparison"
     ]
-  }
+  },
+  "release_attempts": [
+    {
+      "head": "73d96c81a879ecde6b392524d26168c34673f648",
+      "report": "<cache>/rustmage-validation-ptnjwzvz/report/result.json",
+      "guard": "<cache>/rustmage-build-reports/2a2861a66336449bb2999213e34f5e9a.json",
+      "result": "Natural exit 1 at strict Clippy after first four gates passed: two needless borrows in Decree test JSON conversions. No release acceptance claimed. Removed only redundant test borrows before rerun."
+    }
+  ]
 }
