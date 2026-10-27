@@ -253,6 +253,40 @@ impl Game {
             }
         }
     }
+    pub(super) fn event_object_power_damage(&mut self, item: &SpellView) {
+        let Some(e) = &item.event_object else {
+            return;
+        };
+        let EventObjectFacts::DamageActor(saved) = e.facts else {
+            return;
+        };
+        let source =
+            if self.on_battlefield(e.object.card) && self.object_ref(e.object.card) == e.object {
+                self.damage_source(e.object.card)
+            } else {
+                saved
+            };
+        // CR208.3: a current noncreature permanent has no power; do not read
+        // printed Vehicle stats or reuse its previous creature characteristics.
+        let amount = if source.facts.kinds & 1 != 0 {
+            source.facts.power.max(0)
+        } else {
+            0
+        };
+        let events = item
+            .targets
+            .iter()
+            .filter(|b| self.same_target_object(**b))
+            .map(|b| DamageEvent {
+                source,
+                target: b.target,
+                amount,
+                combat: false,
+                preventable: true,
+            })
+            .collect::<Vec<_>>();
+        self.apply_damage_batch(&events);
+    }
     pub(super) fn event_object_damage_players(
         &mut self,
         p: &SpellView,

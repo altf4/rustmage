@@ -1121,6 +1121,8 @@ pub(crate) enum Instruction {
     },
     /// The first fighter is the captured non-targeted successful-action subject.
     ReflexiveFight,
+    /// Untargeted exact event object deals its current (or last-known) power.
+    EventObjectPowerDamage,
     CreateRolesMatching {
         token: Card,
         filter: CreatureFilter,
@@ -1537,6 +1539,12 @@ pub(crate) enum Instruction {
     AttachEquipmentByGroups {
         equipment: u16,
         recipient: u16,
+    },
+    /// Queue one reflexive ability only for actual new attachments in this batch.
+    AttachEquipmentGroupsReflexive {
+        equipment: u16,
+        recipient: u16,
+        ability: u16,
     },
     AttachEquipmentToAttached {
         group: u16,

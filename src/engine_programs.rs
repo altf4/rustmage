@@ -2279,6 +2279,7 @@ impl Game {
                     | Instruction::RevealTargetHandExileUntilSourceLeaves
                     | Instruction::MayAttachControlledEquipment { .. }
                     | Instruction::AttachEquipmentByGroups { .. }
+                    | Instruction::AttachEquipmentGroupsReflexive { .. }
                     | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::CopyTargetAbility { .. }
@@ -3397,6 +3398,15 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::AttachEquipmentGroupsReflexive {
+                    equipment,
+                    recipient,
+                    ability,
+                } => {
+                    if self.attach_groups_reflexive(&item, equipment, recipient, ability) {
+                        return;
+                    }
+                }
                 Instruction::AttachEquipmentByGroups {
                     equipment,
                     recipient,
@@ -4172,6 +4182,7 @@ impl Game {
                 Instruction::CreateRoleReflexive { token, ability } => {
                     self.resolve_role_reflexive(&item, token, ability);
                 }
+                Instruction::EventObjectPowerDamage => self.event_object_power_damage(&item),
                 Instruction::ReflexiveFight => {
                     self.reflexive_fight(&item);
                 }
