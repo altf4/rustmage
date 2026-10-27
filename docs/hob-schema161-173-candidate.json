@@ -1,0 +1,39 @@
+{
+  "scope": "173 local HOB candidates; 20 gated. Entire193 and final published PR remain open.",
+  "schema": 161,
+  "schema_changes": [
+    "Inside Information public optional exile life-permission field, action, cast method and alternative life-cost clause"
+  ],
+  "prior_release": {
+    "head": "5b359ef75a264a2f1606c2969f92c31bcd3b9eb9",
+    "report": "<cache>/rustmage-validation-5k2adhld/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1094,
+    "python_passed": 8,
+    "terminal_receipt_reviews": "pending two independent auditors"
+  },
+  "cohorts": [
+    {
+      "card": "Inside Information",
+      "leaf": "2dfa9259aa70a7454b064a4a1674698e9ead849a",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 53,
+      "note": "Chosen life-cast permission is isolated from independent normal-permission modifiers; no admitted global tax fixture."
+    },
+    {
+      "card": "Bard, King of Dale",
+      "leaf": "4a86c89140e2af456b6936efd67733e95e59f7ad",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_executions": 51,
+      "unique_tests": 48,
+      "note": "No admitted second draw-replacement provider for an ordering fixture; zero-match filter excluded."
+    }
+  ],
+  "status": "Leaf reviews passed; combined focused tests, historical traces, integrated reviews, full release and whole-set acceptance remain open."
+}

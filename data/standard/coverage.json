@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "00af2b00c0b66ba7d9c5512c3508d6cc1c6766845f20025e6ad501e4065f20b4",
+  "catalogue_version": "8b67e3cef24244b22377a868234f1fa2c2a7f0d0b76a10b046b2a422d1eff4d3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2680,
-  "implemented_total": 2686,
+  "implemented_standard_cards": 2682,
+  "implemented_total": 2688,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 166,
-      "gated": 22
+      "complete": 168,
+      "gated": 20
     },
     "hoc": {
       "total": 5,
@@ -2828,8 +2828,8 @@
     {
       "name": "Bard, King of Dale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/bard_king_of_dale.rs",
       "set": "hob"
     },
@@ -17644,8 +17644,8 @@
     {
       "name": "Inside Information",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/inside_information.rs",
       "set": "hob"
     },

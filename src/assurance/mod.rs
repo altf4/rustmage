@@ -273,7 +273,9 @@ mod hob_bolg;
 
 mod hob_elrond;
 
+mod hob_bard;
 mod hob_getaway_barrel;
+mod hob_inside_information;
 mod hob_key_side_door;
 mod hob_notary;
 mod hob_part_friendship;
