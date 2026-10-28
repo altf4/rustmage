@@ -257,6 +257,7 @@ struct ResourceKey {
     entered: bool,
     counters: InitialCounters,
     used: u64,
+    loyalty_activated_this_turn: bool,
     gained: Keywords,
     owned: bool,
     controlled: bool,
@@ -1586,6 +1587,7 @@ impl<'g> FundingState<'g> {
                 }) && self.entered_this_turn(self.reference(r.id)),
                 counters: r.object.counters,
                 used: r.object.used_abilities,
+                loyalty_activated_this_turn: r.object.loyalty_activated_this_turn,
                 gained: r.object.gained_keywords,
                 // Ownership still determines whose graveyard receives a sacrificed
                 // resource; control determines who can use it before that move.

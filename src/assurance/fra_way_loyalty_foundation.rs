@@ -196,3 +196,222 @@ fn healer_grant_respects_later_ability_removal_and_returns_after_it_leaves() {
         }
     }
 }
+
+#[test]
+fn printed_loyalty_locks_grant_through_theft_until_new_turn_or_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let way = put(&mut g, p, "Forest", Zone::Hand);
+        g.state.objects[way as usize].card = Card::from_name("Way of the Healer").unwrap();
+        super::big_helpers::cast(&mut g, way, None, &[]);
+        settle(&mut g);
+        let walker = put(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.add_counter(walker, CounterKind::Loyalty, 4);
+        let old = g.object_ref(walker);
+        let grantor = g.object_ref(way);
+        let grant = Action::AnnouncePlaneswalkerGrant {
+            source: old,
+            grantor,
+            ability: 0,
+        };
+        assert!(g.legal_actions().contains(&grant));
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: walker,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        settle(&mut g);
+        for viewer in [p, p.other()] {
+            assert!(
+                g.observe(viewer)
+                    .objects
+                    .iter()
+                    .any(|o| o.reference == old && o.loyalty_activated_this_turn)
+            );
+        }
+        reject(&mut g, grant.clone());
+        g.change_controller(old, p.other());
+        g.change_controller(grantor, p.other());
+        g.state.active = p.other();
+        g.state.priority = p.other();
+        reject(&mut g, grant.clone());
+        g.state.turn += 1;
+        g.begin_turn();
+        g.state.active = p.other();
+        g.state.priority = p.other();
+        g.state.step = Step::Main1;
+        assert!(g.legal_actions().contains(&grant));
+        g.move_object(walker, Zone::Exile);
+        g.move_object(walker, Zone::Battlefield);
+        let new = g.object_ref(walker);
+        assert_ne!(old, new);
+        assert!(!g.object_view(walker).loyalty_activated_this_turn);
+        reject(&mut g, grant);
+    }
+}
+
+#[test]
+fn healer_grant_rejects_low_loyalty_and_wrong_timing_and_counter_keeps_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let way = put(&mut g, p, "Forest", Zone::Hand);
+        g.state.objects[way as usize].card = Card::from_name("Way of the Healer").unwrap();
+        super::big_helpers::cast(&mut g, way, None, &[]);
+        settle(&mut g);
+        let walker = put(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.add_counter(walker, CounterKind::Loyalty, 1);
+        let source = g.object_ref(walker);
+        let grant = Action::AnnouncePlaneswalkerGrant {
+            source,
+            grantor: g.object_ref(way),
+            ability: 0,
+        };
+        reject(&mut g, grant.clone());
+        g.add_counter(walker, CounterKind::Loyalty, 2);
+        g.state.step = Step::BeginCombat;
+        reject(&mut g, grant.clone());
+        g.state.step = Step::Main1;
+        let before = g.snapshot();
+        checked(&mut g, grant.clone());
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 1);
+        let id = g.state.stack.last().unwrap().id;
+        assert!(g.counter_stack_item(id, false));
+        settle(&mut g);
+        assert!(
+            !g.state
+                .objects
+                .iter()
+                .any(|o| o.zone == Zone::Battlefield && o.card == Card::test_index(5298))
+        );
+        assert!(g.object_view(walker).loyalty_activated_this_turn);
+        reject(&mut g, grant.clone());
+        g.restore(&before).unwrap();
+        assert!(g.legal_actions().contains(&grant));
+    }
+}
+
+#[test]
+fn two_grant_providers_share_one_loyalty_activation_limit() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let way = put(&mut g, p, "Forest", Zone::Hand);
+        g.state.objects[way as usize].card = Card::from_name("Way of the Healer").unwrap();
+        super::big_helpers::cast(&mut g, way, None, &[]);
+        settle(&mut g);
+        let duplicate = put(&mut g, p, "Forest", Zone::Battlefield);
+        g.state.objects[duplicate as usize].card = Card::from_name("Way of the Healer").unwrap();
+        let duplicate_ref = g.object_ref(duplicate);
+        let mut recipe = CopyRecipe::new(Card::from_name("Way of the Healer").unwrap());
+        recipe.overrides = Some(CopyOverrides {
+            legendary: Some(false),
+            ..CopyOverrides::NONE
+        });
+        g.set_copy_recipe(duplicate_ref, recipe);
+        g.register_battlefield_providers(duplicate);
+        let walker = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(i, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && g.has_subtype(i as CardId, "Jace"))
+                .then_some(i as CardId)
+            })
+            .unwrap();
+        let source = g.object_ref(walker);
+        let first = Action::AnnouncePlaneswalkerGrant {
+            source,
+            grantor: g.object_ref(way),
+            ability: 0,
+        };
+        let second = Action::AnnouncePlaneswalkerGrant {
+            source,
+            grantor: duplicate_ref,
+            ability: 0,
+        };
+        assert!(g.legal_actions().contains(&first));
+        assert!(g.legal_actions().contains(&second));
+        checked(&mut g, first);
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        settle(&mut g);
+        reject(&mut g, second);
+    }
+}
+
+#[test]
+fn granted_loyalty_activation_notifies_existing_loyalty_observers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let paradox = put(&mut g, p, "Forest", Zone::Hand);
+        g.state.objects[paradox as usize].card = Card::from_name("Way of the Paradox").unwrap();
+        super::big_helpers::cast(&mut g, paradox, None, &[]);
+        settle(&mut g);
+        let way = put(&mut g, p, "Forest", Zone::Hand);
+        g.state.objects[way as usize].card = Card::from_name("Way of the Healer").unwrap();
+        super::big_helpers::cast(&mut g, way, None, &[]);
+        settle(&mut g);
+        let walker = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(i, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && g.has_subtype(i as CardId, "Jace"))
+                .then_some(i as CardId)
+            })
+            .unwrap();
+        let life = g.state.players[p.index()].life;
+        let lands = g.state.players[p.index()].extra_land_plays_remaining;
+        let source = g.object_ref(walker);
+        let grantor = g.object_ref(way);
+        checked(
+            &mut g,
+            Action::AnnouncePlaneswalkerGrant {
+                source,
+                grantor,
+                ability: 0,
+            },
+        );
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 1);
+        assert_eq!(
+            g.state.players[p.index()].extra_land_plays_remaining,
+            lands + 1
+        );
+    }
+}
