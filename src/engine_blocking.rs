@@ -23,7 +23,6 @@ impl Game {
 
     fn controlled_small_creature_cannot_be_blocked(&self, attacker: CardId) -> bool {
         let attacker_controller = self.state.objects[attacker as usize].controller;
-        let stats = self.stats(attacker);
         self.state.static_sources.iter().copied().any(|source| {
             self.on_battlefield(source)
                 && self.state.objects[source as usize].controller == attacker_controller
@@ -31,8 +30,11 @@ impl Game {
                     .flat_map(|group| group.fragments)
                     .any(|fragment| {
                         let crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(maximum) = *fragment else { return false; };
-                        (stats.power <= maximum || stats.toughness <= maximum)
-                            && self.continuous_fragment_available(source, |candidate| std::ptr::eq(candidate, fragment))
+                        self.continuous_fragment_available(source, |candidate| std::ptr::eq(candidate, fragment))
+                            && {
+                                let stats = self.stats(attacker);
+                                stats.power <= maximum || stats.toughness <= maximum
+                            }
                     })
         })
     }
