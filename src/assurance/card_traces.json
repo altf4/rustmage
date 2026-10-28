@@ -151,6 +151,14 @@
     "journal": "a4c714aeb662e85f",
     "observations": "6e9f267ebc9a67ad"
   },
+  "Academic Ascent": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "fae424dc01ad1ac5",
+    "observations": "6cb643bfcc7a1248"
+  },
   "Accumulate Wisdom": {
     "root": "main",
     "status": "completed",
@@ -838,6 +846,14 @@
     "zone": "Battlefield",
     "journal": "bdc89f9863097122",
     "observations": "c528c346b88f3303"
+  },
+  "Arcane Amphisbaena": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "57367694ff0129ef",
+    "observations": "4435d200f21cdfd5"
   },
   "Arcane Epiphany": {
     "root": "main",

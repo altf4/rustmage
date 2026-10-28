@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "84d79cf1fd325f7b143c8da84a55c7818cf98881bac0529e3fe43137952999d3",
+  "catalogue_version": "1c71dc375b0138cefb9b1f6913dbb85f249c1600aefe3df4a66f88f838fb0357",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2743,
-  "implemented_total": 2749,
+  "implemented_standard_cards": 2745,
+  "implemented_total": 2751,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 96,
-      "gated": 189
+      "complete": 98,
+      "gated": 187
     },
     "frc": {
       "total": 6,
@@ -571,8 +571,8 @@
     {
       "name": "Academic Ascent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/academic_ascent.rs",
       "set": "fra"
     },
@@ -1827,8 +1827,8 @@
     {
       "name": "Arcane Amphisbaena",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/arcane_amphisbaena.rs",
       "set": "fra"
     },
