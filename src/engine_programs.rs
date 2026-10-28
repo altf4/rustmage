@@ -3422,6 +3422,16 @@ impl Game {
                     let players: Vec<_> = self.program_players(players, &item).collect();
                     self.mill_batch(&players, amount, item.controller);
                 }
+                Instruction::MillThenReflexive { amount, ability } => {
+                    self.mill_batch(
+                        &[item.controller],
+                        MillAmount::Fixed(amount),
+                        item.controller,
+                    );
+                    if self.state.resolving.as_ref().unwrap().milled.len() == usize::from(amount) {
+                        self.queue_reflexive(&item, ability, None);
+                    }
+                }
                 Instruction::MayMill(amount) => {
                     // CR701.17b forbids choosing to mill more than the library.
                     let resolution = self.state.resolving.as_mut().unwrap();

@@ -1614,6 +1614,11 @@ pub(crate) enum Instruction {
     DiscardHandRememberCount(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
+    /// Mill the specified number, then queue a reflexive ability only if all were milled.
+    MillThenReflexive {
+        amount: u16,
+        ability: u16,
+    },
     MillLifeEvent,
     DrawForGraveyardsAtLeast(u16),
     MayMill(u16),

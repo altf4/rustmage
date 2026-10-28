@@ -4949,3 +4949,79 @@ fn room_of_refuge_color_mana_sacrifice_and_counter_replacement() {
         }
     }
 }
+
+#[test]
+fn primal_witchstalker_mills_then_targets_only_after_all_four() {
+    for p in [Player::P0, Player::P1] {
+        for count in 0..=4 {
+            for fizzle in [false, true] {
+                let mut g = scenario(p);
+                while g.state.players[p.index()].library.len() > count {
+                    let card = *g.state.players[p.index()].library.last().unwrap();
+                    g.move_object(card, Zone::Exile);
+                }
+                let target = g.state.players[p.index()].library.last().copied();
+                let wolf = put(&mut g, p, "Primal Witchstalker", Zone::Hand);
+                cast(&mut g, wolf, None);
+                let mut selected = false;
+                for _ in 0..48 {
+                    g.prepare_triggers();
+                    let actions = g.legal_actions();
+                    if let Some(target) = target {
+                        let choice = Action::ChooseTarget {
+                            target: Target::Card(target),
+                        };
+                        if actions.contains(&choice) {
+                            assert_eq!(count, 4);
+                            act(&mut g, choice);
+                            selected = true;
+                            break;
+                        }
+                    }
+                    if g.state.stack.is_empty()
+                        && g.state.pending_triggers.is_empty()
+                        && g.state.pending == Pending::Priority
+                    {
+                        break;
+                    }
+                    choose(&mut g, |a| {
+                        matches!(a, Action::Pass | Action::PutTrigger { .. })
+                    });
+                }
+                assert_eq!(g.state.players[p.index()].library.len(), 0);
+                assert_eq!(selected, count == 4);
+                if selected {
+                    let target = target.unwrap();
+                    g.move_object(wolf, Zone::Exile);
+                    if fizzle {
+                        g.move_object(target, Zone::Exile);
+                    }
+                    let before = g.snapshot();
+                    super::contracts::branch_contract(g.clone());
+                    settle(&mut g);
+                    assert_eq!(
+                        g.object_view(target).zone,
+                        if fizzle {
+                            Zone::Exile
+                        } else {
+                            Zone::Battlefield
+                        }
+                    );
+                    if !fizzle {
+                        assert!(g.object_view(target).tapped);
+                    }
+                    g.restore(&before).unwrap();
+                    settle(&mut g);
+                    assert_eq!(
+                        g.object_view(target).zone,
+                        if fizzle {
+                            Zone::Exile
+                        } else {
+                            Zone::Battlefield
+                        }
+                    );
+                }
+            }
+        }
+    }
+}
