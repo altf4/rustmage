@@ -5845,3 +5845,57 @@ fn hungering_puppetbeast_chooses_keyword_on_resolution_and_cleans_up() {
         }
     }
 }
+
+#[test]
+fn hungering_puppetbeast_does_not_choose_for_a_new_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let beast = put(&mut g, p, "Hungering Puppetbeast", Zone::Battlefield);
+        let artifact = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: beast,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let artifact_ref = g.object_ref(artifact);
+        act(
+            &mut g,
+            Action::ChooseAdditionalCost {
+                object: artifact_ref,
+            },
+        );
+        pay(&mut g);
+        let old = g.object_ref(beast);
+        g.move_object(beast, Zone::Graveyard);
+        g.move_object(beast, Zone::Battlefield);
+        assert_ne!(g.object_ref(beast), old);
+        for _ in 0..32 {
+            g.prepare_triggers();
+            let actions = g.legal_actions();
+            assert!(
+                !actions
+                    .iter()
+                    .any(|a| matches!(a, Action::ChooseKeyword { .. }))
+            );
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            }
+            let action = actions
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                .expect("source-departure resolution");
+            act(&mut g, action);
+        }
+        assert_eq!(g.counter_count(beast, CounterKind::PlusOne), 0);
+        for keyword in [Keywords::TRAMPLE, Keywords::HEXPROOF, Keywords::HASTE] {
+            assert!(!g.keywords(beast).contains(keyword));
+        }
+    }
+}
