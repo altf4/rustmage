@@ -4495,3 +4495,33 @@ fn generous_revival_targets_mana_value_and_flashback_entry_counters() {
         }
     }
 }
+
+#[test]
+fn generous_revival_adds_to_intrinsic_entry_counters_before_replacements() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            let mut g = scenario(p);
+            let hydra = put(&mut g, p, "Mossborn Hydra", Zone::Graveyard);
+            if doubled {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let revival = put(&mut g, p, "Generous Revival", Zone::Hand);
+            cast(&mut g, revival, Some(Target::Card(hydra)));
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(g.object_view(hydra).zone, Zone::Battlefield);
+            assert_eq!(
+                g.counter_count(hydra, CounterKind::PlusOne),
+                if doubled { 4 } else { 2 }
+            );
+            assert_eq!(stats(&g, hydra), if doubled { (4, 4) } else { (2, 2) });
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(
+                g.counter_count(hydra, CounterKind::PlusOne),
+                if doubled { 4 } else { 2 }
+            );
+        }
+    }
+}
