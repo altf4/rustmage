@@ -3591,3 +3591,42 @@ fn solve_for_disappointment_reveals_hand_discards_permanent_then_empowers() {
         }
     }
 }
+
+#[test]
+fn overwrite_counts_exiled_creatures_including_tokens_before_empower() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let land = put(&mut g, p, "Forest", Zone::Battlefield);
+        g.create_tokens(p, Card(5298), 1, false);
+        settle(&mut g);
+        let token = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(i, o)| {
+                (o.zone == Zone::Battlefield && o.is_token() && o.card == Card(5298))
+                    .then_some(i as CardId)
+            })
+            .unwrap();
+        let spell = put(&mut g, p, "Overwrite the Multiverse", Zone::Hand);
+        cast(&mut g, spell, None);
+        let before = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.object_view(own).zone, Zone::Exile);
+        assert_eq!(g.object_view(enemy).zone, Zone::Exile);
+        assert_ne!(g.object_view(token).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+        let jaces = fra_jaces(&g, p);
+        assert_eq!(jaces.len(), 1);
+        assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 3);
+        g.restore(&before).unwrap();
+        settle(&mut g);
+        let jaces = fra_jaces(&g, p);
+        assert_eq!(jaces.len(), 1);
+        assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 3);
+    }
+}

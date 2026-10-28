@@ -1620,6 +1620,8 @@ pub(crate) enum Instruction {
     BottomLookedLibraryRandom,
     ControlTargetPlayerNextTurn,
     ExileAllCreaturesRemember,
+    /// Exile creatures simultaneously and count only those actually exiled, including tokens.
+    ExileAllCreaturesCount,
     DeployHandCreaturesEach,
     ReturnExiledResultToHands,
     ExileDamagedLibraryUntilNonland,

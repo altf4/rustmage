@@ -3464,6 +3464,7 @@ impl Game {
                     }
                 }
                 Instruction::ExileAllCreaturesRemember => self.exile_all_creatures_remember(),
+                Instruction::ExileAllCreaturesCount => self.exile_all_creatures_count(),
                 Instruction::DeployHandCreaturesEach => {
                     self.start_hand_deployment();
                     return;

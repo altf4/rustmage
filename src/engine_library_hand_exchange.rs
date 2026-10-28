@@ -37,6 +37,25 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &before);
     }
+    pub(super) fn exile_all_creatures_count(&mut self) {
+        let ids = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(i, o)| o.zone == Zone::Battlefield && self.is_creature(*i as CardId))
+            .map(|(i, _)| i as CardId)
+            .collect::<Vec<_>>();
+        let before = self.death_trigger_sources();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let count = events
+            .iter()
+            .filter(|event| event.moved && event.destination == Zone::Exile)
+            .count();
+        self.state.resolving.as_mut().unwrap().moved_count =
+            Some(u64::try_from(count).capacity("exiled creature count exhausted"));
+        self.finish_zone_events(&events, &before);
+    }
     pub(super) fn return_exiled_result_to_hands(&mut self) {
         let objects = std::mem::take(&mut self.state.resolving.as_mut().unwrap().milled);
         let moves = objects

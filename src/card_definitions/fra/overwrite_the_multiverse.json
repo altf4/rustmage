@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "850fc6b3d6405ac5174fbe7ff7fca50a1a51af10eed8f4c0179ae0b65abf8941"
   },
-  "physical_metadata_sha256": "619544514bb5ad5ba1484f2c2a2834b832f2cb7e3bfc8d01e45af522ab01aa5d"
+  "physical_metadata_sha256": "619544514bb5ad5ba1484f2c2a2834b832f2cb7e3bfc8d01e45af522ab01aa5d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OverwriteTheMultiverse.java",
+  "java_sha256": "f8ff37646c8c5f2b6b4b34aca80384a290e64a34fa11b9a8cfba6f02b7cf6b53",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }
