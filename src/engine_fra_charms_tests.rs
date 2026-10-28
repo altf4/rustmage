@@ -6608,3 +6608,43 @@ fn hunters_axes_create_independent_attack_choices() {
         assert!(!g.keywords(bearer).contains(Keywords::DEATHTOUCH));
     }
 }
+
+#[test]
+fn hunters_axe_attack_choice_does_not_affect_returned_creature() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let bearer = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let axe = put(&mut g, p, "Hunter's Axe", Zone::Battlefield);
+        let before = g.object_ref(bearer);
+        g.state.objects[axe as usize].attached_to = Some(before);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: bearer });
+        act(&mut g, Action::FinishAttackers);
+        g.move_object(bearer, Zone::Graveyard);
+        g.move_object(bearer, Zone::Battlefield);
+        assert_ne!(g.object_ref(bearer), before);
+        for _ in 0..48 {
+            let actions = g.legal_actions();
+            assert!(
+                !actions
+                    .iter()
+                    .any(|a| matches!(a, Action::ChooseKeyword { .. }))
+            );
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            }
+            let action = actions
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                .expect("granted attack resolution");
+            act(&mut g, action);
+        }
+        assert!(!g.keywords(bearer).contains(Keywords::TRAMPLE));
+        assert!(!g.keywords(bearer).contains(Keywords::DEATHTOUCH));
+    }
+}
