@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b078aa6a59506713e82dce99a9056e7075317048398c08033f01b1d99d7c5333"
   },
-  "physical_metadata_sha256": "742f13241317318900c2012358fe0c0b7609940a61446f5ff47a03137ed6f7fc"
+  "physical_metadata_sha256": "742f13241317318900c2012358fe0c0b7609940a61446f5ff47a03137ed6f7fc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InfiniteCoursework.java",
+  "java_sha256": "8fe08faefd01ba3a2567c4e6e3ca316532472b642da19bf90f7cf13888a586db",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+      "sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+      "sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+      "sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+    }
+  ]
 }

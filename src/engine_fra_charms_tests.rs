@@ -4060,3 +4060,29 @@ fn hapatra_desert_frost_stuns_even_tapped_creatures_and_untap_removes_stun() {
         }
     }
 }
+
+#[test]
+fn infinite_coursework_unprepares_blanks_and_restricts_only_untap_step() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let creature = put(&mut g, p, "Pigment Wrangler", Zone::Hand);
+        cast(&mut g, creature, None);
+        settle(&mut g);
+        assert!(g.is_prepared(g.object_ref(creature)));
+        assert!(g.keywords(creature).contains(Keywords::FLYING));
+        let aura = put(&mut g, p, "Infinite Coursework", Zone::Hand);
+        cast(&mut g, aura, Some(Target::Card(creature)));
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert!(!g.is_prepared(g.object_ref(creature)));
+        assert!(!g.keywords(creature).contains(Keywords::FLYING));
+        assert!(g.state.objects[creature as usize].tapped);
+        g.untap_objects(&[creature], untap_rules::UntapCause::ControllerStep(p));
+        assert!(g.state.objects[creature as usize].tapped);
+        g.untap_objects(&[creature], untap_rules::UntapCause::Effect);
+        assert!(!g.state.objects[creature as usize].tapped);
+        g.move_object(aura, Zone::Graveyard);
+        assert!(g.keywords(creature).contains(Keywords::FLYING));
+        assert!(!g.is_prepared(g.object_ref(creature)));
+    }
+}
