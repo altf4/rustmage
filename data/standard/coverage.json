@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "901ac02513977a8a9f2c8215efac0b31537a89c438f9d1229b1ced16d8edf106",
+  "catalogue_version": "69bc596d23ae277a5c2579779b8551d14d0f80e37a90c1721e2c0dfec8ac0729",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2741,
-  "implemented_total": 2747,
+  "implemented_standard_cards": 2742,
+  "implemented_total": 2748,
   "token_definitions": 136,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 94,
-      "gated": 191
+      "complete": 95,
+      "gated": 190
     },
     "frc": {
       "total": 6,
@@ -17227,8 +17227,8 @@
     {
       "name": "Icy Reception",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/icy_reception.rs",
       "set": "fra"
     },
