@@ -6286,3 +6286,48 @@ fn koth_landfall_keeps_multiple_land_events_independent() {
         assert_eq!(g.state.players[p.index()].mana[3], 1);
     }
 }
+
+#[test]
+fn break_under_pressure_opponent_chooses_tied_greatest_mana_value() {
+    for p in [Player::P0, Player::P1] {
+        for choose_second in [false, true] {
+            let mut g = scenario(p);
+            let small = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let first = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let second = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let irrelevant = put(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+            let friendly = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let spell = put(&mut g, p, "Break Under Pressure", Zone::Hand);
+            let life = g.state.players[p.index()].life;
+            cast(&mut g, spell, Some(Target::Player(p.other())));
+            for _ in 0..32 {
+                if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+                    break;
+                }
+                act(&mut g, Action::Pass);
+            }
+            assert_eq!(g.actor(), Some(p.other()));
+            for id in [small, irrelevant, friendly] {
+                let object = g.object_ref(id);
+                reject(&mut g, Action::Sacrifice { object });
+            }
+            let selected = if choose_second { second } else { first };
+            let object = g.object_ref(selected);
+            let saved = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            act(&mut g, Action::Sacrifice { object });
+            settle(&mut g);
+            assert_eq!(g.object_view(selected).zone, Zone::Graveyard);
+            assert_eq!(
+                g.object_view(if choose_second { first } else { second })
+                    .zone,
+                Zone::Battlefield
+            );
+            assert_eq!(g.state.players[p.index()].life, life + 2);
+            g.restore(&saved).unwrap();
+            act(&mut g, Action::Sacrifice { object });
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].life, life + 2);
+        }
+    }
+}
