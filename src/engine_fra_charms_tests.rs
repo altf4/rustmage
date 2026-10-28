@@ -4808,3 +4808,73 @@ fn warriors_blades_equip_cost_uses_chosen_creature_counters() {
         }
     }
 }
+
+#[test]
+fn warriors_blades_entry_damage_life_and_target_fizzle() {
+    for p in [Player::P0, Player::P1] {
+        for fizzle in [false, true] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+            let equipment = put(&mut g, p, "Warrior's Blades", Zone::Hand);
+            let life = g.state.players[p.index()].life;
+            cast(&mut g, equipment, None);
+            let wanted = Action::ChooseTarget {
+                target: Target::Card(target),
+            };
+            let mut selected = false;
+            for _ in 0..48 {
+                g.prepare_triggers();
+                if g.legal_actions().contains(&wanted) {
+                    act(&mut g, wanted.clone());
+                    selected = true;
+                    break;
+                }
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+            assert!(selected);
+            g.move_object(equipment, Zone::Graveyard);
+            if fizzle {
+                g.move_object(target, Zone::Exile);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                life + if fizzle { 0 } else { 3 }
+            );
+            if !fizzle {
+                assert_eq!(g.state.objects[target as usize].damage, 3);
+            }
+            let completed = g.snapshot();
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(g.snapshot(), completed);
+        }
+    }
+}
+
+#[test]
+fn warriors_blades_direct_equip_action_uses_target_counter_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let equipment = put(&mut g, p, "Warrior's Blades", Zone::Battlefield);
+        let cheap = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let expensive = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.add_counter(cheap, CounterKind::PlusOne, 2);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        let actions = g.legal_actions();
+        assert!(!actions.iter().any(|a| matches!(a, Action::Activate { card, ability: 0, target: Some(Target::Card(id)), .. } if *card == equipment && *id == expensive)));
+        let action = actions.into_iter().find(|a| matches!(a, Action::Activate { card, ability: 0, target: Some(Target::Card(id)), payment, .. } if *card == equipment && *id == cheap && payment[5] == 1)).expect("discounted direct equip");
+        act(&mut g, action);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(
+            g.object_view(equipment).attached_to,
+            Some(g.object_ref(cheap))
+        );
+        assert_eq!(g.state.players[p.index()].mana[5], 0);
+    }
+}
