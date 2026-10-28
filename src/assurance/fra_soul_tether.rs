@@ -129,6 +129,17 @@ fn crafter_restricted_mana_rejects_hand_cast_but_funds_prepared_spell() {
         g.state.objects[source as usize].summoning_sick = false;
         let prepared = copy(&g, source);
         g.state.players[p.index()].mana = [0; 6];
+        // Speculative funding must not treat the untapped producer as usable
+        // for this hand cast, even before its restricted lot is produced.
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: hand_spell })
+        );
+        let mut funding = g.clone();
+        funding.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
+        assert!(funding.legal_actions().contains(&Action::AnnounceExile {
+            card: prepared.card
+        }));
         let mana = g.legal_actions().into_iter().find(|a| matches!(a, Action::ActivateMana { card, production: [0,0,0,0,0,1], .. } if *card == source)).unwrap();
         checked(&mut g, mana);
         for viewer in [p, p.other()] {
