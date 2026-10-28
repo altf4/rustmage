@@ -4427,8 +4427,7 @@ impl Game {
                     };
                     if completable {
                         let costs = if flashback {
-                            std::iter::once(obj.card.flashback_cost().unwrap())
-                                .chain([].iter().copied())
+                            obj.card.flashback_cost_options()
                         } else {
                             obj.card.cost_options()
                         };

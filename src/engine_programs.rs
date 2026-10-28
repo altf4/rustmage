@@ -3062,6 +3062,11 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::IfNotCastFromHand { skip } => {
+                    if !item.is_copy && item.cast.is_some_and(|cast| cast.origin == Zone::Hand) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfCastFromNonHand { skip } => {
                     if item.is_copy || !item.cast.is_some_and(|cast| cast.origin != Zone::Hand) {
                         self.state.resolving.as_mut().unwrap().pc += skip;

@@ -198,8 +198,7 @@ impl Announcement {
                     .cast
                     .is_some_and(|cast| cast.method == CastMethod::Flashback) =>
             {
-                std::iter::once(self.item.source_card.flashback_cost().unwrap())
-                    .chain([].iter().copied())
+                self.item.source_card.flashback_cost_options()
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| {

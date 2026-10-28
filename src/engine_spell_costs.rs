@@ -152,7 +152,7 @@ impl Game {
             return false;
         }
         let costs = if flashback {
-            std::iter::once(definition.flashback_cost().unwrap()).chain([].iter().copied())
+            definition.flashback_cost_options()
         } else {
             definition.cost_options()
         };

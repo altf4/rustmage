@@ -2629,19 +2629,33 @@ impl Game {
             && let Some(spec) = a.item.source_card.flashback_additional()
         {
             let cost = self.reduced_spell_cost(a.item.controller, a.item.card, cost);
-            return self.group_cost_fundable(
-                FundingGoal {
-                    actor: a.item.controller,
-                    required: cost.colored,
-                    generic: cost.generic,
-                    reserve: None,
-                    source: None,
-                },
-                self.purpose_for_item(&a.item),
-                spec,
-                a.item.object,
-                &[],
-            );
+            let goal = FundingGoal {
+                actor: a.item.controller,
+                required: cost.colored,
+                generic: cost.generic,
+                reserve: None,
+                source: None,
+            };
+            let purpose = self.purpose_for_item(&a.item);
+            if matches!(
+                spec.kind,
+                EffectChoiceKind::TapPermanents(_)
+                    | EffectChoiceKind::ExileGraveyardCards(_)
+                    | EffectChoiceKind::ExileGraveyardSymbols { .. }
+            ) {
+                return self.group_cost_fundable(goal, purpose, spec, a.item.object, &[]);
+            }
+            return self.state.objects.iter().enumerate().any(|(id, _)| {
+                let candidate = self.object_ref(id as CardId);
+                self.additional_candidate(spec, a.item.controller, a.item.object, candidate)
+                    && self.can_fund_for(
+                        FundingGoal {
+                            reserve: Some((candidate, spec)),
+                            ..goal.clone()
+                        },
+                        purpose,
+                    )
+            });
         }
         if a.graveyard_origin_counter_cost().is_some() {
             let cost = self.reduced_spell_cost(a.item.controller, a.item.card, cost);

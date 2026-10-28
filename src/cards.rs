@@ -1087,6 +1087,10 @@ pub(crate) enum Instruction {
     IfCastFromGraveyard {
         skip: usize,
     },
+    /// Copies and spells not cast from a hand take the non-hand branch.
+    IfNotCastFromHand {
+        skip: usize,
+    },
     IfCastFromNonHand {
         skip: usize,
     },
@@ -4775,6 +4779,14 @@ impl Card {
     /// The fixed alternative mana cost for casting this complete card from its graveyard.
     pub fn flashback_cost(self) -> Option<ManaCost> {
         generated::flashback_cost(self)
+    }
+    pub(crate) fn flashback_cost_options(self) -> ManaCostOptions {
+        std::iter::once(self.flashback_cost().expect("flashback cost")).chain(
+            authored::rules(self)
+                .map_or(&[][..], |r| r.extras.flashback_cost_alternatives)
+                .iter()
+                .copied(),
+        )
     }
     pub(crate) fn zone_replacement(self) -> Option<ZoneReplacementRule> {
         generated::zone_replacement(self)
