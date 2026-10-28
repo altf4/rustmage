@@ -722,7 +722,14 @@ impl Game {
         if item.kind == StackKind::Spell {
             let mut source = Source::printed(item.source_card);
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
-            source.cast_from_hand = item.cast.is_some_and(|c| c.origin == Zone::Hand);
+            source.cast_from_hand = item.cast.is_some_and(|c| {
+                c.origin == Zone::Hand
+                    && self
+                        .state
+                        .objects
+                        .get(item.object.card as usize)
+                        .is_some_and(|object| object.owner == c.caster)
+            });
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
             Purpose::Spell(source)
         } else if let StackKind::ActivatedAbility { ability } = item.kind {
@@ -750,14 +757,15 @@ impl Game {
         definition: Card,
     ) -> Purpose {
         let mut source = Source::printed(definition);
-        source.cast_from_hand = self
-            .state
-            .announcing
-            .as_ref()
-            .filter(|a| a.item.card == card)
-            .and_then(|a| a.item.cast.map(|cast| cast.origin))
-            .unwrap_or(self.state.objects[card as usize].zone)
-            == Zone::Hand;
+        source.cast_from_hand = self.state.objects[card as usize].owner == actor
+            && self
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| a.item.card == card)
+                .and_then(|a| a.item.cast.map(|cast| cast.origin))
+                .unwrap_or(self.state.objects[card as usize].zone)
+                == Zone::Hand;
         source.spend_any_mana = self.exile_cast_modifiers(actor, card).0
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item.card == card && a.item.cast.is_some_and(|c| c.spend_any_mana)
