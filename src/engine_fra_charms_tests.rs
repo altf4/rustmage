@@ -1061,3 +1061,57 @@ fn craterclaw_counts_artifacts_when_entry_trigger_resolves() {
         assert!(g.keywords(bear).contains(Keywords::TRAMPLE));
     }
 }
+
+#[test]
+fn pia_creates_thopter_and_uses_resolution_time_artifact_count() {
+    for p in [Player::P0, Player::P1] {
+        for fizzle in [false, true] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let pia = put(&mut g, p, "Pia, Determined Rebuilder", Zone::Hand);
+            cast(&mut g, pia, None);
+            settle(&mut g);
+            let thopters = fra_thopters(&g, p);
+            assert_eq!(thopters.len(), 1);
+            assert_eq!(stats(&g, thopters[0]), (1, 1));
+            assert!(g.keywords(thopters[0]).contains(Keywords::FLYING));
+            let extra = put(&mut g, p, "Mox Jasper", Zone::Battlefield);
+            put(&mut g, p.other(), "Mox Jasper", Zone::Battlefield);
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: pia,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            pay(&mut g);
+            super::contracts::branch_contract(g.clone());
+            g.move_object(pia, Zone::Graveyard);
+            g.move_object(extra, Zone::Graveyard);
+            if fizzle {
+                g.move_object(target, Zone::Exile);
+            }
+            settle(&mut g);
+            if fizzle {
+                assert_eq!(g.object_view(target).zone, Zone::Exile);
+            } else {
+                assert_eq!(stats(&g, target), (3, 2));
+                g.finish_cleanup();
+                assert_eq!(stats(&g, target), (2, 2));
+            }
+        }
+    }
+}
