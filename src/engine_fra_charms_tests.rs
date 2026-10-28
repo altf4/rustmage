@@ -3706,3 +3706,20 @@ fn vigorbloom_charm_protects_permanents_and_counters_before_fight() {
         }
     }
 }
+
+#[test]
+fn vigorbloom_charm_draw_mode_gains_life() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let card = put(&mut g, p, "Forest", Zone::Library);
+        let spell = put(&mut g, p, "Vigorbloom Charm", Zone::Hand);
+        let life = g.state.players[p.index()].life;
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 1, 0];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, Action::ChooseMode { mode: 1 });
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 3);
+        assert_eq!(g.object_view(card).zone, Zone::Hand);
+    }
+}
