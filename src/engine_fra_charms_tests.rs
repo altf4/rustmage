@@ -403,3 +403,56 @@ fn return_to_light_realms_simultaneous_entries_and_aura_choice() {
         assert_eq!(g.state.players[p.index()].life, 21);
     }
 }
+
+#[test]
+fn fixed_empower_entry_and_graveyard_activation_reuse_jace() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let eye = put(&mut g, p, "Mindseeker Oculus", Zone::Hand);
+        cast(&mut g, eye, None);
+        settle(&mut g);
+        let jaces: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(i, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && o.card == Card(5435))
+                .then_some(i as CardId)
+            })
+            .collect();
+        assert_eq!(jaces.len(), 1);
+        let jace = jaces[0];
+        assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 4);
+        let crier = put(&mut g, p, "Campus Crier", Zone::Graveyard);
+        g.state.active = p.other();
+        g.state.priority = p;
+        g.state.players[p.index()].mana = [0; 6];
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: crier,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        assert_eq!(g.object_view(crier).zone, Zone::Graveyard);
+        g.state.players[p.index()].mana[5] = 1;
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: crier,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.object_view(crier).zone, Zone::Exile);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 6);
+    }
+}

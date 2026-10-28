@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4247640541ef538dd7651a5ff23bc9f900c1e357998e78b568880fa17d71cbd0"
   },
-  "physical_metadata_sha256": "b655fa6dd45942fff5b8a5b15c2e6b015c514b8c274596c0c3cb90b5c40722f6"
+  "physical_metadata_sha256": "b655fa6dd45942fff5b8a5b15c2e6b015c514b8c274596c0c3cb90b5c40722f6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CampusCrier.java",
+  "java_sha256": "54c844eb7f1c2f1394a4700525ec45d6c6d3ebcf28596470dca8ec1225a2acc7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }
