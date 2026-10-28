@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "002ce8881cce097a359769ec24e02507ba02c8f2abe2401897da536dbc851790"
   },
-  "physical_metadata_sha256": "de651a091f5f225247602bd2704d8d2ef01d729c43274f44d21d4371b38563bc"
+  "physical_metadata_sha256": "de651a091f5f225247602bd2704d8d2ef01d729c43274f44d21d4371b38563bc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JiangYangguNeverAlone.java",
+  "java_sha256": "9853e01b5c7e5700927f24991b12f7eb537d841cdb6c196424d37b9dfe1e58b7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/MowuToken.java",
+      "sha256": "00e970587860abdf8dddeb77dc0637ea4c74082a8576c7e76b9e1b195b8eeef5"
+    }
+  ]
 }

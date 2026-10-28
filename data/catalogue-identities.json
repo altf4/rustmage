@@ -5441,7 +5441,8 @@
     0,
     0,
     0,
-    2
+    2,
+    16
   ],
   "aliases": [
     [
@@ -6303,6 +6304,10 @@
     [
       "@token/komas_coil",
       5335
+    ],
+    [
+      "@token/mowu",
+      5436
     ],
     [
       "@token/msh-alien",
@@ -28811,6 +28816,12 @@
       "name": "Jace",
       "subtypes": "Jace",
       "colors": 2
+    },
+    {
+      "factory_identity": "@token/mowu",
+      "name": "Mowu",
+      "subtypes": "Dog",
+      "colors": 16
     }
   ],
   "emblems": [
@@ -184189,6 +184200,33 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 64,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5436,
+      "module": "card_5436",
+      "path": "synthetic/token_mowu.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/mowu",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Dog",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [

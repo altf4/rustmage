@@ -4863,6 +4863,21 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::UntapControlledTokens => {
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, o)| {
+                            (o.zone == Zone::Battlefield
+                                && o.controller == item.controller
+                                && o.is_token())
+                            .then_some(id as CardId)
+                        })
+                        .collect();
+                    self.untap_objects(&ids, untap_rules::UntapCause::Effect);
+                }
                 Instruction::UntapCreatures(filter) | Instruction::TapCreatures(filter) => {
                     let ids: Vec<_> = self
                         .state

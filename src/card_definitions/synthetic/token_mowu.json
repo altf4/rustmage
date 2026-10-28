@@ -1,0 +1,11 @@
+{
+  "name": "@token/mowu",
+  "catalogue_id": 5436,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "6bf7a93fa817b45c2a2549d7378896ecb5c9da0977777512e3f9ceb7acee4125",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/MowuToken.java",
+  "java_sha256": "00e970587860abdf8dddeb77dc0637ea4c74082a8576c7e76b9e1b195b8eeef5"
+}

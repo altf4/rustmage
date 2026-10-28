@@ -2100,3 +2100,59 @@ fn entrust_the_spark_optional_planeswalker_sacrifice_and_private_search() {
         }
     }
 }
+
+#[test]
+fn jiang_yanggu_creates_legendary_mowu_and_untaps_all_owned_tokens() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let jiang = put(&mut g, p, "Jiang Yanggu, Never Alone", Zone::Hand);
+        cast(&mut g, jiang, None);
+        settle(&mut g);
+        let mowu = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(id, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && g.object_name(id as CardId) == "Mowu")
+                    .then_some(id as CardId)
+            })
+            .expect("Mowu token");
+        let view = g.object_view(mowu);
+        assert!(view.is_legendary());
+        assert!(g.has_subtype(mowu, "Dog"));
+        assert_eq!(view.colors, 16);
+        assert_eq!(stats(&g, mowu), (3, 3));
+        g.create_tokens(p, Card(5246), 2, false);
+        g.create_tokens(p.other(), Card(5246), 1, false);
+        let foods: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                (o.zone == Zone::Battlefield && o.is_token() && o.card == Card(5246))
+                    .then_some((id as CardId, o.controller))
+            })
+            .collect();
+        assert_eq!(foods.len(), 3);
+        for &(id, _) in &foods {
+            g.state.objects[id as usize].tapped = true;
+        }
+        g.state.objects[mowu as usize].tapped = true;
+        let stunned = foods.iter().find(|(_, owner)| *owner == p).unwrap().0;
+        g.add_counter(stunned, CounterKind::Stun, 1);
+        g.begin_step(Step::End);
+        g.prepare_triggers();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert!(!g.object_view(mowu).tapped);
+        for (id, owner) in foods {
+            assert_eq!(g.object_view(id).tapped, owner != p || id == stunned);
+        }
+        assert_eq!(g.counter_count(stunned, CounterKind::Stun), 0);
+    }
+}
