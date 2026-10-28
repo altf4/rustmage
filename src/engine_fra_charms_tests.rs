@@ -6160,7 +6160,7 @@ fn koth_landfall_uses_current_or_last_known_land_subtype() {
             assert_eq!(g.state.players[p.other().index()].life, life - 1);
             assert_eq!(
                 g.state.players[p.index()].mana[3],
-                u64::from(name == "Mountain")
+                u32::from(name == "Mountain")
             );
             assert!(g.keywords(koth).contains(Keywords::REACH));
         }
