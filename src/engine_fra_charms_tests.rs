@@ -1036,3 +1036,28 @@ fn craterclaw_freezes_current_artifact_count_and_recipients() {
         assert!(!g.keywords(own).contains(Keywords::TRAMPLE));
     }
 }
+
+#[test]
+fn craterclaw_counts_artifacts_when_entry_trigger_resolves() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        put(&mut g, p, "Mox Jasper", Zone::Battlefield);
+        let source = put(&mut g, p, "Craterclaw Colossus", Zone::Hand);
+        cast(&mut g, source, None);
+        for _ in 0..16 {
+            if g.object_view(source).zone == Zone::Battlefield {
+                break;
+            }
+            choose(&mut g, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
+        }
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        g.move_object(source, Zone::Graveyard);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(stats(&g, bear), (3, 2));
+        assert!(g.keywords(bear).contains(Keywords::TRAMPLE));
+    }
+}
