@@ -2639,3 +2639,71 @@ fn mabel_counter_choice_handles_zero_loyalty_and_departed_targets() {
         }
     }
 }
+
+#[test]
+fn mabel_counter_target_rechecks_hexproof_and_survives_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        for hexproof in [false, true] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            g.add_counter(target, CounterKind::Stun, 1);
+            let source = put(&mut g, p, "Mabel, Bitter Recluse", Zone::Hand);
+            cast(&mut g, source, None);
+            let mut targeted = false;
+            let mut selected = false;
+            for _ in 0..64 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let wanted = Action::ChooseTarget {
+                    target: Target::Card(target),
+                };
+                if !targeted && actions.contains(&wanted) {
+                    act(&mut g, wanted);
+                    targeted = true;
+                    if hexproof {
+                        g.state.objects[target as usize].gained_keywords = Keywords::HEXPROOF;
+                    } else {
+                        g.move_object(source, Zone::Graveyard);
+                    }
+                } else if matches!(g.state.pending, Pending::TargetCounterRemoval { .. }) {
+                    assert!(!hexproof);
+                    act(
+                        &mut g,
+                        Action::SelectTargetCounter {
+                            counter: CounterKind::Stun,
+                        },
+                    );
+                    act(&mut g, Action::FinishTargetCounterRemoval);
+                    selected = true;
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                } else if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Mabel target transition {:?}", g.state.pending);
+                }
+            }
+            assert!(targeted);
+            assert_eq!(selected, !hexproof);
+            assert_eq!(
+                g.counter_count(target, CounterKind::Stun),
+                u64::from(hexproof)
+            );
+        }
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Mabel, Bitter Recluse", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert!(g.state.pending_triggers.is_empty());
+    }
+}
