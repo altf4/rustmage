@@ -3689,7 +3689,11 @@ mod fra_subtype_grant_tests {
     fn funding_world_respects_controlled_thopter_haste() {
         for p in [Player::P0, Player::P1] {
             let mut g = setup(p);
-            let saheeli = named(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
+            // The definition is still gated, so install it into this isolated fixture.
+            let saheeli = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            g.state.objects[saheeli as usize].card =
+                Card::from_name("Saheeli, Jewel of Avishkar").unwrap();
+            g.register_battlefield_sources(saheeli);
             g.create_tokens(p, Card(5266), 1, false);
             let thopter = g
                 .state
