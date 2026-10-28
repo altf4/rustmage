@@ -3,7 +3,7 @@
   "catalogue_id": 1938,
   "oracle_id": "ac0f161a-e5ec-4a95-9f37-305bdf1ac900",
   "facts_sha256": "69b30e77dee534bfa2db78e26317861e42dd99030b4c7826b3925339e87a1122",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d24a25431ee4517af7342be2350e75af15e82034c19c6813cb735a2d1eb45b2b"
@@ -33,5 +33,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
       "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_hapatra_final_tests.rs"
 }

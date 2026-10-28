@@ -2591,6 +2591,14 @@
     "journal": "2931b996e6d88d03",
     "observations": "ee41c250b4d27833"
   },
+  "Budding Insurgent": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "e8bf26ca588c612b"
+  },
   "Bulk Up": {
     "root": "main",
     "status": "completed",
@@ -8503,6 +8511,22 @@
     "journal": "946f75d542e09151",
     "observations": "c417cdd32b813978"
   },
+  "Hapatra, the Desert Fang": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "1fa2e414f0dfe395",
+    "observations": "af1349695037bc98"
+  },
+  "Hapatra, the Desert Frost": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "4288b8a6341e6c68",
+    "observations": "383a9db275675d39"
+  },
   "Harbinger of the Tides": {
     "root": "main",
     "status": "completed",
@@ -14174,6 +14198,14 @@
     "zone": "Battlefield",
     "journal": "b43781f2834dd88f",
     "observations": "a6dc97635d7ceff6"
+  },
+  "Prophesied End": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "fae424dc01ad1ac5",
+    "observations": "0121ca151dfe1693"
   },
   "Prophetic Prism": {
     "root": "main",
@@ -20055,6 +20087,22 @@
     "journal": "79397f3e65b5c440",
     "observations": "3741b9ee0d9e3b10"
   },
+  "Traxos, Academy Guardian": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b3f39d5b44da38ed",
+    "observations": "3a835e030bbe79f8"
+  },
+  "Traxos, Scourge Eternal": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ad0926541e55fa73",
+    "observations": "039b49ef0edaa6ac"
+  },
   "Treasure Dredger": {
     "root": "main",
     "status": "completed",
@@ -20286,6 +20334,14 @@
     "zone": "Battlefield",
     "journal": "a19704fa93226173",
     "observations": "9d0647b83e9d4d84"
+  },
+  "Twisted Fates": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "adf985a774c9c24a",
+    "observations": "60df4bd739b01229"
   },
   "Twisted Sewer-Witch": {
     "root": "main",
@@ -21918,6 +21974,14 @@
     "zone": "Graveyard",
     "journal": "1289f2dc863418ef",
     "observations": "102bbecc59b63f67"
+  },
+  "Wrath of the Bloodmane": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "afe38ae8ff25fb1e",
+    "observations": "2faa6af9ff33c91d"
   },
   "Wreck Remover": {
     "root": "main",

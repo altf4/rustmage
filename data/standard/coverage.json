@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0ce6861f945f494bb039b41b09c1589ec32626c1fc00dfa5324c99e11312185d",
+  "catalogue_version": "8f025ecece92c850df2beb0eaffbf642d9e307b7491591b1bc1321c91cf7df60",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2769,
-  "implemented_total": 2775,
+  "implemented_standard_cards": 2773,
+  "implemented_total": 2779,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 122,
-      "gated": 163
+      "complete": 126,
+      "gated": 159
     },
     "frc": {
       "total": 6,
@@ -15699,16 +15699,16 @@
     {
       "name": "Hapatra, the Desert Fang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/hapatra_the_desert_fang.rs",
       "set": "fra"
     },
     {
       "name": "Hapatra, the Desert Frost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/hapatra_the_desert_frost.rs",
       "set": "fra"
     },
@@ -38011,8 +38011,8 @@
     {
       "name": "Twisted Fates",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/twisted_fates.rs",
       "set": "fra"
     },
@@ -41163,8 +41163,8 @@
     {
       "name": "Wrath of the Bloodmane",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/wrath_of_the_bloodmane.rs",
       "set": "fra"
     },
