@@ -1976,6 +1976,8 @@ pub(crate) enum Instruction {
     },
     ReturnToBattlefield,
     ReturnToBattlefieldUnderControl,
+    /// Return legal target cards with an additional entry counter.
+    ReturnToBattlefieldWithCounter(CounterKind),
     ReturnToBattlefieldTapped,
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,

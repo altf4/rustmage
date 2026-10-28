@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "38a0c1fb9e266e064d1692659b67b81036be2f1d1dc9bc255f6e3b72c97831c9"
   },
-  "physical_metadata_sha256": "b23814587b8139cd389fc34141e359d7bbc158b26a15b7d491e88dd8ff738e17"
+  "physical_metadata_sha256": "b23814587b8139cd389fc34141e359d7bbc158b26a15b7d491e88dd8ff738e17",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GenerousRevival.java",
+  "java_sha256": "79bb0ff82030b5a93e041899e4be53b777cf59e6123d9971eb5d380b3153c513",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+      "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    }
+  ]
 }

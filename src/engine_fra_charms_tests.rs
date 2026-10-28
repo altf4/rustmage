@@ -4411,3 +4411,87 @@ fn activation_counter_cost_preserves_replacement_order_and_restore() {
         }
     }
 }
+
+#[test]
+fn generous_revival_targets_mana_value_and_flashback_entry_counters() {
+    for p in [Player::P0, Player::P1] {
+        for flashback in [false, true] {
+            for fizzle in [false, true] {
+                let mut g = scenario(p);
+                let creature = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+                let too_large = put(&mut g, p, "Hill Giant", Zone::Graveyard);
+                let opponent = put(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+                let land = put(&mut g, p, "Forest", Zone::Graveyard);
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+                let spell = put(
+                    &mut g,
+                    p,
+                    "Generous Revival",
+                    if flashback {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Hand
+                    },
+                );
+                act(
+                    &mut g,
+                    if flashback {
+                        Action::AnnounceFlashback { card: spell }
+                    } else {
+                        Action::AnnounceCast { card: spell }
+                    },
+                );
+                for illegal in [too_large, opponent, land] {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(illegal),
+                        },
+                    );
+                }
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(creature),
+                    },
+                );
+                pay(&mut g);
+                if fizzle {
+                    g.move_object(creature, Zone::Exile);
+                }
+                let before = g.snapshot();
+                super::contracts::branch_contract(g.clone());
+                settle(&mut g);
+                assert_eq!(
+                    g.object_view(spell).zone,
+                    if flashback {
+                        Zone::Exile
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+                assert_eq!(
+                    g.object_view(creature).zone,
+                    if fizzle {
+                        Zone::Exile
+                    } else {
+                        Zone::Battlefield
+                    }
+                );
+                if !fizzle {
+                    assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 2);
+                }
+                g.restore(&before).unwrap();
+                settle(&mut g);
+                assert_eq!(
+                    g.object_view(creature).zone,
+                    if fizzle {
+                        Zone::Exile
+                    } else {
+                        Zone::Battlefield
+                    }
+                );
+            }
+        }
+    }
+}
