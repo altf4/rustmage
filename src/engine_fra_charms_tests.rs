@@ -922,3 +922,25 @@ fn fatehold_charm_returns_creature_spell_and_spell_copy() {
         }
     }
 }
+
+#[test]
+fn fatehold_charm_fizzles_if_its_only_creature_target_leaves() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let creature = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let charm = put(&mut g, p, "Fatehold Charm", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: charm });
+        act(&mut g, Action::ChooseMode { mode: 1 });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(creature),
+            },
+        );
+        pay(&mut g);
+        g.move_object(creature, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Exile);
+        assert_eq!(g.object_view(charm).zone, Zone::Graveyard);
+    }
+}
