@@ -708,3 +708,18 @@ fn traxos_untap_restriction_and_cast_trigger() {
         assert!(!g.state.objects[traxos as usize].tapped);
     }
 }
+
+#[test]
+fn traxos_observes_artifact_casts_only_by_its_controller() {
+    for p in [Player::P0, Player::P1] {
+        for caster in [p, p.other()] {
+            let mut g = scenario(caster);
+            let traxos = put(&mut g, p, "Traxos, Scourge Eternal", Zone::Battlefield);
+            g.state.objects[traxos as usize].tapped = true;
+            let artifact = put(&mut g, caster, "Sting, Bilbo's Sword", Zone::Hand);
+            cast(&mut g, artifact, None);
+            settle(&mut g);
+            assert_eq!(g.state.objects[traxos as usize].tapped, caster != p);
+        }
+    }
+}
