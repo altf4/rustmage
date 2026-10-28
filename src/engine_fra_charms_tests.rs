@@ -171,7 +171,7 @@ fn kiora_dragons_entry_activation_and_replacement() {
                         o.zone == Zone::Battlefield
                             && o.controller == p
                             && o.is_token()
-                            && o.card == Card(5288)
+                            && o.card == Card::test_index(5288)
                     })
                     .map(|(id, _)| id as CardId)
                     .collect()
@@ -459,7 +459,7 @@ fn fixed_empower_entry_and_graveyard_activation_reuse_jace() {
                 (o.zone == Zone::Battlefield
                     && o.controller == p
                     && o.is_token()
-                    && o.card == Card(5435))
+                    && o.card == Card::test_index(5435))
                 .then_some(i as CardId)
             })
             .collect();
@@ -514,7 +514,7 @@ fn fra_jaces(g: &Game, p: Player) -> Vec<CardId> {
             (o.zone == Zone::Battlefield
                 && o.controller == p
                 && o.is_token()
-                && o.card == Card(5435))
+                && o.card == Card::test_index(5435))
             .then_some(i as CardId)
         })
         .collect()
@@ -810,7 +810,7 @@ fn fra_thopters(g: &Game, p: Player) -> Vec<CardId> {
             (o.zone == Zone::Battlefield
                 && o.controller == p
                 && o.is_token()
-                && o.card == Card(5266))
+                && o.card == Card::test_index(5266))
             .then_some(i as CardId)
         })
         .collect()
@@ -2165,15 +2165,15 @@ fn jiang_yanggu_creates_legendary_mowu_and_untaps_all_owned_tokens() {
         assert!(g.has_subtype(mowu, "Dog"));
         assert_eq!(view.colors, 16);
         assert_eq!(stats(&g, mowu), (3, 3));
-        g.create_tokens(p, Card(5246), 2, false);
-        g.create_tokens(p.other(), Card(5246), 2, false);
+        g.create_tokens(p, Card::test_index(5246), 2, false);
+        g.create_tokens(p.other(), Card::test_index(5246), 2, false);
         let foods: Vec<_> = g
             .state
             .objects
             .iter()
             .enumerate()
             .filter_map(|(id, o)| {
-                (o.zone == Zone::Battlefield && o.is_token() && o.card == Card(5246))
+                (o.zone == Zone::Battlefield && o.is_token() && o.card == Card::test_index(5246))
                     .then_some((id as CardId, o.controller))
             })
             .collect();
@@ -2461,7 +2461,7 @@ fn vraska_cutting_glare_rechecks_six_lands_and_creates_treasure_after_destructio
                     o.zone == Zone::Battlefield
                         && o.controller == p.other()
                         && o.is_token()
-                        && o.card == Card(5302)
+                        && o.card == Card::test_index(5302)
                 })
                 .count();
             assert_eq!(treasures, usize::from(triggered));
@@ -2967,7 +2967,7 @@ fn stingerquill_charm_modes_and_doubled_cadet_haste() {
         for mode in 0..3 {
             let mut g = scenario(p);
             let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
-            g.create_tokens(p, Card(5298), 1, false);
+            g.create_tokens(p, Card::test_index(5298), 1, false);
             settle(&mut g);
             let old_cadet = g
                 .state
@@ -2975,8 +2975,10 @@ fn stingerquill_charm_modes_and_doubled_cadet_haste() {
                 .iter()
                 .enumerate()
                 .find_map(|(i, o)| {
-                    (o.zone == Zone::Battlefield && o.is_token() && o.card == Card(5298))
-                        .then_some(i as CardId)
+                    (o.zone == Zone::Battlefield
+                        && o.is_token()
+                        && o.card == Card::test_index(5298))
+                    .then_some(i as CardId)
                 })
                 .unwrap();
             if mode == 2 {
@@ -3024,7 +3026,7 @@ fn stingerquill_charm_modes_and_doubled_cadet_haste() {
                             (o.zone == Zone::Battlefield
                                 && o.controller == p
                                 && o.is_token()
-                                && o.card == Card(5298)
+                                && o.card == Card::test_index(5298)
                                 && i as CardId != old_cadet)
                                 .then_some(i as CardId)
                         })
@@ -3376,7 +3378,7 @@ fn hexhaven_battalion_creates_cadets_and_empowers_jace() {
                     o.zone == Zone::Battlefield
                         && o.controller == p
                         && o.is_token()
-                        && o.card == Card(5298)
+                        && o.card == Card::test_index(5298)
                 })
                 .count();
             assert_eq!(cadets, if doubled { 6 } else { 3 });
@@ -3638,7 +3640,7 @@ fn overwrite_counts_exiled_creatures_including_tokens_before_empower() {
         let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
         let land = put(&mut g, p, "Forest", Zone::Battlefield);
-        g.create_tokens(p, Card(5298), 1, false);
+        g.create_tokens(p, Card::test_index(5298), 1, false);
         settle(&mut g);
         let token = g
             .state
@@ -3646,7 +3648,7 @@ fn overwrite_counts_exiled_creatures_including_tokens_before_empower() {
             .iter()
             .enumerate()
             .find_map(|(i, o)| {
-                (o.zone == Zone::Battlefield && o.is_token() && o.card == Card(5298))
+                (o.zone == Zone::Battlefield && o.is_token() && o.card == Card::test_index(5298))
                     .then_some(i as CardId)
             })
             .unwrap();
@@ -3831,7 +3833,7 @@ fn vraska_soul_of_stone_creates_sculpture_treasure_with_vigilance() {
                 (o.zone == Zone::Battlefield
                     && o.controller == p
                     && o.is_token()
-                    && o.card == Card(5437))
+                    && o.card == Card::test_index(5437))
                 .then_some(i as CardId)
             })
             .collect();
@@ -3911,7 +3913,7 @@ fn mind_meanderer_jace_vigilance_and_optional_fight_use_live_objects() {
             if !source_leaves {
                 assert!(g.keywords(source).contains(Keywords::FLYING));
                 assert!(!g.keywords(source).contains(Keywords::VIGILANCE));
-                g.create_tokens(p, Card(5435), 1, false);
+                g.create_tokens(p, Card::test_index(5435), 1, false);
                 let jace = fra_jaces(&g, p)[0];
                 g.add_counter(jace, CounterKind::Loyalty, 1);
                 assert!(g.keywords(source).contains(Keywords::VIGILANCE));
@@ -4334,7 +4336,7 @@ fn ferocity_flash_hybrid_payment_and_simultaneous_death() {
 fn ferocity_does_not_return_a_dead_token() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        g.create_tokens(p, Card(5298), 1, false);
+        g.create_tokens(p, Card::test_index(5298), 1, false);
         settle(&mut g);
         let token = g
             .state
@@ -4342,8 +4344,10 @@ fn ferocity_does_not_return_a_dead_token() {
             .iter()
             .enumerate()
             .find_map(|(i, object)| {
-                (object.zone == Zone::Battlefield && object.is_token() && object.card == Card(5298))
-                    .then_some(i as CardId)
+                (object.zone == Zone::Battlefield
+                    && object.is_token()
+                    && object.card == Card::test_index(5298))
+                .then_some(i as CardId)
             })
             .unwrap();
         let aura = put(&mut g, p, "Ferocity of the Hunt", Zone::Hand);
@@ -4609,7 +4613,7 @@ fn recursive_recruitment_counts_own_graveyard_after_flashback_and_creation() {
                             (o.zone == Zone::Battlefield
                                 && o.is_token()
                                 && o.controller == p
-                                && o.card == Card(5298))
+                                && o.card == Card::test_index(5298))
                             .then_some(i as CardId)
                         })
                         .collect();
@@ -4687,7 +4691,7 @@ fn recursive_recruitment_counters_all_replacement_created_tokens() {
                     (o.zone == Zone::Battlefield
                         && o.is_token()
                         && o.controller == p
-                        && (o.card == Card(5298) || o.card == Card(5264)))
+                        && (o.card == Card::test_index(5298) || o.card == Card::test_index(5264)))
                     .then_some(i as CardId)
                 })
                 .collect();
@@ -5574,7 +5578,7 @@ fn aerid_heartwood_mana_growth_and_death() {
                         (o.zone == Zone::Battlefield
                             && o.controller == p
                             && o.is_token()
-                            && o.card == Card(5438))
+                            && o.card == Card::test_index(5438))
                         .then_some(i as CardId)
                     })
                     .collect()
@@ -5760,7 +5764,7 @@ fn tenured_tethermage_land_choice_creates_tapped_heartwood() {
                     o.zone == Zone::Battlefield
                         && o.controller == p
                         && o.is_token()
-                        && o.card == Card(5438)
+                        && o.card == Card::test_index(5438)
                 })
                 .collect();
             assert_eq!(
@@ -5958,7 +5962,7 @@ fn hungering_puppetbeast_entry_heartwood_is_a_usable_sacrifice() {
                     (o.zone == Zone::Battlefield
                         && o.controller == p
                         && o.is_token()
-                        && o.card == Card(5438))
+                        && o.card == Card::test_index(5438))
                     .then_some(i as CardId)
                 })
                 .collect();
@@ -6077,10 +6081,10 @@ fn saheeli_grants_haste_to_a_noncreature_thopter() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let source = put(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
-        g.create_tokens(p, Card(5266), 1, false);
+        g.create_tokens(p, Card::test_index(5266), 1, false);
         let thopter = fra_thopters(&g, p)[0];
         let reference = g.object_ref(thopter);
-        let mut recipe = CopyRecipe::new(Card(5266));
+        let mut recipe = CopyRecipe::new(Card::test_index(5266));
         recipe.overrides = Some(CopyOverrides {
             kinds: Some(16 | 128),
             ..CopyOverrides::NONE
@@ -6109,7 +6113,7 @@ fn saheeli_grants_haste_based_on_copied_subtype() {
         let reference = g.object_ref(bear);
         g.apply_temporary_copy(
             reference,
-            CopyRecipe::new(Card(5266)),
+            CopyRecipe::new(Card::test_index(5266)),
             CopyDeadline::EndOfTurn,
         );
         assert!(g.has_subtype(bear, "Thopter"));
@@ -6125,7 +6129,7 @@ fn saheeli_grant_tracks_thopter_subtype_changes() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         put(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
-        g.create_tokens(p, Card(5266), 1, false);
+        g.create_tokens(p, Card::test_index(5266), 1, false);
         let thopter = fra_thopters(&g, p)[0];
         let thopter_ref = g.object_ref(thopter);
         assert!(g.keywords(thopter).contains(Keywords::HASTE));

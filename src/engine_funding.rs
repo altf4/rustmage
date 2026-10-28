@@ -3709,14 +3709,16 @@ mod fra_subtype_grant_tests {
                 Card::from_name("Saheeli, Jewel of Avishkar").unwrap();
             g.register_battlefield_sources(saheeli);
             assert!(g.state.static_sources.contains(&saheeli));
-            g.create_tokens(p, Card(5266), 1, false);
+            g.create_tokens(p, Card::test_index(5266), 1, false);
             let thopter = g
                 .state
                 .objects
                 .iter()
                 .enumerate()
                 .find_map(|(i, o)| {
-                    (o.zone == Zone::Battlefield && o.card == Card(5266) && o.controller == p)
+                    (o.zone == Zone::Battlefield
+                        && o.card == Card::test_index(5266)
+                        && o.controller == p)
                         .then_some(i as CardId)
                 })
                 .expect("created Thopter");

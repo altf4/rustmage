@@ -4013,6 +4013,11 @@ fn printed_subtype(type_line: &str, subtype: &str) -> bool {
 pub type Mana = [u32; 6];
 
 impl Card {
+    #[cfg(test)]
+    pub(crate) const fn test_index(index: u16) -> Self {
+        Self(index)
+    }
+
     /// Intrinsic colors (W=1, U=2, B=4, R=8, G=16), including both hybrid halves
     /// and token colors. Unsupported multiple-face identities describe the front.
     pub(crate) fn combat_restriction(self) -> Option<CombatRestriction> {
