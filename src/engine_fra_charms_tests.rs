@@ -3930,3 +3930,70 @@ fn gallia_grants_haste_live_and_targets_recent_creatures_of_either_player() {
         assert_eq!(g.counter_count(incoming, CounterKind::PlusOne), 1);
     }
 }
+
+#[test]
+fn hapatra_desert_fang_uses_greatest_graveyard_mana_value_at_resolution() {
+    for p in [Player::P0, Player::P1] {
+        for add_expensive in [false, true] {
+            let mut g = scenario(p);
+            let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let hapatra = put(&mut g, p, "Hapatra, the Desert Fang", Zone::Hand);
+            cast(&mut g, hapatra, None);
+            let mut targeted = false;
+            for _ in 0..48 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let choice = Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                };
+                if !targeted && actions.contains(&choice) {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(own),
+                        },
+                    );
+                    act(&mut g, choice);
+                    targeted = true;
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                    break;
+                } else if targeted && g.state.pending == Pending::Priority {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Hapatra choice {:?}", g.state.pending);
+                }
+            }
+            assert!(targeted);
+            if add_expensive {
+                put(&mut g, p, "Craterhoof Behemoth", Zone::Graveyard);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            if add_expensive {
+                assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+            } else {
+                assert_eq!(g.counter_count(enemy, CounterKind::MinusOne), 2);
+                assert_eq!(g.object_view(enemy).zone, Zone::Battlefield);
+            }
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(enemy).zone,
+                if add_expensive {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+        }
+    }
+}

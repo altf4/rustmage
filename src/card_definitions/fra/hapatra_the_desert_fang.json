@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f66735ccfc106d6b485ca3c05e1003ba0bf22beeb5e3fe208804466857a877b8"
   },
-  "physical_metadata_sha256": "bf6d46ba1680a63ba99a22c6b1146ba03bc381092b9091ccd1431aec40233993"
+  "physical_metadata_sha256": "bf6d46ba1680a63ba99a22c6b1146ba03bc381092b9091ccd1431aec40233993",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HapatraTheDesertFang.java",
+  "java_sha256": "242f6cd334db00bb1967492fa23bd607d3f5d815a91509000fd309eaeec760b1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ForEachPlayerTargetsAdjuster.java",
+      "sha256": "0983e17113baf50a95495f9aac7c2218adf8b0c7350303f390e2ecdfd2576971"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    }
+  ]
 }
