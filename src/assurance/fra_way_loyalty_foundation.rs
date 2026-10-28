@@ -415,3 +415,66 @@ fn granted_loyalty_activation_notifies_existing_loyalty_observers() {
         );
     }
 }
+
+#[test]
+fn pyromancer_loyalty_production_uses_stack_and_cannot_fund_a_spell_midcast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let way = put(&mut g, p, "Forest", Zone::Hand);
+        g.state.objects[way as usize].card = Card::from_name("Way of the Pyromancer").unwrap();
+        super::big_helpers::cast(&mut g, way, None, &[]);
+        settle(&mut g);
+        let walker = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(i, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && g.has_subtype(i as CardId, "Jace"))
+                .then_some(i as CardId)
+            })
+            .unwrap();
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: shock })
+        );
+        let grant = Action::AnnouncePlaneswalkerGrant {
+            source: g.object_ref(walker),
+            grantor: g.object_ref(way),
+            ability: 0,
+        };
+        let before = g.snapshot();
+        checked(&mut g, grant.clone());
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 3);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let id = g.state.stack.last().unwrap().id;
+        assert!(g.counter_stack_item(id, false));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        g.restore(&before).unwrap();
+        checked(&mut g, grant);
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 1, 0, 0]);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: shock })
+        );
+    }
+}

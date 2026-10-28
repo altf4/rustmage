@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "772b8a1ccafbb582076c8d6e449dc0dd5ba9a579589afa219d76e523af993fc9"
   },
-  "physical_metadata_sha256": "359f78e19f7b66bf9ad9f13276e65b2d2d86718c9734da333d1252ab1c60fec1"
+  "physical_metadata_sha256": "359f78e19f7b66bf9ad9f13276e65b2d2d86718c9734da333d1252ab1c60fec1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WayOfThePyromancer.java",
+  "java_sha256": "189419d05abe632f8dcaf137fb3f10f5bf0427bf1867c37a97cc956c37f872f0",
+  "rules_tests": "src/assurance/fra_way_loyalty_foundation.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+      "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79"
+    }
+  ]
 }
