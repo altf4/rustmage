@@ -378,12 +378,8 @@ fn return_to_light_realms_simultaneous_entries_and_aura_choice() {
         for _ in 0..64 {
             if matches!(g.state.pending, Pending::AuraEntry { .. }) {
                 super::contracts::branch_contract(g.clone());
-                act(
-                    &mut g,
-                    Action::ChooseAuraAttachment {
-                        object: g.object_ref(host),
-                    },
-                );
+                let object = g.object_ref(host);
+                act(&mut g, Action::ChooseAuraAttachment { object });
             } else if g.state.pending == Pending::Priority
                 && g.state.stack.is_empty()
                 && g.state.pending_triggers.is_empty()
