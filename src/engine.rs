@@ -2297,6 +2297,8 @@ pub struct PlayerView {
     pub spells_cast_this_turn: u64,
     pub cards_drawn_this_turn: u64,
     pub cards_discarded_this_turn: u64,
+    /// Number of actual library-to-graveyard moves this turn, without card identities.
+    pub cards_library_to_graveyard_this_turn: u64,
     pub card_left_graveyard_this_turn: bool,
     pub controlled_creature_died_this_turn: bool,
     pub life_gain_events_this_turn: u64,
@@ -6814,7 +6816,10 @@ impl Game {
                 evidence_collected: false,
             };
         }
-        if before.zone == Zone::Library && destination == Zone::Graveyard {
+        if before.zone == Zone::Library
+            && destination == Zone::Graveyard
+            && !self.state.objects[id as usize].is_spell_copy()
+        {
             let count =
                 &mut self.state.players[before.owner.index()].cards_library_to_graveyard_this_turn;
             *count = count
@@ -8321,6 +8326,8 @@ impl Game {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
+                cards_library_to_graveyard_this_turn: s.players[i]
+                    .cards_library_to_graveyard_this_turn,
                 card_left_graveyard_this_turn: s.players[i].card_left_graveyard_this_turn,
                 controlled_creature_died_this_turn: s.players[i].controlled_creature_died_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,

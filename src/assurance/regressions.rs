@@ -239,6 +239,19 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
         }
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
+    if schema_projection.is_some_and(|schema| schema < 173) {
+        for view in &views {
+            for player in &view.players {
+                observation_bytes = observation_bytes.replace(
+                    &format!(
+                        "\"cards_library_to_graveyard_this_turn\":{},",
+                        player.cards_library_to_graveyard_this_turn
+                    ),
+                    "",
+                );
+            }
+        }
+    }
     if schema_projection.is_some_and(|schema| schema < 138) {
         // Recording-only projection of the two new ObjectView wire fields.
         // Preserve every inherited field and byte order so old hashes still
