@@ -162,7 +162,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             keywords
         }
         StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
-            if !own || !world.subtypes(id).has(target.card, subtype) {
+            if !own || !world.subtypes(id).has(world.definition(id), subtype) {
                 return None;
             }
             keywords

@@ -6082,7 +6082,7 @@ fn saheeli_grants_haste_to_a_noncreature_thopter() {
         let reference = g.object_ref(thopter);
         let mut recipe = CopyRecipe::new(Card(5266));
         recipe.overrides = Some(CopyOverrides {
-            kinds: Some(16),
+            kinds: Some(16 | 128),
             ..CopyOverrides::NONE
         });
         g.apply_temporary_copy(reference, recipe, CopyDeadline::EndOfTurn);
@@ -6096,5 +6096,26 @@ fn saheeli_grants_haste_to_a_noncreature_thopter() {
         assert!(g.keywords(thopter).contains(Keywords::HASTE));
         g.move_object(source, Zone::Graveyard);
         assert!(!g.keywords(thopter).contains(Keywords::HASTE));
+    }
+}
+
+#[test]
+fn saheeli_grants_haste_based_on_copied_subtype() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        assert!(!g.keywords(bear).contains(Keywords::HASTE));
+        let reference = g.object_ref(bear);
+        g.apply_temporary_copy(
+            reference,
+            CopyRecipe::new(Card(5266)),
+            CopyDeadline::EndOfTurn,
+        );
+        assert!(g.has_subtype(bear, "Thopter"));
+        assert!(g.keywords(bear).contains(Keywords::HASTE));
+        super::contracts::branch_contract(g.clone());
+        g.move_object(source, Zone::Graveyard);
+        assert!(!g.keywords(bear).contains(Keywords::HASTE));
     }
 }
