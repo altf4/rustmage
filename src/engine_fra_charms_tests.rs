@@ -1426,3 +1426,16 @@ fn gardenize_counts_own_deaths_and_uses_latest_departure_counter_quantity() {
         assert_eq!(g.counter_count(source, CounterKind::Charge), 7);
     }
 }
+
+#[test]
+fn gardenize_does_not_trigger_on_opponents_first_main_phase() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p.other());
+        let source = put(&mut g, p, "Gardenize", Zone::Battlefield);
+        g.add_counter(source, CounterKind::Charge, 3);
+        g.state.players[p.index()].mana = [0; 6];
+        g.begin_step(Step::Main1);
+        assert!(g.state.pending_triggers.is_empty());
+        assert_eq!(g.state.players[p.index()].mana[4], 0);
+    }
+}
