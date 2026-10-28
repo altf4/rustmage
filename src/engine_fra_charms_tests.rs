@@ -3217,3 +3217,51 @@ fn vraskas_final_mercy_modes_and_illegal_target() {
         }
     }
 }
+
+#[test]
+fn way_of_the_paradox_observes_committed_loyalty_activations() {
+    for p in [Player::P0, Player::P1] {
+        for way_leaves in [false, true] {
+            let mut g = scenario(p);
+            let way = put(&mut g, p, "Way of the Paradox", Zone::Hand);
+            cast(&mut g, way, None);
+            settle(&mut g);
+            let jace = fra_jaces(&g, p)[0];
+            let life = g.state.players[p.index()].life;
+            let allowance = g.state.players[p.index()].extra_land_plays_remaining;
+            let activation = Action::AnnounceActivate {
+                card: jace,
+                ability: 1,
+                counter_payment: Counters::default(),
+            };
+            g.state.priority = p.other();
+            reject(&mut g, activation.clone());
+            assert_eq!(g.state.players[p.index()].life, life);
+            assert_eq!(
+                g.state.players[p.index()].extra_land_plays_remaining,
+                allowance
+            );
+            g.state.priority = p;
+            act(&mut g, activation);
+            pay(&mut g);
+            if way_leaves {
+                g.move_object(way, Zone::Graveyard);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].life, life + 1);
+            assert_eq!(
+                g.state.players[p.index()].extra_land_plays_remaining,
+                allowance + 1
+            );
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].life, life + 1);
+            assert_eq!(
+                g.state.players[p.index()].extra_land_plays_remaining,
+                allowance + 1
+            );
+        }
+    }
+}

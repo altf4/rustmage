@@ -3249,6 +3249,8 @@ pub(crate) enum TriggerCondition {
     SelfCast,
     /// The controller actually activates an ability of a creature permanent.
     CreatureAbilityActivated,
+    /// The controller committed an activation of a loyalty ability.
+    LoyaltyAbilityActivated,
     CardsLeaveGraveyard,
     /// One trigger per actual creature CARD departing its owner's graveyard.
     CreatureCardLeavesYourGraveyard,

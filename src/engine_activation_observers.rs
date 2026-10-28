@@ -6,7 +6,13 @@ impl Game {
             .card
             .triggers()
             .iter()
-            .any(|ability| ability.condition.event() == TriggerCondition::CreatureAbilityActivated)
+            .any(|ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::CreatureAbilityActivated
+                        | TriggerCondition::LoyaltyAbilityActivated
+                )
+            })
         {
             let sources = self.state.activation_observers.get_or_insert_default();
             if !sources.contains(&id) {
@@ -71,14 +77,43 @@ impl Game {
                 && item.source_facts.is_creature()
         };
         self.creature_ability_activated(item.controller, creature);
+        if item.source_card.activation(ability).cost.loyalty.is_some()
+            && !self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.replay.is_some())
+        {
+            let observers: Vec<_> = self
+                .state
+                .activation_observers
+                .as_ref()
+                .unwrap()
+                .iter()
+                .filter(|&&id| {
+                    self.on_battlefield(id)
+                        && self.state.objects[id as usize].controller == item.controller
+                })
+                .map(|&id| self.object_view(id))
+                .collect();
+            for source in observers {
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    if ability.condition.event() == TriggerCondition::LoyaltyAbilityActivated {
+                        self.queue_trigger(&source, index);
+                    }
+                }
+            }
+        }
     }
     pub(super) fn restore_activation_observer_use(&mut self, item: &SpellView) {
         let StackKind::TriggeredAbility { ability } = item.kind else {
             return;
         };
         let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
-        if condition.event() == TriggerCondition::CreatureAbilityActivated
-            && condition.once_per_turn()
+        if matches!(
+            condition.event(),
+            TriggerCondition::CreatureAbilityActivated | TriggerCondition::LoyaltyAbilityActivated
+        ) && condition.once_per_turn()
         {
             let used = TriggerUse {
                 source: item.object,

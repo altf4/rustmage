@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bb402d06187bc67d3e9aa2041bf5f6de39d499761f569c9982e516687ccfc329"
   },
-  "physical_metadata_sha256": "e63475728bb24dcd8ab08bf126f3324bb461630df4ddc6504e5a74ab14570846"
+  "physical_metadata_sha256": "e63475728bb24dcd8ab08bf126f3324bb461630df4ddc6504e5a74ab14570846",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WayOfTheParadox.java",
+  "java_sha256": "afc4375ea6a49a9ae33335cb035e7de498ccb3c638dd81b481f2d351ed7c76ec",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivatePlaneswalkerLoyaltyAbilityTriggeredAbility.java",
+      "sha256": "3dc874cecfb456bbf36ad54c5e6a0d5d5a0b7d758a550a9d69874e191d6af5be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayAdditionalLandsControllerEffect.java",
+      "sha256": "a7b2413a24959fbde172621336f4f48cb1ef76bc4254b922b272bfe2bef30664"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }
