@@ -429,6 +429,15 @@ fn fixed_empower_entry_and_graveyard_activation_reuse_jace() {
         assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 4);
         let crier = put(&mut g, p, "Campus Crier", Zone::Graveyard);
         g.state.active = p.other();
+        g.state.priority = p.other();
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: crier,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
         g.state.priority = p;
         g.state.players[p.index()].mana = [0; 6];
         reject(
