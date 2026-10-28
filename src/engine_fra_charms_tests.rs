@@ -1,5 +1,44 @@
 use super::*;
 
+// Draft definitions remain gated in the public catalogue. Test their authored
+// behavior directly without presenting them as supported deck entries.
+fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
+    let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
+    if card.is_supported() {
+        return super::put(g, owner, name, zone);
+    }
+    let id = g.state.objects.len() as CardId;
+    g.state.objects.push(Object {
+        copy_kind: CopyKind::None,
+        card,
+        owner,
+        controller: owner,
+        zone,
+        generation: 0,
+        tapped: false,
+        summoning_sick: false,
+        flashback: false,
+        cast_for_warp: false,
+        damage: 0,
+        damaged_this_turn: false,
+        dealt_damage_this_turn: false,
+        deathtouch_since_sba: false,
+        growth: Stats::default(),
+        gained_keywords: Keywords::NONE,
+        counters: InitialCounters::default(),
+        used_abilities: 0,
+        class_level: 1,
+        attached_to: None,
+    });
+    match zone {
+        Zone::Library => g.state.players[owner.index()].library.push(id),
+        Zone::Battlefield => g.register_battlefield_sources(id),
+        Zone::Graveyard => g.register_graveyard_sources(id),
+        _ => (),
+    }
+    id
+}
+
 #[test]
 fn konstrari_charm_modes_targets_and_mana() {
     for p in [Player::P0, Player::P1] {
@@ -5632,5 +5671,79 @@ fn tenured_tethermage_can_tap_itself_if_it_is_an_artifact() {
         g.restore(&before).unwrap();
         settle(&mut g);
         assert_eq!(g.counter_count(mage, CounterKind::PlusOne), 2);
+    }
+}
+
+#[test]
+fn tenured_tethermage_land_choice_creates_tapped_heartwood() {
+    for p in [Player::P0, Player::P1] {
+        for sacrifice in [false, true] {
+            let mut g = scenario(p);
+            let land = put(&mut g, p, "Forest", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Forest", Zone::Battlefield);
+            let nonland = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let mage = put(&mut g, p, "Tenured Tethermage", Zone::Hand);
+            cast(&mut g, mage, None);
+            let mut decided = false;
+            for _ in 0..64 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                if !decided && actions.contains(&Action::DeclineEffectPayment) {
+                    let enemy_ref = g.object_ref(enemy);
+                    let nonland_ref = g.object_ref(nonland);
+                    reject(&mut g, Action::Sacrifice { object: enemy_ref });
+                    reject(
+                        &mut g,
+                        Action::Sacrifice {
+                            object: nonland_ref,
+                        },
+                    );
+                    super::contracts::branch_contract(g.clone());
+                    if sacrifice {
+                        let chosen = g.object_ref(land);
+                        act(&mut g, Action::Sacrifice { object: chosen });
+                    } else {
+                        act(&mut g, Action::DeclineEffectPayment);
+                    }
+                    decided = true;
+                } else if decided
+                    && g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Tethermage choice {:?}", g.state.pending);
+                }
+            }
+            assert!(decided);
+            assert_eq!(
+                g.object_view(land).zone,
+                if sacrifice {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            let heartwoods: Vec<_> = g
+                .state
+                .objects
+                .iter()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == p
+                        && o.is_token()
+                        && o.card == Card(5438)
+                })
+                .collect();
+            assert_eq!(heartwoods.len(), if sacrifice { 2 } else { 0 });
+            assert!(heartwoods.iter().all(|o| o.tapped));
+        }
     }
 }
