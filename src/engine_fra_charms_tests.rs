@@ -3997,3 +3997,66 @@ fn hapatra_desert_fang_uses_greatest_graveyard_mana_value_at_resolution() {
         }
     }
 }
+
+#[test]
+fn hapatra_desert_frost_stuns_even_tapped_creatures_and_untap_removes_stun() {
+    for p in [Player::P0, Player::P1] {
+        for already_tapped in [false, true] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            g.state.objects[target as usize].tapped = already_tapped;
+            let source = put(&mut g, p, "Hapatra, the Desert Frost", Zone::Hand);
+            cast(&mut g, source, None);
+            let mut targeted = false;
+            for _ in 0..48 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let choice = Action::ChooseTarget {
+                    target: Target::Card(target),
+                };
+                if !targeted && actions.contains(&choice) {
+                    act(&mut g, choice);
+                    targeted = true;
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                    break;
+                } else if targeted && g.state.pending == Pending::Priority {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Hapatra Frost choice {:?}", g.state.pending);
+                }
+            }
+            assert!(targeted);
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert!(g.state.objects[target as usize].tapped);
+            assert_eq!(g.counter_count(target, CounterKind::Stun), 1);
+            for expected_tapped in [true, false] {
+                g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 2];
+                act(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: source,
+                        ability: 0,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+                pay(&mut g);
+                settle(&mut g);
+                assert_eq!(g.state.objects[target as usize].tapped, expected_tapped);
+                assert_eq!(g.counter_count(target, CounterKind::Stun), 0);
+            }
+        }
+    }
+}
