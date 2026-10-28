@@ -1311,3 +1311,18 @@ fn darklight_phoenix_uses_exact_graveyard_incarnation_and_intervening_guard() {
         }
     }
 }
+
+#[test]
+fn darklight_phoenix_does_not_trigger_from_the_battlefield() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let phoenix = put(&mut g, p, "Darklight Phoenix", Zone::Battlefield);
+        for owner in [p, p.other()] {
+            let creature = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+            g.move_object(creature, Zone::Graveyard);
+        }
+        g.begin_step(Step::BeginCombat);
+        assert!(g.state.pending_triggers.is_empty());
+        assert_eq!(g.object_view(phoenix).zone, Zone::Battlefield);
+    }
+}
