@@ -23,7 +23,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(KEYWORDS)],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
+        },
+        StaticAbilityGroup {
+            line: 2,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::VIGILANCE,
+            )],
         },
     ],
     triggers: &[TriggeredAbility {
