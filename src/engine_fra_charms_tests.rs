@@ -761,3 +761,75 @@ fn dark_matter_manipulator_mill_and_graveyard_groups_are_live() {
         assert_eq!(stats(&g, creature), (1, 1));
     }
 }
+
+fn fra_thopters(g: &Game, p: Player) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(i, o)| {
+            (o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.is_token()
+                && o.card == Card(5266))
+            .then_some(i as CardId)
+        })
+        .collect()
+}
+
+#[test]
+fn saheeli_cast_trigger_and_thopter_haste_follow_controller_and_source() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
+        let creature = put(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, creature, None);
+        settle(&mut g);
+        assert!(fra_thopters(&g, p).is_empty());
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        let thopters = fra_thopters(&g, p);
+        assert_eq!(thopters.len(), 1);
+        let thopter = thopters[0];
+        assert_eq!(stats(&g, thopter), (1, 1));
+        assert!(g.keywords(thopter).contains(Keywords::FLYING));
+        assert!(g.keywords(thopter).contains(Keywords::HASTE));
+        let reference = g.object_ref(thopter);
+        g.change_controller(reference, p.other());
+        assert!(!g.keywords(thopter).contains(Keywords::HASTE));
+        g.change_controller(reference, p);
+        assert!(g.keywords(thopter).contains(Keywords::HASTE));
+        let aura = put(&mut g, p.other(), "Witness Protection", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(source));
+        assert!(!g.printed_abilities_available(source));
+        assert!(!g.keywords(thopter).contains(Keywords::HASTE));
+        g.move_object(aura, Zone::Graveyard);
+        assert!(g.keywords(thopter).contains(Keywords::HASTE));
+        g.move_object(source, Zone::Graveyard);
+        assert!(!g.keywords(thopter).contains(Keywords::HASTE));
+    }
+}
+
+#[test]
+fn saheeli_ignores_opponent_cast_and_trigger_survives_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p.other());
+        put(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
+        let shock = put(&mut g, p.other(), "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p)));
+        settle(&mut g);
+        assert!(fra_thopters(&g, p).is_empty());
+
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        let thopters = fra_thopters(&g, p);
+        assert_eq!(thopters.len(), 1);
+        assert!(!g.keywords(thopters[0]).contains(Keywords::HASTE));
+    }
+}
