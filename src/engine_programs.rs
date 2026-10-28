@@ -658,11 +658,13 @@ impl Game {
                         if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
                             self.capture_return_death(event);
                         }
-                        if ability
-                            .program
-                            .iter()
-                            .any(|i| matches!(i, Instruction::ReturnEventCardToHand))
-                        {
+                        if ability.program.iter().any(|i| {
+                            matches!(
+                                i,
+                                Instruction::ReturnEventCardToHand
+                                    | Instruction::ReturnEventCardToBattlefieldTapped
+                            )
+                        }) {
                             self.state.pending_triggers.last_mut().unwrap().return_link =
                                 Some(Box::new(ReturnLinkView {
                                     additional_returning: None,
@@ -670,7 +672,9 @@ impl Game {
                                     zone: Zone::Graveyard,
                                     controller: event.before.owner,
                                     counter: None,
-                                    tapped: false,
+                                    tapped: ability.program.iter().any(|i| {
+                                        matches!(i, Instruction::ReturnEventCardToBattlefieldTapped)
+                                    }),
                                 }));
                         }
                         if ability.program.iter().any(|i| {
@@ -3062,6 +3066,9 @@ impl Game {
                 }
                 Instruction::ReturnDeathCard(kind) => self.return_death_card(&item, kind),
                 Instruction::ReturnEventCardToHand => self.return_event_card_to_hand(&item),
+                Instruction::ReturnEventCardToBattlefieldTapped => {
+                    self.resolve_delayed_return(&item)
+                }
                 Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
                 Instruction::ReturnSourceFromFirstPublicZoneToHand => {
                     self.return_source_from_first_public_zone_to_hand(&item);

@@ -1569,6 +1569,8 @@ pub(crate) enum Instruction {
     ReturnSourceFromFirstPublicZoneToHand,
     /// Return the exact resulting graveyard card captured from this death event.
     ReturnEventCardToHand,
+    /// Return the exact death-event card tapped under its owner’s control.
+    ReturnEventCardToBattlefieldTapped,
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },

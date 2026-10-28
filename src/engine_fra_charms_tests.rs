@@ -4211,3 +4211,53 @@ fn edgar_ancient_bloodlord_sacrifice_cost_triggers_life_and_grants_menace() {
         assert_eq!(g.counter_count(edgar, CounterKind::PlusOne), 1);
     }
 }
+
+#[test]
+fn ferocity_returns_the_exact_dying_card_tapped_under_its_owner() {
+    for p in [Player::P0, Player::P1] {
+        for moved_away in [false, true] {
+            let mut g = scenario(p);
+            let creature = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let creature_ref = g.object_ref(creature);
+            g.change_controller(creature_ref, p);
+            let aura = put(&mut g, p, "Ferocity of the Hunt", Zone::Hand);
+            cast(&mut g, aura, Some(Target::Card(creature)));
+            settle(&mut g);
+            assert_eq!(stats(&g, creature), (3, 2));
+            assert!(g.keywords(creature).contains(Keywords::DEATHTOUCH));
+            g.move_object(creature, Zone::Graveyard);
+            g.prepare_triggers();
+            if moved_away {
+                g.move_object(creature, Zone::Exile);
+                g.move_object(creature, Zone::Graveyard);
+            }
+            while g
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PutTrigger { .. }))
+            {
+                choose(&mut g, |a| matches!(a, Action::PutTrigger { .. }));
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            if moved_away {
+                assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+            } else {
+                assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+                assert!(g.object_view(creature).tapped);
+                assert_eq!(g.object_view(creature).controller, p.other());
+            }
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(creature).zone,
+                if moved_away {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+        }
+    }
+}
