@@ -3770,3 +3770,55 @@ fn edgar_moonlit_sovereign_rechecks_end_step_and_counters_only_eligible_creature
         }
     }
 }
+
+#[test]
+fn vraska_soul_of_stone_creates_sculpture_treasure_with_vigilance() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let vraska = put(&mut g, p, "Vraska, Soul of Stone", Zone::Battlefield);
+        let own_bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana[3] = 1;
+        cast(&mut g, shock, Some(Target::Card(target)));
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        let tokens: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(i, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && o.card == Card(5437))
+                .then_some(i as CardId)
+            })
+            .collect();
+        assert_eq!(tokens.len(), 1);
+        let token = tokens[0];
+        assert_eq!(stats(&g, token), (1, 1));
+        assert!(g.has_subtype(token, "Sculpture"));
+        assert!(g.has_subtype(token, "Treasure"));
+        assert!(g.keywords(token).contains(Keywords::VIGILANCE));
+        assert!(!g.keywords(own_bear).contains(Keywords::VIGILANCE));
+        assert!(!g.legal_actions().iter().any(|a| matches!(a,
+            Action::ActivateMana { card, .. } if *card == token)));
+        g.state.objects[token as usize].summoning_sick = false;
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| {
+                matches!(a,
+            Action::ActivateMana { card, production: [0, 0, 0, 0, 1, 0], .. } if *card == token)
+            })
+            .expect("Sculpture Treasure mana ability");
+        let before = g.state.players[p.index()].mana[4];
+        act(&mut g, action);
+        assert_ne!(g.object_view(token).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].mana[4], before + 1);
+        g.move_object(vraska, Zone::Graveyard);
+        assert!(!g.keywords(own_bear).contains(Keywords::VIGILANCE));
+    }
+}
