@@ -326,3 +326,35 @@ fn master_of_barbs_observes_any_noncombat_damage_once_per_batch() {
         assert_eq!(stats(&g, friend), (2, 2));
     }
 }
+
+#[test]
+fn master_of_barbs_paid_damage_of_either_player() {
+    for p in [Player::P0, Player::P1] {
+        for target in [p, p.other()] {
+            let mut g = scenario(p);
+            let master = put(&mut g, p, "Master of Barbs", Zone::Hand);
+            cast(&mut g, master, None);
+            settle(&mut g);
+            let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let shock = put(&mut g, p.other(), "Shock", Zone::Hand);
+            g.state.priority = p.other();
+            cast(&mut g, shock, Some(Target::Player(target)));
+            for _ in 0..48 {
+                if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                }
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+            assert_eq!(
+                stats(&g, creature),
+                if target == p.other() { (3, 2) } else { (2, 2) }
+            );
+        }
+    }
+}
