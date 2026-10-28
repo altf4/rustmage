@@ -363,3 +363,5 @@ mod requested_callous;
 
 #[path = "../engine_fra_blue_tests.rs"]
 mod fra_blue;
+
+mod fra_seed_suture;

@@ -5441,7 +5441,9 @@
     0,
     0,
     0,
-    2
+    2,
+    17,
+    17
   ],
   "aliases": [
     [
@@ -5713,6 +5715,10 @@
       5353
     ],
     [
+      "@prepare/blossom_blessed_angel_seed_suture",
+      5437
+    ],
+    [
       "@prepare/campus_composer_aqueous_aria",
       5354
     ],
@@ -5727,6 +5733,10 @@
     [
       "@prepare/elite_interceptor_rejoinder",
       5356
+    ],
+    [
+      "@prepare/emergency_phytomedic_seed_suture",
+      5436
     ],
     [
       "@prepare/emeritus_of_abundance_regrowth",
@@ -8335,6 +8345,10 @@
     [
       "Bloomvine Regent // Claim Territory",
       468
+    ],
+    [
+      "Blossom-Blessed Angel",
+      469
     ],
     [
       "Blossom-Blessed Angel // Seed Suture",
@@ -11855,6 +11869,10 @@
     [
       "Emergency Eject",
       1311
+    ],
+    [
+      "Emergency Phytomedic",
+      1312
     ],
     [
       "Emergency Phytomedic // Seed Suture",
@@ -42767,14 +42785,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3,
+      "front_face": {
+        "name": "Blossom-Blessed Angel",
+        "mana_cost": "{3}{W}",
+        "type_line": "Creature — Angel Cleric"
+      }
     },
     {
       "index": 470,
@@ -66818,14 +66841,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Emergency Phytomedic",
+        "mana_cost": "{G/W}",
+        "type_line": "Creature — Dryad Cleric"
+      }
     },
     {
       "index": 1313,
@@ -184193,6 +184221,60 @@
       "mana_color": null,
       "colored": [
         0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5436,
+      "module": "card_5436",
+      "path": "synthetic/prepare_emergency_phytomedic_seed_suture.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Seed Suture",
+      "oracle_id": "7737ccdc-49f2-463e-8ffd-43ab98d11f45",
+      "facts_sha256": "cc60c634f249293f61490d30138b03834f342df1d80fb5da589917ed7a77d410",
+      "mana_cost": "{G/W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5437,
+      "module": "card_5437",
+      "path": "synthetic/prepare_blossom_blessed_angel_seed_suture.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Seed Suture",
+      "oracle_id": "cd61c26b-8d3c-4730-92f2-0d94d961bafd",
+      "facts_sha256": "be99db63295e45ecf8b3affd702dc26689070b42513320af2d98c848a93c161c",
+      "mana_cost": "{G/W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
         0,
         0,
         0,
