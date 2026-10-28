@@ -88,3 +88,90 @@ fn seed_suture_both_seats_and_hybrid_colors_with_invalidated_target() {
         }
     }
 }
+
+#[test]
+fn seed_suture_timing_invalid_target_and_owned_announcement() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = put(&mut g, p, "Forest", Zone::Hand);
+        g.state.objects[source as usize].card =
+            Card::from_name("Emergency Phytomedic // Seed Suture").unwrap();
+        announce(&mut g, Action::AnnounceCast { card: source }, None);
+        settle(&mut g);
+        let source_ref = g.object_ref(source);
+        let copy = g
+            .state
+            .preparations
+            .as_ref()
+            .unwrap()
+            .iter()
+            .find(|r| r.permanent == source_ref)
+            .unwrap()
+            .spell_copy;
+        let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let land = put(&mut g, p, "Forest", Zone::Battlefield);
+        g.state.active = p.other();
+        g.state.priority = p;
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceExile { card: copy.card })
+        );
+        reject(&mut g, Action::AnnounceExile { card: copy.card });
+        assert!(g.is_prepared(source_ref));
+        g.state.active = p;
+        checked(&mut g, Action::AnnounceExile { card: copy.card });
+        if let Some(action) = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseSpellCost { .. }))
+        {
+            checked(&mut g, action);
+        }
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(land),
+            },
+        );
+        assert!(g.is_prepared(source_ref));
+        let announced_copy = g
+            .state
+            .preparations
+            .as_ref()
+            .unwrap()
+            .iter()
+            .find(|r| r.permanent == source_ref)
+            .unwrap()
+            .spell_copy;
+        let checkpoint = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(creature),
+            },
+        );
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        assert!(!g.is_prepared(source_ref));
+        settle(&mut g);
+        assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 1);
+        g.restore(&checkpoint).unwrap();
+        assert!(g.is_prepared(source_ref));
+        assert_eq!(
+            g.state
+                .preparations
+                .as_ref()
+                .unwrap()
+                .iter()
+                .find(|r| r.permanent == source_ref)
+                .unwrap()
+                .spell_copy,
+            announced_copy
+        );
+    }
+}

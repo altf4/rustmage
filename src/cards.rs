@@ -2058,6 +2058,12 @@ pub(crate) enum Instruction {
         amount: u32,
     },
     /// Place counters on surviving targets that currently have any specified kind.
+    /// Put counters only on legal targets in the selected target group.
+    PutCountersOnTargetGroup {
+        group: u16,
+        kind: CounterKind,
+        amount: u16,
+    },
     PutCountersOnTargetKinds {
         kinds: u16,
         kind: CounterKind,

@@ -321,3 +321,46 @@ fn candidate_fronts_have_correct_names_costs_and_remain_gated() {
         assert!(!card.is_supported());
     }
 }
+
+#[test]
+fn soul_tether_permission_follows_controller_and_ends_on_departure() {
+    for p in [Player::P0, Player::P1] {
+        for name in [
+            "Heartwood Crafter // Soul Tether",
+            "Konstrari Improviser // Soul Tether",
+        ] {
+            let mut g = setup(p);
+            let source = candidate(&mut g, p, name);
+            cast_creature(&mut g, source);
+            settle(&mut g);
+            let source_ref = g.object_ref(source);
+            let prepared = copy(&g, source);
+            g.state.active = p.other();
+            g.state.priority = p;
+            reject(
+                &mut g,
+                Action::AnnounceExile {
+                    card: prepared.card,
+                },
+            );
+            assert!(g.is_prepared(source_ref));
+            g.change_controller(source_ref, p.other());
+            g.state.priority = p.other();
+            assert!(g.legal_actions().contains(&Action::AnnounceExile {
+                card: prepared.card
+            }));
+            super::contracts::branch_contract(g.clone());
+            let checkpoint = g.snapshot();
+            g.move_object(source, Zone::Graveyard);
+            assert!(!g.is_prepared(source_ref));
+            assert!(!g.legal_actions().contains(&Action::AnnounceExile {
+                card: prepared.card
+            }));
+            g.restore(&checkpoint).unwrap();
+            assert!(g.is_prepared(source_ref));
+            assert!(g.legal_actions().contains(&Action::AnnounceExile {
+                card: prepared.card
+            }));
+        }
+    }
+}

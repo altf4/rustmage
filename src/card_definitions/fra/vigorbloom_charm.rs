@@ -42,8 +42,8 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 }),
             ]),
             program: &[
-                Instruction::PutCounters {
-                    subject: Subject::Targets,
+                Instruction::PutCountersOnTargetGroup {
+                    group: 0,
                     kind: CounterKind::PlusOne,
                     amount: 1,
                 },

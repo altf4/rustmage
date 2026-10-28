@@ -3693,10 +3693,13 @@ fn overwrite_counts_exiled_creatures_including_tokens_before_empower() {
 #[test]
 fn vigorbloom_charm_protects_permanents_and_counters_before_fight() {
     for p in [Player::P0, Player::P1] {
-        for case in 0..4 {
+        for case in 0..5 {
             let mut g = scenario(p);
             let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
             let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            if case == 4 {
+                g.state.objects[enemy as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+            }
             let land = put(&mut g, p, "Forest", Zone::Battlefield);
             let spell = put(&mut g, p, "Vigorbloom Charm", Zone::Hand);
             g.state.players[p.index()].mana = [1, 0, 0, 0, 1, 0];
@@ -3749,13 +3752,19 @@ fn vigorbloom_charm_protects_permanents_and_counters_before_fight() {
                     g.object_view(enemy).zone,
                     if case == 2 {
                         Zone::Exile
+                    } else if case == 4 {
+                        Zone::Battlefield
                     } else {
                         Zone::Graveyard
                     }
                 );
                 assert_eq!(g.object_view(own).zone, Zone::Battlefield);
+                if case == 4 {
+                    assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+                }
             } else {
                 assert_eq!(g.object_view(enemy).zone, Zone::Battlefield);
+                assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
             }
             g.restore(&before).unwrap();
             settle(&mut g);
@@ -6833,5 +6842,294 @@ fn loyalty_cost_without_a_replacement_is_not_doubled() {
         super::contracts::branch_contract(g.clone());
         settle(&mut g);
         assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 7);
+    }
+}
+
+#[test]
+fn konstrari_charm_exact_damage_and_counter_replacement() {
+    for p in [Player::P0, Player::P1] {
+        for mode in [0, 1] {
+            let mut g = scenario(p);
+            let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            g.state.objects[creature as usize].growth.toughness = 10;
+            g.state.objects[creature as usize].gained_keywords = Keywords::FLYING;
+            if mode == 1 {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let spell = put(&mut g, p, "Konstrari Charm", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 1, 1, 0];
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseMode { mode });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(creature),
+                },
+            );
+            pay(&mut g);
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            if mode == 0 {
+                assert_eq!(g.state.objects[creature as usize].damage, 6);
+                assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 0);
+            } else {
+                assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 4);
+                assert!(g.keywords(creature).contains(Keywords::TRAMPLE));
+            }
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            if mode == 0 {
+                assert_eq!(g.state.objects[creature as usize].damage, 6);
+            } else {
+                assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 4);
+            }
+        }
+    }
+}
+
+#[test]
+fn charge_the_sanctum_fizzles_when_its_creature_leaves() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let creature = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let land = put(&mut g, p, "Forest", Zone::Battlefield);
+        let spell = put(&mut g, p, "Charge the Sanctum", Zone::Hand);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 2];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, Action::ChooseMode { mode: 1 });
+        if g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::ChooseSpellCost { .. }))
+        {
+            choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
+        }
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(land),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(creature),
+            },
+        );
+        pay(&mut g);
+        g.move_object(creature, Zone::Exile);
+        let before = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Exile);
+        assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 0);
+        assert!(!g.keywords(creature).contains(Keywords::FIRST_STRIKE));
+        g.restore(&before).unwrap();
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Exile);
+        assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 0);
+    }
+}
+
+#[test]
+fn fatehold_charm_returns_noncreature_spell_and_stolen_creature_to_owners_hand() {
+    for p in [Player::P0, Player::P1] {
+        for stack_spell in [false, true] {
+            let mut g = scenario(if stack_spell { p.other() } else { p });
+            let target = put(
+                &mut g,
+                p.other(),
+                if stack_spell { "Shock" } else { "Bear Cub" },
+                if stack_spell {
+                    Zone::Hand
+                } else {
+                    Zone::Battlefield
+                },
+            );
+            if stack_spell {
+                cast(&mut g, target, Some(Target::Player(p)));
+                g.state.priority = p;
+            } else {
+                let reference = g.object_ref(target);
+                g.change_controller(reference, p);
+            }
+            let spell = put(&mut g, p, "Fatehold Charm", Zone::Hand);
+            let life = g.state.players[p.index()].life;
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseMode { mode: 1 });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: if stack_spell {
+                        Target::Spell(target)
+                    } else {
+                        Target::Card(target)
+                    },
+                },
+            );
+            pay(&mut g);
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(g.object_view(target).zone, Zone::Hand);
+            assert_eq!(g.object_view(target).owner, p.other());
+            assert_eq!(g.state.players[p.index()].life, life);
+        }
+    }
+}
+
+#[test]
+fn stingerquill_charm_damage_hits_creatures_or_planeswalkers_and_rechecks_targets() {
+    for p in [Player::P0, Player::P1] {
+        for planeswalker in [false, true] {
+            for invalid in [false, true] {
+                let mut g = scenario(p);
+                let target = put(
+                    &mut g,
+                    p.other(),
+                    if planeswalker {
+                        "Liliana, Dreadhorde General"
+                    } else {
+                        "Bear Cub"
+                    },
+                    Zone::Battlefield,
+                );
+                if planeswalker {
+                    g.add_counter(target, CounterKind::Loyalty, 5);
+                } else {
+                    g.state.objects[target as usize].growth.toughness = 10;
+                }
+                let spell = put(&mut g, p, "Stingerquill Charm", Zone::Hand);
+                g.state.players[p.index()].mana = [0, 0, 1, 1, 0, 0];
+                act(&mut g, Action::AnnounceCast { card: spell });
+                act(&mut g, Action::ChooseMode { mode: 0 });
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+                pay(&mut g);
+                if invalid {
+                    g.move_object(target, Zone::Exile);
+                }
+                super::contracts::branch_contract(g.clone());
+                settle(&mut g);
+                if invalid {
+                    assert_eq!(g.object_view(target).zone, Zone::Exile);
+                } else if planeswalker {
+                    assert_eq!(g.counter_count(target, CounterKind::Loyalty), 2);
+                } else {
+                    assert_eq!(g.state.objects[target as usize].damage, 3);
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn koth_landfall_keeps_trigger_controller_after_source_changes_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Koth, the Geomancer", Zone::Battlefield);
+        let land = put(&mut g, p, "Mountain", Zone::Hand);
+        let before_life = g.state.players[p.other().index()].life;
+        g.state.players[p.index()].mana = [0; 6];
+        g.state.players[p.other().index()].mana = [0; 6];
+        g.move_object(land, Zone::Battlefield);
+        g.prepare_triggers();
+        let source_ref = g.object_ref(source);
+        g.change_controller(source_ref, p.other());
+        let checkpoint = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, before_life - 1);
+        assert_eq!(g.state.players[p.index()].mana[3], 1);
+        assert_eq!(g.state.players[p.other().index()].mana[3], 0);
+        g.restore(&checkpoint).unwrap();
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana[3], 1);
+    }
+}
+
+#[test]
+fn pia_thopter_creation_is_doubled_and_target_hexproof_fizzles() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let pia = put(&mut g, p, "Pia, Determined Rebuilder", Zone::Hand);
+        cast(&mut g, pia, None);
+        settle(&mut g);
+        assert_eq!(fra_thopters(&g, p).len(), 2);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: pia,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        g.state.objects[target as usize].gained_keywords = Keywords::HEXPROOF;
+        let checkpoint = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(stats(&g, target), (2, 2));
+        g.restore(&checkpoint).unwrap();
+        settle(&mut g);
+        assert_eq!(stats(&g, target), (2, 2));
+    }
+}
+
+#[test]
+fn vigorbloom_fight_mode_rechecks_control_and_hexproof_independently() {
+    for p in [Player::P0, Player::P1] {
+        for own_changes_controller in [false, true] {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let spell = put(&mut g, p, "Vigorbloom Charm", Zone::Hand);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 1, 0];
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseMode { mode: 2 });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            pay(&mut g);
+            if own_changes_controller {
+                let reference = g.object_ref(own);
+                g.change_controller(reference, p.other());
+            } else {
+                g.state.objects[enemy as usize].gained_keywords = Keywords::HEXPROOF;
+            }
+            let checkpoint = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.counter_count(own, CounterKind::PlusOne),
+                u64::from(!own_changes_controller)
+            );
+            assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+            assert_eq!(g.state.objects[own as usize].damage, 0);
+            assert_eq!(g.state.objects[enemy as usize].damage, 0);
+            g.restore(&checkpoint).unwrap();
+            settle(&mut g);
+            assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+        }
     }
 }
