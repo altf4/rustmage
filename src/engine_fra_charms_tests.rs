@@ -1768,3 +1768,57 @@ fn kindred_judgment_chooses_at_resolution_and_destroys_one_batch() {
         assert_eq!(g.counter_count(shielded, CounterKind::Shield), 0);
     }
 }
+
+#[test]
+fn ajanis_anguish_keeps_paid_x_for_entry_damage_and_grants_trample() {
+    for p in [Player::P0, Player::P1] {
+        for x in [0, 2] {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let opponent = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let spell = put(&mut g, p, "Ajani's Anguish", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseX { value: x });
+            pay(&mut g);
+            let mut targeted = false;
+            let before = g.state.players[p.other().index()].life;
+            for _ in 0..48 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let wanted = Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                };
+                if !targeted && actions.contains(&wanted) {
+                    act(&mut g, wanted);
+                    targeted = true;
+                    assert!(g.keywords(own).contains(Keywords::TRAMPLE));
+                    assert!(!g.keywords(opponent).contains(Keywords::TRAMPLE));
+                    super::contracts::branch_contract(g.clone());
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                } else if targeted
+                    && g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Ajani's Anguish choice {:?}", g.state.pending);
+                }
+            }
+            assert!(targeted);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                before - i128::from(x)
+            );
+            g.move_object(spell, Zone::Graveyard);
+            assert!(!g.keywords(own).contains(Keywords::TRAMPLE));
+        }
+    }
+}
