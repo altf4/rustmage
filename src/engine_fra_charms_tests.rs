@@ -6233,3 +6233,56 @@ fn koth_event_subtype_facts_coexist_with_other_event_facts() {
         assert_eq!(g.state.players[p.index()].mana[3], 1);
     }
 }
+
+#[test]
+fn koth_landfall_keeps_multiple_land_events_independent() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Koth, the Geomancer", Zone::Battlefield);
+        let mountain = put(&mut g, p, "Mountain", Zone::Hand);
+        let forest = put(&mut g, p, "Forest", Zone::Hand);
+        let life = g.state.players[p.other().index()].life;
+        g.state.players[p.index()].mana = [0; 6];
+        g.move_object(mountain, Zone::Battlefield);
+        g.move_object(forest, Zone::Battlefield);
+        g.move_object(mountain, Zone::Graveyard);
+        g.prepare_triggers();
+        let saved = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        for _ in 0..64 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                .expect("landfall ordering");
+            act(&mut g, action);
+        }
+        assert_eq!(g.state.players[p.other().index()].life, life - 2);
+        assert_eq!(g.state.players[p.index()].mana[3], 1);
+        g.restore(&saved).unwrap();
+        for _ in 0..64 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                .expect("restored landfall ordering");
+            act(&mut g, action);
+        }
+        assert_eq!(g.state.players[p.other().index()].life, life - 2);
+        assert_eq!(g.state.players[p.index()].mana[3], 1);
+    }
+}
