@@ -833,3 +833,92 @@ fn saheeli_ignores_opponent_cast_and_trigger_survives_source_departure() {
         assert!(!g.keywords(thopters[0]).contains(Keywords::HASTE));
     }
 }
+
+#[test]
+fn fatehold_charm_draw_empower_and_team_modes() {
+    for p in [Player::P0, Player::P1] {
+        for mode in [0, 2] {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let opposing = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let before = g.state.players[p.index()].library.len();
+            let charm = put(&mut g, p, "Fatehold Charm", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: charm });
+            act(&mut g, Action::ChooseMode { mode });
+            pay(&mut g);
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            if mode == 0 {
+                assert_eq!(g.state.players[p.index()].library.len(), before - 1);
+                let jaces = fra_jaces(&g, p);
+                assert_eq!(jaces.len(), 1);
+                assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 2);
+            } else {
+                assert_eq!(stats(&g, own), (3, 4));
+                assert_eq!(stats(&g, opposing), (2, 2));
+                g.finish_cleanup();
+                assert_eq!(stats(&g, own), (2, 2));
+            }
+        }
+    }
+}
+
+#[test]
+fn fatehold_charm_returns_creature_spell_and_spell_copy() {
+    for p in [Player::P0, Player::P1] {
+        for target_kind in 0..3 {
+            let mut g = scenario(p.other());
+            let target = put(
+                &mut g,
+                p.other(),
+                "Bear Cub",
+                if target_kind == 0 {
+                    Zone::Battlefield
+                } else {
+                    Zone::Hand
+                },
+            );
+            let charm = put(&mut g, p, "Fatehold Charm", Zone::Hand);
+            let mut copy_id = None;
+            if target_kind != 0 {
+                cast(&mut g, target, None);
+                if target_kind == 2 {
+                    let template = g
+                        .state
+                        .stack
+                        .iter()
+                        .find(|s| s.card == target)
+                        .unwrap()
+                        .clone();
+                    let copy = g.allocate_spell_copy(&template, p.other());
+                    copy_id = Some(copy.id);
+                    g.state.stack.push(copy);
+                }
+            }
+            g.state.priority = p;
+            act(&mut g, Action::AnnounceCast { card: charm });
+            act(&mut g, Action::ChooseMode { mode: 1 });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p),
+                },
+            );
+            let selected = match target_kind {
+                0 => Target::Card(target),
+                1 => Target::Spell(target),
+                _ => Target::Stack(copy_id.unwrap()),
+            };
+            act(&mut g, Action::ChooseTarget { target: selected });
+            pay(&mut g);
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            if let Some(copy_id) = copy_id {
+                assert!(!g.state.stack.iter().any(|s| s.id == copy_id));
+                assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+            } else {
+                assert_eq!(g.object_view(target).zone, Zone::Hand);
+            }
+        }
+    }
+}
