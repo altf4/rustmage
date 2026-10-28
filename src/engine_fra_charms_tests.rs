@@ -3109,3 +3109,53 @@ fn arni_uses_entering_creatures_current_or_last_known_power() {
         }
     }
 }
+
+#[test]
+fn massacre_girl_death_damage_triggers_her_counter_ability() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let girl = put(&mut g, p, "Massacre Girl, Most Wanted", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.move_object(enemy, Zone::Graveyard);
+        g.prepare_triggers();
+        settle(&mut g);
+        assert_eq!(g.counter_count(girl, CounterKind::PlusOne), 0);
+        let life = g.state.players[p.index()].life;
+        let opponent_life = g.state.players[p.other().index()].life;
+        let ally = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.move_object(ally, Zone::Graveyard);
+        let mut targeted = false;
+        for _ in 0..64 {
+            g.prepare_triggers();
+            let actions = g.legal_actions();
+            let target = Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            };
+            if !targeted && actions.contains(&target) {
+                act(&mut g, target);
+                targeted = true;
+                super::contracts::branch_contract(g.clone());
+            } else if actions.contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            } else if targeted
+                && g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            } else if let Some(action) = actions
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+            {
+                act(&mut g, action);
+            } else {
+                panic!("unexpected Massacre Girl choice {:?}", g.state.pending);
+            }
+        }
+        assert!(targeted);
+        assert_eq!(g.state.players[p.index()].life, life + 1);
+        assert_eq!(g.state.players[p.other().index()].life, opponent_life - 1);
+        assert_eq!(g.counter_count(girl, CounterKind::PlusOne), 1);
+    }
+}
