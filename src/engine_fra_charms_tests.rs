@@ -6166,3 +6166,41 @@ fn koth_landfall_uses_current_or_last_known_land_subtype() {
         }
     }
 }
+
+#[test]
+fn koth_landfall_tracks_subtype_changes_before_resolution_or_departure() {
+    for p in [Player::P0, Player::P1] {
+        for (initial, replacement, leaves, red) in [
+            ("Forest", "Mountain", false, 1),
+            ("Mountain", "Forest", false, 0),
+            ("Forest", "Mountain", true, 1),
+            ("Mountain", "Forest", true, 0),
+        ] {
+            let mut g = scenario(p);
+            put(&mut g, p, "Koth, the Geomancer", Zone::Battlefield);
+            let land = put(&mut g, p, initial, Zone::Hand);
+            let life = g.state.players[p.other().index()].life;
+            g.state.players[p.index()].mana = [0; 6];
+            g.move_object(land, Zone::Battlefield);
+            g.prepare_triggers();
+            let reference = g.object_ref(land);
+            g.apply_temporary_copy(
+                reference,
+                CopyRecipe::new(Card::from_name(replacement).unwrap()),
+                CopyDeadline::EndOfTurn,
+            );
+            assert_eq!(g.has_subtype(land, "Mountain"), red == 1);
+            if leaves {
+                g.move_object(land, Zone::Graveyard);
+            }
+            let saved = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(g.state.players[p.other().index()].life, life - 1);
+            assert_eq!(g.state.players[p.index()].mana[3], red);
+            g.restore(&saved).unwrap();
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana[3], red);
+        }
+    }
+}
