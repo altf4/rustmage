@@ -8,6 +8,8 @@ pub(super) struct TargetCardFacts {
     pub controller: Player,
     pub mana_value: u64,
     pub attacking: bool,
+    pub legendary: bool,
+    pub kinds: u16,
     pub power: i128,
 }
 
@@ -2032,6 +2034,9 @@ impl Game {
         let reads_target_attacking = program.iter().any(|instruction| {
             matches!(instruction, Instruction::DrawTargetControllerIfNotAttacking)
         });
+        let reads_target_legendary_kind = program
+            .iter()
+            .any(|instruction| matches!(instruction, Instruction::DrawIfTargetLegendaryKind(_)));
         let target_card_facts = program
             .iter()
             .any(|instruction| {
@@ -2044,6 +2049,7 @@ impl Game {
                         }
                         | Instruction::DrawIfTargetController
                         | Instruction::DrawTargetControllerIfNotAttacking
+                        | Instruction::DrawIfTargetLegendaryKind(_)
                         | Instruction::LoseLifeTargetCardManaValue(_)
                         | Instruction::MayTargetController { .. }
                         | Instruction::SearchTargetController(_)
@@ -2064,6 +2070,13 @@ impl Game {
                                     0
                                 },
                                 controller: self.state.objects[card as usize].controller,
+                                legendary: reads_target_legendary_kind
+                                    && ability_world::CharacteristicWorld::legendary(self, card),
+                                kinds: if reads_target_legendary_kind {
+                                    self.object_kinds(card, &self.state.objects[card as usize])
+                                } else {
+                                    0
+                                },
                                 mana_value: self.object_mana_value(card),
                                 attacking: reads_target_attacking
                                     && self.state.attackers.iter().any(|a| a.card == card),
@@ -3640,6 +3653,18 @@ impl Game {
                         && self.amass_goblins_for(&item, player, amount)
                     {
                         return;
+                    }
+                }
+                Instruction::DrawIfTargetLegendaryKind(kinds) => {
+                    let matches = self.state.resolving.as_ref().is_some_and(|r| {
+                        r.target_card_facts.as_ref().is_some_and(|facts| {
+                            facts.iter().any(|f| {
+                                f.group == r.target_group && f.legendary && f.kinds & kinds != 0
+                            })
+                        })
+                    });
+                    if matches {
+                        self.draw_many(item.controller, 1);
                     }
                 }
                 Instruction::DrawTargetControllerIfNotAttacking => {

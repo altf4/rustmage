@@ -982,6 +982,8 @@ pub(crate) enum Instruction {
     DrawIfTargetController,
     /// Draw for the target's controller if it was not attacking at resolution.
     DrawTargetControllerIfNotAttacking,
+    /// Draw if the target was legendary and had any of the given kinds at resolution.
+    DrawIfTargetLegendaryKind(u16),
     /// Real nonmana variable activation cost; amount is declared before payment.
     SourceCounterCost {
         kind: CounterKind,

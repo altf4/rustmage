@@ -1842,3 +1842,72 @@ fn karn_gilded_guardian_counts_distinct_colors_of_other_controlled_artifacts() {
         assert!(g.keywords(karn).contains(Keywords::TRAMPLE));
     }
 }
+
+#[test]
+fn budding_insurgent_draws_for_legendary_enchantments_even_if_indestructible() {
+    for p in [Player::P0, Player::P1] {
+        for (name, legendary_enchantment, indestructible, fizzle) in [
+            ("Way of the Mentor", true, false, false),
+            ("Way of the Mentor", true, true, false),
+            ("Way of the Mentor", true, false, true),
+            ("Pacifism", false, false, false),
+            ("The Mind Stone", false, false, false),
+        ] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Budding Insurgent", Zone::Battlefield);
+            let target = put(&mut g, p.other(), name, Zone::Battlefield);
+            let illegal = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            if indestructible {
+                g.state.objects[target as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+            }
+            let before = g.state.players[p.index()].library.len();
+            assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(illegal),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            if g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::PayCosts { .. }))
+            {
+                pay(&mut g);
+            }
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            if fizzle {
+                g.move_object(target, Zone::Exile);
+            }
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].library.len(),
+                before - usize::from(legendary_enchantment && !fizzle)
+            );
+            assert_eq!(
+                g.object_view(target).zone,
+                if fizzle {
+                    Zone::Exile
+                } else if indestructible {
+                    Zone::Battlefield
+                } else {
+                    Zone::Graveyard
+                }
+            );
+        }
+    }
+}
