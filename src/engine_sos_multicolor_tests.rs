@@ -974,3 +974,233 @@ fn fra_surgical_precision_modes_target_legality_and_fizzle() {
         assert_eq!(g.state.players[p.index()].life, 23);
     }
 }
+
+#[test]
+fn fra_empower_jace_creation_replacements_choice_and_loyalty() {
+    use super::big_helpers::{cast, settle, setup, spawn};
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("No Admittance").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, spell, None, &[Target::Player(p.other())]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 17);
+        let jace = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && g.has_subtype(*id as CardId, "Jace")
+            })
+            .map(|(id, _)| id as CardId)
+            .unwrap();
+        assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 1);
+        assert_eq!(g.state.objects[jace as usize].card.name(), "Jace");
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: jace,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        while g.state.announcing.is_some() {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        settle(&mut g);
+        assert_ne!(g.object_view(jace).zone, Zone::Battlefield);
+
+        let mut g = setup(p);
+        spawn(
+            &mut g,
+            p,
+            Card::from_name("Doubling Season").unwrap(),
+            Zone::Battlefield,
+        );
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("No Admittance").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, spell, None, &[Target::Player(p.other())]);
+        for _ in 0..20 {
+            if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        let choices: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter_map(|a| match a {
+                Action::ChooseJace { object } => Some(object),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(choices.len(), 2);
+        assert_eq!(
+            g.observe(p)
+                .effect_choice
+                .as_ref()
+                .unwrap()
+                .candidates
+                .len(),
+            2
+        );
+        let before = g.snapshot();
+        assert_eq!(
+            g.apply(
+                p,
+                Action::ChooseJace {
+                    object: g.object_ref(spell)
+                }
+            ),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), before);
+        checked(&mut g, Action::ChooseJace { object: choices[1] });
+        settle(&mut g);
+        assert_eq!(g.counter_count(choices[1].card, CounterKind::Loyalty), 2);
+        assert_eq!(g.object_view(choices[1].card).zone, Zone::Battlefield);
+        assert_ne!(g.object_view(choices[0].card).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn fra_empower_existing_jace_and_draw_loyalty() {
+    use super::big_helpers::{cast, settle, setup, spawn};
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let physical = spawn(
+            &mut g,
+            p,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let enemy_spell = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        for id in [physical, enemy_spell] {
+            g.state.objects[id as usize].card = Card::from_name("Jace Reawakened").unwrap();
+            g.state.objects[id as usize].counters.loyalty = 4;
+        }
+        g.create_tokens(p.other(), Card::JacePlaneswalkerToken, 1, false);
+        let enemy_token = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| o.zone == Zone::Battlefield && o.controller == p.other() && o.is_token())
+            .unwrap()
+            .0 as CardId;
+        g.state.objects[enemy_token as usize].counters.loyalty = 4;
+        let mut own_jace = None;
+        for expected in 1..=3 {
+            let spell = spawn(
+                &mut g,
+                p,
+                Card::from_name("No Admittance").unwrap(),
+                Zone::Hand,
+            );
+            cast(&mut g, spell, None, &[Target::Player(p.other())]);
+            settle(&mut g);
+            let controlled: Vec<_> = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(id, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == p
+                        && o.is_token()
+                        && g.has_subtype(*id as CardId, "Jace")
+                })
+                .map(|(id, _)| id as CardId)
+                .collect();
+            assert_eq!(controlled.len(), 1);
+            assert_eq!(
+                g.counter_count(controlled[0], CounterKind::Loyalty),
+                expected
+            );
+            if let Some(old) = own_jace {
+                assert_eq!(old, controlled[0]);
+            }
+            own_jace = Some(controlled[0]);
+        }
+        assert_eq!(g.counter_count(enemy_token, CounterKind::Loyalty), 4);
+        assert_eq!(g.object_view(physical).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(enemy_spell).zone, Zone::Battlefield);
+        let library = g.state.players[p.index()].library.len();
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: own_jace.unwrap(),
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        while g.state.announcing.is_some() {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), library - 1);
+    }
+}
+
+#[test]
+fn fra_surgical_precision_indestructible_and_changed_toughness() {
+    use super::big_helpers::{cast, settle, setup, spawn};
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let creature = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Fateshaper Aspirant").unwrap(),
+            Zone::Battlefield,
+        );
+        g.state.objects[creature as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("Surgical Precision").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, spell, Some(0), &[Target::Card(creature)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].life, 21);
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("Surgical Precision").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, spell, Some(0), &[Target::Card(creature)]);
+        g.state.objects[creature as usize].growth.toughness = -1;
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].life, 21);
+    }
+}

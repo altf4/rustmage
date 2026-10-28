@@ -5440,7 +5440,8 @@
     0,
     0,
     0,
-    0
+    0,
+    2
   ],
   "aliases": [
     [
@@ -6294,6 +6295,10 @@
     [
       "@token/hob-wolf",
       5412
+    ],
+    [
+      "@token/jace-planeswalker",
+      5435
     ],
     [
       "@token/komas_coil",
@@ -28800,6 +28805,12 @@
       "name": "Pilot Token",
       "subtypes": "Pilot",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/jace-planeswalker",
+      "name": "Jace",
+      "subtypes": "Jace",
+      "colors": 2
     }
   ],
   "emblems": [
@@ -29171,7 +29182,8 @@
     "MshBlueMerfolkToken": 5398,
     "MshGalactusToken": 5399,
     "MshSturdyShieldToken": 5400,
-    "GoblinArmyToken": 5405
+    "GoblinArmyToken": 5405,
+    "JacePlaneswalkerToken": 5435
   },
   "helper_interface": [
     [
@@ -184150,6 +184162,33 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5435,
+      "module": "card_5435",
+      "path": "synthetic/token_jace_planeswalker.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/jace-planeswalker",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Planeswalker — Jace",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 64,
       "basic": false,
       "mana_color": null,
       "colored": [

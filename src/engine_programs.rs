@@ -3592,6 +3592,19 @@ impl Game {
                         self.attach_equipment(item.object, target);
                     }
                 }
+                Instruction::EnsureJaceToken => self.ensure_jace_token(item.controller),
+                Instruction::EmpowerJace(amount) => {
+                    if self.empower_jace(&item, u64::from(amount)) {
+                        return;
+                    }
+                }
+                Instruction::EmpowerJaceScaled(amount) => {
+                    let amount = u64::try_from(self.item_amount(amount, &item))
+                        .capacity("empower counter amount exhausted");
+                    if self.empower_jace(&item, amount) {
+                        return;
+                    }
+                }
                 Instruction::EnsureGoblinArmy | Instruction::EnsureGoblinArmyFor(_) => {
                     let players = match instruction {
                         Instruction::EnsureGoblinArmyFor(players) => players,

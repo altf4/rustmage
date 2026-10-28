@@ -537,6 +537,7 @@ define_actions! {
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
     ChooseArmy { object: ObjectRef },
+    ChooseJace { object: ObjectRef },
     FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
@@ -3691,6 +3692,7 @@ impl Game {
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
                             EffectChoiceKind::AmassGoblins(_) => Action::ChooseArmy { object },
+                            EffectChoiceKind::EmpowerJace(_) => Action::ChooseJace { object },
                             EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
                                 Action::PutHandCreature { object }
                             }
@@ -5975,6 +5977,7 @@ impl Game {
             | Action::PutHandPermanent { object }
             | Action::PutHandLand { object }
             | Action::ChooseArmy { object }
+            | Action::ChooseJace { object }
             | Action::SelectLand { object } => self.choose_effect_object(actor, object),
             Action::FinishLandSelection => {
                 self.finish_land_selection();

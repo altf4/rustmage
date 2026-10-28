@@ -2137,6 +2137,59 @@ pub struct CreatedTokenChoiceView {
 }
 
 impl Game {
+    fn jace_recipients(&self, player: Player) -> Vec<ObjectRef> {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == player
+                    && o.is_token()
+                    && self.current_kinds(*id as CardId) & 64 != 0
+                    && self.has_subtype(*id as CardId, "Jace")
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect()
+    }
+    pub(super) fn ensure_jace_token(&mut self, player: Player) {
+        if self.jace_recipients(player).is_empty() {
+            self.create_tokens(player, Card::JacePlaneswalkerToken, 1, false);
+        }
+    }
+    pub(super) fn finish_empower_jace(
+        &mut self,
+        player: Player,
+        recipient: ObjectRef,
+        amount: u64,
+    ) {
+        self.effect_counters_by(
+            vec![(recipient, Counters::of(CounterKind::Loyalty, amount))],
+            Some(player),
+            ResumeMode::Program,
+        );
+    }
+    pub(super) fn empower_jace(&mut self, item: &SpellView, amount: u64) -> bool {
+        let player = item.controller;
+        let recipients = self.jace_recipients(player);
+        if recipients.len() == 1 {
+            self.finish_empower_jace(player, recipients[0], amount);
+        } else if recipients.len() > 1 {
+            let mut filter = evidence::cost(0).filter;
+            filter.subtype = Some("Jace");
+            filter.kinds = 64;
+            filter.tokens = Some(true);
+            return self.start_effect_choice(
+                item,
+                EffectChoiceKind::EmpowerJace(amount),
+                PlayerSet::Controller,
+                filter,
+                1,
+                None,
+            );
+        }
+        false
+    }
     fn army_recipients(&self, player: Player) -> Vec<ObjectRef> {
         self.state
             .objects

@@ -749,6 +749,7 @@ pub(crate) struct SearchSpec {
 pub enum EffectChoiceKind {
     /// Non-targeted Army selection during amass.
     AmassGoblins(u64),
+    EmpowerJace(u64),
     ExileGreatestManaValue,
     ExileGraveyard,
     SacrificeDifferentNames(u16),
@@ -959,6 +960,15 @@ pub(crate) enum Instruction {
     /// Increase the exact source permanent to this Class level.
     GainClassLevel(u8),
     /// First half of amass: create an Army only if none is controlled.
+    /// Create a Jace token if none is controlled; replacements finish before empower.
+    EnsureJaceToken,
+    /// Put loyalty counters on a chosen controlled Jace planeswalker token.
+    EmpowerJace(u16),
+    #[allow(
+        dead_code,
+        reason = "Dynamic consumers remain gated until their interactions are tested"
+    )]
+    EmpowerJaceScaled(AmountValue),
     EnsureGoblinArmy,
     /// Complete amass after token creation and its replacements.
     AmassGoblins(u16),

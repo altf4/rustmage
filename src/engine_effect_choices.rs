@@ -1007,6 +1007,21 @@ impl Game {
             {
                 self.finish_amass_goblins(&item, player, recipient, amount);
             }
+        } else if let EffectChoiceKind::EmpowerJace(amount) = choice.kind {
+            if let Some(recipient) = choice.selected[self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .item
+                .controller
+                .index()]
+            .first()
+            .copied()
+            {
+                let player = self.state.resolving.as_ref().unwrap().item.controller;
+                self.finish_empower_jace(player, recipient, amount);
+            }
         } else if matches!(
             choice.kind,
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileGreatestManaValue
