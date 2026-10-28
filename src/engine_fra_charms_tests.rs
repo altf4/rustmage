@@ -5318,3 +5318,112 @@ fn guiding_hydra_cannot_remove_a_missing_counter_or_from_a_new_incarnation() {
         }
     }
 }
+
+#[test]
+fn plan_for_all_outcomes_library_choice_belongs_to_target_owner() {
+    for p in [Player::P0, Player::P1] {
+        for destination in [LibraryDestination::Top, LibraryDestination::Bottom] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let old_ref = g.object_ref(target);
+            g.change_controller(old_ref, p);
+            let land = put(&mut g, p, "Forest", Zone::Battlefield);
+            let plan = put(&mut g, p, "Plan for All Outcomes", Zone::Hand);
+            cast(&mut g, plan, None);
+            let mut selected = false;
+            for _ in 0..48 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let wanted = Action::ChooseTarget {
+                    target: Target::Card(target),
+                };
+                if actions.contains(&wanted) {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(land),
+                        },
+                    );
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(plan),
+                        },
+                    );
+                    act(&mut g, wanted);
+                    selected = true;
+                    break;
+                }
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+            assert!(selected);
+            for _ in 0..48 {
+                if matches!(g.state.pending, Pending::TargetLibrary { .. }) {
+                    break;
+                }
+                act(&mut g, Action::Pass);
+            }
+            assert_eq!(g.actor(), Some(p.other()));
+            let choice = Action::ChooseLibraryDestination {
+                object: g.object_ref(target),
+                destination,
+            };
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            act(&mut g, choice.clone());
+            settle(&mut g);
+            assert_eq!(g.object_view(target).zone, Zone::Library);
+            let library = &g.state.players[p.other().index()].library;
+            assert_eq!(
+                if destination == LibraryDestination::Top {
+                    library.last()
+                } else {
+                    library.first()
+                },
+                Some(&target)
+            );
+            let after = g.snapshot();
+            g.restore(&before).unwrap();
+            act(&mut g, choice);
+            settle(&mut g);
+            assert_eq!(g.snapshot(), after);
+        }
+    }
+}
+
+#[test]
+fn plan_for_all_outcomes_counts_first_noncreature_cast_before_entry() {
+    for p in [Player::P0, Player::P1] {
+        for already_cast in [false, true] {
+            let mut g = scenario(p);
+            if already_cast {
+                let earlier = put(&mut g, p, "Shock", Zone::Hand);
+                cast(&mut g, earlier, Some(Target::Player(p.other())));
+                settle(&mut g);
+            }
+            put(&mut g, p, "Plan for All Outcomes", Zone::Battlefield);
+            let creature = put(&mut g, p, "Bear Cub", Zone::Hand);
+            cast(&mut g, creature, None);
+            settle(&mut g);
+            let first = put(&mut g, p, "Shock", Zone::Hand);
+            cast(&mut g, first, Some(Target::Player(p.other())));
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            let jaces = fra_jaces(&g, p);
+            assert_eq!(jaces.len(), if already_cast { 0 } else { 1 });
+            if !already_cast {
+                assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 1);
+            }
+            let second = put(&mut g, p, "Shock", Zone::Hand);
+            cast(&mut g, second, Some(Target::Player(p.other())));
+            settle(&mut g);
+            let jaces = fra_jaces(&g, p);
+            assert_eq!(jaces.len(), if already_cast { 0 } else { 1 });
+            if !already_cast {
+                assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 1);
+            }
+        }
+    }
+}

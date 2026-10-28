@@ -1,16 +1,34 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct Oracle behavior; the cast ordinal includes spells cast before entry.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Object {
+                    zone: TargetZone::Battlefield,
+                    kinds: 0,
+                    relation: -1,
+                    other: true,
+                    nonland: true,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: u32::MAX,
+                },
+                min: 0,
+                max: 1,
+            }),
+            program: &[Instruction::OwnerLibrary],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: CastFilter::NonCreatureOrdinal(1),
+                ordinal: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::EnsureJaceToken, Instruction::EmpowerJace(1)],
+        },
+    ],
     ..CardRules::EMPTY
 };
