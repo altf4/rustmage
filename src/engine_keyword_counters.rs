@@ -2,7 +2,7 @@
 use super::*;
 
 impl CounterKind {
-    pub(crate) const KEYWORDS: [Self; 11] = [
+    pub(crate) const KEYWORDS: [Self; 12] = [
         Self::Haste,
         Self::Flying,
         Self::FirstStrike,
@@ -14,6 +14,7 @@ impl CounterKind {
         Self::Reach,
         Self::Trample,
         Self::Vigilance,
+        Self::Hexproof,
     ];
     pub(crate) fn keyword(self) -> Option<Keywords> {
         Some(match self {
@@ -28,14 +29,15 @@ impl CounterKind {
             Self::Reach => Keywords::REACH,
             Self::Trample => Keywords::TRAMPLE,
             Self::Vigilance => Keywords::VIGILANCE,
+            Self::Hexproof => Keywords::HEXPROOF,
             _ => return None,
         })
     }
 }
 impl CounterAmounts<'_> {
-    pub(super) fn keyword_amounts(self) -> [u64; 11] {
+    pub(super) fn keyword_amounts(self) -> [u64; CounterKind::KEYWORDS.len()] {
         if self.named.is_none() {
-            return [0; 11];
+            return [0; CounterKind::KEYWORDS.len()];
         }
         CounterKind::KEYWORDS.map(|kind| self.get(kind))
     }
@@ -45,8 +47,8 @@ impl CounterAmounts<'_> {
 pub(super) fn sync_effects(
     state: &mut roles::RoleState,
     object: ObjectRef,
-    before: [u64; 11],
-    after: [u64; 11],
+    before: [u64; CounterKind::KEYWORDS.len()],
+    after: [u64; CounterKind::KEYWORDS.len()],
     timestamp: Option<u64>,
 ) {
     for (i, kind) in CounterKind::KEYWORDS.into_iter().enumerate() {

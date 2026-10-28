@@ -2707,3 +2707,56 @@ fn mabel_counter_target_rechecks_hexproof_and_survives_source_departure() {
         assert!(g.state.pending_triggers.is_empty());
     }
 }
+
+#[test]
+fn mabel_can_remove_a_hexproof_counter_from_an_owned_creature() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let target = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        g.add_counter(target, CounterKind::Hexproof, 1);
+        assert!(g.keywords(target).contains(Keywords::HEXPROOF));
+        let source = put(&mut g, p, "Mabel, Bitter Recluse", Zone::Hand);
+        cast(&mut g, source, None);
+        let mut targeted = false;
+        for _ in 0..64 {
+            g.prepare_triggers();
+            if matches!(g.state.pending, Pending::TargetCounterRemoval { .. }) {
+                break;
+            }
+            let actions = g.legal_actions();
+            let wanted = Action::ChooseTarget {
+                target: Target::Card(target),
+            };
+            if !targeted && actions.contains(&wanted) {
+                act(&mut g, wanted);
+                targeted = true;
+            } else if actions.contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            } else if let Some(action) = actions
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+            {
+                act(&mut g, action);
+            } else {
+                panic!("unexpected Mabel hexproof choice {:?}", g.state.pending);
+            }
+        }
+        assert!(targeted);
+        super::contracts::branch_contract(g.clone());
+        let before = g.snapshot();
+        act(
+            &mut g,
+            Action::SelectTargetCounter {
+                counter: CounterKind::Hexproof,
+            },
+        );
+        assert!(g.keywords(target).contains(Keywords::HEXPROOF));
+        act(&mut g, Action::FinishTargetCounterRemoval);
+        settle(&mut g);
+        assert_eq!(g.counter_count(target, CounterKind::Hexproof), 0);
+        assert!(!g.keywords(target).contains(Keywords::HEXPROOF));
+        g.restore(&before).unwrap();
+        assert_eq!(g.counter_count(target, CounterKind::Hexproof), 1);
+        assert!(g.keywords(target).contains(Keywords::HEXPROOF));
+    }
+}

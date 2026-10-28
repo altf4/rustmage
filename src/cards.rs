@@ -2547,10 +2547,11 @@ pub enum CounterKind {
     Hone,
     Quest,
     Defense,
+    Hexproof,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 34] = [
+    pub const ALL: [Self; 35] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -2585,6 +2586,7 @@ impl CounterKind {
         Self::Hone,
         Self::Quest,
         Self::Defense,
+        Self::Hexproof,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -2618,6 +2620,7 @@ impl CounterKind {
                 | Self::Hone
                 | Self::Quest
                 | Self::Defense
+                | Self::Hexproof
         )
     }
 }

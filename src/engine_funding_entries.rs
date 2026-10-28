@@ -1174,7 +1174,7 @@ impl FundingState<'_> {
             keyword_counters::sync_effects(
                 &mut p.roles,
                 source,
-                [0; 11],
+                [0; CounterKind::KEYWORDS.len()],
                 CounterAmounts::from(&m.counters).keyword_amounts(),
                 Some(timestamp),
             );
