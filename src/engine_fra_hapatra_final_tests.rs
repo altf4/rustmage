@@ -38,6 +38,7 @@ fn hapatra_frost_untapped_target_legality_and_unfunded_activation() {
         let source = put(&mut g, p, "Hapatra, the Desert Frost", Zone::Battlefield);
         let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let land = put(&mut g, p, "Forest", Zone::Battlefield);
+        g.state.objects[land as usize].tapped = true;
         let activation = Action::AnnounceActivate {
             card: source,
             ability: 0,
