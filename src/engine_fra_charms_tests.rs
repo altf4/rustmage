@@ -2127,7 +2127,7 @@ fn jiang_yanggu_creates_legendary_mowu_and_untaps_all_owned_tokens() {
         assert_eq!(view.colors, 16);
         assert_eq!(stats(&g, mowu), (3, 3));
         g.create_tokens(p, Card(5246), 2, false);
-        g.create_tokens(p.other(), Card(5246), 1, false);
+        g.create_tokens(p.other(), Card(5246), 2, false);
         let foods: Vec<_> = g
             .state
             .objects
@@ -2138,7 +2138,14 @@ fn jiang_yanggu_creates_legendary_mowu_and_untaps_all_owned_tokens() {
                     .then_some((id as CardId, o.controller))
             })
             .collect();
-        assert_eq!(foods.len(), 3);
+        assert_eq!(foods.len(), 4);
+        let stolen = foods
+            .iter()
+            .find(|(_, owner)| *owner == p.other())
+            .unwrap()
+            .0;
+        let stolen_ref = g.object_ref(stolen);
+        g.change_controller(stolen_ref, p);
         for &(id, _) in &foods {
             g.state.objects[id as usize].tapped = true;
         }
@@ -2151,8 +2158,12 @@ fn jiang_yanggu_creates_legendary_mowu_and_untaps_all_owned_tokens() {
         settle(&mut g);
         assert!(!g.object_view(mowu).tapped);
         for (id, owner) in foods {
-            assert_eq!(g.object_view(id).tapped, owner != p || id == stunned);
+            assert_eq!(
+                g.object_view(id).tapped,
+                (owner != p && id != stolen) || id == stunned
+            );
         }
+        assert_eq!(g.object_view(stolen).owner, p.other());
         assert_eq!(g.counter_count(stunned, CounterKind::Stun), 0);
     }
 }
