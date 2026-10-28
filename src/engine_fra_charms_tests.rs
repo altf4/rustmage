@@ -6648,3 +6648,39 @@ fn hunters_axe_attack_choice_does_not_affect_returned_creature() {
         assert!(!g.keywords(bearer).contains(Keywords::DEATHTOUCH));
     }
 }
+
+#[test]
+fn hunters_axe_equip_is_sorcery_speed_and_uses_exact_target_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let axe = put(&mut g, p, "Hunter's Axe", Zone::Battlefield);
+        let bearer = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let activation = Action::AnnounceActivate {
+            card: axe,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        g.state.step = Step::BeginCombat;
+        reject(&mut g, activation.clone());
+        g.state.step = Step::Main1;
+        act(&mut g, activation);
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bearer),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        let before = g.object_ref(bearer);
+        g.move_object(bearer, Zone::Graveyard);
+        g.move_object(bearer, Zone::Battlefield);
+        assert_ne!(g.object_ref(bearer), before);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.object_view(axe).attached_to, None);
+        assert_eq!(stats(&g, bearer), (2, 2));
+    }
+}
