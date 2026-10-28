@@ -6427,3 +6427,43 @@ fn break_under_pressure_does_nothing_if_its_target_becomes_illegal() {
         assert_eq!(g.state.players[p.index()].life, life);
     }
 }
+
+#[test]
+fn break_under_pressure_uses_current_copied_mana_values_at_resolution() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let changed = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let highest = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let spell = put(&mut g, p, "Break Under Pressure", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        let changed_ref = g.object_ref(changed);
+        g.apply_temporary_copy(
+            changed_ref,
+            CopyRecipe::new(Card::from_name("Bear Cub").unwrap()),
+            CopyDeadline::EndOfTurn,
+        );
+        assert!(g.object_mana_value(changed) < g.object_mana_value(highest));
+        for _ in 0..32 {
+            if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        reject(
+            &mut g,
+            Action::Sacrifice {
+                object: changed_ref,
+            },
+        );
+        let highest_ref = g.object_ref(highest);
+        act(
+            &mut g,
+            Action::Sacrifice {
+                object: highest_ref,
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(highest).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(changed).zone, Zone::Battlefield);
+    }
+}
