@@ -6493,3 +6493,74 @@ fn koth_ignores_opponents_land_and_its_queued_trigger_survives_departure() {
         assert_eq!(g.state.players[p.index()].mana[3], 1);
     }
 }
+
+#[test]
+fn hunters_axe_grants_attack_choice_to_equipped_creature() {
+    for p in [Player::P0, Player::P1] {
+        for (index, keyword, remove_axe) in [
+            (0, Keywords::TRAMPLE, false),
+            (1, Keywords::DEATHTOUCH, false),
+            (1, Keywords::DEATHTOUCH, true),
+        ] {
+            let mut g = scenario(p);
+            let bearer = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let axe = put(&mut g, p, "Hunter's Axe", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: axe,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bearer),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.object_view(axe).attached_to, Some(g.object_ref(bearer)));
+            assert_eq!(stats(&g, bearer), (4, 2));
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            act(&mut g, Action::Attack { card: bearer });
+            act(&mut g, Action::FinishAttackers);
+            if remove_axe {
+                g.move_object(axe, Zone::Graveyard);
+            }
+            for _ in 0..48 {
+                if g.legal_actions().contains(&Action::ChooseKeyword { index }) {
+                    break;
+                }
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+            assert_eq!(g.actor(), Some(p));
+            let view = g.observe(p).keyword_choice.expect("attack keyword choice");
+            assert_eq!(view.recipients, vec![g.object_ref(bearer)]);
+            assert_eq!(view.choices, vec![Keywords::TRAMPLE, Keywords::DEATHTOUCH]);
+            let saved = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            act(&mut g, Action::ChooseKeyword { index });
+            assert!(g.keywords(bearer).contains(keyword));
+            g.restore(&saved).unwrap();
+            act(&mut g, Action::ChooseKeyword { index });
+            assert!(g.keywords(bearer).contains(keyword));
+            g.finish_cleanup();
+            assert!(!g.keywords(bearer).contains(keyword));
+        }
+    }
+}
