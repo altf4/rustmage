@@ -2921,3 +2921,87 @@ fn marwyn_land_hexproof_changes_actual_target_legality() {
         ));
     }
 }
+
+#[test]
+fn stingerquill_charm_modes_and_doubled_cadet_haste() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            let mut g = scenario(p);
+            let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            g.create_tokens(p, Card(5298), 1, false);
+            settle(&mut g);
+            let old_cadet = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .find_map(|(i, o)| {
+                    (o.zone == Zone::Battlefield && o.is_token() && o.card == Card(5298))
+                        .then_some(i as CardId)
+                })
+                .unwrap();
+            if mode == 2 {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let charm = put(&mut g, p, "Stingerquill Charm", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 1, 0, 0];
+            let life = g.state.players[p.other().index()].life;
+            act(&mut g, Action::AnnounceCast { card: charm });
+            act(&mut g, Action::ChooseMode { mode });
+            if mode == 0 {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    },
+                );
+            } else if mode == 1 {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(creature),
+                    },
+                );
+            }
+            pay(&mut g);
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            match mode {
+                0 => assert_eq!(g.state.players[p.other().index()].life, life - 3),
+                1 => {
+                    assert!(g.keywords(creature).contains(Keywords::FIRST_STRIKE));
+                    assert!(g.keywords(creature).contains(Keywords::DEATHTOUCH));
+                    g.finish_cleanup();
+                    assert!(!g.keywords(creature).contains(Keywords::FIRST_STRIKE));
+                    assert!(!g.keywords(creature).contains(Keywords::DEATHTOUCH));
+                }
+                _ => {
+                    let cadets: Vec<_> = g
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(i, o)| {
+                            (o.zone == Zone::Battlefield
+                                && o.controller == p
+                                && o.is_token()
+                                && o.card == Card(5298)
+                                && i as CardId != old_cadet)
+                                .then_some(i as CardId)
+                        })
+                        .collect();
+                    assert_eq!(cadets.len(), 2);
+                    assert!(!g.keywords(old_cadet).contains(Keywords::HASTE));
+                    for &id in &cadets {
+                        assert!(g.keywords(id).contains(Keywords::HASTE));
+                        assert_eq!(stats(&g, id), (2, 2));
+                    }
+                    g.finish_cleanup();
+                    for id in cadets {
+                        assert!(!g.keywords(id).contains(Keywords::HASTE));
+                    }
+                }
+            }
+        }
+    }
+}

@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5b1ecb522b63abc583cf31640e9cbe96ce90200de82dc84f1feebd44753ada28"
   },
-  "physical_metadata_sha256": "68e21f75a1ac8a71c794d16804be4aaaa9fb378fea4d8c92b6b5385fd8e98ca9"
+  "physical_metadata_sha256": "68e21f75a1ac8a71c794d16804be4aaaa9fb378fea4d8c92b6b5385fd8e98ca9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StingerquillCharm.java",
+  "java_sha256": "75ca0dfd588fff06e33abd1659326875cbdbaa9a2a3b028e024497f481c6e96c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/CadetToken.java",
+      "sha256": "9e9b0eaec4d6f703141db5932b446205f25adb25e8fea103cd16d937fb0ef52a"
+    }
+  ]
 }
