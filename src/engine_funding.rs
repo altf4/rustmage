@@ -3694,6 +3694,7 @@ mod fra_subtype_grant_tests {
             g.state.objects[saheeli as usize].card =
                 Card::from_name("Saheeli, Jewel of Avishkar").unwrap();
             g.register_battlefield_sources(saheeli);
+            assert!(g.state.static_sources.contains(&saheeli));
             g.create_tokens(p, Card(5266), 1, false);
             let thopter = g
                 .state
