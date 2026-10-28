@@ -1204,3 +1204,297 @@ fn fra_surgical_precision_indestructible_and_changed_toughness() {
         assert_eq!(g.state.players[p.index()].life, 21);
     }
 }
+
+#[test]
+fn fra_empower_replacement_order_non_targeting_and_replay() {
+    use super::big_helpers::{cast, checked, setup, spawn};
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        spawn(
+            &mut g,
+            p,
+            Card::from_name("Doubling Season").unwrap(),
+            Zone::Battlefield,
+        );
+        spawn(
+            &mut g,
+            p,
+            Card::from_name("Doc Samson, Super Psychiatrist").unwrap(),
+            Zone::Battlefield,
+        );
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("No Admittance").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, spell, None, &[Target::Player(p.other())]);
+        for _ in 0..30 {
+            if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::ChooseReplacement { .. }))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        let choices: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter_map(|a| match a {
+                Action::ChooseJace { object } => Some(object),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(choices.len(), 2);
+        g.state.objects[choices[0].card as usize].gained_keywords = Keywords::HEXPROOF;
+        assert!(
+            g.legal_actions()
+                .contains(&Action::ChooseJace { object: choices[0] })
+        );
+        checked(&mut g, Action::ChooseJace { object: choices[0] });
+        assert!(matches!(g.state.pending, Pending::Replacement { .. }));
+        let actions: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter(|a| matches!(a, Action::ChooseReplacement { .. }))
+            .collect();
+        assert_eq!(actions.len(), 2);
+        let mut alternate = g.clone();
+        checked(&mut g, actions[0].clone());
+        checked(&mut alternate, actions[1].clone());
+        super::big_helpers::settle(&mut g);
+        super::big_helpers::settle(&mut alternate);
+        let a = g.counter_count(choices[0].card, CounterKind::Loyalty);
+        let b = alternate.counter_count(choices[0].card, CounterKind::Loyalty);
+        assert_eq!((a.min(b), a.max(b)), (3, 4));
+    }
+}
+
+#[test]
+fn fra_empower_fizzle_and_loyalty_once_per_turn() {
+    use super::big_helpers::{cast, checked, settle, setup, spawn};
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let victim = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("No Admittance").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, spell, None, &[Target::Card(victim)]);
+        g.move_object(victim, Zone::Hand);
+        settle(&mut g);
+        assert!(
+            !g.state
+                .objects
+                .iter()
+                .any(|o| o.zone == Zone::Battlefield && o.is_token())
+        );
+        for _ in 0..2 {
+            let spell = spawn(
+                &mut g,
+                p,
+                Card::from_name("No Admittance").unwrap(),
+                Zone::Hand,
+            );
+            cast(&mut g, spell, None, &[Target::Player(p.other())]);
+            settle(&mut g);
+        }
+        let jace = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| o.zone == Zone::Battlefield && o.controller == p && o.is_token())
+            .unwrap()
+            .0 as CardId;
+        assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 2);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: jace,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        while g.state.announcing.is_some() {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        settle(&mut g);
+        let before = g.snapshot();
+        assert_eq!(
+            g.apply(
+                p,
+                Action::AnnounceActivate {
+                    card: jace,
+                    ability: 0,
+                    counter_payment: Counters::default()
+                }
+            ),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), before);
+    }
+}
+
+#[test]
+fn fra_empower_scaled_zero_and_three() {
+    use super::big_helpers::{setup, spawn};
+    for p in [Player::P0, Player::P1] {
+        for amount in [0u16, 3] {
+            let mut g = setup(p);
+            let source = spawn(
+                &mut g,
+                p,
+                Card::from_name("Bear Cub").unwrap(),
+                Zone::Battlefield,
+            );
+            let item = g.activation_item(p, source, 0);
+            let program: &'static [Instruction] = if amount == 0 {
+                &[
+                    Instruction::EnsureJaceToken,
+                    Instruction::EmpowerJaceScaled(AmountValue::Fixed(0)),
+                ]
+            } else {
+                &[
+                    Instruction::EnsureJaceToken,
+                    Instruction::EmpowerJaceScaled(AmountValue::Fixed(3)),
+                ]
+            };
+            g.state.resolving = Some(Resolution {
+                chosen_creature_type: None,
+                linked_copy: None,
+                cascade: None,
+                target_card_facts: None,
+                sacrificed_power: None,
+                immediate_blink_return: None,
+                connive: None,
+                explore: None,
+                evidence: None,
+                item,
+                mana_payment: None,
+                forage: None,
+                target_library: None,
+                program,
+                pc: 0,
+                target_group: 0,
+                moved_count: None,
+                discard_after: None,
+                discards: [0; 2],
+                selected_discards: [vec![], vec![]],
+                milled: vec![],
+                milled_selection: None,
+                library: None,
+                selection: None,
+                return_attachment: None,
+                search: None,
+                search_result: None,
+                optional_searches: None,
+                choice: None,
+            });
+            g.run_program();
+            let jace = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .find(|(_, o)| o.zone == Zone::Battlefield && o.controller == p && o.is_token())
+                .map(|(id, _)| id as CardId);
+            if amount == 3 {
+                assert_eq!(g.counter_count(jace.unwrap(), CounterKind::Loyalty), 3);
+            } else {
+                assert!(
+                    jace.is_none() || g.counter_count(jace.unwrap(), CounterKind::Loyalty) == 0
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn fra_empower_checks_current_control_card_type_and_subtype() {
+    use super::big_helpers::{cast, settle, setup, spawn};
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            let mut g = setup(p);
+            let spell = spawn(
+                &mut g,
+                p,
+                Card::from_name("No Admittance").unwrap(),
+                Zone::Hand,
+            );
+            cast(&mut g, spell, None, &[Target::Player(p.other())]);
+            settle(&mut g);
+            let jace = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .find(|(_, o)| o.zone == Zone::Battlefield && o.controller == p && o.is_token())
+                .unwrap()
+                .0 as CardId;
+            let reference = g.object_ref(jace);
+            if mode == 0 {
+                g.change_controller(reference, p.other());
+            } else {
+                let mut recipe = CopyRecipe::new(Card::JacePlaneswalkerToken);
+                recipe.overrides = Some(CopyOverrides {
+                    kinds: Some(if mode == 1 { 16 } else { 64 }),
+                    types: (mode == 2).then_some(CopyTypes {
+                        replace: true,
+                        ..CopyTypes::default()
+                    }),
+                    ..CopyOverrides::NONE
+                });
+                g.apply_temporary_copy(reference, recipe, CopyDeadline::EndOfTurn);
+                assert!(g.state.objects[jace as usize].is_token());
+                if mode == 1 {
+                    assert_eq!(g.current_kinds(jace) & 64, 0);
+                }
+                if mode == 2 {
+                    assert!(!g.has_subtype(jace, "Jace"));
+                }
+            }
+            let spell = spawn(
+                &mut g,
+                p,
+                Card::from_name("No Admittance").unwrap(),
+                Zone::Hand,
+            );
+            cast(&mut g, spell, None, &[Target::Player(p.other())]);
+            settle(&mut g);
+            assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 1);
+            let own: Vec<_> = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(id, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == p
+                        && o.is_token()
+                        && g.current_kinds(*id as CardId) & 64 != 0
+                        && g.has_subtype(*id as CardId, "Jace")
+                })
+                .map(|(id, _)| id as CardId)
+                .collect();
+            assert_eq!(own.len(), 1);
+            assert_ne!(own[0], jace);
+            assert_eq!(g.counter_count(own[0], CounterKind::Loyalty), 1);
+        }
+    }
+}
