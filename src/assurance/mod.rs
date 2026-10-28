@@ -386,3 +386,5 @@ mod fra_rattler_dark;
 mod fra_removal_interactions;
 mod fra_traxos_interactions;
 mod fra_wrath_twisted;
+
+mod fra_barbs_garden;
