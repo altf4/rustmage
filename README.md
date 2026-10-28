@@ -46,7 +46,7 @@ To explore the project:
 
 `███████░░░░░░░░░░░░░`
 
-**2,992 / 5,164 unique Standard cards implemented across accepted branches · 58%**
+**3,027 / 5,164 unique Standard cards implemented across accepted branches · 58%**
 
 `████████████░░░░░░░░`
 
@@ -64,14 +64,14 @@ into `main`, alongside [Secrets of Strixhaven](https://github.com/altf4/rustmage
 [bounded card and interaction assurance](docs/msh-bounded-assurance-rebuild.json);
 its earlier full-game receipts are historical.
 The totals below combine accepted coverage by unique identity. The current `main`
-[coverage report](https://github.com/altf4/rustmage/blob/main/data/standard/coverage.json) separately admits 2,702 cards;
-its lower count does not undo accepted set milestones. Counts refreshed 2026-10-26.
+[coverage report](https://github.com/altf4/rustmage/blob/main/data/standard/coverage.json) separately admits 2,740 cards;
+its lower count does not undo accepted set milestones. Counts refreshed 2026-10-27.
 
 <!-- Refresh supported counts from the union of accepted implementation branches,
      using their pinned set membership and coverage reports. Deduplicate by physical
      identity; never demote an accepted set using a checkout that lacks its merged
      integration branch. Keep current-main admission separate from accepted coverage.
-     This refresh unions main at 0986d146 and codex/portable-set-skill at 91b4d6de.
+     This refresh unions main at c55abea3 and codex/portable-set-skill at 91b4d6de.
      Reconcile set acceptance with its rules/game evidence and published PR. -->
 
 | Set | Code | Supported cards | Implementation status |
@@ -79,23 +79,23 @@ its lower count does not undo accepted set milestones. Counts refreshed 2026-10-
 | Foundations | FDN | 517/517 (100%) | ✅ Complete |
 | Lorwyn Eclipsed | ECL | 273/273 (100%) | ✅ Complete |
 | Teenage Mutant Ninja Turtles | TMT | 195/195 (100%) | ✅ Complete |
-| Aetherdrift | DFT | 110/276 (40%) | ⏳ Partial |
-| Avatar: The Last Airbender | TLA | 97/286 (34%) | ⏳ Partial |
-| Bloomburrow | BLB | 127/279 (46%) | ⏳ Partial |
-| Duskmourn: House of Horror | DSK | 85/276 (31%) | ⏳ Partial |
-| Edge of Eternities | EOE | 110/266 (41%) | ⏳ Partial |
-| Final Fantasy | FIN | 133/312 (43%) | ⏳ Partial |
+| Aetherdrift | DFT | 111/276 (40%) | ⏳ Partial |
+| Avatar: The Last Airbender | TLA | 100/286 (35%) | ⏳ Partial |
+| Bloomburrow | BLB | 132/279 (47%) | ⏳ Partial |
+| Duskmourn: House of Horror | DSK | 87/276 (32%) | ⏳ Partial |
+| Edge of Eternities | EOE | 115/266 (43%) | ⏳ Partial |
+| Final Fantasy | FIN | 135/312 (43%) | ⏳ Partial |
 | Marvel Super Heroes | MSH | 281/281 (100%) | ✅ Complete |
-| Marvel's Spider-Man | SPM | 76/193 (39%) | ⏳ Partial |
-| Murders at Karlov Manor | MKM | 81/279 (29%) | ⏳ Partial |
+| Marvel's Spider-Man | SPM | 79/193 (41%) | ⏳ Partial |
+| Murders at Karlov Manor | MKM | 82/279 (29%) | ⏳ Partial |
 | Outlaws of Thunder Junction | OTJ | 101/276 (37%) | ⏳ Partial |
-| Reality Fracture | FRA | 89/285 (31%) | ⏳ Partial |
+| Reality Fracture | FRA | 93/285 (33%) | ⏳ Partial |
 | Secrets of Strixhaven | SOS | 271/271 (100%) | ✅ Complete |
-| Tarkir: Dragonstorm | TDM | 127/276 (46%) | ⏳ Partial |
+| Tarkir: Dragonstorm | TDM | 130/276 (47%) | ⏳ Partial |
 | The Big Score | BIG | 30/30 (100%) | ✅ Complete |
 | The Hobbit | HOB | 193/193 (100%) | ✅ Complete |
-| The Lost Caverns of Ixalan | LCI | 105/291 (36%) | ⏳ Partial |
-| Wilds of Eldraine | WOE | 150/281 (53%) | ⏳ Partial |
+| The Lost Caverns of Ixalan | LCI | 108/291 (37%) | ⏳ Partial |
+| Wilds of Eldraine | WOE | 153/281 (54%) | ⏳ Partial |
 
 Supported counts use the union of the accepted branches’ coverage reports
 and full physical set membership from pinned XMage tables and Oracle facts,
