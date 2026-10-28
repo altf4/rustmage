@@ -681,3 +681,30 @@ fn way_of_the_mentor_counters_follow_replacement_effects() {
         assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 12);
     }
 }
+
+#[test]
+fn traxos_untap_restriction_and_cast_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let traxos = put(&mut g, p, "Traxos, Scourge Eternal", Zone::Battlefield);
+        assert!(g.keywords(traxos).contains(Keywords::TRAMPLE));
+        g.state.objects[traxos as usize].tapped = true;
+        g.untap_active_player();
+        assert!(g.state.objects[traxos as usize].tapped);
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        settle(&mut g);
+        assert!(g.state.objects[traxos as usize].tapped);
+        let creature = put(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, creature, None);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert!(!g.state.objects[traxos as usize].tapped);
+        let aura = put(&mut g, p.other(), "Witness Protection", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(traxos));
+        g.state.objects[traxos as usize].tapped = true;
+        assert!(!g.printed_abilities_available(traxos));
+        g.untap_active_player();
+        assert!(!g.state.objects[traxos as usize].tapped);
+    }
+}
