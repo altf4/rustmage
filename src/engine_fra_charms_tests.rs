@@ -1002,3 +1002,37 @@ fn wrath_of_the_bloodmane_reduction_and_creature_or_planeswalker_damage() {
         }
     }
 }
+
+#[test]
+fn craterclaw_freezes_current_artifact_count_and_recipients() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let opposing = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let artifact = put(&mut g, p, "Mox Jasper", Zone::Battlefield);
+        put(&mut g, p.other(), "Mox Jasper", Zone::Battlefield);
+        let source = put(&mut g, p, "Craterclaw Colossus", Zone::Hand);
+        cast(&mut g, source, None);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (7, 5));
+        assert!(g.keywords(source).contains(Keywords::HASTE));
+        assert!(g.keywords(source).contains(Keywords::TRAMPLE));
+        assert_eq!(stats(&g, own), (4, 2));
+        assert!(g.keywords(own).contains(Keywords::TRAMPLE));
+        assert_eq!(stats(&g, opposing), (2, 2));
+        assert!(!g.keywords(opposing).contains(Keywords::TRAMPLE));
+        g.move_object(artifact, Zone::Graveyard);
+        let late = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        assert_eq!(stats(&g, own), (4, 2));
+        assert_eq!(stats(&g, late), (2, 2));
+        assert!(!g.keywords(late).contains(Keywords::TRAMPLE));
+        let reference = g.object_ref(own);
+        g.change_controller(reference, p.other());
+        assert_eq!(stats(&g, own), (4, 2));
+        assert!(g.keywords(own).contains(Keywords::TRAMPLE));
+        g.finish_cleanup();
+        assert_eq!(stats(&g, own), (2, 2));
+        assert!(!g.keywords(own).contains(Keywords::TRAMPLE));
+    }
+}

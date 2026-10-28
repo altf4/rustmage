@@ -8,5 +8,35 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "420b041af521be8637be3d80b086af747f0e4da1a6fae8a91b89ff10518afc2e"
   },
-  "physical_metadata_sha256": "89e48be142853cad45308d88f6a5ee1a34dee6bcef5114e5338ba91055af9256"
+  "physical_metadata_sha256": "89e48be142853cad45308d88f6a5ee1a34dee6bcef5114e5338ba91055af9256",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CraterclawColossus.java",
+  "java_sha256": "ed2b11894032e64472ebede5e9e3b3686f00db35eda45b32950a7783ecf17545",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ArtifactYouControlCount.java",
+      "sha256": "92087ef848245fb2f446712fb82cfc54bd7d12bf00b8babd522e4ba655a52a6a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }
