@@ -11,5 +11,17 @@
   "physical_metadata_sha256": "0dffbb3d9e8ec9f8196f43599b5796f2e71368cf073b73023e12140d9d945c09",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TraxosAcademyGuardian.java",
-  "java_sha256": "44d959c33f4c033c0fa1cee3fe084b56079073574e7a92f6d466c7c3c5287ff6"
+  "java_sha256": "44d959c33f4c033c0fa1cee3fe084b56079073574e7a92f6d466c7c3c5287ff6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    }
+  ]
 }
