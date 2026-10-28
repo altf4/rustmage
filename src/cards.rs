@@ -4592,6 +4592,14 @@ impl Card {
             .find(|(index, _)| *index == ability)
             .map(|(_, rule)| *rule)
     }
+    pub(crate) fn activation_target_counter_discount(self, ability: u16) -> Option<CounterKind> {
+        authored::RULES[self.index()]
+            .extras
+            .activation_target_counter_discounts
+            .iter()
+            .find(|(index, _)| *index == ability)
+            .map(|(_, kind)| *kind)
+    }
     pub(crate) fn activation_subtype_discount(self, ability: u16) -> Option<&'static str> {
         authored::RULES[self.index()]
             .extras

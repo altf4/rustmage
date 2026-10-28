@@ -30,6 +30,9 @@ impl Game {
     pub(super) fn activation_target_sensitive(definition: Card, ability: u16) -> bool {
         definition.activation(ability).is_equip()
             || definition.activation_target_reduction(ability).is_some()
+            || definition
+                .activation_target_counter_discount(ability)
+                .is_some()
     }
     pub(super) fn first_equip_zero_available(
         &self,

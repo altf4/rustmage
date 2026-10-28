@@ -4739,3 +4739,72 @@ fn silence_the_echo_sacrifice_or_mana_and_target_legality() {
         }
     }
 }
+
+#[test]
+fn warriors_blades_equip_cost_uses_chosen_creature_counters() {
+    for p in [Player::P0, Player::P1] {
+        for counters in 0..=4u64 {
+            for fizzle in [false, true] {
+                let mut g = scenario(p);
+                let equipment = put(&mut g, p, "Warrior's Blades", Zone::Battlefield);
+                let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let poor = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+                g.add_counter(target, CounterKind::PlusOne, counters);
+                let cost = 3u32.saturating_sub(u32::try_from(counters).unwrap());
+                g.state.players[p.index()].mana = [0, 0, 0, 0, 0, cost];
+                act(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: equipment,
+                        ability: 0,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(enemy),
+                    },
+                );
+                if counters > 0 {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(poor),
+                        },
+                    );
+                }
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+                pay(&mut g);
+                assert_eq!(g.state.players[p.index()].mana[5], 0);
+                if fizzle {
+                    g.move_object(target, Zone::Exile);
+                }
+                let before = g.snapshot();
+                super::contracts::branch_contract(g.clone());
+                settle(&mut g);
+                if fizzle {
+                    assert_eq!(g.object_view(equipment).attached_to, None);
+                } else {
+                    assert_eq!(
+                        g.object_view(equipment).attached_to,
+                        Some(g.object_ref(target))
+                    );
+                    assert_eq!(
+                        stats(&g, target),
+                        (4 + i128::from(counters), 3 + i128::from(counters))
+                    );
+                }
+                g.restore(&before).unwrap();
+                settle(&mut g);
+                assert_eq!(g.object_view(equipment).attached_to.is_some(), !fizzle);
+            }
+        }
+    }
+}

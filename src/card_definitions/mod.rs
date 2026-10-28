@@ -70,6 +70,23 @@ impl CardRules {
             }
             reduction_index += 1;
         }
+        let mut counter_reduction_index = 0;
+        while counter_reduction_index < self.extras.activation_target_counter_discounts.len() {
+            let (slot, _) =
+                self.extras.activation_target_counter_discounts[counter_reduction_index];
+            assert!(
+                (slot as usize) < self.activated.len(),
+                "target counter reduction lacks activated slot"
+            );
+            match self.activated[slot as usize].targets {
+                TargetPlan::Single(spec) => assert!(
+                    spec.min == 1 && spec.max == 1,
+                    "target counter reduction requires one target"
+                ),
+                _ => panic!("target counter reduction requires one target group"),
+            }
+            counter_reduction_index += 1;
+        }
         // A printed mana component opens the mana-ability payment window.
         // Reject zero-mana template flags copied into newly authored paid abilities.
         let mut index = 0;
@@ -164,6 +181,8 @@ pub(super) struct CardExtras {
     /// These are not alternative casting costs.
     pub power_up_mana_cost_alternatives: &'static [ManaCost],
     pub activation_target_reductions: &'static [(u16, TargetActivationReduction)],
+    /// Generic cost reduced by the chosen target's counters of this kind.
+    pub activation_target_counter_discounts: &'static [(u16, CounterKind)],
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     /// Reduce generic activation cost once per controlled permanent of this subtype.
     pub activation_subtype_discounts: &'static [(u16, &'static str)],
@@ -262,6 +281,7 @@ impl CardExtras {
         power_up_other_creature_reduction: 0,
         power_up_mana_cost_alternatives: &[],
         activation_target_reductions: &[],
+        activation_target_counter_discounts: &[],
         activation_counter_discounts: &[],
         activation_subtype_discounts: &[],
         activation_put_counters: &[],

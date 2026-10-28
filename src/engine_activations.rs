@@ -417,6 +417,10 @@ impl Game {
                         .card
                         .activation_target_reduction(index as u16)
                         .is_some()
+                        || object
+                            .card
+                            .activation_target_counter_discount(index as u16)
+                            .is_some()
                         || self.active_target_equip_reducer(actor, object.card, index as u16)
                     {
                         return self.visit_target_cost_direct_actions(

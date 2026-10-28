@@ -15,6 +15,16 @@ impl Game {
         {
             base.generic = base.generic.saturating_sub(rule.generic);
         }
+        if let (Some(kind), Target::Card(id)) = (
+            definition.activation_target_counter_discount(ability),
+            target,
+        ) {
+            if self.on_battlefield(id) {
+                base.generic = base.generic.saturating_sub(
+                    u32::try_from(self.counter_count(id, kind)).unwrap_or(u32::MAX),
+                );
+            }
+        }
         base.generic = base
             .generic
             .saturating_sub(self.equip_target_reduction(actor, definition, ability, target));
@@ -36,6 +46,16 @@ impl Game {
             base.generic = base.generic.saturating_sub(rule.generic);
         }
         for target in item.targets.iter().filter(|b| self.same_target_object(**b)) {
+            if let (Some(kind), Target::Card(id)) = (
+                item.source_card.activation_target_counter_discount(ability),
+                target.target,
+            ) {
+                if self.on_battlefield(id) {
+                    base.generic = base.generic.saturating_sub(
+                        u32::try_from(self.counter_count(id, kind)).unwrap_or(u32::MAX),
+                    );
+                }
+            }
             base.generic = base.generic.saturating_sub(self.equip_target_reduction(
                 item.controller,
                 item.source_card,
