@@ -1190,3 +1190,72 @@ fn flickering_hound_optional_target_and_owner_control() {
         }
     }
 }
+
+#[test]
+fn echoverse_fulcrum_entry_draw_discard_and_private_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let spare = put(&mut g, p, "Bear Cub", Zone::Hand);
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Hand);
+        let source = put(&mut g, p, "The Echoverse Fulcrum", Zone::Hand);
+        let library = g.state.players[p.index()].library.len();
+        cast(&mut g, source, None);
+        let mut discarded = false;
+        for _ in 0..48 {
+            let action = Action::Discard { card: spare };
+            if g.legal_actions().contains(&action) {
+                assert_eq!(g.actor(), Some(p));
+                reject(&mut g, Action::Discard { card: foreign });
+                super::contracts::branch_contract(g.clone());
+                act(&mut g, action);
+                discarded = true;
+            } else if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            } else {
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+        }
+        assert!(discarded);
+        assert_eq!(g.state.players[p.index()].library.len(), library - 1);
+        assert_eq!(g.object_view(spare).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(foreign).zone, Zone::Hand);
+    }
+}
+
+#[test]
+fn echoverse_fulcrum_sorcery_activation_exiles_cost_and_destroys_simultaneously() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "The Echoverse Fulcrum", Zone::Battlefield);
+        let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let opposing = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let indestructible = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.state.objects[indestructible as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+        let activate = Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        g.state.step = Step::BeginCombat;
+        reject(&mut g, activate.clone());
+        g.state.step = Step::Main1;
+        g.state.players[p.index()].mana = [0; 6];
+        g.state.players[p.index()].mana[5] = 4;
+        reject(&mut g, activate.clone());
+        g.state.players[p.index()].mana[5] = 5;
+        act(&mut g, activate);
+        pay(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.object_view(own).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(opposing).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(indestructible).zone, Zone::Battlefield);
+    }
+}

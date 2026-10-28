@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "57e1f7322d3a9c12bbb3f1d15c62b4b4102d6b71f17aeb90b4b0146aabadab7e"
   },
-  "physical_metadata_sha256": "6f82df28216d42843f488bb48a8a41a57756d39d92be93f61779f901d9e44a5e"
+  "physical_metadata_sha256": "6f82df28216d42843f488bb48a8a41a57756d39d92be93f61779f901d9e44a5e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheEchoverseFulcrum.java",
+  "java_sha256": "49d1a6b2ffb3db4dc7ad375255eeda56b49c8f985cf9d9d37f213d18a59466a8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceCost.java",
+      "sha256": "1cd064f3443f1a13cffbc141dbc6ddd71762a8a7a6b4c4d2aad6b432bf870d73"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    }
+  ]
 }
