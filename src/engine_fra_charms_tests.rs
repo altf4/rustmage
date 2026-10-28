@@ -1683,3 +1683,56 @@ fn graft_surgeon_death_sees_counter_pairs_before_state_based_removal() {
         assert_eq!(g.counter_count(target, CounterKind::MinusOne), 2);
     }
 }
+
+#[test]
+fn prophesied_end_uses_attacking_status_and_controller_at_resolution() {
+    for p in [Player::P0, Player::P1] {
+        for (attacking, indestructible, stolen, fizzle) in [
+            (false, false, false, false),
+            (true, false, false, false),
+            (false, true, false, false),
+            (false, false, true, false),
+            (false, false, false, true),
+        ] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            if indestructible {
+                g.state.objects[target as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+            }
+            if attacking {
+                g.state.attackers.push(Attacker {
+                    card: target,
+                    defender: Some(CombatDefender::Player(p)),
+                    blocked: false,
+                });
+            }
+            let spell = put(&mut g, p, "Prophesied End", Zone::Hand);
+            cast(&mut g, spell, Some(Target::Card(target)));
+            if stolen {
+                let reference = g.object_ref(target);
+                g.change_controller(reference, p);
+            }
+            if fizzle {
+                g.move_object(target, Zone::Exile);
+            }
+            let controller = if stolen { p } else { p.other() };
+            let before = g.state.players[controller.index()].library.len();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[controller.index()].library.len(),
+                before - usize::from(!attacking && !fizzle)
+            );
+            assert_eq!(
+                g.object_view(target).zone,
+                if fizzle {
+                    Zone::Exile
+                } else if indestructible {
+                    Zone::Battlefield
+                } else {
+                    Zone::Graveyard
+                }
+            );
+        }
+    }
+}

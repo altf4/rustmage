@@ -7,6 +7,7 @@ pub(super) struct TargetCardFacts {
     pub group: u16,
     pub controller: Player,
     pub mana_value: u64,
+    pub attacking: bool,
     pub power: i128,
 }
 
@@ -2039,6 +2040,7 @@ impl Game {
                             ..
                         }
                         | Instruction::DrawIfTargetController
+                        | Instruction::DrawTargetControllerIfNotAttacking
                         | Instruction::LoseLifeTargetCardManaValue(_)
                         | Instruction::MayTargetController { .. }
                         | Instruction::SearchTargetController(_)
@@ -2060,6 +2062,7 @@ impl Game {
                                 },
                                 controller: self.state.objects[card as usize].controller,
                                 mana_value: self.object_mana_value(card),
+                                attacking: self.state.attackers.iter().any(|a| a.card == card),
                             }),
                             _ => None,
                         })
@@ -3633,6 +3636,18 @@ impl Game {
                         && self.amass_goblins_for(&item, player, amount)
                     {
                         return;
+                    }
+                }
+                Instruction::DrawTargetControllerIfNotAttacking => {
+                    let player = self.state.resolving.as_ref().and_then(|r| {
+                        r.target_card_facts
+                            .as_ref()?
+                            .iter()
+                            .find(|f| f.group == r.target_group && !f.attacking)
+                            .map(|f| f.controller)
+                    });
+                    if let Some(player) = player {
+                        self.draw_many(player, 1);
                     }
                 }
                 Instruction::DrawIfTargetController => {

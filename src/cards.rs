@@ -980,6 +980,8 @@ pub(crate) enum Instruction {
         amount: AmountValue,
     },
     DrawIfTargetController,
+    /// Draw for the target's controller if it was not attacking at resolution.
+    DrawTargetControllerIfNotAttacking,
     /// Real nonmana variable activation cost; amount is declared before payment.
     SourceCounterCost {
         kind: CounterKind,
