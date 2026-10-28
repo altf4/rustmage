@@ -3630,3 +3630,79 @@ fn overwrite_counts_exiled_creatures_including_tokens_before_empower() {
         assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 3);
     }
 }
+
+#[test]
+fn vigorbloom_charm_protects_permanents_and_counters_before_fight() {
+    for p in [Player::P0, Player::P1] {
+        for case in 0..4 {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let land = put(&mut g, p, "Forest", Zone::Battlefield);
+            let spell = put(&mut g, p, "Vigorbloom Charm", Zone::Hand);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 1, 0];
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(
+                &mut g,
+                Action::ChooseMode {
+                    mode: if case == 0 { 0 } else { 2 },
+                },
+            );
+            if case == 0 {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(land),
+                    },
+                );
+            } else {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(own),
+                    },
+                );
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(enemy),
+                    },
+                );
+            }
+            pay(&mut g);
+            if case == 2 {
+                g.move_object(enemy, Zone::Exile);
+            }
+            if case == 3 {
+                g.move_object(own, Zone::Exile);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            if case == 0 {
+                assert!(g.keywords(land).contains(Keywords::HEXPROOF));
+                assert!(g.keywords(land).contains(Keywords::INDESTRUCTIBLE));
+                g.finish_cleanup();
+                assert!(!g.keywords(land).contains(Keywords::HEXPROOF));
+            } else if case != 3 {
+                assert_eq!(g.counter_count(own, CounterKind::PlusOne), 1);
+                assert_eq!(
+                    g.object_view(enemy).zone,
+                    if case == 2 {
+                        Zone::Exile
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+                assert_eq!(g.object_view(own).zone, Zone::Battlefield);
+            } else {
+                assert_eq!(g.object_view(enemy).zone, Zone::Battlefield);
+            }
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            if case == 1 || case == 2 {
+                assert_eq!(g.counter_count(own, CounterKind::PlusOne), 1);
+            }
+        }
+    }
+}
