@@ -5899,3 +5899,65 @@ fn hungering_puppetbeast_does_not_choose_for_a_new_incarnation() {
         }
     }
 }
+
+#[test]
+fn hungering_puppetbeast_entry_heartwood_is_a_usable_sacrifice() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            let mut g = scenario(p);
+            if doubled {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let beast = put(&mut g, p, "Hungering Puppetbeast", Zone::Hand);
+            cast(&mut g, beast, None);
+            settle(&mut g);
+            let tokens: Vec<_> = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(i, o)| {
+                    (o.zone == Zone::Battlefield
+                        && o.controller == p
+                        && o.is_token()
+                        && o.card == Card(5438))
+                    .then_some(i as CardId)
+                })
+                .collect();
+            assert_eq!(tokens.len(), if doubled { 2 } else { 1 });
+            assert!(tokens.iter().all(|id| !g.object_view(*id).tapped));
+            g.state.players[p.index()].mana = [0; 6];
+            let mana = g.legal_actions().into_iter().find(|a| matches!(a,
+                Action::ActivateMana { card, production, .. } if *card == tokens[0] && production[3] == 1
+            )).expect("Heartwood produces red");
+            act(&mut g, mana);
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: beast,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let sacrificed = g.object_ref(tokens[0]);
+            act(&mut g, Action::ChooseAdditionalCost { object: sacrificed });
+            pay(&mut g);
+            for _ in 0..32 {
+                if g.legal_actions()
+                    .contains(&Action::ChooseKeyword { index: 0 })
+                {
+                    break;
+                }
+                act(&mut g, Action::Pass);
+            }
+            assert_eq!(
+                g.counter_count(beast, CounterKind::PlusOne),
+                if doubled { 2 } else { 1 }
+            );
+            act(&mut g, Action::ChooseKeyword { index: 0 });
+            settle(&mut g);
+            assert!(g.keywords(beast).contains(Keywords::TRAMPLE));
+            assert_ne!(g.object_view(tokens[0]).zone, Zone::Battlefield);
+        }
+    }
+}
