@@ -475,6 +475,8 @@ pub(crate) struct ChosenModifier {
 /// Rules attached to produced mana, captured independently of its producer.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaRestriction {
+    /// Any cost except casting a spell from a hand.
+    ExceptCastFromHand,
     /// Only the costs of casting a spell with the artifact card type.
     ArtifactSpell,
     /// Any cost except casting a spell without the artifact card type.
