@@ -932,6 +932,7 @@ struct PlayerState {
     cards_drawn_this_turn: u64,
     drew_in_own_draw_step: bool,
     cards_discarded_this_turn: u64,
+    cards_library_to_graveyard_this_turn: u64,
     card_left_graveyard_this_turn: bool,
     controlled_creature_died_this_turn: bool,
     controlled_creatures_died_this_turn: u64,
@@ -2798,6 +2799,7 @@ impl Game {
             cards_drawn_this_turn: 0,
             drew_in_own_draw_step: false,
             cards_discarded_this_turn: 0,
+            cards_library_to_graveyard_this_turn: 0,
             card_left_graveyard_this_turn: false,
             controlled_creature_died_this_turn: false,
             controlled_creatures_died_this_turn: 0,
@@ -6812,6 +6814,13 @@ impl Game {
                 evidence_collected: false,
             };
         }
+        if before.zone == Zone::Library && destination == Zone::Graveyard {
+            let count =
+                &mut self.state.players[before.owner.index()].cards_library_to_graveyard_this_turn;
+            *count = count
+                .checked_add(1)
+                .capacity("library-to-graveyard history exhausted");
+        }
         // An undone public move cannot erase knowledge acquired during the cast.
         // Keep only cards that were already in the checkpoint hand; library and
         // newly created objects are handled separately by irreversible replay.
@@ -7396,6 +7405,7 @@ impl Game {
             player.equip_activated_this_turn = false;
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
+            player.cards_library_to_graveyard_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
             player.controlled_creature_died_this_turn = false;
             player.controlled_creatures_died_this_turn = 0;

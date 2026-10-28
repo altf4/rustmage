@@ -298,6 +298,19 @@ impl Game {
                     .moved_count
                     .expect("quantity requires remembered move result"),
             ),
+            AmountValue::TargetPlayerLibraryToGraveyardThisTurn => item
+                .targets
+                .iter()
+                .find_map(|bound| {
+                    if let Target::Player(player) = bound.target {
+                        Some(u128::from(
+                            self.state.players[player.index()].cards_library_to_graveyard_this_turn,
+                        ))
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or(0),
             AmountValue::TargetPlayerHandSize => item
                 .targets
                 .iter()
