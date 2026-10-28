@@ -358,3 +358,52 @@ fn master_of_barbs_paid_damage_of_either_player() {
         }
     }
 }
+
+#[test]
+fn return_to_light_realms_simultaneous_entries_and_aura_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let host = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let angel = put(&mut g, p, "Dazzling Angel", Zone::Graveyard);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let artifact = put(&mut g, p, "Mox Jasper", Zone::Graveyard);
+        let aura = put(&mut g, p, "Pacifism", Zone::Graveyard);
+        let land = put(&mut g, p, "Forest", Zone::Graveyard);
+        let instant = put(&mut g, p, "Lightning Strike", Zone::Graveyard);
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+        let spell = put(&mut g, p, "Return to the Light Realms", Zone::Hand);
+        let old = g.object_ref(bear);
+        g.state.players[p.index()].mana = [2, 0, 0, 0, 0, 7];
+        cast(&mut g, spell, None);
+        for _ in 0..64 {
+            if matches!(g.state.pending, Pending::AuraEntry { .. }) {
+                super::contracts::branch_contract(g.clone());
+                act(
+                    &mut g,
+                    Action::ChooseAuraAttachment {
+                        object: g.object_ref(host),
+                    },
+                );
+            } else if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            } else {
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+        }
+        for id in [angel, bear, artifact, aura] {
+            assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+        }
+        for id in [land, instant, foreign] {
+            assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+        }
+        assert_ne!(g.object_ref(bear), old);
+        assert_eq!(g.object_view(aura).attached_to, Some(g.object_ref(host)));
+        assert_eq!(g.state.players[p.index()].life, 21);
+    }
+}

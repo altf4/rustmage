@@ -1511,6 +1511,8 @@ pub(crate) enum Instruction {
         kinds: u16,
         maximum: AmountValue,
     },
+    /// Simultaneously return the controller's nonland permanent cards.
+    ReturnOwnedGraveyardNonlandPermanents,
     ReturnGraveyardCreatures {
         players: PlayerSet,
         maximum_mana_value: u64,

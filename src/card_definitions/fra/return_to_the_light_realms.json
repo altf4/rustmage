@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "34fe5234d557f311bf50a46132857362266e0a8dfa7e9056b17a16dd51e9215f"
   },
-  "physical_metadata_sha256": "2029a823373daf645151ad0c3121bd9cf13919263710be8bb2b6b63020ca4a68"
+  "physical_metadata_sha256": "2029a823373daf645151ad0c3121bd9cf13919263710be8bb2b6b63020ca4a68",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/ReturnToTheLightRealms.java",
+  "java_sha256": "d8c2af5172878e7420481068caf03e77ce42c1fd191d34a07f59f0870bceb81e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromYourGraveyardToBattlefieldAllEffect.java",
+      "sha256": "444e837f098cf2687f903aea028d28b77d561a40b23b66085fbf03284becdde7"
+    }
+  ]
 }

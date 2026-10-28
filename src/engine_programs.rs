@@ -3176,6 +3176,9 @@ impl Game {
                         false,
                     );
                 }
+                Instruction::ReturnOwnedGraveyardNonlandPermanents => {
+                    self.return_owned_graveyard_nonland_permanents(&item);
+                }
                 Instruction::ReturnGraveyardCreatures {
                     players,
                     maximum_mana_value,
