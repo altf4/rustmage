@@ -121,6 +121,42 @@ fn bitter_triumph_low_life_requires_another_hand_card() {
 }
 
 #[test]
+fn bitter_triumph_funding_preserves_returned_discard_and_branching() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.players[p.index()].life = 2;
+        g.state.players[p.index()].mana = [0; 6];
+        put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Bitter Triumph", Zone::Hand);
+        let bolg = put(&mut g, p, "Bolg's Company", Zone::Battlefield);
+        let goblin = put(&mut g, p, "Goblin Piker", Zone::Battlefield);
+        let discard = put(&mut g, p, "Island", Zone::Exile);
+        let before = g.snapshot();
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: spell })
+        );
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        assert_eq!(g.snapshot(), before);
+
+        // Sacrificing the linked Goblin for Bolg's mana returns a card to hand.
+        // Funding must explore that line before rejecting the additional cost.
+        g.state.exile_links.push(ExileLink {
+            source: g.object_ref(goblin),
+            exiled: g.object_ref(discard),
+            return_zone: Zone::Hand,
+        });
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: spell })
+        );
+        contracts::branch_contract(g.clone());
+        assert_eq!(g.object_view(bolg).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(discard).zone, Zone::Exile);
+    }
+}
+
+#[test]
 fn bitter_triumph_can_pay_mana_before_life_route() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);

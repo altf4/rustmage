@@ -281,13 +281,49 @@ impl Game {
         if matches!(spec.kind, EffectChoiceKind::ExileGraveyardSymbols { .. }) {
             return self.can_fund_symbol_cost_group(goal, purpose, spec, source, chosen);
         }
-        if !self.can_fund_for(goal.clone(), purpose) {
-            return false;
-        }
         let amount = match spec.kind {
             EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::ExileGraveyardCards(n) => n,
             _ => unreachable!("group cost"),
         };
+        let Some(needed) = usize::from(amount).checked_sub(chosen.len()) else {
+            return false;
+        };
+        // This fallback enumerates current candidates, not future projected
+        // objects. Rule out an undersized candidate set before funding search.
+        let eligible = |r: ObjectRef| {
+            !chosen.contains(&r)
+                && self.additional_candidate(spec, goal.actor, source, r)
+                && (!matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
+                    || goal
+                        .source
+                        .as_ref()
+                        .is_none_or(|(source, _, _, _, _)| *source != r))
+        };
+        if needed > 0
+            && (0..self.state.objects.len())
+                .map(|id| self.object_ref(id as CardId))
+                .filter(|&r| eligible(r))
+                .take(needed)
+                .count()
+                < needed
+        {
+            return false;
+        }
+        if !self.can_fund_for(goal.clone(), purpose) {
+            return false;
+        }
+        self.group_cost_fundable_selected(goal, purpose, spec, source, chosen, amount)
+    }
+
+    fn group_cost_fundable_selected(
+        &self,
+        goal: FundingGoal,
+        purpose: mana_lots::Purpose,
+        spec: AdditionalCost,
+        source: ObjectRef,
+        chosen: &[ObjectRef],
+        amount: u16,
+    ) -> bool {
         if chosen.len() == usize::from(amount) {
             return self.can_fund_cost_group(goal, purpose, spec, chosen);
         }
@@ -305,7 +341,7 @@ impl Game {
             }
             let mut next = chosen.to_vec();
             next.push(r);
-            self.group_cost_fundable(goal.clone(), purpose, spec, source, &next)
+            self.group_cost_fundable_selected(goal.clone(), purpose, spec, source, &next, amount)
         })
     }
     pub(super) fn different_name_sacrifice_fundable(

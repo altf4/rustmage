@@ -63,6 +63,92 @@ impl CostContext {
     }
 }
 impl FundingState<'_> {
+    /// Reject an unpaid additional cost only if even an overestimate of the
+    /// resources available after funding cannot satisfy any of its routes.
+    /// Unknown costs and worlds with linked or nested state changes retain the
+    /// complete search. Counts deliberately ignore filters, control, names,
+    /// counters and tapping, all of which can change during funding.
+    pub(super) fn additional_cost_deficit(&self) -> bool {
+        let Some(c) = &self.cast_costs else {
+            return false;
+        };
+        let Some(spec) = c.additional else {
+            return false;
+        };
+        if !c
+            .clauses
+            .iter()
+            .any(|r| !r.paid && r.clause == CastCostClause::Additional)
+            || !self.game.state.exile_links.is_empty()
+            || self.continuation.is_some()
+            || self.entry_projection.is_some()
+        {
+            return false;
+        }
+        // These clauses can consume resources, tap, add counters, or move a
+        // battlefield object to a graveyard. Without linked returns they cannot
+        // increase life or introduce a card to hand or a new battlefield object.
+        // Keep this exhaustive so new ordered clauses require a bound audit.
+        for row in &c.clauses {
+            match row.clause {
+                CastCostClause::Additional
+                | CastCostClause::Mana
+                | CastCostClause::Life(_)
+                | CastCostClause::AlternativeLife(_)
+                | CastCostClause::Teamwork(_)
+                | CastCostClause::Blight { .. }
+                | CastCostClause::Casualty(_)
+                | CastCostClause::Harmonize(_) => {}
+            }
+        }
+        let mut hand = 0usize;
+        let mut battlefield = 0usize;
+        let mut graveyard = 0usize;
+        for r in &self.resources {
+            match r.object.zone {
+                Zone::Hand if r.object.owner == c.actor && self.reference(r.id) != c.source => {
+                    hand += 1;
+                }
+                Zone::Battlefield => battlefield += 1,
+                Zone::Graveyard => graveyard += 1,
+                _ => {}
+            }
+        }
+        // Mana payments may sacrifice battlefield objects into graveyards. We
+        // count every object there even if it is an opponent's, a token, or not
+        // actually sacrificable, and ignore all card-characteristic filters.
+        let potential_graveyard = graveyard.saturating_add(battlefield);
+        let possible = match spec.kind {
+            EffectChoiceKind::Discard
+            | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary => hand > 0,
+            EffectChoiceKind::DiscardOrLife(life) => hand > 0 || self.life >= i128::from(life),
+            EffectChoiceKind::SacrificeOrDiscard { .. } => battlefield > 0 || hand > 0,
+            EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeAttachedEquipment
+            | EffectChoiceKind::ReturnUnblockedAttacker
+            | EffectChoiceKind::ReturnToHand => battlefield > 0,
+            EffectChoiceKind::SacrificeDifferentNames(n) | EffectChoiceKind::TapPermanents(n) => {
+                battlefield >= usize::from(n)
+            }
+            EffectChoiceKind::ExileGraveyard => potential_graveyard > 0,
+            EffectChoiceKind::ExileGraveyardCards(n) => potential_graveyard >= usize::from(n),
+            // Any one potential card is treated as sufficient for a positive
+            // weight. Its future face, colors and value need not be stable.
+            EffectChoiceKind::CollectEvidence(n)
+            | EffectChoiceKind::ExileGraveyardSymbols { minimum: n, .. } => {
+                n == 0 || potential_graveyard > 0
+            }
+            EffectChoiceKind::RemoveCreatureCounters(n) => n == 0 || battlefield > 0,
+            EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => match c.forage {
+                Some(ForageRoute::Food) => battlefield > 0,
+                Some(ForageRoute::ExileThree) => potential_graveyard >= 3,
+                Some(ForageRoute::Black) | None => true,
+            },
+            _ => true,
+        };
+        !possible
+    }
     pub(super) fn set_cost_context(&mut self, a: Option<&Announcement>) {
         self.install_cost_context(a.and_then(CostContext::from_announcement));
         if let Some(a) = a.filter(|a| a.cast_costs.is_some())
@@ -1529,3 +1615,7 @@ impl FundingState<'_> {
         )
     }
 }
+
+#[cfg(test)]
+#[path = "engine_additional_bound_tests.rs"]
+mod additional_bound_tests;

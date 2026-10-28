@@ -5,8 +5,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
-from run_native_tests import process_running, run_command
+from run_native_tests import active_peers, descendants, process_running, run_command
 from resource_limits import MAX_MEMORY, bounded_group
 from test_validate import ValidatorTests
 
@@ -14,6 +15,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    def test_process_exit_during_proc_read_is_treated_as_gone(self):
+        # Linux can return ESRCH after opening procfs when the task exits before
+        # the read; ENOENT is also possible if it exits before the open.
+        for error in (FileNotFoundError, ProcessLookupError):
+            with self.subTest(error=error), patch.object(Path, 'read_text', side_effect=error):
+                self.assertFalse(process_running(123456))
+                self.assertEqual(descendants(123456), set())
+                with patch('run_native_tests.group_members', return_value=set()):
+                    self.assertEqual(active_peers(), set())
+
     def test_limits_are_enforced_by_the_running_cgroup(self):
         group = bounded_group()
         self.assertIsNotNone(group, 'run through scripts/resource_guard.py')
