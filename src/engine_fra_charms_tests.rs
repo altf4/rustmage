@@ -6467,3 +6467,29 @@ fn break_under_pressure_uses_current_copied_mana_values_at_resolution() {
         assert_eq!(g.object_view(changed).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn koth_ignores_opponents_land_and_its_queued_trigger_survives_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let koth = put(&mut g, p, "Koth, the Geomancer", Zone::Battlefield);
+        let enemy_land = put(&mut g, p.other(), "Mountain", Zone::Hand);
+        let own_land = put(&mut g, p, "Mountain", Zone::Hand);
+        let life = g.state.players[p.other().index()].life;
+        g.state.players[p.index()].mana = [0; 6];
+        g.move_object(enemy_land, Zone::Battlefield);
+        assert!(g.state.pending_triggers.is_empty());
+        g.move_object(own_land, Zone::Battlefield);
+        g.prepare_triggers();
+        g.move_object(koth, Zone::Graveyard);
+        let saved = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, life - 1);
+        assert_eq!(g.state.players[p.index()].mana[3], 1);
+        g.restore(&saved).unwrap();
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, life - 1);
+        assert_eq!(g.state.players[p.index()].mana[3], 1);
+    }
+}
