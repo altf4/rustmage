@@ -2036,6 +2036,8 @@ pub(crate) enum Instruction {
         amount: u16,
     },
     PutSourceCountersOnTargets,
+    /// Choose and remove up to this many counters from one targeted permanent.
+    RemoveUpToTargetCounters(u16),
     CreateTokensWithCounters {
         token: Card,
         amount: u16,

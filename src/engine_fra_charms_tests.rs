@@ -2429,3 +2429,213 @@ fn vraska_cutting_glare_rechecks_six_lands_and_creates_treasure_after_destructio
         }
     }
 }
+
+#[test]
+fn mabel_bitter_recluse_selects_mixed_counters_and_removes_them_together() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        g.add_counter(target, CounterKind::PlusOne, 1);
+        g.add_counter(target, CounterKind::Stun, 2);
+        g.add_counter(target, CounterKind::Charge, 2);
+        let mabel = put(&mut g, p, "Mabel, Bitter Recluse", Zone::Hand);
+        cast(&mut g, mabel, None);
+        let mut targeted = false;
+        for _ in 0..64 {
+            g.prepare_triggers();
+            if matches!(g.state.pending, Pending::TargetCounterRemoval { .. }) {
+                break;
+            }
+            let actions = g.legal_actions();
+            let wanted = Action::ChooseTarget {
+                target: Target::Card(target),
+            };
+            if !targeted && actions.contains(&wanted) {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(mabel),
+                    },
+                );
+                act(&mut g, wanted);
+                targeted = true;
+            } else if actions.contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            } else if let Some(action) = actions
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+            {
+                act(&mut g, action);
+            } else {
+                panic!("unexpected Mabel counter choice {:?}", g.state.pending);
+            }
+        }
+        assert!(targeted);
+        assert_eq!(g.actor(), Some(p));
+        assert!(g.observe(p.other()).target_counter_removal.is_none());
+        assert_eq!(
+            g.observe(p).target_counter_removal.unwrap().target,
+            g.object_ref(target)
+        );
+        let own_wire = serde_json::to_value(g.observe(p)).unwrap();
+        let other_wire = serde_json::to_value(g.observe(p.other())).unwrap();
+        assert!(own_wire.get("target_counter_removal").is_some());
+        assert!(other_wire.get("target_counter_removal").is_none());
+        let choice = Action::SelectTargetCounter {
+            counter: CounterKind::Charge,
+        };
+        assert_eq!(
+            serde_json::from_value::<Action>(serde_json::to_value(&choice).unwrap()).unwrap(),
+            choice
+        );
+        let before = g.snapshot();
+        assert_eq!(
+            g.apply(
+                p.other(),
+                Action::SelectTargetCounter {
+                    counter: CounterKind::Stun
+                }
+            ),
+            Err(Error::WrongActor)
+        );
+        assert_eq!(g.snapshot(), before);
+        reject(
+            &mut g,
+            Action::SelectTargetCounter {
+                counter: CounterKind::Loyalty,
+            },
+        );
+        act(
+            &mut g,
+            Action::SelectTargetCounter {
+                counter: CounterKind::PlusOne,
+            },
+        );
+        act(
+            &mut g,
+            Action::SelectTargetCounter {
+                counter: CounterKind::Stun,
+            },
+        );
+        act(
+            &mut g,
+            Action::SelectTargetCounter {
+                counter: CounterKind::Charge,
+            },
+        );
+        reject(
+            &mut g,
+            Action::SelectTargetCounter {
+                counter: CounterKind::Charge,
+            },
+        );
+        assert_eq!(g.counter_count(target, CounterKind::PlusOne), 1);
+        assert_eq!(g.counter_count(target, CounterKind::Stun), 2);
+        assert_eq!(g.counter_count(target, CounterKind::Charge), 2);
+        super::contracts::branch_contract(g.clone());
+        let checkpoint = g.snapshot();
+        act(&mut g, Action::FinishTargetCounterRemoval);
+        settle(&mut g);
+        assert_eq!(g.counter_count(target, CounterKind::PlusOne), 0);
+        assert_eq!(g.counter_count(target, CounterKind::Stun), 1);
+        assert_eq!(g.counter_count(target, CounterKind::Charge), 1);
+        g.restore(&checkpoint).unwrap();
+        assert_eq!(g.counter_count(target, CounterKind::Charge), 2);
+        act(&mut g, Action::FinishTargetCounterRemoval);
+        settle(&mut g);
+        assert_eq!(g.counter_count(target, CounterKind::Charge), 1);
+        assert!(g.keywords(mabel).contains(Keywords::DEATHTOUCH));
+    }
+}
+
+#[test]
+fn mabel_counter_choice_handles_zero_loyalty_and_departed_targets() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..4 {
+            let mut g = scenario(p);
+            let target = put(
+                &mut g,
+                p.other(),
+                if mode == 2 {
+                    "Bear Cub"
+                } else {
+                    "Liliana the Faultless"
+                },
+                Zone::Battlefield,
+            );
+            if mode != 2 {
+                g.add_counter(target, CounterKind::Loyalty, 2);
+            }
+            let mabel = put(&mut g, p, "Mabel, Bitter Recluse", Zone::Hand);
+            cast(&mut g, mabel, None);
+            let mut targeted = false;
+            let mut finished = false;
+            for _ in 0..64 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let wanted = Action::ChooseTarget {
+                    target: Target::Card(target),
+                };
+                if !targeted && actions.contains(&wanted) {
+                    act(&mut g, wanted);
+                    targeted = true;
+                    if mode == 3 {
+                        g.move_object(target, Zone::Exile);
+                    }
+                } else if matches!(g.state.pending, Pending::TargetCounterRemoval { .. }) {
+                    assert!(targeted);
+                    assert_ne!(mode, 2);
+                    assert_ne!(mode, 3);
+                    if mode == 1 {
+                        act(
+                            &mut g,
+                            Action::SelectTargetCounter {
+                                counter: CounterKind::Loyalty,
+                            },
+                        );
+                        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+                        act(
+                            &mut g,
+                            Action::SelectTargetCounter {
+                                counter: CounterKind::Loyalty,
+                            },
+                        );
+                        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+                    }
+                    act(&mut g, Action::FinishTargetCounterRemoval);
+                    finished = true;
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                } else if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Mabel resolution {:?}", g.state.pending);
+                }
+            }
+            assert!(targeted);
+            assert_eq!(finished, mode < 2);
+            assert_eq!(
+                g.object_view(target).zone,
+                if mode == 1 {
+                    Zone::Graveyard
+                } else if mode == 3 {
+                    Zone::Exile
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            if mode == 0 {
+                assert_eq!(g.counter_count(target, CounterKind::Loyalty), 2);
+            }
+        }
+    }
+}

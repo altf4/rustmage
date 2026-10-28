@@ -601,6 +601,8 @@ define_actions! {
     // Required private reveal selection, revealed discard, or optional exile.
     ChooseHandCard { object: Option<ObjectRef> },
     ChooseRevealedDiscard { object: ObjectRef },
+    SelectTargetCounter { counter: CounterKind },
+    FinishTargetCounterRemoval,
     RecoverMilled {
         object: Option<ObjectRef>,
     },
@@ -1662,6 +1664,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    TargetCounterRemoval {
+        player: Player,
+    },
     AttackPayment {
         player: Player,
     },
@@ -2466,6 +2471,13 @@ pub struct SourceCounterChoiceView {
     pub kind: CounterKind,
     pub maximum: u64,
 }
+/// Incremental, owned selection; counters change together when the player finishes.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct TargetCounterRemovalView {
+    pub target: ObjectRef,
+    pub maximum: u16,
+    pub selected: Counters,
+}
 /// Complete action space: concrete choices and full numeric payment/damage domains.
 #[derive(Clone, Debug, Serialize)]
 pub struct LegalActionSpace {
@@ -2480,6 +2492,8 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub target_counter_removal: Option<TargetCounterRemovalView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub face_down_permanents: Vec<FaceDownPermanentView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -3016,6 +3030,7 @@ impl Game {
             | Pending::Bargain { player }
             | Pending::ResolutionX { player }
             | Pending::SourceCounterAmount { player }
+            | Pending::TargetCounterRemoval { player }
             | Pending::X { player }
             | Pending::Casualty { player }
             | Pending::ManaRollback { player }
@@ -3422,6 +3437,28 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, Card, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::TargetCounterRemoval { .. } => {
+                let choice = s
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .target_counter_removal
+                    .as_ref()
+                    .unwrap();
+                if emit(Action::FinishTargetCounterRemoval) {
+                    return true;
+                }
+                if choice.selected.total() < u128::from(choice.maximum) {
+                    for counter in CounterKind::ALL {
+                        if choice.selected.get(counter)
+                            < self.counter_count(choice.target.card, counter)
+                            && emit(Action::SelectTargetCounter { counter })
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
             Pending::CreatureTypeChoice { .. } => {
                 return self.visit_creature_type_tokens(&mut emit);
             }
@@ -6021,6 +6058,33 @@ impl Game {
             Action::SelectMilled { object } => self.select_milled(object),
             Action::FinishMilledSelection => self.finish_milled_selection(),
             Action::ChooseHandCard { object } => self.choose_hand_card(object),
+            Action::SelectTargetCounter { counter } => {
+                self.state
+                    .resolving
+                    .as_mut()
+                    .unwrap()
+                    .target_counter_removal
+                    .as_mut()
+                    .unwrap()
+                    .selected
+                    .add(counter, 1);
+            }
+            Action::FinishTargetCounterRemoval => {
+                let choice = self
+                    .state
+                    .resolving
+                    .as_mut()
+                    .unwrap()
+                    .target_counter_removal
+                    .take()
+                    .unwrap();
+                if self.on_battlefield(choice.target.card)
+                    && self.object_ref(choice.target.card) == choice.target
+                {
+                    self.pay_counters(choice.target.card, &choice.selected);
+                }
+                self.run_program();
+            }
             Action::ChooseRevealedDiscard { object } => {
                 let cause = self.state.resolving.as_ref().unwrap().item.controller;
                 self.discard_batch_caused(&[object.card], None, Some(cause));
@@ -7846,6 +7910,15 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            target_counter_removal: if owns_choice
+                && matches!(s.pending, Pending::TargetCounterRemoval { .. })
+            {
+                s.resolving
+                    .as_ref()
+                    .and_then(|r| r.target_counter_removal.as_deref().cloned())
+            } else {
+                None
+            },
             face_down_permanents: self.face_down_views(viewer),
             face_down_spells: self.face_down_spell_views(viewer),
             manifest_choice: self.manifest_choice_view(viewer),
@@ -8099,6 +8172,7 @@ impl Game {
                 Pending::Manifest { .. } => "manifest",
                 Pending::ResolutionX { .. } => "resolution_x",
                 Pending::SourceCounterAmount { .. } => "source_counter_amount",
+                Pending::TargetCounterRemoval { .. } => "target_counter_removal",
                 Pending::X { .. } => "x",
                 Pending::EvidenceIntent { .. } => "evidence_intent",
                 Pending::Evidence { .. } => "evidence",
@@ -8812,9 +8886,16 @@ impl Game {
                 .as_ref()
                 .map(|resolution| {
                     resolution
-                        .sacrificed_power
+                        .target_counter_removal
                         .as_ref()
-                        .map_or(0, |_| std::mem::size_of::<i128>())
+                        .map_or(0, |choice| {
+                            std::mem::size_of::<TargetCounterRemovalView>()
+                                + choice.selected.owned_bytes()
+                        })
+                        + resolution
+                            .sacrificed_power
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<i128>())
                         + resolution.linked_copy.as_ref().map_or(0, |_| {
                             std::mem::size_of::<linked_copies::LinkedCopyCapture>()
                         })

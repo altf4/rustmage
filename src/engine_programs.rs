@@ -16,6 +16,7 @@ pub(super) struct TargetCardFacts {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
+    pub target_counter_removal: Option<Box<TargetCounterRemovalView>>,
     pub linked_copy: Option<Box<linked_copies::LinkedCopyCapture>>,
     pub cascade: Option<Box<cascade::CascadeView>>,
     #[allow(clippy::box_collection)]
@@ -2088,6 +2089,7 @@ impl Game {
             });
         self.state.resolving = Some(Resolution {
             chosen_creature_type: None,
+            target_counter_removal: None,
             linked_copy: None,
             cascade: None,
             target_card_facts,
@@ -3890,6 +3892,37 @@ impl Game {
                 }
                 Instruction::DestroyCombatDamagedPlayersPermanents => {
                     self.destroy_combat_damaged_players_permanents(&item)
+                }
+                Instruction::RemoveUpToTargetCounters(maximum) => {
+                    let target = item.targets.iter().copied().find_map(|bound| {
+                        if !self.same_target_object(bound) {
+                            return None;
+                        }
+                        match bound.target {
+                            Target::Card(id) if self.on_battlefield(id) => {
+                                Some(self.object_ref(id))
+                            }
+                            _ => None,
+                        }
+                    });
+                    if let Some(target) = target
+                        && maximum != 0
+                        && self.counter_amounts(target.card).total() != 0
+                    {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .target_counter_removal = Some(Box::new(TargetCounterRemovalView {
+                            target,
+                            maximum,
+                            selected: Counters::default(),
+                        }));
+                        self.state.pending = Pending::TargetCounterRemoval {
+                            player: item.controller,
+                        };
+                        return;
+                    }
                 }
                 Instruction::PutSourceCountersOnTargets => {
                     let mut counters = Counters::default();
