@@ -5677,8 +5677,11 @@ fn tenured_tethermage_can_tap_itself_if_it_is_an_artifact() {
 #[test]
 fn tenured_tethermage_land_choice_creates_tapped_heartwood() {
     for p in [Player::P0, Player::P1] {
-        for sacrifice in [false, true] {
+        for (sacrifice, doubled) in [(false, false), (true, false), (true, true)] {
             let mut g = scenario(p);
+            if doubled {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
             let land = put(&mut g, p, "Forest", Zone::Battlefield);
             let enemy = put(&mut g, p.other(), "Forest", Zone::Battlefield);
             let nonland = put(&mut g, p, "Bear Cub", Zone::Battlefield);
@@ -5742,7 +5745,16 @@ fn tenured_tethermage_land_choice_creates_tapped_heartwood() {
                         && o.card == Card(5438)
                 })
                 .collect();
-            assert_eq!(heartwoods.len(), if sacrifice { 2 } else { 0 });
+            assert_eq!(
+                heartwoods.len(),
+                if !sacrifice {
+                    0
+                } else if doubled {
+                    4
+                } else {
+                    2
+                }
+            );
             assert!(heartwoods.iter().all(|o| o.tapped));
         }
     }
