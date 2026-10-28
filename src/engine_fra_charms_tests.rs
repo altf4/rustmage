@@ -3005,3 +3005,38 @@ fn stingerquill_charm_modes_and_doubled_cadet_haste() {
         }
     }
 }
+
+#[test]
+fn way_of_the_necromancer_empowers_and_triggers_for_each_controlled_death() {
+    for p in [Player::P0, Player::P1] {
+        for source_leaves in [false, true] {
+            let mut g = scenario(p);
+            let way = put(&mut g, p, "Way of the Necromancer", Zone::Hand);
+            cast(&mut g, way, None);
+            settle(&mut g);
+            let jaces = fra_jaces(&g, p);
+            assert_eq!(jaces.len(), 1);
+            let jace = jaces[0];
+            assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 2);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.move_object(enemy, Zone::Graveyard);
+            g.prepare_triggers();
+            settle(&mut g);
+            assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 2);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            g.move_object(own, Zone::Graveyard);
+            g.prepare_triggers();
+            assert!(!g.state.stack.is_empty() || !g.state.pending_triggers.is_empty());
+            if source_leaves {
+                g.move_object(way, Zone::Graveyard);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 3);
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 3);
+        }
+    }
+}
