@@ -6383,3 +6383,31 @@ fn break_under_pressure_counts_controlled_planeswalkers_owned_by_the_caster() {
         assert_eq!(g.state.players[p.index()].life, life + 2);
     }
 }
+
+#[test]
+fn break_under_pressure_sacrifice_is_untargeted_and_obeys_zone_replacement() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Rest in Peace", Zone::Battlefield);
+        let creature = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        g.state.objects[creature as usize].gained_keywords =
+            Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE);
+        let spell = put(&mut g, p, "Break Under Pressure", Zone::Hand);
+        let life = g.state.players[p.index()].life;
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        for _ in 0..32 {
+            if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        assert_eq!(g.actor(), Some(p.other()));
+        let object = g.object_ref(creature);
+        assert!(g.legal_actions().contains(&Action::Sacrifice { object }));
+        super::contracts::branch_contract(g.clone());
+        act(&mut g, Action::Sacrifice { object });
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Exile);
+        assert_eq!(g.state.players[p.index()].life, life + 2);
+    }
+}
