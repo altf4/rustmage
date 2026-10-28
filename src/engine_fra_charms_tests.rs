@@ -4170,3 +4170,44 @@ fn yoshimaru_scrappy_stray_fights_and_targets_nonlegendary_creatures() {
         assert_eq!(g.counter_count(own, CounterKind::PlusOne), 1);
     }
 }
+
+#[test]
+fn edgar_ancient_bloodlord_sacrifice_cost_triggers_life_and_grants_menace() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let edgar = put(&mut g, p, "Edgar, Ancient Bloodlord", Zone::Battlefield);
+        let ally = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let life = g.state.players[p.index()].life;
+        g.state.players[p.index()].mana[5] = 2;
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: edgar,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let self_ref = g.object_ref(edgar);
+        let enemy_ref = g.object_ref(enemy);
+        let ally_ref = g.object_ref(ally);
+        reject(&mut g, Action::ChooseAdditionalCost { object: self_ref });
+        reject(&mut g, Action::ChooseAdditionalCost { object: enemy_ref });
+        act(&mut g, Action::ChooseAdditionalCost { object: ally_ref });
+        pay(&mut g);
+        assert_eq!(g.object_view(ally).zone, Zone::Graveyard);
+        let before = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 1);
+        assert_eq!(g.counter_count(edgar, CounterKind::PlusOne), 1);
+        assert!(g.keywords(edgar).contains(Keywords::MENACE));
+        g.finish_cleanup();
+        assert!(!g.keywords(edgar).contains(Keywords::MENACE));
+        assert_eq!(g.counter_count(edgar, CounterKind::PlusOne), 1);
+        g.restore(&before).unwrap();
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 1);
+        assert_eq!(g.counter_count(edgar, CounterKind::PlusOne), 1);
+    }
+}
