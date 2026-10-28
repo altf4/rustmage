@@ -773,11 +773,13 @@ impl Game {
                     .filter(|(id, o)| {
                         o.zone == Zone::Battlefield
                             && o.controller == player
-                            && if matches!(
-                                kind,
-                                EffectChoiceKind::ExileGreatestManaValue
-                                    | EffectChoiceKind::SacrificeGreatestManaValue
-                            ) {
+                            && if kind == EffectChoiceKind::SacrificeGreatestManaValue {
+                                self.effect_choice_candidate(
+                                    &choice,
+                                    player,
+                                    self.object_ref(*id as CardId),
+                                )
+                            } else if kind == EffectChoiceKind::ExileGreatestManaValue {
                                 self.current_kinds(*id as CardId) & 65 != 0
                             } else {
                                 self.is_creature(*id as CardId)
