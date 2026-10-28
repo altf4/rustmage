@@ -38,6 +38,9 @@ pub struct EventObjectView {
     /// Only saved on the actual departure of an untargeted conniver.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub conniver_creature: Option<bool>,
+    /// Opt-in last-known characteristics for a later subtype condition.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subtype_lki: Option<DamageFacts>,
 }
 fn actor(view: &ObjectView) -> DamageSource {
     DamageSource {
@@ -130,6 +133,9 @@ impl Game {
                 && let Some((_, stats, damage, recipe)) =
                     facts.iter().find(|(r, _, _, _)| *r == e.object)
             {
+                if e.subtype_lki.is_some() {
+                    e.subtype_lki = Some(damage.facts);
+                }
                 e.facts = match e.facts {
                     EventObjectFacts::DamageActor(_) => EventObjectFacts::DamageActor(*damage),
                     EventObjectFacts::Copiable(_) => EventObjectFacts::Copiable(*recipe),
@@ -165,6 +171,7 @@ impl Game {
                     object: entering.reference,
                     facts: EventObjectFacts::Controller(entering.controller),
                     conniver_creature: None,
+                    subtype_lki: None,
                 }));
         }
     }
@@ -181,15 +188,21 @@ impl Game {
             return;
         }
         let packet = self.state.pending_triggers.last_mut().unwrap();
-        assert!(
-            packet.event_object.is_none(),
-            "event object facts already bound"
-        );
-        packet.event_object = Some(Box::new(EventObjectView {
-            object: entering.reference,
-            facts: EventObjectFacts::DamageActor(actor(entering)),
-            conniver_creature: None,
-        }));
+        let facts = actor(entering).facts;
+        if let Some(event) = &mut packet.event_object {
+            assert_eq!(
+                event.object, entering.reference,
+                "event object identity mismatch"
+            );
+            event.subtype_lki = Some(facts);
+        } else {
+            packet.event_object = Some(Box::new(EventObjectView {
+                object: entering.reference,
+                facts: EventObjectFacts::DamageActor(actor(entering)),
+                conniver_creature: None,
+                subtype_lki: Some(facts),
+            }));
+        }
     }
     pub(super) fn event_object_has_subtype(&self, item: &SpellView, subtype: &str) -> bool {
         let Some(event) = &item.event_object else {
@@ -200,10 +213,9 @@ impl Game {
         {
             return self.has_subtype(event.object.card, subtype);
         }
-        match event.facts {
-            EventObjectFacts::DamageActor(saved) => saved.facts.has_subtype(subtype),
-            _ => false,
-        }
+        event
+            .subtype_lki
+            .is_some_and(|facts| facts.has_subtype(subtype))
     }
     pub(super) fn bind_creature_comparison(&mut self, source: &ObjectView, entering: &ObjectView) {
         let p = self.state.pending_triggers.last_mut().unwrap();
@@ -218,6 +230,7 @@ impl Game {
                 entering,
             )),
             conniver_creature: None,
+            subtype_lki: None,
         }));
     }
     fn comparison_facts(
@@ -285,6 +298,7 @@ impl Game {
                             object: recipient,
                             facts,
                             conniver_creature: None,
+                            subtype_lki: None,
                         }));
                 }
             }

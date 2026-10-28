@@ -515,6 +515,7 @@ impl Game {
                             object,
                             facts: EventObjectFacts::Controller(controller),
                             conniver_creature: None,
+                            subtype_lki: None,
                         }));
                 }
             }

@@ -12,6 +12,7 @@ impl Game {
                     object: entering.reference,
                     facts: EventObjectFacts::Copiable(self.copiable_recipe(entering.reference)),
                     conniver_creature: None,
+                    subtype_lki: None,
                 }));
         }
     }

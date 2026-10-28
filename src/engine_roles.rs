@@ -137,6 +137,7 @@ impl Game {
                 object,
                 facts: EventObjectFacts::DamageActor(self.damage_source(object.card)),
                 conniver_creature: None,
+                subtype_lki: None,
             }));
         }
         self.state.pending_triggers.push(reflexive);
