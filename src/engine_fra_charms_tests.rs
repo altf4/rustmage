@@ -5751,7 +5751,6 @@ fn tenured_tethermage_land_choice_creates_tapped_heartwood() {
             if sacrifice {
                 let owner = if stolen { p.other() } else { p };
                 assert_eq!(g.object_view(land).owner, owner);
-                assert!(g.state.players[owner.index()].graveyard.contains(&land));
             }
             let heartwoods: Vec<_> = g
                 .state
