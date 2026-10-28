@@ -1447,6 +1447,7 @@ fn teyo_flash_entry_grants_permanent_and_kind_appropriate_counters() {
             (0, false, false),
             (1, true, false),
             (2, false, false),
+            (3, false, false),
             (0, false, true),
         ] {
             let mut g = scenario(p.other());
@@ -1455,13 +1456,28 @@ fn teyo_flash_entry_grants_permanent_and_kind_appropriate_counters() {
                 p,
                 match kind {
                     0 => "Bear Cub",
-                    1 => "Liliana the Faultless",
+                    1 | 3 => "Liliana the Faultless",
                     _ => "Forest",
                 },
                 Zone::Battlefield,
             );
-            if kind == 1 {
+            if kind == 1 || kind == 3 {
                 g.add_counter(target, CounterKind::Loyalty, 5);
+            }
+            if kind == 3 {
+                let reference = g.object_ref(target);
+                g.change_object_form(
+                    reference,
+                    AnimationSpec {
+                        artifact: false,
+                        creature_types: AnimationCreatureTypes::Unchanged,
+                        base: Some((3, 3)),
+                        keywords: Keywords::NONE,
+                        duration: AnimationDuration::EndOfTurn,
+                    },
+                    characteristic_layers::AnimationTypeMode::AddCreature,
+                );
+                assert_eq!(g.current_kinds(target) & 65, 65);
             }
             if doubled {
                 put(&mut g, p, "Doubling Season", Zone::Battlefield);
@@ -1512,11 +1528,17 @@ fn teyo_flash_entry_grants_permanent_and_kind_appropriate_counters() {
             assert_eq!(g.keywords(target).contains(Keywords::DEATHTOUCH), !fizzle);
             assert_eq!(
                 g.counter_count(target, CounterKind::PlusOne),
-                u64::from(kind == 0 && !fizzle)
+                u64::from((kind == 0 || kind == 3) && !fizzle)
             );
             assert_eq!(
                 g.counter_count(target, CounterKind::Loyalty),
-                if kind == 1 { 7 } else { 0 }
+                if kind == 1 {
+                    7
+                } else if kind == 3 {
+                    6
+                } else {
+                    0
+                }
             );
             g.finish_cleanup();
             assert!(!g.keywords(target).contains(Keywords::DEATHTOUCH));
