@@ -27,6 +27,16 @@ pub struct AdditionalCostView {
     pub creature_counter_payments: Vec<(ObjectRef, CounterKind)>,
     pub paid: bool,
 }
+/// A tap-symbol cost and a separate tap-permanents cost cannot both tap the
+/// same source. Without the tap symbol the source is an ordinary candidate.
+fn tap_cost_reserves_source(goal: &FundingGoal, object: ObjectRef) -> bool {
+    goal.source
+        .as_ref()
+        .is_some_and(|(source, ability, _, definition, _)| {
+            *source == object && definition.activation(*ability).cost.tap
+        })
+}
+
 impl Game {
     pub(super) fn additional_candidate(
         &self,
@@ -294,10 +304,7 @@ impl Game {
             !chosen.contains(&r)
                 && self.additional_candidate(spec, goal.actor, source, r)
                 && (!matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
-                    || goal
-                        .source
-                        .as_ref()
-                        .is_none_or(|(source, _, _, _, _)| *source != r))
+                    || !tap_cost_reserves_source(&goal, r))
         };
         if needed > 0
             && (0..self.state.objects.len())
@@ -332,10 +339,7 @@ impl Game {
             if chosen.contains(&r)
                 || !self.additional_candidate(spec, goal.actor, source, r)
                 || (matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
-                    && goal
-                        .source
-                        .as_ref()
-                        .is_some_and(|(source, _, _, _, _)| *source == r))
+                    && tap_cost_reserves_source(&goal, r))
             {
                 return false;
             }
@@ -484,8 +488,7 @@ impl Game {
             if selected.contains(&object)
                 || !self.additional_candidate(spec, a.item.controller, a.item.object, object)
                 || (matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
-                    && a.item.kind != StackKind::Spell
-                    && object == a.item.object)
+                    && tap_cost_reserves_source(&self.funding_goal(a), object))
             {
                 return false;
             }
@@ -649,8 +652,12 @@ impl Game {
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
             let group = a.additional_group.as_ref().expect("selected tap group");
             assert_eq!(group.len(), usize::from(amount));
-            assert!(group.iter().all(|&r| r != a.item.object
-                && self.additional_candidate(spec, a.item.controller, a.item.object, r)));
+            assert!(
+                group
+                    .iter()
+                    .all(|&r| !tap_cost_reserves_source(&self.funding_goal(a), r)
+                        && self.additional_candidate(spec, a.item.controller, a.item.object, r))
+            );
             self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
             a.additional_paid = true;
             return;

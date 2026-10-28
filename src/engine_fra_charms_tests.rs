@@ -5578,3 +5578,59 @@ fn aerid_heartwood_mana_growth_and_death() {
         }
     }
 }
+
+#[test]
+fn tenured_tethermage_can_tap_itself_if_it_is_an_artifact() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let mage = put(&mut g, p, "Tenured Tethermage", Zone::Battlefield);
+        let artifact = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
+        let stone = put(&mut g, p, "Stone by Sunlight", Zone::Hand);
+        g.state.players[p.index()].mana = [10; 6];
+        act(&mut g, Action::AnnounceCast { card: stone });
+        act(&mut g, Action::ChooseMode { mode: 1 });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(mage),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        settle(&mut g);
+        assert_ne!(g.object_view(mage).kinds & 16, 0);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: mage,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let mage_ref = g.object_ref(mage);
+        let artifact_ref = g.object_ref(artifact);
+        let enemy_ref = g.object_ref(enemy);
+        reject(&mut g, Action::ChooseAdditionalCost { object: enemy_ref });
+        act(&mut g, Action::ChooseAdditionalCost { object: mage_ref });
+        reject(&mut g, Action::ChooseAdditionalCost { object: mage_ref });
+        super::contracts::branch_contract(g.clone());
+        act(
+            &mut g,
+            Action::ChooseAdditionalCost {
+                object: artifact_ref,
+            },
+        );
+        pay(&mut g);
+        assert!(g.object_view(mage).tapped);
+        assert!(g.object_view(artifact).tapped);
+        let before = g.snapshot();
+        settle(&mut g);
+        assert_eq!(g.counter_count(mage, CounterKind::PlusOne), 2);
+        g.restore(&before).unwrap();
+        settle(&mut g);
+        assert_eq!(g.counter_count(mage, CounterKind::PlusOne), 2);
+    }
+}
