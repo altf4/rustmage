@@ -384,3 +384,4 @@ mod fra_charm_extra;
 mod fra_rattler_dark;
 mod fra_graveyard_extra;
 mod fra_removal_interactions;
+mod fra_traxos_interactions;
