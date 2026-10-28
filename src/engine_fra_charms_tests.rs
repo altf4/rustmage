@@ -1259,3 +1259,55 @@ fn echoverse_fulcrum_sorcery_activation_exiles_cost_and_destroys_simultaneously(
         assert_eq!(g.object_view(indestructible).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn darklight_phoenix_counts_both_players_deaths_on_its_owners_turn() {
+    for p in [Player::P0, Player::P1] {
+        for (deaths, active_own) in [(0, true), (1, true), (2, true), (2, false)] {
+            let mut g = scenario(if active_own { p } else { p.other() });
+            let phoenix = put(&mut g, p, "Darklight Phoenix", Zone::Graveyard);
+            for index in 0..deaths {
+                let owner = if index == 0 { p } else { p.other() };
+                let creature = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+                g.move_object(creature, Zone::Graveyard);
+            }
+            g.begin_step(Step::BeginCombat);
+            g.prepare_triggers();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            if deaths == 2 && active_own {
+                assert_eq!(g.object_view(phoenix).zone, Zone::Battlefield);
+                assert!(g.keywords(phoenix).contains(Keywords::FLYING));
+                assert!(g.keywords(phoenix).contains(Keywords::HASTE));
+            } else {
+                assert_eq!(g.object_view(phoenix).zone, Zone::Graveyard);
+            }
+        }
+    }
+}
+
+#[test]
+fn darklight_phoenix_uses_exact_graveyard_incarnation_and_intervening_guard() {
+    for p in [Player::P0, Player::P1] {
+        for reenter in [false, true] {
+            let mut g = scenario(p);
+            let phoenix = put(&mut g, p, "Darklight Phoenix", Zone::Graveyard);
+            for owner in [p, p.other()] {
+                let creature = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+                g.move_object(creature, Zone::Graveyard);
+            }
+            g.begin_step(Step::BeginCombat);
+            g.prepare_triggers();
+            assert!(!g.state.stack.is_empty());
+            if reenter {
+                g.move_object(phoenix, Zone::Exile);
+                g.move_object(phoenix, Zone::Graveyard);
+            } else {
+                g.state.creatures_died_this_turn = 1;
+            }
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(g.object_view(phoenix).zone, Zone::Graveyard);
+        }
+    }
+}
