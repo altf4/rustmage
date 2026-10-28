@@ -161,6 +161,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
+            if !own || !world.subtypes(id).has(target.card, subtype) {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::DeathBaronLord => {
             if !world.death_baron_applies(source, id) {
                 return None;
@@ -407,6 +413,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::DeathBaronLord
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)
                 )
             });

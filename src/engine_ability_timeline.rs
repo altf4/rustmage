@@ -46,6 +46,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::HarnessedTrigger(..)

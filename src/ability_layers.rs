@@ -92,6 +92,10 @@ pub(crate) enum StaticAbilityFragment {
         kinds: u16,
         keywords: Keywords,
     },
+    ControlledSubtypeKeywords {
+        subtype: &'static str,
+        keywords: Keywords,
+    },
     PlayerHexproof,
     ActivateControlledCreaturesAsHaste,
     PlayerHexproofIfSourceCounter {

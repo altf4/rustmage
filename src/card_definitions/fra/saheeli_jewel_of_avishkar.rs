@@ -1,25 +1,4 @@
 // Directly authored from pinned Oracle and XMage sources; admission awaits rules tests.
-const HASTE_THOPTERS: KeywordGrant = KeywordGrant {
-    condition: None,
-    requires_life_gain: false,
-    filter: CreatureFilter {
-        relation: 0,
-        other: false,
-        subtype: Some("Thopter"),
-        keyword: Keywords::NONE,
-        attacking: false,
-        tokens: None,
-        artifact: false,
-    },
-    source_only: false,
-    own_turn: false,
-    keywords: Keywords::HASTE,
-};
-const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
-    line: 0,
-    first_layer: AbilityLayer::Ability,
-    fragments: &[StaticAbilityFragment::KeywordGrant(0, HASTE_THOPTERS)],
-}];
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 4),
     triggers: &[TriggeredAbility {
@@ -35,11 +14,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             tapped: false,
         }],
     }],
-    static_groups: GROUPS,
-    extras: &CardExtras {
-        static_ability_groups: GROUPS,
-        keyword_grants: &[HASTE_THOPTERS],
-        ..CardExtras::EMPTY
-    },
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::ControlledSubtypeKeywords {
+            subtype: "Thopter",
+            keywords: Keywords::HASTE,
+        }],
+    }],
     ..CardRules::EMPTY
 };
