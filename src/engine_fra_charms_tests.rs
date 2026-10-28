@@ -1,4 +1,5 @@
 use super::*;
+use crate::cards::{AnimationCreatureTypes, AnimationDuration, AnimationSpec, ChoiceColor};
 
 // Draft definitions remain gated in the public catalogue. Test their authored
 // behavior directly without presenting them as supported deck entries.
