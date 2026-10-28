@@ -1330,11 +1330,28 @@ fn darklight_phoenix_does_not_trigger_from_the_battlefield() {
 #[test]
 fn living_library_pays_sacrifice_and_shuffles_into_actual_owners_library() {
     for p in [Player::P0, Player::P1] {
-        for (stolen, fizzle) in [(false, false), (true, false), (false, true)] {
+        for (stolen, fizzle, planeswalker) in [
+            (false, false, false),
+            (true, false, false),
+            (false, true, false),
+            (false, false, true),
+        ] {
             let mut g = scenario(p);
             let source = put(&mut g, p, "Living Library", Zone::Battlefield);
             let owner = if stolen { p } else { p.other() };
-            let target = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+            let target = put(
+                &mut g,
+                owner,
+                if planeswalker {
+                    "Liliana the Faultless"
+                } else {
+                    "Bear Cub"
+                },
+                Zone::Battlefield,
+            );
+            if planeswalker {
+                g.add_counter(target, CounterKind::Loyalty, 5);
+            }
             if stolen {
                 let reference = g.object_ref(target);
                 g.change_controller(reference, p.other());
