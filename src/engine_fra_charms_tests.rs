@@ -3040,3 +3040,41 @@ fn way_of_the_necromancer_empowers_and_triggers_for_each_controlled_death() {
         }
     }
 }
+
+#[test]
+fn repurposed_enforcer_counts_controlled_creatures_when_attack_trigger_resolves() {
+    for p in [Player::P0, Player::P1] {
+        for attacker_leaves in [false, true] {
+            let mut g = scenario(p);
+            let enforcer = put(&mut g, p, "Repurposed Enforcer", Zone::Battlefield);
+            put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[enforcer as usize].summoning_sick = false;
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            act(&mut g, Action::Attack { card: enforcer });
+            act(&mut g, Action::FinishAttackers);
+            if attacker_leaves {
+                g.move_object(enforcer, Zone::Graveyard);
+            }
+            put(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            let jaces = fra_jaces(&g, p);
+            assert_eq!(jaces.len(), 1);
+            assert_eq!(
+                g.counter_count(jaces[0], CounterKind::Loyalty),
+                if attacker_leaves { 2 } else { 3 }
+            );
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            let jaces = fra_jaces(&g, p);
+            assert_eq!(jaces.len(), 1);
+            assert_eq!(
+                g.counter_count(jaces[0], CounterKind::Loyalty),
+                if attacker_leaves { 2 } else { 3 }
+            );
+        }
+    }
+}
