@@ -320,6 +320,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnouncePlot { .. } | Action::BeginFaceUp { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
+            | Action::AnnouncePlaneswalkerGrant { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
             | Action::AnnounceBorrowedAbility { .. }
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,

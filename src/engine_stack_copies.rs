@@ -313,6 +313,7 @@ impl Game {
             gained_keywords: Keywords::NONE,
             counters: InitialCounters::default(),
             used_abilities: 0,
+            loyalty_activated_this_turn: false,
             class_level: 1,
             attached_to: None,
         };

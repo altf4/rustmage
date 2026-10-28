@@ -1027,6 +1027,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             dealt_damage_this_turn: obj.dealt_damage_this_turn,
             counters: self.counter_amounts(id).to_owned(),
             used_abilities: obj.used_abilities,
+            loyalty_activated_this_turn: obj.loyalty_activated_this_turn,
             class_level: (obj.zone == Zone::Battlefield
                 && (obj.class_level > 1 || self.granted_subtypes(id).has(definition, "Class")))
             .then_some(obj.class_level),

@@ -251,6 +251,7 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
                 );
             }
         }
+        observation_bytes = observation_bytes.replace(",\"loyalty_activated_this_turn\":true", "");
     }
     if schema_projection.is_some_and(|schema| schema < 138) {
         // Recording-only projection of the two new ObjectView wire fields.

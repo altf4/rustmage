@@ -92,6 +92,8 @@ pub(crate) enum StaticAbilityFragment {
         kinds: u16,
         keywords: Keywords,
     },
+    /// Grant the immutable activated template to controlled planeswalkers.
+    ControlledPlaneswalkerActivation(u16),
     ControlledSubtypeKeywords {
         subtype: &'static str,
         keywords: Keywords,

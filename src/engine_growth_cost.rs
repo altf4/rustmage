@@ -1,5 +1,6 @@
 //! Direct typed persistent evolution and non-targeting growth-card costs.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 impl TriggerCondition {
     pub(super) fn is_growth_damage_event(self) -> bool {
         matches!(
@@ -15,6 +16,99 @@ impl TriggerCondition {
     }
 }
 impl Game {
+    pub(super) fn visit_planeswalker_grants(
+        &self,
+        card: CardId,
+        actor: Player,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        if self.current_kinds(card) & 64 == 0
+            || ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            || self.named_activation_prohibited(card)
+        {
+            return false;
+        }
+        let source = self.object_ref(card);
+        let view = self.object_view(card);
+        for &provider in &self.state.static_sources {
+            let giver = &self.state.objects[provider as usize];
+            if giver.zone != Zone::Battlefield || giver.controller != actor {
+                continue;
+            }
+            let grantor = self.object_ref(provider);
+            for fragment in giver
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                let StaticAbilityFragment::ControlledPlaneswalkerActivation(index) = *fragment
+                else {
+                    continue;
+                };
+                let ability = giver.card.activation(index);
+                let readiness = self.activation_readiness(actor, ability);
+                if !view.grant_available(grantor, giver.card, index, None)
+                    || !self.activation_guard_available(ability.guard, card, actor)
+                    || !Self::object_activation_available_with_kinds(
+                        &self.state.objects[card as usize],
+                        self.counter_amounts(card),
+                        self.current_kinds(card),
+                        || ability_world::CharacteristicWorld::activation_keywords(self, card),
+                        self.state.players[actor.index()].life,
+                        &readiness,
+                        usize::from(index),
+                        actor,
+                        sorcery,
+                    )
+                    || !self.targets_available(ability.targets, actor, source)
+                    || !self.initial_activation_target_fundable(
+                        FundingGoal {
+                            reserve: None,
+                            actor,
+                            required: ability.cost.colored,
+                            generic: ability.cost.generic,
+                            source: Some((source, index, Counters::default(), giver.card, None)),
+                        },
+                        ability.targets,
+                    )
+                {
+                    continue;
+                }
+                if emit(Action::AnnouncePlaneswalkerGrant {
+                    source,
+                    grantor,
+                    ability: index,
+                }) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    pub(super) fn announce_planeswalker_grant(
+        &mut self,
+        source: ObjectRef,
+        grantor: ObjectRef,
+        ability: u16,
+    ) {
+        let giver = self.state.objects[grantor.card as usize].card;
+        let actor = self.state.objects[source.card as usize].controller;
+        let mut item = self.activation_item(actor, source.card, ability);
+        item.source_card = giver;
+        item.source_ability_origin = self.copied_grant_origin(grantor);
+        item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
+            grantor,
+            granting_card: giver,
+            recipient: source,
+            defender: None,
+            granted: true,
+            origin: item.source_ability_origin,
+        }));
+        self.open_payment_announcement(item, Counters::default(), None);
+    }
     pub(super) fn evolve_source(
         &mut self,
         item: &SpellView,

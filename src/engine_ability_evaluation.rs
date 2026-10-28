@@ -155,6 +155,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::ControlledPlaneswalkerActivation(ability) => {
+            if !own || world.kinds(id) & 64 == 0 {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::ControlledPermanentKeywords { kinds, keywords } => {
             if !own || world.kinds(id) & kinds == 0 {
                 return None;
@@ -277,6 +288,15 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
+        || world.static_sources().iter().any(|&id| {
+            let source = world.object(id);
+            source.zone == Zone::Battlefield
+                && source.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| matches!(
+                        fragment, StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
+                    ))
+                })
+        })
         // External attachment rules must participate even without ability removal.
         // They are deliberately absent from EquipmentSpec's granted abilities.
         || world.attachment_sources().iter().any(|&id| {
@@ -413,6 +433,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::DeathBaronLord
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)
                 )

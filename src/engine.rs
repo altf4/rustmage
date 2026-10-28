@@ -562,6 +562,7 @@ define_actions! {
     AnnounceCounterGraveyard { card: CardId },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
+    AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
     AnnounceSelfGrantedAbility { source: ObjectRef, grant_timestamp: u64 },
     ChooseAdditionalCost {
         object: ObjectRef,
@@ -886,6 +887,8 @@ struct Object {
     gained_keywords: Keywords,
     counters: InitialCounters,
     used_abilities: u64,
+    // Loyalty use belongs to the permanent incarnation, independent of copied abilities.
+    loyalty_activated_this_turn: bool,
     // Class levels belong to this permanent incarnation, not its copiable values.
     class_level: u8,
     attached_to: Option<ObjectRef>,
@@ -2187,6 +2190,9 @@ pub struct ObjectView {
     pub dealt_damage_this_turn: bool,
     pub counters: Counters,
     pub used_abilities: u64,
+    /// Loyalty use is shared by all of this exact permanent's abilities.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub loyalty_activated_this_turn: bool,
     /// Current Class level on the battlefield.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub class_level: Option<u8>,
@@ -2842,6 +2848,7 @@ impl Game {
                     gained_keywords: Keywords::NONE,
                     counters: InitialCounters::default(),
                     used_abilities: 0,
+                    loyalty_activated_this_turn: false,
                     class_level: 1,
                     attached_to: None,
                 });
@@ -4014,6 +4021,11 @@ impl Game {
                     }
                     if obj.zone == Zone::Battlefield
                         && self.visit_attached_activations(card, actor, &mut emit)
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Battlefield
+                        && self.visit_planeswalker_grants(card, actor, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -5228,6 +5240,11 @@ impl Game {
             Action::AnnounceAttachedAbility { grantor, ability } => {
                 self.announce_attached_ability(grantor, ability)
             }
+            Action::AnnouncePlaneswalkerGrant {
+                source,
+                grantor,
+                ability,
+            } => self.announce_planeswalker_grant(source, grantor, ability),
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
             Action::ChooseAdditionalLife => self.choose_additional_life(),
             Action::FinishGraveyardSymbolCost => self.finish_graveyard_symbol_cost(),
@@ -7168,6 +7185,7 @@ impl Game {
         obj.gained_keywords = Keywords::NONE;
         obj.counters = counters.hot();
         obj.used_abilities = 0;
+        obj.loyalty_activated_this_turn = false;
         obj.class_level = 1;
         obj.attached_to = None;
         // This ordered index enumerates library cards, not transient tokens.
@@ -7434,6 +7452,7 @@ impl Game {
             }
         }
         for obj in &mut self.state.objects {
+            obj.loyalty_activated_this_turn = false;
             if obj.used_abilities != 0 {
                 obj.used_abilities &= obj.card.exhaust_mask();
             }

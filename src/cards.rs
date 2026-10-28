@@ -4133,18 +4133,6 @@ impl Card {
     pub(crate) fn exhaust_mask(self) -> u64 {
         generated::exhaust_mask(self)
     }
-    pub(crate) fn loyalty_mask(self) -> u64 {
-        self.activations()
-            .iter()
-            .enumerate()
-            .fold(0, |mask, (i, a)| {
-                mask | if a.cost.loyalty.is_some() {
-                    1u64 << i
-                } else {
-                    0
-                }
-            })
-    }
     pub fn is_token(self) -> bool {
         self.token_info().is_some()
     }
@@ -4380,7 +4368,7 @@ impl Card {
         self.static_ability_groups().iter().any(|g| {
             g.fragments
                 .iter()
-                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation(i) if *i == index))
+                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation(i) | StaticAbilityFragment::ControlledPlaneswalkerActivation(i) if *i == index))
         })
     }
     pub(crate) fn graveyard_activation_subtype(self) -> Option<&'static str> {

@@ -293,6 +293,7 @@ impl Game {
                 .is_empty()
             || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::FirstEquipZeroCost { .. } | crate::cards::StaticAbilityFragment::EquipTargetReduction(_))))
             || self.state.objects[id as usize].card.graveyard_activation_subtype().is_some()
+            || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(_))))
             || self.state.objects[id as usize].card.has_free_hand_cast()
             || self.state.objects[id as usize].card.has_storm_grant()
             || self.state.objects[id as usize]

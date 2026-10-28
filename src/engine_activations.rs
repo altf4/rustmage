@@ -262,7 +262,7 @@ impl Game {
         }
         if let Some(change) = ability.cost.loyalty
             && (!sorcery
-                || object.used_abilities & object.card.loyalty_mask() != 0
+                || object.loyalty_activated_this_turn
                 || (change < 0 && object.counters.loyalty < u64::from(change.unsigned_abs())))
         {
             return false;
@@ -683,7 +683,21 @@ impl Game {
             );
             return;
         }
-        if item.self_granted_activation.is_none() {
+        let external_planeswalker_grant = item.attachment_trigger.as_ref().is_some_and(|event| {
+            event.granted
+                && item
+                    .source_card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(fragment,
+                    crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
+                        if *index == ability)
+                        })
+                    })
+        });
+        if item.self_granted_activation.is_none() && !external_planeswalker_grant {
             if let Some(slot) = item.borrowed_slot {
                 self.record_borrowed_use(item.object, slot, definition.exhaust);
             } else {
@@ -700,6 +714,7 @@ impl Game {
             });
         }
         if let Some(change) = cost.loyalty {
+            self.state.objects[item.card as usize].loyalty_activated_this_turn = true;
             if change < 0 {
                 self.pay_counters(
                     item.card,

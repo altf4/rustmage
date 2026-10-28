@@ -4,6 +4,7 @@ use super::*;
 pub(super) mod big_helpers;
 mod cards;
 mod contracts;
+mod fra_way_loyalty_foundation;
 mod interactions;
 mod regressions;
 mod requested_earthbend;
@@ -67,6 +68,7 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
         gained_keywords: Keywords::NONE,
         counters: InitialCounters::default(),
         used_abilities: 0,
+        loyalty_activated_this_turn: false,
         class_level: 1,
         attached_to: None,
     });
