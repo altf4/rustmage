@@ -5677,12 +5677,26 @@ fn tenured_tethermage_can_tap_itself_if_it_is_an_artifact() {
 #[test]
 fn tenured_tethermage_land_choice_creates_tapped_heartwood() {
     for p in [Player::P0, Player::P1] {
-        for (sacrifice, doubled) in [(false, false), (true, false), (true, true)] {
+        for (sacrifice, doubled, stolen) in [
+            (false, false, false),
+            (true, false, false),
+            (true, true, false),
+            (true, false, true),
+        ] {
             let mut g = scenario(p);
             if doubled {
                 put(&mut g, p, "Doubling Season", Zone::Battlefield);
             }
-            let land = put(&mut g, p, "Forest", Zone::Battlefield);
+            let land = put(
+                &mut g,
+                if stolen { p.other() } else { p },
+                "Forest",
+                Zone::Battlefield,
+            );
+            if stolen {
+                let land_ref = g.object_ref(land);
+                g.change_controller(land_ref, p);
+            }
             let enemy = put(&mut g, p.other(), "Forest", Zone::Battlefield);
             let nonland = put(&mut g, p, "Bear Cub", Zone::Battlefield);
             let mage = put(&mut g, p, "Tenured Tethermage", Zone::Hand);
@@ -5734,6 +5748,11 @@ fn tenured_tethermage_land_choice_creates_tapped_heartwood() {
                     Zone::Battlefield
                 }
             );
+            if sacrifice {
+                let owner = if stolen { p.other() } else { p };
+                assert_eq!(g.object_view(land).owner, owner);
+                assert!(g.state.players[owner.index()].graveyard.contains(&land));
+            }
             let heartwoods: Vec<_> = g
                 .state
                 .objects
