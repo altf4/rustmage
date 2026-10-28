@@ -6071,3 +6071,30 @@ fn hungering_puppetbeast_counter_replacements_resolve_before_keyword_choice() {
         assert!(!g.keywords(beast).contains(Keywords::HEXPROOF));
     }
 }
+
+#[test]
+fn saheeli_grants_haste_to_a_noncreature_thopter() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
+        g.create_tokens(p, Card(5266), 1, false);
+        let thopter = fra_thopters(&g, p)[0];
+        let reference = g.object_ref(thopter);
+        let mut recipe = CopyRecipe::new(Card(5266));
+        recipe.overrides = Some(CopyOverrides {
+            kinds: Some(16),
+            ..CopyOverrides::NONE
+        });
+        g.apply_temporary_copy(reference, recipe, CopyDeadline::EndOfTurn);
+        assert!(!g.is_creature(thopter));
+        assert!(g.has_subtype(thopter, "Thopter"));
+        assert!(g.keywords(thopter).contains(Keywords::HASTE));
+        super::contracts::branch_contract(g.clone());
+        g.change_controller(reference, p.other());
+        assert!(!g.keywords(thopter).contains(Keywords::HASTE));
+        g.change_controller(reference, p);
+        assert!(g.keywords(thopter).contains(Keywords::HASTE));
+        g.move_object(source, Zone::Graveyard);
+        assert!(!g.keywords(thopter).contains(Keywords::HASTE));
+    }
+}
