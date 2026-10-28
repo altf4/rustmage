@@ -1736,3 +1736,35 @@ fn prophesied_end_uses_attacking_status_and_controller_at_resolution() {
         }
     }
 }
+
+#[test]
+fn kindred_judgment_chooses_at_resolution_and_destroys_one_batch() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let elf = put(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+        let protected = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        g.state.objects[protected as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+        let shielded = put(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+        g.add_counter(shielded, CounterKind::Shield, 1);
+        let spell = put(&mut g, p, "Kindred Judgment", Zone::Hand);
+        cast(&mut g, spell, None);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        assert!(matches!(g.state.pending, Pending::CreatureTypeChoice { player } if player == p));
+        assert_eq!(g.object_view(elf).zone, Zone::Battlefield);
+        super::contracts::branch_contract(g.clone());
+        act(
+            &mut g,
+            Action::ChooseCreatureType {
+                creature_type: crate::cards::CreatureType::from_name("Bear").unwrap(),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(elf).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(protected).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(shielded).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(shielded, CounterKind::Shield), 0);
+    }
+}

@@ -4423,7 +4423,8 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
-                Instruction::CreateTokensForChosenCreatureType { .. } => {
+                Instruction::CreateTokensForChosenCreatureType { .. }
+                | Instruction::DestroyCreaturesExceptChosenType => {
                     self.state.pending = Pending::CreatureTypeChoice {
                         player: item.controller,
                     };

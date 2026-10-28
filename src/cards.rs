@@ -2013,6 +2013,8 @@ pub(crate) enum Instruction {
         keywords: Keywords,
     },
     /// Public resolution choice followed by one current controlled-type count.
+    /// Choose a creature type, then destroy every creature without it.
+    DestroyCreaturesExceptChosenType,
     CreateTokensForChosenCreatureType {
         token: Card,
     },

@@ -17,26 +17,45 @@ impl Game {
     }
     pub(super) fn choose_type_for_tokens(&mut self, creature_type: CreatureType) {
         let r = self.state.resolving.as_mut().unwrap();
-        let Instruction::CreateTokensForChosenCreatureType { token } = r.program[r.pc - 1] else {
-            unreachable!("creature-type token continuation")
-        };
+        let instruction = r.program[r.pc - 1];
         r.chosen_creature_type = Some(creature_type);
         let player = r.item.controller;
-        let count = self
-            .state
-            .objects
-            .iter()
-            .enumerate()
-            .filter(|(id, o)| {
-                o.zone == Zone::Battlefield
-                    && o.controller == player
-                    && self.is_creature(*id as CardId)
-                    && self.has_subtype(*id as CardId, creature_type.name())
-            })
-            .count() as u128;
-        // pc already passed the instruction before offering the choice. Any
-        // replacement/entry suspension resumes after this exact creation batch.
-        self.create_tokens(player, token, count, false);
+        match instruction {
+            Instruction::CreateTokensForChosenCreatureType { token } => {
+                let count = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, o)| {
+                        o.zone == Zone::Battlefield
+                            && o.controller == player
+                            && self.is_creature(*id as CardId)
+                            && self.has_subtype(*id as CardId, creature_type.name())
+                    })
+                    .count() as u128;
+                self.create_tokens(player, token, count, false);
+            }
+            Instruction::DestroyCreaturesExceptChosenType => {
+                let mut ids: Vec<_> = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(id, o)| {
+                        (o.zone == Zone::Battlefield
+                            && self.is_creature(id as CardId)
+                            && !self.has_subtype(id as CardId, creature_type.name()))
+                        .then_some(id as CardId)
+                    })
+                    .collect();
+                ids.retain(|&id| !self.effect_destruction_prevented(id));
+                let sources = self.death_trigger_sources();
+                let events = self.move_objects_raw(&ids, Zone::Graveyard);
+                self.finish_zone_events(&events, &sources);
+            }
+            _ => unreachable!("creature-type choice continuation"),
+        }
         self.run_program();
     }
     pub(super) fn creature_type_tokens_view(&self) -> Option<CreatureTypeChoiceView> {
