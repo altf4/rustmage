@@ -4602,3 +4602,72 @@ fn recursive_recruitment_counts_own_graveyard_after_flashback_and_creation() {
         }
     }
 }
+
+#[test]
+fn recursive_recruitment_counters_all_replacement_created_tokens() {
+    for p in [Player::P0, Player::P1] {
+        for quina_first in [false, true] {
+            let mut g = scenario(p);
+            for _ in 0..3 {
+                put(&mut g, p, "Forest", Zone::Graveyard);
+            }
+            let quina = put(&mut g, p, "Quina, Qu Gourmet", Zone::Battlefield);
+            let doubling = put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            let spell = put(&mut g, p, "Recursive Recruitment", Zone::Graveyard);
+            act(&mut g, Action::AnnounceFlashback { card: spell });
+            pay(&mut g);
+            for _ in 0..20 {
+                if matches!(g.state.pending, Pending::Replacement { .. }) {
+                    break;
+                }
+                act(&mut g, Action::Pass);
+            }
+            assert!(matches!(g.state.pending, Pending::Replacement { .. }));
+            let first = g.object_ref(if quina_first { quina } else { doubling });
+            let choice = Action::ChooseReplacement {
+                source: first,
+                ability: 0,
+            };
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            act(&mut g, choice.clone());
+            while g
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseReplacement { .. }))
+            {
+                choose(&mut g, |a| matches!(a, Action::ChooseReplacement { .. }));
+            }
+            settle(&mut g);
+            let tokens: Vec<_> = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(i, o)| {
+                    (o.zone == Zone::Battlefield
+                        && o.is_token()
+                        && o.controller == p
+                        && (o.card == Card(5298) || o.card == Card(5264)))
+                    .then_some(i as CardId)
+                })
+                .collect();
+            assert_eq!(tokens.len(), if quina_first { 6 } else { 5 });
+            for token in tokens {
+                assert_eq!(g.counter_count(token, CounterKind::PlusOne), 2);
+            }
+            let completed = g.snapshot();
+            g.restore(&before).unwrap();
+            act(&mut g, choice);
+            while g
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseReplacement { .. }))
+            {
+                choose(&mut g, |a| matches!(a, Action::ChooseReplacement { .. }));
+            }
+            settle(&mut g);
+            assert_eq!(g.snapshot(), completed);
+        }
+    }
+}
