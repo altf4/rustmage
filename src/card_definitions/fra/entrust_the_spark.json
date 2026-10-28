@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ce4b99e9a097ae88535120dcf4f44167c0f38b9e43480bd6f9547161f3b9aa6a"
   },
-  "physical_metadata_sha256": "54f48d0c168ebdbef9cd438ddea96da97da25b4c39075cd8e1445b151909293c"
+  "physical_metadata_sha256": "54f48d0c168ebdbef9cd438ddea96da97da25b4c39075cd8e1445b151909293c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EntrustTheSpark.java",
+  "java_sha256": "b8e374edc68535194dbfd74996ca21b394826d40cee98fd7f11003e9f1d46efa",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    }
+  ]
 }

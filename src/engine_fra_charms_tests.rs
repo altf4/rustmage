@@ -2019,3 +2019,84 @@ fn stinging_vitriol_deals_damage_then_reveals_and_discards_a_nonland() {
         }
     }
 }
+
+#[test]
+fn entrust_the_spark_optional_planeswalker_sacrifice_and_private_search() {
+    for p in [Player::P0, Player::P1] {
+        for (pay_sacrifice, find_card) in [(false, true), (true, false), (true, true)] {
+            let mut g = scenario(p);
+            let old = put(&mut g, p, "Liliana the Faultless", Zone::Battlefield);
+            g.add_counter(old, CounterKind::Loyalty, 5);
+            let illegal = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let other = put(
+                &mut g,
+                p.other(),
+                "Liliana the Faultless",
+                Zone::Battlefield,
+            );
+            g.add_counter(other, CounterKind::Loyalty, 5);
+            let found = put(&mut g, p, "Liliana the Faultless", Zone::Library);
+            let spell = put(&mut g, p, "Entrust the Spark", Zone::Hand);
+            cast(&mut g, spell, None);
+            let mut decided = false;
+            let mut searched = false;
+            for _ in 0..64 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                if !decided && actions.contains(&Action::DeclineEffectPayment) {
+                    let wrong = g.object_ref(illegal);
+                    let opponents = g.object_ref(other);
+                    reject(&mut g, Action::Sacrifice { object: wrong });
+                    reject(&mut g, Action::Sacrifice { object: opponents });
+                    super::contracts::branch_contract(g.clone());
+                    if pay_sacrifice {
+                        let choice = g.object_ref(old);
+                        act(&mut g, Action::Sacrifice { object: choice });
+                    } else {
+                        act(&mut g, Action::DeclineEffectPayment);
+                    }
+                    decided = true;
+                } else if actions.contains(&Action::ChooseSearch { card: found }) {
+                    assert!(g.observe(p.other()).search_choice.is_none());
+                    if find_card {
+                        act(&mut g, Action::ChooseSearch { card: found });
+                    }
+                    act(&mut g, Action::FinishSearch);
+                    searched = true;
+                } else if decided
+                    && g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Entrust choice {:?}", g.state.pending);
+                }
+            }
+            assert!(decided);
+            assert_eq!(searched, pay_sacrifice);
+            assert_eq!(
+                g.object_view(old).zone,
+                if pay_sacrifice {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(
+                g.object_view(found).zone,
+                if pay_sacrifice && find_card {
+                    Zone::Battlefield
+                } else {
+                    Zone::Library
+                }
+            );
+        }
+    }
+}
