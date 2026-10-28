@@ -3080,6 +3080,7 @@ pub(crate) enum DamageQualification {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum DamageSubject {
+    AnyNoncombatSources,
     ControlledNoncombatSources,
     Source,
     Attached,

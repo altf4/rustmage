@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bf8dcc09bb10dd0416f353155e45dbe6be2f3ae3e6439af6fa779a6af7037d6b"
   },
-  "physical_metadata_sha256": "5e2935fc5558271510ba04d34b9355738667b4745a04487d94c9ad070c2f10b7"
+  "physical_metadata_sha256": "5e2935fc5558271510ba04d34b9355738667b4745a04487d94c9ad070c2f10b7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MasterOfBarbs.java",
+  "java_sha256": "cdfb3abaaba7fd998fb28d136801fead8f8df95e84fd0d964bb7a99980d6d766",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ]
 }

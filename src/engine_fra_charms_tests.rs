@@ -287,3 +287,42 @@ fn eardrum_rattler_target_limits_tap_and_power_recheck() {
         }
     }
 }
+
+#[test]
+fn master_of_barbs_observes_any_noncombat_damage_once_per_batch() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let master = put(&mut g, p, "Master of Barbs", Zone::Battlefield);
+        let friend = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let opponent_source = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let event = |g: &Game, target: Player, combat: bool| DamageEvent {
+            preventable: true,
+            source: g.damage_source(opponent_source),
+            target: Target::Player(target),
+            amount: 1,
+            combat,
+        };
+        g.apply_damage_batch(&[event(&g, p, false), event(&g, p.other(), true)]);
+        assert!(g.state.pending_triggers.is_empty());
+        g.apply_damage_batch(&[event(&g, p.other(), false), event(&g, p.other(), false)]);
+        assert_eq!(g.state.pending_triggers.len(), 1);
+        super::contracts::branch_contract(g.clone());
+        g.move_object(master, Zone::Exile);
+        for _ in 0..48 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            }
+            choose(&mut g, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
+        }
+        assert_eq!(stats(&g, friend), (3, 2));
+        assert_eq!(stats(&g, opponent_source), (2, 2));
+        g.finish_cleanup();
+        assert_eq!(stats(&g, friend), (2, 2));
+    }
+}
