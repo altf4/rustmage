@@ -347,6 +347,7 @@ fn hob_storied_transient_threshold_inside_one_typed_resolution() {
     let item = g.activation_item(p, source, 0);
     g.state.resolving = Some(Resolution {
         chosen_creature_type: None,
+        target_counter_removal: None,
         linked_copy: None,
         cascade: None,
         target_card_facts: None,

@@ -269,6 +269,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ChooseRevealedDiscard { .. } => 60,
             Action::ChooseHandCard { object: None } => -1,
             Action::FinishMilledSelection => 0,
+            Action::SelectTargetCounter { .. } => 1,
+            Action::FinishTargetCounterRemoval => 0,
             Action::RecoverMilled { object } => {
                 if object.is_some() {
                     60
