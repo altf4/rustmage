@@ -1115,3 +1115,78 @@ fn pia_creates_thopter_and_uses_resolution_time_artifact_count() {
         }
     }
 }
+
+#[test]
+fn flickering_hound_optional_target_and_owner_control() {
+    for p in [Player::P0, Player::P1] {
+        for targeted in [false, true] {
+            let mut g = scenario(p);
+            let hound = put(&mut g, p, "Flickering Hound", Zone::Battlefield);
+            let creature = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let stolen = g.object_ref(creature);
+            g.change_controller(stolen, p);
+            let opponent = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let spell = put(&mut g, p, "Bear Cub", Zone::Hand);
+            cast(&mut g, spell, None);
+            let mut selected = false;
+            let mut rejected = false;
+            for _ in 0..64 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let target = Action::ChooseTarget {
+                    target: Target::Card(creature),
+                };
+                if actions.contains(&target) && !selected {
+                    if !rejected {
+                        reject(
+                            &mut g,
+                            Action::ChooseTarget {
+                                target: Target::Card(hound),
+                            },
+                        );
+                        reject(
+                            &mut g,
+                            Action::ChooseTarget {
+                                target: Target::Card(opponent),
+                            },
+                        );
+                        rejected = true;
+                    }
+                    if targeted {
+                        act(&mut g, target);
+                        selected = true;
+                    } else {
+                        act(&mut g, Action::FinishTargets);
+                        selected = true;
+                    }
+                    super::contracts::branch_contract(g.clone());
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                } else if actions.contains(&Action::Pass) {
+                    if g.state.stack.is_empty()
+                        && g.state.pending_triggers.is_empty()
+                        && g.state.resolving.is_none()
+                    {
+                        break;
+                    }
+                    act(&mut g, Action::Pass);
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Flickering Hound choice {:?}", g.state.pending);
+                }
+            }
+            assert!(selected);
+            assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+            assert_eq!(g.object_ref(creature) != stolen, targeted);
+            assert_eq!(
+                g.object_view(creature).controller,
+                if targeted { p.other() } else { p }
+            );
+            assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+        }
+    }
+}
