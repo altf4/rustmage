@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c1b4740092c917fe5a7824ab318551d3ce1a8487286d7ab28eea16611870c1ab"
   },
-  "physical_metadata_sha256": "584faf5ade68a1e9b120cd056a26133759b897b618a2b739e191690c2c015a4f"
+  "physical_metadata_sha256": "584faf5ade68a1e9b120cd056a26133759b897b618a2b739e191690c2c015a4f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BuddingInsurgent.java",
+  "java_sha256": "8aab90a174e11d7c6b987d1d051dcaa99159b0607b8d19f20bb6ea20ba633346"
 }

@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bf06f0612efc6e9d75ac3ff93b93370c96c09831529d2469f5ccad8b56a0fd58"
   },
-  "physical_metadata_sha256": "1c2d4746eec364c70ebbaac905585ef8bf5bcc0f03bcb47101ee978a888b54dd"
+  "physical_metadata_sha256": "1c2d4746eec364c70ebbaac905585ef8bf5bcc0f03bcb47101ee978a888b54dd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KindredJudgment.java",
+  "java_sha256": "412981f76208c779cf61fffcbc3e5650d418cb3c4d6e9b4fa16e2d4101255a84",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    }
+  ]
 }
