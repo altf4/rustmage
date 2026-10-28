@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b2b11b56d67203d8122eb8b4a3b80a9be3a4a540f392fe017845d984325a37de"
   },
-  "physical_metadata_sha256": "350e75af343d7bcc31e261b79743a29521af1c4b9ced0e412202bad99e47b5cf"
+  "physical_metadata_sha256": "350e75af343d7bcc31e261b79743a29521af1c4b9ced0e412202bad99e47b5cf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArniRenownedChampion.java",
+  "java_sha256": "453925512242b877ccb67a430246f256e56e3ba643627b00aa38d9dca5fe6818",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/TargetPermanentPowerCount.java",
+      "sha256": "f0b296ef8d2fb45064bc8c791842e589a5bbd3c2622ef4fe2e78b26dde8b94fc"
+    }
+  ]
 }

@@ -3078,3 +3078,34 @@ fn repurposed_enforcer_counts_controlled_creatures_when_attack_trigger_resolves(
         }
     }
 }
+
+#[test]
+fn arni_uses_entering_creatures_current_or_last_known_power() {
+    for p in [Player::P0, Player::P1] {
+        for (leave, negative) in [(false, false), (true, false), (true, true)] {
+            let mut g = scenario(p);
+            let arni = put(&mut g, p, "Arni, Renowned Champion", Zone::Battlefield);
+            let entrant = put(&mut g, p, "Bear Cub", Zone::Hand);
+            g.move_object(entrant, Zone::Battlefield);
+            g.prepare_triggers();
+            assert!(!g.state.stack.is_empty() || !g.state.pending_triggers.is_empty());
+            if negative {
+                g.state.objects[entrant as usize].growth.power = -5;
+            } else {
+                g.state.objects[entrant as usize].growth.power = 2;
+            }
+            if leave {
+                g.move_object(entrant, Zone::Graveyard);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(stats(&g, arni), (if negative { 1 } else { 5 }, 5));
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(stats(&g, arni), (if negative { 1 } else { 5 }, 5));
+            g.finish_cleanup();
+            assert_eq!(stats(&g, arni), (1, 5));
+        }
+    }
+}

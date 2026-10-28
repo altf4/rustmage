@@ -5056,12 +5056,22 @@ impl Game {
                     power,
                     toughness,
                     ..
+                }
+                | Instruction::GrowResolved {
+                    subject,
+                    power,
+                    toughness,
+                    ..
                 } => {
-                    let amount = if let Instruction::GrowScaled { amount, .. } = instruction {
-                        i128::try_from(self.item_amount(amount, &item))
-                            .capacity("growth amount representation exhausted")
-                    } else {
-                        1
+                    let amount = match instruction {
+                        Instruction::GrowScaled { amount, .. } => {
+                            i128::try_from(self.item_amount(amount, &item))
+                                .capacity("growth amount representation exhausted")
+                        }
+                        Instruction::GrowResolved { value, .. } => {
+                            self.resolved_stat_value(&item, value).unwrap_or(0).max(0)
+                        }
+                        _ => 1,
                     };
                     let stats = Stats {
                         power: i128::from(power)

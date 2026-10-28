@@ -1823,6 +1823,13 @@ pub(crate) enum Instruction {
         power: i32,
         toughness: i32,
     },
+    /// Apply a sampled expression as a nonnegative growth multiplier (CR107.1b).
+    GrowResolved {
+        subject: Subject,
+        value: ResolvedStatValue,
+        power: i32,
+        toughness: i32,
+    },
     /// Replace creature types until the affected permanent changes zones.
     #[allow(
         dead_code,
