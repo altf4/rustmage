@@ -19,7 +19,12 @@ integration; a single final bump should cover all changes published together.
 Hexproof counters are appended to the existing named-counter and keyword-counter
 sets so older counter ordering is preserved. This is necessary for Mabel's
 interaction with Leatherhead, Swamp Stalker. Existing layer-six timestamp rules
-apply when such counters are added or removed. Counter removal currently uses
+apply when such counters are added or removed. The draft also adds named
+permanent-counter identities found in the pinned Standard front and back faces,
+including blight, conqueror, net and time; this only represents the counters
+and does not certify the cards that create them. In particular, a decayed
+counter must also grant its associated ability, which remains unimplemented.
+Player counters such as poison remain a separate concern. Counter removal currently uses
 the engine's existing counter-removal primitive; a source audit found no
 counter-removal observer in the pinned Standard Oracle, but full-pool
 interactions and replacement rules remain subject to the final audit.
