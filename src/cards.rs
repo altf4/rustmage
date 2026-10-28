@@ -284,6 +284,7 @@ pub(crate) enum TargetPredicate {
     Subtype(&'static str),
     Nonbasic,
     Legendary,
+    Nonlegendary,
     NonOutlaw,
 }
 

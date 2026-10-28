@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ab6019c608e966d503cd8b1b46d7bd3016fbb78662ea3cdb5babcbf42df53b89"
   },
-  "physical_metadata_sha256": "2ef406c0a4220a86b3b63b9d055d6615bb0fe2a10ee87d335b1c284d8af1cbd6"
+  "physical_metadata_sha256": "2ef406c0a4220a86b3b63b9d055d6615bb0fe2a10ee87d335b1c284d8af1cbd6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/y/YoshimaruScrappyStray.java",
+  "java_sha256": "622c234966c0e96a6452bd78e9185e3c9884781aff5fa4eaccf35f4601e0f8ba",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightTargetsEffect.java",
+      "sha256": "e562370eb9b15a7fc0db16f44b32e8dce627719fc405b2bc09eb8dad21f8edc2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    }
+  ]
 }

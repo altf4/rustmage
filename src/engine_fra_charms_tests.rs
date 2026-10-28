@@ -4086,3 +4086,87 @@ fn infinite_coursework_unprepares_blanks_and_restricts_only_untap_step() {
         assert!(!g.is_prepared(g.object_ref(creature)));
     }
 }
+
+#[test]
+fn yoshimaru_scrappy_stray_fights_and_targets_nonlegendary_creatures() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let own = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let dog = put(&mut g, p, "Yoshimaru, Scrappy Stray", Zone::Hand);
+        cast(&mut g, dog, None);
+        let mut picked_own = false;
+        let mut picked_enemy = false;
+        for _ in 0..64 {
+            g.prepare_triggers();
+            let actions = g.legal_actions();
+            let own_choice = Action::ChooseTarget {
+                target: Target::Card(own),
+            };
+            let enemy_choice = Action::ChooseTarget {
+                target: Target::Card(enemy),
+            };
+            if !picked_own && actions.contains(&own_choice) {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(dog),
+                    },
+                );
+                act(&mut g, own_choice);
+                picked_own = true;
+            } else if picked_own && !picked_enemy && actions.contains(&enemy_choice) {
+                act(&mut g, enemy_choice);
+                picked_enemy = true;
+            } else if actions.contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            } else if picked_enemy
+                && g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            } else if let Some(action) = actions
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+            {
+                act(&mut g, action);
+            } else {
+                panic!("unexpected Yoshimaru choice {:?}", g.state.pending);
+            }
+        }
+        assert!(picked_own && picked_enemy);
+        assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(own).zone, Zone::Battlefield);
+        g.state.players[p.index()].mana[5] = 6;
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: dog,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(dog),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        pay(&mut g);
+        let before = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 1);
+        g.restore(&before).unwrap();
+        settle(&mut g);
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 1);
+    }
+}

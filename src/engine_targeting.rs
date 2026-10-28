@@ -1344,6 +1344,9 @@ impl Game {
                     TargetPredicate::Legendary => {
                         ability_world::CharacteristicWorld::legendary(self, id)
                     }
+                    TargetPredicate::Nonlegendary => {
+                        !ability_world::CharacteristicWorld::legendary(self, id)
+                    }
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
