@@ -5514,3 +5514,67 @@ fn stingcaster_mage_grants_exact_temporary_flashback_permission() {
         }
     }
 }
+
+#[test]
+fn aerid_heartwood_mana_growth_and_death() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            let mut g = scenario(p);
+            if doubled {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let source = put(&mut g, p, "Aerid Konstrari", Zone::Hand);
+            cast(&mut g, source, None);
+            settle(&mut g);
+            let tokens = |g: &Game| -> Vec<CardId> {
+                g.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(i, o)| {
+                        (o.zone == Zone::Battlefield
+                            && o.controller == p
+                            && o.is_token()
+                            && o.card == Card(5438))
+                        .then_some(i as CardId)
+                    })
+                    .collect()
+            };
+            let first = tokens(&g);
+            assert_eq!(first.len(), if doubled { 2 } else { 1 });
+            let heartwood = first[0];
+            assert_eq!(g.object_view(heartwood).colors, 8 | 16);
+            assert!(g.has_subtype(heartwood, "Heartwood"));
+            for color in [3, 4] {
+                g.state.players[p.index()].mana = [0; 6];
+                let action = g.legal_actions().into_iter().find(|a| matches!(a, Action::ActivateMana { card, production, .. } if *card == heartwood && production[color] == 1)).expect("Heartwood mana");
+                act(&mut g, action);
+                assert_eq!(g.state.players[p.index()].mana[color], 1);
+                g.untap_objects(&[heartwood], untap_rules::UntapCause::Effect);
+            }
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 6];
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            pay(&mut g);
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(tokens(&g).len(), if doubled { 4 } else { 2 });
+            assert_eq!(stats(&g, source), if doubled { (9, 4) } else { (7, 4) });
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            g.finish_cleanup();
+            assert_eq!(stats(&g, source), (5, 4));
+            g.move_object(source, Zone::Graveyard);
+            g.prepare_triggers();
+            settle(&mut g);
+            assert_eq!(tokens(&g).len(), if doubled { 6 } else { 3 });
+        }
+    }
+}

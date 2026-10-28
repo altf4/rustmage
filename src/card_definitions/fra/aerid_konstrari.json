@@ -8,5 +8,35 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d9a2a90d600ff5fd2788ade5ca7af35fa39f2c227c0f8dd0717a4597a81b83d2"
   },
-  "physical_metadata_sha256": "9ed9e5d45e2221993ea3525c1a7ada88a66bc8cc9630cf1690a853890387bdf5"
+  "physical_metadata_sha256": "9ed9e5d45e2221993ea3525c1a7ada88a66bc8cc9630cf1690a853890387bdf5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AeridKonstrari.java",
+  "java_sha256": "9516ead7bf63671d3b7ca3a891d4db43fb14fa31daf0e4859bc7e8fefda051b8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HeartwoodToken.java",
+      "sha256": "956f8bf81061e436da05478f1923f01ec377b0563b620d0751ba6a5e35680a91"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrDiesSourceTriggeredAbility.java",
+      "sha256": "cc63649c52975b7de190b2f45fda8f94e462716367c82fa8064cd51314ce08c0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    }
+  ]
 }

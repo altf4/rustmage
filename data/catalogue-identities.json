@@ -5443,7 +5443,8 @@
     0,
     2,
     16,
-    0
+    0,
+    24
   ],
   "aliases": [
     [
@@ -6269,6 +6270,10 @@
     [
       "@token/goblin_army",
       5405
+    ],
+    [
+      "@token/heartwood",
+      5438
     ],
     [
       "@token/hob-axe",
@@ -28833,6 +28838,12 @@
       "name": "Sculpture Treasure Token",
       "subtypes": "Sculpture Treasure",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/heartwood",
+      "name": "Heartwood Token",
+      "subtypes": "Heartwood",
+      "colors": 24
     }
   ],
   "emblems": [
@@ -184265,6 +184276,33 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5438,
+      "module": "card_5438",
+      "path": "synthetic/token_heartwood.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/heartwood",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact — Heartwood",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
       "basic": false,
       "mana_color": null,
       "colored": [
