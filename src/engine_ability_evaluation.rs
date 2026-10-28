@@ -214,6 +214,16 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::CounterKeywordOther(kind, value) => {
+            if !own
+                || world.reference(id) == source
+                || world.kinds(id) & 1 == 0
+                || world.counter_count(id, kind) == 0
+            {
+                return None;
+            }
+            value
+        }
         StaticAbilityFragment::CounterKeyword(_, kind, value) => {
             if !own || world.kinds(id) & 1 == 0 || world.counter_count(id, kind) == 0 {
                 return None;
@@ -392,6 +402,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }
                         | StaticAbilityFragment::CounterKeyword(..)
+                        | StaticAbilityFragment::CounterKeywordOther(..)
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                         | StaticAbilityFragment::DeathBaronLord
                         | StaticAbilityFragment::KeywordGrant(..)

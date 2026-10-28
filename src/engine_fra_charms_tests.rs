@@ -3882,3 +3882,51 @@ fn mind_meanderer_jace_vigilance_and_optional_fight_use_live_objects() {
         }
     }
 }
+
+#[test]
+fn gallia_grants_haste_live_and_targets_recent_creatures_of_either_player() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let gallia = put(&mut g, p, "Gallia, the Merrymaker", Zone::Battlefield);
+        let ally = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let old = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let incoming = put(&mut g, p.other(), "Bear Cub", Zone::Hand);
+        g.move_object(incoming, Zone::Battlefield);
+        assert!(g.keywords(gallia).contains(Keywords::HASTE));
+        assert!(!g.keywords(ally).contains(Keywords::HASTE));
+        g.add_counter(ally, CounterKind::PlusOne, 1);
+        assert!(g.keywords(ally).contains(Keywords::HASTE));
+        g.pay_counters(ally, &Counters::of(CounterKind::PlusOne, 1));
+        assert!(!g.keywords(ally).contains(Keywords::HASTE));
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: gallia,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(old),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(incoming),
+            },
+        );
+        pay(&mut g);
+        let before = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.counter_count(incoming, CounterKind::PlusOne), 1);
+        assert!(!g.keywords(incoming).contains(Keywords::HASTE));
+        g.restore(&before).unwrap();
+        settle(&mut g);
+        assert_eq!(g.counter_count(incoming, CounterKind::PlusOne), 1);
+    }
+}
