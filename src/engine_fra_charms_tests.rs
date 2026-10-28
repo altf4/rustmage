@@ -540,3 +540,65 @@ fn academic_ascent_target_fizzle_and_temporary_effects() {
         }
     }
 }
+
+#[test]
+fn tams_resistance_optional_target_hybrid_and_fizzle() {
+    for p in [Player::P0, Player::P1] {
+        for (targeted, fizzle, color) in [(false, false, 1), (true, false, 4), (true, true, 1)] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let spell = put(&mut g, p, "Tam's Resistance", Zone::Hand);
+            g.state.players[p.index()].mana = [0; 6];
+            g.state.players[p.index()].mana[color] = 1;
+            g.state.players[p.index()].mana[5] = 1;
+            act(&mut g, Action::AnnounceCast { card: spell });
+            let mut selected = false;
+            for _ in 0..12 {
+                if g.state.announcing.is_none() {
+                    break;
+                }
+                let wanted = Action::ChooseTarget {
+                    target: Target::Card(target),
+                };
+                if targeted && !selected && g.legal_actions().contains(&wanted) {
+                    act(&mut g, wanted);
+                    selected = true;
+                } else {
+                    choose(&mut g, |a| {
+                        matches!(
+                            a,
+                            Action::ChooseSpellCost { .. }
+                                | Action::FinishTargets
+                                | Action::PayCosts { .. }
+                        )
+                    });
+                }
+            }
+            assert!(g.state.announcing.is_none());
+            assert_eq!(selected, targeted);
+            super::contracts::branch_contract(g.clone());
+            if fizzle {
+                g.move_object(target, Zone::Exile);
+            }
+            settle(&mut g);
+            if fizzle {
+                assert!(fra_jaces(&g, p).is_empty());
+            } else {
+                let jaces = fra_jaces(&g, p);
+                assert_eq!(jaces.len(), 1);
+                assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 4);
+                assert_eq!(
+                    g.counter_count(target, CounterKind::PlusOne),
+                    u64::from(targeted)
+                );
+                assert_eq!(g.keywords(target).contains(Keywords::VIGILANCE), targeted);
+                g.finish_cleanup();
+                assert!(!g.keywords(target).contains(Keywords::VIGILANCE));
+                assert_eq!(
+                    g.counter_count(target, CounterKind::PlusOne),
+                    u64::from(targeted)
+                );
+            }
+        }
+    }
+}
