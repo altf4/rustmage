@@ -5842,6 +5842,14 @@ fn hungering_puppetbeast_chooses_keyword_on_resolution_and_cleans_up() {
                 );
             }
             reject(&mut g, Action::ChooseKeyword { index: 3 });
+            let before_wrong_actor = g.snapshot();
+            let before_revision = g.revision();
+            assert_eq!(
+                g.apply(p.other(), Action::ChooseKeyword { index }),
+                Err(Error::WrongActor)
+            );
+            assert_eq!(g.snapshot(), before_wrong_actor);
+            assert_eq!(g.revision(), before_revision);
             let saved = g.snapshot();
             super::contracts::branch_contract(g.clone());
             act(&mut g, Action::ChooseKeyword { index });
