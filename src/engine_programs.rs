@@ -2029,6 +2029,9 @@ impl Game {
                 }
             )
         });
+        let reads_target_attacking = program.iter().any(|instruction| {
+            matches!(instruction, Instruction::DrawTargetControllerIfNotAttacking)
+        });
         let target_card_facts = program
             .iter()
             .any(|instruction| {
@@ -2062,7 +2065,8 @@ impl Game {
                                 },
                                 controller: self.state.objects[card as usize].controller,
                                 mana_value: self.object_mana_value(card),
-                                attacking: self.state.attackers.iter().any(|a| a.card == card),
+                                attacking: reads_target_attacking
+                                    && self.state.attackers.iter().any(|a| a.card == card),
                             }),
                             _ => None,
                         })
