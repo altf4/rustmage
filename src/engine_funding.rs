@@ -3679,3 +3679,72 @@ mod requested_esper_funding_tests;
 #[cfg(test)]
 #[path = "engine_requested_ghost_projection_tests.rs"]
 mod requested_ghost_projection_tests;
+
+#[cfg(test)]
+mod fra_subtype_grant_tests {
+    use super::*;
+    use crate::engine::assurance::big_helpers::{named, setup};
+
+    #[test]
+    fn funding_world_respects_controlled_thopter_haste() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let saheeli = named(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
+            g.create_tokens(p, Card(5266), 1, false);
+            let thopter = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .find_map(|(i, o)| {
+                    (o.zone == Zone::Battlefield && o.card == Card(5266) && o.controller == p)
+                        .then_some(i as CardId)
+                })
+                .expect("created Thopter");
+            let goal = FundingGoal {
+                actor: p,
+                required: [0; 6],
+                generic: 1,
+                reserve: None,
+                source: None,
+            };
+            // Ensure this creature is represented in the projected funding graph.
+            let object = g.object_ref(thopter);
+            let goal = FundingGoal {
+                reserve: Some((
+                    object,
+                    AdditionalCost {
+                        kind: EffectChoiceKind::Sacrifice,
+                        filter: SacrificeFilter {
+                            keywords: Keywords::NONE,
+                            source_only: false,
+                            kinds: 1,
+                            nonland: false,
+                            other: false,
+                            tokens: None,
+                            artifact_enchantment_or_token: false,
+                            subtype: None,
+                        },
+                    },
+                )),
+                ..goal
+            };
+            let world = FundingState::from_game(&g, &goal);
+            let resource = world.resources.iter().find(|r| r.id == thopter).unwrap();
+            assert!(world.keywords(resource).contains(Keywords::HASTE));
+            let mut without_source = world.clone();
+            let provider = without_source
+                .resources
+                .iter_mut()
+                .find(|r| r.id == saheeli)
+                .unwrap();
+            provider.object.zone = Zone::Graveyard;
+            let resource = without_source
+                .resources
+                .iter()
+                .find(|r| r.id == thopter)
+                .unwrap();
+            assert!(!without_source.keywords(resource).contains(Keywords::HASTE));
+        }
+    }
+}
