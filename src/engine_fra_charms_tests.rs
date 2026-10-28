@@ -6140,3 +6140,29 @@ fn saheeli_grant_tracks_thopter_subtype_changes() {
         assert!(g.keywords(thopter).contains(Keywords::HASTE));
     }
 }
+
+#[test]
+fn koth_landfall_uses_current_or_last_known_land_subtype() {
+    for p in [Player::P0, Player::P1] {
+        for (name, leaves) in [("Forest", false), ("Mountain", false), ("Mountain", true)] {
+            let mut g = scenario(p);
+            let koth = put(&mut g, p, "Koth, the Geomancer", Zone::Battlefield);
+            let land = put(&mut g, p, name, Zone::Hand);
+            let life = g.state.players[p.other().index()].life;
+            g.state.players[p.index()].mana = [0; 6];
+            g.move_object(land, Zone::Battlefield);
+            g.prepare_triggers();
+            if leaves {
+                g.move_object(land, Zone::Graveyard);
+            }
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(g.state.players[p.other().index()].life, life - 1);
+            assert_eq!(
+                g.state.players[p.index()].mana[3],
+                u64::from(name == "Mountain")
+            );
+            assert!(g.keywords(koth).contains(Keywords::REACH));
+        }
+    }
+}
