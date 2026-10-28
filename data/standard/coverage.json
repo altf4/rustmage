@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e741b5228b078fb9e345b779f5254dc6c19af867d69082ee3ecb850b0c22d887",
+  "catalogue_version": "3f58902089315c6a16b01f6a10d4787671f5aece73174effd77108456c8a2742",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2759,
-  "implemented_total": 2765,
+  "implemented_standard_cards": 2765,
+  "implemented_total": 2771,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 112,
-      "gated": 173
+      "complete": 118,
+      "gated": 167
     },
     "frc": {
       "total": 6,
@@ -7955,8 +7955,8 @@
     {
       "name": "Dark Matter Manipulator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/dark_matter_manipulator.rs",
       "set": "fra"
     },
@@ -10043,8 +10043,8 @@
     {
       "name": "Eardrum Rattler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/eardrum_rattler.rs",
       "set": "fra"
     },
@@ -13563,8 +13563,8 @@
     {
       "name": "Gallia, Tragic Host",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/gallia_tragic_host.rs",
       "set": "fra"
     },
@@ -13867,8 +13867,8 @@
     {
       "name": "Generous Revival",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/generous_revival.rs",
       "set": "fra"
     },
@@ -27603,8 +27603,8 @@
     {
       "name": "Recursive Recruitment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/recursive_recruitment.rs",
       "set": "fra"
     },
@@ -28299,8 +28299,8 @@
     {
       "name": "Rewrite Regrets",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/rewrite_regrets.rs",
       "set": "fra"
     },

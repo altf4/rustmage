@@ -3,7 +3,7 @@
   "catalogue_id": 1708,
   "oracle_id": "f8601f5f-0f7c-4689-9d15-137f1e82c49c",
   "facts_sha256": "324376c70799df2f13d925fd674736b62521d79987b1c4d6cbf88dc5dd3347fa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "38a0c1fb9e266e064d1692659b67b81036be2f1d1dc9bc255f6e3b72c97831c9"
@@ -28,5 +28,6 @@
       "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
       "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
     }
-  ]
+  ],
+  "rules_tests": "src/assurance/fra_graveyard_extra.rs"
 }

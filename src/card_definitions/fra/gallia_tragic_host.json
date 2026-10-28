@@ -3,7 +3,7 @@
   "catalogue_id": 1670,
   "oracle_id": "58285b70-0d13-4723-b5a4-91fb6f9ccf03",
   "facts_sha256": "68a15f4eafbf22f702f35a8020acacd53d117e9aefc9e4cfb7b63c3df4e8e27e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a932deeeccefd112ae65123255322429ed98a98ce274c03aab7d8ed07ef6165b"
@@ -33,5 +33,6 @@
       "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
       "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_gallia_entry_tests.rs"
 }

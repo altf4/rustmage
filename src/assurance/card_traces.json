@@ -4143,6 +4143,14 @@
     "journal": "c74d47fdf1bf30fc",
     "observations": "b1b434e7618c5bcd"
   },
+  "Dark Matter Manipulator": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "e37159643c0db6fe",
+    "observations": "abf5318d8537afb6"
+  },
   "Darkness Descends": {
     "root": "main",
     "status": "completed",
@@ -5334,6 +5342,14 @@
     "zone": "Battlefield",
     "journal": "b590b80476d94838",
     "observations": "b26f27d511a1ff23"
+  },
+  "Eardrum Rattler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "8a74f9504f18a066"
   },
   "Earth Kingdom Soldier": {
     "root": "main",
@@ -7247,6 +7263,14 @@
     "journal": "b3c7b7afbc4d3086",
     "observations": "fb05338a9a44c0e4"
   },
+  "Gallia, Tragic Host": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "c0c0d0723422cf9c"
+  },
   "Galuf's Final Act": {
     "root": "main",
     "status": "completed",
@@ -7398,6 +7422,14 @@
     "zone": "Battlefield",
     "journal": "b43781f2834dd88f",
     "observations": "0651faf4aea1febe"
+  },
+  "Generous Revival": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "96df770007b23c51",
+    "observations": "7ec34cfd945d73dc"
   },
   "Genesis Wave": {
     "root": "main",
@@ -14807,6 +14839,14 @@
     "journal": "02573b280abef5f9",
     "observations": "61eeef739e0d8c46"
   },
+  "Recursive Recruitment": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "3c38242be96ca09d",
+    "observations": "5804d67e97837a6c"
+  },
   "Red Guardian, Super-Soldier": {
     "root": "main",
     "status": "completed",
@@ -15118,6 +15158,14 @@
     "zone": "Battlefield",
     "journal": "5a37305467443acc",
     "observations": "516d8132465caa49"
+  },
+  "Rewrite Regrets": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "07a060a59ac77cf0",
+    "observations": "4635202dd60bbd6b"
   },
   "Rhovanion Rampager": {
     "root": "main",
