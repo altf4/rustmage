@@ -5787,3 +5787,61 @@ fn tenured_tethermage_requires_two_artifacts_but_its_source_may_already_be_tappe
         assert_eq!(g.counter_count(mage, CounterKind::PlusOne), 2);
     }
 }
+
+#[test]
+fn hungering_puppetbeast_chooses_keyword_on_resolution_and_cleans_up() {
+    for p in [Player::P0, Player::P1] {
+        for (index, keyword) in [
+            (0, Keywords::TRAMPLE),
+            (1, Keywords::HEXPROOF),
+            (2, Keywords::HASTE),
+        ] {
+            let mut g = scenario(p);
+            let beast = put(&mut g, p, "Hungering Puppetbeast", Zone::Battlefield);
+            let artifact = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: beast,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let beast_ref = g.object_ref(beast);
+            let enemy_ref = g.object_ref(enemy);
+            reject(&mut g, Action::ChooseAdditionalCost { object: beast_ref });
+            reject(&mut g, Action::ChooseAdditionalCost { object: enemy_ref });
+            let artifact_ref = g.object_ref(artifact);
+            act(
+                &mut g,
+                Action::ChooseAdditionalCost {
+                    object: artifact_ref,
+                },
+            );
+            pay(&mut g);
+            assert_eq!(g.object_view(artifact).zone, Zone::Graveyard);
+            assert!(!g.legal_actions().contains(&Action::ChooseKeyword { index }));
+            for _ in 0..32 {
+                if g.legal_actions().contains(&Action::ChooseKeyword { index }) {
+                    break;
+                }
+                act(&mut g, Action::Pass);
+            }
+            assert_eq!(g.counter_count(beast, CounterKind::PlusOne), 1);
+            reject(&mut g, Action::ChooseKeyword { index: 3 });
+            let saved = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            act(&mut g, Action::ChooseKeyword { index });
+            settle(&mut g);
+            assert!(g.keywords(beast).contains(keyword));
+            g.restore(&saved).unwrap();
+            act(&mut g, Action::ChooseKeyword { index });
+            settle(&mut g);
+            assert!(g.keywords(beast).contains(keyword));
+            g.finish_cleanup();
+            assert!(!g.keywords(beast).contains(keyword));
+            assert_eq!(g.counter_count(beast, CounterKind::PlusOne), 1);
+        }
+    }
+}
