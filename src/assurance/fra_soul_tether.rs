@@ -250,3 +250,34 @@ fn woodwork_upkeep_intervening_if_checks_both_event_and_resolution() {
         assert_eq!(copy(&g, source), replacement);
     }
 }
+
+#[test]
+fn candidate_fronts_have_correct_names_costs_and_remain_gated() {
+    for (identity, front, cost, mana_value) in [
+        (
+            "Heartwood Crafter // Soul Tether",
+            "Heartwood Crafter",
+            "{G}",
+            1,
+        ),
+        (
+            "Konstrari Improviser // Soul Tether",
+            "Konstrari Improviser",
+            "{1}{R/G}",
+            2,
+        ),
+        (
+            "Woodwork Prodigy // Soul Tether",
+            "Woodwork Prodigy",
+            "{2}{R/G}",
+            3,
+        ),
+    ] {
+        let card = Card::from_name(identity).unwrap();
+        assert_eq!(Card::from_name(front), Some(card));
+        assert_eq!(card.name(), front);
+        assert_eq!(card.info().mana_cost, cost);
+        assert_eq!(card.fixed_mana_value(), mana_value);
+        assert!(!card.is_supported());
+    }
+}
