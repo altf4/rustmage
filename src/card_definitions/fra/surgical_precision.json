@@ -3,10 +3,36 @@
   "catalogue_id": 4268,
   "oracle_id": "0caccec3-4942-499a-9434-0c94389afcf8",
   "facts_sha256": "8fe7cb1a8ef95587a59bf5dd4d2478c67cfbfeb98e1aeacdf427ca3e8b7644cb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bba52f485ba08ee5fc81e6499e0090f2c8a13d73ea39f783591fc7805618c0d0"
   },
-  "physical_metadata_sha256": "643a7c6005351dd250d43ef00518f3bc7e7eec4b2db5c36637797cce6f332444"
+  "physical_metadata_sha256": "643a7c6005351dd250d43ef00518f3bc7e7eec4b2db5c36637797cce6f332444",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SurgicalPrecision.java",
+  "java_sha256": "811bc3b0cf13002ddb6e48b7f7db9c38e9603306bcf239e12528fabce785bc2e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ToughnessPredicate.java",
+      "sha256": "dde981d3b674374b3638ade013cc0c706d21f4c4e93309422dc53b76c83b8ff2"
+    }
+  ],
+  "remaining_obligations": []
 }

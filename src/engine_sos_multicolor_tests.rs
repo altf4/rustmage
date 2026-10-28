@@ -903,3 +903,74 @@ fn sos_foreign_death_return_cannot_enable_tender_for_old_controller() {
         );
     }
 }
+
+#[test]
+fn fra_surgical_precision_modes_target_legality_and_fizzle() {
+    use super::big_helpers::{cast, settle, setup, spawn};
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let giant = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Fateshaper Aspirant").unwrap(),
+            Zone::Battlefield,
+        );
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("Surgical Precision").unwrap(),
+            Zone::Hand,
+        );
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(&mut g, Action::ChooseMode { mode: 0 });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(giant),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(giant).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].life, 21);
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("Surgical Precision").unwrap(),
+            Zone::Hand,
+        );
+        let size = g.state.players[p.index()].library.len();
+        cast(&mut g, spell, Some(1), &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 23);
+        assert_eq!(g.state.players[p.index()].library.len(), size - 1);
+        let giant = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Fateshaper Aspirant").unwrap(),
+            Zone::Battlefield,
+        );
+        let spell = spawn(
+            &mut g,
+            p,
+            Card::from_name("Surgical Precision").unwrap(),
+            Zone::Hand,
+        );
+        cast(&mut g, spell, Some(0), &[Target::Card(giant)]);
+        g.move_object(giant, Zone::Hand);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 23);
+    }
+}
