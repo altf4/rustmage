@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4d85f91a01ae22f0b22b973bb713d2b397f752308adc96b773eb640076c3ecdc"
   },
-  "physical_metadata_sha256": "3e30f94ae00a05e7d2024db8fc129fd5c836085adab68e084b567ba20355b88f"
+  "physical_metadata_sha256": "3e30f94ae00a05e7d2024db8fc129fd5c836085adab68e084b567ba20355b88f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GraftSurgeon.java",
+  "java_sha256": "2a028a4a8baa97056a18b452c1fdb880ff058c8113c4b1c6d2565e0ca855da4d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutSourceCountersOnTargetEffect.java",
+      "sha256": "320385417b879d53dfe01e4d3f58413732c5830ce57f6160001b43b9a7b69ac3"
+    }
+  ]
 }

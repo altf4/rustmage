@@ -1569,3 +1569,71 @@ fn teyo_flash_entry_grants_permanent_and_kind_appropriate_counters() {
         }
     }
 }
+
+#[test]
+fn graft_surgeon_optional_death_target_uses_all_frozen_counter_kinds() {
+    for p in [Player::P0, Player::P1] {
+        for targeted in [false, true] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let opponent = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let surgeon = put(&mut g, p, "Graft Surgeon", Zone::Hand);
+            cast(&mut g, surgeon, None);
+            settle(&mut g);
+            assert_eq!(g.counter_count(surgeon, CounterKind::PlusOne), 1);
+            g.add_counter(surgeon, CounterKind::Stun, 2);
+            let old = g.object_ref(surgeon);
+            g.move_object(surgeon, Zone::Graveyard);
+            g.move_object(surgeon, Zone::Battlefield);
+            assert_ne!(g.object_ref(surgeon), old);
+            g.add_counter(surgeon, CounterKind::PlusOne, 7);
+            let mut selected = false;
+            for _ in 0..48 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let wanted = Action::ChooseTarget {
+                    target: Target::Card(target),
+                };
+                if !selected && actions.contains(&wanted) {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(opponent),
+                        },
+                    );
+                    if targeted {
+                        act(&mut g, wanted);
+                    } else {
+                        act(&mut g, Action::FinishTargets);
+                    }
+                    selected = true;
+                    super::contracts::branch_contract(g.clone());
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                } else if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Graft Surgeon choice {:?}", g.state.pending);
+                }
+            }
+            assert!(selected);
+            assert_eq!(
+                g.counter_count(target, CounterKind::PlusOne),
+                u64::from(targeted)
+            );
+            assert_eq!(
+                g.counter_count(target, CounterKind::Stun),
+                if targeted { 2 } else { 0 }
+            );
+        }
+    }
+}
