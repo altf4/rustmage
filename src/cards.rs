@@ -2285,6 +2285,11 @@ pub(crate) enum StatValue {
     Colors(CountFilter),
     CardTypes(CountFilter),
     GraveyardCardTypes,
+    /// Number of complete positive-sized groups in a nonnegative quantity.
+    GroupsOf {
+        value: &'static StatValue,
+        size: std::num::NonZeroU16,
+    },
     Sum(&'static [StatValue]),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

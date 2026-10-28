@@ -369,6 +369,28 @@ impl Game {
                 .filter(|(_, o)| o.zone == Zone::Graveyard && !o.is_token())
                 .fold(0u16, |mask, (_, o)| mask | o.card.kind_mask())
                 .count_ones() as i128,
+            StatValue::GroupsOf { value, size } => {
+                self.stat_value_with(
+                    *value,
+                    source,
+                    owner,
+                    objects,
+                    subtypes,
+                    kinds,
+                    names,
+                    colors,
+                    legendary,
+                    mana_value,
+                    counter_count,
+                    has_counters,
+                    life,
+                    attacking,
+                    enduring_story,
+                    life_lost,
+                )
+                .max(0)
+                    / i128::from(size.get())
+            }
             StatValue::Sum(values) => values
                 .iter()
                 .map(|&value| {

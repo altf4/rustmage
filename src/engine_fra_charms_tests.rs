@@ -723,3 +723,36 @@ fn traxos_observes_artifact_casts_only_by_its_controller() {
         }
     }
 }
+
+#[test]
+fn dark_matter_manipulator_mill_and_graveyard_groups_are_live() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let creature = put(&mut g, p, "Dark Matter Manipulator", Zone::Hand);
+        let before = g.state.players[p.index()].library.len();
+        cast(&mut g, creature, None);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), before - 3);
+        assert_eq!(stats(&g, creature), (1, 2));
+        for _ in 0..3 {
+            put(&mut g, p, "Forest", Zone::Graveyard);
+        }
+        for _ in 0..7 {
+            put(&mut g, p.other(), "Forest", Zone::Graveyard);
+        }
+        assert_eq!(stats(&g, creature), (1, 2));
+        let seventh = put(&mut g, p, "Forest", Zone::Graveyard);
+        assert_eq!(stats(&g, creature), (3, 2));
+        super::contracts::branch_contract(g.clone());
+        for _ in 0..7 {
+            put(&mut g, p, "Forest", Zone::Graveyard);
+        }
+        assert_eq!(stats(&g, creature), (5, 2));
+        g.move_object(seventh, Zone::Exile);
+        assert_eq!(stats(&g, creature), (3, 2));
+        let aura = put(&mut g, p.other(), "Witness Protection", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(creature));
+        assert!(!g.printed_abilities_available(creature));
+        assert_eq!(stats(&g, creature), (1, 1));
+    }
+}

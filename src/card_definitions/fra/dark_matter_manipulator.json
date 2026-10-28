@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "54f50fda03eefb8a7ba3a240a1c30c1ab170b12e88dd44fcac5cc245ee6231e5"
   },
-  "physical_metadata_sha256": "e53e299bd41d0aad0e56df0c5dbc5636ba9b499a9162f57721b17d705da05ff5"
+  "physical_metadata_sha256": "e53e299bd41d0aad0e56df0c5dbc5636ba9b499a9162f57721b17d705da05ff5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DarkMatterManipulator.java",
+  "java_sha256": "5bdca80aed69905852ba4036d1615827eb5954e19f8117d3178ca5a35afc3503",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ]
 }
