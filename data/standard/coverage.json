@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2ddd9b2c30cdcaf1c5e39322b743ab405d3f8e9534ecf66b110abf8d5a61566c",
+  "catalogue_version": "901ac02513977a8a9f2c8215efac0b31537a89c438f9d1229b1ced16d8edf106",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2740,
-  "implemented_total": 2746,
+  "implemented_standard_cards": 2741,
+  "implemented_total": 2747,
   "token_definitions": 136,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 93,
-      "gated": 192
+      "complete": 94,
+      "gated": 191
     },
     "frc": {
       "total": 6,
@@ -34347,8 +34347,8 @@
     {
       "name": "Surgical Precision",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/surgical_precision.rs",
       "set": "fra"
     },
