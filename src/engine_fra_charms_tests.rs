@@ -1442,106 +1442,130 @@ fn gardenize_does_not_trigger_on_opponents_first_main_phase() {
 
 #[test]
 fn teyo_flash_entry_grants_permanent_and_kind_appropriate_counters() {
-    for p in [Player::P0, Player::P1] {
-        for (kind, doubled, fizzle) in [
-            (0, false, false),
-            (1, true, false),
-            (2, false, false),
-            (3, false, false),
-            (0, false, true),
-        ] {
-            let mut g = scenario(p.other());
-            let target = put(
-                &mut g,
-                p,
-                match kind {
-                    0 => "Bear Cub",
-                    1 | 3 => "Liliana the Faultless",
-                    _ => "Forest",
-                },
-                Zone::Battlefield,
-            );
-            if kind == 1 || kind == 3 {
-                g.add_counter(target, CounterKind::Loyalty, 5);
-            }
-            if kind == 3 {
-                let reference = g.object_ref(target);
-                g.change_object_form(
-                    reference,
-                    AnimationSpec {
-                        artifact: false,
-                        creature_types: AnimationCreatureTypes::Unchanged,
-                        base: Some((3, 3)),
-                        keywords: Keywords::NONE,
-                        duration: AnimationDuration::EndOfTurn,
+    for (name, keyword) in [
+        ("Teyo, Diamondblade Mage", Keywords::DEATHTOUCH),
+        ("Teyo, Lightshield Expert", Keywords::HEXPROOF),
+    ] {
+        for p in [Player::P0, Player::P1] {
+            for (kind, doubled, fizzle) in [
+                (0, false, false),
+                (1, true, false),
+                (2, false, false),
+                (3, false, false),
+                (0, false, true),
+            ] {
+                let mut g = scenario(p.other());
+                let target = put(
+                    &mut g,
+                    p,
+                    match kind {
+                        0 => "Bear Cub",
+                        1 | 3 => "Liliana the Faultless",
+                        _ => "Forest",
                     },
-                    characteristic_layers::AnimationTypeMode::AddCreature,
+                    Zone::Battlefield,
                 );
-                assert_eq!(g.current_kinds(target) & 65, 65);
-            }
-            if doubled {
-                put(&mut g, p, "Doubling Season", Zone::Battlefield);
-            }
-            let illegal = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-            let teyo = put(&mut g, p, "Teyo, Diamondblade Mage", Zone::Hand);
-            g.state.priority = p;
-            cast(&mut g, teyo, None);
-            let mut chosen = false;
-            for _ in 0..48 {
-                g.prepare_triggers();
-                let actions = g.legal_actions();
-                let wanted = Action::ChooseTarget {
-                    target: Target::Card(target),
-                };
-                if !chosen && actions.contains(&wanted) {
+                if kind == 1 || kind == 3 {
+                    g.add_counter(target, CounterKind::Loyalty, 5);
+                }
+                if kind == 3 {
+                    let reference = g.object_ref(target);
+                    g.change_object_form(
+                        reference,
+                        AnimationSpec {
+                            artifact: false,
+                            creature_types: AnimationCreatureTypes::Unchanged,
+                            base: Some((3, 3)),
+                            keywords: Keywords::NONE,
+                            duration: AnimationDuration::EndOfTurn,
+                        },
+                        characteristic_layers::AnimationTypeMode::AddCreature,
+                    );
+                    assert_eq!(g.current_kinds(target) & 65, 65);
+                }
+                if doubled {
+                    put(&mut g, p, "Doubling Season", Zone::Battlefield);
+                }
+                let illegal = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+                let teyo = put(&mut g, p, name, Zone::Hand);
+                g.state.priority = p;
+                cast(&mut g, teyo, None);
+                let mut chosen = false;
+                for _ in 0..48 {
+                    g.prepare_triggers();
+                    let actions = g.legal_actions();
+                    let wanted = Action::ChooseTarget {
+                        target: Target::Card(target),
+                    };
+                    if !chosen && actions.contains(&wanted) {
+                        reject(
+                            &mut g,
+                            Action::ChooseTarget {
+                                target: Target::Card(illegal),
+                            },
+                        );
+                        act(&mut g, wanted);
+                        chosen = true;
+                        if fizzle {
+                            let reference = g.object_ref(target);
+                            g.change_controller(reference, p.other());
+                        }
+                        super::contracts::branch_contract(g.clone());
+                    } else if actions.contains(&Action::FinishTargets) {
+                        act(&mut g, Action::FinishTargets);
+                    } else if g.state.pending == Pending::Priority
+                        && g.state.stack.is_empty()
+                        && g.state.pending_triggers.is_empty()
+                        && g.state.resolving.is_none()
+                    {
+                        break;
+                    } else if let Some(action) = actions
+                        .into_iter()
+                        .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                    {
+                        act(&mut g, action);
+                    } else {
+                        panic!("unexpected Teyo choice {:?}", g.state.pending);
+                    }
+                }
+                assert!(chosen);
+                assert_eq!(g.keywords(target).contains(keyword), !fizzle);
+                assert_eq!(
+                    g.counter_count(target, CounterKind::PlusOne),
+                    u64::from((kind == 0 || kind == 3) && !fizzle)
+                );
+                assert_eq!(
+                    g.counter_count(target, CounterKind::Loyalty),
+                    if kind == 1 {
+                        7
+                    } else if kind == 3 {
+                        6
+                    } else {
+                        0
+                    }
+                );
+                if keyword == Keywords::HEXPROOF && kind == 0 && !fizzle {
+                    g.state.priority = p.other();
+                    let shock = put(&mut g, p.other(), "Shock", Zone::Hand);
+                    act(&mut g, Action::AnnounceCast { card: shock });
                     reject(
                         &mut g,
                         Action::ChooseTarget {
-                            target: Target::Card(illegal),
+                            target: Target::Card(target),
                         },
                     );
-                    act(&mut g, wanted);
-                    chosen = true;
-                    if fizzle {
-                        let reference = g.object_ref(target);
-                        g.change_controller(reference, p.other());
-                    }
-                    super::contracts::branch_contract(g.clone());
-                } else if actions.contains(&Action::FinishTargets) {
-                    act(&mut g, Action::FinishTargets);
-                } else if g.state.pending == Pending::Priority
-                    && g.state.stack.is_empty()
-                    && g.state.pending_triggers.is_empty()
-                    && g.state.resolving.is_none()
-                {
-                    break;
-                } else if let Some(action) = actions
-                    .into_iter()
-                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
-                {
-                    act(&mut g, action);
-                } else {
-                    panic!("unexpected Teyo choice {:?}", g.state.pending);
+                    act(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Player(p),
+                        },
+                    );
+                    pay(&mut g);
+                    settle(&mut g);
                 }
+                g.finish_cleanup();
+                assert!(!g.keywords(target).contains(keyword));
             }
-            assert!(chosen);
-            assert_eq!(g.keywords(target).contains(Keywords::DEATHTOUCH), !fizzle);
-            assert_eq!(
-                g.counter_count(target, CounterKind::PlusOne),
-                u64::from((kind == 0 || kind == 3) && !fizzle)
-            );
-            assert_eq!(
-                g.counter_count(target, CounterKind::Loyalty),
-                if kind == 1 {
-                    7
-                } else if kind == 3 {
-                    6
-                } else {
-                    0
-                }
-            );
-            g.finish_cleanup();
-            assert!(!g.keywords(target).contains(Keywords::DEATHTOUCH));
         }
     }
 }
