@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "02785eaa25c6d14265de98a0067a10bf38e44c0a1991977af421f6d9a8027203"
   },
-  "physical_metadata_sha256": "ae8ac03fadfb309b6e2459c41f2975e834fc81e782fb54baa2efa3f0407ba69b"
+  "physical_metadata_sha256": "ae8ac03fadfb309b6e2459c41f2975e834fc81e782fb54baa2efa3f0407ba69b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SolveForDisappointment.java",
+  "java_sha256": "de9cd081eaa83b7a6c63458284ed28f444fe4cef9faa62854ab6e027d1917238",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+      "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }

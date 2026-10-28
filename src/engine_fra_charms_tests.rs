@@ -3530,3 +3530,67 @@ fn rewrite_regrets_reanimates_then_empowers_and_fizzles_for_stale_target() {
         }
     }
 }
+
+#[test]
+fn solve_for_disappointment_reveals_hand_discards_permanent_then_empowers() {
+    for p in [Player::P0, Player::P1] {
+        for has_permanent in [false, true] {
+            let mut g = scenario(p);
+            let land = put(&mut g, p.other(), "Forest", Zone::Hand);
+            let instant = put(&mut g, p.other(), "Shock", Zone::Hand);
+            let permanent = has_permanent.then(|| put(&mut g, p.other(), "Bear Cub", Zone::Hand));
+            let spell = put(&mut g, p, "Solve for Disappointment", Zone::Hand);
+            assert!(!g.observe(p).objects.iter().any(|o| o.id == land));
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 1];
+            act(&mut g, Action::AnnounceCast { card: spell });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            pay(&mut g);
+            for _ in 0..48 {
+                if matches!(g.state.pending, Pending::RevealedDiscard { .. })
+                    || (g.state.pending == Pending::Priority
+                        && g.state.stack.is_empty()
+                        && g.state.resolving.is_none())
+                {
+                    break;
+                }
+                act(&mut g, Action::Pass);
+            }
+            assert!(g.observe(p).objects.iter().any(|o| o.id == land));
+            if let Some(permanent) = permanent {
+                reject(
+                    &mut g,
+                    Action::ChooseRevealedDiscard {
+                        object: g.object_ref(land),
+                    },
+                );
+                reject(
+                    &mut g,
+                    Action::ChooseRevealedDiscard {
+                        object: g.object_ref(instant),
+                    },
+                );
+                super::contracts::branch_contract(g.clone());
+                let chosen = g.object_ref(permanent);
+                act(&mut g, Action::ChooseRevealedDiscard { object: chosen });
+                settle(&mut g);
+                assert_eq!(g.object_view(permanent).zone, Zone::Graveyard);
+            }
+            assert_eq!(g.object_view(land).zone, Zone::Hand);
+            assert_eq!(g.object_view(instant).zone, Zone::Hand);
+            let jaces = fra_jaces(&g, p);
+            assert_eq!(jaces.len(), 1);
+            assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 1);
+        }
+    }
+}
