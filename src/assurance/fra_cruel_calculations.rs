@@ -180,3 +180,42 @@ fn cruel_calculations_does_not_count_a_transient_card_copy_as_a_card() {
         }
     }
 }
+
+#[test]
+fn cruel_calculations_batch_attributes_history_to_owner_after_mixed_replacements() {
+    for owner in [Player::P0, Player::P1] {
+        let mut g = scenario(owner);
+        put(&mut g, owner, "Dryad Militant", Zone::Battlefield);
+        let forest = put(&mut g, owner, "Forest", Zone::Library);
+        let shock = put(&mut g, owner.other(), "Shock", Zone::Library);
+        // Zone events must use the owner of a card, not stale controller data.
+        g.state.objects[forest as usize].controller = owner.other();
+        g.state.objects[shock as usize].controller = owner;
+        let before = g.snapshot();
+        let events = g.move_objects_raw(&[forest, shock], Zone::Graveyard);
+        assert_eq!(events[0].destination, Zone::Graveyard);
+        assert_eq!(events[1].destination, Zone::Exile);
+        for viewer in [Player::P0, Player::P1] {
+            let observation = g.observe(viewer);
+            assert_eq!(
+                observation.players[owner.index()].cards_library_to_graveyard_this_turn,
+                1
+            );
+            assert_eq!(
+                observation.players[owner.other().index()].cards_library_to_graveyard_this_turn,
+                0
+            );
+        }
+        let after = g.snapshot();
+        g.restore(&before).unwrap();
+        assert_eq!(
+            g.observe(owner).players[owner.index()].cards_library_to_graveyard_this_turn,
+            0
+        );
+        g.restore(&after).unwrap();
+        assert_eq!(
+            g.observe(owner.other()).players[owner.index()].cards_library_to_graveyard_this_turn,
+            1
+        );
+    }
+}
