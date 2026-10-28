@@ -106,13 +106,7 @@ fn prepared_source_can_be_sacrificed_for_mana_during_its_copys_cast() {
             g.state.objects[source as usize].summoning_sick = false;
             g.state.players[p.index()].mana = [0; 6];
             checked(&mut g, Action::AnnounceExile { card: copy.card });
-            if let Some(action) = g
-                .legal_actions()
-                .into_iter()
-                .find(|a| matches!(a, Action::ChooseSpellCost { .. }))
-            {
-                checked(&mut g, action);
-            }
+            checked(&mut g, Action::ChooseSpellCost { cost: 1 });
             if seed {
                 checked(
                     &mut g,
