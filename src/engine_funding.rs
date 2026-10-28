@@ -942,6 +942,28 @@ impl<'g> FundingState<'g> {
                 for group in source.object.card.static_ability_groups() {
                     for fragment in group.fragments {
                         match *fragment {
+                            crate::cards::StaticAbilityFragment::ControlledPermanentKeywords {
+                                kinds,
+                                keywords: grant,
+                            } if target.object.controller == source.object.controller
+                                && self.kinds(target) & kinds != 0 =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
+                            crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords {
+                                subtype,
+                                keywords: grant,
+                            } if target.object.controller == source.object.controller
+                                && ability_world::CharacteristicWorld::subtypes(
+                                    self, target.id,
+                                )
+                                .has(
+                                    ability_world::CharacteristicWorld::definition(self, target.id),
+                                    subtype,
+                                ) =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
                             crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords {
                                 filter,
                                 keywords: grant,

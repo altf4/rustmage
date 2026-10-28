@@ -556,6 +556,23 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
                     match *fragment {
+                        StaticAbilityFragment::ControlledPermanentKeywords {
+                            kinds,
+                            keywords: grant,
+                        } if target.controller == object.controller
+                            && CharacteristicWorld::kinds(self, id) & kinds != 0 =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
+                        StaticAbilityFragment::ControlledSubtypeKeywords {
+                            subtype,
+                            keywords: grant,
+                        } if target.controller == object.controller
+                            && CharacteristicWorld::subtypes(self, id)
+                                .has(CharacteristicWorld::definition(self, id), subtype) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::PlusOnePlacedKeywords {
                             filter,
                             keywords: grant,
