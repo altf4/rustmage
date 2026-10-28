@@ -2345,3 +2345,87 @@ fn traxos_academy_guardian_discount_tracks_noncreature_casts_and_prowess() {
         }
     }
 }
+
+#[test]
+fn vraska_cutting_glare_rechecks_six_lands_and_creates_treasure_after_destruction() {
+    for p in [Player::P0, Player::P1] {
+        for (lands, lose_land, indestructible) in [
+            (5, false, false),
+            (6, true, false),
+            (6, false, false),
+            (6, false, true),
+        ] {
+            let mut g = scenario(p);
+            let land_ids: Vec<_> = (0..lands)
+                .map(|_| put(&mut g, p, "Forest", Zone::Battlefield))
+                .collect();
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            if indestructible {
+                g.state.objects[target as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+            }
+            let vraska = put(&mut g, p, "Vraska, the Cutting Glare", Zone::Hand);
+            cast(&mut g, vraska, None);
+            let mut selected = false;
+            for _ in 0..64 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let wanted = Action::ChooseTarget {
+                    target: Target::Card(target),
+                };
+                if !selected && actions.contains(&wanted) {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(own),
+                        },
+                    );
+                    act(&mut g, wanted);
+                    selected = true;
+                    if lose_land {
+                        g.move_object(land_ids[0], Zone::Graveyard);
+                    }
+                    super::contracts::branch_contract(g.clone());
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                } else if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Vraska choice {:?}", g.state.pending);
+                }
+            }
+            assert_eq!(selected, lands >= 6);
+            assert!(g.keywords(vraska).contains(Keywords::DEATHTOUCH));
+            let triggered = lands >= 6 && !lose_land;
+            assert_eq!(
+                g.object_view(target).zone,
+                if triggered && !indestructible {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            let treasures = g
+                .state
+                .objects
+                .iter()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == p.other()
+                        && o.is_token()
+                        && o.card == Card(5302)
+                })
+                .count();
+            assert_eq!(treasures, usize::from(triggered));
+        }
+    }
+}
