@@ -6331,3 +6331,24 @@ fn break_under_pressure_opponent_chooses_tied_greatest_mana_value() {
         }
     }
 }
+
+#[test]
+fn break_under_pressure_gains_life_when_opponent_has_no_eligible_permanent() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let land = put(&mut g, p.other(), "Forest", Zone::Battlefield);
+        let enchantment = put(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+        let spell = put(&mut g, p, "Break Under Pressure", Zone::Hand);
+        let life = g.state.players[p.index()].life;
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        let saved = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 2);
+        assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(enchantment).zone, Zone::Battlefield);
+        g.restore(&saved).unwrap();
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 2);
+    }
+}
