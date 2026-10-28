@@ -602,3 +602,33 @@ fn tams_resistance_optional_target_hybrid_and_fizzle() {
         }
     }
 }
+
+#[test]
+fn tetsuko_uses_live_power_toughness_control_and_ability_origin() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let tetsuko = put(&mut g, p, "Tetsuko Umezawa, Fugitive", Zone::Battlefield);
+        let low_power = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let low_toughness = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let ordinary = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let blocker = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.state.objects[low_power as usize].growth.power = -1;
+        g.state.objects[low_toughness as usize].growth.toughness = -1;
+        assert!(!g.can_block_pair(blocker, tetsuko));
+        assert!(!g.can_block_pair(blocker, low_power));
+        assert!(!g.can_block_pair(blocker, low_toughness));
+        assert!(g.can_block_pair(blocker, ordinary));
+        super::contracts::branch_contract(g.clone());
+        g.state.objects[low_power as usize].growth.power = 0;
+        assert!(g.can_block_pair(blocker, low_power));
+        let aura = put(&mut g, p.other(), "Witness Protection", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(tetsuko));
+        assert!(!g.printed_abilities_available(tetsuko));
+        assert!(g.can_block_pair(blocker, low_toughness));
+        g.move_object(aura, Zone::Graveyard);
+        assert!(!g.can_block_pair(blocker, low_toughness));
+        let reference = g.object_ref(tetsuko);
+        g.change_controller(reference, p.other());
+        assert!(g.can_block_pair(blocker, low_toughness));
+    }
+}

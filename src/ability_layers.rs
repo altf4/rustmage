@@ -226,6 +226,8 @@ pub(crate) enum StaticAbilityFragment {
     /// Rules restriction evaluated after all derived power modifications.
     CannotBeBlockedIfSourcePowerAtMost(i128),
     CannotBeBlockedByCreaturesWithLessPower,
+    /// Controlled creatures meeting either live stat bound cannot be blocked.
+    ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(i128),
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,
