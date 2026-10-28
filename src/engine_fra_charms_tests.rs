@@ -1397,3 +1397,32 @@ fn living_library_pays_sacrifice_and_shuffles_into_actual_owners_library() {
         }
     }
 }
+
+#[test]
+fn gardenize_counts_own_deaths_and_uses_latest_departure_counter_quantity() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Gardenize", Zone::Battlefield);
+        for owner in [p, p.other(), p] {
+            let dead = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+            g.move_object(dead, Zone::Graveyard);
+            g.prepare_triggers();
+            settle(&mut g);
+        }
+        assert_eq!(g.counter_count(source, CounterKind::Charge), 2);
+        g.state.players[p.index()].mana = [0; 6];
+        g.begin_step(Step::Main1);
+        g.prepare_triggers();
+        assert!(!g.state.stack.is_empty());
+        g.add_counter(source, CounterKind::Charge, 1);
+        let before = g.object_ref(source);
+        g.move_object(source, Zone::Graveyard);
+        g.move_object(source, Zone::Battlefield);
+        assert_ne!(g.object_ref(source), before);
+        g.add_counter(source, CounterKind::Charge, 7);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana[4], 3);
+        assert_eq!(g.counter_count(source, CounterKind::Charge), 7);
+    }
+}

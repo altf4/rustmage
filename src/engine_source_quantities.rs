@@ -62,6 +62,7 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
             | Instruction::AddColorlessScaled(value)
+            | Instruction::AddManaScaled { amount: value, .. }
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }

@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7c4c5166b4276bea53a278206d288cf263c56a8fe173c89389efe5f733a98671"
   },
-  "physical_metadata_sha256": "699477384571dfd7dc0426973951f50c1f5f98de5fb4d1083a7d25de2614376a"
+  "physical_metadata_sha256": "699477384571dfd7dc0426973951f50c1f5f98de5fb4d1083a7d25de2614376a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/Gardenize.java",
+  "java_sha256": "e54aabce9caf60b9fc5e3e73518a6aa3b9fd7b23c9ede06062b3088d99ace3b9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    }
+  ],
+  "oracle_interpretation": "Wizards Reality Fracture release notes specify source last-known charge counters if it leaves before the mana trigger resolves; the pinned XMage effect returns early when no permanent remains."
 }

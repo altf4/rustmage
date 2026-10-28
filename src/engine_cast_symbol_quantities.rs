@@ -34,6 +34,7 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::LoseOpponentGainSame(value)
         | Instruction::DamageScaled(value)
         | Instruction::AddColorlessScaled(value)
+        | Instruction::AddManaScaled { amount: value, .. }
         | Instruction::AddCombatRedScaled(value)
         | Instruction::Mobilize { amount: value, .. }
         | Instruction::CounterUnlessPayScaled { amount: value, .. }
