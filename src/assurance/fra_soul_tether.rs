@@ -176,6 +176,33 @@ fn crafter_restricted_mana_rejects_hand_cast_but_funds_prepared_spell() {
     }
 }
 #[test]
+fn cached_funding_keeps_hand_and_graveyard_origins_distinct() {
+    for p in [Player::P0, Player::P1] {
+        for hand_first in [false, true] {
+            let mut g = setup(p);
+            let source = candidate(&mut g, p, "Heartwood Crafter // Soul Tether");
+            cast_creature(&mut g, source);
+            settle(&mut g);
+            g.state.objects[source as usize].summoning_sick = false;
+            let (hand, grave) = if hand_first {
+                let hand = put(&mut g, p, "Revenge of the Rats", Zone::Hand);
+                let grave = put(&mut g, p, "Revenge of the Rats", Zone::Graveyard);
+                (hand, grave)
+            } else {
+                let grave = put(&mut g, p, "Revenge of the Rats", Zone::Graveyard);
+                let hand = put(&mut g, p, "Revenge of the Rats", Zone::Hand);
+                (hand, grave)
+            };
+            // Both faces cost {2}{B}{B}; only the graveyard cast may use the
+            // producer's second generic mana.
+            g.state.players[p.index()].mana = [0, 0, 2, 0, 0, 1];
+            let actions = g.legal_actions();
+            assert!(!actions.contains(&Action::AnnounceCast { card: hand }));
+            assert!(actions.contains(&Action::AnnounceFlashback { card: grave }));
+        }
+    }
+}
+#[test]
 fn crafter_mana_can_pay_activated_ability_costs() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);

@@ -3420,7 +3420,7 @@ impl Game {
         }
         // This query is read-only: identical fixed spell costs share a funding
         // result. Cache capacity affects work only, never the admitted action set.
-        let mut spell_funding_cache: [Option<(Mana, u32, Card, bool)>; 8] = [None; 8];
+        let mut spell_funding_cache: [Option<(Mana, u32, Card, bool, bool)>; 8] = [None; 8];
         match s.pending {
             Pending::CreatureTypeChoice { .. } => {
                 return self.visit_creature_type_tokens(&mut emit);
@@ -4403,15 +4403,17 @@ impl Game {
                                 }
                                 let colored = cost.colored;
                                 let generic = cost.generic.saturating_sub(reduction);
+                                let own_hand = obj.zone == Zone::Hand && obj.owner == actor;
                                 let cached = spell_funding_cache
                                     .iter()
                                     .flatten()
-                                    .find(|(required, amount, definition, _)| {
+                                    .find(|(required, amount, definition, from_hand, _)| {
                                         *required == colored
                                             && *amount == generic
                                             && *definition == obj.card
+                                            && *from_hand == own_hand
                                     })
-                                    .map(|(_, _, _, result)| *result);
+                                    .map(|(_, _, _, _, result)| *result);
                                 if let Some(result) = cached {
                                     result
                                 } else {
@@ -4428,7 +4430,8 @@ impl Game {
                                     if let Some(slot) =
                                         spell_funding_cache.iter_mut().find(|slot| slot.is_none())
                                     {
-                                        *slot = Some((colored, generic, obj.card, result));
+                                        *slot =
+                                            Some((colored, generic, obj.card, own_hand, result));
                                     }
                                     result
                                 }
