@@ -155,6 +155,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::ControlledPermanentKeywords { kinds, keywords } => {
+            if !own || world.kinds(id) & kinds == 0 {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::DeathBaronLord => {
             if !world.death_baron_applies(source, id) {
                 return None;
@@ -389,6 +395,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                         | StaticAbilityFragment::DeathBaronLord
                         | StaticAbilityFragment::KeywordGrant(..)
+                        | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)
                 )
             });

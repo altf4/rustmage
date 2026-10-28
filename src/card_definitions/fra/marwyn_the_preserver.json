@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c6e1464a6d0696c23961872f5fb228710c05157c17c516c2ba6f602b32e1914c"
   },
-  "physical_metadata_sha256": "d0d48c35d49e2e78348362a80df6bc0c8e7dce09b5a5b4b74cf3ddeedd480fa7"
+  "physical_metadata_sha256": "d0d48c35d49e2e78348362a80df6bc0c8e7dce09b5a5b4b74cf3ddeedd480fa7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarwynThePreserver.java",
+  "java_sha256": "93c71b866a64722d8b7010dfb400b6db774be38570d5de1bb6a16d9fec949b21",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    }
+  ]
 }

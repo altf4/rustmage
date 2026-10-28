@@ -87,6 +87,11 @@ pub(crate) enum StaticAbilityFragment {
     ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
+    /// Grant keywords to controlled battlefield permanents matching a live kind mask.
+    ControlledPermanentKeywords {
+        kinds: u16,
+        keywords: Keywords,
+    },
     PlayerHexproof,
     ActivateControlledCreaturesAsHaste,
     PlayerHexproofIfSourceCounter {

@@ -2815,3 +2815,65 @@ fn mabel_can_select_different_pinned_named_counter_kinds() {
         assert_eq!(g.counter_count(target, CounterKind::Conqueror), 1);
     }
 }
+
+#[test]
+fn marwyn_protects_controlled_lands_and_returns_own_graveyard_land() {
+    for p in [Player::P0, Player::P1] {
+        for target_leaves in [false, true] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Marwyn, the Preserver", Zone::Battlefield);
+            let own_land = put(&mut g, p, "Forest", Zone::Battlefield);
+            let opposing_land = put(&mut g, p.other(), "Forest", Zone::Battlefield);
+            let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let own_grave_land = put(&mut g, p, "Forest", Zone::Graveyard);
+            let opposing_grave_land = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+            let nonland = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            assert!(g.keywords(own_land).contains(Keywords::HEXPROOF));
+            assert!(!g.keywords(opposing_land).contains(Keywords::HEXPROOF));
+            assert!(!g.keywords(creature).contains(Keywords::HEXPROOF));
+            g.state.players[p.index()].mana[5] = 2;
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(opposing_grave_land),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(nonland),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own_grave_land),
+                },
+            );
+            pay(&mut g);
+            super::contracts::branch_contract(g.clone());
+            g.move_object(source, Zone::Exile);
+            assert!(!g.keywords(own_land).contains(Keywords::HEXPROOF));
+            if target_leaves {
+                g.move_object(own_grave_land, Zone::Exile);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(own_grave_land).zone,
+                if target_leaves {
+                    Zone::Exile
+                } else {
+                    Zone::Hand
+                }
+            );
+        }
+    }
+}
