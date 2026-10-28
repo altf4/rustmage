@@ -4317,3 +4317,37 @@ fn ferocity_does_not_return_a_dead_token() {
         assert_ne!(g.object_view(token).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn loyalty_cost_uses_non_effect_counter_replacements() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let planeswalker = put(&mut g, p, "Liliana, Dreadhorde General", Zone::Battlefield);
+        g.add_counter(planeswalker, CounterKind::Loyalty, 6);
+        put(
+            &mut g,
+            p,
+            "Doc Samson, Super Psychiatrist",
+            Zone::Battlefield,
+        );
+        put(&mut g, p, "Doubling Season", Zone::Battlefield);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: planeswalker,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        // Samson applies to the loyalty cost; Doubling Season applies only to effects.
+        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 8);
+        let before = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 8);
+        g.restore(&before).unwrap();
+        settle(&mut g);
+        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 8);
+    }
+}

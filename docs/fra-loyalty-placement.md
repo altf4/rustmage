@@ -25,3 +25,12 @@ versus effect-only multipliers, failed payment, state-based actions and source
 departure, copied/granted loyalty abilities, and raw/index branch/restore at
 each suspended choice. The original guarded build is still in flight; neither
 the scenario nor a continuation design has been compiled or tested here.
+
+The same payment routine already calls `activation_cost_counters` for typed
+`activation_put_counters` costs, including Mazemind Tome and Jessica Jones,
+before it performs later source costs or returns to `finish_announcement`.
+That existing path also needs the owned continuation when replacements defer;
+the fix must not be limited to positive loyalty costs. The new
+`loyalty_cost_uses_non_effect_counter_replacements` scenario distinguishes
+Doc Samson's cost-inclusive replacement from Doubling Season's effect-only
+replacement, and is expected to fail until the gap is closed.
