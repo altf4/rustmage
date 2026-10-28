@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "10cd2c3b86103dc9f422b1731c00fc01097aac0778103f4cc660ecaddbdb248f",
+  "catalogue_version": "e741b5228b078fb9e345b779f5254dc6c19af867d69082ee3ecb850b0c22d887",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2754,
-  "implemented_total": 2760,
+  "implemented_standard_cards": 2759,
+  "implemented_total": 2765,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 107,
-      "gated": 178
+      "complete": 112,
+      "gated": 173
     },
     "frc": {
       "total": 6,
@@ -11827,8 +11827,8 @@
     {
       "name": "Fatehold Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/fatehold_charm.rs",
       "set": "fra"
     },
@@ -19371,8 +19371,8 @@
     {
       "name": "Konstrari Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/konstrari_charm.rs",
       "set": "fra"
     },
@@ -20787,8 +20787,8 @@
     {
       "name": "Loyal Tutor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/loyal_tutor.rs",
       "set": "fra"
     },
@@ -33363,8 +33363,8 @@
     {
       "name": "Stingerquill Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/stingerquill_charm.rs",
       "set": "fra"
     },
@@ -39323,8 +39323,8 @@
     {
       "name": "Vigorbloom Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/vigorbloom_charm.rs",
       "set": "fra"
     },

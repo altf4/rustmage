@@ -6287,6 +6287,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "89725d49948c51d3"
   },
+  "Fatehold Charm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "041072842308ceea",
+    "observations": "25035344746fa6b8"
+  },
   "Fateshaper Aspirant": {
     "root": "main",
     "status": "completed",
@@ -10343,6 +10351,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "f6c257383f2c87e3"
   },
+  "Konstrari Charm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "9c6d54fc8aeae483",
+    "observations": "f4464fac0eccd048"
+  },
   "Konstrari Improviser // Soul Tether": {
     "root": "main",
     "status": "completed",
@@ -11070,6 +11086,14 @@
     "zone": "Battlefield",
     "journal": "f500b3118c2282cd",
     "observations": "06e32e18f99c2f97"
+  },
+  "Loyal Tutor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "d64eaa4554f8c189",
+    "observations": "b0c4358e38e1e3cb"
   },
   "Luke Cage, Power Man": {
     "root": "main",
@@ -17799,6 +17823,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "c95e6222a173399b"
   },
+  "Stingerquill Charm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "299398cd1be7b07e",
+    "observations": "e77eb47c039a0285"
+  },
   "Stinging Cave Crawler": {
     "root": "main",
     "status": "completed",
@@ -20886,6 +20918,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "f226ab2ed7511d1b"
+  },
+  "Vigorbloom Charm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "f9fdc162ff57c68e",
+    "observations": "824cd75a7188db5b"
   },
   "Vile Entomber": {
     "root": "main",

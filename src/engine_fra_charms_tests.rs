@@ -7193,3 +7193,6 @@ mod loyal_tutor_assurance;
 
 #[path = "engine_fra_discard_tests.rs"]
 mod discard_assurance;
+
+#[path = "engine_fra_gallia_tragic_tests.rs"]
+mod gallia_tragic_assurance;

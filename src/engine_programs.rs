@@ -3184,6 +3184,7 @@ impl Game {
                         && self.state.objects[item.card as usize].zone == Zone::Graveyard
                     {
                         let mut movement = self.entry_move(item.card, Zone::Battlefield, tapped);
+                        movement.controller = item.controller;
                         movement.effect_counter = Some((counter, 1));
                         self.stage_entries(vec![movement], None);
                     }
