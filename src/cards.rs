@@ -2068,6 +2068,8 @@ pub(crate) enum Instruction {
         discard: u16,
     },
     Discard(PlayerSet, u16),
+    /// Choose uniformly without replacement, then discard the batch.
+    DiscardRandom(PlayerSet, u16),
     /// Optional resolution choice; its accepted branch records an exact ability use.
     MayOncePerTurn {
         skip: usize,

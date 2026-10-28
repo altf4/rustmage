@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4aff505d63a5cf6152d74b3ed7f33be772e5c52215ef9b8c23fec045ceccf834"
   },
-  "physical_metadata_sha256": "e3e3c91edab93d0fc8917c3c3a3a78329d24834946200de14c6b9809661f9b04"
+  "physical_metadata_sha256": "e3e3c91edab93d0fc8917c3c3a3a78329d24834946200de14c6b9809661f9b04",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CurseMarredDemon.java",
+  "java_sha256": "3ab103cc20bf5fb1660229d44fb07802ec0212e77a20249822008dd1b77004ff",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ]
 }

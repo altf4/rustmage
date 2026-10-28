@@ -1,16 +1,26 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Authored from pinned Oracle and complete XMage source; awaiting rules tests.
+const KEYWORDS: Keywords = Keywords::FLYING.union(Keywords::TRAMPLE);
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::FLYING.union(Keywords::TRAMPLE),
+    effect: Effect::Creature(4, 4),
+    keywords: KEYWORDS,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(KEYWORDS)],
+    }],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::SearchRequired(SearchSpec {
+                filter: SearchFilter::Any,
+                maximum: 1,
+                destination: SearchDestination::Hand,
+                tapped: false,
+                reveal: false,
+            }),
+            Instruction::DiscardRandom(PlayerSet::Controller, 1),
+        ],
+    }],
     ..CardRules::EMPTY
 };

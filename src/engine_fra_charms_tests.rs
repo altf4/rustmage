@@ -2247,3 +2247,57 @@ fn tether_technician_discards_before_choosing_reflexive_target() {
         }
     }
 }
+
+#[test]
+fn curse_marred_demon_searches_privately_then_randomly_discards_with_replay() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let old_hand = put(&mut g, p, "Forest", Zone::Hand);
+        let found = put(&mut g, p, "Shock", Zone::Library);
+        let source = put(&mut g, p, "Curse-Marred Demon", Zone::Hand);
+        cast(&mut g, source, None);
+        for _ in 0..48 {
+            g.prepare_triggers();
+            if g.observe(p).search_choice.is_some() {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                .expect("search progression");
+            act(&mut g, action);
+        }
+        assert!(g.observe(p).search_choice.is_some());
+        assert!(g.observe(p.other()).search_choice.is_none());
+        assert!(
+            !g.observe(p.other())
+                .objects
+                .iter()
+                .any(|o| o.id == old_hand)
+        );
+        reject(&mut g, Action::FinishSearch);
+        act(&mut g, Action::ChooseSearch { card: found });
+        super::contracts::branch_contract(g.clone());
+        let mut replay = g.clone();
+        act(&mut g, Action::FinishSearch);
+        act(&mut replay, Action::FinishSearch);
+        settle(&mut g);
+        settle(&mut replay);
+        assert_eq!(
+            g.object_view(old_hand).zone,
+            replay.object_view(old_hand).zone
+        );
+        assert_eq!(g.object_view(found).zone, replay.object_view(found).zone);
+        assert_eq!(
+            [old_hand, found]
+                .into_iter()
+                .filter(|&id| g.object_view(id).zone == Zone::Graveyard)
+                .count(),
+            1
+        );
+        assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 1);
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+        assert!(g.keywords(source).contains(Keywords::TRAMPLE));
+    }
+}

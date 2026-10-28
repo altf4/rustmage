@@ -4690,6 +4690,30 @@ impl Game {
                         i128::try_from(lost).capacity("life drain result exhausted"),
                     );
                 }
+                Instruction::DiscardRandom(set, amount) => {
+                    let players: Vec<_> = self.program_players(set, &item).collect();
+                    let mut selected = Vec::new();
+                    for player in players {
+                        let mut hand: Vec<_> = self
+                            .state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .filter_map(|(id, o)| {
+                                (o.zone == Zone::Hand && o.owner == player).then_some(id as CardId)
+                            })
+                            .collect();
+                        for _ in 0..usize::from(amount).min(hand.len()) {
+                            let index = if hand.len() == 1 {
+                                0
+                            } else {
+                                self.state.rng.below(hand.len() as u64) as usize
+                            };
+                            selected.push(hand.swap_remove(index));
+                        }
+                    }
+                    self.discard_batch_caused(&selected, None, Some(item.controller));
+                }
                 Instruction::Discard(set, _) | Instruction::DiscardScaled(set, _) => {
                     let amount = match instruction {
                         Instruction::Discard(_, n) => usize::from(n),
