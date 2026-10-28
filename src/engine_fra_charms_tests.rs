@@ -1822,3 +1822,23 @@ fn ajanis_anguish_keeps_paid_x_for_entry_damage_and_grants_trample() {
         }
     }
 }
+
+#[test]
+fn karn_gilded_guardian_counts_distinct_colors_of_other_controlled_artifacts() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Ancient Cornucopia", Zone::Battlefield);
+        put(&mut g, p, "Wildfire Wickerfolk", Zone::Battlefield);
+        put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        put(&mut g, p.other(), "Futurist Forge", Zone::Battlefield);
+        let before = g.state.players[p.index()].library.len();
+        let karn = put(&mut g, p, "Karn, Gilded Guardian", Zone::Hand);
+        cast(&mut g, karn, None);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), before - 2);
+        assert_eq!(stats(&g, karn), (5, 5));
+        assert!(g.keywords(karn).contains(Keywords::VIGILANCE));
+        assert!(g.keywords(karn).contains(Keywords::TRAMPLE));
+    }
+}
