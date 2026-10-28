@@ -1607,6 +1607,11 @@ pub(crate) enum Instruction {
     ReturnSourceToBattlefield {
         tapped: bool,
     },
+    /// Return the exact graveyard source with an entry counter.
+    ReturnSourceToBattlefieldWithCounter {
+        tapped: bool,
+        counter: CounterKind,
+    },
     CounterRelated,
     AddPoison(PlayerSet, u16),
     MayOpponent {

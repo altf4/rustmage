@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a932deeeccefd112ae65123255322429ed98a98ce274c03aab7d8ed07ef6165b"
   },
-  "physical_metadata_sha256": "5319cb4c7dd5cb426ec169dce7694225f7329a690377d62f05788cd827fcf709"
+  "physical_metadata_sha256": "5319cb4c7dd5cb426ec169dce7694225f7329a690377d62f05788cd827fcf709",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GalliaTragicHost.java",
+  "java_sha256": "8f7620429fef1f0ad2263640e5ce4d5e3cd748177973893ff3594cdc9df9e57b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldWithCounterEffect.java",
+      "sha256": "b2e498c7be8b60c53c88c09ed1e81bf5eb78154ec9f2f0e1af0f48ee8c61ed0d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+      "sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+      "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ]
 }

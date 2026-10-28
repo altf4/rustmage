@@ -3179,6 +3179,15 @@ impl Game {
                         self.stage_entries(vec![movement], None);
                     }
                 }
+                Instruction::ReturnSourceToBattlefieldWithCounter { tapped, counter } => {
+                    if self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].zone == Zone::Graveyard
+                    {
+                        let mut movement = self.entry_move(item.card, Zone::Battlefield, tapped);
+                        movement.effect_counter = Some((counter, 1));
+                        self.stage_entries(vec![movement], None);
+                    }
+                }
                 Instruction::CounterRelated => {
                     let link = item.related_stack.expect("ward stack association");
                     self.counter_stack_item(link.id, false);
