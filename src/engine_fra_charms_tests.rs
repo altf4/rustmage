@@ -225,3 +225,65 @@ fn twisted_fates_independent_targets_partial_legality_and_counter_replacement() 
         }
     }
 }
+
+#[test]
+fn eardrum_rattler_target_limits_tap_and_power_recheck() {
+    for p in [Player::P0, Player::P1] {
+        for fizzle in [false, true] {
+            let mut g = scenario(p);
+            let rattler = put(&mut g, p, "Eardrum Rattler", Zone::Battlefield);
+            let friend = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let big = put(&mut g, p, "Fateshaper Aspirant", Zone::Battlefield);
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: rattler,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(rattler),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(big),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(friend),
+                },
+            );
+            super::contracts::branch_contract(g.clone());
+            pay(&mut g);
+            assert!(g.object_view(rattler).tapped);
+            if fizzle {
+                g.state.objects[friend as usize].growth.power += 1;
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.keywords(friend).contains(Keywords::CANT_BE_BLOCKED),
+                !fizzle
+            );
+            if !fizzle {
+                g.state.objects[friend as usize].growth.power += 1;
+                assert!(g.keywords(friend).contains(Keywords::CANT_BE_BLOCKED));
+            }
+            g.finish_cleanup();
+            assert!(!g.keywords(friend).contains(Keywords::CANT_BE_BLOCKED));
+        }
+    }
+}
