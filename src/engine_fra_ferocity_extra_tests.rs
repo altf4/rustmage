@@ -49,6 +49,12 @@ fn ferocity_spell_rejects_noncreatures_and_fizzles_for_stale_target() {
             let land = put(&mut g, p.other(), "Forest", Zone::Battlefield);
             let aura = put(&mut g, p, "Ferocity of the Hunt", Zone::Hand);
             act(&mut g, Action::AnnounceCast { card: aura });
+            if g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseSpellCost { .. }))
+            {
+                choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
+            }
             reject(
                 &mut g,
                 Action::ChooseTarget {
@@ -61,12 +67,6 @@ fn ferocity_spell_rejects_noncreatures_and_fizzles_for_stale_target() {
                     target: Target::Card(victim),
                 },
             );
-            if g.legal_actions()
-                .iter()
-                .any(|a| matches!(a, Action::ChooseSpellCost { .. }))
-            {
-                choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
-            }
             pay(&mut g);
             if kind == 0 {
                 g.move_object(victim, Zone::Exile);
