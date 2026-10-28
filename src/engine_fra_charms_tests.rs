@@ -3302,3 +3302,91 @@ fn inspired_tethermage_observes_loyalty_costs_and_its_own_empower() {
         assert_eq!(g.counter_count(mage, CounterKind::PlusOne), 2);
     }
 }
+
+#[test]
+fn hexhaven_battalion_creates_cadets_and_empowers_jace() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            let mut g = scenario(p);
+            if doubled {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let spell = put(&mut g, p, "Hexhaven Battalion", Zone::Hand);
+            cast(&mut g, spell, None);
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            let cadets = g
+                .state
+                .objects
+                .iter()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == p
+                        && o.is_token()
+                        && o.card == Card(5298)
+                })
+                .count();
+            assert_eq!(cadets, if doubled { 6 } else { 3 });
+            let jaces = fra_jaces(&g, p);
+            assert_eq!(jaces.len(), if doubled { 2 } else { 1 });
+            assert_eq!(
+                jaces
+                    .iter()
+                    .map(|&id| g.counter_count(id, CounterKind::Loyalty))
+                    .sum::<u64>(),
+                if doubled { 4 } else { 2 }
+            );
+        }
+    }
+}
+
+#[test]
+fn hexhaven_battalion_landcycling_discards_and_searches_a_basic_land() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let battalion = put(&mut g, p, "Hexhaven Battalion", Zone::Hand);
+        let land = put(&mut g, p, "Forest", Zone::Library);
+        let nonland = put(&mut g, p, "Bear Cub", Zone::Library);
+        g.state.players[p.index()].mana[5] = 2;
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: battalion,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.object_view(battalion).zone, Zone::Graveyard);
+        let mut selected = false;
+        for _ in 0..64 {
+            let actions = g.legal_actions();
+            let choice = Action::ChooseSearch { card: land };
+            if actions.contains(&choice) {
+                reject(&mut g, Action::ChooseSearch { card: nonland });
+                super::contracts::branch_contract(g.clone());
+                act(&mut g, choice);
+                selected = true;
+            } else if actions.contains(&Action::FinishSearch) {
+                act(&mut g, Action::FinishSearch);
+            } else if selected
+                && g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            } else if let Some(action) = actions
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+            {
+                act(&mut g, action);
+            } else {
+                panic!("unexpected landcycling choice {:?}", g.state.pending);
+            }
+        }
+        assert!(selected);
+        assert_eq!(g.object_view(land).zone, Zone::Hand);
+        assert_eq!(g.object_view(nonland).zone, Zone::Library);
+    }
+}
