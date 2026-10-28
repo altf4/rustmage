@@ -6352,3 +6352,34 @@ fn break_under_pressure_gains_life_when_opponent_has_no_eligible_permanent() {
         assert_eq!(g.state.players[p.index()].life, life + 2);
     }
 }
+
+#[test]
+fn break_under_pressure_counts_controlled_planeswalkers_owned_by_the_caster() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let small = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let walker = put(&mut g, p, "Vivien Reid", Zone::Battlefield);
+        g.add_counter(walker, CounterKind::Loyalty, 5);
+        let walker_ref = g.object_ref(walker);
+        g.change_controller(walker_ref, p.other());
+        let spell = put(&mut g, p, "Break Under Pressure", Zone::Hand);
+        let life = g.state.players[p.index()].life;
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        for _ in 0..32 {
+            if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        assert_eq!(g.actor(), Some(p.other()));
+        let small_ref = g.object_ref(small);
+        reject(&mut g, Action::Sacrifice { object: small_ref });
+        let selected = g.object_ref(walker);
+        act(&mut g, Action::Sacrifice { object: selected });
+        settle(&mut g);
+        assert_eq!(g.object_view(walker).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(walker).owner, p);
+        assert_eq!(g.object_view(small).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].life, life + 2);
+    }
+}
