@@ -7196,3 +7196,6 @@ mod discard_assurance;
 
 #[path = "engine_fra_gallia_tragic_tests.rs"]
 mod gallia_tragic_assurance;
+
+#[path = "engine_fra_gallia_entry_tests.rs"]
+mod gallia_entry_assurance;
