@@ -104,6 +104,12 @@ fn charge_the_sanctum_hybrid_modes_and_cleanup() {
             g.state.players[p.index()].mana[5] = 2;
             act(&mut g, Action::AnnounceCast { card: charm });
             act(&mut g, Action::ChooseMode { mode });
+            if g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseSpellCost { .. }))
+            {
+                choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
+            }
             if mode == 1 {
                 act(
                     &mut g,
@@ -677,11 +683,11 @@ fn tetsuko_uses_live_power_toughness_control_and_ability_origin() {
 fn way_of_the_mentor_empowers_and_rewards_each_controller_life_gain() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        let own = put(&mut g, p, "Liliana the Faultless", Zone::Battlefield);
+        let own = put(&mut g, p, "Liliana, Dreadhorde General", Zone::Battlefield);
         let opposing = put(
             &mut g,
             p.other(),
-            "Liliana the Faultless",
+            "Liliana, Dreadhorde General",
             Zone::Battlefield,
         );
         g.add_counter(own, CounterKind::Loyalty, 4);
@@ -699,6 +705,10 @@ fn way_of_the_mentor_empowers_and_rewards_each_controller_life_gain() {
         g.gain_life(p, 1);
         super::contracts::branch_contract(g.clone());
         g.move_object(way, Zone::Graveyard);
+        g.prepare_triggers();
+        while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut g, |action| matches!(action, Action::PutTrigger { .. }));
+        }
         settle(&mut g);
         assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 7);
         assert_eq!(g.counter_count(own, CounterKind::Loyalty), 6);
@@ -713,10 +723,18 @@ fn way_of_the_mentor_counters_follow_replacement_effects() {
         put(&mut g, p, "Doubling Season", Zone::Battlefield);
         let way = put(&mut g, p, "Way of the Mentor", Zone::Hand);
         cast(&mut g, way, None);
+        for _ in 0..32 {
+            if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        choose(&mut g, |a| matches!(a, Action::ChooseJace { .. }));
         settle(&mut g);
         let jace = fra_jaces(&g, p)[0];
         assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 10);
         g.gain_life(p, 1);
+        g.prepare_triggers();
         settle(&mut g);
         assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 12);
     }
@@ -756,7 +774,7 @@ fn traxos_observes_artifact_casts_only_by_its_controller() {
             let mut g = scenario(caster);
             let traxos = put(&mut g, p, "Traxos, Scourge Eternal", Zone::Battlefield);
             g.state.objects[traxos as usize].tapped = true;
-            let artifact = put(&mut g, caster, "Sting, Bilbo's Sword", Zone::Hand);
+            let artifact = put(&mut g, caster, "Goldvein Pick", Zone::Hand);
             cast(&mut g, artifact, None);
             settle(&mut g);
             assert_eq!(g.state.objects[traxos as usize].tapped, caster != p);
@@ -1000,7 +1018,7 @@ fn wrath_of_the_bloodmane_reduction_and_creature_or_planeswalker_damage() {
                 let id = put(
                     &mut g,
                     p.other(),
-                    "Liliana the Faultless",
+                    "Liliana, Dreadhorde General",
                     Zone::Battlefield,
                 );
                 g.add_counter(id, CounterKind::Loyalty, 5);
@@ -1383,7 +1401,7 @@ fn living_library_pays_sacrifice_and_shuffles_into_actual_owners_library() {
                 &mut g,
                 owner,
                 if planeswalker {
-                    "Liliana the Faultless"
+                    "Liliana, Dreadhorde General"
                 } else {
                     "Bear Cub"
                 },
@@ -1500,7 +1518,7 @@ fn teyo_flash_entry_grants_permanent_and_kind_appropriate_counters() {
                     p,
                     match kind {
                         0 => "Bear Cub",
-                        1 | 3 => "Liliana the Faultless",
+                        1 | 3 => "Liliana, Dreadhorde General",
                         _ => "Forest",
                     },
                     Zone::Battlefield,
@@ -1867,7 +1885,6 @@ fn ajanis_anguish_keeps_paid_x_for_entry_damage_and_grants_trample() {
 fn karn_gilded_guardian_counts_distinct_colors_of_other_controlled_artifacts() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        put(&mut g, p, "Ancient Cornucopia", Zone::Battlefield);
         put(&mut g, p, "Wildfire Wickerfolk", Zone::Battlefield);
         put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
         put(&mut g, p.other(), "Futurist Forge", Zone::Battlefield);
@@ -1891,7 +1908,7 @@ fn budding_insurgent_draws_for_legendary_enchantments_even_if_indestructible() {
             ("Way of the Mentor", true, true, false),
             ("Way of the Mentor", true, false, true),
             ("Pacifism", false, false, false),
-            ("The Mind Stone", false, false, false),
+            ("The Mind Stone", false, true, false),
         ] {
             let mut g = scenario(p);
             let source = put(&mut g, p, "Budding Insurgent", Zone::Battlefield);
@@ -2065,17 +2082,17 @@ fn entrust_the_spark_optional_planeswalker_sacrifice_and_private_search() {
     for p in [Player::P0, Player::P1] {
         for (pay_sacrifice, find_card) in [(false, true), (true, false), (true, true)] {
             let mut g = scenario(p);
-            let old = put(&mut g, p, "Liliana the Faultless", Zone::Battlefield);
+            let old = put(&mut g, p, "Liliana, Dreadhorde General", Zone::Battlefield);
             g.add_counter(old, CounterKind::Loyalty, 5);
             let illegal = put(&mut g, p, "Bear Cub", Zone::Battlefield);
             let other = put(
                 &mut g,
                 p.other(),
-                "Liliana the Faultless",
+                "Liliana, Dreadhorde General",
                 Zone::Battlefield,
             );
             g.add_counter(other, CounterKind::Loyalty, 5);
-            let found = put(&mut g, p, "Liliana the Faultless", Zone::Library);
+            let found = put(&mut g, p, "Liliana, Dreadhorde General", Zone::Library);
             let spell = put(&mut g, p, "Entrust the Spark", Zone::Hand);
             cast(&mut g, spell, None);
             let mut decided = false;
@@ -2599,7 +2616,7 @@ fn mabel_counter_choice_handles_zero_loyalty_and_departed_targets() {
                 if mode == 2 {
                     "Bear Cub"
                 } else {
-                    "Liliana the Faultless"
+                    "Liliana, Dreadhorde General"
                 },
                 Zone::Battlefield,
             );
@@ -3932,6 +3949,7 @@ fn gallia_grants_haste_live_and_targets_recent_creatures_of_either_player() {
         let gallia = put(&mut g, p, "Gallia, the Merrymaker", Zone::Battlefield);
         let ally = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let old = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        g.state.entered_this_turn = None;
         let incoming = put(&mut g, p.other(), "Bear Cub", Zone::Hand);
         g.move_object(incoming, Zone::Battlefield);
         assert!(g.keywords(gallia).contains(Keywords::HASTE));
@@ -4384,15 +4402,26 @@ fn loyalty_cost_uses_non_effect_counter_replacements() {
             },
         );
         pay(&mut g);
-        // Samson applies to the loyalty cost; Doubling Season applies only to effects.
-        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 8);
+        // Samson replaces the cost placement; that replacement makes it an effect,
+        // so Doubling Season then doubles its two counters (CR 614.16).
+        assert_eq!(
+            g.counter_count(planeswalker, CounterKind::Loyalty),
+            10,
+            "static sources {:?}, pending {:?}",
+            g.state
+                .static_sources
+                .iter()
+                .map(|id| g.object_view(*id).name().to_string())
+                .collect::<Vec<_>>(),
+            g.state.pending
+        );
         let before = g.snapshot();
         super::contracts::branch_contract(g.clone());
         settle(&mut g);
-        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 8);
+        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 10);
         g.restore(&before).unwrap();
         settle(&mut g);
-        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 8);
+        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 10);
     }
 }
 
@@ -6687,5 +6716,122 @@ fn hunters_axe_equip_is_sorcery_speed_and_uses_exact_target_incarnation() {
         settle(&mut g);
         assert_eq!(g.object_view(axe).attached_to, None);
         assert_eq!(stats(&g, bearer), (2, 2));
+    }
+}
+
+#[test]
+fn twinned_vision_flashback_hybrid_discard_and_draw() {
+    for p in [Player::P0, Player::P1] {
+        for colored in [[0, 2, 0, 0, 0, 1], [0, 1, 0, 1, 0, 1], [0, 0, 0, 2, 0, 1]] {
+            let mut g = scenario(p);
+            let spell = put(&mut g, p, "Twinned Vision", Zone::Graveyard);
+            let discard = put(&mut g, p, "Bear Cub", Zone::Hand);
+            let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Hand);
+            g.state.players[p.index()].mana = colored;
+            let initial_library = g.state.players[p.index()].library.len();
+            act(&mut g, Action::AnnounceFlashback { card: spell });
+            let mut chose_discard = false;
+            for _ in 0..24 {
+                let actions = g.legal_actions();
+                if let Some(action) = actions
+                    .iter()
+                    .find(|a| matches!(a, Action::ChooseSpellCost { .. }))
+                    .cloned()
+                {
+                    act(&mut g, action);
+                } else if actions
+                    .iter()
+                    .any(|a| matches!(a, Action::ChooseAdditionalCost { .. }))
+                {
+                    let forbidden = g.object_ref(foreign);
+                    reject(&mut g, Action::ChooseAdditionalCost { object: forbidden });
+                    assert!(g.observe(p.other()).additional_cost.is_none());
+                    let selected = g.object_ref(discard);
+                    super::contracts::branch_contract(g.clone());
+                    act(&mut g, Action::ChooseAdditionalCost { object: selected });
+                    chose_discard = true;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+                {
+                    act(&mut g, action);
+                } else if g.state.pending == Pending::Priority && !g.state.stack.is_empty() {
+                    break;
+                } else {
+                    panic!(
+                        "unexpected flashback state {:?}, actions {:?}, mana {:?}, announcement {:?}",
+                        g.state.pending,
+                        g.legal_actions(),
+                        g.state.players[p.index()].mana,
+                        g.state.announcing
+                    );
+                }
+            }
+            assert!(chose_discard);
+            assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
+            let saved = g.snapshot();
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].library.len(),
+                initial_library - 2
+            );
+            assert_eq!(g.object_view(spell).zone, Zone::Exile);
+            g.restore(&saved).unwrap();
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].library.len(),
+                initial_library - 2
+            );
+        }
+    }
+}
+
+#[test]
+fn twinned_vision_hand_cast_draws_one_and_flashback_requires_discard() {
+    for p in [Player::P0, Player::P1] {
+        for mana in [[0, 1, 0, 0, 0, 1], [0, 0, 0, 1, 0, 1]] {
+            let mut g = scenario(p);
+            let spell = put(&mut g, p, "Twinned Vision", Zone::Hand);
+            g.state.players[p.index()].mana = mana;
+            let initial_library = g.state.players[p.index()].library.len();
+            cast(&mut g, spell, None);
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].library.len(),
+                initial_library - 1
+            );
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            let mut g = scenario(p);
+            let spell = put(&mut g, p, "Twinned Vision", Zone::Graveyard);
+            g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 1];
+            assert!(
+                !g.legal_actions()
+                    .contains(&Action::AnnounceFlashback { card: spell })
+            );
+            reject(&mut g, Action::AnnounceFlashback { card: spell });
+        }
+    }
+}
+
+#[test]
+fn loyalty_cost_without_a_replacement_is_not_doubled() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let planeswalker = put(&mut g, p, "Liliana, Dreadhorde General", Zone::Battlefield);
+        g.add_counter(planeswalker, CounterKind::Loyalty, 6);
+        put(&mut g, p, "Doubling Season", Zone::Battlefield);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: planeswalker,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 7);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 7);
     }
 }

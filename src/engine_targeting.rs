@@ -393,9 +393,10 @@ impl Announcement {
             && self.cost.is_none()
             && match self.item.kind {
                 StackKind::Spell => {
-                    self.item.cast.is_none_or(|cast| {
-                        !matches!(cast.method, CastMethod::Flashback | CastMethod::Warp)
-                    }) && self.cost_options().count() > 1
+                    self.item
+                        .cast
+                        .is_none_or(|cast| cast.method != CastMethod::Warp)
+                        && self.cost_options().count() > 1
                 }
                 StackKind::ActivatedAbility { .. } => self.cost_options().count() > 1,
                 StackKind::TriggeredAbility { .. }

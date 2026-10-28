@@ -699,12 +699,19 @@ impl Game {
                 paid: true,
             });
         }
-        let object = &mut self.state.objects[item.card as usize];
         if let Some(change) = cost.loyalty {
             if change < 0 {
-                object.counters.loyalty -= u64::from(change.unsigned_abs());
-            } else {
-                self.add_counter(item.card, CounterKind::Loyalty, change as u64);
+                self.pay_counters(
+                    item.card,
+                    &Counters::of(CounterKind::Loyalty, u64::from(change.unsigned_abs())),
+                );
+            } else if change > 0 {
+                self.activation_cost_counters(
+                    item.object,
+                    CounterKind::Loyalty,
+                    change as u64,
+                    item.controller,
+                );
             }
         }
         // Capture the tap event before a subsequent sacrifice/discard/exile

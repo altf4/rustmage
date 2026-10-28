@@ -233,6 +233,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
+                            | crate::cards::StaticAbilityFragment::CounterKeywordOther(..)
                     )
                 })
             })

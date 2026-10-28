@@ -594,6 +594,14 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(Keywords::DEATHTOUCH)
                         }
+                        StaticAbilityFragment::CounterKeywordOther(kind, grant)
+                            if source != id
+                                && target.controller == object.controller
+                                && self.is_creature(id)
+                                && self.counter_count(id, kind) > 0 =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::CounterKeywordOwnTurn(kind, grant)
                             if object.controller == self.state.active
                                 && target.controller == object.controller

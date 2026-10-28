@@ -1916,6 +1916,8 @@ enum Pending {
     },
     KeywordChoice {
         player: Player,
+        // Keep the common Pending value compact; the collection exists only during this choice.
+        #[allow(clippy::box_collection)]
         recipients: Box<Vec<ObjectRef>>,
         choices: &'static [Keywords],
     },
