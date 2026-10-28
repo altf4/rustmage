@@ -4546,6 +4546,7 @@ impl Game {
                         && self.object_ref(item.card) == item.object
                         && self.counter_count(item.card, kind) > 0
                     {
+                        let resolution = self.state.resolving.as_ref().unwrap();
                         let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                         assert!(skip_to <= resolution.program.len());
                         self.state.pending = Pending::EffectOptional {
