@@ -3465,3 +3465,68 @@ fn awaken_the_inferno_resolves_each_target_group_independently() {
         }
     }
 }
+
+#[test]
+fn rewrite_regrets_reanimates_then_empowers_and_fizzles_for_stale_target() {
+    for p in [Player::P0, Player::P1] {
+        for stale in [false, true] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let opposing = put(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+            let expensive = put(&mut g, p, "Craterhoof Behemoth", Zone::Graveyard);
+            let spell = put(&mut g, p, "Rewrite Regrets", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 3];
+            act(&mut g, Action::AnnounceCast { card: spell });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(opposing),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(expensive),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            pay(&mut g);
+            if stale {
+                g.move_object(target, Zone::Exile);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(target).zone,
+                if stale {
+                    Zone::Exile
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            let jaces = fra_jaces(&g, p);
+            if stale {
+                assert!(jaces.is_empty());
+            } else {
+                assert_eq!(jaces.len(), 1);
+                assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 2);
+            }
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(target).zone,
+                if stale {
+                    Zone::Exile
+                } else {
+                    Zone::Battlefield
+                }
+            );
+        }
+    }
+}

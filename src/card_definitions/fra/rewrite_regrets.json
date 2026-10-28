@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "011f090fe704c99fe32c3a78a736194051fc5123ead694b38afabc24f9f7181e"
   },
-  "physical_metadata_sha256": "459ef646a2524c116cadb506f06c8af6ed6db74c6d9e62662208ee6c74c02c64"
+  "physical_metadata_sha256": "459ef646a2524c116cadb506f06c8af6ed6db74c6d9e62662208ee6c74c02c64",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RewriteRegrets.java",
+  "java_sha256": "81b0e6beea90112a256804f180018df01d648abc6bd12c0109cb607abfa69419",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }
