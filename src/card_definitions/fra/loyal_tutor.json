@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2ecf47f7807f9f6fc91d86e1e2ef6df1d03a186323b920b723297908c1f91e9b"
   },
-  "physical_metadata_sha256": "668c856640767c3438dca3c32415982a19567ba873c4200c52861cb5a1779ff1"
+  "physical_metadata_sha256": "668c856640767c3438dca3c32415982a19567ba873c4200c52861cb5a1779ff1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LoyalTutor.java",
+  "java_sha256": "9bc61ee921d3f2cce7bff0b9c35fbcc0307fb2a3ad12a0085ec560d03ef86aa2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutOnLibraryEffect.java",
+      "sha256": "743cf7facece5aca87d59348f3bb7d8655aa46d3852e9e437f6672c29535e782"
+    }
+  ]
 }

@@ -7133,3 +7133,52 @@ fn vigorbloom_fight_mode_rechecks_control_and_hexproof_independently() {
         }
     }
 }
+
+#[test]
+fn loyal_tutor_search_is_private_revealed_and_replayable() {
+    for p in [Player::P0, Player::P1] {
+        for find in [false, true] {
+            let mut g = scenario(p);
+            let walker = put(&mut g, p, "Ajani, Caller of the Pride", Zone::Library);
+            let other = put(&mut g, p, "Forest", Zone::Library);
+            let spell = put(&mut g, p, "Loyal Tutor", Zone::Hand);
+            cast(&mut g, spell, None);
+            for _ in 0..48 {
+                if g.observe(p).search_choice.is_some() {
+                    break;
+                }
+                g.prepare_triggers();
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                    .expect("search progression");
+                act(&mut g, action);
+            }
+            assert!(g.observe(p).search_choice.is_some());
+            assert!(g.observe(p.other()).search_choice.is_none());
+            reject(&mut g, Action::ChooseSearch { card: other });
+            if find {
+                act(&mut g, Action::ChooseSearch { card: walker });
+            }
+            super::contracts::branch_contract(g.clone());
+            let mut replay = g.clone();
+            act(&mut g, Action::FinishSearch);
+            act(&mut replay, Action::FinishSearch);
+            settle(&mut g);
+            settle(&mut replay);
+            assert_eq!(
+                g.state.players[p.index()].library,
+                replay.state.players[p.index()].library
+            );
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            if find {
+                assert_eq!(g.state.players[p.index()].library.last(), Some(&walker));
+                assert!(g.observe(p.other()).objects.iter().any(|o| o.id == walker));
+            }
+        }
+    }
+}
+
+#[path = "engine_fra_awaken_tests.rs"]
+mod fra_awaken_tests;
