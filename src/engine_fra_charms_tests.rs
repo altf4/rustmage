@@ -6411,3 +6411,19 @@ fn break_under_pressure_sacrifice_is_untargeted_and_obeys_zone_replacement() {
         assert_eq!(g.state.players[p.index()].life, life + 2);
     }
 }
+
+#[test]
+fn break_under_pressure_does_nothing_if_its_target_becomes_illegal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let creature = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let spell = put(&mut g, p, "Break Under Pressure", Zone::Hand);
+        let life = g.state.players[p.index()].life;
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        g.state.players[p.other().index()].hexproof_until_end_turn = true;
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].life, life);
+    }
+}
