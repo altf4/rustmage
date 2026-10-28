@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dea9a89a6a87e29079d65f7ebac25f51070c7e82994142af22ee67a5c811627e"
   },
-  "physical_metadata_sha256": "228e9df7abe97af5fe8c3a2e5d723842587d5a7e977b18a4368dc247d5443494"
+  "physical_metadata_sha256": "e0e988828ca899f350ea4204f7dce1f7da71d82033eb6dbe79645c81794827ab",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KonstrariImproviser.java",
+  "java_sha256": "99abd33f6951303f89e4f032afc693e82999ff1eb61ee5675052313abfe0da00",
+  "rules_tests": "src/assurance/fra_soul_tether.rs",
+  "oracle_face": {
+    "oracle_id": "bad2e3b2-ad47-4e17-b35e-0fcc13e82937",
+    "index": 0,
+    "sha256": "a5d2981aaa8f626ccaf37a909d28a928c10ec67c918c7a893f5adffa40b3525e"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HeartwoodToken.java",
+      "sha256": "956f8bf81061e436da05478f1923f01ec377b0563b620d0751ba6a5e35680a91"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    }
+  ]
 }

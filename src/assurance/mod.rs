@@ -365,3 +365,5 @@ mod requested_callous;
 mod fra_blue;
 
 mod fra_seed_suture;
+
+mod fra_soul_tether;

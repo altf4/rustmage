@@ -1,16 +1,41 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Draft typed behavior; remains gated pending complete rules tests.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(1, 1),
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            colored: [0; 6],
+            generic: 0,
+            alternatives: &[],
+            additional: None,
+            mana_component: false,
+            tap: true,
+            sacrifice: false,
+            exile_self: false,
+            discard: false,
+            life: 0,
+            remove: None,
+            loyalty: None,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AddMana(ManaProduction::Tagged {
+            production: &ManaProduction::Fixed([0, 0, 0, 0, 0, 1]),
+            quality: &ManaQuality {
+                restriction: ManaRestriction::ExceptCastFromHand,
+                spell_bonus: ManaSpellBonus::None,
+                retention: ManaRetention::Step,
+            },
+        })],
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    extras: &CardExtras {
+        prepared_spell: Some(Card(5439)),
+        enters_prepared: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

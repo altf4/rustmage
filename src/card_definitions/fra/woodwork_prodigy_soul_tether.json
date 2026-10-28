@@ -8,5 +8,41 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1f95e0a2f590d578f9eda4a101389227205020d9fb8fcd8b264d4347b72d604e"
   },
-  "physical_metadata_sha256": "0521f9b27843f4e22b33e83bab5f675ed6e54291529934798c513d14cdfb259d"
+  "physical_metadata_sha256": "6f8d91cf2f1821a6a7cf29eb7f5937323552ddfe696c00a5e142757ac39475f7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WoodworkProdigy.java",
+  "java_sha256": "1fb59a8f3ef3479379c3d891149503c39d1355856d4957f72b4d0355210710cf",
+  "rules_tests": "src/assurance/fra_soul_tether.rs",
+  "oracle_face": {
+    "oracle_id": "f3ed157f-a09b-405f-aec4-0e7a81d80fc8",
+    "index": 0,
+    "sha256": "00b3a24b62531cac861154f51f069590ee599b1946ca79dffb9c743ac413a09f"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HeartwoodToken.java",
+      "sha256": "956f8bf81061e436da05478f1923f01ec377b0563b620d0751ba6a5e35680a91"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourcePreparedCondition.java",
+      "sha256": "010390bed14d8e636c2c4ec49831c957b757b6bcba388c437d2015c76b69ca63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    }
+  ]
 }

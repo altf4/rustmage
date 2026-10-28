@@ -8,5 +8,41 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "389771fb799204c9b87c03e334274d0f9ac39b08d822947898080ae3dfe5ed0a"
   },
-  "physical_metadata_sha256": "499b8d8a63d6a3392f896d23788e5809404436fa6dd133f280d12192be845004"
+  "physical_metadata_sha256": "c11cda02ffc4ad56e192f363586e651b47e3a1c8e2ebd13ee52625bb6f82c75e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HeartwoodCrafter.java",
+  "java_sha256": "229767f22aefed833002afd293421894b4080544095576c4a874a2772a9fb8d5",
+  "rules_tests": "src/assurance/fra_soul_tether.rs",
+  "oracle_face": {
+    "oracle_id": "c8b3a070-408e-4a8f-8597-6476eeec0a5f",
+    "index": 0,
+    "sha256": "3caa825a11c2ea3f9f2f25aa74eebdadce7f0abf1c170c9bff020f53af34f8ce"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HeartwoodToken.java",
+      "sha256": "956f8bf81061e436da05478f1923f01ec377b0563b620d0751ba6a5e35680a91"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalColorlessManaEffect.java",
+      "sha256": "f5ba3fd57b7cff9f184695673821963516c5834505063f7a319d8c344076d97b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+      "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+    }
+  ]
 }
