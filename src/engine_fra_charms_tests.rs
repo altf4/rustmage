@@ -4671,3 +4671,71 @@ fn recursive_recruitment_counters_all_replacement_created_tokens() {
         }
     }
 }
+
+#[test]
+fn silence_the_echo_sacrifice_or_mana_and_target_legality() {
+    for p in [Player::P0, Player::P1] {
+        for route in [0, 1] {
+            for sacrifice_walker in [false, true] {
+                for fizzle in [false, true] {
+                    let mut g = scenario(p);
+                    let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+                    let walker = put(&mut g, p, "Liliana, Dreadhorde General", Zone::Battlefield);
+                    g.add_counter(walker, CounterKind::Loyalty, 6);
+                    let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+                    let land = put(&mut g, p, "Forest", Zone::Battlefield);
+                    let spell = put(&mut g, p, "Silence the Echo", Zone::Hand);
+                    g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 4];
+                    act(&mut g, Action::AnnounceCast { card: spell });
+                    act(&mut g, Action::ChooseSpellCost { cost: route });
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(land),
+                        },
+                    );
+                    act(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(enemy),
+                        },
+                    );
+                    let chosen = if sacrifice_walker { walker } else { creature };
+                    if route == 0 {
+                        let land_ref = g.object_ref(land);
+                        let enemy_ref = g.object_ref(enemy);
+                        reject(&mut g, Action::ChooseAdditionalCost { object: land_ref });
+                        reject(&mut g, Action::ChooseAdditionalCost { object: enemy_ref });
+                        let chosen_ref = g.object_ref(chosen);
+                        act(&mut g, Action::ChooseAdditionalCost { object: chosen_ref });
+                    }
+                    pay(&mut g);
+                    assert_eq!(
+                        g.object_view(chosen).zone,
+                        if route == 0 {
+                            Zone::Graveyard
+                        } else {
+                            Zone::Battlefield
+                        }
+                    );
+                    if fizzle {
+                        g.move_object(enemy, Zone::Exile);
+                    }
+                    let before = g.snapshot();
+                    super::contracts::branch_contract(g.clone());
+                    settle(&mut g);
+                    assert_eq!(
+                        g.object_view(enemy).zone,
+                        if fizzle { Zone::Exile } else { Zone::Graveyard }
+                    );
+                    g.restore(&before).unwrap();
+                    settle(&mut g);
+                    assert_eq!(
+                        g.object_view(enemy).zone,
+                        if fizzle { Zone::Exile } else { Zone::Graveyard }
+                    );
+                }
+            }
+        }
+    }
+}
