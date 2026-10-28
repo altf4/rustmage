@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4d85174d17e39fa22c62e52471df3b8d04e438e58e4b1888ab7d963e9d3d8182"
   },
-  "physical_metadata_sha256": "4f7c16a2fbf93b5745669635edfbaf3725531fbd86b7df6346e927a4a9ffbe6e"
+  "physical_metadata_sha256": "4f7c16a2fbf93b5745669635edfbaf3725531fbd86b7df6346e927a4a9ffbe6e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InspiredTethermage.java",
+  "java_sha256": "2b14d3325f7427b8db8013093810c07fbd2939ab43b8027da325b54806325e1c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PutCounterOnPermanentTriggeredAbility.java",
+      "sha256": "f333016822bde02a6e1be7257787d3031615b525220bf0e7403a392289f4e5d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }

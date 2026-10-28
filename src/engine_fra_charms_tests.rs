@@ -3265,3 +3265,40 @@ fn way_of_the_paradox_observes_committed_loyalty_activations() {
         }
     }
 }
+
+#[test]
+fn inspired_tethermage_observes_loyalty_costs_and_its_own_empower() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let mage = put(&mut g, p, "Inspired Tethermage", Zone::Battlefield);
+        let liliana = put(&mut g, p, "Liliana, Dreadhorde General", Zone::Battlefield);
+        g.add_counter(liliana, CounterKind::Loyalty, 6);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: liliana,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.counter_count(mage, CounterKind::PlusOne), 1);
+        g.state.players[p.index()].mana[5] = 6;
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: mage,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        let jaces = fra_jaces(&g, p);
+        assert_eq!(jaces.len(), 1);
+        assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 2);
+        assert_eq!(g.counter_count(mage, CounterKind::PlusOne), 2);
+    }
+}
