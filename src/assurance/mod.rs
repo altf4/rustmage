@@ -372,3 +372,4 @@ mod fra_seed_suture;
 mod fra_soul_tether;
 
 mod fra_prepared_extra;
+mod fra_fatehold_empower;
