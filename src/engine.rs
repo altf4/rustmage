@@ -1916,7 +1916,7 @@ enum Pending {
     },
     KeywordChoice {
         player: Player,
-        subject: Subject,
+        recipients: Box<Vec<ObjectRef>>,
         choices: &'static [Keywords],
     },
     EffectChoice {
@@ -6027,14 +6027,21 @@ impl Game {
             }
             Action::ChooseKeyword { index } => {
                 let Pending::KeywordChoice {
-                    subject, choices, ..
-                } = self.state.pending
+                    recipients,
+                    choices,
+                    ..
+                } = &self.state.pending
                 else {
                     unreachable!()
                 };
-                let item = self.state.resolving.as_ref().unwrap().item.clone();
-                let ids = self.keyword_subjects(&item, subject);
-                self.grant_keyword_effects(&ids, item.object, choices[usize::from(index)]);
+                let ids: Vec<_> = recipients
+                    .iter()
+                    .filter(|r| self.on_battlefield(r.card) && self.object_ref(r.card) == **r)
+                    .map(|r| r.card)
+                    .collect();
+                let keywords = choices[usize::from(index)];
+                let source = self.state.resolving.as_ref().unwrap().item.object;
+                self.grant_keyword_effects(&ids, source, keywords);
                 self.run_program();
             }
             Action::ChooseToken { token } => {

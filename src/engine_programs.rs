@@ -3709,11 +3709,16 @@ impl Game {
                     }
                 }
                 Instruction::ChooseGrantKeywords { subject, choices } => {
-                    if !self.keyword_subjects(&item, subject).is_empty() {
+                    let recipients: Vec<_> = self
+                        .keyword_subjects(&item, subject)
+                        .into_iter()
+                        .map(|id| self.object_ref(id))
+                        .collect();
+                    if !recipients.is_empty() {
                         assert!(!choices.is_empty() && u16::try_from(choices.len()).is_ok());
                         self.state.pending = Pending::KeywordChoice {
                             player: item.controller,
-                            subject,
+                            recipients: Box::new(recipients),
                             choices,
                         };
                         return;
