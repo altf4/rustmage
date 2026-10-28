@@ -3568,16 +3568,13 @@ fn solve_for_disappointment_reveals_hand_discards_permanent_then_empowers() {
             }
             assert!(g.observe(p).objects.iter().any(|o| o.id == land));
             if let Some(permanent) = permanent {
+                let land_ref = g.object_ref(land);
+                let instant_ref = g.object_ref(instant);
+                reject(&mut g, Action::ChooseRevealedDiscard { object: land_ref });
                 reject(
                     &mut g,
                     Action::ChooseRevealedDiscard {
-                        object: g.object_ref(land),
-                    },
-                );
-                reject(
-                    &mut g,
-                    Action::ChooseRevealedDiscard {
-                        object: g.object_ref(instant),
+                        object: instant_ref,
                     },
                 );
                 super::contracts::branch_contract(g.clone());
