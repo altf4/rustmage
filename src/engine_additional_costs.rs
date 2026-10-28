@@ -703,6 +703,7 @@ impl Game {
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. }
             | EffectChoiceKind::ExileGreatestManaValue
+            | EffectChoiceKind::SacrificeGreatestManaValue
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)

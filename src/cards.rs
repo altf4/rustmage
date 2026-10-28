@@ -756,6 +756,8 @@ pub enum EffectChoiceKind {
     AmassGoblins(u64),
     EmpowerJace(u64),
     ExileGreatestManaValue,
+    /// Sacrifice one controlled permanent of greatest mana value among matching kinds.
+    SacrificeGreatestManaValue,
     ExileGraveyard,
     SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.

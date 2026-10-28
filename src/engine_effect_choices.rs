@@ -203,7 +203,11 @@ impl Game {
                 };
         }
         if choice.greatest_value[player.index()].is_some_and(|max| {
-            let value = if choice.kind == EffectChoiceKind::ExileGreatestManaValue {
+            let value = if matches!(
+                choice.kind,
+                EffectChoiceKind::ExileGreatestManaValue
+                    | EffectChoiceKind::SacrificeGreatestManaValue
+            ) {
                 i128::from(self.object_mana_value(object.card))
             } else {
                 self.object_view(object.card).power
@@ -754,7 +758,13 @@ impl Game {
             && optional_skip.is_some()
             && filter != evidence::cost(0).filter;
         for player in self.program_players(players, item) {
-            if greatest || kind == EffectChoiceKind::ExileGreatestManaValue {
+            if greatest
+                || matches!(
+                    kind,
+                    EffectChoiceKind::ExileGreatestManaValue
+                        | EffectChoiceKind::SacrificeGreatestManaValue
+                )
+            {
                 choice.greatest_value[player.index()] = self
                     .state
                     .objects
@@ -763,14 +773,22 @@ impl Game {
                     .filter(|(id, o)| {
                         o.zone == Zone::Battlefield
                             && o.controller == player
-                            && if kind == EffectChoiceKind::ExileGreatestManaValue {
+                            && if matches!(
+                                kind,
+                                EffectChoiceKind::ExileGreatestManaValue
+                                    | EffectChoiceKind::SacrificeGreatestManaValue
+                            ) {
                                 self.current_kinds(*id as CardId) & 65 != 0
                             } else {
                                 self.is_creature(*id as CardId)
                             }
                     })
                     .map(|(id, _)| {
-                        if kind == EffectChoiceKind::ExileGreatestManaValue {
+                        if matches!(
+                            kind,
+                            EffectChoiceKind::ExileGreatestManaValue
+                                | EffectChoiceKind::SacrificeGreatestManaValue
+                        ) {
                             i128::from(self.object_mana_value(id as CardId))
                         } else {
                             self.object_view(id as CardId).power

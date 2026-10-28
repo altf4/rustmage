@@ -3771,6 +3771,7 @@ impl Game {
                             | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
                             EffectChoiceKind::Sacrifice
                             | EffectChoiceKind::ExileGreatestManaValue
+                            | EffectChoiceKind::SacrificeGreatestManaValue
                             | EffectChoiceKind::ExileGraveyard
                             | EffectChoiceKind::TapPermanents(_)
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
