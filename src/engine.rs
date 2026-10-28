@@ -2472,6 +2472,9 @@ pub struct SourceCounterChoiceView {
     pub maximum: u64,
 }
 /// Incremental, owned selection; counters change together when the player finishes.
+/// These intermediate steps are an implementation of one rules choice. Only the
+/// decision-making player and players sharing their information see the partial
+/// selection; every player sees the resulting public counters after commitment.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct TargetCounterRemovalView {
     pub target: ObjectRef,
