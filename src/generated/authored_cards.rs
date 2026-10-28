@@ -48914,8 +48914,17 @@ pub(super) mod card_5434 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/battle_reserved_5434.rs");
 }
+pub(super) mod card_5435 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_jace_planeswalker.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5435] = [
+pub(super) static RULES: [&CardRules; 5436] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54351,6 +54360,7 @@ pub(super) static RULES: [&CardRules; 5435] = [
     &card_5432::RULES,
     &card_5433::RULES,
     &card_5434::RULES,
+    &card_5435::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

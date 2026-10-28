@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "69bc596d23ae277a5c2579779b8551d14d0f80e37a90c1721e2c0dfec8ac0729",
+  "catalogue_version": "506aa6de8d72e9c3c3097c34e49d6c9a8ae9add6bd7afe4daadc275fb4b9fd97",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2742,
-  "implemented_total": 2748,
-  "token_definitions": 136,
+  "implemented_standard_cards": 2743,
+  "implemented_total": 2749,
+  "token_definitions": 137,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
   "omen_definitions": 13,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 95,
-      "gated": 190
+      "complete": 96,
+      "gated": 189
     },
     "frc": {
       "total": 6,
@@ -23811,8 +23811,8 @@
     {
       "name": "No Admittance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/no_admittance.rs",
       "set": "fra"
     },
