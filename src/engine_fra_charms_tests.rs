@@ -4351,3 +4351,63 @@ fn loyalty_cost_uses_non_effect_counter_replacements() {
         assert_eq!(g.counter_count(planeswalker, CounterKind::Loyalty), 8);
     }
 }
+
+#[test]
+fn activation_counter_cost_preserves_replacement_order_and_restore() {
+    for p in [Player::P0, Player::P1] {
+        for samson_first in [false, true] {
+            let mut g = scenario(p);
+            let jessica = put(&mut g, p, "Jessica Jones, Private Eye", Zone::Battlefield);
+            let samson = put(
+                &mut g,
+                p,
+                "Doc Samson, Super Psychiatrist",
+                Zone::Battlefield,
+            );
+            let loading = put(&mut g, p, "Loading Zone", Zone::Battlefield);
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: jessica,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            pay(&mut g);
+            assert!(matches!(g.state.pending, Pending::Replacement { .. }));
+            assert_eq!(g.actor(), Some(p));
+            let chosen = if samson_first { samson } else { loading };
+            let chosen_ref = g.object_ref(chosen);
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            let pick = Action::ChooseReplacement {
+                source: chosen_ref,
+                ability: 0,
+            };
+            act(&mut g, pick.clone());
+            while g
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseReplacement { .. }))
+            {
+                choose(&mut g, |a| matches!(a, Action::ChooseReplacement { .. }));
+            }
+            assert_eq!(
+                g.counter_count(jessica, CounterKind::Stun),
+                if samson_first { 4 } else { 3 }
+            );
+            assert!(g.object_view(jessica).tapped);
+            let completed = g.snapshot();
+            g.restore(&before).unwrap();
+            act(&mut g, pick);
+            while g
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseReplacement { .. }))
+            {
+                choose(&mut g, |a| matches!(a, Action::ChooseReplacement { .. }));
+            }
+            assert_eq!(g.snapshot(), completed);
+        }
+    }
+}
