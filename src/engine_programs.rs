@@ -4922,6 +4922,19 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::PutControlledCreatureCountersWith {
+                    required,
+                    kind,
+                    amount,
+                } => {
+                    let changes = self
+                        .player_creature_recipients(PlayerSet::Controller, &item)
+                        .into_iter()
+                        .filter(|&id| self.counter_count(id, required) > 0)
+                        .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
                 Instruction::UntapControlledTokens => {
                     let ids: Vec<_> = self
                         .state

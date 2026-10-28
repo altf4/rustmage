@@ -1800,6 +1800,12 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    /// Put counters on controlled creatures that already have the specified kind.
+    PutControlledCreatureCountersWith {
+        required: CounterKind,
+        kind: CounterKind,
+        amount: u32,
+    },
     SetBaseStats {
         subject: Subject,
         power: Option<i128>,

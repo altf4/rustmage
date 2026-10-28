@@ -3723,3 +3723,50 @@ fn vigorbloom_charm_draw_mode_gains_life() {
         assert_eq!(g.object_view(card).zone, Zone::Hand);
     }
 }
+
+#[test]
+fn edgar_moonlit_sovereign_rechecks_end_step_and_counters_only_eligible_creatures() {
+    for p in [Player::P0, Player::P1] {
+        for cast_after_trigger in [false, true] {
+            let mut g = scenario(p);
+            let edgar = put(&mut g, p, "Edgar, Moonlit Sovereign", Zone::Battlefield);
+            let marked = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let unmarked = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.add_counter(marked, CounterKind::PlusOne, 1);
+            g.add_counter(enemy, CounterKind::PlusOne, 1);
+            g.begin_step(Step::End);
+            g.prepare_triggers();
+            if cast_after_trigger {
+                g.state.players[p.index()].spells_cast_this_turn = 1;
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.counter_count(edgar, CounterKind::PlusOne),
+                if cast_after_trigger { 0 } else { 2 }
+            );
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 4];
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: edgar,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.counter_count(marked, CounterKind::PlusOne), 2);
+            assert_eq!(g.counter_count(unmarked, CounterKind::PlusOne), 0);
+            assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 1);
+            assert_eq!(
+                g.counter_count(edgar, CounterKind::PlusOne),
+                if cast_after_trigger { 0 } else { 3 }
+            );
+        }
+    }
+}

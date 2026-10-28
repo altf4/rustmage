@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6897dfa4dfd45ec45e3c29b58a7665471f59e9c6e3c4a63e121510e16b4602b8"
   },
-  "physical_metadata_sha256": "98de95ad30d5ce5f4f247de9d20d85d934df05fc6edb4700f7efd2a09d99fdaa"
+  "physical_metadata_sha256": "98de95ad30d5ce5f4f247de9d20d85d934df05fc6edb4700f7efd2a09d99fdaa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EdgarMoonlitSovereign.java",
+  "java_sha256": "01e1ae9ee9e5196ed20e73277f1c8f023dcd7a561cde802a23563d18cbb759d3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CastSpellLastTurnWatcher.java",
+      "sha256": "065a8c406c463e6b5a4fc410b932eb1784fd05f2964afc8e64c81664a518a7ce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }
