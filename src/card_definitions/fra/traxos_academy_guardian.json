@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c7275485307d01a7baa3fc27e11a0888bc143f83b17a3845f002b35c8e81d4e9"
   },
-  "physical_metadata_sha256": "0dffbb3d9e8ec9f8196f43599b5796f2e71368cf073b73023e12140d9d945c09"
+  "physical_metadata_sha256": "0dffbb3d9e8ec9f8196f43599b5796f2e71368cf073b73023e12140d9d945c09",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TraxosAcademyGuardian.java",
+  "java_sha256": "44d959c33f4c033c0fa1cee3fe084b56079073574e7a92f6d466c7c3c5287ff6"
 }

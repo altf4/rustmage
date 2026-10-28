@@ -2301,3 +2301,47 @@ fn curse_marred_demon_searches_privately_then_randomly_discards_with_replay() {
         assert!(g.keywords(source).contains(Keywords::TRAMPLE));
     }
 }
+
+#[test]
+fn traxos_academy_guardian_discount_tracks_noncreature_casts_and_prowess() {
+    for p in [Player::P0, Player::P1] {
+        for history in 0..3 {
+            let mut g = scenario(p);
+            if history == 1 {
+                let bear = put(&mut g, p, "Bear Cub", Zone::Hand);
+                cast(&mut g, bear, None);
+                settle(&mut g);
+            } else if history == 2 {
+                let shock = put(&mut g, p, "Shock", Zone::Hand);
+                cast(&mut g, shock, Some(Target::Player(p.other())));
+                settle(&mut g);
+            }
+            let traxos = put(&mut g, p, "Traxos, Academy Guardian", Zone::Hand);
+            g.state.players[p.index()].mana = [0; 6];
+            g.state.players[p.index()].mana[1] = 1;
+            g.state.players[p.index()].mana[5] = 1;
+            if history != 2 {
+                reject(&mut g, Action::AnnounceCast { card: traxos });
+                g.state.players[p.index()].mana[5] = 3;
+            }
+            act(&mut g, Action::AnnounceCast { card: traxos });
+            pay(&mut g);
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(stats(&g, traxos), (1, 5));
+            assert!(g.keywords(traxos).contains(Keywords::FLYING));
+            assert!(g.keywords(traxos).contains(Keywords::VIGILANCE));
+            g.state.players[p.index()].mana = [8; 6];
+            let bear = put(&mut g, p, "Bear Cub", Zone::Hand);
+            cast(&mut g, bear, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, traxos), (1, 5));
+            let shock = put(&mut g, p, "Shock", Zone::Hand);
+            cast(&mut g, shock, Some(Target::Player(p.other())));
+            settle(&mut g);
+            assert_eq!(stats(&g, traxos), (2, 6));
+            g.finish_cleanup();
+            assert_eq!(stats(&g, traxos), (1, 5));
+        }
+    }
+}

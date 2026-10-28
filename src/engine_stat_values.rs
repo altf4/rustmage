@@ -258,6 +258,15 @@ impl Game {
             StatValue::CreatureSpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].creature_spells_cast_this_turn)
             }
+            StatValue::NoncreatureSpellsCastThisTurn => {
+                let player = &self.state.players[owner.index()];
+                i128::from(
+                    player
+                        .spells_cast_this_turn
+                        .checked_sub(player.creature_spells_cast_this_turn)
+                        .expect("creature spell count cannot exceed total spell count"),
+                )
+            }
             StatValue::CreaturesDiedThisTurn => i128::from(self.state.creatures_died_this_turn),
             StatValue::LifeGainOccurredThisTurn => {
                 i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)
