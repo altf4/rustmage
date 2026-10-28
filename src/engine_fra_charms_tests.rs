@@ -6119,3 +6119,24 @@ fn saheeli_grants_haste_based_on_copied_subtype() {
         assert!(!g.keywords(bear).contains(Keywords::HASTE));
     }
 }
+
+#[test]
+fn saheeli_grant_tracks_thopter_subtype_changes() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Saheeli, Jewel of Avishkar", Zone::Battlefield);
+        g.create_tokens(p, Card(5266), 1, false);
+        let thopter = fra_thopters(&g, p)[0];
+        let thopter_ref = g.object_ref(thopter);
+        assert!(g.keywords(thopter).contains(Keywords::HASTE));
+        let aura = put(&mut g, p.other(), "Witness Protection", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(thopter_ref);
+        assert!(!g.has_subtype(thopter, "Thopter"));
+        assert!(g.has_subtype(thopter, "Citizen"));
+        assert!(!g.keywords(thopter).contains(Keywords::HASTE));
+        super::contracts::branch_contract(g.clone());
+        g.move_object(aura, Zone::Graveyard);
+        assert!(g.has_subtype(thopter, "Thopter"));
+        assert!(g.keywords(thopter).contains(Keywords::HASTE));
+    }
+}
