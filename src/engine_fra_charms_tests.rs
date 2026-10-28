@@ -7187,3 +7187,6 @@ fn loyal_tutor_search_is_private_revealed_and_replayable() {
 
 #[path = "engine_fra_awaken_tests.rs"]
 mod fra_awaken_tests;
+
+#[path = "engine_fra_loyal_tutor_tests.rs"]
+mod loyal_tutor_assurance;
