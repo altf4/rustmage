@@ -632,3 +632,36 @@ fn tetsuko_uses_live_power_toughness_control_and_ability_origin() {
         assert!(g.can_block_pair(blocker, low_toughness));
     }
 }
+
+#[test]
+fn way_of_the_mentor_empowers_and_rewards_each_controller_life_gain() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let own = put(&mut g, p, "Liliana the Faultless", Zone::Battlefield);
+        let opposing = put(
+            &mut g,
+            p.other(),
+            "Liliana the Faultless",
+            Zone::Battlefield,
+        );
+        g.add_counter(own, CounterKind::Loyalty, 4);
+        g.add_counter(opposing, CounterKind::Loyalty, 4);
+        let way = put(&mut g, p, "Way of the Mentor", Zone::Hand);
+        cast(&mut g, way, None);
+        settle(&mut g);
+        let jace = fra_jaces(&g, p)[0];
+        assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 5);
+        g.gain_life(p.other(), 2);
+        g.gain_life(p, 0);
+        settle(&mut g);
+        assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 5);
+        g.gain_life(p, 3);
+        g.gain_life(p, 1);
+        super::contracts::branch_contract(g.clone());
+        g.move_object(way, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 7);
+        assert_eq!(g.counter_count(own, CounterKind::Loyalty), 6);
+        assert_eq!(g.counter_count(opposing, CounterKind::Loyalty), 4);
+    }
+}
