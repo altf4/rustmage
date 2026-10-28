@@ -3822,3 +3822,63 @@ fn vraska_soul_of_stone_creates_sculpture_treasure_with_vigilance() {
         assert!(!g.keywords(own_bear).contains(Keywords::VIGILANCE));
     }
 }
+
+#[test]
+fn mind_meanderer_jace_vigilance_and_optional_fight_use_live_objects() {
+    for p in [Player::P0, Player::P1] {
+        for source_leaves in [false, true] {
+            let mut g = scenario(p);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let source = put(&mut g, p, "Mind Meanderer", Zone::Hand);
+            cast(&mut g, source, None);
+            let mut targeted = false;
+            for _ in 0..48 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let choice = Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                };
+                if !targeted && actions.contains(&choice) {
+                    act(&mut g, choice);
+                    targeted = true;
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                    break;
+                } else if targeted && g.state.pending == Pending::Priority {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Mind Meanderer choice {:?}", g.state.pending);
+                }
+            }
+            assert!(targeted);
+            if source_leaves {
+                g.move_object(source, Zone::Exile);
+            }
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(enemy).zone,
+                if source_leaves {
+                    Zone::Battlefield
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            if !source_leaves {
+                assert!(g.keywords(source).contains(Keywords::FLYING));
+                assert!(!g.keywords(source).contains(Keywords::VIGILANCE));
+                g.create_tokens(p, Card(5435), 1, false);
+                let jace = fra_jaces(&g, p)[0];
+                g.add_counter(jace, CounterKind::Loyalty, 1);
+                assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+                g.move_object(jace, Zone::Exile);
+                assert!(!g.keywords(source).contains(Keywords::VIGILANCE));
+            }
+        }
+    }
+}
