@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9754dbcb1dbca5de9f6dd1d9fb31434b5a46757fa81bbd7dc6a07f28c39247d6"
   },
-  "physical_metadata_sha256": "63c4373041aee6d3debfc286da9d90cb99f776c5c3d40313d8bdbbce9df5bf5f"
+  "physical_metadata_sha256": "63c4373041aee6d3debfc286da9d90cb99f776c5c3d40313d8bdbbce9df5bf5f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KeeperOfTheQuietHour.java",
+  "java_sha256": "a6270bc7e93b50a19226936285ca1f3a59cdd25156e09cb726272f9483906300",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }

@@ -465,3 +465,78 @@ fn fixed_empower_entry_and_graveyard_activation_reuse_jace() {
         assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 6);
     }
 }
+
+fn fra_jaces(g: &Game, p: Player) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(i, o)| {
+            (o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.is_token()
+                && o.card == Card(5435))
+            .then_some(i as CardId)
+        })
+        .collect()
+}
+
+#[test]
+fn empower_consumers_entry_and_draw() {
+    for p in [Player::P0, Player::P1] {
+        for (name, loyalty, pt) in [
+            ("Arcane Amphisbaena", 2, (1, 1)),
+            ("Keeper of the Quiet Hour", 2, (3, 2)),
+        ] {
+            let mut g = scenario(p);
+            let creature = put(&mut g, p, name, Zone::Hand);
+            cast(&mut g, creature, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, creature), pt);
+            if name == "Arcane Amphisbaena" {
+                assert!(g.keywords(creature).contains(Keywords::DEATHTOUCH));
+            }
+            let jaces = fra_jaces(&g, p);
+            assert_eq!(jaces.len(), 1);
+            assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), loyalty);
+        }
+        let mut g = scenario(p);
+        let before = g.state.players[p.index()].library.len();
+        let spell = put(&mut g, p, "Protege's Awakening", Zone::Hand);
+        cast(&mut g, spell, None);
+        settle(&mut g);
+        let jaces = fra_jaces(&g, p);
+        assert_eq!(jaces.len(), 1);
+        assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 6);
+        assert_eq!(g.state.players[p.index()].library.len(), before - 1);
+    }
+}
+
+#[test]
+fn academic_ascent_target_fizzle_and_temporary_effects() {
+    for p in [Player::P0, Player::P1] {
+        for fizzle in [false, true] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let spell = put(&mut g, p, "Academic Ascent", Zone::Hand);
+            cast(&mut g, spell, Some(Target::Card(target)));
+            super::contracts::branch_contract(g.clone());
+            if fizzle {
+                g.move_object(target, Zone::Exile);
+            }
+            settle(&mut g);
+            if fizzle {
+                assert!(fra_jaces(&g, p).is_empty());
+            } else {
+                assert_eq!(stats(&g, target), (4, 4));
+                assert!(g.keywords(target).contains(Keywords::FLYING));
+                let jaces = fra_jaces(&g, p);
+                assert_eq!(jaces.len(), 1);
+                assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 2);
+                g.finish_cleanup();
+                assert_eq!(stats(&g, target), (2, 2));
+                assert!(!g.keywords(target).contains(Keywords::FLYING));
+            }
+        }
+    }
+}

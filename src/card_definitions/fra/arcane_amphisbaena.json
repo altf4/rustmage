@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "663b380a8a9de8b2695acf7532836e665324e2c9a53e06c67038233adff2ac6a"
   },
-  "physical_metadata_sha256": "43cd9746c9f4bcaa543046e2004981bfc10a44310116da31ca1c66f08fb70752"
+  "physical_metadata_sha256": "43cd9746c9f4bcaa543046e2004981bfc10a44310116da31ca1c66f08fb70752",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArcaneAmphisbaena.java",
+  "java_sha256": "4bcf257bc8c80513fd369c385d72dbb66e2c2543f45c8a395868425ce606e873",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }
