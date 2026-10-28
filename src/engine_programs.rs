@@ -4514,6 +4514,22 @@ impl Game {
                         );
                     }
                 }
+                Instruction::MayRemoveSourceCounter { kind, skip } => {
+                    if self.on_battlefield(item.card)
+                        && self.object_ref(item.card) == item.object
+                        && self.counter_count(item.card, kind) > 0
+                    {
+                        let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                        assert!(skip_to <= resolution.program.len());
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    } else {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::RemoveSourceCounterIfAny { kind, skip } => {
                     if self.on_battlefield(item.card)
                         && self.object_ref(item.card) == item.object
@@ -4928,6 +4944,15 @@ impl Game {
                 Instruction::UntapPlayerCreatures(players) => {
                     let recipients = self.player_creature_recipients(players, &item);
                     self.untap_objects(&recipients, untap_rules::UntapCause::Effect);
+                }
+                Instruction::PutOtherControlledCreaturesExceptSource { kind, amount } => {
+                    let changes = self
+                        .player_creature_recipients(PlayerSet::Controller, &item)
+                        .into_iter()
+                        .filter(|&id| self.object_ref(id) != item.object)
+                        .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::PutOtherControlledCreatureCounters { kind, amount } => {
                     let changes = self

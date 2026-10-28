@@ -1669,6 +1669,11 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         skip: usize,
     },
+    /// Offer an optional removal only while the exact source has this counter.
+    MayRemoveSourceCounter {
+        kind: CounterKind,
+        skip: usize,
+    },
     ChooseObjects {
         kind: EffectChoiceKind,
         players: PlayerSet,
@@ -1802,6 +1807,11 @@ pub(crate) enum Instruction {
     UntapPlayerCreatures(PlayerSet),
     /// Controlled creatures other than exact objects in the selected target group.
     PutOtherControlledCreatureCounters {
+        kind: CounterKind,
+        amount: u32,
+    },
+    /// All controlled creatures except the exact source, in one placement event.
+    PutOtherControlledCreaturesExceptSource {
         kind: CounterKind,
         amount: u32,
     },

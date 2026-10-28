@@ -5206,3 +5206,80 @@ fn hexhaven_dueling_arena_general_preparation_is_instant_speed() {
         assert!(g.is_prepared(g.object_ref(creature)));
     }
 }
+
+#[test]
+fn guiding_hydra_optional_counter_removal_and_simultaneous_placement() {
+    for p in [Player::P0, Player::P1] {
+        for accept in [false, true] {
+            for doubled in [false, true] {
+                let mut g = scenario(p);
+                let hydra = put(&mut g, p, "Guiding Hydra", Zone::Battlefield);
+                g.add_counter(hydra, CounterKind::PlusOne, 2);
+                let first = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let second = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let opponent = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+                if doubled {
+                    put(&mut g, p, "Doubling Season", Zone::Battlefield);
+                }
+                g.begin_step(Step::BeginCombat);
+                g.prepare_triggers();
+                for _ in 0..32 {
+                    if matches!(g.state.pending, Pending::EffectOptional { .. }) {
+                        break;
+                    }
+                    choose(&mut g, |a| {
+                        matches!(a, Action::Pass | Action::PutTrigger { .. })
+                    });
+                }
+                assert!(matches!(g.state.pending, Pending::EffectOptional { .. }));
+                let before = g.snapshot();
+                super::contracts::branch_contract(g.clone());
+                act(&mut g, Action::ChooseOptional { accept });
+                settle(&mut g);
+                assert_eq!(
+                    g.counter_count(hydra, CounterKind::PlusOne),
+                    if accept { 1 } else { 2 }
+                );
+                for creature in [first, second] {
+                    assert_eq!(
+                        g.counter_count(creature, CounterKind::PlusOne),
+                        if accept {
+                            if doubled { 2 } else { 1 }
+                        } else {
+                            0
+                        }
+                    );
+                }
+                assert_eq!(g.counter_count(opponent, CounterKind::PlusOne), 0);
+                let after = g.snapshot();
+                g.restore(&before).unwrap();
+                act(&mut g, Action::ChooseOptional { accept });
+                settle(&mut g);
+                assert_eq!(g.snapshot(), after);
+            }
+        }
+    }
+}
+
+#[test]
+fn guiding_hydra_enters_with_x_counters() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            let mut g = scenario(p);
+            if doubled {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let hydra = put(&mut g, p, "Guiding Hydra", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: hydra });
+            act(&mut g, Action::ChooseX { value: 2 });
+            pay(&mut g);
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.counter_count(hydra, CounterKind::PlusOne),
+                if doubled { 4 } else { 2 }
+            );
+            assert_eq!(stats(&g, hydra), if doubled { (5, 4) } else { (3, 2) });
+        }
+    }
+}
