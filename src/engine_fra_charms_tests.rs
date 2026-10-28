@@ -3159,3 +3159,61 @@ fn massacre_girl_death_damage_triggers_her_counter_ability() {
         assert_eq!(g.counter_count(girl, CounterKind::PlusOne), 1);
     }
 }
+
+#[test]
+fn vraskas_final_mercy_modes_and_illegal_target() {
+    for p in [Player::P0, Player::P1] {
+        for case in 0..4 {
+            let mut g = scenario(p);
+            let victim = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            if case == 2 {
+                g.state.objects[victim as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+            }
+            let spell = put(&mut g, p, "Vraska's Final Mercy", Zone::Hand);
+            let life = g.state.players[p.index()].life;
+            g.state.players[p.index()].mana = [0, 0, 2, 0, 0, 0];
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(
+                &mut g,
+                Action::ChooseMode {
+                    mode: if case == 3 { 1 } else { 0 },
+                },
+            );
+            if case != 3 {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(victim),
+                    },
+                );
+            }
+            pay(&mut g);
+            if case == 1 {
+                g.move_object(victim, Zone::Exile);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                life - if case == 1 { 0 } else { 2 }
+            );
+            match case {
+                0 => assert_eq!(g.object_view(victim).zone, Zone::Graveyard),
+                1 => assert_eq!(g.object_view(victim).zone, Zone::Exile),
+                2 => assert_eq!(g.object_view(victim).zone, Zone::Battlefield),
+                _ => {
+                    let jaces = fra_jaces(&g, p);
+                    assert_eq!(jaces.len(), 1);
+                    assert_eq!(g.counter_count(jaces[0], CounterKind::Loyalty), 6);
+                }
+            }
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                life - if case == 1 { 0 } else { 2 }
+            );
+        }
+    }
+}
