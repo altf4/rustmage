@@ -2548,10 +2548,35 @@ pub enum CounterKind {
     Quest,
     Defense,
     Hexproof,
+    Blight,
+    Bloodstain,
+    Bore,
+    Chorus,
+    Coin,
+    Conqueror,
+    Decayed,
+    Dread,
+    Dream,
+    Film,
+    Fire,
+    Flood,
+    Impostor,
+    Ingenuity,
+    Landmark,
+    Loot,
+    Nest,
+    Net,
+    Point,
+    Possession,
+    Rev,
+    Skewer,
+    Supply,
+    Time,
+    Unlock,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 35] = [
+    pub const ALL: [Self; 60] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -2587,6 +2612,31 @@ impl CounterKind {
         Self::Quest,
         Self::Defense,
         Self::Hexproof,
+        Self::Blight,
+        Self::Bloodstain,
+        Self::Bore,
+        Self::Chorus,
+        Self::Coin,
+        Self::Conqueror,
+        Self::Decayed,
+        Self::Dread,
+        Self::Dream,
+        Self::Film,
+        Self::Fire,
+        Self::Flood,
+        Self::Impostor,
+        Self::Ingenuity,
+        Self::Landmark,
+        Self::Loot,
+        Self::Nest,
+        Self::Net,
+        Self::Point,
+        Self::Possession,
+        Self::Rev,
+        Self::Skewer,
+        Self::Supply,
+        Self::Time,
+        Self::Unlock,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -2621,6 +2671,31 @@ impl CounterKind {
                 | Self::Quest
                 | Self::Defense
                 | Self::Hexproof
+                | Self::Blight
+                | Self::Bloodstain
+                | Self::Bore
+                | Self::Chorus
+                | Self::Coin
+                | Self::Conqueror
+                | Self::Decayed
+                | Self::Dread
+                | Self::Dream
+                | Self::Film
+                | Self::Fire
+                | Self::Flood
+                | Self::Impostor
+                | Self::Ingenuity
+                | Self::Landmark
+                | Self::Loot
+                | Self::Nest
+                | Self::Net
+                | Self::Point
+                | Self::Possession
+                | Self::Rev
+                | Self::Skewer
+                | Self::Supply
+                | Self::Time
+                | Self::Unlock
         )
     }
 }
