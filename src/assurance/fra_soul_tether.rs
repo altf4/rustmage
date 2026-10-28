@@ -131,6 +131,12 @@ fn crafter_restricted_mana_rejects_hand_cast_but_funds_prepared_spell() {
         g.state.players[p.index()].mana = [0; 6];
         let mana = g.legal_actions().into_iter().find(|a| matches!(a, Action::ActivateMana { card, production: [0,0,0,0,0,1], .. } if *card == source)).unwrap();
         checked(&mut g, mana);
+        for viewer in [p, p.other()] {
+            assert!(
+                g.observe(viewer).mana_lots.iter().any(|lot| lot.player == p
+                    && lot.restriction == ManaRestrictionView::ExceptCastFromHand)
+            );
+        }
         assert_eq!(g.available_mana(p, mana_lots::Purpose::Other)[5], 1);
         // If a later permission lets this player cast from another player's
         // hand, the restriction concerns the mana owner's hand only.
