@@ -5981,3 +5981,75 @@ fn hungering_puppetbeast_entry_heartwood_is_a_usable_sacrifice() {
         }
     }
 }
+
+#[test]
+fn hungering_puppetbeast_counter_replacements_resolve_before_keyword_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let beast = put(&mut g, p, "Hungering Puppetbeast", Zone::Battlefield);
+        let artifact = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        put(&mut g, p, "Doubling Season", Zone::Battlefield);
+        put(&mut g, p, "Doubling Season", Zone::Battlefield);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: beast,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let artifact_ref = g.object_ref(artifact);
+        act(
+            &mut g,
+            Action::ChooseAdditionalCost {
+                object: artifact_ref,
+            },
+        );
+        pay(&mut g);
+        for _ in 0..32 {
+            if g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseReplacement { .. }))
+            {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::Replacement { .. }));
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseKeyword { .. }))
+        );
+        let saved = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        while g
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::ChooseReplacement { .. }))
+        {
+            choose(&mut g, |a| matches!(a, Action::ChooseReplacement { .. }));
+        }
+        assert_eq!(g.counter_count(beast, CounterKind::PlusOne), 4);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::ChooseKeyword { index: 1 })
+        );
+        act(&mut g, Action::ChooseKeyword { index: 1 });
+        settle(&mut g);
+        assert!(g.keywords(beast).contains(Keywords::HEXPROOF));
+        g.restore(&saved).unwrap();
+        while g
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::ChooseReplacement { .. }))
+        {
+            choose(&mut g, |a| matches!(a, Action::ChooseReplacement { .. }));
+        }
+        assert_eq!(g.counter_count(beast, CounterKind::PlusOne), 4);
+        act(&mut g, Action::ChooseKeyword { index: 2 });
+        settle(&mut g);
+        assert!(g.keywords(beast).contains(Keywords::HASTE));
+        assert!(!g.keywords(beast).contains(Keywords::HEXPROOF));
+    }
+}
