@@ -250,6 +250,12 @@ impl FundingState<'_> {
                 .count()
         };
         match guard {
+            StepGuard::SourceUnprepared => {
+                let object = ability_world::CharacteristicWorld::object(self, source.card);
+                object.zone == Zone::Battlefield
+                    && self.reference(source.card) == source
+                    && !self.game.is_prepared(source)
+            }
             StepGuard::ClassLevelAtLeast(level) => {
                 let object = ability_world::CharacteristicWorld::object(self, source.card);
                 object.zone == Zone::Battlefield

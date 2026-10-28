@@ -3024,6 +3024,7 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    SourceUnprepared,
     ClassLevelAtLeast(u8),
     UnsolvedLifeGainedAtLeast(u128),
     /// Trigger-time attachment relation; wrap the step event in When.
