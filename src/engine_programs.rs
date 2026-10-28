@@ -3708,6 +3708,17 @@ impl Game {
                         self.draw_many(item.controller, 1);
                     }
                 }
+                Instruction::ChooseGrantKeywords { subject, choices } => {
+                    if !self.keyword_subjects(&item, subject).is_empty() {
+                        assert!(!choices.is_empty() && u16::try_from(choices.len()).is_ok());
+                        self.state.pending = Pending::KeywordChoice {
+                            player: item.controller,
+                            subject,
+                            choices,
+                        };
+                        return;
+                    }
+                }
                 Instruction::CreateTokenChoice(tokens) => {
                     self.state.pending = Pending::TokenChoice {
                         player: item.controller,

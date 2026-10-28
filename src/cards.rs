@@ -1049,6 +1049,11 @@ pub(crate) enum Instruction {
         subject: Subject,
     },
     CreateTokenChoice(&'static [Card]),
+    /// Choose a keyword during resolution for the current exact subjects.
+    ChooseGrantKeywords {
+        subject: Subject,
+        choices: &'static [Keywords],
+    },
     PlayHideawayIfCoven,
     ExileHandCardCopy,
     /// Exile the current hand and draw its frozen size, retaining exact exile results.

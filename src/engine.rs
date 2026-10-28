@@ -532,6 +532,7 @@ define_actions! {
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
     ChooseToken { token: Card },
+    ChooseKeyword { index: u16 },
     PutHandCreature { object: ObjectRef },
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
@@ -1913,6 +1914,11 @@ enum Pending {
         player: Player,
         tokens: &'static [Card],
     },
+    KeywordChoice {
+        player: Player,
+        subject: Subject,
+        choices: &'static [Keywords],
+    },
     EffectChoice {
         player: Player,
     },
@@ -3058,6 +3064,7 @@ impl Game {
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
             | Pending::TokenChoice { player, .. }
+            | Pending::KeywordChoice { player, .. }
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
             | Pending::Role { player }
@@ -3681,6 +3688,15 @@ impl Game {
             Pending::HandDefender { .. } => {
                 if self.visit_hand_defenders(&mut emit) {
                     return true;
+                }
+            }
+            Pending::KeywordChoice { choices, .. } => {
+                for index in 0..choices.len() {
+                    if emit(Action::ChooseKeyword {
+                        index: u16::try_from(index).expect("keyword choice count"),
+                    }) {
+                        return true;
+                    }
                 }
             }
             Pending::TokenChoice { tokens, .. } => {
@@ -6009,6 +6025,18 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
+            Action::ChooseKeyword { index } => {
+                let Pending::KeywordChoice {
+                    subject, choices, ..
+                } = self.state.pending
+                else {
+                    unreachable!()
+                };
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                let ids = self.keyword_subjects(&item, subject);
+                self.grant_keyword_effects(&ids, item.object, choices[usize::from(index)]);
+                self.run_program();
+            }
             Action::ChooseToken { token } => {
                 self.create_tokens(actor, token, 1, false);
                 self.run_program();
@@ -8216,6 +8244,7 @@ impl Game {
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
+                Pending::KeywordChoice { .. } => "keyword_choice",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
