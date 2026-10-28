@@ -6564,3 +6564,47 @@ fn hunters_axe_grants_attack_choice_to_equipped_creature() {
         }
     }
 }
+
+#[test]
+fn hunters_axes_create_independent_attack_choices() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let bearer = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let first = put(&mut g, p, "Hunter's Axe", Zone::Battlefield);
+        let second = put(&mut g, p, "Hunter's Axe", Zone::Battlefield);
+        let bearer_ref = g.object_ref(bearer);
+        g.state.objects[first as usize].attached_to = Some(bearer_ref);
+        g.state.objects[second as usize].attached_to = Some(bearer_ref);
+        assert_eq!(stats(&g, bearer), (6, 2));
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: bearer });
+        act(&mut g, Action::FinishAttackers);
+        let mut chosen = 0;
+        for _ in 0..64 {
+            let actions = g.legal_actions();
+            if chosen < 2 && actions.contains(&Action::ChooseKeyword { index: chosen }) {
+                if chosen == 0 {
+                    super::contracts::branch_contract(g.clone());
+                }
+                act(&mut g, Action::ChooseKeyword { index: chosen });
+                chosen += 1;
+            } else if chosen == 2 {
+                break;
+            } else if let Some(action) = actions
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+            {
+                act(&mut g, action);
+            } else {
+                panic!("unexpected multiple Axe state {:?}", g.state.pending);
+            }
+        }
+        assert_eq!(chosen, 2);
+        assert!(g.keywords(bearer).contains(Keywords::TRAMPLE));
+        assert!(g.keywords(bearer).contains(Keywords::DEATHTOUCH));
+        g.finish_cleanup();
+        assert!(!g.keywords(bearer).contains(Keywords::TRAMPLE));
+        assert!(!g.keywords(bearer).contains(Keywords::DEATHTOUCH));
+    }
+}
