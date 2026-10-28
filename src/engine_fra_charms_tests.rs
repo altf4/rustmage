@@ -2167,3 +2167,83 @@ fn jiang_yanggu_creates_legendary_mowu_and_untaps_all_owned_tokens() {
         assert_eq!(g.counter_count(stunned, CounterKind::Stun), 0);
     }
 }
+
+#[test]
+fn tether_technician_discards_before_choosing_reflexive_target() {
+    for p in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = scenario(p);
+            let hand = put(&mut g, p, "Forest", Zone::Hand);
+            let opposing_hand = put(&mut g, p.other(), "Forest", Zone::Hand);
+            let creature = put(&mut g, p, "Tether Technician", Zone::Hand);
+            let life = g.state.players[p.other().index()].life;
+            cast(&mut g, creature, None);
+            let mut decided = false;
+            let mut targeted = false;
+            for _ in 0..64 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                if !decided && actions.contains(&Action::DeclineEffectPayment) {
+                    assert!(!actions.contains(&Action::ChooseTarget {
+                        target: Target::Player(p.other())
+                    }));
+                    assert!(g.observe(p.other()).effect_choice.is_none());
+                    reject(
+                        &mut g,
+                        Action::Discard {
+                            card: opposing_hand,
+                        },
+                    );
+                    super::contracts::branch_contract(g.clone());
+                    if pay {
+                        act(&mut g, Action::Discard { card: hand });
+                        g.move_object(creature, Zone::Graveyard);
+                    } else {
+                        act(&mut g, Action::DeclineEffectPayment);
+                    }
+                    decided = true;
+                } else if pay
+                    && !targeted
+                    && actions.contains(&Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    })
+                {
+                    assert!(decided);
+                    act(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Player(p.other()),
+                        },
+                    );
+                    targeted = true;
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                } else if decided
+                    && g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Tether choice {:?}", g.state.pending);
+                }
+            }
+            assert!(decided);
+            assert_eq!(targeted, pay);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                life - if pay { 2 } else { 0 }
+            );
+            assert_eq!(
+                g.object_view(hand).zone,
+                if pay { Zone::Graveyard } else { Zone::Hand }
+            );
+        }
+    }
+}
