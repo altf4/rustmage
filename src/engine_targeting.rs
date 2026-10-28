@@ -1280,6 +1280,10 @@ impl Game {
                             && !object.is_token()
                             && self.graveyard_entry_this_turn(self.object_ref(id))
                     }
+                    TargetPredicate::EnteredBattlefieldThisTurn => {
+                        object.zone == Zone::Battlefield
+                            && self.entered_this_turn(self.object_ref(id))
+                    }
                     TargetPredicate::ManaValueAtMostLifeGained => {
                         u128::from(self.object_mana_value(id))
                             <= self.state.players[controller.index()].life_gained_this_turn

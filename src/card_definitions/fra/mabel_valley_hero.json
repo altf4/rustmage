@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2d6e8c95f3a19278f369cf5849707e3a572ec0264c2cd9c9badc49537160d11c"
   },
-  "physical_metadata_sha256": "bb2f1b95f499f80baa4b80dcaf4d7569a50e4300473b5dacabe0b2a3cbc77b10"
+  "physical_metadata_sha256": "bb2f1b95f499f80baa4b80dcaf4d7569a50e4300473b5dacabe0b2a3cbc77b10",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MabelValleyHero.java",
+  "java_sha256": "bf52ca3c855a6c856371b291b2f0ee65271bd0116ff37465605715bf166e3416"
 }

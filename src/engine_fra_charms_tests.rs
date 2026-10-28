@@ -1911,3 +1911,59 @@ fn budding_insurgent_draws_for_legendary_enchantments_even_if_indestructible() {
         }
     }
 }
+
+#[test]
+fn mabel_valley_hero_targets_only_current_turns_creature_incarnations() {
+    for p in [Player::P0, Player::P1] {
+        for stale_at_resolution in [false, true] {
+            let mut g = scenario(p);
+            let old = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.entered_this_turn = None;
+            let mabel = put(&mut g, p, "Mabel, Valley Hero", Zone::Hand);
+            cast(&mut g, mabel, None);
+            let mut chosen = false;
+            for _ in 0..48 {
+                g.prepare_triggers();
+                let actions = g.legal_actions();
+                let target = Action::ChooseTarget {
+                    target: Target::Card(mabel),
+                };
+                if !chosen && actions.contains(&target) {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(old),
+                        },
+                    );
+                    act(&mut g, target);
+                    chosen = true;
+                    if stale_at_resolution {
+                        g.state.entered_this_turn = None;
+                    }
+                    super::contracts::branch_contract(g.clone());
+                } else if actions.contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                } else if chosen
+                    && g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                } else if let Some(action) = actions
+                    .into_iter()
+                    .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                {
+                    act(&mut g, action);
+                } else {
+                    panic!("unexpected Mabel choice {:?}", g.state.pending);
+                }
+            }
+            assert!(chosen);
+            assert_eq!(
+                g.counter_count(mabel, CounterKind::PlusOne),
+                u64::from(!stale_at_resolution)
+            );
+        }
+    }
+}

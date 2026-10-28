@@ -256,6 +256,8 @@ impl TargetRule {
 pub(crate) enum TargetPredicate {
     OwnedByController,
     EnteredGraveyardThisTurn,
+    /// This exact battlefield incarnation entered during the current turn.
+    EnteredBattlefieldThisTurn,
     ManaValueAtMostLifeGained,
     OtherThanSource,
     OtherThanSourceAttachment,
