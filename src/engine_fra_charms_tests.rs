@@ -4261,3 +4261,59 @@ fn ferocity_returns_the_exact_dying_card_tapped_under_its_owner() {
         }
     }
 }
+
+#[test]
+fn ferocity_flash_hybrid_payment_and_simultaneous_death() {
+    for p in [Player::P0, Player::P1] {
+        for color in [2, 4] {
+            let mut g = scenario(p);
+            g.state.active = p.other();
+            g.state.step = Step::Attackers;
+            let creature = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let aura = put(&mut g, p, "Ferocity of the Hunt", Zone::Hand);
+            g.state.players[p.index()].mana = [0; 6];
+            g.state.players[p.index()].mana[color] = 1;
+            g.state.players[p.index()].mana[5] = 1;
+            cast(&mut g, aura, Some(Target::Card(creature)));
+            settle(&mut g);
+            assert_eq!(stats(&g, creature), (3, 2));
+            let observers = g.death_trigger_sources();
+            let events = g.move_objects_raw(&[creature, aura], Zone::Graveyard);
+            g.finish_zone_events(&events, &observers);
+            g.prepare_triggers();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+            assert!(g.object_view(creature).tapped);
+            assert_eq!(g.object_view(creature).controller, p.other());
+        }
+    }
+}
+
+#[test]
+fn ferocity_does_not_return_a_dead_token() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.create_tokens(p, Card(5298), 1, false);
+        settle(&mut g);
+        let token = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(i, object)| {
+                (object.zone == Zone::Battlefield && object.is_token() && object.card == Card(5298))
+                    .then_some(i as CardId)
+            })
+            .unwrap();
+        let aura = put(&mut g, p, "Ferocity of the Hunt", Zone::Hand);
+        cast(&mut g, aura, Some(Target::Card(token)));
+        settle(&mut g);
+        g.move_object(token, Zone::Graveyard);
+        g.prepare_triggers();
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_ne!(g.object_view(token).zone, Zone::Battlefield);
+    }
+}
