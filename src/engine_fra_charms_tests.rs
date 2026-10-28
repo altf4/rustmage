@@ -2877,3 +2877,47 @@ fn marwyn_protects_controlled_lands_and_returns_own_graveyard_land() {
         }
     }
 }
+
+#[test]
+fn marwyn_land_hexproof_changes_actual_target_legality() {
+    let land_rule = TargetRule::Object {
+        zone: TargetZone::Battlefield,
+        kinds: 2,
+        relation: -1,
+        other: false,
+        nonland: false,
+        tapped: false,
+        min_mana: 0,
+        max_mana: u32::MAX,
+    };
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let marwyn = put(&mut g, p, "Marwyn, the Preserver", Zone::Battlefield);
+        let land = put(&mut g, p, "Forest", Zone::Battlefield);
+        let own_source = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let opposing_source = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        assert!(g.cast_target_matches(land_rule, p, g.object_ref(own_source), Target::Card(land)));
+        assert!(!g.cast_target_matches(
+            land_rule,
+            p.other(),
+            g.object_ref(opposing_source),
+            Target::Card(land),
+        ));
+        let before = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        g.move_object(marwyn, Zone::Exile);
+        assert!(g.cast_target_matches(
+            land_rule,
+            p.other(),
+            g.object_ref(opposing_source),
+            Target::Card(land),
+        ));
+        g.restore(&before).unwrap();
+        assert!(!g.cast_target_matches(
+            land_rule,
+            p.other(),
+            g.object_ref(opposing_source),
+            Target::Card(land),
+        ));
+    }
+}
