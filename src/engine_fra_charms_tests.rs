@@ -944,3 +944,61 @@ fn fatehold_charm_fizzles_if_its_only_creature_target_leaves() {
         assert_eq!(g.object_view(charm).zone, Zone::Graveyard);
     }
 }
+
+#[test]
+fn wrath_of_the_bloodmane_reduction_and_creature_or_planeswalker_damage() {
+    for p in [Player::P0, Player::P1] {
+        for (discounted, planeswalker) in [(false, false), (true, false), (true, true)] {
+            let mut g = scenario(p);
+            put(
+                &mut g,
+                p.other(),
+                "Haliya, Guided by Light",
+                Zone::Battlefield,
+            );
+            let target = if planeswalker {
+                let id = put(
+                    &mut g,
+                    p.other(),
+                    "Liliana the Faultless",
+                    Zone::Battlefield,
+                );
+                g.add_counter(id, CounterKind::Loyalty, 5);
+                id
+            } else {
+                put(&mut g, p.other(), "Bear Cub", Zone::Battlefield)
+            };
+            let spell = put(&mut g, p, "Wrath of the Bloodmane", Zone::Hand);
+            g.state.players[p.index()].mana = [0; 6];
+            g.state.players[p.index()].mana[3] = 1;
+            g.state.players[p.index()].mana[5] = 1;
+            if discounted {
+                put(&mut g, p, "Haliya, Guided by Light", Zone::Battlefield);
+            } else {
+                reject(&mut g, Action::AnnounceCast { card: spell });
+                g.state.players[p.index()].mana[5] = 2;
+            }
+            act(&mut g, Action::AnnounceCast { card: spell });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            pay(&mut g);
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            if planeswalker {
+                assert_eq!(g.counter_count(target, CounterKind::Loyalty), 1);
+            } else {
+                assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+            }
+        }
+    }
+}
