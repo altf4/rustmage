@@ -1496,6 +1496,11 @@ pub(crate) enum Instruction {
         skip: usize,
     },
     /// Live predicate on an exact resolving object, never on a reincarnation.
+    /// Check the exact event object's current subtype, or its last known subtype.
+    IfEventObjectSubtype {
+        subtype: &'static str,
+        skip: usize,
+    },
     IfSubject {
         subject: Subject,
         filter: CreatureFilter,

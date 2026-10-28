@@ -168,6 +168,43 @@ impl Game {
                 }));
         }
     }
+    /// Opt in to subtype LKI only for programs that examine their event object.
+    pub(super) fn bind_entering_subtype_lki(
+        &mut self,
+        entering: &ObjectView,
+        program: &[Instruction],
+    ) {
+        if !program
+            .iter()
+            .any(|instruction| matches!(instruction, Instruction::IfEventObjectSubtype { .. }))
+        {
+            return;
+        }
+        let packet = self.state.pending_triggers.last_mut().unwrap();
+        assert!(
+            packet.event_object.is_none(),
+            "event object facts already bound"
+        );
+        packet.event_object = Some(Box::new(EventObjectView {
+            object: entering.reference,
+            facts: EventObjectFacts::DamageActor(actor(entering)),
+            conniver_creature: None,
+        }));
+    }
+    pub(super) fn event_object_has_subtype(&self, item: &SpellView, subtype: &str) -> bool {
+        let Some(event) = &item.event_object else {
+            return false;
+        };
+        if self.on_battlefield(event.object.card)
+            && self.object_ref(event.object.card) == event.object
+        {
+            return self.has_subtype(event.object.card, subtype);
+        }
+        match event.facts {
+            EventObjectFacts::DamageActor(saved) => saved.facts.has_subtype(subtype),
+            _ => false,
+        }
+    }
     pub(super) fn bind_creature_comparison(&mut self, source: &ObjectView, entering: &ObjectView) {
         let p = self.state.pending_triggers.last_mut().unwrap();
         p.source_quantity_lki = Some(Box::new(SourceQuantityView {

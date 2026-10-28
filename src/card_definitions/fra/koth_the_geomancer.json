@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5a1b2fc7a60181263babdbb642f41b2845a0d23dce00515cd28f7367b21124cd"
   },
-  "physical_metadata_sha256": "7e693c56188a785e0477e22326c9ca13853ad91e21e607840281aa32d92e56d6"
+  "physical_metadata_sha256": "7e693c56188a785e0477e22326c9ca13853ad91e21e607840281aa32d92e56d6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KothTheGeomancer.java",
+  "java_sha256": "30160375ea2590cd1a8211ec46ea3da0ea7408bb12836023ca3a76fa6221440a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    }
+  ]
 }

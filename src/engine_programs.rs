@@ -908,6 +908,7 @@ impl Game {
                             event.cast_event.clone();
                     }
                     self.bind_stat_subject(event.after, source.card.triggers()[index].program);
+                    self.bind_entering_subtype_lki(&entered, source.card.triggers()[index].program);
                     self.bind_entering_conniver(&entered, source.card.triggers()[index].program);
                     self.bind_entering_copy(&entered, source.card.triggers()[index].program);
                     if same && source.card.x_symbols() > 0 {
@@ -2948,6 +2949,11 @@ impl Game {
                     }
                 }
 
+                Instruction::IfEventObjectSubtype { subtype, skip } => {
+                    if !self.event_object_has_subtype(&item, subtype) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfSubject {
                     subject,
                     filter,
