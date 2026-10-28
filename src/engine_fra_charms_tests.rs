@@ -3314,6 +3314,20 @@ fn hexhaven_battalion_creates_cadets_and_empowers_jace() {
             let spell = put(&mut g, p, "Hexhaven Battalion", Zone::Hand);
             cast(&mut g, spell, None);
             super::contracts::branch_contract(g.clone());
+            if doubled {
+                for _ in 0..32 {
+                    if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+                        break;
+                    }
+                    act(&mut g, Action::Pass);
+                }
+                let choice = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::ChooseJace { .. }))
+                    .expect("doubled Jace choice");
+                act(&mut g, choice);
+            }
             settle(&mut g);
             let cadets = g
                 .state
@@ -3328,7 +3342,7 @@ fn hexhaven_battalion_creates_cadets_and_empowers_jace() {
                 .count();
             assert_eq!(cadets, if doubled { 6 } else { 3 });
             let jaces = fra_jaces(&g, p);
-            assert_eq!(jaces.len(), if doubled { 2 } else { 1 });
+            assert_eq!(jaces.len(), 1);
             assert_eq!(
                 jaces
                     .iter()
