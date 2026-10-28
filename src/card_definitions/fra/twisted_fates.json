@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a67bd095f02799dc3fb0137d04626519f076aa8980286a78d5a4bed6b0fda062"
   },
-  "physical_metadata_sha256": "28d1c5c5661dcec29acb116a0f3660b0ca58dba1b9be8d49cb0bac1038ce257a"
+  "physical_metadata_sha256": "28d1c5c5661dcec29acb116a0f3660b0ca58dba1b9be8d49cb0bac1038ce257a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwistedFates.java",
+  "java_sha256": "8ed89f503036f9a3da4f231e78ad9877d96f1a0c83b21df453a5d57a8c2e1dc8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ]
 }

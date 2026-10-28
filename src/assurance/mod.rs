@@ -363,3 +363,6 @@ mod requested_callous;
 
 #[path = "../engine_fra_blue_tests.rs"]
 mod fra_blue;
+
+#[path = "../engine_fra_charms_tests.rs"]
+mod fra_charms;
