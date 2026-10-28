@@ -376,3 +376,4 @@ mod fra_fatehold_empower;
 mod fra_prepared_extra;
 
 mod fra_prepared_control;
+mod fra_yuriko_shadows;
