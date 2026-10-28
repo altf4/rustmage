@@ -3404,3 +3404,64 @@ fn hexhaven_battalion_landcycling_discards_and_searches_a_basic_land() {
         assert_eq!(g.object_view(nonland).zone, Zone::Library);
     }
 }
+
+#[test]
+fn awaken_the_inferno_resolves_each_target_group_independently() {
+    for p in [Player::P0, Player::P1] {
+        for invalid in 0..4 {
+            let mut g = scenario(p);
+            let victim = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let ally = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let spell = put(&mut g, p, "Awaken the Inferno", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 4];
+            act(&mut g, Action::AnnounceCast { card: spell });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(ally),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(victim),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(ally),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            pay(&mut g);
+            if invalid == 1 || invalid == 3 {
+                g.move_object(victim, Zone::Exile);
+            }
+            if invalid == 2 || invalid == 3 {
+                g.move_object(ally, Zone::Exile);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(victim).zone,
+                if invalid == 1 || invalid == 3 {
+                    Zone::Exile
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            if invalid != 2 && invalid != 3 {
+                assert_eq!(g.counter_count(ally, CounterKind::PlusOne), 1);
+            }
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            if invalid != 2 && invalid != 3 {
+                assert_eq!(g.counter_count(ally, CounterKind::PlusOne), 1);
+            }
+        }
+    }
+}
