@@ -5025,3 +5025,94 @@ fn primal_witchstalker_mills_then_targets_only_after_all_four() {
         }
     }
 }
+
+#[test]
+fn sphinx_of_false_conclusions_death_copies_last_known_nontoken() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            for reenter in [false, true] {
+                let mut g = scenario(p);
+                if doubled {
+                    put(&mut g, p, "Doubling Season", Zone::Battlefield);
+                }
+                let sphinx = put(&mut g, p, "Sphinx of False Conclusions", Zone::Battlefield);
+                let printed = g.object_view(sphinx).card;
+                g.add_counter(sphinx, CounterKind::PlusOne, 2);
+                g.move_object(sphinx, Zone::Graveyard);
+                g.prepare_triggers();
+                if reenter {
+                    g.move_object(sphinx, Zone::Battlefield);
+                }
+                let before = g.snapshot();
+                super::contracts::branch_contract(g.clone());
+                settle(&mut g);
+                let copies: Vec<_> = g
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(i, object)| {
+                        (object.zone == Zone::Battlefield
+                            && object.is_token()
+                            && object.card == printed
+                            && object.controller == p)
+                            .then_some(i as CardId)
+                    })
+                    .collect();
+                assert_eq!(copies.len(), if doubled { 2 } else { 1 });
+                for &copy in &copies {
+                    assert_eq!(stats(&g, copy), (4, 2));
+                    assert!(g.keywords(copy).contains(Keywords::FLYING));
+                    assert_eq!(g.counter_count(copy, CounterKind::PlusOne), 0);
+                }
+                let after = g.snapshot();
+                g.restore(&before).unwrap();
+                settle(&mut g);
+                assert_eq!(g.snapshot(), after);
+                for copy in copies {
+                    g.move_object(copy, Zone::Graveyard);
+                }
+                g.prepare_triggers();
+                assert!(g.state.pending_triggers.is_empty());
+                assert!(g.state.stack.is_empty());
+            }
+        }
+    }
+}
+
+#[test]
+fn sphinx_attack_draws_then_discards_with_private_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let sphinx = put(&mut g, p, "Sphinx of False Conclusions", Zone::Battlefield);
+        let discard = put(&mut g, p, "Bear Cub", Zone::Hand);
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Hand);
+        let library = g.state.players[p.index()].library.len();
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: sphinx });
+        act(&mut g, Action::FinishAttackers);
+        let mut discarded = false;
+        for _ in 0..48 {
+            let action = Action::Discard { card: discard };
+            if g.legal_actions().contains(&action) {
+                reject(&mut g, Action::Discard { card: foreign });
+                super::contracts::branch_contract(g.clone());
+                act(&mut g, action);
+                discarded = true;
+            } else if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            } else {
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+        }
+        assert!(discarded);
+        assert_eq!(g.state.players[p.index()].library.len(), library - 1);
+        assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
+    }
+}
