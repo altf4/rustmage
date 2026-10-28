@@ -3,7 +3,7 @@
   "catalogue_id": 576,
   "oracle_id": "723669e0-4a04-45ec-8c76-b1a369aa6892",
   "facts_sha256": "062f19ff4e484f4054470fd4b52d7c412b6d9812094e88046dc84a9d0a3d0e46",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c1b4740092c917fe5a7824ab318551d3ce1a8487286d7ab28eea16611870c1ab"
@@ -11,5 +11,6 @@
   "physical_metadata_sha256": "584faf5ade68a1e9b120cd056a26133759b897b618a2b739e191690c2c015a4f",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/b/BuddingInsurgent.java",
-  "java_sha256": "8aab90a174e11d7c6b987d1d051dcaa99159b0607b8d19f20bb6ea20ba633346"
+  "java_sha256": "8aab90a174e11d7c6b987d1d051dcaa99159b0607b8d19f20bb6ea20ba633346",
+  "rules_tests": "src/assurance/fra_removal_interactions.rs"
 }

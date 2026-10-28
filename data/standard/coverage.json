@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3f58902089315c6a16b01f6a10d4787671f5aece73174effd77108456c8a2742",
+  "catalogue_version": "0ce6861f945f494bb039b41b09c1589ec32626c1fc00dfa5324c99e11312185d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2765,
-  "implemented_total": 2771,
+  "implemented_standard_cards": 2769,
+  "implemented_total": 2775,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 118,
-      "gated": 167
+      "complete": 122,
+      "gated": 163
     },
     "frc": {
       "total": 6,
@@ -4811,8 +4811,8 @@
     {
       "name": "Budding Insurgent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/budding_insurgent.rs",
       "set": "fra"
     },
@@ -26275,8 +26275,8 @@
     {
       "name": "Prophesied End",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/prophesied_end.rs",
       "set": "fra"
     },
@@ -37539,16 +37539,16 @@
     {
       "name": "Traxos, Academy Guardian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/traxos_academy_guardian.rs",
       "set": "fra"
     },
     {
       "name": "Traxos, Scourge Eternal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/traxos_scourge_eternal.rs",
       "set": "fra"
     },

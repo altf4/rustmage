@@ -3,7 +3,7 @@
   "catalogue_id": 4667,
   "oracle_id": "7b9a574f-6d56-421b-8fbd-94da1e6e3ce1",
   "facts_sha256": "355435fe1e40c0d24adc10a52b0baff1af6ed5665bd07300f5d03e8993732779",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c7275485307d01a7baa3fc27e11a0888bc143f83b17a3845f002b35c8e81d4e9"
@@ -23,5 +23,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
       "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
     }
-  ]
+  ],
+  "rules_tests": "src/assurance/fra_traxos_interactions.rs"
 }
