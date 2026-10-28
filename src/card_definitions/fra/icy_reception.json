@@ -3,10 +3,25 @@
   "catalogue_id": 2128,
   "oracle_id": "612c7807-be70-4e2f-afd2-3d3c03eddbbe",
   "facts_sha256": "dd2e2430f23704d7526d5651aa383480ded61045f7a86c7759d7fa724e03b0bf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4d0aa5f1e6a790b67865ae21b847163613828211dbb27f89b20df0445b0f694a"
   },
-  "physical_metadata_sha256": "cac030f1d4d08b4cdb42c378e67b8dcf72547adf778eb9739307a3f9ea30f055"
+  "physical_metadata_sha256": "cac030f1d4d08b4cdb42c378e67b8dcf72547adf778eb9739307a3f9ea30f055",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IcyReception.java",
+  "java_sha256": "5faa09864bddf3411fc54be23bc46249be34f3807b2eb00aac3a5c9adaacddf8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

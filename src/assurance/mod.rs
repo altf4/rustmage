@@ -360,3 +360,6 @@ mod requested_esper;
 
 mod requested_battle_foundation;
 mod requested_callous;
+
+#[path = "../engine_fra_blue_tests.rs"]
+mod fra_blue;

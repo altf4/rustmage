@@ -1375,6 +1375,9 @@ impl Game {
                             item.controller == controller
                                 && item.source_card.kind_mask() & u16::from(kinds) != 0
                         }
+                        TargetRule::CreatureOrLegendarySpell => {
+                            item.source_card.kind_mask() & 1 != 0 || item.source_card.is_legendary()
+                        }
                         TargetRule::SpellKinds { kinds, excluded } => {
                             (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
                                 && item.source_card.kind_mask() & u16::from(excluded) == 0

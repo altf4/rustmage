@@ -198,6 +198,8 @@ pub(crate) enum TargetRule {
     YourAbilityFromSourceKinds {
         kinds: u16,
     },
+    /// A spell that is a creature or legendary.
+    CreatureOrLegendarySpell,
     SpellKinds {
         kinds: u8,
         excluded: u8,
