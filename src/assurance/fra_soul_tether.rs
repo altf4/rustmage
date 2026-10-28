@@ -220,6 +220,7 @@ fn woodwork_upkeep_intervening_if_checks_both_event_and_resolution() {
         let original = copy(&g, source);
         // A prepared source must not queue another upkeep trigger.
         g.begin_step(Step::Upkeep);
+        assert!(g.state.pending_triggers.is_empty());
         g.give_priority();
         g.prepare_triggers();
         settle(&mut g);
@@ -227,9 +228,17 @@ fn woodwork_upkeep_intervening_if_checks_both_event_and_resolution() {
         // Unprepare, queue the trigger, then prepare before it resolves.
         g.forget_prepared(g.object_ref(source));
         g.begin_step(Step::Upkeep);
+        assert_eq!(g.state.pending_triggers.len(), 1);
+        let item = g.state.pending_triggers[0].clone();
+        let condition = g.state.objects[source as usize].card.triggers()[0].condition;
+        assert!(g.trigger_item_guards_hold(&item, condition));
+        let mut departed = g.clone();
+        departed.move_object(source, Zone::Graveyard);
+        assert!(!departed.trigger_item_guards_hold(&item, condition));
         g.give_priority();
         g.prepare_triggers();
         g.prepare_permanent(g.object_ref(source));
+        assert!(!g.trigger_item_guards_hold(&item, condition));
         let replacement = copy(&g, source);
         settle(&mut g);
         assert_eq!(copy(&g, source), replacement);
