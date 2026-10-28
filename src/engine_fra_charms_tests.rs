@@ -5283,3 +5283,38 @@ fn guiding_hydra_enters_with_x_counters() {
         }
     }
 }
+
+#[test]
+fn guiding_hydra_cannot_remove_a_missing_counter_or_from_a_new_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        for source_leaves in [false, true] {
+            let mut g = scenario(p);
+            let hydra = put(&mut g, p, "Guiding Hydra", Zone::Battlefield);
+            let friend = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            if source_leaves {
+                g.add_counter(hydra, CounterKind::PlusOne, 1);
+            } else {
+                g.state.objects[hydra as usize].growth.toughness = 1;
+            }
+            g.begin_step(Step::BeginCombat);
+            g.prepare_triggers();
+            if source_leaves {
+                g.move_object(hydra, Zone::Exile);
+                g.move_object(hydra, Zone::Battlefield);
+                g.add_counter(hydra, CounterKind::PlusOne, 2);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(g.counter_count(friend, CounterKind::PlusOne), 0);
+            assert_eq!(
+                g.counter_count(hydra, CounterKind::PlusOne),
+                if source_leaves { 2 } else { 0 }
+            );
+            let after = g.snapshot();
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(g.snapshot(), after);
+        }
+    }
+}
