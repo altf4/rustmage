@@ -366,3 +366,7 @@ mod fra_blue;
 
 #[path = "../engine_fra_charms_tests.rs"]
 mod fra_charms;
+
+mod fra_seed_suture;
+
+mod fra_soul_tether;

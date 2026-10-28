@@ -1265,6 +1265,7 @@ impl<'g> FundingState<'g> {
                         let purpose = mana_lots::Purpose::Activation(mana_lots::Source {
                             card: object.card,
                             foreign_stash: false,
+                            cast_from_hand: false,
                             spend_any_mana: false,
                             equip: ability.is_equip(),
                             kinds: self.kinds(entry),

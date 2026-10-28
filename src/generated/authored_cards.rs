@@ -48950,8 +48950,53 @@ pub(super) mod card_5438 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/token_heartwood.rs");
 }
+pub(super) mod card_5439 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_heartwood_crafter_soul_tether.rs");
+}
+pub(super) mod card_5440 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_konstrari_improviser_soul_tether.rs");
+}
+pub(super) mod card_5441 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_woodwork_prodigy_soul_tether.rs");
+}
+pub(super) mod card_5442 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_emergency_phytomedic_seed_suture.rs");
+}
+pub(super) mod card_5443 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_blossom_blessed_angel_seed_suture.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5439] = [
+pub(super) static RULES: [&CardRules; 5444] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54391,6 +54436,11 @@ pub(super) static RULES: [&CardRules; 5439] = [
     &card_5436::RULES,
     &card_5437::RULES,
     &card_5438::RULES,
+    &card_5439::RULES,
+    &card_5440::RULES,
+    &card_5441::RULES,
+    &card_5442::RULES,
+    &card_5443::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

@@ -10,6 +10,7 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
+    ExceptCastFromHand,
     ArtifactSpell,
     ExceptNonArtifactSpells,
     SubtypeSpellOrActivation(&'static str),
@@ -121,6 +122,7 @@ impl Quality {
     ) -> Self {
         Self {
             restriction: match quality.restriction {
+                ManaRestriction::ExceptCastFromHand => ManaRestrictionView::ExceptCastFromHand,
                 ManaRestriction::EquipmentSpellOrEquip => {
                     ManaRestrictionView::EquipmentSpellOrEquip
                 }
@@ -177,6 +179,9 @@ impl Quality {
     }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
+            ManaRestrictionView::ExceptCastFromHand => {
+                !matches!(purpose, Purpose::Spell(source) if source.cast_from_hand)
+            }
             ManaRestrictionView::EquipmentSpellOrEquip => match purpose {
                 Purpose::Spell(facts) => facts.has_subtype("Equipment"),
                 Purpose::Activation(facts) => facts.equip,
@@ -229,6 +234,8 @@ pub(super) struct Source {
     pub kinds: u16,
     pub subtypes: GrantedSubtypes,
     pub foreign_stash: bool,
+    /// Frozen cast origin; irrelevant for abilities and non-cast payments.
+    pub cast_from_hand: bool,
     pub spend_any_mana: bool,
     pub equip: bool,
 }
@@ -246,6 +253,7 @@ impl Source {
             kinds: world.kinds(id),
             subtypes: world.subtypes(id),
             foreign_stash: false,
+            cast_from_hand: false,
             spend_any_mana: false,
             equip: false,
         }
@@ -259,6 +267,7 @@ impl Source {
             kinds: card.kind_mask(),
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
+            cast_from_hand: false,
             spend_any_mana: false,
             equip: false,
         }
@@ -271,6 +280,7 @@ impl From<DamageFacts> for Source {
             kinds: facts.kinds,
             subtypes: facts.granted_subtypes,
             foreign_stash: false,
+            cast_from_hand: false,
             spend_any_mana: false,
             equip: false,
         }
@@ -712,6 +722,14 @@ impl Game {
         if item.kind == StackKind::Spell {
             let mut source = Source::printed(item.source_card);
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
+            source.cast_from_hand = item.cast.is_some_and(|c| {
+                c.origin == Zone::Hand
+                    && self
+                        .state
+                        .objects
+                        .get(item.object.card as usize)
+                        .is_some_and(|object| object.owner == c.caster)
+            });
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
             Purpose::Spell(source)
         } else if let StackKind::ActivatedAbility { ability } = item.kind {
@@ -739,6 +757,15 @@ impl Game {
         definition: Card,
     ) -> Purpose {
         let mut source = Source::printed(definition);
+        source.cast_from_hand = self.state.objects[card as usize].owner == actor
+            && self
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| a.item.card == card)
+                .and_then(|a| a.item.cast.map(|cast| cast.origin))
+                .unwrap_or(self.state.objects[card as usize].zone)
+                == Zone::Hand;
         source.spend_any_mana = self.exile_cast_modifiers(actor, card).0
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item.card == card && a.item.cast.is_some_and(|c| c.spend_any_mana)

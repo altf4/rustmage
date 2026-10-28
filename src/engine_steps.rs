@@ -194,6 +194,11 @@ impl Game {
     ) -> bool {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
+            StepGuard::SourceUnprepared => {
+                return self.on_battlefield(source.card)
+                    && self.object_ref(source.card) == source
+                    && !self.is_prepared(source);
+            }
             StepGuard::ClassLevelAtLeast(level) => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source

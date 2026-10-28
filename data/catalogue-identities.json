@@ -5444,7 +5444,12 @@
     2,
     16,
     0,
-    24
+    24,
+    24,
+    24,
+    24,
+    17,
+    17
   ],
   "aliases": [
     [
@@ -5716,6 +5721,10 @@
       5353
     ],
     [
+      "@prepare/blossom_blessed_angel_seed_suture",
+      5443
+    ],
+    [
       "@prepare/campus_composer_aqueous_aria",
       5354
     ],
@@ -5730,6 +5739,10 @@
     [
       "@prepare/elite_interceptor_rejoinder",
       5356
+    ],
+    [
+      "@prepare/emergency_phytomedic_seed_suture",
+      5442
     ],
     [
       "@prepare/emeritus_of_abundance_regrowth",
@@ -5768,6 +5781,10 @@
       5365
     ],
     [
+      "@prepare/heartwood_crafter_soul_tether",
+      5439
+    ],
+    [
       "@prepare/honorbound_page_forum_s_favor",
       5366
     ],
@@ -5786,6 +5803,10 @@
     [
       "@prepare/kirol_history_buff_pack_a_punch",
       5370
+    ],
+    [
+      "@prepare/konstrari_improviser_soul_tether",
+      5440
     ],
     [
       "@prepare/landscape_painter_vibrant_idea",
@@ -5854,6 +5875,10 @@
     [
       "@prepare/vastlands_scavenger_bind_to_life",
       5386
+    ],
+    [
+      "@prepare/woodwork_prodigy_soul_tether",
+      5441
     ],
     [
       "@test/manifest-observer",
@@ -8350,6 +8375,10 @@
     [
       "Bloomvine Regent // Claim Territory",
       468
+    ],
+    [
+      "Blossom-Blessed Angel",
+      469
     ],
     [
       "Blossom-Blessed Angel // Seed Suture",
@@ -11872,6 +11901,10 @@
       1311
     ],
     [
+      "Emergency Phytomedic",
+      1312
+    ],
+    [
       "Emergency Phytomedic // Seed Suture",
       1312
     ],
@@ -14724,6 +14757,10 @@
       1983
     ],
     [
+      "Heartwood Crafter",
+      1984
+    ],
+    [
       "Heartwood Crafter // Soul Tether",
       1984
     ],
@@ -16438,6 +16475,10 @@
     [
       "Konstrari Charm",
       2396
+    ],
+    [
+      "Konstrari Improviser",
+      2397
     ],
     [
       "Konstrari Improviser // Soul Tether",
@@ -27714,6 +27755,10 @@
     [
       "Woodland Weavemaster",
       5110
+    ],
+    [
+      "Woodwork Prodigy",
+      5111
     ],
     [
       "Woodwork Prodigy // Soul Tether",
@@ -42800,14 +42845,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3,
+      "front_face": {
+        "name": "Blossom-Blessed Angel",
+        "mana_cost": "{3}{W}",
+        "type_line": "Creature — Angel Cleric"
+      }
     },
     {
       "index": 470,
@@ -66851,14 +66901,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Emergency Phytomedic",
+        "mana_cost": "{G/W}",
+        "type_line": "Creature — Dryad Cleric"
+      }
     },
     {
       "index": 1313,
@@ -85971,10 +86026,15 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Heartwood Crafter",
+        "mana_cost": "{G}",
+        "type_line": "Creature — Elf Artificer"
+      }
     },
     {
       "index": 1985,
@@ -97778,11 +97838,16 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Konstrari Improviser",
+        "mana_cost": "{1}{R/G}",
+        "type_line": "Creature — Human Artificer"
+      }
     },
     {
       "index": 2398,
@@ -175260,11 +175325,16 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Woodwork Prodigy",
+        "mana_cost": "{2}{R/G}",
+        "type_line": "Creature — Cat Druid"
+      }
     },
     {
       "index": 5112,
@@ -184307,6 +184377,141 @@
       "mana_color": null,
       "colored": [
         0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5439,
+      "module": "card_5439",
+      "path": "synthetic/prepare_heartwood_crafter_soul_tether.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Soul Tether",
+      "oracle_id": "c8b3a070-408e-4a8f-8597-6476eeec0a5f",
+      "facts_sha256": "a8b4d3acab3e6df29273a473fbf5545bc6a63eecaed6da8d485a5c3e371a8266",
+      "mana_cost": "{2}{R/G}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5440,
+      "module": "card_5440",
+      "path": "synthetic/prepare_konstrari_improviser_soul_tether.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Soul Tether",
+      "oracle_id": "bad2e3b2-ad47-4e17-b35e-0fcc13e82937",
+      "facts_sha256": "07d01766938e81d5baf19fe29de665a89673478c356f0606145d95fc53ad8a74",
+      "mana_cost": "{2}{R/G}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5441,
+      "module": "card_5441",
+      "path": "synthetic/prepare_woodwork_prodigy_soul_tether.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Soul Tether",
+      "oracle_id": "f3ed157f-a09b-405f-aec4-0e7a81d80fc8",
+      "facts_sha256": "01f10bc1c4b3a7c43b775da077cedec130f0207ab16dcc489984e801ab575c85",
+      "mana_cost": "{2}{R/G}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5442,
+      "module": "card_5442",
+      "path": "synthetic/prepare_emergency_phytomedic_seed_suture.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Seed Suture",
+      "oracle_id": "7737ccdc-49f2-463e-8ffd-43ab98d11f45",
+      "facts_sha256": "cc60c634f249293f61490d30138b03834f342df1d80fb5da589917ed7a77d410",
+      "mana_cost": "{G/W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5443,
+      "module": "card_5443",
+      "path": "synthetic/prepare_blossom_blessed_angel_seed_suture.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Seed Suture",
+      "oracle_id": "cd61c26b-8d3c-4730-92f2-0d94d961bafd",
+      "facts_sha256": "be99db63295e45ecf8b3affd702dc26689070b42513320af2d98c848a93c161c",
+      "mana_cost": "{G/W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
         0,
         0,
         0,
