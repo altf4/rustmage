@@ -111,6 +111,8 @@ pub(super) enum TokenCompletion {
         amount: u64,
     },
     CounterSet(Box<Counters>),
+    /// Evaluate the controller's graveyard after this creation event completes.
+    GraveyardGroups(std::num::NonZeroU16),
     TemporaryCopy(Box<SpellView>),
     AnimateNoncreatures(AnimationSpec),
     Keywords {
@@ -184,6 +186,11 @@ enum Work {
         player: Player,
         created: Vec<ObjectRef>,
         counters: Box<Counters>,
+    },
+    CreatedGraveyardCounters {
+        player: Player,
+        created: Vec<ObjectRef>,
+        group: std::num::NonZeroU16,
     },
     Damage(DamageBatch),
     Counters(CounterBatch),
@@ -259,6 +266,9 @@ impl ReplacementState {
                     }
                     Work::Counters(b) => counter_bytes(b),
                     Work::Tokens(b) => token_bytes(b),
+                    Work::CreatedGraveyardCounters { created, .. } => {
+                        created.len() * std::mem::size_of::<ObjectRef>()
+                    }
                     Work::CreatedCounters {
                         created, counters, ..
                     } => {
@@ -1427,6 +1437,37 @@ impl Game {
                         self.animate_created_noncreatures(&created, spec);
                         continue;
                     }
+                    Some(Work::CreatedGraveyardCounters {
+                        player,
+                        created,
+                        group,
+                    }) => {
+                        let cards = self
+                            .state
+                            .objects
+                            .iter()
+                            .filter(|object| {
+                                object.zone == Zone::Graveyard
+                                    && object.owner == player
+                                    && !object.is_token()
+                                    && !object.is_spell_copy()
+                            })
+                            .count();
+                        let amount = u64::try_from(cards / usize::from(group.get()))
+                            .capacity("graveyard counter quantity exhausted");
+                        let counters = Counters::of(CounterKind::PlusOne, amount);
+                        let placements =
+                            self.created_token_counter_placements(player, &created, &counters);
+                        if !placements.is_empty() {
+                            state.work.push_front(Work::Counters(CounterBatch {
+                                completion: None,
+                                placements,
+                                next: 0,
+                                used: Vec::new(),
+                            }));
+                        }
+                        continue;
+                    }
                     Some(Work::CreatedCounters {
                         player,
                         created,
@@ -1670,6 +1711,13 @@ impl Game {
                                     }
                                     _ => None,
                                 };
+                                if let TokenCompletion::GraveyardGroups(group) = batch.completion {
+                                    state.work.push_front(Work::CreatedGraveyardCounters {
+                                        player: batch.player,
+                                        created: created.clone(),
+                                        group,
+                                    });
+                                }
                                 if let Some(counters) = counters {
                                     state.work.push_front(Work::CreatedCounters {
                                         player: batch.player,
@@ -1693,6 +1741,7 @@ impl Game {
                                         | TokenCompletion::AttachCreatedTo(_)
                                         | TokenCompletion::Counters { .. }
                                         | TokenCompletion::CounterSet(_)
+                                        | TokenCompletion::GraveyardGroups(_)
                                         | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
                                         | TokenCompletion::ReflexiveCreated { .. }
@@ -1734,6 +1783,13 @@ impl Game {
                                     }
                                     _ => None,
                                 };
+                                if let TokenCompletion::GraveyardGroups(group) = batch.completion {
+                                    state.work.push_front(Work::CreatedGraveyardCounters {
+                                        player: batch.player,
+                                        created: created.clone(),
+                                        group,
+                                    });
+                                }
                                 if let Some(counters) = counters {
                                     let placements = self.created_token_counter_placements(
                                         batch.player,

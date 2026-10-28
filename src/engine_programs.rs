@@ -3962,6 +3962,26 @@ impl Game {
                 } => {
                     self.create_tokens_with_counters(&item, token, amount, kind, counters);
                 }
+                Instruction::CreateTokensWithGraveyardGroups {
+                    token,
+                    amount,
+                    group,
+                } => {
+                    let completion = if !item.is_copy
+                        && item.cast.is_some_and(|cast| cast.origin == Zone::Graveyard)
+                    {
+                        replacements::TokenCompletion::GraveyardGroups(group)
+                    } else {
+                        replacements::TokenCompletion::None
+                    };
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        completion,
+                    );
+                }
                 Instruction::SelectGroup(group) => {
                     self.state.resolving.as_mut().unwrap().target_group = group;
                 }

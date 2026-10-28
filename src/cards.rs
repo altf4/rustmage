@@ -2064,6 +2064,12 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         counters: AmountValue,
     },
+    /// If cast from a graveyard, count its controller's graveyard after creation.
+    CreateTokensWithGraveyardGroups {
+        token: Card,
+        amount: u16,
+        group: std::num::NonZeroU16,
+    },
     /// Create first, then attach every exact resulting Equipment to this source.
     CreateEquipmentForSource {
         token: Card,

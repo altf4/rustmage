@@ -4525,3 +4525,80 @@ fn generous_revival_adds_to_intrinsic_entry_counters_before_replacements() {
         }
     }
 }
+
+#[test]
+fn recursive_recruitment_counts_own_graveyard_after_flashback_and_creation() {
+    for p in [Player::P0, Player::P1] {
+        for flashback in [false, true] {
+            for doubled in [false, true] {
+                for cards in [0, 2, 3, 6] {
+                    let mut g = scenario(p);
+                    for _ in 0..cards {
+                        put(&mut g, p, "Forest", Zone::Graveyard);
+                    }
+                    for _ in 0..3 {
+                        put(&mut g, p.other(), "Forest", Zone::Graveyard);
+                    }
+                    if doubled {
+                        put(&mut g, p, "Doubling Season", Zone::Battlefield);
+                    }
+                    let spell = put(
+                        &mut g,
+                        p,
+                        "Recursive Recruitment",
+                        if flashback {
+                            Zone::Graveyard
+                        } else {
+                            Zone::Hand
+                        },
+                    );
+                    if flashback {
+                        act(&mut g, Action::AnnounceFlashback { card: spell });
+                        pay(&mut g);
+                    } else {
+                        cast(&mut g, spell, None);
+                    }
+                    let before = g.snapshot();
+                    super::contracts::branch_contract(g.clone());
+                    settle(&mut g);
+                    let cadets: Vec<_> = g
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(i, o)| {
+                            (o.zone == Zone::Battlefield
+                                && o.is_token()
+                                && o.controller == p
+                                && o.card == Card(5298))
+                            .then_some(i as CardId)
+                        })
+                        .collect();
+                    assert_eq!(cadets.len(), if doubled { 4 } else { 2 });
+                    for token in cadets {
+                        assert_eq!(
+                            g.counter_count(token, CounterKind::PlusOne),
+                            if flashback {
+                                cards / 3 * if doubled { 2 } else { 1 }
+                            } else {
+                                0
+                            }
+                        );
+                    }
+                    assert_eq!(
+                        g.object_view(spell).zone,
+                        if flashback {
+                            Zone::Exile
+                        } else {
+                            Zone::Graveyard
+                        }
+                    );
+                    let completed = g.snapshot();
+                    g.restore(&before).unwrap();
+                    settle(&mut g);
+                    assert_eq!(g.snapshot(), completed);
+                }
+            }
+        }
+    }
+}
