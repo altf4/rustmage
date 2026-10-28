@@ -5759,3 +5759,31 @@ fn tenured_tethermage_land_choice_creates_tapped_heartwood() {
         }
     }
 }
+
+#[test]
+fn tenured_tethermage_requires_two_artifacts_but_its_source_may_already_be_tapped() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let mage = put(&mut g, p, "Tenured Tethermage", Zone::Battlefield);
+        let first = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        let activation = Action::AnnounceActivate {
+            card: mage,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        reject(&mut g, activation.clone());
+        let second = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        g.state.objects[mage as usize].tapped = true;
+        g.state.objects[mage as usize].summoning_sick = true;
+        act(&mut g, activation);
+        let first_ref = g.object_ref(first);
+        let second_ref = g.object_ref(second);
+        act(&mut g, Action::ChooseAdditionalCost { object: first_ref });
+        act(&mut g, Action::ChooseAdditionalCost { object: second_ref });
+        pay(&mut g);
+        assert!(g.object_view(first).tapped);
+        assert!(g.object_view(second).tapped);
+        settle(&mut g);
+        assert_eq!(g.counter_count(mage, CounterKind::PlusOne), 2);
+    }
+}
