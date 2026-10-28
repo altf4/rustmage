@@ -7174,7 +7174,12 @@ fn loyal_tutor_search_is_private_revealed_and_replayable() {
             assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
             if find {
                 assert_eq!(g.state.players[p.index()].library.last(), Some(&walker));
-                assert!(g.observe(p.other()).objects.iter().any(|o| o.id == walker));
+                assert_eq!(
+                    g.observe(p.other()).known_library_top[p.index()]
+                        .unwrap()
+                        .object,
+                    g.object_ref(walker)
+                );
             }
         }
     }
