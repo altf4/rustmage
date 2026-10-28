@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7d8efdbd964e5ffd916cd58dd7767f96b31109def7162de73a96e78bbaa261e6"
   },
-  "physical_metadata_sha256": "0c9758ba3b68cc242c216b85d048fd0e553bf967cd5783454a2ef13d39b445c1"
+  "physical_metadata_sha256": "0c9758ba3b68cc242c216b85d048fd0e553bf967cd5783454a2ef13d39b445c1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StingcasterMage.java",
+  "java_sha256": "2260c3db58ec6a4613fa4ab232098128060cbc23fa1a8e2ff3215036b4bc4ab6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainFlashbackTargetEffect.java",
+      "sha256": "a31c4c77af35bdd83e3e259a3d4546236e5017d4a9b037f92c309e2e8927beed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    }
+  ]
 }

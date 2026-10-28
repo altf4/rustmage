@@ -5427,3 +5427,90 @@ fn plan_for_all_outcomes_counts_first_noncreature_cast_before_entry() {
         }
     }
 }
+
+#[test]
+fn stingcaster_mage_grants_exact_temporary_flashback_permission() {
+    for p in [Player::P0, Player::P1] {
+        for stale in [false, true] {
+            let mut g = scenario(p);
+            let spell = put(&mut g, p, "Shock", Zone::Graveyard);
+            let foreign = put(&mut g, p.other(), "Shock", Zone::Graveyard);
+            let creature = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let mage = put(&mut g, p, "Stingcaster Mage", Zone::Hand);
+            cast(&mut g, mage, None);
+            let wanted = Action::ChooseTarget {
+                target: Target::Card(spell),
+            };
+            let mut selected = false;
+            for _ in 0..48 {
+                g.prepare_triggers();
+                if g.legal_actions().contains(&wanted) {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(foreign),
+                        },
+                    );
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(creature),
+                        },
+                    );
+                    act(&mut g, wanted.clone());
+                    selected = true;
+                    break;
+                }
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+            assert!(selected);
+            g.move_object(mage, Zone::Graveyard);
+            if stale {
+                g.move_object(spell, Zone::Exile);
+                g.move_object(spell, Zone::Graveyard);
+            }
+            let before = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            assert_eq!(
+                g.has_graveyard_cast(p, spell, GraveyardCastKind::Flashback),
+                !stale
+            );
+            if !stale {
+                let granted = g.snapshot();
+                let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+                act(
+                    &mut g,
+                    Action::AnnounceGrantedFlashback {
+                        card: spell,
+                        flash_surcharge: false,
+                    },
+                );
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    },
+                );
+                pay(&mut g);
+                assert_eq!(
+                    mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                    1
+                );
+                settle(&mut g);
+                assert_eq!(g.object_view(spell).zone, Zone::Exile);
+                g.restore(&granted).unwrap();
+                g.finish_cleanup();
+                assert!(!g.has_graveyard_cast(p, spell, GraveyardCastKind::Flashback));
+            }
+            g.restore(&before).unwrap();
+            settle(&mut g);
+            assert_eq!(
+                g.has_graveyard_cast(p, spell, GraveyardCastKind::Flashback),
+                !stale
+            );
+        }
+    }
+}
