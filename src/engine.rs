@@ -2499,8 +2499,18 @@ pub struct LegalActionSpace {
     pub damage_assignment: Option<DamageAssignmentRange>,
 }
 
+/// Public alternatives for a resolution-time keyword grant, in action-index order.
+#[derive(Clone, Debug, Serialize)]
+pub struct KeywordChoiceView {
+    pub player: Player,
+    pub recipients: Vec<ObjectRef>,
+    pub choices: Vec<Keywords>,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub keyword_choice: Option<KeywordChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_counter_removal: Option<TargetCounterRemovalView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -7948,6 +7958,18 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            keyword_choice: match &s.pending {
+                Pending::KeywordChoice {
+                    player,
+                    recipients,
+                    choices,
+                } => Some(KeywordChoiceView {
+                    player: *player,
+                    recipients: recipients.as_ref().clone(),
+                    choices: choices.to_vec(),
+                }),
+                _ => None,
+            },
             target_counter_removal: if owns_choice
                 && matches!(s.pending, Pending::TargetCounterRemoval { .. })
             {

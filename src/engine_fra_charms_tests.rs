@@ -5829,6 +5829,18 @@ fn hungering_puppetbeast_chooses_keyword_on_resolution_and_cleans_up() {
                 act(&mut g, Action::Pass);
             }
             assert_eq!(g.counter_count(beast, CounterKind::PlusOne), 1);
+            for viewer in [p, p.other()] {
+                let view = g
+                    .observe(viewer)
+                    .keyword_choice
+                    .expect("public keyword options");
+                assert_eq!(view.player, p);
+                assert_eq!(view.recipients, vec![g.object_ref(beast)]);
+                assert_eq!(
+                    view.choices,
+                    vec![Keywords::TRAMPLE, Keywords::HEXPROOF, Keywords::HASTE]
+                );
+            }
             reject(&mut g, Action::ChooseKeyword { index: 3 });
             let saved = g.snapshot();
             super::contracts::branch_contract(g.clone());
