@@ -1967,3 +1967,55 @@ fn mabel_valley_hero_targets_only_current_turns_creature_incarnations() {
         }
     }
 }
+
+#[test]
+fn stinging_vitriol_deals_damage_then_reveals_and_discards_a_nonland() {
+    for p in [Player::P0, Player::P1] {
+        for has_nonland in [false, true] {
+            let mut g = scenario(p);
+            let land = put(&mut g, p.other(), "Forest", Zone::Hand);
+            let nonland = has_nonland.then(|| put(&mut g, p.other(), "Shock", Zone::Hand));
+            let spell = put(&mut g, p, "Stinging Vitriol", Zone::Hand);
+            let life = g.state.players[p.other().index()].life;
+            assert!(!g.observe(p).objects.iter().any(|o| o.id == land));
+            act(&mut g, Action::AnnounceCast { card: spell });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            pay(&mut g);
+            for _ in 0..48 {
+                if matches!(g.state.pending, Pending::RevealedDiscard { .. })
+                    || (g.state.pending == Pending::Priority
+                        && g.state.stack.is_empty()
+                        && g.state.resolving.is_none())
+                {
+                    break;
+                }
+                act(&mut g, Action::Pass);
+            }
+            assert_eq!(g.state.players[p.other().index()].life, life - 2);
+            assert!(g.observe(p).objects.iter().any(|o| o.id == land));
+            if let Some(nonland) = nonland {
+                assert_eq!(g.actor(), Some(p));
+                assert!(g.observe(p).objects.iter().any(|o| o.id == nonland));
+                let land_ref = g.object_ref(land);
+                reject(&mut g, Action::ChooseRevealedDiscard { object: land_ref });
+                super::contracts::branch_contract(g.clone());
+                let chosen = g.object_ref(nonland);
+                act(&mut g, Action::ChooseRevealedDiscard { object: chosen });
+                settle(&mut g);
+                assert_eq!(g.object_view(nonland).zone, Zone::Graveyard);
+            }
+            assert_eq!(g.object_view(land).zone, Zone::Hand);
+        }
+    }
+}

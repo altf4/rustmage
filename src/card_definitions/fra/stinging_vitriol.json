@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6acd043cf77c6282876b80b00ed43bde01834adcf04fceeac744860ba24768b4"
   },
-  "physical_metadata_sha256": "31f486cb4eb79d6aa9825cee9c1c0b44f04ed5476d1a4313a586c61ff1a11492"
+  "physical_metadata_sha256": "31f486cb4eb79d6aa9825cee9c1c0b44f04ed5476d1a4313a586c61ff1a11492",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StingingVitriol.java",
+  "java_sha256": "35594d7a558f2d6b9a92374ef57a8d003507435263b38d33237f69021992fb61",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+      "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d"
+    }
+  ]
 }

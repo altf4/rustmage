@@ -1,16 +1,13 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Authored from pinned Oracle and complete XMage source; awaiting rules tests.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Player {
+            opponent_only: true,
+        })),
+        &[
+            Instruction::Damage(2),
+            Instruction::RevealHandDiscard { excluded_kinds: 2 },
+        ],
+    ),
     ..CardRules::EMPTY
 };
