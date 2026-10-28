@@ -5424,6 +5424,28 @@ impl Game {
                         }
                     }
                 }
+                Instruction::PutCountersOnTargetKinds {
+                    kinds,
+                    kind,
+                    amount,
+                } => {
+                    let changes = item
+                        .targets
+                        .iter()
+                        .filter_map(|bound| {
+                            let Target::Card(id) = bound.target else {
+                                return None;
+                            };
+                            (self.same_target_object(*bound)
+                                && self.on_battlefield(id)
+                                && self.current_kinds(id) & kinds != 0)
+                                .then(|| {
+                                    (self.object_ref(id), Counters::of(kind, u64::from(amount)))
+                                })
+                        })
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
                 Instruction::PutCounters { .. }
                 | Instruction::PutCountersScaled { .. }
                 | Instruction::PutCountersMixed { .. } => {

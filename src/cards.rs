@@ -1994,6 +1994,12 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    /// Place counters on surviving targets that currently have any specified kind.
+    PutCountersOnTargetKinds {
+        kinds: u16,
+        kind: CounterKind,
+        amount: u32,
+    },
     /// One simultaneous placement may contain multiple counter kinds.
     PutCountersMixed {
         subject: Subject,
