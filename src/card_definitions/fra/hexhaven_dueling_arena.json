@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7b4b3d675c1cdc3fe3a6c9315d23ebe4e30285b2765d080d7b313bd10dc3ff09"
   },
-  "physical_metadata_sha256": "e477b674fb382facacd94c32b53bccb839675a669383d49d61ad77e827c58951"
+  "physical_metadata_sha256": "e477b674fb382facacd94c32b53bccb839675a669383d49d61ad77e827c58951",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HexhavenDuelingArena.java",
+  "java_sha256": "fadd0ee079d2be754277f466b9730d0ea5abe2fc8ed46ce500da5b6d0f9ab629",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedTargetEffect.java",
+      "sha256": "e633f01d35efd5b302570c57216efb4ed71cd895c88dab0987908dbb95a3846e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/AttackedThisTurnPredicate.java",
+      "sha256": "61a91287e7a6b8c353089125d3a08cde463f8e99fc63efaa2ffaa9e1904d49ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    }
+  ]
 }

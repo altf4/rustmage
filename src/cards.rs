@@ -265,6 +265,8 @@ pub(crate) enum TargetPredicate {
     Nontoken,
     Permanent,
     Attacking,
+    /// This exact permanent was declared as an attacker earlier this turn.
+    AttackedThisTurn,
     Nonattacking,
     /// The sole creature currently attacking, irrespective of its defender.
     AttackingAlone,

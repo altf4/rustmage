@@ -5116,3 +5116,93 @@ fn sphinx_attack_draws_then_discards_with_private_choice() {
         assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
     }
 }
+
+#[test]
+fn hexhaven_dueling_arena_uses_exact_attacker_history() {
+    for p in [Player::P0, Player::P1] {
+        for reenter in [false, true] {
+            let mut g = scenario(p);
+            let arena = put(&mut g, p, "Hexhaven Dueling Arena", Zone::Battlefield);
+            let fighter = put(&mut g, p, "Pigment Wrangler", Zone::Battlefield);
+            let other = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+            let activation = Action::AnnounceActivate {
+                card: arena,
+                ability: 1,
+                counter_payment: Counters::default(),
+            };
+            reject(&mut g, activation.clone());
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            act(&mut g, Action::Attack { card: fighter });
+            act(&mut g, Action::FinishAttackers);
+            g.state.step = Step::Main2;
+            g.state.priority = p;
+            if reenter {
+                g.move_object(fighter, Zone::Exile);
+                g.move_object(fighter, Zone::Battlefield);
+                reject(&mut g, activation);
+            } else {
+                act(&mut g, activation);
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(other),
+                    },
+                );
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(fighter),
+                    },
+                );
+                pay(&mut g);
+                let before = g.snapshot();
+                super::contracts::branch_contract(g.clone());
+                settle(&mut g);
+                assert!(g.is_prepared(g.object_ref(fighter)));
+                g.restore(&before).unwrap();
+                settle(&mut g);
+                assert!(g.is_prepared(g.object_ref(fighter)));
+            }
+        }
+    }
+}
+
+#[test]
+fn hexhaven_dueling_arena_general_preparation_is_instant_speed() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let arena = put(&mut g, p, "Hexhaven Dueling Arena", Zone::Battlefield);
+        let creature = put(&mut g, p.other(), "Pigment Wrangler", Zone::Battlefield);
+        g.state.active = p.other();
+        g.state.step = Step::Attackers;
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: arena,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: arena,
+                ability: 2,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(creature),
+            },
+        );
+        pay(&mut g);
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert!(g.is_prepared(g.object_ref(creature)));
+    }
+}
