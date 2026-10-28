@@ -1326,3 +1326,57 @@ fn darklight_phoenix_does_not_trigger_from_the_battlefield() {
         assert_eq!(g.object_view(phoenix).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn living_library_pays_sacrifice_and_shuffles_into_actual_owners_library() {
+    for p in [Player::P0, Player::P1] {
+        for (stolen, fizzle) in [(false, false), (true, false), (false, true)] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Living Library", Zone::Battlefield);
+            let owner = if stolen { p } else { p.other() };
+            let target = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+            if stolen {
+                let reference = g.object_ref(target);
+                g.change_controller(reference, p.other());
+            }
+            let illegal = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let before = g.state.players[owner.index()].library.len();
+            g.state.players[p.index()].mana = [0; 6];
+            g.state.players[p.index()].mana[5] = 6;
+            let activation = Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            };
+            act(&mut g, activation);
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(illegal),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            pay(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            if fizzle {
+                let reference = g.object_ref(target);
+                g.change_controller(reference, p);
+            }
+            super::contracts::branch_contract(g.clone());
+            settle(&mut g);
+            if fizzle {
+                assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+                assert_eq!(g.state.players[owner.index()].library.len(), before);
+            } else {
+                assert_eq!(g.object_view(target).zone, Zone::Library);
+                assert_eq!(g.state.players[owner.index()].library.len(), before + 1);
+                assert!(g.state.players[owner.index()].library.contains(&target));
+            }
+        }
+    }
+}

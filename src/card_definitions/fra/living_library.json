@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d28ed97ae57d45e5098ecfec822270e89a3743181417cf72942055eec0b18cdf"
   },
-  "physical_metadata_sha256": "828472cc078b582fd6e7cdfde904cab108e6adfa20c05e062ebbec579de5423e"
+  "physical_metadata_sha256": "828472cc078b582fd6e7cdfde904cab108e6adfa20c05e062ebbec579de5423e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LivingLibrary.java",
+  "java_sha256": "a76ebedb5008b84dd697d5ac7e76b40ac286f08b8f8ec857c938e3048ef5854b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleIntoLibraryTargetEffect.java",
+      "sha256": "453f0d6256823dca73013ff64fdee6296512c5cbc9ad1465f0dc72e165a2fe02"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    }
+  ]
 }
