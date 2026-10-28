@@ -4878,3 +4878,74 @@ fn warriors_blades_direct_equip_action_uses_target_counter_cost() {
         assert_eq!(g.state.players[p.index()].mana[5], 0);
     }
 }
+
+#[test]
+fn room_of_refuge_color_mana_sacrifice_and_counter_replacement() {
+    for p in [Player::P0, Player::P1] {
+        for color in ChoiceColor::ALL {
+            for fizzle in [false, true] {
+                let mut g = scenario(p);
+                let land = put(&mut g, p, "Room of Refuge", Zone::Hand);
+                let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+                act(&mut g, Action::PlayLand { card: land });
+                let before_entry = g.snapshot();
+                super::contracts::branch_contract(g.clone());
+                act(
+                    &mut g,
+                    Action::ChooseEntryValue {
+                        value: EntryChoiceValue::Color(color),
+                    },
+                );
+                assert!(g.object_view(land).tapped);
+                g.untap_objects(&[land], untap_rules::UntapCause::Effect);
+                g.state.players[p.index()].mana = [0; 6];
+                let action = g.legal_actions().into_iter().find(|a| matches!(a, Action::ActivateMana { card, ability: 0, .. } if *card == land)).expect("chosen color mana ability");
+                act(&mut g, action);
+                assert_eq!(g.state.players[p.index()].mana[color.index()], 1);
+                g.untap_objects(&[land], untap_rules::UntapCause::Effect);
+                g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 5];
+                act(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: land,
+                        ability: 1,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+                pay(&mut g);
+                assert_eq!(g.object_view(land).zone, Zone::Graveyard);
+                if fizzle {
+                    g.move_object(target, Zone::Exile);
+                }
+                let before_resolution = g.snapshot();
+                super::contracts::branch_contract(g.clone());
+                settle(&mut g);
+                assert_eq!(
+                    g.counter_count(target, CounterKind::PlusOne),
+                    if fizzle { 0 } else { 4 }
+                );
+                g.restore(&before_resolution).unwrap();
+                settle(&mut g);
+                assert_eq!(
+                    g.counter_count(target, CounterKind::PlusOne),
+                    if fizzle { 0 } else { 4 }
+                );
+                g.restore(&before_entry).unwrap();
+                act(
+                    &mut g,
+                    Action::ChooseEntryValue {
+                        value: EntryChoiceValue::Color(color),
+                    },
+                );
+                assert!(g.object_view(land).tapped);
+            }
+        }
+    }
+}
