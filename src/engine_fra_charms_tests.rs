@@ -748,6 +748,11 @@ fn dark_matter_manipulator_mill_and_graveyard_groups_are_live() {
             put(&mut g, p, "Forest", Zone::Graveyard);
         }
         assert_eq!(stats(&g, creature), (5, 2));
+        let reference = g.object_ref(creature);
+        g.change_controller(reference, p.other());
+        assert_eq!(stats(&g, creature), (3, 2));
+        g.change_controller(reference, p);
+        assert_eq!(stats(&g, creature), (5, 2));
         g.move_object(seventh, Zone::Exile);
         assert_eq!(stats(&g, creature), (3, 2));
         let aura = put(&mut g, p.other(), "Witness Protection", Zone::Battlefield);
