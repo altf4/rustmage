@@ -6204,3 +6204,32 @@ fn koth_landfall_tracks_subtype_changes_before_resolution_or_departure() {
         }
     }
 }
+
+#[test]
+fn koth_event_subtype_facts_coexist_with_other_event_facts() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Koth, the Geomancer", Zone::Battlefield);
+        let land = put(&mut g, p, "Mountain", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        g.move_object(land, Zone::Battlefield);
+        let packet = g
+            .state
+            .pending_triggers
+            .last_mut()
+            .expect("landfall packet");
+        let event = packet.event_object.as_mut().expect("bound event");
+        assert!(event.subtype_lki.is_some());
+        // Simulate another event-object consumer retaining controller facts.
+        event.facts = EventObjectFacts::Controller(p);
+        g.prepare_triggers();
+        g.move_object(land, Zone::Graveyard);
+        let packet = g.state.stack.last().expect("landfall ability");
+        let event = packet.event_object.as_ref().unwrap();
+        assert!(matches!(event.facts, EventObjectFacts::Controller(controller) if controller == p));
+        assert!(event.subtype_lki.unwrap().has_subtype("Mountain"));
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana[3], 1);
+    }
+}
