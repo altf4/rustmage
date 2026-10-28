@@ -7190,3 +7190,6 @@ mod fra_awaken_tests;
 
 #[path = "engine_fra_loyal_tutor_tests.rs"]
 mod loyal_tutor_assurance;
+
+#[path = "engine_fra_discard_tests.rs"]
+mod discard_assurance;

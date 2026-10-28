@@ -292,7 +292,7 @@ fn woodwork_upkeep_intervening_if_checks_both_event_and_resolution() {
 }
 
 #[test]
-fn candidate_fronts_have_correct_names_costs_and_remain_gated() {
+fn prepared_fronts_have_correct_names_costs_and_are_supported() {
     for (identity, front, cost, mana_value) in [
         (
             "Heartwood Crafter // Soul Tether",
@@ -318,7 +318,7 @@ fn candidate_fronts_have_correct_names_costs_and_remain_gated() {
         assert_eq!(card.name(), front);
         assert_eq!(card.info().mana_cost, cost);
         assert_eq!(card.fixed_mana_value(), mana_value);
-        assert!(!card.is_supported());
+        assert!(card.is_supported());
     }
 }
 

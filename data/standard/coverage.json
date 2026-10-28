@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "143e5ba9a5f92f9df6bac523760676f42c1db4d320c401e068471923ed9ddcb1",
+  "catalogue_version": "10cd2c3b86103dc9f422b1731c00fc01097aac0778103f4cc660ecaddbdb248f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2745,
-  "implemented_total": 2751,
+  "implemented_standard_cards": 2754,
+  "implemented_total": 2760,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 98,
-      "gated": 187
+      "complete": 107,
+      "gated": 178
     },
     "frc": {
       "total": 6,
@@ -1891,8 +1891,8 @@
     {
       "name": "Archive Arbiter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/archive_arbiter.rs",
       "set": "fra"
     },
@@ -3955,8 +3955,8 @@
     {
       "name": "Blossom-Blessed Angel // Seed Suture",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/blossom_blessed_angel_seed_suture.rs",
       "set": "fra"
     },
@@ -10699,8 +10699,8 @@
     {
       "name": "Emergency Phytomedic // Seed Suture",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/emergency_phytomedic_seed_suture.rs",
       "set": "fra"
     },
@@ -16075,8 +16075,8 @@
     {
       "name": "Heartwood Crafter // Soul Tether",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/heartwood_crafter_soul_tether.rs",
       "set": "fra"
     },
@@ -19379,8 +19379,8 @@
     {
       "name": "Konstrari Improviser // Soul Tether",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/konstrari_improviser_soul_tether.rs",
       "set": "fra"
     },
@@ -31899,8 +31899,8 @@
     {
       "name": "Solve for Disappointment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/solve_for_disappointment.rs",
       "set": "fra"
     },
@@ -33387,8 +33387,8 @@
     {
       "name": "Stinging Vitriol",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/stinging_vitriol.rs",
       "set": "fra"
     },
@@ -41091,8 +41091,8 @@
     {
       "name": "Woodwork Prodigy // Soul Tether",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/woodwork_prodigy_soul_tether.rs",
       "set": "fra"
     },
@@ -41387,8 +41387,8 @@
     {
       "name": "Yuriko, Hope from the Shadows",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/yuriko_hope_from_the_shadows.rs",
       "set": "fra"
     },

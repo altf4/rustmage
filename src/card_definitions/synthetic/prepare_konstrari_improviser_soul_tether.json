@@ -3,7 +3,7 @@
   "catalogue_id": 5440,
   "oracle_id": "bad2e3b2-ad47-4e17-b35e-0fcc13e82937",
   "facts_sha256": "07d01766938e81d5baf19fe29de665a89673478c356f0606145d95fc53ad8a74",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "6c1a5666ab7f199be9a2d46b592893b6f913e307dc31b986a0f93020a01e9526",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/k/KonstrariImproviser.java",

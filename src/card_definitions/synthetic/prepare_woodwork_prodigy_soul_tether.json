@@ -3,7 +3,7 @@
   "catalogue_id": 5441,
   "oracle_id": "f3ed157f-a09b-405f-aec4-0e7a81d80fc8",
   "facts_sha256": "01f10bc1c4b3a7c43b775da077cedec130f0207ab16dcc489984e801ab575c85",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "f50ee5f0ef207789020e6aaa812615db16d72da801ea14c29c4d4a32692ef8f2",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/w/WoodworkProdigy.java",

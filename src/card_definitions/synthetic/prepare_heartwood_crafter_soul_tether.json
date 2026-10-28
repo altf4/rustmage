@@ -3,7 +3,7 @@
   "catalogue_id": 5439,
   "oracle_id": "c8b3a070-408e-4a8f-8597-6476eeec0a5f",
   "facts_sha256": "a8b4d3acab3e6df29273a473fbf5545bc6a63eecaed6da8d485a5c3e371a8266",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "4c8c36829e0ef3a8293d6abd3758d0378530cb7c0995b28633fed755a344e2fb",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/h/HeartwoodCrafter.java",

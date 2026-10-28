@@ -895,6 +895,14 @@
     "journal": "fb30b9aae5fd6ce5",
     "observations": "d03fa60107f361d7"
   },
+  "Archive Arbiter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "bfd0f0427d2bcf36",
+    "observations": "10db2db6e3facb64"
+  },
   "Archive Dragon": {
     "root": "main",
     "status": "completed",
@@ -2158,6 +2166,14 @@
     "zone": "Battlefield",
     "journal": "3a899e2580c6c1c6",
     "observations": "c5aa9a351c2c2520"
+  },
+  "Blossom-Blessed Angel // Seed Suture": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1ee756735d2f017d",
+    "observations": "edf0d3eae6f19aa9"
   },
   "Blossoming Defense": {
     "root": "main",
@@ -5663,6 +5679,14 @@
     "journal": "087711649df55e1f",
     "observations": "7c30c4d76a8a7226"
   },
+  "Emergency Phytomedic // Seed Suture": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "fe50d88a02d465a1",
+    "observations": "95d30ce2f4e2f6dd"
+  },
   "Emeritus of Abundance": {
     "root": "main",
     "status": "completed",
@@ -8655,6 +8679,14 @@
     "journal": "b86544257bfe4a7d",
     "observations": "67989fa43fcc824e"
   },
+  "Heartwood Crafter // Soul Tether": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "d96ad4ca883f316e",
+    "observations": "ecb8542bad286fb3"
+  },
   "Heated Argument": {
     "root": "main",
     "status": "completed",
@@ -10310,6 +10342,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "f6c257383f2c87e3"
+  },
+  "Konstrari Improviser // Soul Tether": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "5430c857453b6e98",
+    "observations": "69fd1b145fdb5e4d"
   },
   "Korvold and the Noble Thief": {
     "root": "main",
@@ -17039,6 +17079,14 @@
     "journal": "0a12e2364ba8262b",
     "observations": "40ac4b904dfd9570"
   },
+  "Solve for Disappointment": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "d721d226d4885060",
+    "observations": "1459aa18774065f7"
+  },
   "Something Worth Saving": {
     "root": "main",
     "status": "completed",
@@ -17758,6 +17806,14 @@
     "zone": "Battlefield",
     "journal": "4324aa4c9fd9325c",
     "observations": "13b316409415a6e6"
+  },
+  "Stinging Vitriol": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "34690fba67c4d5e0",
+    "observations": "216c59e2ea6e9506"
   },
   "Stir Up Trouble": {
     "root": "main",
@@ -21719,6 +21775,14 @@
     "journal": "100cb581dd613f1f",
     "observations": "663c94f402b6599c"
   },
+  "Woodwork Prodigy // Soul Tether": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "d3bbb2e94f7fc3ab",
+    "observations": "a1fc5b3ba9dae600"
+  },
   "World Map": {
     "root": "main",
     "status": "completed",
@@ -21886,6 +21950,14 @@
     "zone": "Battlefield",
     "journal": "ce93789b5fa64c9f",
     "observations": "1c5c59796eacb46a"
+  },
+  "Yuriko, Hope from the Shadows": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "507879c5853cdbcf",
+    "observations": "7ec54d74cc438010"
   },
   "Yuyan Archers": {
     "root": "main",

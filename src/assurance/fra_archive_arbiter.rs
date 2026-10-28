@@ -115,3 +115,6 @@ fn archive_arbiter_destroy_respects_indestructible_and_target_invalidation() {
         }
     }
 }
+
+#[path = "fra_modal_entry_extra.rs"]
+mod modal_entry_extra;
