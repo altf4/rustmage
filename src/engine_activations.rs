@@ -323,7 +323,8 @@ impl Game {
     ) -> bool {
         let object = &self.state.objects[card as usize];
         for (index, ability) in object.card.activations().iter().enumerate() {
-            if object.card.grants_activation(index as u16)
+            if object.card.legacy_subtype_mana_activation(index as u16)
+                || object.card.grants_activation(index as u16)
                 || object.card.self_granted_activation_template(index as u16)
             {
                 continue;

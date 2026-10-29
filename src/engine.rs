@@ -612,6 +612,7 @@ define_actions! {
     FinishMilledSelection,
     ChooseEntryTimestamp { object: ObjectRef },
     ChooseEntryReplacement { source: ObjectRef, intrinsic: bool },
+    ChooseEntryBehold { object: Option<ObjectRef> },
     ChooseEntryValue { value: EntryChoiceValue },
     ChooseCreatureType { creature_type: crate::cards::CreatureType },
     ChooseEntryLife {
@@ -1853,6 +1854,9 @@ enum Pending {
     EntryLife {
         player: Player,
     },
+    EntryBehold {
+        player: Player,
+    },
     AuraEntry {
         player: Player,
     },
@@ -2078,6 +2082,7 @@ struct State {
     )]
     borrowed_links: Option<Box<Vec<borrowed_activations::Link>>>,
     graveyard_borrowing: graveyard_borrowing::Rows,
+    borrowed_slots: borrowed_activations::SlotRows,
     #[allow(
         clippy::box_collection,
         reason = "Cold rule state keeps one pointer in games without this mechanic"
@@ -2939,6 +2944,7 @@ impl Game {
                 hand_play_bans: None,
                 borrowed_links: None,
                 graveyard_borrowing: None,
+                borrowed_slots: None,
                 borrowed_uses: None,
                 used_free_hand_permissions: None,
                 graveyard_cast_permissions: None,
@@ -3097,6 +3103,7 @@ impl Game {
             | Pending::EntryValue { player }
             | Pending::LandCardName { player }
             | Pending::EntryLife { player }
+            | Pending::EntryBehold { player }
             | Pending::AuraEntry { player }
             | Pending::TokenChoice { player, .. }
             | Pending::KeywordChoice { player, .. }
@@ -3431,6 +3438,7 @@ impl Game {
         self.finish_library_visibility();
         self.clear_finished_cast_rollback();
         self.refresh_copy_grant_availability();
+        self.state.borrowed_slots = borrowed_activations::refreshed_slots(self);
         self.prune_modal_history();
         self.revision = self.revision.checked_add(1).capacity("revision exhausted");
         Ok(())
@@ -3703,6 +3711,18 @@ impl Game {
             Pending::EntryValue { .. } | Pending::LandCardName { .. } => {
                 if self.visit_entry_values(|value| emit(Action::ChooseEntryValue { value })) {
                     return true;
+                }
+            }
+            Pending::EntryBehold { .. } => {
+                if emit(Action::ChooseEntryBehold { object: None }) {
+                    return true;
+                }
+                for object in self.entry_behold_candidates() {
+                    if emit(Action::ChooseEntryBehold {
+                        object: Some(object),
+                    }) {
+                        return true;
+                    }
                 }
             }
             Pending::EntryLife { .. } => {
@@ -5286,6 +5306,7 @@ impl Game {
             }
             Action::ChooseEntryValue { value } => self.choose_entry_value(value),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
+            Action::ChooseEntryBehold { object } => self.choose_entry_behold(object),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
             Action::Keep => {
                 self.state.players[actor.index()].kept = true;
@@ -5360,7 +5381,7 @@ impl Game {
                 }
                 if matches!(
                     self.state.objects[card as usize].card.entry_tapped(),
-                    EntryTapped::PayLife(_)
+                    EntryTapped::PayLife(_) | EntryTapped::UnlessBehold(_)
                 ) || self.state.objects[card as usize]
                     .card
                     .entry_choice()
@@ -6524,7 +6545,7 @@ impl Game {
                     destination != Zone::Battlefield
                         || !matches!(
                             self.state.objects[id as usize].card.entry_tapped(),
-                            EntryTapped::PayLife(_)
+                            EntryTapped::PayLife(_) | EntryTapped::UnlessBehold(_)
                         ),
                     "choice-bearing entry must be staged"
                 );
@@ -6606,7 +6627,7 @@ impl Game {
     fn self_entry_requires_tapped(&self, id: CardId, controller: Player) -> bool {
         let object = &self.state.objects[id as usize];
         match object.card.entry_tapped() {
-            EntryTapped::Never | EntryTapped::PayLife(_) => false,
+            EntryTapped::Never | EntryTapped::PayLife(_) | EntryTapped::UnlessBehold(_) => false,
             EntryTapped::UnlessPlainsOrIsland => {
                 !self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield
@@ -6687,7 +6708,7 @@ impl Game {
             destination != Zone::Battlefield
                 || !matches!(
                     self.state.objects[id as usize].card.entry_tapped(),
-                    EntryTapped::PayLife(_)
+                    EntryTapped::PayLife(_) | EntryTapped::UnlessBehold(_)
                 ),
             "choice-bearing entry must be staged"
         );
@@ -8381,6 +8402,7 @@ impl Game {
                 Pending::EntryValue { .. } => "entry_value",
                 Pending::LandCardName { .. } => "land_card_name",
                 Pending::EntryLife { .. } => "entry_life",
+                Pending::EntryBehold { .. } => "entry_behold",
                 Pending::EntryReplacement { .. } => "entry_replacement",
                 Pending::AuraEntry { .. } => "aura_entry",
                 Pending::Attackers => "attackers",
@@ -8994,6 +9016,10 @@ impl Game {
                     + rows.len() * std::mem::size_of::<borrowed_activations::Use>()
             })
             + graveyard_borrowing::owned_bytes(&s.graveyard_borrowing)
+            + s.borrowed_slots.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<borrowed_activations::SlotRow>>()
+                    + rows.len() * std::mem::size_of::<borrowed_activations::SlotRow>()
+            })
             + s.borrowed_links.as_ref().map_or(0, |links| {
                 std::mem::size_of::<Vec<borrowed_activations::Link>>()
                     + links.len() * std::mem::size_of::<borrowed_activations::Link>()

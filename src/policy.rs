@@ -403,6 +403,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseEntryValue { .. } => 0,
+            Action::ChooseEntryBehold { object } => {
+                if object.is_some() {
+                    80
+                } else {
+                    40
+                }
+            }
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises
                 // both branches as life falls during games.
@@ -559,14 +566,19 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::TapMana { card } => {
                 if observation.resolution_payment.is_some() {
                     let mut production = [0; 6];
-                    production[observation
-                        .objects
-                        .iter()
-                        .find(|o| o.id == *card)
-                        .unwrap()
-                        .card
-                        .mana_color()
-                        .unwrap()] = 1;
+                    let object = observation.objects.iter().find(|o| o.id == *card).unwrap();
+                    let color = if !object.card.is_land() && object.card.mana_color().is_some() {
+                        object.card.mana_color()
+                    } else if object.kinds & 2 != 0 {
+                        ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                            .iter()
+                            .position(|subtype| object.has_subtype(subtype))
+                            .or(object.card.mana_color())
+                    } else {
+                        object.card.mana_color()
+                    }
+                    .expect("legal mana action has a color");
+                    production[color] = 1;
                     return resolution_mana_score([0; 6], production);
                 }
                 if tap_for_payment { 10 } else { -20 }

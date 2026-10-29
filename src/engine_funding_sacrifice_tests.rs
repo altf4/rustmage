@@ -596,3 +596,170 @@ fn hob_sacrifice_funding_ordered_source_departure_matches_native_cost_executor()
 
 #[path = "assurance/hob_head_hunt_funding.rs"]
 mod head_hunt_tests;
+
+#[test]
+fn projected_borrowed_slots_match_owned_inventory_without_mutating_parent() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let forge = named(&mut g, p, "Territory Forge", Zone::Battlefield);
+        let donor = named(&mut g, p.other(), "Hedron Archive", Zone::Exile);
+        let source = g.object_ref(forge);
+        let exiled = g.object_ref(donor);
+        g.state
+            .borrowed_links
+            .get_or_insert_default()
+            .push(borrowed_activations::Link {
+                source,
+                origin: None,
+                exiled,
+                first_slot: 0,
+                width: 1,
+            });
+        g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
+        let saved = g.snapshot();
+        let owned = borrowed_activations::abilities(&g, forge);
+        let mut projected = FundingState::from_game(&g, &goal(p));
+        projected.refresh_control_projection();
+        let projected_abilities = borrowed_activations::abilities(&projected, forge);
+        assert_eq!(
+            owned
+                .iter()
+                .map(|a| (a.ability, a.slot))
+                .collect::<Vec<_>>(),
+            projected_abilities
+                .iter()
+                .map(|a| (a.ability, a.slot))
+                .collect::<Vec<_>>()
+        );
+        assert_eq!(g.snapshot(), saved);
+    }
+}
+
+#[test]
+fn funding_key_distinguishes_same_land_added_type_and_timestamp() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Meticulous Commons", Zone::Battlefield);
+        let reference = g.object_ref(land);
+        let required = goal(p);
+        let mut base = FundingState::from_game(&g, &required);
+        base.prepare_entry_projection();
+        let mut island = base.clone();
+        let mut forest = base.clone();
+        let mut later_island = base.clone();
+        for (world, kind, timestamp) in [
+            (&mut island, crate::cards::BasicLandType::Island, 7),
+            (&mut forest, crate::cards::BasicLandType::Forest, 7),
+            (&mut later_island, crate::cards::BasicLandType::Island, 8),
+        ] {
+            world
+                .entry_projection
+                .as_mut()
+                .unwrap()
+                .roles
+                .basic_land_types
+                .push(subtypes::BasicLandTypesEffectView {
+                    recipient: reference,
+                    source: reference,
+                    kind,
+                    timestamp,
+                });
+        }
+        assert_eq!(island.intrinsic_mana_color(land), Some(1));
+        assert_eq!(forest.intrinsic_mana_color(land), Some(4));
+        assert!(island.key(&required) != forest.key(&required));
+        assert!(island.key(&required) != later_island.key(&required));
+    }
+}
+
+#[test]
+fn projected_manifest_keeps_physical_identity_and_key_until_it_leaves() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let elf = named(&mut g, p, "Llanowar Elves", Zone::Library);
+        let movement = g.manifest_entry(g.object_ref(elf), p).unwrap();
+        let required = goal(p);
+        let world = FundingState::from_game(&g, &required);
+        let saved = g.snapshot();
+        let mut observed = false;
+        world.commit_projected_entries(vec![movement], &[0], &mut |next| {
+            let object = next.reference(elf);
+            assert_eq!(
+                next.object(elf).card,
+                Card::from_name("@face-down/manifest").unwrap()
+            );
+            assert_eq!(
+                next.projected_face_down_physical(object).unwrap().name(),
+                "Llanowar Elves"
+            );
+            let mut different = next.clone();
+            different
+                .entry_projection
+                .as_mut()
+                .unwrap()
+                .manifested
+                .clear();
+            assert!(next.key(&required) != different.key(&required));
+            observed = true;
+            true
+        });
+        assert!(observed);
+        assert_eq!(g.snapshot(), saved);
+    }
+}
+
+#[test]
+fn projected_type_transformation_funds_new_basic_type_without_live_fallback() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Island", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        let source = g.object_ref(land);
+        let required = FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let before = g.snapshot();
+        let mut world = FundingState::from_game(&g, &required);
+        world.prepare_entry_projection();
+        let roles = &mut world.entry_projection.as_mut().unwrap().roles;
+        for (timestamp, food_only, land_type) in [(100, true, false), (101, false, true)] {
+            roles.animations.push(AnimationView {
+                object: source,
+                timestamp,
+                artifact: false,
+                land: land_type,
+                preserve_card_types: false,
+                food_only,
+                artifact_noncreature: false,
+                colors: None,
+                creature_types: None,
+                all_creature_types: false,
+                base: land_type.then_some((1, 1)),
+                keywords: Keywords::NONE,
+                expires_turn: None,
+            });
+        }
+        roles
+            .basic_land_types
+            .push(subtypes::BasicLandTypesEffectView {
+                recipient: source,
+                source,
+                kind: crate::cards::BasicLandType::Forest,
+                timestamp: 102,
+            });
+        assert_eq!(world.intrinsic_mana_color(land), Some(4));
+        assert!(
+            world
+                .moves(&required)
+                .iter()
+                .any(|step| world.resources[step.resource].id == land
+                    && step.production == [0, 0, 0, 0, 1, 0])
+        );
+        assert_eq!(g.intrinsic_mana_color(land), Some(1));
+        assert_eq!(g.snapshot(), before);
+    }
+}

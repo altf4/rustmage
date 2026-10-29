@@ -340,6 +340,15 @@ impl Game {
                 }
             };
             let mut effects = self.entry_tap_effects(movement);
+            if movement.manifest_original.is_none()
+                && let EntryTapped::UnlessBehold(subtype) = movement.before.card.entry_tapped()
+            {
+                effects.push(EntryTapEffect {
+                    source: movement.before.reference,
+                    intrinsic: true,
+                    kind: EntryTapKind::Behold(subtype),
+                });
+            }
             if effects.is_empty() {
                 movement.tapped |= intrinsic_tapped
                     || self.opponent_entry_kinds_require_tapped(
@@ -372,6 +381,7 @@ impl Game {
                     index,
                     effects,
                     payment: None,
+                    behold: None,
                 });
             }
         }

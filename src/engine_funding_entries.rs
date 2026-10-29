@@ -25,6 +25,7 @@ impl PaymentContinuation<'_> {
 pub(super) struct EntryProjection {
     /// Opt-in restoration origins; these are copy changes, never entry history.
     pub copy_origins: Vec<(ObjectRef, Option<u64>)>,
+    pub manifested: Vec<(ObjectRef, Card)>,
     pub static_sources: Vec<CardId>,
     pub attachment_sources: Vec<CardId>,
     pub roles: roles::RoleState,
@@ -54,6 +55,22 @@ impl EntryProjection {
         });
         Self {
             copy_origins: Vec::new(),
+            manifested: w
+                .game
+                .state
+                .manifest
+                .as_ref()
+                .map_or_else(Vec::new, |state| {
+                    state
+                        .permanents
+                        .iter()
+                        .filter(|row| {
+                            w.reference(row.object.card) == row.object
+                                && w.object(row.object.card).zone == Zone::Battlefield
+                        })
+                        .map(|row| (row.object, row.underlying))
+                        .collect()
+                }),
             static_sources: w.static_sources().to_vec(),
             attachment_sources: w.attachment_sources().to_vec(),
             roles: w.roles().cloned().unwrap_or_default(),
@@ -513,7 +530,7 @@ impl FundingState<'_> {
                 .count()
         };
         match m.before.card.entry_tapped() {
-            EntryTapped::Never | EntryTapped::PayLife(_) => false,
+            EntryTapped::Never | EntryTapped::PayLife(_) | EntryTapped::UnlessBehold(_) => false,
             EntryTapped::Always => true,
             EntryTapped::ChosenXAtMost(n) => m.x <= n,
             EntryTapped::OpponentsTurn => owner != self.active,
@@ -597,7 +614,9 @@ impl FundingState<'_> {
                     && self.printed_abilities_available(id)
             })
             .collect::<Vec<_>>();
-        if effects.is_empty() {
+        if effects.is_empty()
+            && !matches!(m.before.card.entry_tapped(), EntryTapped::UnlessBehold(_))
+        {
             m.tapped |= self.entry_tapped(m) || !opponent.is_empty();
             return effects;
         }
@@ -620,6 +639,15 @@ impl FundingState<'_> {
                 source: m.before.reference,
                 intrinsic: true,
                 kind: entry_tap::EntryTapKind::PayLife(n),
+            });
+        }
+        if m.manifest_original.is_none()
+            && let EntryTapped::UnlessBehold(subtype) = m.before.card.entry_tapped()
+        {
+            effects.push(entry_tap::EntryTapEffect {
+                source: m.before.reference,
+                intrinsic: true,
+                kind: entry_tap::EntryTapKind::Behold(subtype),
             });
         }
         effects
@@ -648,6 +676,7 @@ impl FundingState<'_> {
                             index,
                             effects,
                             payment: None,
+                            behold: None,
                         });
                     }
                 }
@@ -673,6 +702,32 @@ impl FundingState<'_> {
                 let mut next = moves.clone();
                 next[event.index].choice = Some(EntryChoiceValue::BasicLandType(kind));
                 if self.visit_entry_taps(next, taps.clone(), at, actual, emit) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if let Some(subtype) = event.behold {
+            let excluded = moves
+                .iter()
+                .filter(|m| m.destination == Zone::Battlefield && !m.skipped)
+                .map(|m| m.before.reference)
+                .collect::<Vec<_>>();
+            let candidates = hand_choices::behold_candidates(
+                self,
+                moves[event.index].controller,
+                subtype,
+                &excluded,
+            );
+            for pay in [false, true] {
+                if pay && candidates.is_empty() {
+                    continue;
+                }
+                let mut next = moves.clone();
+                next[event.index].tapped |= !pay;
+                let mut events = taps.clone();
+                events[at].behold = None;
+                if self.visit_entry_taps(next, events, at, actual, emit) {
                     return true;
                 }
             }
@@ -710,6 +765,7 @@ impl FundingState<'_> {
                 entry_tap::EntryTapKind::Tapped => next[event.index].tapped = true,
                 entry_tap::EntryTapKind::Untapped => next[event.index].tapped = false,
                 entry_tap::EntryTapKind::PayLife(n) => events[at].payment = Some(n),
+                entry_tap::EntryTapKind::Behold(subtype) => events[at].behold = Some(subtype),
             }
             if self.visit_entry_taps(next, events, at, actual, emit) {
                 return true;
@@ -1089,6 +1145,7 @@ impl FundingState<'_> {
             if m.skipped {
                 continue;
             }
+            let face_down_physical = next.projected_face_down_physical(m.before.reference);
             let row = next
                 .resources
                 .iter_mut()
@@ -1097,7 +1154,14 @@ impl FundingState<'_> {
             let o = &mut row.object;
             next.game
                 .restore_projected_copy_identity(m.before.reference, o);
-            o.card = if m.destination == Zone::Battlefield
+            o.card = if m.destination == Zone::Battlefield && m.manifest_original.is_some() {
+                m.before.card
+            } else if let Some(physical) = face_down_physical
+                && m.before.zone == Zone::Battlefield
+                && m.destination != Zone::Battlefield
+            {
+                physical.front_face()
+            } else if m.destination == Zone::Battlefield
                 && (m.source_before.is_some() || m.before.zone == Zone::Stack)
             {
                 m.before.card
@@ -1116,7 +1180,8 @@ impl FundingState<'_> {
             } else {
                 o.owner
             };
-            o.summoning_sick = true;
+            o.summoning_sick = m.destination == Zone::Battlefield;
+            o.flashback = false;
             o.cast_for_warp = m.destination == Zone::Battlefield
                 && m.warp_controller.is_some()
                 && m.cast_origin.is_some();
@@ -1137,6 +1202,13 @@ impl FundingState<'_> {
                 card: row.id,
                 generation: o.generation,
             };
+            let manifested = &mut next.entry_projection.as_mut().unwrap().manifested;
+            manifested.retain(|(object, _)| *object != m.before.reference);
+            if m.destination == Zone::Battlefield
+                && let Some(physical) = m.manifest_original
+            {
+                manifested.push((source, physical));
+            }
             live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
             if m.destination == Zone::Battlefield {
                 next.entry_projection.as_mut().unwrap().entered.push(source);
@@ -1417,7 +1489,8 @@ impl Game {
         }
         if !matches!(
             action,
-            Action::ChooseEntryValue { .. }
+            Action::ChooseEntryBehold { .. }
+                | Action::ChooseEntryValue { .. }
                 | Action::ChooseEntryLife { .. }
                 | Action::ChooseAuraAttachment { .. }
                 | Action::ChooseEntryReplacement { .. }
@@ -1574,6 +1647,15 @@ impl Game {
                     batch.tap_events[batch.tap_next].payment = None;
                 }
             }
+            Some(Action::ChooseEntryBehold { object }) => {
+                let event = &mut batch.tap_events[batch.tap_next];
+                if event.behold.take().is_none() {
+                    return false;
+                }
+                if object.is_none() {
+                    batch.moves[event.index].tapped = true;
+                }
+            }
             Some(Action::ChooseEntryReplacement { source, intrinsic }) => {
                 let event = &mut batch.tap_events[batch.tap_next];
                 let Some(i) = event
@@ -1588,6 +1670,7 @@ impl Game {
                     entry_tap::EntryTapKind::Tapped => batch.moves[event.index].tapped = true,
                     entry_tap::EntryTapKind::Untapped => batch.moves[event.index].tapped = false,
                     entry_tap::EntryTapKind::PayLife(cost) => event.payment = Some(cost),
+                    entry_tap::EntryTapKind::Behold(subtype) => event.behold = Some(subtype),
                 }
             }
             Some(Action::ChooseEntryTimestamp { object }) => {

@@ -11,13 +11,19 @@ pub(super) trait CharacteristicWorld {
             .power
     }
     fn game(&self) -> &Game;
+    fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
+        &self.game().state.borrowed_slots
+    }
+    fn borrowed_slots(&self) -> &[borrowed_activations::SlotRow] {
+        self.borrowed_slots_state()
+            .as_ref()
+            .map_or(&[], |rows| rows.as_slice())
+    }
     fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
         &self.game().state.graveyard_borrowing
     }
     fn graveyard_borrowing(&self) -> &[graveyard_borrowing::Row] {
-        self.game()
-            .state
-            .graveyard_borrowing
+        self.graveyard_borrowing_state()
             .as_ref()
             .map_or(&[], |rows| rows.as_slice())
     }
@@ -165,19 +171,48 @@ pub(super) trait CharacteristicWorld {
     }
     fn intrinsic_mana_color(&self, id: CardId) -> Option<usize> {
         let card = self.definition(id);
-        let color = card.mana_color()?;
-        // CR305.6 belongs to the current basic land subtype. The same shortcut
-        // also represents printed mana on Llanowar Elves, which survives losing Elf.
-        if card.is_basic_land()
-            && (self.kinds(id) & 2 == 0
-                || !self.subtypes(id).has(
-                    card,
-                    ["Plains", "Island", "Swamp", "Mountain", "Forest"][color],
-                ))
-        {
+        if self.has_ability_removal() {
+            let evaluation = ability_evaluation::evaluate_abilities(self);
+            let state = &evaluation.result.objects[id as usize];
+            if !card.is_land() && state.printed && card.mana_color().is_some() {
+                return card.mana_color();
+            }
+            if let Some(color) = state
+                .mana
+                .iter()
+                .filter(|grant| grant.subtype_derived)
+                .find_map(|grant| match grant.production {
+                    ManaProduction::Fixed(mana) => mana.iter().position(|amount| *amount != 0),
+                    _ => None,
+                })
+            {
+                return Some(color);
+            }
+            return if state.printed
+                && !(card.is_land() && card.printed_intrinsic_mana_colors().next().is_some())
+            {
+                card.mana_color()
+            } else {
+                None
+            };
+        }
+        // The generated shortcut on a nonland (e.g. Llanowar Elves) is a
+        // printed ability, independent of any types the object gains later.
+        if !card.is_land() && card.mana_color().is_some() {
+            return card.mana_color();
+        }
+        if self.kinds(id) & 2 != 0 {
+            if let Some(color) = ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                .iter()
+                .position(|subtype| self.subtypes(id).has(card, subtype))
+            {
+                return Some(color);
+            }
+        }
+        if card.is_land() && card.printed_intrinsic_mana_colors().next().is_some() {
             None
         } else {
-            Some(color)
+            card.mana_color()
         }
     }
     /// Sparse rows belong to this world, including virtual counter payments.
@@ -395,7 +430,6 @@ pub(super) trait CharacteristicWorld {
     fn has_ability_removal(&self) -> bool {
         self.static_sources().iter().any(|&id| {
             self.object(id).zone == Zone::Battlefield
-                && self.kinds(id) & 2 != 0
                 && self
                     .object(id)
                     .card
@@ -468,7 +502,6 @@ pub(super) trait CharacteristicWorld {
                 self.entry_value(self.reference(id)),
                 Some(EntryChoiceValue::BasicLandType(_))
             )
-            && self.kinds(id) & 2 != 0
         {
             return ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
                 .printed;
@@ -603,9 +636,29 @@ pub(super) trait CharacteristicWorld {
         // ability or change a mana grant, so only removal needs layer-six order.
         if self.has_ability_removal() {
             let evaluation = ability_evaluation::evaluate_abilities(self);
-            return evaluation.result.objects[id as usize].mana.clone();
+            let mut result = evaluation.result.objects[id as usize].mana.clone();
+            if evaluation.result.objects[id as usize].printed
+                && self.kinds(id) & 2 != 0
+                && !(!self.definition(id).is_land()
+                    && evaluation.result.objects[id as usize].printed
+                    && self.definition(id).mana_color().is_some())
+            {
+                if let Some(first) = self.intrinsic_mana_color(id) {
+                    let mut production = [0; 6];
+                    production[first] = 1;
+                    if let Some(index) = result.iter().position(|grant| {
+                        grant.subtype_derived
+                            && grant.source == self.reference(id)
+                            && grant.production == ManaProduction::Fixed(production)
+                    }) {
+                        result.remove(index);
+                    }
+                }
+            }
+            return result;
         }
         let mut result = Vec::new();
+        self.append_additional_basic_subtype_mana(id, &mut result);
         for &source in self.attachment_sources() {
             let reference = self.reference(source);
             if self.kinds(source) & 1 != 0 || !self.attachment_link(reference, self.reference(id)) {
@@ -621,6 +674,7 @@ pub(super) trait CharacteristicWorld {
                         result.push(ability_order::GrantedManaAbility {
                             source: reference,
                             production,
+                            subtype_derived: false,
                             sacrifice: matches!(
                                 *fragment,
                                 crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(_)
@@ -643,12 +697,43 @@ pub(super) trait CharacteristicWorld {
                             source: self.reference(source),
                             production,
                             sacrifice: false,
+                            subtype_derived: false,
                         });
                     }
                 }
             }
         }
         result
+    }
+    fn append_additional_basic_subtype_mana(
+        &self,
+        id: CardId,
+        result: &mut Vec<ability_order::GrantedManaAbility>,
+    ) {
+        let card = self.definition(id);
+        if self.object(id).zone != Zone::Battlefield || self.kinds(id) & 2 == 0 {
+            return;
+        }
+        let Some(first) = self.intrinsic_mana_color(id) else {
+            return;
+        };
+        for (color, subtype) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+            .iter()
+            .enumerate()
+        {
+            if (color != first || (!card.is_land() && card.mana_color().is_some()))
+                && self.subtypes(id).has(card, subtype)
+            {
+                let mut production = [0; 6];
+                production[color] = 1;
+                result.push(ability_order::GrantedManaAbility {
+                    source: self.reference(id),
+                    production: ManaProduction::Fixed(production),
+                    sacrifice: false,
+                    subtype_derived: true,
+                });
+            }
+        }
     }
     fn attachment_link(&self, source: ObjectRef, recipient: ObjectRef) -> bool {
         let object = self.object(source.card);
@@ -819,6 +904,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     fn game(&self) -> &Game {
         self.parent.game()
     }
+    fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
+        self.parent.battle_protector(object)
+    }
     fn object(&self, id: CardId) -> &Object {
         if id == self.source {
             &self.object
@@ -879,6 +967,15 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, p: Player) -> bool {
         self.parent.plus_one_placed_this_turn(object, p)
+    }
+    fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
+        self.parent.graveyard_borrowing_state()
+    }
+    fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
+        self.parent.borrowed_slots_state()
+    }
+    fn borrowed_slots(&self) -> &[borrowed_activations::SlotRow] {
+        self.parent.borrowed_slots()
     }
     fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
         self.parent.borrowed_activation_used(source, slot)

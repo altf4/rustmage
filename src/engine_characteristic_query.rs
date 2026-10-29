@@ -1092,6 +1092,24 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn object(&self, id: CardId) -> &Object {
         self.world.object(id)
     }
+    fn ability_origin(&self, id: CardId) -> Option<u64> {
+        self.world.ability_origin(id)
+    }
+    fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
+        self.world.borrowed_slots_state()
+    }
+    fn borrowed_slots(&self) -> &[borrowed_activations::SlotRow] {
+        self.world.borrowed_slots()
+    }
+    fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
+        self.world.graveyard_borrowing_state()
+    }
+    fn graveyard_borrowing(&self) -> &[graveyard_borrowing::Row] {
+        self.world.graveyard_borrowing()
+    }
+    fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
+        self.world.borrowed_activation_used(source, slot)
+    }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.world.stored_recipe(id)
     }

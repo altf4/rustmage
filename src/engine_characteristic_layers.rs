@@ -84,6 +84,29 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .flat_map(|r| &r.animations)
         .filter(move |row| Some(row.object) == recipient)
 }
+/// Layer-four changes to the presence of the land card type. Other card-type
+/// additions do not affect existing land types and need no timeline entry.
+pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Vec<(u64, bool)> {
+    let mut events: Vec<_> = aura_effects(world, id)
+        .into_iter()
+        .map(|(time, spec)| (time, matches!(spec.form, PermanentForm::Land)))
+        .collect();
+    events.extend(animations(world, id).filter_map(|row| {
+        if row.food_only || row.artifact_noncreature {
+            Some((row.timestamp, false))
+        } else if row.land && (!row.preserve_card_types || row.artifact) {
+            Some((row.timestamp, true))
+        } else {
+            None
+        }
+    }));
+    events.sort_by_key(|event| event.0);
+    events
+}
+
 #[inline]
 pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     world: &W,
@@ -266,6 +289,7 @@ pub(super) enum SubtypeChange {
     All,
     LandOnly,
     BasicLand(crate::cards::BasicLandType),
+    AddBasicLand(crate::cards::BasicLandType),
     FoodOnly,
 }
 #[inline]

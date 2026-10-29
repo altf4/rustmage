@@ -36,31 +36,43 @@ impl HandInteraction {
             + (self.selected.len() + self.candidates.len()) * std::mem::size_of::<ObjectRef>()
     }
 }
+/// Collect exact non-targeting behold witnesses in an actual or projected world.
+/// Objects in the simultaneous entry batch are not yet on the battlefield.
+pub(super) fn behold_candidates<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    subtype: &str,
+    entering: &[ObjectRef],
+) -> Vec<ObjectRef> {
+    (0..world.game().state.objects.len())
+        .filter_map(|index| {
+            let id = index as CardId;
+            let object = world.object(id);
+            let reference = world.reference(id);
+            if entering.contains(&reference) {
+                return None;
+            }
+            let matches = match object.zone {
+                Zone::Battlefield => {
+                    object.controller == actor
+                        && world.subtypes(id).has(world.definition(id), subtype)
+                }
+                Zone::Hand => {
+                    object.owner == actor && !object.is_token() && object.card.has_subtype(subtype)
+                }
+                _ => false,
+            };
+            matches.then_some(reference)
+        })
+        .collect()
+}
 impl Game {
     pub(super) fn start_behold_search_result(
         &mut self,
         item: &SpellView,
         subtype: &'static str,
     ) -> bool {
-        let candidates = self
-            .state
-            .objects
-            .iter()
-            .enumerate()
-            .filter_map(|(id, o)| {
-                let id = id as CardId;
-                let matches = match o.zone {
-                    Zone::Battlefield => {
-                        o.controller == item.controller && self.has_subtype(id, subtype)
-                    }
-                    Zone::Hand => {
-                        o.owner == item.controller && !o.is_token() && o.card.has_subtype(subtype)
-                    }
-                    _ => false,
-                };
-                matches.then(|| self.object_ref(id))
-            })
-            .collect::<Vec<_>>();
+        let candidates = behold_candidates(self, item.controller, subtype, &[]);
         if candidates.is_empty() {
             self.state.resolving.as_mut().unwrap().search_result = None;
             return false;

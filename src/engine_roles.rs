@@ -27,6 +27,7 @@ pub(super) struct RoleState {
     pub stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_timestamps: Vec<AbilitySourceTimestampView>,
     pub creature_types: Vec<subtypes::CreatureTypesEffectView>,
+    pub basic_land_types: Vec<subtypes::BasicLandTypesEffectView>,
     pub animations: Vec<AnimationView>,
     pub keyword_effects: Vec<KeywordEffectView>,
     pub source_linked_effects: Vec<SourceLinkedEffectView>,
@@ -54,6 +55,8 @@ impl RoleState {
             + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()
             + self.ability_timestamps.len() * std::mem::size_of::<AbilitySourceTimestampView>()
             + self.creature_types.len() * std::mem::size_of::<subtypes::CreatureTypesEffectView>()
+            + self.basic_land_types.len()
+                * std::mem::size_of::<subtypes::BasicLandTypesEffectView>()
             + self.animations.len() * std::mem::size_of::<AnimationView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
             + self.source_linked_effects.len() * std::mem::size_of::<SourceLinkedEffectView>()
@@ -259,6 +262,11 @@ impl Game {
             // Only deferred rows acquire the entry timestamp: later provider
             // retimestamps must preserve an ordinary resolution grant's time.
             for row in &mut r.creature_types {
+                if row.recipient == source && row.timestamp == 0 {
+                    row.timestamp = timestamp;
+                }
+            }
+            for row in &mut r.basic_land_types {
                 if row.recipient == source && row.timestamp == 0 {
                     row.timestamp = timestamp;
                 }

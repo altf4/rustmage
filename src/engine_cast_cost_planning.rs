@@ -124,7 +124,9 @@ impl FundingState<'_> {
             | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::DiscardLegendary => hand > 0,
             EffectChoiceKind::DiscardOrLife(life) => hand > 0 || self.life >= i128::from(life),
-            EffectChoiceKind::SacrificeOrDiscard { .. } => battlefield > 0 || hand > 0,
+            EffectChoiceKind::Behold | EffectChoiceKind::SacrificeOrDiscard { .. } => {
+                battlefield > 0 || hand > 0
+            }
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::ReturnUnblockedAttacker
@@ -947,7 +949,8 @@ impl FundingState<'_> {
             EffectChoiceKind::ReturnUnblockedAttacker | EffectChoiceKind::ReturnToHand => {
                 destination = Zone::Hand
             }
-            EffectChoiceKind::Sacrifice
+            EffectChoiceKind::Behold
+            | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
@@ -1030,7 +1033,9 @@ impl FundingState<'_> {
             if remaining.is_empty() {
                 return true;
             }
-            let success = if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) {
+            let success = if spec.kind == EffectChoiceKind::Behold {
+                self.complete_cost_rows(later, remaining)
+            } else if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) {
                 let mut next = self.clone();
                 for r in selected.iter() {
                     let i = next.resources.iter().position(|v| v.id == r.card).unwrap();

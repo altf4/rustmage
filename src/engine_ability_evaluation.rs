@@ -92,6 +92,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: vec![GrantedManaAbility {
                     source,
                     production,
+                    subtype_derived: false,
                     sacrifice: matches!(
                         fragment,
                         StaticAbilityFragment::AttachmentSacrificeMana(_)
@@ -114,6 +115,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                     source,
                     production,
                     sacrifice: false,
+                    subtype_derived: false,
                 }],
             });
         }
@@ -364,7 +366,41 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 },
                 grants: Vec::new(),
                 self_grants: Vec::new(),
-                mana: Vec::new(),
+                // Native land subtypes exist before any later layer-six removal.
+                // Type-setting effects add their own timestamped grants below.
+                mana: if object.zone == Zone::Battlefield {
+                    let timeline = subtypes::basic_land_timeline(world, i as CardId);
+                    let native = timeline.has_events.then_some(timeline.initial_types);
+                    let current = (native.is_none() && world.kinds(i as CardId) & 2 != 0)
+                        .then(|| world.subtypes(i as CardId));
+                    ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(color, subtype)| {
+                            let has_subtype = native.map_or_else(
+                                || {
+                                    current
+                                        .expect("current subtype projection")
+                                        .has(object.card, subtype)
+                                },
+                                |mask| mask & (1 << color) != 0,
+                            );
+                            if !has_subtype {
+                                return None;
+                            }
+                            let mut production = [0; 6];
+                            production[color] = 1;
+                            Some(GrantedManaAbility {
+                                source: world.reference(i as CardId),
+                                production: ManaProduction::Fixed(production),
+                                sacrifice: false,
+                                subtype_derived: true,
+                            })
+                        })
+                        .collect()
+                } else {
+                    Vec::new()
+                },
             }
         })
         .collect();
@@ -377,33 +413,40 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             continue;
         }
         let source = world.reference(id);
-        if world.kinds(id) & 2 != 0
-            && object.card.static_ability_groups().iter().any(|group| {
-                group
-                    .fragments
-                    .iter()
-                    .any(|fragment| matches!(fragment, StaticAbilityFragment::ChosenBasicLandType))
-            })
-            && let Some(EntryChoiceValue::BasicLandType(kind)) = world.entry_value(source)
         {
-            let mut production = [0; 6];
-            production[kind.index()] = 1;
-            effects.push(LayerSixEffect {
-                provider: Some(id),
-                started_earlier: true,
-                timestamp: timestamp(world, source),
-                recipients: vec![id],
-                action: LayerSixAction::RemovePrintedAndGrant(vec![LayerSixGrant {
-                    recipient: id,
-                    keywords: Keywords::NONE,
-                    abilities: Vec::new(),
-                    mana: vec![GrantedManaAbility {
-                        source,
-                        production: ManaProduction::Fixed(production),
-                        sacrifice: false,
-                    }],
-                }]),
-            });
+            for (timestamp, change) in subtypes::basic_land_timeline(world, id).ability_changes {
+                let action = match change {
+                    subtypes::BasicLandAbilityChange::Remove => LayerSixAction::RemoveSubtypeMana,
+                    subtypes::BasicLandAbilityChange::Add(kind)
+                    | subtypes::BasicLandAbilityChange::Set(kind) => {
+                        let mut production = [0; 6];
+                        production[kind.index()] = 1;
+                        let grants = vec![LayerSixGrant {
+                            recipient: id,
+                            keywords: Keywords::NONE,
+                            abilities: Vec::new(),
+                            mana: vec![GrantedManaAbility {
+                                source,
+                                production: ManaProduction::Fixed(production),
+                                sacrifice: false,
+                                subtype_derived: true,
+                            }],
+                        }];
+                        if matches!(change, subtypes::BasicLandAbilityChange::Set(_)) {
+                            LayerSixAction::RemovePrintedAndGrant(grants)
+                        } else {
+                            LayerSixAction::GrantEach(grants)
+                        }
+                    }
+                };
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: true,
+                    timestamp,
+                    recipients: vec![id],
+                    action,
+                });
+            }
         }
         for (group, origin) in object.card.static_ability_groups().iter().enumerate() {
             let removes = origin

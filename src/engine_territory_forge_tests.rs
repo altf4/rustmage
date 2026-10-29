@@ -91,7 +91,7 @@ fn territory_forge_paid_intrinsic_land_mana_funding_exact_departure_and_abolishe
         let land = fixture(&mut g, p.other(), "Forest", Zone::Battlefield);
         let id = forge(&mut g, p, land);
         g.state.players[p.index()].mana = [0; 6];
-        let b = borrowed(&g, id, u16::MAX);
+        let b = borrowed(&g, id, u16::MAX - 5);
         assert_eq!(
             g.observe(p).borrowed_abilities,
             g.observe(p.other()).borrowed_abilities
@@ -106,7 +106,7 @@ fn territory_forge_paid_intrinsic_land_mana_funding_exact_departure_and_abolishe
         let action = Action::AnnounceBorrowedMana {
             card: id,
             exiled: b.exiled,
-            ability: u16::MAX,
+            ability: u16::MAX - 5,
             counter_payment: Counters::default(),
             production: [0, 0, 0, 0, 1, 0],
         };
@@ -288,12 +288,16 @@ fn territory_forge_more_than_sixty_four_acquired_abilities_never_alias_usage() {
                     source,
                     origin: None,
                     exiled,
-                    first_slot: slot,
-                    width: 1,
+                    first_slot: slot * borrowed_activations::DONOR_SLOT_WIDTH,
+                    width: borrowed_activations::DONOR_SLOT_WIDTH,
                 });
         }
         let descriptors = g.borrowed_ability_views();
         assert_eq!(descriptors.len(), 70);
+        assert_eq!(
+            descriptors.iter().map(|a| a.slot).collect::<Vec<_>>(),
+            (0..70).collect::<Vec<_>>()
+        );
         let last = descriptors[69];
         checked(
             &mut g,
@@ -459,5 +463,273 @@ fn territory_forge_inherited_saddle_does_not_inherit_mount_trigger() {
         assert!(g.on_battlefield(id));
         assert!(g.state.pending_triggers.is_empty());
         assert_eq!(g.state.objects[moon as usize].zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn forge_borrows_lonely_mountain_printed_and_intrinsic_mana_abilities() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = fixture(&mut g, p.other(), "The Lonely Mountain", Zone::Battlefield);
+        let source = forge(&mut g, p, land);
+        let abilities = g.borrowed_ability_views();
+        assert!(
+            abilities
+                .iter()
+                .any(|a| a.source.card == source && a.ability == 0)
+        );
+        assert!(
+            abilities
+                .iter()
+                .any(|a| a.source.card == source && a.ability == u16::MAX - 4)
+        );
+    }
+}
+
+#[test]
+fn forge_borrows_both_intrinsic_mana_abilities_of_dual_land() {
+    for p in [Player::P0, Player::P1] {
+        for color in [1u16, 4] {
+            let mut g = setup(p);
+            let land = fixture(&mut g, p.other(), "Hedge Maze", Zone::Battlefield);
+            let source = forge(&mut g, p, land);
+            let abilities = g.borrowed_ability_views();
+            assert!(
+                abilities
+                    .iter()
+                    .any(|a| a.source.card == source && a.ability == u16::MAX - 2)
+            );
+            assert!(
+                abilities
+                    .iter()
+                    .any(|a| a.source.card == source && a.ability == u16::MAX - 5)
+            );
+            assert!(
+                !abilities
+                    .iter()
+                    .any(|a| a.source.card == source && a.ability == 0)
+            );
+            let descriptor = borrowed(&g, source, u16::MAX - 1 - color);
+            g.state.players[p.index()].mana = [0; 6];
+            let mut production = [0; 6];
+            production[usize::from(color)] = 1;
+            checked(
+                &mut g,
+                Action::AnnounceBorrowedMana {
+                    card: source,
+                    exiled: descriptor.exiled,
+                    ability: u16::MAX - 1 - color,
+                    counter_payment: Counters::default(),
+                    production,
+                },
+            );
+            finish(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, production);
+        }
+    }
+}
+
+#[test]
+fn borrowed_land_subtype_abilities_follow_donor_copy_exception_with_stable_slots() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = fixture(&mut g, p.other(), "Hedge Maze", Zone::Battlefield);
+        let source = forge(&mut g, p, land);
+        let before = borrowed(&g, source, u16::MAX - 2);
+        let green = borrowed(&g, source, u16::MAX - 5);
+        let reference = g.object_ref(land);
+        let mut recipe = CopyRecipe::new(Card::from_name("Hedge Maze").unwrap());
+        recipe.overrides = Some(CopyOverrides {
+            name: None,
+            legendary: None,
+            kinds: None,
+            types: Some(CopyTypes {
+                replace: true,
+                ..CopyTypes::default()
+            }),
+            keywords: Keywords::NONE,
+        });
+        g.set_copy_recipe(reference, recipe);
+        assert!(
+            !g.borrowed_ability_views()
+                .iter()
+                .any(|ability| ability.source.card == source
+                    && (ability.ability == u16::MAX - 2 || ability.ability == u16::MAX - 5))
+        );
+        g.clear_copy_recipe(reference);
+        assert_eq!(borrowed(&g, source, u16::MAX - 2).slot, before.slot);
+        assert_eq!(borrowed(&g, source, u16::MAX - 5).slot, green.slot);
+    }
+}
+
+#[test]
+fn borrowed_links_reserve_stable_slots_for_multiple_and_initially_ability_free_donors() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = fixture(&mut g, p, "Territory Forge", Zone::Battlefield);
+        let first = fixture(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let second = fixture(&mut g, p.other(), "Forest", Zone::Battlefield);
+        let source_ref = g.object_ref(source);
+        let mut item = g.cast_preview(p, source, Zone::Battlefield, source_ref, 0, [0; 6]);
+        for card in [first, second] {
+            item.targets.push(BoundTarget {
+                group: 0,
+                target: Target::Card(card),
+                object: Some(g.object_ref(card)),
+            });
+        }
+        g.exile_and_borrow_activated_abilities(&item);
+        let links = g.state.borrowed_links.as_ref().unwrap();
+        assert_eq!(links.len(), 2);
+        assert!(links[0].first_slot + links[0].width <= links[1].first_slot);
+        assert_eq!(links[0].width, 1);
+        assert_eq!(links[1].width, 1);
+        let green = borrowed(&g, source, u16::MAX - 5);
+        g.state.objects[first as usize].card = Card::from_name("Island").unwrap();
+        let blue = borrowed(&g, source, u16::MAX - 2);
+        assert_ne!(blue.slot, green.slot);
+        assert_eq!(g.object_ref(first), blue.exiled);
+        let blue_slot = blue.slot;
+        g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
+        g.state.objects[first as usize].card = Card::from_name("Hedron Archive").unwrap();
+        let added = g
+            .borrowed_ability_views()
+            .into_iter()
+            .filter(|ability| ability.exiled.card == first)
+            .collect::<Vec<_>>();
+        assert!(added.iter().any(|ability| ability.ability == 0));
+        assert!(added.iter().any(|ability| ability.ability == 1));
+        assert!(
+            added
+                .iter()
+                .all(|ability| ability.slot != green.slot && ability.slot != blue_slot)
+        );
+        let archive_slot = added
+            .iter()
+            .find(|ability| ability.ability == 0)
+            .unwrap()
+            .slot;
+        g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
+        g.state.objects[first as usize].card = Card::from_name("Goblin Firebomb").unwrap();
+        let changed = g
+            .borrowed_ability_views()
+            .into_iter()
+            .find(|ability| ability.exiled.card == first && ability.ability == 0)
+            .unwrap();
+        assert_ne!(changed.slot, archive_slot);
+        g.state.objects[first as usize].card = Card::from_name("Island").unwrap();
+        assert_eq!(borrowed(&g, source, u16::MAX - 2).slot, blue_slot);
+    }
+}
+
+#[test]
+fn borrowed_donor_definition_changes_replay_and_restore_slots() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = fixture(&mut g, p, "Territory Forge", Zone::Battlefield);
+        let donor = fixture(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let other = fixture(&mut g, p.other(), "Forest", Zone::Battlefield);
+        let reference = g.object_ref(source);
+        let mut item = g.cast_preview(p, source, Zone::Battlefield, reference, 0, [0; 6]);
+        for card in [donor, other] {
+            item.targets.push(BoundTarget {
+                group: 0,
+                target: Target::Card(card),
+                object: Some(g.object_ref(card)),
+            });
+        }
+        g.exile_and_borrow_activated_abilities(&item);
+        let checkpoint = g.snapshot();
+        let mut replay = g.clone();
+        let exercise = |game: &mut Game| {
+            let green = borrowed(game, source, u16::MAX - 5).slot;
+            game.state.objects[donor as usize].card = Card::from_name("Hedron Archive").unwrap();
+            let archive = game
+                .borrowed_ability_views()
+                .into_iter()
+                .find(|a| a.exiled.card == donor && a.ability == 0)
+                .unwrap()
+                .slot;
+            game.state.borrowed_slots = borrowed_activations::refreshed_slots(game);
+            game.state.objects[donor as usize].card = Card::from_name("Goblin Firebomb").unwrap();
+            let firebomb = game
+                .borrowed_ability_views()
+                .into_iter()
+                .find(|a| a.exiled.card == donor && a.ability == 0)
+                .unwrap()
+                .slot;
+            assert_ne!(archive, firebomb);
+            assert_ne!(green, archive);
+            assert_ne!(green, firebomb);
+            game.state.borrowed_slots = borrowed_activations::refreshed_slots(game);
+            game.state.objects[donor as usize].card = Card::from_name("Hedron Archive").unwrap();
+            assert_eq!(
+                game.borrowed_ability_views()
+                    .into_iter()
+                    .find(|a| a.exiled.card == donor && a.ability == 0)
+                    .unwrap()
+                    .slot,
+                archive
+            );
+            (green, archive, firebomb)
+        };
+        let expected = exercise(&mut g);
+        assert_eq!(exercise(&mut replay), expected);
+        assert_eq!(g.snapshot(), replay.snapshot());
+        g.restore(&checkpoint).unwrap();
+        assert_eq!(g.snapshot(), checkpoint);
+        assert_eq!(exercise(&mut g), expected);
+        assert_eq!(g.snapshot(), replay.snapshot());
+    }
+}
+
+#[test]
+fn graveyard_donor_reacquisition_replays_without_aliasing_old_slot() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = fixture(&mut g, p, "Thranduil, the Elvenking", Zone::Battlefield);
+        let donor = fixture(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        g.refresh_graveyard_borrowing();
+        g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
+        let original = g
+            .graveyard_borrowed_ability_views()
+            .unwrap()
+            .into_iter()
+            .find(|a| a.source.card == source && a.graveyard.card == donor)
+            .unwrap()
+            .slot;
+        let checkpoint = g.snapshot();
+        let mut replay = g.clone();
+        let exercise = |game: &mut Game| {
+            game.state.objects[donor as usize].card = Card::from_name("Bear Cub").unwrap();
+            game.refresh_graveyard_borrowing();
+            game.state.borrowed_slots = borrowed_activations::refreshed_slots(game);
+            assert!(
+                !game
+                    .graveyard_borrowed_ability_views()
+                    .unwrap_or_default()
+                    .iter()
+                    .any(|a| a.source.card == source && a.graveyard.card == donor)
+            );
+            game.state.objects[donor as usize].card = Card::from_name("Llanowar Elves").unwrap();
+            game.refresh_graveyard_borrowing();
+            game.state.borrowed_slots = borrowed_activations::refreshed_slots(game);
+            let new_slot = game
+                .graveyard_borrowed_ability_views()
+                .unwrap()
+                .into_iter()
+                .find(|a| a.source.card == source && a.graveyard.card == donor)
+                .unwrap()
+                .slot;
+            assert_ne!(new_slot, original);
+            new_slot
+        };
+        let expected = exercise(&mut g);
+        assert_eq!(exercise(&mut replay), expected);
+        assert_eq!(g.snapshot(), replay.snapshot());
+        g.restore(&checkpoint).unwrap();
+        assert_eq!(g.snapshot(), checkpoint);
+        assert_eq!(exercise(&mut g), expected);
+        assert_eq!(g.snapshot(), replay.snapshot());
     }
 }

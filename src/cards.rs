@@ -756,6 +756,8 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    /// Choose a controlled permanent or reveal a matching card in hand.
+    Behold,
     /// Non-targeted Army selection during amass.
     AmassGoblins(u64),
     EmpowerJace(u64),
@@ -1908,6 +1910,15 @@ pub(crate) enum Instruction {
     AddCreatureTypes {
         subject: Subject,
         types: &'static [&'static str],
+    },
+    /// Add a basic land subtype to the selected exact land incarnations.
+    #[allow(
+        dead_code,
+        reason = "Shared rule remains gated until a complete card consumes it"
+    )]
+    AddBasicLandType {
+        subject: Subject,
+        kind: BasicLandType,
     },
     SetCreatureTypes {
         subject: Subject,
@@ -4004,6 +4015,7 @@ pub(crate) enum EntryTapped {
     UnlessPlaneswalker,
     UnlessControlsSubtype(&'static str),
     PayLife(u32),
+    UnlessBehold(&'static str),
     ChosenXAtMost(u32),
 }
 
@@ -4423,7 +4435,7 @@ impl Card {
     /// Intrinsic land/dork mana is stored separately from printed activation tables.
     /// The reserved index is used only by a captured inherited-ability descriptor.
     pub(crate) fn activation(self, index: u16) -> &'static ActivatedAbility {
-        if index == u16::MAX {
+        if index >= u16::MAX - 5 {
             static INTRINSIC: [ActivatedAbility; 6] = [
                 ActivatedAbility {
                     exhaust: false,
@@ -4582,7 +4594,12 @@ impl Card {
                     once_per_turn: false,
                 },
             ];
-            &INTRINSIC[self.mana_color().expect("captured intrinsic mana")]
+            let color = if index == u16::MAX {
+                self.mana_color().expect("captured printed intrinsic mana")
+            } else {
+                usize::from(u16::MAX - index - 1)
+            };
+            &INTRINSIC[color]
         } else {
             &self.activations()[usize::from(index)]
         }
@@ -4712,6 +4729,22 @@ impl Card {
     /// Printed starting loyalty of the represented face; zero for non-walkers.
     pub fn starting_loyalty(self) -> u64 {
         generated::starting_loyalty(self)
+    }
+    pub(crate) fn legacy_subtype_mana_activation(self, index: u16) -> bool {
+        authored::rules(self)
+            .is_some_and(|r| r.extras.legacy_subtype_mana_activation == Some(index))
+    }
+    /// Printed intrinsic mana abilities include all basic land subtypes, even in exile.
+    pub(crate) fn printed_intrinsic_mana_colors(self) -> impl Iterator<Item = usize> {
+        let land = self.is_land();
+        let fallback = self.mana_color();
+        (0..6).filter(move |&color| {
+            if land && color < 5 {
+                self.has_subtype(["Plains", "Island", "Swamp", "Mountain", "Forest"][color])
+            } else {
+                !land && fallback == Some(color)
+            }
+        })
     }
     pub(crate) fn mana_color(self) -> Option<usize> {
         generated::DEFINITIONS[self.0 as usize].mana_color

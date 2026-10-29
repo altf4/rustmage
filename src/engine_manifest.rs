@@ -368,6 +368,16 @@ impl Game {
         self.state.passes = 0;
         assert!(self.turn_manifest_face_up(request.object));
     }
+    pub(super) fn face_down_physical(&self, object: ObjectRef) -> Option<Card> {
+        self.state
+            .manifest
+            .as_ref()?
+            .permanents
+            .iter()
+            .find(|row| row.object == object)
+            .map(|row| row.underlying)
+    }
+
     pub(super) fn is_face_down(&self, object: ObjectRef) -> bool {
         self.state
             .manifest
@@ -2460,6 +2470,7 @@ mod tests {
                 },
             ],
             payment: None,
+            behold: None,
         }];
         assert!(game.advance_entries());
         assert_eq!(game.state.objects[other as usize].zone, Zone::Library);

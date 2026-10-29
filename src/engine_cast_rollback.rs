@@ -190,7 +190,8 @@ impl Game {
             if actor != rollback.player
                 && matches!(
                     action,
-                    Action::ChooseEntryValue { .. }
+                    Action::ChooseEntryBehold { .. }
+                        | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }
                         | Action::ChooseAuraAttachment { .. }
                         | Action::ChooseEntryReplacement { .. }

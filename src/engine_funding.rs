@@ -59,8 +59,17 @@ pub(super) struct FundingState<'g> {
     continuation: Option<Box<PaymentContinuation<'g>>>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
     graveyard_borrowing: graveyard_borrowing::Rows,
+    borrowed_slots: borrowed_activations::SlotRows,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
+        &self.borrowed_slots
+    }
+    fn borrowed_slots(&self) -> &[borrowed_activations::SlotRow] {
+        self.borrowed_slots
+            .as_ref()
+            .map_or(&[], |rows| rows.as_slice())
+    }
     fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
         &self.graveyard_borrowing
     }
@@ -268,6 +277,7 @@ struct ResourceKey {
 #[derive(Hash, PartialEq, Eq)]
 struct EntryFundingKey {
     copy_origins: Vec<(ObjectRef, Option<u64>)>,
+    manifested: Vec<(ObjectRef, Card)>,
     order: Vec<ObjectRef>,
     entered: Vec<ObjectRef>,
     battle_protectors: Vec<(ObjectRef, usize)>,
@@ -286,6 +296,8 @@ struct FundingKey {
     controlled_creature_deaths: [u64; 2],
     borrowed_uses: Vec<(ObjectRef, u64)>,
     graveyard_borrowing: Vec<graveyard_borrowing::Row>,
+    borrowed_slots: Vec<borrowed_activations::SlotRow>,
+    basic_land_types: Vec<subtypes::BasicLandTypesEffectView>,
     mana: [u128; 6],
     lots: Vec<mana_lots::Lot>,
     life: i128,
@@ -544,6 +556,18 @@ impl<'g> FundingState<'g> {
     fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
     }
+    fn projected_face_down_physical(&self, object: ObjectRef) -> Option<Card> {
+        self.entry_projection.as_ref().map_or_else(
+            || self.game.face_down_physical(object),
+            |projection| {
+                projection
+                    .manifested
+                    .iter()
+                    .find(|(reference, _)| *reference == object)
+                    .map(|(_, card)| *card)
+            },
+        )
+    }
     fn project_copy_departure(&mut self, before: ObjectRef, after: ObjectRef) {
         let index = self.copy_recipes.as_ref().and_then(|rows| {
             rows.binary_search_by_key(&before.card, |row| row.object.card)
@@ -696,6 +720,7 @@ impl<'g> FundingState<'g> {
                 .and_then(|a| a.additional_group.as_ref())
                 .map_or_else(Vec::new, |g| g.to_vec()),
             graveyard_borrowing: game.state.graveyard_borrowing.clone(),
+            borrowed_slots: game.state.borrowed_slots.clone(),
             borrowed_uses: game
                 .state
                 .borrowed_uses
@@ -1118,6 +1143,7 @@ impl<'g> FundingState<'g> {
             .enumerate()
             .filter(|(index, ability)| {
                 !object.card.self_granted_activation_template(*index as u16)
+                    && !object.card.legacy_subtype_mana_activation(*index as u16)
                     && ability.mana_production().is_some()
             })
             .map(|(index, ability)| (index as u16, ability, None))
@@ -1365,6 +1391,7 @@ impl<'g> FundingState<'g> {
             }
         }
         self.graveyard_borrowing = graveyard_borrowing::refreshed(self);
+        self.borrowed_slots = borrowed_activations::refreshed_slots(self);
     }
     pub(super) fn prune_source_linked_projection(&mut self) {
         let retained: Vec<_> = self
@@ -1518,20 +1545,51 @@ impl<'g> FundingState<'g> {
                     .checked_add(1)
                     .capacity("virtual controlled death history exhausted");
             }
+            let face_down_physical = self.projected_face_down_physical(reference);
             let object = &mut self.resources[step.resource].object;
             object.zone = destination;
             if !preserve_departure_counters {
+                // A committed zone change creates a new incarnation in both the
+                // owned game and the projected world.
+                object.generation = object
+                    .generation
+                    .checked_add(1)
+                    .capacity("virtual generation exhausted");
                 // The slow path still needs the old face for replacement planning.
                 // Normalize only when this step commits the virtual departure.
                 self.game.restore_projected_copy_identity(reference, object);
-                if !object.is_token() && !object.is_spell_copy() {
+                if let Some(physical) = face_down_physical {
+                    object.card = physical.front_face();
+                } else if !object.is_token() && !object.is_spell_copy() {
                     object.card = object.card.front_face();
                 }
+                object.controller = object.owner;
+                object.flashback = false;
+                object.cast_for_warp = false;
+                object.tapped = false;
+                object.summoning_sick = false;
+                object.damage = 0;
+                object.damaged_this_turn = false;
+                object.dealt_damage_this_turn = false;
+                object.deathtouch_since_sba = false;
+                object.growth = Stats::default();
+                object.gained_keywords = Keywords::NONE;
                 object.counters = InitialCounters::default();
+                object.used_abilities = 0;
+                object.loyalty_activated_this_turn = false;
+                object.class_level = 1;
+                object.attached_to = None;
                 live_counters::set(&mut self.named_counters, reference, None);
             }
             if !preserve_departure_counters {
-                self.project_copy_departure(reference, reference);
+                self.resources[step.resource].attacking = false;
+                if let Some(projection) = &mut self.entry_projection {
+                    projection
+                        .manifested
+                        .retain(|(object, _)| *object != reference);
+                }
+                let after = self.reference(id);
+                self.project_copy_departure(reference, after);
             }
         }
         // visit_applied commits source and selected additional cost components
@@ -1615,6 +1673,10 @@ impl<'g> FundingState<'g> {
                             .resolved_ability_modifications
                             .iter()
                             .any(|row| row.recipient.card == r.id)
+                        || roles
+                            .basic_land_types
+                            .iter()
+                            .any(|row| row.recipient.card == r.id)
                 }) || self.continuation.as_ref().is_some_and(|c| c.selects(r.id))
                     || self.power_sensitive
                     || self
@@ -1684,6 +1746,7 @@ impl<'g> FundingState<'g> {
             controlled_creature_deaths: self.controlled_creatures_died,
             entries: self.entry_projection.as_ref().map(|p| EntryFundingKey {
                 copy_origins: p.copy_origins.clone(),
+                manifested: p.manifested.clone(),
                 order: p.order.clone(),
                 entered: p.entered.clone(),
                 battle_protectors: p
@@ -1700,6 +1763,13 @@ impl<'g> FundingState<'g> {
                 uses.dedup();
                 uses
             },
+            basic_land_types: self
+                .roles()
+                .map_or_else(Vec::new, |roles| roles.basic_land_types.clone()),
+            borrowed_slots: self
+                .borrowed_slots
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             graveyard_borrowing: self
                 .graveyard_borrowing
                 .as_ref()
@@ -1744,7 +1814,9 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             if !object.tapped {
-                total = total.saturating_add(u128::from(object.card.mana_color().is_some()));
+                total = total.saturating_add(u128::from(
+                    object.card.mana_color().is_some() || self.kinds(resource) & 2 != 0,
+                ));
                 // A chosen basic type can supply one mana even if ability removal
                 // currently hides it; later funding moves may restore the grant.
                 if object.card.static_ability_groups().iter().any(|group| {
@@ -1868,6 +1940,17 @@ impl<'g> FundingState<'g> {
                     let mut mana = [0; 6];
                     mana[color] = 1;
                     add(ManaProduction::Fixed(mana), 1);
+                }
+                // A land's subtype can change during funding. Overestimate all
+                // five colors rather than pruning a reachable future grant.
+                if self.kinds(resource) & 2 != 0 {
+                    add(
+                        ManaProduction::Choice {
+                            mask: 31,
+                            amount: 1,
+                        },
+                        1,
+                    );
                 }
                 if object.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| {
@@ -2023,7 +2106,10 @@ impl<'g> FundingState<'g> {
                     });
                 }
             }
-            if tap_ready && let Some(color) = object.card.mana_color() {
+            if tap_ready
+                && let Some(color) =
+                    ability_world::CharacteristicWorld::intrinsic_mana_color(self, resource.id)
+            {
                 upper[color] = upper[color].saturating_add(1);
             }
             for (index, ability, borrowed) in self.mana_activations(resource.id) {

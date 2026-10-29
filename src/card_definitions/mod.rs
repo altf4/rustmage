@@ -251,6 +251,8 @@ pub(super) struct CardExtras {
     pub mana_alternative_replaces_additional: bool,
     /// Independent additional mana route crossed with every printed hybrid base.
     pub additional_mana_alternative: Option<ManaCost>,
+    /// Legacy reminder-text activation replaced by rules-derived basic-land mana.
+    pub legacy_subtype_mana_activation: Option<u16>,
     pub kicked_targets: Option<TargetPlan>,
     pub cast_entry_counters: &'static [(CounterKind, u64)],
     pub hand_cast_entry_counters: &'static [(CounterKind, u64)],
@@ -351,6 +353,7 @@ impl CardExtras {
         cost_alternative_guard: None,
         mana_alternative_replaces_additional: false,
         additional_mana_alternative: None,
+        legacy_subtype_mana_activation: None,
         kicked_targets: None,
         entry_counter_rules: &[],
         starting_loyalty: 0,

@@ -75,6 +75,9 @@ pub struct GrantedSubtypes {
     chosen: Option<crate::cards::CreatureType>,
     /// A layer-four effect replaces all previously held land subtypes.
     basic_land: Option<crate::cards::BasicLandType>,
+    added_basic_lands: u8,
+    effective_basic_lands: Option<u8>,
+    suppress_printed_land: bool,
     /// None retains printed types (including changeling); Some replaces only
     /// creature types, preserving e.g. Equipment, Aura, Forest and Lesson.
     creature_types: Option<&'static [&'static str]>,
@@ -87,6 +90,9 @@ impl GrantedSubtypes {
             added: SUPPRESS_PRINTED | ADDED_FOOD,
             chosen: None,
             basic_land: None,
+            added_basic_lands: 0,
+            effective_basic_lands: None,
+            suppress_printed_land: false,
             creature_types: Some(&[]),
             card_types: None,
         }
@@ -111,6 +117,10 @@ impl GrantedSubtypes {
             return false;
         }
         self.basic_land.is_some_and(|kind| kind.name() == subtype)
+            || (self.added_basic_lands != 0
+                && crate::cards::BasicLandType::ALL.iter().any(|kind| {
+                    kind.name() == subtype && self.added_basic_lands & (1 << kind.index()) != 0
+                }))
             || (self.added & Self::copy_type_bit(subtype) != 0)
             || (self.flag(ALL_CREATURE_TYPES) && crate::cards::is_creature_type(subtype))
             || self.chosen.is_some_and(|t| t.name() == subtype)
@@ -129,10 +139,20 @@ impl GrantedSubtypes {
         {
             return false;
         }
+        if let Some(bits) = self.effective_basic_lands
+            && let Some(kind) = crate::cards::BasicLandType::ALL
+                .into_iter()
+                .find(|kind| kind.name() == subtype)
+        {
+            return bits & (1 << kind.index()) != 0;
+        }
+        if self.suppress_printed_land && LAND_TYPES.contains(&subtype) {
+            return self.contains(subtype);
+        }
         if LAND_TYPES.contains(&subtype)
             && let Some(basic) = self.basic_land
         {
-            return basic.name() == subtype;
+            return basic.name() == subtype || self.contains(subtype);
         }
         // Preserve the ordinary-card hot path: no taxonomy lookup, and printed
         // membership short-circuits the additional-type mask as before.
@@ -235,7 +255,11 @@ impl Serialize for GrantedSubtypes {
         }
         let mut out = serializer.serialize_struct(
             "GrantedSubtypes",
-            6 + usize::from(self.card_types.is_some()) + usize::from(self.basic_land.is_some()),
+            6 + usize::from(self.card_types.is_some())
+                + usize::from(self.basic_land.is_some())
+                + usize::from(self.added_basic_lands != 0)
+                + usize::from(self.effective_basic_lands.is_some())
+                + usize::from(self.suppress_printed_land),
         )?;
         out.serialize_field("suppress_printed", &self.flag(SUPPRESS_PRINTED))?;
         out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
@@ -243,6 +267,23 @@ impl Serialize for GrantedSubtypes {
         out.serialize_field("chosen", &self.chosen)?;
         out.serialize_field("added", &Added(self.added & ADDED_MASK))?;
         out.serialize_field("creature_types", &self.creature_types)?;
+        if let Some(bits) = self.effective_basic_lands {
+            let kinds: Vec<_> = crate::cards::BasicLandType::ALL
+                .into_iter()
+                .filter(|kind| bits & (1 << kind.index()) != 0)
+                .collect();
+            out.serialize_field("effective_basic_lands", &kinds)?;
+        }
+        if self.suppress_printed_land {
+            out.serialize_field("suppress_printed_land", &true)?;
+        }
+        if self.added_basic_lands != 0 {
+            let kinds: Vec<_> = crate::cards::BasicLandType::ALL
+                .into_iter()
+                .filter(|kind| self.added_basic_lands & (1 << kind.index()) != 0)
+                .collect();
+            out.serialize_field("added_basic_lands", &kinds)?;
+        }
         if let Some(kind) = self.basic_land {
             out.serialize_field("basic_land", &kind)?;
         }
@@ -338,6 +379,15 @@ impl DamageFacts {
         self.granted_subtypes.has(self.card, subtype)
     }
 }
+/// An exact-incarnation, resolution-created additive land type effect.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
+pub struct BasicLandTypesEffectView {
+    pub recipient: ObjectRef,
+    pub source: ObjectRef,
+    pub kind: crate::cards::BasicLandType,
+    pub timestamp: u64,
+}
+
 /// Earlier subtype layers over actual or projected source registries.
 pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
@@ -373,6 +423,20 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                         } else {
                             characteristic_layers::SubtypeChange::Named(row.types, false)
                         },
+                    )
+                }),
+        );
+    }
+    if let Some(state) = world.roles() {
+        changes.extend(
+            state
+                .basic_land_types
+                .iter()
+                .filter(|row| row.recipient == reference)
+                .map(|row| {
+                    (
+                        row.timestamp,
+                        characteristic_layers::SubtypeChange::AddBasicLand(row.kind),
                     )
                 }),
         );
@@ -445,6 +509,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                 change,
                 characteristic_layers::SubtypeChange::Add(_)
                     | characteristic_layers::SubtypeChange::BasicLand(_)
+                    | characteristic_layers::SubtypeChange::AddBasicLand(_)
             )
         })
         .map(|row| row.0);
@@ -459,6 +524,12 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             }
             characteristic_layers::SubtypeChange::BasicLand(kind) => {
                 mask.basic_land = Some(kind);
+                mask.added_basic_lands = 0;
+            }
+            characteristic_layers::SubtypeChange::AddBasicLand(kind) => {
+                if kinds(id, target) & 2 != 0 {
+                    mask.added_basic_lands |= 1 << kind.index();
+                }
             }
             characteristic_layers::SubtypeChange::FoodOnly => {
                 mask = GrantedSubtypes::food_only();
@@ -482,6 +553,18 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                     mask.set_flag(LAND_ONLY, false);
                 }
             }
+        }
+    }
+    let land_timeline = basic_land_timeline(world, id);
+    if land_timeline.has_events {
+        mask.effective_basic_lands = Some(land_timeline.final_types);
+        mask.suppress_printed_land = land_timeline.lost_original_types;
+        mask.added_basic_lands &= land_timeline.final_types;
+        if mask
+            .basic_land
+            .is_some_and(|kind| land_timeline.final_types & (1 << kind.index()) == 0)
+        {
+            mask.basic_land = None;
         }
     }
     if world.roles().is_some_and(|roles| {
@@ -577,6 +660,137 @@ impl Game {
     }
 }
 
+/// Layer-one land types, before later type-setting and additive effects.
+pub(super) fn native_basic_lands<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> u8 {
+    let mut mask = GrantedSubtypes::default();
+    mask.apply_copy_types(Some(world.recipe(id).copy_types()));
+    crate::cards::BasicLandType::ALL
+        .into_iter()
+        .filter(|kind| mask.has(world.definition(id), kind.name()))
+        .fold(0, |bits, kind| bits | (1 << kind.index()))
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum BasicLandAbilityChange {
+    Remove,
+    Add(crate::cards::BasicLandType),
+    Set(crate::cards::BasicLandType),
+}
+pub(super) struct BasicLandTimeline {
+    pub initial_types: u8,
+    pub final_types: u8,
+    pub lost_original_types: bool,
+    pub has_events: bool,
+    pub ability_changes: Vec<(u64, BasicLandAbilityChange)>,
+}
+
+/// Run all supported layer-four card-type and basic-land-type changes in
+/// timestamp order, recording precisely when intrinsic mana is lost or gained.
+pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> BasicLandTimeline {
+    #[derive(Clone, Copy)]
+    enum Event {
+        Land(bool),
+        Add(crate::cards::BasicLandType),
+        Set(crate::cards::BasicLandType),
+    }
+    let object = world.object(id);
+    let reference = world.reference(id);
+    let mut events: Vec<(u64, Event)> = characteristic_layers::land_kind_events(world, id)
+        .into_iter()
+        .map(|(time, land)| (time, Event::Land(land)))
+        .collect();
+    events.extend(
+        world
+            .roles()
+            .into_iter()
+            .flat_map(|state| &state.basic_land_types)
+            .filter(|row| row.recipient == reference)
+            .map(|row| (row.timestamp, Event::Add(row.kind))),
+    );
+    if object.card.static_ability_groups().iter().any(|group| {
+        group
+            .fragments
+            .iter()
+            .any(|f| matches!(f, crate::cards::StaticAbilityFragment::ChosenBasicLandType))
+    }) && let Some(EntryChoiceValue::BasicLandType(kind)) = world.entry_value(reference)
+        && let Some(time) = world
+            .roles()
+            .and_then(|state| {
+                state
+                    .ability_timestamps
+                    .iter()
+                    .find(|row| row.source == reference)
+            })
+            .map(|row| row.timestamp)
+    {
+        events.push((time, Event::Set(kind)));
+    }
+    if events.is_empty() {
+        return BasicLandTimeline {
+            initial_types: 0,
+            final_types: 0,
+            lost_original_types: false,
+            has_events: false,
+            ability_changes: Vec::new(),
+        };
+    }
+    events.sort_by_key(|event| event.0);
+    let mut is_land = world.recipe(id).kinds() & 2 != 0;
+    let relevant = is_land
+        || events
+            .iter()
+            .any(|(_, event)| !matches!(event, Event::Land(false)));
+    let initial_types = if is_land {
+        native_basic_lands(world, id)
+    } else {
+        0
+    };
+    let mut present = initial_types;
+    let mut lost_original_types = !is_land;
+    let mut ability_changes = Vec::new();
+    for (time, event) in &events {
+        match *event {
+            Event::Land(false) => {
+                if is_land {
+                    present = 0;
+                    is_land = false;
+                    lost_original_types = true;
+                    ability_changes.push((*time, BasicLandAbilityChange::Remove));
+                }
+            }
+            Event::Land(true) => {
+                is_land = true;
+            }
+            Event::Add(kind) if is_land => {
+                let bit = 1 << kind.index();
+                if present & bit == 0 {
+                    present |= bit;
+                    ability_changes.push((*time, BasicLandAbilityChange::Add(kind)));
+                }
+            }
+            Event::Set(kind) if is_land => {
+                present = 1 << kind.index();
+                lost_original_types = true;
+                ability_changes.push((*time, BasicLandAbilityChange::Set(kind)));
+            }
+            Event::Add(_) | Event::Set(_) => {}
+        }
+    }
+    BasicLandTimeline {
+        initial_types,
+        final_types: present,
+        lost_original_types,
+        has_events: relevant && !events.is_empty(),
+        ability_changes,
+    }
+}
+
 impl Game {
     pub(super) fn add_creature_types(
         &mut self,
@@ -605,6 +819,35 @@ impl Game {
                     source: item.object,
                     types,
                     additional: true,
+                    timestamp,
+                });
+        }
+    }
+    pub(super) fn add_basic_land_type(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        kind: crate::cards::BasicLandType,
+    ) {
+        let recipients: Vec<_> = self
+            .keyword_subjects(item, subject)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id) && self.current_kinds(id) & 2 != 0)
+            .map(|id| self.object_ref(id))
+            .collect();
+        if recipients.is_empty() {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        for recipient in recipients {
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .basic_land_types
+                .push(BasicLandTypesEffectView {
+                    recipient,
+                    source: item.object,
+                    kind,
                     timestamp,
                 });
         }
@@ -650,6 +893,9 @@ impl Game {
         if let Some(state) = &mut self.state.roles {
             state
                 .creature_types
+                .retain(|row| row.recipient != recipient);
+            state
+                .basic_land_types
                 .retain(|row| row.recipient != recipient);
         }
     }

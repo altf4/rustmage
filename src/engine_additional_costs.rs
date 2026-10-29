@@ -55,6 +55,11 @@ impl Game {
         }
         let spec = spec.in_zone(o.zone);
         let controls_cost_object = match spec.kind {
+            EffectChoiceKind::Behold => match o.zone {
+                Zone::Battlefield => o.controller == actor,
+                Zone::Hand => o.owner == actor,
+                _ => false,
+            },
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
@@ -119,6 +124,7 @@ impl Game {
     ) -> bool {
         let spec = spec.in_zone(o.zone);
         let zone = match spec.kind {
+            EffectChoiceKind::Behold if matches!(o.zone, Zone::Battlefield | Zone::Hand) => o.zone,
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => Zone::Graveyard,
@@ -141,6 +147,9 @@ impl Game {
         if let EffectChoiceKind::ExileGraveyardSymbols { color, .. } = spec.kind
             && o.card.colors() & (1 << color.index()) == 0
         {
+            return false;
+        }
+        if spec.kind == EffectChoiceKind::Behold && zone == Zone::Hand && o.is_token() {
             return false;
         }
         let f = spec.filter;
@@ -695,6 +704,11 @@ impl Game {
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind {
+            EffectChoiceKind::Behold => {
+                if self.state.objects[object.card as usize].zone == Zone::Hand {
+                    self.remember_public_hand(object);
+                }
+            }
             EffectChoiceKind::TargetAttackingReturn { .. }
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)

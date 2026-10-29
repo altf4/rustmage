@@ -38,5 +38,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     },
     entry: EntryTapped::PayLife(2),
     keywords: Keywords::NONE,
+    extras: &CardExtras {
+        legacy_subtype_mana_activation: Some(0),
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

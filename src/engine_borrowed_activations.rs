@@ -1,6 +1,20 @@
 //! Activated abilities inherited from exact linked exile incarnations.
 use super::ability_world::CharacteristicWorld;
 use super::*;
+/// Acquisition identifiers are separate from public ability slots. Both are
+/// allocated monotonically within an exact source incarnation.
+pub(super) const DONOR_SLOT_WIDTH: u64 = 1;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub(super) struct SlotRow {
+    source: ObjectRef,
+    acquisition: u64,
+    graveyard: bool,
+    definition: Option<Card>,
+    ability: u16,
+    slot: u64,
+}
+pub(super) type SlotRows = Option<SharedVec<SlotRow>>;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Link {
@@ -15,7 +29,7 @@ pub struct BorrowedAbilityView {
     pub source: ObjectRef,
     pub exiled: ObjectRef,
     pub definition: Card,
-    /// u16::MAX denotes the exiled card's intrinsic mana ability.
+    /// The final five indices identify the exiled object's intrinsic mana abilities.
     pub ability: u16,
     pub slot: u64,
     pub used: bool,
@@ -45,6 +59,7 @@ pub(super) struct Descriptor {
     pub ability: u16,
     pub slot: u64,
     pub used: bool,
+    pub(super) acquisition: u64,
 }
 impl Descriptor {
     pub(super) fn rules(self) -> &'static ActivatedAbility {
@@ -85,12 +100,15 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
             continue;
         }
         for (index, _) in card.card.activations().iter().enumerate() {
+            if card.card.legacy_subtype_mana_activation(index as u16) {
+                continue;
+            }
             if card.card.grants_activation(index as u16)
                 || card.card.self_granted_activation_template(index as u16)
             {
                 continue;
             }
-            let slot = link.first_slot + index as u64;
+            let slot = 0;
             result.push(Descriptor {
                 source: link.source,
                 donor: link.exiled,
@@ -98,11 +116,34 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: card.card,
                 ability: index as u16,
                 slot,
-                used: world.borrowed_activation_used(link.source, slot),
+                used: false,
+                acquisition: link.first_slot,
             });
         }
-        if card.card.mana_color().is_some() {
-            let slot = link.first_slot + card.card.activations().len() as u64;
+        if world.kinds(link.exiled.card) & 2 != 0 {
+            let subtypes = world.subtypes(link.exiled.card);
+            for (color, subtype) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                .iter()
+                .enumerate()
+            {
+                if !subtypes.has(card.card, subtype) {
+                    continue;
+                }
+                let slot = 0;
+                result.push(Descriptor {
+                    source: link.source,
+                    donor: link.exiled,
+                    zone: Zone::Exile,
+                    definition: card.card,
+                    ability: u16::MAX - 1 - color as u16,
+                    slot,
+                    used: false,
+                    acquisition: link.first_slot,
+                });
+            }
+        }
+        if !card.card.is_land() && card.card.mana_color().is_some() {
+            let slot = 0;
             result.push(Descriptor {
                 source: link.source,
                 donor: link.exiled,
@@ -110,14 +151,115 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: card.card,
                 ability: u16::MAX,
                 slot,
-                used: world.borrowed_activation_used(link.source, slot),
+                used: false,
+                acquisition: link.first_slot,
             });
         }
     }
     if source.card.graveyard_activation_subtype().is_some() {
         result.extend(graveyard_borrowing::inventory(world, id));
     }
+    assign_slots(world, &mut result);
     result
+}
+
+// Existing rows are immutable. New candidate rows receive provisional compact
+// slots in inventory order, the same order used when persisting the registry.
+fn assign_slots<W: CharacteristicWorld + ?Sized>(world: &W, abilities: &mut [Descriptor]) {
+    let mut rows = world.borrowed_slots().to_vec();
+    for ability in abilities {
+        let intrinsic = ability.ability >= u16::MAX - 5 && ability.ability < u16::MAX;
+        let definition = (!intrinsic).then_some(ability.definition);
+        let graveyard = ability.zone == Zone::Graveyard;
+        let matching = |row: &&SlotRow| {
+            row.source == ability.source
+                && row.acquisition == ability.acquisition
+                && row.graveyard == graveyard
+                && row.definition == definition
+                && row.ability == ability.ability
+        };
+        let slot = if let Some(row) = rows.iter().find(matching) {
+            row.slot
+        } else {
+            let slot = rows
+                .iter()
+                .filter(|row| row.source == ability.source)
+                .map(|row| row.slot)
+                .max()
+                .map_or(0, |slot| {
+                    slot.checked_add(1)
+                        .capacity("borrowed ability slots exhausted")
+                });
+            rows.push(SlotRow {
+                source: ability.source,
+                acquisition: ability.acquisition,
+                graveyard,
+                definition,
+                ability: ability.ability,
+                slot,
+            });
+            slot
+        };
+        ability.slot = slot;
+        ability.used = world.borrowed_activation_used(ability.source, slot);
+    }
+}
+
+pub(super) fn refreshed_slots<W: CharacteristicWorld + ?Sized>(world: &W) -> SlotRows {
+    if world.borrowed_slots().is_empty()
+        && world.graveyard_borrowing().is_empty()
+        && world.game().state.borrowed_links.is_none()
+    {
+        return None;
+    }
+    let mut rows: Vec<_> = world
+        .borrowed_slots()
+        .iter()
+        .copied()
+        .filter(|row| {
+            world.object(row.source.card).zone == Zone::Battlefield
+                && world.reference(row.source.card) == row.source
+        })
+        .collect();
+    let mut sources = world.static_sources().to_vec();
+    for link in world
+        .game()
+        .state
+        .borrowed_links
+        .as_ref()
+        .into_iter()
+        .flat_map(|rows| rows.iter())
+    {
+        if !sources.contains(&link.source.card) {
+            sources.push(link.source.card);
+        }
+    }
+    for id in sources {
+        for ability in inventory(world, id, false) {
+            let intrinsic = ability.ability >= u16::MAX - 5 && ability.ability < u16::MAX;
+            let row = SlotRow {
+                source: ability.source,
+                acquisition: ability.acquisition,
+                graveyard: ability.zone == Zone::Graveyard,
+                definition: (!intrinsic).then_some(ability.definition),
+                ability: ability.ability,
+                slot: ability.slot,
+            };
+            if !rows.iter().any(|old| {
+                old.source == row.source
+                    && old.acquisition == row.acquisition
+                    && old.graveyard == row.graveyard
+                    && old.definition == row.definition
+                    && old.ability == row.ability
+            }) {
+                rows.push(row);
+            }
+        }
+    }
+    if rows == world.borrowed_slots() {
+        return world.borrowed_slots_state().clone();
+    }
+    (!rows.is_empty()).then(|| rows.into())
 }
 impl Game {
     pub(super) fn exile_and_borrow_activated_abilities(&mut self, item: &SpellView) {
@@ -137,14 +279,7 @@ impl Game {
                 if !event.moved || event.destination != Zone::Exile {
                     continue;
                 }
-                let definition = self.state.objects[event.after.card as usize].card;
-                let width = u64::try_from(
-                    definition.activations().len() + usize::from(definition.mana_color().is_some()),
-                )
-                .capacity("borrowed activation capacity exhausted");
-                if width == 0 {
-                    continue;
-                }
+                let width = DONOR_SLOT_WIDTH;
                 let first_slot = graveyard_borrowing::next_slot(self, item.object);
                 (first_slot.checked_add(width)).capacity("borrowed activation capacity exhausted");
                 self.state
@@ -210,6 +345,12 @@ impl Game {
     }
     pub(super) fn forget_borrowed_source(&mut self, source: ObjectRef) {
         graveyard_borrowing::forget(&mut self.state.graveyard_borrowing, source);
+        if let Some(rows) = &mut self.state.borrowed_slots {
+            rows.retain(|row| row.source != source);
+            if rows.is_empty() {
+                self.state.borrowed_slots = None;
+            }
+        }
         if let Some(rows) = &mut self.state.borrowed_links {
             rows.retain(|row| row.source != source);
             if rows.is_empty() {
