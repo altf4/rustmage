@@ -247,7 +247,7 @@ fn verify(i: usize, p: Player, item: &SpellView, b: &Observation, a: &Observatio
     };
     match (i, ch) {
         (0, _) => {
-            let others: Vec<_> = creatures().filter(|v| v.id != item.card).collect();
+            let others: Vec<_> = creatures().filter(|v| v.id != item.source().expect("example expects an object-backed packet").id).collect();
             assert!(!others.is_empty());
             for v in others {
                 let n = now(v.id);
@@ -489,7 +489,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 }
                 if let Some(item) = view.stack.last().filter(|v| {
-                    Some(v.card) == f.source && matches!(v.kind, StackKind::TriggeredAbility { .. })
+                    v.source().map(|source| source.id) == f.source && matches!(v.kind, StackKind::TriggeredAbility { .. })
                 }) && view.resolving.is_none()
                     && view.announcing.is_none()
                 {
@@ -526,11 +526,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let (Some(ann), Action::PayCosts { .. }) = (&o.announcing, &action)
                 && ann.kind == StackKind::Spell
             {
-                if ann.source_card.name() == NAMES[i] {
-                    s[p.index()].source = Some(ann.card);
+                if ann.source().is_some_and(|source| source.card.name() == NAMES[i]) {
+                    s[p.index()].source = Some(ann.source().expect("example expects an object-backed packet").id);
                     casts[i][p.index()] += 1;
                 }
-                if ann.source_card.name() == "Thrill of Possibility" {
+                if ann.source().is_some_and(|source| source.card.name() == "Thrill of Possibility") {
                     s[p.index()].thrill = true;
                 }
             }

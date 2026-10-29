@@ -64,7 +64,7 @@ fn countered_loyalty_still_qualifies_attack_on_planeswalker() {
             .state
             .stack
             .iter()
-            .find(|item| item.card == own_walker)
+            .find(|item| item.source.is_some_and(|source| source.id == own_walker))
             .unwrap()
             .id;
         assert!(g.counter_stack_item(ability, false));
@@ -81,7 +81,7 @@ fn countered_loyalty_still_qualifies_attack_on_planeswalker() {
         act(&mut g, attack);
         act(&mut g, Action::FinishAttackers);
         select_kiora_target(&mut g, attacker);
-        assert!(g.state.stack.iter().any(|item| item.card == kiora));
+        assert!(g.state.stack.iter().any(|item| item.source.is_some_and(|source| source.id == kiora)));
         settle(&mut g);
         assert!(!g.object_view(attacker).tapped);
         assert!(g.keywords(attacker).contains(Keywords::CANT_BE_BLOCKED));
@@ -114,7 +114,7 @@ fn opposing_loyalty_activation_does_not_qualify_kiora() {
                 .pending_triggers
                 .iter()
                 .chain(g.state.stack.iter())
-                .any(|item| item.card == kiora)
+                .any(|item| item.source.is_some_and(|source| source.id == kiora))
         );
     }
 }

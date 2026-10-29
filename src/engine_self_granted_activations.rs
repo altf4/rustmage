@@ -96,7 +96,7 @@ impl Game {
         };
         let actor = self.state.objects[source.card as usize].controller;
         let mut item = self.activation_item(actor, source.card, ability);
-        item.source_card = row.granting_card;
+        item.set_source_definition(row.granting_card);
         item.source_ability_origin = Some(row.timestamp);
         item.self_granted_activation = Some(Box::new(SelfGrantedActivationContext {
             grant_timestamp: row.timestamp,

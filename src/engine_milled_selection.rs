@@ -213,7 +213,7 @@ impl Game {
         // this continuation and no old-generation object can be recovered.
         self.state
             .stack
-            .retain(|item| !selected.contains(&item.object));
+            .retain(|item| item.source.is_none_or(|source| !selected.contains(&source.object)));
         let destination = match destination {
             MilledDestination::PlayPermission { .. } => {
                 unreachable!("handled permission without movement")

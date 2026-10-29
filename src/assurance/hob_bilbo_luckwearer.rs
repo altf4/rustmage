@@ -59,7 +59,7 @@ fn plot(g: &mut Game, p: Player, a: CardId, b: CardId) -> CardId {
     pay(g);
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     let spell = g.state.stack.last().unwrap();
-    assert_eq!(spell.source_card.name(), "Burglar's Plot");
+    assert_eq!(spell.source.unwrap().card.name(), "Burglar's Plot");
     assert_eq!(spell.mana_value(), 5);
     s
 }

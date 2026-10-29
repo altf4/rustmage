@@ -947,7 +947,7 @@ fn fatehold_charm_returns_creature_spell_and_spell_copy() {
                         .state
                         .stack
                         .iter()
-                        .find(|s| s.card == target)
+                        .find(|s| s.source.is_some_and(|source| source.id == target))
                         .unwrap()
                         .clone();
                     let copy = g.allocate_spell_copy(&template, p.other());
@@ -7755,3 +7755,21 @@ mod engine_fra_uldaros_budget_tests;
 
 #[path = "engine_fra_uldaros_budget_independent_tests.rs"]
 mod engine_fra_uldaros_budget_independent_tests;
+
+#[path = "engine_fra_planeswalker_type_count_tests.rs"]
+mod engine_fra_planeswalker_type_count_tests;
+
+#[path = "engine_fra_poison_ward_tests.rs"]
+mod engine_fra_poison_ward_tests;
+
+#[path = "engine_fra_proliferate_batch_tests.rs"]
+mod engine_fra_proliferate_batch_tests;
+
+#[path = "engine_fra_radiation_order_tests.rs"]
+mod engine_fra_radiation_order_tests;
+
+#[path = "engine_fra_self_replacement_tests.rs"]
+mod engine_fra_self_replacement_tests;
+
+#[path = "engine_fra_tam_proliferate_tests.rs"]
+mod engine_fra_tam_proliferate_tests;

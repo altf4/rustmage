@@ -149,12 +149,12 @@ fn delirium(obs: &Observation, p: Player) -> bool {
 fn check(before: &Observation, after: &Observation, item: &SpellView) -> (usize, bool) {
     let p = item.controller;
     let i = p.index();
-    let n = item.source_card.name();
+    let n = item.source().expect("example expects an object-backed packet").card.name();
     let trigger = matches!(item.kind, StackKind::TriggeredAbility { .. });
     let own_source = before
         .objects
         .iter()
-        .find(|o| o.reference == item.object && o.zone == Zone::Battlefield);
+        .find(|o| o.reference == item.source().expect("example expects an object-backed packet").object && o.zone == Zone::Battlefield);
     let bound = item.targets.first();
     let target = bound.and_then(|b| {
         before.objects.iter().find(|o| {
@@ -195,7 +195,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> (usize,
         }
         ("Dwynen's Elite", true) => {
             let yes =
-                bf(before, p).any(|o| o.reference != item.object && o.card.has_subtype("Elf"));
+                bf(before, p).any(|o| o.reference != item.source().expect("example expects an object-backed packet").object && o.card.has_subtype("Elf"));
             let count = |obs: &Observation| {
                 bf(obs, p)
                     .filter(|o| o.card.is_token() && o.card.has_subtype("Elf"))
@@ -207,7 +207,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> (usize,
         ("Hero in Training", true) => {
             draws(1);
             let yes =
-                bf(before, p).any(|o| o.reference != item.object && o.card.has_subtype("Hero"));
+                bf(before, p).any(|o| o.reference != item.source().expect("example expects an object-backed packet").object && o.card.has_subtype("Hero"));
             assert_eq!(
                 after.players[i].life,
                 before.players[i].life + if yes { 2 } else { 0 }
@@ -248,7 +248,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> (usize,
             }
             let yes = bf(before, p).any(|o| {
                 o.card.is_creature()
-                    && (n == "Nasty Little Rabbit" || o.reference != item.object)
+                    && (n == "Nasty Little Rabbit" || o.reference != item.source().expect("example expects an object-backed packet").object)
                     && o.power >= 4
             });
             counter(u64::from(yes));
@@ -475,7 +475,7 @@ fn main() {
                     batches += 1;
                     checked.insert(item.id);
                     seen.insert((
-                        item.source_card.name(),
+                        item.source().expect("example expects an object-backed packet").card.name(),
                         format!("{:?}/{:?}/{active}", item.kind, item.mode),
                     ));
                 }

@@ -140,7 +140,7 @@ fn score(o: &Observation, a: &Action, p: Player, i: usize, s: &Pilot, high: bool
                     return if o.stack.iter().any(|v| {
                         v.kind == StackKind::Spell
                             && v.controller != p
-                            && v.source_card.name()
+                            && v.source().expect("spell has source").card.name()
                                 == if high { "Bygone Colossus" } else { "Shock" }
                     }) {
                         2300
@@ -310,7 +310,7 @@ fn score(o: &Observation, a: &Action, p: Player, i: usize, s: &Pilot, high: bool
                 && s.stage < 5
                 && o.announcing
                     .as_ref()
-                    .is_some_and(|v| v.source_card.name() == NAMES[i])
+                    .is_some_and(|v| v.source().is_some_and(|source| source.card.name() == NAMES[i]))
             {
                 if *payment
                     == if high {
@@ -581,7 +581,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && o.mana_payment.is_some()
                 && o.announcing
                     .as_ref()
-                    .is_some_and(|v| v.source_card.name() == NAMES[i])
+                    .is_some_and(|v| v.source().is_some_and(|source| source.card.name() == NAMES[i]))
             {
                 let payment = if high {
                     [1, 1, 1, 1, 1, 0]
@@ -629,13 +629,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && actor == p
                 && let Some(packet) = &o.announcing
             {
-                if packet.kind == StackKind::Spell && Some(packet.card) == s.source {
-                    check_payment = Some((packet.card, payment));
+                if packet.kind == StackKind::Spell && Some(packet.source().expect("example expects an object-backed packet").id) == s.source {
+                    check_payment = Some((packet.source().expect("example expects an object-backed packet").id, payment));
                 }
-                if Some(packet.card) == s.event && s.stage == 3 {
+                if Some(packet.source().expect("example expects an object-backed packet").id) == s.event && s.stage == 3 {
                     baseline(&o, p, &mut s);
                     s.stage = 4;
-                    check_payment = Some((packet.card, payment));
+                    check_payment = Some((packet.source().expect("example expects an object-backed packet").id, payment));
                     if i == 18 {
                         let target = o
                             .stack
@@ -688,7 +688,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let spell = v
                     .stack
                     .iter()
-                    .find(|v| v.kind == StackKind::Spell && v.card == card)
+                    .find(|v| v.kind == StackKind::Spell && v.source().is_some_and(|source| source.id == card))
                     .unwrap();
                 assert_eq!(spell.cast.unwrap().payment, payment);
             }

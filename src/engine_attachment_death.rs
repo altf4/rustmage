@@ -27,7 +27,7 @@ impl Game {
             }
             if let Some(event) = events.iter().find(|event| {
                 event.moved
-                    && event.before.reference == item.object
+                    && item.source.is_some_and(|source| event.before.reference == source.object)
                     && event.before.zone == Zone::Battlefield
                     && matches!(event.destination, Zone::Graveyard | Zone::Exile)
             }) {
@@ -52,10 +52,11 @@ impl Game {
         }
     }
     pub(super) fn return_source_from_first_public_zone_to_hand(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return; };
         let (reference, zone) = item
             .source_move
             .as_ref()
-            .map_or((item.object, Zone::Battlefield), |movement| {
+            .map_or((source.object, Zone::Battlefield), |movement| {
                 (movement.after, movement.destination)
             });
         if matches!(zone, Zone::Battlefield | Zone::Graveyard | Zone::Exile)

@@ -6,15 +6,16 @@ impl Game {
     /// into its copiable values or ability packet. The spell may currently be
     /// resolving; it remains on the stack until its resolution finishes.
     pub(super) fn spell_has_split_second(&self, spell: &SpellView) -> bool {
+        let Some(source) = spell.source else { return false; };
         spell.kind == StackKind::Spell
             && self
                 .state
                 .objects
-                .get(spell.card as usize)
+                .get(source.id as usize)
                 .is_some_and(|object| {
-                    object.zone == Zone::Stack && object.generation == spell.object.generation
+                    object.zone == Zone::Stack && object.generation == source.object.generation
                 })
-            && self.keywords(spell.card).contains(Keywords::SPLIT_SECOND)
+            && self.keywords(source.id).contains(Keywords::SPLIT_SECOND)
     }
 
     pub(super) fn spell_with_current_abilities(&self, item: &SpellView) -> SpellView {
@@ -60,15 +61,7 @@ impl Game {
             .iter()
             .any(|spell| self.spell_has_split_second(spell))
             || self.state.resolving.as_ref().is_some_and(|r| {
-                r.item.kind == StackKind::Spell
-                    && self
-                        .state
-                        .objects
-                        .get(r.item.card as usize)
-                        .is_some_and(|o| {
-                            o.zone == Zone::Stack && o.generation == r.item.object.generation
-                        })
-                    && self.spell_has_split_second(&r.item)
+                self.spell_has_split_second(&r.item)
             })
     }
     pub(super) fn static_casting_prohibited(&self, actor: Player) -> bool {
@@ -83,6 +76,7 @@ impl Game {
             })
     }
     pub(super) fn put_power_excess_counters(&mut self, item: &SpellView, filter: CreatureFilter) {
+        let Some(source) = item.source else { return; };
         // Capture the entire simultaneous batch before any counter replacement
         // or placement can change a later recipient's characteristics.
         let changes = self
@@ -92,7 +86,7 @@ impl Game {
             .enumerate()
             .filter_map(|(index, _)| {
                 let id = index as CardId;
-                if !self.creature_matches(filter, item.controller, item.object, id) {
+                if !self.creature_matches(filter, item.controller, source.object, id) {
                     return None;
                 }
                 let (base, current) = self.layered_stats_without_hand(id, None);

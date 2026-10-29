@@ -35,7 +35,7 @@ impl Game {
         let spell = &self.state.stack[index];
         if spell.is_copy
             || !spell.cast.is_some_and(|c| c.origin == Zone::Hand)
-            || !CastFilter::InstantSorcery.matches(spell.source_card)
+            || !spell.source.is_some_and(|source| CastFilter::InstantSorcery.matches(source.card))
         {
             return;
         }
@@ -56,7 +56,7 @@ impl Game {
                             AttachmentTriggerView {
                                 grantor: source.reference,
                                 granting_card: source.card,
-                                recipient: spell.object,
+                                recipient: spell.source.expect("cast spell has source").object,
                                 defender: None,
                                 granted: true,
                                 origin: source.copied_grant_origin(),

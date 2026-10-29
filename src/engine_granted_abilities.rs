@@ -29,6 +29,7 @@ impl Game {
                     && matches!(
                         a.condition.event(),
                         TriggerCondition::ScryOrSurveil
+                            | TriggerCondition::Proliferated(_)
                             | TriggerCondition::CreatureCardsEnterYourGraveyard
                             | TriggerCondition::SpellCast { .. }
                             | TriggerCondition::CardDrawn { .. }

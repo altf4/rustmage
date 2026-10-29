@@ -23,7 +23,7 @@ fn index(c: Card) -> Option<usize> {
     NAMES.iter().position(|n| *n == c.name())
 }
 fn grave_ability(s: &SpellView) -> Option<usize> {
-    let i = index(s.source_card)?;
+    let i = s.source().and_then(|source| index(source.card))?;
     matches!(s.kind,StackKind::ActivatedAbility{ability}if ability==if i==8{1}else{0}).then_some(i)
 }
 fn deck(family: usize) -> Vec<Card> {
@@ -144,7 +144,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && after
                         .stack
                         .iter()
-                        .any(|s| s.object == old.reference && grave_ability(s) == Some(i))
+                        .any(|s| s.source().expect("example expects an object-backed packet").object == old.reference && grave_ability(s) == Some(i))
                 {
                     commits[i] += 1;
                     assert_ne!(new.reference, old.reference);
@@ -164,7 +164,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && !live(&after, s.id)
                 {
                     resolutions[i] += 1;
-                    let source = after.objects.iter().find(|o| o.id == s.card).unwrap();
+                    let source = after.objects.iter().find(|o| o.id == s.source().expect("example expects an object-backed packet").id).unwrap();
                     assert_eq!(source.zone, Zone::Exile);
                     checks += 1;
                 }

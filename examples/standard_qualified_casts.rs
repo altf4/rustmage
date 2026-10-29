@@ -208,17 +208,17 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             b.players[s.controller.other().index()].life - if i == 0 { 1 } else { 2 }
         ),
         1 | 4 | 5 | 10 => {
-            if let Some(v) = exact(b, s.object) {
+            if let Some(v) = exact(b, s.source().expect("example expects an object-backed packet").object) {
                 let n = if i == 10 { 2 } else { 1 };
-                if let Some(after) = exact(a, s.object) {
+                if let Some(after) = exact(a, s.source().expect("example expects an object-backed packet").object) {
                     assert_eq!(after.counters.plus_one, v.counters.plus_one + n);
                 }
-                bump(l, s.object, a.turn, i128::from(n), 0, Keywords::NONE);
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, i128::from(n), 0, Keywords::NONE);
             }
         }
         3 => {
-            if exact(a, s.object).is_some() {
-                bump(l, s.object, a.turn, 0, 2, Keywords::VIGILANCE);
+            if exact(a, s.source().expect("example expects an object-backed packet").object).is_some() {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 2, Keywords::VIGILANCE);
             }
         }
         6 => {
@@ -237,7 +237,7 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             b.players[s.controller.index()].life + 2
         ),
         9 => {
-            if let Some(v) = exact(a, s.object) {
+            if let Some(v) = exact(a, s.source().expect("example expects an object-backed packet").object) {
                 assert!(!v.tapped);
             }
         }
@@ -271,7 +271,7 @@ impl SurveilWitness {
         assert!(choice.surveil);
         assert!(choice.top.is_empty() && choice.bottom.is_empty() && choice.graveyard.is_empty());
         assert_eq!(
-            before.resolving.as_ref().unwrap().source_card.name(),
+            before.resolving.as_ref().unwrap().source().expect("example expects an object-backed packet").card.name(),
             NAMES[12]
         );
         Self {
@@ -517,13 +517,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !seen_cast.insert(spell.id) {
                     continue;
                 }
-                if let Some(i) = index(spell.source_card) {
+                if let Some(i) = spell.source().and_then(|source| index(source.card)) {
                     casts[i] += 1;
                 }
                 for s in a.objects.iter().filter(|v| v.zone == Zone::Battlefield) {
                     if let Some(i) = index(s.card) {
                         checks += 1;
-                        if qualifies(i, s, spell.controller, spell.source_card, a.active) {
+                        if qualifies(i, s, spell.controller, spell.source().expect("example expects an object-backed packet").card, a.active) {
                             *debt.entry((s.reference, 0)).or_default() += 1;
                         }
                     }
@@ -545,9 +545,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     unreachable!()
                 };
                 let i =
-                    index(item.source_card).expect("only qualified cast triggers in these decks");
-                let n = debt.get_mut(&(item.object, ability)).unwrap_or_else(|| {
-                    panic!("unexpected {} trigger seed{seed}", item.source_card.name())
+                    item.source().and_then(|source| index(source.card)).expect("only qualified cast triggers in these decks");
+                let n = debt.get_mut(&(item.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
+                    panic!("unexpected {} trigger seed{seed}", item.source().expect("example expects an object-backed packet").card.name())
                 });
                 assert!(*n > 0);
                 *n -= 1;
@@ -560,7 +560,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             {
                 pending.insert(
                     root.id,
-                    (index(root.source_card).unwrap(), root.clone(), b.clone()),
+                    (root.source().and_then(|source| index(source.card)).unwrap(), root.clone(), b.clone()),
                 );
             }
             let done: Vec<_> = pending

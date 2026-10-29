@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b76463aff636f14252e051a6e976716bcc330c6fb48a1b5ded7e4c1bc8a9482c"
   },
-  "physical_metadata_sha256": "edca1a42cd3872086c552d9636c257b3ea9b88640badaa91fe7eff352faa5c3a"
+  "physical_metadata_sha256": "edca1a42cd3872086c552d9636c257b3ea9b88640badaa91fe7eff352faa5c3a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TamThePossibility.java",
+  "java_sha256": "f647334fae4eda3808c621f85abe7fed38d560e65bcd0381f112daec6283d232",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/ProliferateEffect.java",
+      "sha256": "b6f4e1da90b6a0ed7ff2a0bcb76f05eac05bd3f87c62bda4b543740c48469b9f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterPermanentOrPlayerWithCounter.java",
+      "sha256": "6dc6daf2310a6577cb9e1610461add6e00b997e68e7615af5b20876583fba47d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/SubType.java",
+      "sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+    }
+  ],
+  "rules_tests": "src/engine_fra_tam_proliferate_tests.rs"
 }

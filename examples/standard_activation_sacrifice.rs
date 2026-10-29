@@ -25,7 +25,7 @@ fn index(card: Card) -> Option<usize> {
     NAMES.iter().position(|n| *n == card.name())
 }
 fn external(s: &rustmage::SpellView) -> Option<usize> {
-    let i = index(s.source_card)?;
+    let i = s.source().and_then(|source| index(source.card))?;
     matches!(s.kind,StackKind::ActivatedAbility{ability}if ability==if i==3{1}else{0}).then_some(i)
 }
 fn deck(kind: usize) -> Vec<Card> {
@@ -104,9 +104,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && before
                         .announcing
                         .as_ref()
-                        .is_some_and(|s| s.source_card.name() == "Kingpin's Enforcers")
+                        .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Kingpin's Enforcers"))
                 {
-                    let source = before.announcing.as_ref().unwrap().object;
+                    let source = before.announcing.as_ref().unwrap().source().expect("activation has source").object;
                     if cost.candidates.contains(&source) {
                         action = Action::ChooseAdditionalCost { object: source };
                     }
@@ -139,7 +139,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let i = external(root).unwrap();
                 uses[i] += 1;
                 commits += 1;
-                self_sacrifices += usize::from(selected == root.object);
+                self_sacrifices += usize::from(selected == root.source().expect("example expects an object-backed packet").object);
                 assert!(
                     !after
                         .objects
@@ -160,7 +160,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && let Some(o) = after
                         .objects
                         .iter()
-                        .find(|o| o.reference == root.object && o.zone == Zone::Battlefield)
+                        .find(|o| o.reference == root.source().expect("example expects an object-backed packet").object && o.zone == Zone::Battlefield)
                 {
                     assert!(o.tapped);
                 }

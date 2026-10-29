@@ -120,7 +120,7 @@ fn fra_zero_scry_and_surveil_do_not_emit_an_event() {
             g.state
                 .stack
                 .iter()
-                .all(|item| item.source_card != Card::from_name("Denzilore Fatehold").unwrap())
+                .all(|item| item.source.is_none_or(|source| source.card != Card::from_name("Denzilore Fatehold").unwrap()))
         );
     }
 }

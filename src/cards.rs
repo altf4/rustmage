@@ -6,6 +6,10 @@ pub(crate) use ability_layers::{
     StaticAbilityGroup, UntapRestriction,
 };
 
+#[cfg(test)]
+#[path = "cards_test_counter_providers.rs"]
+pub(crate) mod test_counter_providers;
+
 #[path = "card_mana_symbols.rs"]
 mod mana_symbols;
 
@@ -1199,6 +1203,9 @@ pub(crate) enum Instruction {
         exile_instants_sorceries: bool,
     },
     CounterRelatedUnlessPayLife(u32),
+    /// Ask the triggering opponent to pay by getting poison counters.
+    MayPayWardPoison { amount: u16, skip: usize },
+    PayWardPoison(u16),
     /// One captured ward payer may discard a card or pay this mana cost.
     CounterRelatedUnlessDiscardOrPay(ManaCost),
     /// Ward payer may discard one card or decline and have the associated object countered.
@@ -1680,6 +1687,7 @@ pub(crate) enum Instruction {
     },
     CounterRelated,
     AddPoison(PlayerSet, u16),
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     MayOpponent {
         skip: usize,
     },
@@ -1705,6 +1713,11 @@ pub(crate) enum Instruction {
     DiscardHandRememberCount(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
+    /// Inherent rad-counter trigger: mill, lose life, then remove rad counters.
+    ResolveRadiation,
+    /// Event-local self-replacements belong to this resolving instruction.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
+    PutPlayerCountersWithSelf { players: PlayerSet, kind: PlayerCounterKind, amount: u64, effects: &'static [SelfPlayerCounterTemplate] },
     /// Mill the specified number, then queue a reflexive ability only if all were milled.
     MillThenReflexive {
         amount: u16,
@@ -2166,6 +2179,8 @@ pub(crate) enum Instruction {
     IfExiledCreature {
         skip: usize,
     },
+    /// Repeat this non-targeting counter event a frozen number of times.
+    Proliferate(AmountValue),
     RemoveAllCounters,
     RemoveAllCountersFrom(Subject),
     SnapshotDoubleCreatures(CreatureFilter),
@@ -2446,6 +2461,8 @@ pub(crate) enum SourceCharacteristicFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    /// Number of different planeswalker types among planeswalkers controlled by the source controller.
+    DistinctControlledPlaneswalkerTypes,
     /// The source has not dealt combat damage in its current incarnation.
     SourceHasNotDealtCombatDamage,
     ControlledCreatureDiedThisTurn,
@@ -2704,12 +2721,54 @@ pub(crate) enum ReplacementSpec {
         add: u32,
         effects_only: bool,
     },
+    /// Replace a proliferate event by a number of events for the related player.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
+    Proliferate { relation: CastRelation, factor: u32, add: u32 },
+    /// Replace counters placed on a player related to the source controller.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
+    PlayerCounters {
+        kind: PlayerCounterKind,
+        relation: CastRelation,
+        /// Relation of the player placing the counter to the provider controller.
+        placed_by: Option<CastRelation>,
+        effects_only: bool,
+        factor: u32,
+        add: u32,
+    },
     DoubleTokens {
         effects_only: bool,
     },
     AddToken(Card),
     ReplaceArtifactTokens(Card),
     AddArtifactToken(Card),
+}
+
+/// One descendant event produced by a split player-counter replacement.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerCounterSplit {
+    pub to_opponent: bool,
+    pub kind: Option<PlayerCounterKind>,
+    pub factor: u32,
+    pub add: u32,
+}
+
+/// One typed same-effect counter replacement. Redirects are relative to each
+/// affected player; absence retains the original player or counter kind.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SelfPlayerCounterTemplate {
+    pub factor: u32,
+    pub add: u32,
+    pub redirect_to_opponent: bool,
+    pub redirect_kind: Option<PlayerCounterKind>,
+    pub split: &'static [PlayerCounterSplit],
+}
+
+/// Player counters currently represented by the game state.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
+pub enum PlayerCounterKind { Poison, Energy, Experience, Rad, Ticket }
+impl PlayerCounterKind {
+    pub const ALL: [Self; 5] = [Self::Poison, Self::Energy, Self::Experience, Self::Rad, Self::Ticket];
+    pub(crate) fn index(self) -> usize { self as usize }
 }
 
 /// Card-type bit reserved for battles.
@@ -3184,6 +3243,7 @@ pub(crate) enum CastFilter {
     InstantSorcery,
     Sorcery,
     Artifact,
+    Planeswalker,
     // Compiler vocabulary; no complete admitted card currently uses this filter.
     #[allow(dead_code)]
     Enchantment,
@@ -3246,6 +3306,7 @@ impl CastFilter {
             Self::InstantSorcery => card.kind_mask() & (4 | 8) != 0,
             Self::Sorcery => card.kind_mask() & 4 != 0,
             Self::Artifact => card.is_artifact(),
+            Self::Planeswalker => card.kind_mask() & 64 != 0,
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
             Self::AnyOf(filters) => filters
@@ -3447,6 +3508,9 @@ pub(crate) enum ReturnKind {
 pub(crate) enum TriggerCondition {
     /// The controller completed a positive scry or surveil instruction.
     ScryOrSurveil,
+    /// One event for each completed proliferate, even when no object was chosen.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
+    Proliferated(CastRelation),
     /// First declaration in the turn whose signed creature-power total reaches this threshold.
     FirstAttackWithTotalPowerAtLeast(u16),
     /// Pre-event observer and other permanent, with an actual owner-hand result.
@@ -4167,6 +4231,8 @@ mod generated {
     include!("generated/catalogue.rs");
 }
 pub use generated::{CATALOGUE_VERSION, CREATURE_TYPES};
+// The source-less sentinel must never alias a real catalogue identity.
+const _: () = assert!(generated::DEFINITIONS.len() < u16::MAX as usize);
 
 /// Creature types from the pinned Comprehensive Rules, including Time Lord.
 pub fn is_creature_type(subtype: &str) -> bool {
@@ -4212,6 +4278,8 @@ impl Card {
         generated::attached_subtype(self)
     }
     pub(crate) fn replacement_effects(self) -> &'static [ReplacementSpec] {
+        #[cfg(test)]
+        if let Some((_, replacements)) = test_counter_providers::provider(self) { return replacements; }
         generated::replacement_effects(self)
     }
     pub fn colors(self) -> u8 {
@@ -4405,6 +4473,8 @@ impl Card {
         generated::additional_cost(self)
     }
     pub(crate) fn static_ability_groups(self) -> &'static [StaticAbilityGroup] {
+        #[cfg(test)]
+        if let Some((groups, _)) = test_counter_providers::provider(self) { return groups; }
         authored::rules(self).map_or_else(
             || {
                 let groups = generated::static_ability_groups(self);

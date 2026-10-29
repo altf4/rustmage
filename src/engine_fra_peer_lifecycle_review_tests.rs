@@ -72,7 +72,7 @@ fn prepared_peer_review_stack_copy_resolves_independently_without_repreparing() 
         assert!(!game.is_prepared(permanent));
         let original = game.state.stack.last().unwrap().clone();
         let copy = game.allocate_spell_copy(&original, player);
-        let copied_object = copy.object;
+        let copied_object = copy.source.unwrap().object;
         game.state.stack.push(copy);
         super::super::contracts::branch_contract(game.clone());
         peer_finish(&mut game);

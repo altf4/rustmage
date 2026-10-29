@@ -76,7 +76,8 @@ impl Game {
         if item.kind != StackKind::Spell {
             return;
         }
-        let name = item.source_card.name();
+        let Some(source) = item.source else { return; };
+        let name = source.card.name();
         if !possible_paradigm_name(name) {
             return;
         }
@@ -94,7 +95,8 @@ impl Game {
         if item.kind != StackKind::Spell {
             return;
         }
-        let name = item.source_card.name();
+        let Some(source) = item.source else { return; };
+        let name = source.card.name();
         let already_resolved = self.state.paradigm.as_ref().is_some_and(|data| {
             data.resolved.iter().any(|row| {
                 row.player == item.controller && crate::card_names::same_name(row.name, name)
@@ -122,10 +124,10 @@ impl Game {
                 .delayed
                 .push(delayed);
         }
-        if self.object_ref(item.card) == item.object
-            && self.state.objects[item.card as usize].zone == Zone::Stack
+        if self.object_ref(source.id) == source.object
+            && self.state.objects[source.id as usize].zone == Zone::Stack
         {
-            self.move_object(item.card, Zone::Exile);
+            self.move_object(source.id, Zone::Exile);
         }
     }
     pub(super) fn queue_paradigm_triggers(&mut self) {
@@ -142,7 +144,8 @@ impl Game {
         }
     }
     pub(super) fn cast_paradigm_copy(&mut self, item: &SpellView) {
-        let object = self.allocate_card_copy(item.source_card, item.controller);
+        let Some(source) = item.source else { return; };
+        let object = self.allocate_card_copy(source.card, item.controller);
         self.state
             .paradigm
             .get_or_insert_with(Default::default)
@@ -215,11 +218,11 @@ impl Game {
         self.state.paradigm.as_ref().map_or_else(Vec::new, |data| {
             data.delayed
                 .iter()
-                .map(|item| ParadigmView {
+                .filter_map(|item| item.source.map(|source| ParadigmView {
                     controller: item.controller,
-                    definition: item.source_card,
-                    name: item.source_card.name(),
-                })
+                    definition: source.card,
+                    name: source.card.name(),
+                }))
                 .collect()
         })
     }

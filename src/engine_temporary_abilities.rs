@@ -22,6 +22,7 @@ impl Game {
         ability: u16,
         timestamp: u64,
     ) {
+        let Some(source) = item.source else { return; };
         let granting_card = item.trigger_definition();
         assert!(
             granting_card.triggers()[usize::from(ability)]
@@ -32,8 +33,8 @@ impl Game {
             .temporary_abilities
             .get_or_insert_with(|| Box::new(Vec::new()))
             .push(TemporaryAbilityView {
-                recipient: item.object,
-                grantor: item.object,
+                recipient: source.object,
+                grantor: source.object,
                 granting_card,
                 ability,
                 grantor_controller: item.controller,
@@ -57,11 +58,11 @@ impl Game {
         let rows = rows.to_vec();
         let event = stack.and_then(|index| {
             let item = &self.state.stack[index];
-            item.cast.map(|cast| CastPaymentEvent {
+            item.cast.zip(item.source).map(|(cast, source)| CastPaymentEvent {
                 mana_value: item.mana_value(),
                 stack_id: item.id,
-                object: item.object,
-                card: item.source_card,
+                object: source.object,
+                card: source.card,
                 controller: item.controller,
                 payment: cast.payment,
                 treasure_mana_spent: cast.treasure_mana_spent,
@@ -102,7 +103,7 @@ impl Game {
                 || (ability.condition.requires_opponents_turn()
                     && self.state.active == source.controller)
                 || !self.cast_filter_matches_value(
-                    stack.map(|i| self.state.objects[self.state.stack[i].card as usize].owner),
+                    stack.and_then(|i| self.state.stack[i].source.and_then(|source| self.state.objects.get(source.id as usize)).map(|object| object.owner)),
                     filter,
                     card,
                     event.map_or_else(|| card.fixed_mana_value(), |e| e.mana_value),
@@ -150,6 +151,7 @@ impl Game {
         ability: u16,
         ids: &[CardId],
     ) {
+        let Some(source) = item.source else { return; };
         let granting_card = item.trigger_definition();
         assert!(
             granting_card.triggers()[usize::from(ability)]
@@ -160,7 +162,7 @@ impl Game {
         for &id in ids {
             let grant = TemporaryAbilityView {
                 recipient: self.object_ref(id),
-                grantor: item.object,
+                grantor: source.object,
                 granting_card,
                 ability,
                 grantor_controller: item.controller,

@@ -21,6 +21,7 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
 }
 impl Game {
     pub(super) fn record_ability_resolution(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return; };
         assert!(matches!(
             item.kind,
             StackKind::TriggeredAbility { .. } | StackKind::ActivatedAbility { .. }
@@ -30,7 +31,7 @@ impl Game {
             .ability_resolutions
             .get_or_insert_with(SharedVec::default);
         if let Some(row) = rows.iter_mut().find(|r| {
-            r.source == item.object
+            r.source == source.object
                 && r.kind == item.kind
                 && r.definition == item.trigger_definition()
                 && r.origin == item.source_ability_origin
@@ -41,7 +42,7 @@ impl Game {
                 .capacity("ability resolution count exhausted");
         } else {
             rows.push(AbilityResolutionView {
-                source: item.object,
+                source: source.object,
                 definition: item.trigger_definition(),
                 kind: item.kind,
                 origin: item.source_ability_origin,
@@ -50,12 +51,13 @@ impl Game {
         }
     }
     pub(super) fn ability_resolution_number(&self, item: &SpellView) -> u64 {
+        let Some(source) = item.source else { return 0; };
         self.state
             .ability_resolutions
             .as_ref()
             .and_then(|rows| {
                 rows.iter().find(|r| {
-                    r.source == item.object
+                    r.source == source.object
                         && r.kind == item.kind
                         && r.definition == item.trigger_definition()
                         && r.origin == item.source_ability_origin

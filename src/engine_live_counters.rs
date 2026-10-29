@@ -129,7 +129,8 @@ impl Game {
         kind: CounterKind,
         amount: AmountValue,
     ) {
-        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+        let Some(source) = item.source else { return; };
+        if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return;
         }
         let Some(target) = self
@@ -139,16 +140,16 @@ impl Game {
         else {
             return;
         };
-        if target == item.card {
+        if target == source.id {
             return;
         }
         let amount = self
             .item_amount(amount, item)
-            .min(u128::from(self.counter_count(item.card, kind))) as u64;
+            .min(u128::from(self.counter_count(source.id, kind))) as u64;
         if amount == 0 {
             return;
         }
-        self.pay_counters(item.card, &Counters::of(kind, amount));
+        self.pay_counters(source.id, &Counters::of(kind, amount));
         self.effect_counters(
             vec![(self.object_ref(target), Counters::of(kind, amount))],
             replacements::ResumeMode::Program,

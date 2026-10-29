@@ -89,7 +89,7 @@ impl Game {
                     p.event_object
                         .as_ref()
                         .is_some_and(|e| e.object == v.reference)
-                        || (p.object == v.reference
+                        || (p.source.is_some_and(|source| source.object == v.reference)
                             && p.source_quantity_lki
                                 .as_ref()
                                 .is_some_and(|q| q.creature_comparison.is_some()))
@@ -125,7 +125,7 @@ impl Game {
         {
             if let Some(q) = &mut p.source_quantity_lki
                 && q.creature_comparison.is_some()
-                && let Some((_, stats, _, _)) = facts.iter().find(|(r, _, _, _)| *r == p.object)
+                && let Some((_, stats, _, _)) = facts.iter().find(|(r, _, _, _)| p.source.is_some_and(|source| *r == source.object))
             {
                 q.creature_comparison = Some(*stats);
             }
@@ -264,8 +264,9 @@ impl Game {
             .as_ref()
             .and_then(|q| q.creature_comparison)
             .expect("source comparison facts");
+        let Some(identity) = p.source else { return false; };
         self.comparison_facts(e.object, entrant)
-            .greater_than(self.comparison_facts(p.object, source))
+            .greater_than(self.comparison_facts(identity.object, source))
     }
     pub(super) fn attached_tap_triggers(&mut self, changed: &[CardId]) {
         if changed.is_empty() || self.state.tap_sources.is_empty() {

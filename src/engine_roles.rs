@@ -76,12 +76,13 @@ impl Game {
         ability: u16,
         subject: Option<ObjectRef>,
     ) {
+        let Some(source) = item.source else { return; };
         let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
         if matches!(condition, TriggerCondition::InterveningIf { .. })
             && !self.trigger_guards_hold(
                 condition,
                 item.controller,
-                item.object,
+                source.object,
                 item.source_tapped,
             )
         {
@@ -95,7 +96,7 @@ impl Game {
         reflexive.mode = None;
         if let Some((_, program)) = reflexive.program()
             && let Some(facts) = card_quantities::counter_quantity_facts(program, |kind| {
-                self.source_counter_quantity_live(reflexive.object, kind)
+                self.source_counter_quantity_live(source.object, kind)
                     .unwrap_or_else(|| {
                         item.source_counter_lki
                             .as_ref()
@@ -116,7 +117,7 @@ impl Game {
         } = condition
         {
             let count = self
-                .source_counter_quantity_live(reflexive.object, kind)
+                .source_counter_quantity_live(source.object, kind)
                 .unwrap_or(0);
             let facts = reflexive
                 .source_counter_lki
@@ -148,9 +149,9 @@ impl Game {
         self.state.pending_triggers.push(reflexive);
     }
     pub(super) fn exact_source_can_tap(&self, item: &SpellView) -> bool {
-        self.on_battlefield(item.card)
-            && self.object_ref(item.card) == item.object
-            && !self.state.objects[item.card as usize].tapped
+        item.source.is_some_and(|source| self.on_battlefield(source.id)
+            && self.object_ref(source.id) == source.object
+            && !self.state.objects[source.id as usize].tapped)
     }
     pub(super) fn complete_optional_tap_reflexive(&mut self) {
         let resolution = self.state.resolving.as_ref().unwrap();
@@ -161,10 +162,11 @@ impl Game {
         };
         let (item, ability) = (resolution.item.clone(), *ability);
         if self.exact_source_can_tap(&item) {
-            self.tap_objects(&[item.card]);
-            if self.on_battlefield(item.card)
-                && self.object_ref(item.card) == item.object
-                && self.state.objects[item.card as usize].tapped
+            let source = item.source.expect("tap source was checked");
+            self.tap_objects(&[source.id]);
+            if self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object
+                && self.state.objects[source.id as usize].tapped
             {
                 self.queue_reflexive(&item, ability, None);
             }
@@ -205,6 +207,7 @@ impl Game {
         token: Card,
         filter: CreatureFilter,
     ) {
+        let Some(source) = item.source else { return; };
         assert!(token.role().is_some(), "predefined Role factory required");
         let recipients = self
             .state
@@ -214,7 +217,7 @@ impl Game {
             .filter_map(|(id, _)| {
                 let id = id as CardId;
                 let recipient = self.object_ref(id);
-                (self.creature_matches(filter, item.controller, item.object, id)
+                (self.creature_matches(filter, item.controller, source.object, id)
                     && self.aura_can_enchant(token, item.controller, recipient))
                 .then_some(recipient)
             })
@@ -317,14 +320,15 @@ impl Game {
     }
 
     pub(super) fn resolve_role(&mut self, item: &SpellView, token: Card, subject: Subject) {
+        let Some(source) = item.source else { return; };
         assert!(
             token.role().is_some(),
             "Role instruction requires a predefined Role factory"
         );
         let recipients: Vec<_> = match subject {
-            Subject::Source => (self.on_battlefield(item.card)
-                && self.object_ref(item.card) == item.object)
-                .then_some(item.object)
+            Subject::Source => (self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object)
+                .then_some(source.object)
                 .into_iter()
                 .collect(),
             Subject::Attached => self

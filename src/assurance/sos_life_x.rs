@@ -17,7 +17,7 @@ fn pay_life(g: &mut Game, spell: CardId, x: u32) {
         .unwrap();
     checked(g, pay);
     assert_eq!(g.state.players[p.index()].life, life);
-    assert!(!g.state.stack.iter().any(|s| s.card == spell));
+    assert!(!g.state.stack.iter().any(|s| s.source.is_some_and(|source| source.id == spell)));
     assert!(g.observe(p.other()).cast_costs.is_none());
     let index = g
         .observe(p)
@@ -30,10 +30,10 @@ fn pay_life(g: &mut Game, spell: CardId, x: u32) {
     checked(g, Action::ChooseCastCost { clause: index });
     assert_eq!(g.state.players[p.index()].life, life - i128::from(x));
     if g.outcome().is_none() {
-        let item = g.state.stack.iter().find(|s| s.card == spell).unwrap();
+        let item = g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == spell)).unwrap();
         assert_eq!(item.x, Some(x));
         assert_eq!(item.mana_value(), 4);
-        assert_eq!(item.source_card.x_symbols(), 0);
+        assert_eq!(item.source.unwrap().card.x_symbols(), 0);
     }
 }
 #[test]
@@ -146,7 +146,7 @@ fn sos_life_x_free_mana_cost_still_allows_positive_additional_life_x() {
                     g.state
                         .stack
                         .iter()
-                        .find(|s| s.card == spell)
+                        .find(|s| s.source.is_some_and(|source| source.id == spell))
                         .unwrap()
                         .cast
                         .unwrap()

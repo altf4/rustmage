@@ -122,7 +122,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         if !before
                             .stack
                             .iter()
-                            .any(|s| s.kind == StackKind::Spell && s.card == o.id)
+                            .any(|s| s.kind == StackKind::Spell && s.source().expect("example expects an object-backed packet").id == o.id)
                         {
                             noncast += 1;
                         }

@@ -136,7 +136,7 @@ fn check_item(before: &Observation, after: &Observation, item: &SpellView) -> us
             continue;
         };
         let Some(valid) = legal(
-            item.source_card.name(),
+            item.source().expect("example expects an object-backed packet").card.name(),
             item.mode,
             item.kind,
             old,
@@ -147,7 +147,7 @@ fn check_item(before: &Observation, after: &Observation, item: &SpellView) -> us
         };
         let now = after.objects.iter().find(|o| o.id == old.id);
         if valid
-            && (exile(item.source_card.name()) || !old.keywords.contains(Keywords::INDESTRUCTIBLE))
+            && (exile(item.source().expect("example expects an object-backed packet").card.name()) || !old.keywords.contains(Keywords::INDESTRUCTIBLE))
         {
             if old.token.is_some() {
                 assert!(
@@ -162,13 +162,13 @@ fn check_item(before: &Observation, after: &Observation, item: &SpellView) -> us
                 now.reference,
                 old.reference,
                 "{} failed removal",
-                item.source_card.name()
+                item.source().expect("example expects an object-backed packet").card.name()
             );
             assert_eq!(
                 now.zone,
                 if old.token.is_some() {
                     Zone::Outside
-                } else if exile(item.source_card.name()) {
+                } else if exile(item.source().expect("example expects an object-backed packet").card.name()) {
                     Zone::Exile
                 } else {
                     Zone::Graveyard
@@ -252,7 +252,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         before
                             .announcing
                             .as_ref()
-                            .map(|s| (s.source_card, s.mode, s.kind)),
+                            .map(|s| (s.source().expect("example expects an object-backed packet").card, s.mode, s.kind)),
                         Some(*target),
                     ),
                     _ => (None, None),
@@ -276,7 +276,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let n = check_item(&before, &after, item);
                 removals += n;
                 if n > 0 {
-                    resolved.insert(item.source_card.name());
+                    resolved.insert(item.source().expect("example expects an object-backed packet").card.name());
                 }
             }
             if before.announcing.is_some()

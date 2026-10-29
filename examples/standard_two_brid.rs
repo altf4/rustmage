@@ -111,7 +111,7 @@ fn score(obs: &Observation, a: &Action, generic: u32) -> i64 {
             if obs
                 .announcing
                 .as_ref()
-                .is_some_and(|s| s.source_card.name() == "Kin-Tree Severance")
+                .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Kin-Tree Severance"))
                 && object(*id).owner == obs.actor.unwrap()
             {
                 -50
@@ -139,7 +139,7 @@ fn score(obs: &Observation, a: &Action, generic: u32) -> i64 {
     }
 }
 fn check(origin: &Observation, after: &Observation, item: &rustmage::SpellView) -> usize {
-    let n = item.source_card.name();
+    let n = item.source().expect("example expects an object-backed packet").card.name();
     let target = item.targets.first().and_then(|b| {
         if let Target::Card(id) = b.target {
             origin.objects.iter().find(|o| {
@@ -238,7 +238,7 @@ fn main() {
                     .cost;
                 assert!(matches!(spec.generic, 0 | 2 | 4 | 6));
                 assert_eq!(spec.colored.iter().sum::<u32>(), 3 - spec.generic / 2);
-                let name = before.announcing.as_ref().unwrap().source_card.name();
+                let name = before.announcing.as_ref().unwrap().source().expect("example expects an object-backed packet").card.name();
                 let colors = if name == "Temur Tawnyback" {
                     [1, 3, 4]
                 } else {
@@ -259,7 +259,7 @@ fn main() {
                 && before
                     .announcing
                     .as_ref()
-                    .is_some_and(|s| CARDS.contains(&s.source_card.name()))
+                    .is_some_and(|s| s.source().is_some_and(|source| CARDS.contains(&source.card.name())))
             {
                 let total = payment.iter().sum::<u32>();
                 assert_eq!(total, cost.generic + cost.colored.iter().sum::<u32>());
@@ -296,7 +296,7 @@ fn main() {
             let after = game.observe(actor);
             if let Some(item) = before.stack.last()
                 && after.stack.iter().all(|s| s.id != item.id)
-                && CARDS.contains(&item.source_card.name())
+                && item.source().is_some_and(|source| CARDS.contains(&source.card.name()))
             {
                 origins.entry(item.id).or_insert_with(|| before.clone());
             }
@@ -311,13 +311,13 @@ fn main() {
                     })
                 });
             if let Some(item) = completed
-                && CARDS.contains(&item.source_card.name())
+                && item.source().is_some_and(|source| CARDS.contains(&source.card.name()))
             {
                 let origin = origins.remove(&item.id).unwrap_or_else(|| before.clone());
                 let n = check(&origin, &after, item);
                 checks += n;
                 if n > 0 {
-                    seen.insert(item.source_card.name());
+                    seen.insert(item.source().expect("example expects an object-backed packet").card.name());
                 }
             }
             max_bytes = max_bytes.max(game.state_bytes());

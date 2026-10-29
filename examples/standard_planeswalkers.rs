@@ -117,7 +117,7 @@ fn main() {
             {
                 let item = before.stack.last().unwrap();
                 let p = item.controller.index();
-                if item.source_card.name() == "Professor Dellian Fel"
+                if item.source().is_some_and(|source| source.card.name() == "Professor Dellian Fel")
                     && let StackKind::ActivatedAbility { ability } = item.kind
                 {
                     resolved.insert(ability);
@@ -151,7 +151,7 @@ fn main() {
                     }
                     checks += 1;
                 }
-                if item.source_card.is_emblem() {
+                if item.source().expect("example expects an object-backed packet").card.is_emblem() {
                     emblem_triggers += 1;
                     let amount = item.life_event.unwrap().amount;
                     let opponent = item.controller.other().index();
@@ -163,7 +163,7 @@ fn main() {
                         after
                             .objects
                             .iter()
-                            .any(|o| o.reference == item.object && o.zone == Zone::Command)
+                            .any(|o| o.reference == item.source().expect("example expects an object-backed packet").object && o.zone == Zone::Command)
                     );
                     checks += 2;
                 }

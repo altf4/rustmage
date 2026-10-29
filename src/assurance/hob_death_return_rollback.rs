@@ -26,7 +26,7 @@ fn hob_death_return_retained_mana_replays_batch_witness_once_and_reverse_discard
                 },
             );
             let captured = &g.state.cast_rollback.as_ref().unwrap().events[0].triggers;
-            let packets: Vec<_> = captured.iter().filter(|s| s.card == bee).collect();
+            let packets: Vec<_> = captured.iter().filter(|s| s.source.is_some_and(|source| source.id == bee)).collect();
             assert_eq!(packets.len(), 1);
             assert_eq!(packets[0].additional_triggers, 1);
             fail(&mut g, silver);

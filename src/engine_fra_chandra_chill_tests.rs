@@ -580,7 +580,7 @@ fn chill_restricted_blue_pays_prepared_noncreature_face() {
         for _ in 0..2 {
             act(&mut g, Action::AnnounceExile { card: copy.card });
             let announcement = g.state.announcing.as_ref().unwrap();
-            assert_eq!(announcement.item.source_card, Card::test_index(5451));
+            assert_eq!(announcement.item.source.unwrap().card, Card::test_index(5451));
             let blue = announcement.cost_options().next().unwrap();
             assert_eq!(blue.colored, [0, 1, 0, 0, 0, 0]);
             assert!(

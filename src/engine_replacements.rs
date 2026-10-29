@@ -42,6 +42,10 @@ pub struct ReplacementChoiceView {
     pub kind: &'static str,
     pub object: Option<ObjectRef>,
     pub counters: Option<Counters>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub player_counters: Option<PlayerCounterPlacementView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proliferate: Option<ProliferateReplacementView>,
     pub tokens: Vec<TokenGroupView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub copy_recipes: Vec<Option<CopyRecipe>>,
@@ -49,6 +53,8 @@ pub struct ReplacementChoiceView {
     /// Ordinary token and counter events use an empty vector.
     pub role_attachments: Vec<Option<ObjectRef>>,
     pub effects: Vec<ReplacementEffectView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub self_counter_effects: Vec<SelfPlayerCounterReplacement>,
     /// Current public damage event, before the next chosen replacement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub damage: Option<DamageEvent>,
@@ -59,6 +65,20 @@ pub struct ReplacementChoiceView {
     pub heals_before_damage: Vec<ObjectRef>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub damage_event_order: Vec<DamageEventOrderView>,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ProliferateReplacementView {
+    pub player: Player,
+    pub amount: u128,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerCounterPlacementView {
+    pub player: Player,
+    pub kind: crate::cards::PlayerCounterKind,
+    pub amount: u64,
+    pub placed_by: Player,
+    /// False for a cost event, including after amount replacements.
+    pub effect: bool,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct CounterPlacement {
@@ -76,12 +96,58 @@ pub(super) struct CounterPlacement {
     pub entry_index: Option<usize>,
     pub private: bool,
 }
+/// A replacement owned by the exact resolving effect that produced its event.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct SelfPlayerCounterReplacement {
+    pub origin_stack_id: u64,
+    pub effect: u16,
+    pub player: Player,
+    pub kind: crate::cards::PlayerCounterKind,
+    pub factor: u32,
+    pub add: u32,
+    pub redirect_player: Option<Player>,
+    pub redirect_kind: Option<crate::cards::PlayerCounterKind>,
+    pub split: &'static [crate::cards::PlayerCounterSplit],
+}
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct CounterBatch {
+    // Player poison additions commit with the permanent placements after all
+    // permanent replacement choices have completed.
+    player_events: player_counter_events::PlayerCounterEvents,
+    self_effects: Vec<SelfPlayerCounterReplacement>,
+    player_placed_by: Option<Player>,
+    player_effect: [bool; 2],
+    next_player: usize,
+    proliferated: Option<Player>,
     completion: Option<Box<CounterReflexiveCompletion>>,
     placements: Vec<CounterPlacement>,
     next: usize,
     used: Vec<(ObjectRef, u16)>,
+}
+fn apply_own_player_counter_replacement(batch: &mut CounterBatch, effect: SelfPlayerCounterReplacement, active: Player) {
+    let event = &batch.player_events.events()[batch.next_player];
+    let event_id = event.id;
+    let player = event.player;
+    let kind = event.kind;
+    let amount = event.amount;
+    let scale = |factor: u32, add: u32| amount.checked_mul(u64::from(factor)).and_then(|n| n.checked_add(u64::from(add))).capacity("self counter replacement exhausted");
+    let outcomes: Vec<_> = if effect.split.is_empty() {
+        vec![player_counter_events::CounterDestination { player: effect.redirect_player.unwrap_or(player), kind: effect.redirect_kind.unwrap_or(kind), amount: scale(effect.factor, effect.add) }]
+    } else {
+        effect.split.iter().map(|out| player_counter_events::CounterDestination {
+            player: if out.to_opponent { player.other() } else { player },
+            kind: out.kind.unwrap_or(kind), amount: scale(out.factor, out.add),
+        }).collect()
+    };
+    assert!(batch.player_events.apply_self(event_id, player_counter_events::EffectIdentity { origin_stack_id: effect.origin_stack_id, index: effect.effect }, &outcomes));
+    batch.player_events.prioritize_active_from(batch.next_player, active);
+}
+fn current_player_counter(batch: &CounterBatch, active: Player) -> Option<(Player, crate::cards::PlayerCounterKind)> {
+    let event = batch.player_events.events().get(batch.next_player)?;
+    if batch.next < batch.placements.len()
+        && !(event.player == active && batch.placements[batch.next].controller != active)
+    { return None; }
+    Some((event.player, event.kind))
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct CounterReflexiveCompletion {
@@ -167,7 +233,14 @@ struct DamageBatch {
     used: Vec<(ObjectRef, u16)>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
+struct ProliferateBatch {
+    player: Player,
+    amount: u128,
+    used: Vec<(ObjectRef, u16)>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
 enum Event {
+    Proliferate(ProliferateBatch),
     Damage(DamageBatch),
     Counters(CounterBatch),
     Tokens(TokenBatch),
@@ -196,6 +269,7 @@ enum Work {
     Damage(DamageBatch),
     Counters(CounterBatch),
     Tokens(TokenBatch),
+    Proliferate(ProliferateBatch),
     DestroyAndCreate {
         targets: Vec<BoundTarget>,
         token: Card,
@@ -217,7 +291,9 @@ pub(super) struct ReplacementState {
 impl ReplacementState {
     pub fn bytes(&self) -> usize {
         let counter_bytes = |b: &CounterBatch| {
-            b.placements.len() * std::mem::size_of::<CounterPlacement>()
+            b.player_events.bytes()
+                + b.self_effects.len() * std::mem::size_of::<SelfPlayerCounterReplacement>()
+                + b.placements.len() * std::mem::size_of::<CounterPlacement>()
                 + b.placements
                     .iter()
                     .map(|p| p.amount.owned_bytes())
@@ -265,6 +341,7 @@ impl ReplacementState {
                                 * std::mem::size_of::<(ObjectRef, DamagePreventionKind)>()
                             + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                     }
+                    Work::Proliferate(b) => b.used.len() * std::mem::size_of::<(ObjectRef, u16)>(),
                     Work::Counters(b) => counter_bytes(b),
                     Work::Tokens(b) => token_bytes(b),
                     Work::CreatedGraveyardCounters { created, .. } => {
@@ -286,6 +363,7 @@ impl ReplacementState {
             + self.active.as_ref().map_or(0, |b| {
                 // The inline Option<Event> storage is already in size_of::<Self>().
                 match b {
+                    Event::Proliferate(b) => b.used.len() * std::mem::size_of::<(ObjectRef, u16)>(),
                     Event::Damage(b) => {
                         b.events.len() * std::mem::size_of::<DamageEvent>()
                             + b.heals.len() * std::mem::size_of::<ObjectRef>()
@@ -471,6 +549,116 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
         add(p.object, p.card, p.controller, true);
     }
     out
+}
+fn modify_proliferate(spec: ReplacementSpec, batch: &mut ProliferateBatch, source: ObjectRef, ability: u16)
+    -> Option<proliferate::ProliferateGroup>
+{
+    let ReplacementSpec::Proliferate { factor, add, .. } = spec else { unreachable!() };
+    let created = u128::from(factor).checked_add(u128::from(add)).capacity("proliferate quantity exhausted");
+    batch.used.push((source, ability));
+    batch.amount = u128::from(created != 0);
+    (created > 1).then(|| proliferate::ProliferateGroup { count: created - 1, used: batch.used.clone() })
+}
+impl Game {
+    fn proliferate_replacements(&self, batch: &ProliferateBatch) -> Vec<ReplacementEffectView> {
+        if batch.amount == 0 { return Vec::new(); }
+        let world = self.characteristic_query();
+        let mut out = Vec::new();
+        for &id in &self.state.static_sources {
+            let object = &self.state.objects[id as usize];
+            if object.zone != Zone::Battlefield { continue; }
+            let reference = self.object_ref(id);
+            for (index, spec) in object.card.replacement_effects().iter().enumerate() {
+                let ReplacementSpec::Proliferate { relation, .. } = spec else { continue; };
+                let related = match relation {
+                    CastRelation::You => batch.player == object.controller,
+                    CastRelation::Opponent => batch.player != object.controller,
+                    CastRelation::Any => true,
+                };
+                let ability = u16::try_from(index).expect("replacement index");
+                if related && !batch.used.contains(&(reference, ability))
+                    && ability_world::CharacteristicWorld::fragment_available(&world, id,
+                        |fragment| matches!(fragment, crate::cards::StaticAbilityFragment::Replacement(slot, _) if *slot == ability)) {
+                    out.push(ReplacementEffectView { source: reference, source_card: object.card, ability });
+                }
+            }
+        }
+        out
+    }
+    pub(super) fn stage_proliferate_replacements(&mut self, player: Player, used: Vec<(ObjectRef, u16)>) {
+        let batch = ProliferateBatch { player, amount: 1, used };
+        if self.state.replacements.is_none() && self.proliferate_replacements(&batch).is_empty() {
+            self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().ready = true;
+            return;
+        }
+        let state = self.state.replacements.get_or_insert_with(|| Box::new(ReplacementState {
+            work: VecDeque::new(), active: None, attachment: None, resume: None, mode: ResumeMode::Program,
+        }));
+        assert_eq!(state.mode, ResumeMode::Program);
+        state.work.push_back(Work::Proliferate(batch));
+    }
+}
+fn modified_player_counters(spec: ReplacementSpec, amount: u64) -> u64 {
+    let ReplacementSpec::PlayerCounters { factor, add, .. } = spec else { unreachable!() };
+    amount.checked_mul(u64::from(factor)).and_then(|n| n.checked_add(u64::from(add)))
+        .capacity("player counter replacement quantity exhausted")
+}
+fn player_counter_rule_matches(spec: ReplacementSpec, controller: Player, player: Player, placed_by: Player, effect: bool, actual_kind: crate::cards::PlayerCounterKind) -> bool {
+    let ReplacementSpec::PlayerCounters { kind, relation, placed_by: placed_relation, effects_only, .. } = spec else { return false; };
+    if kind != actual_kind { return false; }
+    let matches = |r| match r {
+        CastRelation::You => player == controller,
+        CastRelation::Opponent => player != controller,
+        CastRelation::Any => true,
+    };
+    let placer_matches = placed_relation.is_none_or(|r| match r {
+        CastRelation::You => placed_by == controller,
+        CastRelation::Opponent => placed_by != controller,
+        CastRelation::Any => true,
+    });
+    matches(relation) && placer_matches && (!effects_only || effect)
+}
+impl Game {
+    // CR 614.17b-c: a prohibited event cannot be paid as a cost and
+    // ordinary replacement effects cannot replace the prohibited event.
+    pub(super) fn player_counters_prohibited(&self, player: Player, kind: crate::cards::PlayerCounterKind) -> bool {
+        let world = self.characteristic_query();
+        self.state.static_sources.iter().any(|&id| {
+            let source = &self.state.objects[id as usize];
+            source.zone == Zone::Battlefield && source.card.static_ability_groups().iter().any(|group|
+                group.fragments.iter().any(|fragment| {
+                    let crate::cards::StaticAbilityFragment::PlayerCounterProhibition { kind: k, relation } = fragment else { return false; };
+                    if *k != kind { return false; }
+                    let related = match relation {
+                        CastRelation::You => player == source.controller,
+                        CastRelation::Opponent => player != source.controller,
+                        CastRelation::Any => true,
+                    };
+                    related && ability_world::CharacteristicWorld::fragment_available(&world, id,
+                        |f| matches!(f, crate::cards::StaticAbilityFragment::PlayerCounterProhibition { kind: candidate, relation: r } if candidate == k && r == relation))
+                }))
+        })
+    }
+    fn player_counter_replacements(&self, player: Player, kind: crate::cards::PlayerCounterKind, placed_by: Player, effect: bool, amount: u64, used: &[(ObjectRef, u16)]) -> Vec<ReplacementEffectView> {
+        if amount == 0 { return Vec::new(); }
+        let world = self.characteristic_query();
+        let mut out = Vec::new();
+        for &id in &self.state.static_sources {
+            let object = &self.state.objects[id as usize];
+            if object.zone != Zone::Battlefield { continue; }
+            let reference = self.object_ref(id);
+            for (index, spec) in object.card.replacement_effects().iter().enumerate() {
+                let ability = u16::try_from(index).expect("replacement index");
+                if player_counter_rule_matches(*spec, object.controller, player, placed_by, effect, kind)
+                    && !used.contains(&(reference, ability))
+                    && ability_world::CharacteristicWorld::fragment_available(&world, id,
+                        |fragment| matches!(fragment, crate::cards::StaticAbilityFragment::Replacement(slot, _) if *slot == ability)) {
+                    out.push(ReplacementEffectView { source: reference, source_card: object.card, ability });
+                }
+            }
+        }
+        out
+    }
 }
 pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
@@ -810,6 +998,8 @@ impl Game {
     fn commit_counter_placements(
         &mut self,
         mut placements: Vec<CounterPlacement>,
+        player_counters: [[u64; 5]; 2],
+        proliferated: Option<Player>,
         completion: Option<Box<CounterReflexiveCompletion>>,
     ) {
         for placement in &mut placements {
@@ -820,7 +1010,7 @@ impl Game {
         let completed = completion.as_ref().is_some_and(|c| {
             placements.iter().any(|p| {
                 p.entry_index.is_none()
-                    && p.object == c.item.object
+                    && c.item.source.is_some_and(|source| p.object == source.object)
                     && p.amount.get(c.kind) > 0
                     && self.on_battlefield(p.object.card)
                     && self.object_ref(p.object.card) == p.object
@@ -843,6 +1033,13 @@ impl Game {
             self.materialize_face_up(object);
         }
         // Commit the complete world before any placement observer sees it.
+        for player in [Player::P0, Player::P1] {
+            for kind in crate::cards::PlayerCounterKind::ALL {
+                if !self.player_counters_prohibited(player, kind) {
+                    self.state.players[player.index()].add_player_counter(kind, player_counters[player.index()][kind.index()]);
+                }
+            }
+        }
         for p in &placements {
             if let Some(index) = p.entry_index {
                 self.state
@@ -879,6 +1076,9 @@ impl Game {
         for (object, before) in lore {
             self.lore_counters_added(object, before);
         }
+        if let Some(player) = proliferated {
+            self.proliferated_event(player);
+        }
         if completed {
             let completion = completion.unwrap();
             self.queue_reflexive(&completion.item, completion.ability, None);
@@ -889,33 +1089,49 @@ impl Game {
         placements: Vec<CounterPlacement>,
         mode: ResumeMode,
     ) {
-        self.stage_counter_placements_inner(placements, mode, None);
+        self.stage_counter_placements_inner(placements, [[0; 5]; 2], None, true, None, mode, None, Vec::new());
     }
     fn stage_counter_placements_inner(
         &mut self,
         mut placements: Vec<CounterPlacement>,
+        mut player_counters: [[u64; 5]; 2],
+        player_placed_by: Option<Player>,
+        player_effect: bool,
+        proliferated: Option<Player>,
         mode: ResumeMode,
         completion: Option<Box<CounterReflexiveCompletion>>,
+        self_effects: Vec<SelfPlayerCounterReplacement>,
     ) {
         for placement in &mut placements {
             if placement_prohibited(self, placement) {
                 placement.amount = Counters::default();
             }
         }
+        for player in [Player::P0, Player::P1] {
+            for kind in crate::cards::PlayerCounterKind::ALL {
+                if self.player_counters_prohibited(player, kind)
+                    && !self_effects.iter().any(|effect| effect.player == player && effect.kind == kind) {
+                    player_counters[player.index()][kind.index()] = 0;
+                }
+            }
+        }
         placements.retain(|p| p.amount.has_any());
-        if placements.is_empty() {
+        if placements.is_empty() && player_counters == [[0; 5]; 2] && proliferated.is_none() {
             return;
         }
         placements.sort_by_key(|p| (p.controller != self.state.active, p.object.card));
         if self.state.replacements.is_none()
-            && placements
-                .iter()
-                .all(|p| self.counter_replacements(p, &[]).is_empty())
+            && self_effects.is_empty()
+            && placements.iter().all(|p| self.counter_replacements(p, &[]).is_empty())
+            && [Player::P0, Player::P1].into_iter().all(|player|
+                crate::cards::PlayerCounterKind::ALL.into_iter().all(|kind|
+                    self.player_counter_replacements(player, kind, player_placed_by.unwrap_or(player), player_effect, player_counters[player.index()][kind.index()], &[]).is_empty()))
         {
-            self.commit_counter_placements(placements, completion);
+            self.commit_counter_placements(placements, player_counters, proliferated, completion);
             self.finish_face_up_counter_replacement();
             return;
         }
+        let active = self.state.active;
         let state = self.state.replacements.get_or_insert_with(|| {
             Box::new(ReplacementState {
                 work: VecDeque::new(),
@@ -929,7 +1145,21 @@ impl Game {
             state.mode, mode,
             "one owned replacement continuation at a time"
         );
+        let mut player_events = player_counter_events::PlayerCounterEvents::default();
+        let origin = self_effects.first().map_or(0, |effect| effect.origin_stack_id);
+        for player in [active, active.other()] {
+            for kind in crate::cards::PlayerCounterKind::ALL {
+                let amount = player_counters[player.index()][kind.index()];
+                if amount != 0 { player_events.push(player, kind, amount, origin); }
+            }
+        }
         state.work.push_back(Work::Counters(CounterBatch {
+            player_events,
+            self_effects,
+            player_placed_by,
+            player_effect: [player_effect; 2],
+            next_player: 0,
+            proliferated,
             completion,
             placements,
             next: 0,
@@ -943,23 +1173,24 @@ impl Game {
         amount: u64,
         ability: u16,
     ) {
+        let Some(source) = item.source else { return; };
         if amount == 0
-            || !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
+            || !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
         {
             return;
         }
-        let o = &self.state.objects[item.card as usize];
+        let o = &self.state.objects[source.id as usize];
         let placement = CounterPlacement {
             placed_by: item.controller,
-            object: item.object,
+            object: source.object,
             card: o.card,
             owner: o.owner,
             controller: o.controller,
-            protector: self.battle_protector(item.object),
-            subtypes: self.granted_subtypes(item.card),
-            kind: self.current_kinds(item.card),
-            power: self.stats(item.card).power,
+            protector: self.battle_protector(source.object),
+            subtypes: self.granted_subtypes(source.id),
+            kind: self.current_kinds(source.id),
+            power: self.stats(source.id).power,
             amount: Counters::of(kind, amount),
             effect: true,
             entry_index: None,
@@ -967,12 +1198,17 @@ impl Game {
         };
         self.stage_counter_placements_inner(
             vec![placement],
+            [[0; 5]; 2],
+            None,
+            true,
+            None,
             ResumeMode::Program,
             Some(Box::new(CounterReflexiveCompletion {
                 item: item.clone(),
                 kind,
                 ability,
             })),
+            Vec::new(),
         );
     }
     pub(super) fn activation_cost_counters(
@@ -1027,15 +1263,22 @@ impl Game {
         changes: Vec<(ObjectRef, Counters)>,
         mode: ResumeMode,
     ) {
-        self.effect_counters_by(changes, None, mode);
+        self.effect_counters_by(changes, None, [[0; 5]; 2], true, None, mode);
     }
     fn effect_counters_by(
         &mut self,
         changes: Vec<(ObjectRef, Counters)>,
         placed_by: Option<Player>,
+        player_counters: [[u64; 5]; 2],
+        player_effect: bool,
+        proliferated: Option<Player>,
         mode: ResumeMode,
     ) {
-        let placements = changes
+        let placements = self.create_counter_placements(changes, placed_by);
+        self.stage_counter_placements_inner(placements, player_counters, placed_by.or_else(|| self.state.resolving.as_ref().map(|r| r.item.controller)), player_effect, proliferated, mode, None, Vec::new());
+    }
+    fn create_counter_placements(&self, changes: Vec<(ObjectRef, Counters)>, placed_by: Option<Player>) -> Vec<CounterPlacement> {
+        changes
             .into_iter()
             .filter_map(|(object, amount)| {
                 if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
@@ -1063,8 +1306,68 @@ impl Game {
                     private: false,
                 })
             })
-            .collect();
-        self.stage_counter_placements(placements, mode);
+            .collect()
+    }
+    #[cfg(test)]
+    pub(super) fn effect_mixed_counters_with_self(
+        &mut self, changes: Vec<(ObjectRef, Counters)>, counters: [[u64; 5]; 2], placed_by: Player,
+        origin_stack_id: u64, effects: Vec<SelfPlayerCounterReplacement>, mode: ResumeMode,
+    ) {
+        assert!(self.state.resolving.as_ref().is_some_and(|r| r.item.id == origin_stack_id));
+        assert!(effects.iter().all(|e| e.origin_stack_id == origin_stack_id));
+        assert!(effects.iter().enumerate().all(|(i, e)| effects[..i].iter().all(|prior| prior.effect != e.effect || prior.player != e.player || prior.kind != e.kind)));
+        let placements = self.create_counter_placements(changes, Some(placed_by));
+        self.stage_counter_placements_inner(placements, counters, Some(placed_by), true, None, mode, None, effects);
+    }
+    /// Stage a mixed event from an existing poison-only caller.
+    pub(super) fn effect_counters_with_poison(
+        &mut self, changes: Vec<(ObjectRef, Counters)>, player_poison: [u64; 2],
+        placed_by: Player, mode: ResumeMode,
+    ) {
+        let mut amounts = [[0; 5]; 2];
+        for player in [Player::P0, Player::P1] { amounts[player.index()][0] = player_poison[player.index()]; }
+        self.effect_counters_by(changes, Some(placed_by), amounts, true, None, mode);
+    }
+    pub(super) fn effect_counters_with_players(
+        &mut self, changes: Vec<(ObjectRef, Counters)>, counters: [[u64; 5]; 2],
+        placed_by: Player, mode: ResumeMode,
+    ) {
+        self.effect_counters_by(changes, Some(placed_by), counters, true, None, mode);
+    }
+    #[cfg(test)]
+    pub(super) fn effect_player_counters_with_self(
+        &mut self, player: Player, kind: crate::cards::PlayerCounterKind, amount: u64,
+        origin_stack_id: u64, effects: Vec<SelfPlayerCounterReplacement>, mode: ResumeMode,
+    ) {
+        assert!(self.state.resolving.as_ref().is_some_and(|r| r.item.id == origin_stack_id));
+        assert!(effects.iter().all(|e| e.origin_stack_id == origin_stack_id && e.player == player && e.kind == kind));
+        assert!(effects.iter().enumerate().all(|(i, e)| effects[..i].iter().all(|prior| prior.effect != e.effect || prior.player != e.player || prior.kind != e.kind)));
+        let mut counters = [[0; 5]; 2];
+        counters[player.index()][kind.index()] = amount;
+        self.stage_counter_placements_inner(Vec::new(), counters, Some(player), true, None, mode, None, effects);
+    }
+    pub(super) fn effect_mixed_player_counters_with_self(
+        &mut self, counters: [[u64; 5]; 2], placed_by: Player, origin_stack_id: u64,
+        effects: Vec<SelfPlayerCounterReplacement>, mode: ResumeMode,
+    ) {
+        assert!(self.state.resolving.as_ref().is_some_and(|r| r.item.id == origin_stack_id));
+        assert!(effects.iter().all(|e| e.origin_stack_id == origin_stack_id));
+        assert!(effects.iter().enumerate().all(|(i, e)| effects[..i].iter().all(|prior| prior.effect != e.effect || prior.player != e.player || prior.kind != e.kind)));
+        self.stage_counter_placements_inner(Vec::new(), counters, Some(placed_by), true, None, mode, None, effects);
+    }
+    // CR 118.11: replacement-modified actions still pay the cost.
+    // CR 614.16's effects-only exception does not extend to player counters.
+    pub(super) fn pay_poison_counter_cost(&mut self, player: Player, amount: u16) {
+        let mut counters = [[0; 5]; 2];
+        counters[player.index()][0] = u64::from(amount);
+        self.effect_counters_by(Vec::new(), Some(player), counters, false, None, ResumeMode::Program);
+    }
+    pub(super) fn proliferate_counters(
+        &mut self, changes: Vec<(ObjectRef, Counters)>, counters: [[u64; 5]; 2], player: Player,
+    ) {
+        // Construct permanent placements using the ordinary path, then attach the
+        // event before replacement choices start, including for an empty event.
+        self.effect_counters_by(changes, Some(player), counters, true, Some(player), ResumeMode::Program);
     }
     pub(super) fn effect_counter(
         &mut self,
@@ -1127,7 +1430,7 @@ impl Game {
         }
         let mut counters = Counters::default();
         counters.add(kind, amount);
-        self.effect_counters_by(vec![(self.object_ref(id), counters)], Some(placed_by), mode);
+        self.effect_counters_by(vec![(self.object_ref(id), counters)], Some(placed_by), [[0; 5]; 2], true, None, mode);
     }
     pub(super) fn defer_empty_explore(&mut self, explorer: ExplorerView, counter_added: bool) {
         self.state
@@ -1468,6 +1771,12 @@ impl Game {
                             self.created_token_counter_placements(player, &created, &counters);
                         if !placements.is_empty() {
                             state.work.push_front(Work::Counters(CounterBatch {
+                                player_events: player_counter_events::PlayerCounterEvents::default(),
+                                self_effects: Vec::new(),
+                                                    player_placed_by: None,
+                                player_effect: [true; 2],
+                                next_player: 0,
+                                proliferated: None,
                                 completion: None,
                                 placements,
                                 next: 0,
@@ -1485,6 +1794,12 @@ impl Game {
                             self.created_token_counter_placements(player, &created, &counters);
                         if !placements.is_empty() {
                             state.work.push_front(Work::Counters(CounterBatch {
+                                player_events: player_counter_events::PlayerCounterEvents::default(),
+                                self_effects: Vec::new(),
+                                                    player_placed_by: None,
+                                player_effect: [true; 2],
+                                next_player: 0,
+                                proliferated: None,
                                 completion: None,
                                 placements,
                                 next: 0,
@@ -1504,6 +1819,7 @@ impl Game {
                         }
                         continue;
                     }
+                    Some(Work::Proliferate(batch)) => state.active = Some(Event::Proliferate(batch)),
                     Some(Work::Damage(batch)) => state.active = Some(Event::Damage(batch)),
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
                     Some(Work::Tokens(batch)) => state.active = Some(Event::Tokens(batch)),
@@ -1575,6 +1891,26 @@ impl Game {
                 return self.state.replacements.is_some();
             };
             match active {
+                Event::Proliferate(batch) => {
+                    let choices = self.proliferate_replacements(batch);
+                    match choices.as_slice() {
+                        [] => {
+                            let Some(Event::Proliferate(done)) = state.active.take() else { unreachable!() };
+                            self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().ready = done.amount != 0;
+                        }
+                        [only] => {
+                            if let Some(siblings) = modify_proliferate(
+                                only.source_card.replacement_effects()[only.ability as usize], batch, only.source, only.ability) {
+                                self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().pending.push_front(siblings);
+                            }
+                        }
+                        _ => {
+                            self.state.pending = Pending::Replacement { player: batch.player };
+                            self.state.replacements = Some(state);
+                            return true;
+                        }
+                    }
+                }
                 Event::Damage(batch) => {
                     if batch.next == batch.events.len() {
                         let Some(Event::Damage(batch)) = state.active.take() else {
@@ -1634,11 +1970,45 @@ impl Game {
                     }
                 }
                 Event::Counters(batch) => {
+                    if let Some((player, kind)) = current_player_counter(batch, self.state.active) {
+                            let amount = batch.player_events.events()[batch.next_player].amount;
+                            let own: Vec<_> = batch.self_effects.iter().filter(|effect| amount != 0 && effect.player == player && effect.kind == kind && !batch.player_events.events()[batch.next_player].applied_self.contains(&player_counter_events::EffectIdentity { origin_stack_id: effect.origin_stack_id, index: effect.effect })).copied().collect();
+                            match own.as_slice() {
+                                [only] => {
+                                    apply_own_player_counter_replacement(batch, *only, self.state.active);
+                                    continue;
+                                }
+                                [] => (),
+                                _ => { self.state.pending = Pending::Replacement { player }; self.state.replacements = Some(state); return true; }
+                            }
+                            if self.player_counters_prohibited(player, kind) {
+                                batch.player_events.event_mut(batch.next_player).amount = 0;
+                                batch.next_player += 1; batch.used.clear();
+                                continue;
+                            }
+                            let choices = self.player_counter_replacements(player, kind, batch.player_placed_by.unwrap_or(player), batch.player_effect[player.index()], amount, &batch.player_events.events()[batch.next_player].applied_external);
+                            match choices.as_slice() {
+                                [] => { batch.next_player += 1; batch.used.clear(); }
+                                [only] => {
+                                    batch.player_events.event_mut(batch.next_player).amount = modified_player_counters(
+                                        only.source_card.replacement_effects()[only.ability as usize], amount);
+                                    let id = batch.player_events.events()[batch.next_player].id;
+                                    assert!(batch.player_events.mark_external(id, (only.source, only.ability)));
+                                }
+                                _ => {
+                                    self.state.pending = Pending::Replacement { player };
+                                    self.state.replacements = Some(state);
+                                    return true;
+                                }
+                            }
+                            continue;
+                    }
                     if batch.next == batch.placements.len() {
                         let Some(Event::Counters(batch)) = state.active.take() else {
                             unreachable!()
                         };
-                        self.commit_counter_placements(batch.placements, batch.completion);
+                        let totals = batch.player_events.totals();
+                        self.commit_counter_placements(batch.placements, totals, batch.proliferated, batch.completion);
                         continue;
                     }
                     let p = &mut batch.placements[batch.next];
@@ -1808,6 +2178,12 @@ impl Game {
                                     );
                                     if !placements.is_empty() {
                                         state.work.push_front(Work::Counters(CounterBatch {
+                                            player_events: player_counter_events::PlayerCounterEvents::default(),
+                                self_effects: Vec::new(),
+                                                                player_placed_by: None,
+                                            player_effect: [true; 2],
+                                            next_player: 0,
+                                            proliferated: None,
                                             completion: None,
                                             placements,
                                             next: 0,
@@ -1839,6 +2215,12 @@ impl Game {
                                     );
                                     if !placements.is_empty() {
                                         state.work.push_front(Work::Counters(CounterBatch {
+                                            player_events: player_counter_events::PlayerCounterEvents::default(),
+                                self_effects: Vec::new(),
+                                                                player_placed_by: None,
+                                            player_effect: [true; 2],
+                                            next_player: 0,
+                                            proliferated: None,
                                             completion: None,
                                             placements,
                                             next: 0,
@@ -1954,6 +2336,15 @@ impl Game {
             candidates: candidates.clone(),
         })
     }
+    pub(super) fn choose_self_counter_replacement(&mut self, effect: u16) {
+        let mut state = self.state.replacements.take().unwrap();
+        let Event::Counters(batch) = state.active.as_mut().unwrap() else { unreachable!() };
+        let (player, kind) = current_player_counter(batch, self.state.active).unwrap();
+        let selected = batch.self_effects.iter().find(|e| e.effect == effect && e.player == player && e.kind == kind && !batch.player_events.events()[batch.next_player].applied_self.contains(&player_counter_events::EffectIdentity { origin_stack_id: e.origin_stack_id, index: effect })).copied().unwrap();
+        apply_own_player_counter_replacement(batch, selected, self.state.active);
+        self.state.replacements = Some(state);
+        self.advance_replacements(true);
+    }
     pub(super) fn choose_replacement(&mut self, source: ObjectRef, ability: u16) {
         if self.state.replacements.is_none() {
             self.apply_connive_replacement(source, ability);
@@ -1962,6 +2353,14 @@ impl Game {
         }
         let mut state = self.state.replacements.take().unwrap();
         match state.active.as_mut().unwrap() {
+            Event::Proliferate(batch) => {
+                let choice = self.proliferate_replacements(batch).into_iter()
+                    .find(|c| c.source == source && c.ability == ability).unwrap();
+                if let Some(siblings) = modify_proliferate(
+                    choice.source_card.replacement_effects()[ability as usize], batch, source, ability) {
+                    self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().pending.push_front(siblings);
+                }
+            }
             Event::Damage(batch) => {
                 let choice = self
                     .damage_replacements(&batch.events[batch.next], &batch.used)
@@ -1970,6 +2369,16 @@ impl Game {
                     .unwrap();
                 self.modify_damage(choice, &mut batch.events[batch.next], &mut batch.heals);
                 batch.used.push((source, ability));
+            }
+            Event::Counters(batch) if current_player_counter(batch, self.state.active).is_some() => {
+                let (player, kind) = current_player_counter(batch, self.state.active).unwrap();
+                let amount = batch.player_events.events()[batch.next_player].amount;
+                let choice = self.player_counter_replacements(player, kind, batch.player_placed_by.unwrap_or(player), batch.player_effect[player.index()], amount, &batch.player_events.events()[batch.next_player].applied_external)
+                    .into_iter().find(|c| c.source == source && c.ability == ability).unwrap();
+                batch.player_events.event_mut(batch.next_player).amount = modified_player_counters(
+                    choice.source_card.replacement_effects()[ability as usize], amount);
+                let id = batch.player_events.events()[batch.next_player].id;
+                assert!(batch.player_events.mark_external(id, (source, ability)));
             }
             Event::Counters(batch) => {
                 let p = &mut batch.placements[batch.next];
@@ -2110,8 +2519,21 @@ impl Game {
                 });
             }
         }
+        if let Event::Counters(batch) = active
+            && let Some((player, kind)) = current_player_counter(batch, self.state.active) {
+            let amount = batch.player_events.events()[batch.next_player].amount;
+            let own: Vec<_> = batch.self_effects.iter().filter(|effect| amount != 0 && effect.player == player && effect.kind == kind && !batch.player_events.events()[batch.next_player].applied_self.contains(&player_counter_events::EffectIdentity { origin_stack_id: effect.origin_stack_id, index: effect.effect })).collect();
+            if !own.is_empty() {
+                return own.into_iter().any(|effect| emit(Action::ChooseSelfCounterReplacement { effect: effect.effect }));
+            }
+        }
         let choices = match active {
+            Event::Proliferate(b) => self.proliferate_replacements(b),
             Event::Damage(b) => self.damage_replacements(&b.events[b.next], &b.used),
+            Event::Counters(b) if current_player_counter(b, self.state.active).is_some() => {
+                let (player, kind) = current_player_counter(b, self.state.active).unwrap();
+                self.player_counter_replacements(player, kind, b.player_placed_by.unwrap_or(player), b.player_effect[player.index()], b.player_events.events()[b.next_player].amount, &b.player_events.events()[b.next_player].applied_external)
+            }
             Event::Counters(b) => self.counter_replacements(&b.placements[b.next], &b.used),
             Event::Tokens(b) => self.token_replacements(b),
         };
@@ -2144,7 +2566,15 @@ impl Game {
             return self.connive_replacement_choice();
         }
         match self.state.replacements.as_ref()?.active.as_ref()? {
+            Event::Proliferate(batch) => Some(ReplacementChoiceView {
+                self_counter_effects: Vec::new(), kind: "Proliferate", object: None, counters: None, player_counters: None,
+                proliferate: Some(ProliferateReplacementView { player: batch.player, amount: batch.amount }),
+                tokens: Vec::new(), copy_recipes: Vec::new(), role_attachments: Vec::new(),
+                effects: self.proliferate_replacements(batch), damage: None, damage_preventions: Vec::new(),
+                heals_before_damage: Vec::new(), damage_event_order: Vec::new(),
+            }),
             Event::Damage(batch) => Some(ReplacementChoiceView {
+                self_counter_effects: Vec::new(),
                 kind: if self.damage_event_order(batch).is_empty() {
                     "Damage"
                 } else {
@@ -2152,6 +2582,8 @@ impl Game {
                 },
                 object: None,
                 counters: None,
+                player_counters: None,
+                proliferate: None,
                 tokens: Vec::new(),
                 copy_recipes: Vec::new(),
                 role_attachments: Vec::new(),
@@ -2172,12 +2604,30 @@ impl Game {
                 heals_before_damage: batch.heals.clone(),
                 damage_event_order: self.damage_event_order(batch),
             }),
+            Event::Counters(batch) if current_player_counter(batch, self.state.active).is_some() => {
+                let (player, kind) = current_player_counter(batch, self.state.active).unwrap();
+                Some(ReplacementChoiceView {
+                    self_counter_effects: batch.self_effects.iter().filter(|e| e.player == player && e.kind == kind && !batch.player_events.events()[batch.next_player].applied_self.contains(&player_counter_events::EffectIdentity { origin_stack_id: e.origin_stack_id, index: e.effect })).copied().collect(),
+                    kind: "PlayerCounters", object: None, counters: None,
+                    player_counters: Some(PlayerCounterPlacementView {
+                        player, kind,
+                        amount: batch.player_events.events()[batch.next_player].amount,
+                        placed_by: batch.player_placed_by.expect("player counter effect controller"),
+                        effect: batch.player_effect[player.index()],
+                    }),
+                    proliferate: None,
+                    tokens: Vec::new(), copy_recipes: Vec::new(), role_attachments: Vec::new(),
+                    effects: if batch.self_effects.iter().any(|e| e.player == player && e.kind == kind && !batch.player_events.events()[batch.next_player].applied_self.contains(&player_counter_events::EffectIdentity { origin_stack_id: e.origin_stack_id, index: e.effect })) { Vec::new() } else { self.player_counter_replacements(player, kind, batch.player_placed_by.unwrap_or(player), batch.player_effect[player.index()], batch.player_events.events()[batch.next_player].amount, &batch.player_events.events()[batch.next_player].applied_external) },
+                    damage: None, damage_preventions: Vec::new(), heals_before_damage: Vec::new(), damage_event_order: Vec::new(),
+                })
+            }
             Event::Counters(batch) => {
                 let p = &batch.placements[batch.next];
                 if p.private && !self.shares_information(viewer, p.owner) {
                     return None;
                 }
                 Some(ReplacementChoiceView {
+                    self_counter_effects: Vec::new(),
                     damage: None,
                     damage_preventions: Vec::new(),
                     heals_before_damage: Vec::new(),
@@ -2185,6 +2635,8 @@ impl Game {
                     kind: "Counters",
                     object: Some(p.object),
                     counters: Some(p.amount.clone()),
+                    player_counters: None,
+                    proliferate: None,
                     tokens: Vec::new(),
                     copy_recipes: Vec::new(),
                     role_attachments: Vec::new(),
@@ -2192,6 +2644,7 @@ impl Game {
                 })
             }
             Event::Tokens(batch) => Some(ReplacementChoiceView {
+                self_counter_effects: Vec::new(),
                 damage: None,
                 damage_preventions: Vec::new(),
                 heals_before_damage: Vec::new(),
@@ -2199,6 +2652,8 @@ impl Game {
                 kind: "Tokens",
                 object: None,
                 counters: None,
+                player_counters: None,
+                proliferate: None,
                 tokens: batch.groups.clone(),
                 copy_recipes: batch.recipes.clone(),
                 role_attachments: match &batch.completion {
@@ -2263,6 +2718,9 @@ impl Game {
         self.effect_counters_by(
             vec![(recipient, Counters::of(CounterKind::Loyalty, amount))],
             Some(player),
+            [[0; 5]; 2],
+            true,
+            None,
             ResumeMode::Program,
         );
     }
@@ -2345,6 +2803,7 @@ impl Game {
         recipient: ObjectRef,
         amount: u64,
     ) {
+        let Some(source) = item.source else { return; };
         // The paused program owns this immutable continuation. Army selection
         // reuses the ordinary public amass choice without a global last result.
         let attach = self.state.resolving.as_ref().is_some_and(|resolution| {
@@ -2359,18 +2818,21 @@ impl Game {
         self.effect_counters_by(
             vec![(recipient, Counters::of(CounterKind::PlusOne, amount))],
             Some(player),
+            [[0; 5]; 2],
+            true,
+            None,
             ResumeMode::Program,
         );
         if let Some(state) = self.state.replacements.as_mut() {
             state.work.push_back(Work::AmassSubtype {
-                source: item.object,
+                source: source.object,
                 recipient,
                 attach,
             });
         } else {
-            self.grant_amass_goblin_type(item.object, recipient);
+            self.grant_amass_goblin_type(source.object, recipient);
             if attach {
-                self.attach_equipment(item.object, recipient);
+                self.attach_equipment(source.object, recipient);
             }
         }
     }
@@ -2545,6 +3007,97 @@ mod blight_cost_zero_replacement_tests {
             settle(&mut g);
             assert_eq!(g.object_view(artifact).zone, Zone::Graveyard);
             assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+        }
+    }
+}
+
+#[cfg(test)]
+mod proliferate_player_replacement_unit_tests {
+    use super::*;
+    use crate::engine::assurance::big_helpers::{named, setup};
+
+    #[test]
+    fn typed_replacement_amounts_compose_in_chosen_order() {
+        let double = ReplacementSpec::PlayerCounters {
+            kind: crate::cards::PlayerCounterKind::Poison,
+            relation: CastRelation::Any, placed_by: None, effects_only: false, factor: 2, add: 0,
+        };
+        let plus = ReplacementSpec::PlayerCounters {
+            kind: crate::cards::PlayerCounterKind::Poison,
+            relation: CastRelation::Any, placed_by: None, effects_only: false, factor: 1, add: 1,
+        };
+        assert_eq!(modified_player_counters(plus, modified_player_counters(double, 1)), 3);
+        assert_eq!(modified_player_counters(double, modified_player_counters(plus, 1)), 4);
+        let game = setup(Player::P0);
+        let source = game.object_ref(0);
+        let mut event = ProliferateBatch { player: Player::P0, amount: 1, used: Vec::new() };
+        let sibling = modify_proliferate(ReplacementSpec::Proliferate {
+            relation: CastRelation::You, factor: 2, add: 0,
+        }, &mut event, source, 0).unwrap();
+        assert_eq!(event.amount, 1);
+        assert_eq!(sibling.count, 1);
+        assert_eq!(sibling.used, vec![(source, 0)]);
+        let suppressed = modify_proliferate(ReplacementSpec::Proliferate {
+            relation: CastRelation::You, factor: 0, add: 0,
+        }, &mut event, source, 1);
+        assert!(suppressed.is_none());
+        assert_eq!(event.amount, 0);
+        // Cancelling one child cannot mutate the separately retained sibling.
+        assert_eq!(sibling.used, vec![(source, 0)]);
+    }
+
+    #[test]
+    fn player_replacement_distinguishes_recipient_placer_and_cost() {
+        let effect_only = ReplacementSpec::PlayerCounters {
+            kind: crate::cards::PlayerCounterKind::Poison,
+            relation: CastRelation::Opponent, placed_by: Some(CastRelation::You),
+            effects_only: true, factor: 2, add: 0,
+        };
+        assert!(player_counter_rule_matches(effect_only, Player::P0, Player::P1, Player::P0, true, crate::cards::PlayerCounterKind::Poison));
+        assert!(!player_counter_rule_matches(effect_only, Player::P0, Player::P0, Player::P0, true, crate::cards::PlayerCounterKind::Poison));
+        assert!(!player_counter_rule_matches(effect_only, Player::P0, Player::P1, Player::P1, true, crate::cards::PlayerCounterKind::Poison));
+        assert!(!player_counter_rule_matches(effect_only, Player::P0, Player::P1, Player::P0, false, crate::cards::PlayerCounterKind::Poison));
+        let cost_and_effect = ReplacementSpec::PlayerCounters {
+            kind: crate::cards::PlayerCounterKind::Poison,
+            relation: CastRelation::Opponent, placed_by: Some(CastRelation::You),
+            effects_only: false, factor: 0, add: 0,
+        };
+        assert!(player_counter_rule_matches(cost_and_effect, Player::P0, Player::P1, Player::P0, false, crate::cards::PlayerCounterKind::Poison));
+        assert_eq!(modified_player_counters(cost_and_effect, 5), 0);
+        // A zero-result replacement does not turn the original cost into an
+        // effects-only event for another player-counter replacement.
+        assert!(!player_counter_rule_matches(effect_only, Player::P0, Player::P1, Player::P0, false, crate::cards::PlayerCounterKind::Poison));
+    }
+
+    #[test]
+    fn simultaneous_counter_choices_interleave_affected_players_in_turn_order() {
+        for active in [Player::P0, Player::P1] {
+            let mut game = setup(active);
+            let id = named(&mut game, active.other(), "Bear Cub", Zone::Battlefield);
+            let object = game.object_ref(id);
+            let creature = &game.state.objects[id as usize];
+            let placement = CounterPlacement {
+                object, placed_by: active, card: creature.card, owner: creature.owner,
+                controller: creature.controller, protector: None,
+                subtypes: game.granted_subtypes(id), kind: game.current_kinds(id),
+                power: game.stats(id).power, amount: Counters::of(CounterKind::PlusOne, 1),
+                effect: true, entry_index: None, private: false,
+            };
+            let mut player_events = player_counter_events::PlayerCounterEvents::default();
+            player_events.push(active, crate::cards::PlayerCounterKind::Poison, 1, 0);
+            player_events.push(active.other(), crate::cards::PlayerCounterKind::Poison, 1, 0);
+            let mut batch = CounterBatch {
+                player_events, self_effects: Vec::new(), player_placed_by: Some(active), player_effect: [true; 2], next_player: 0,
+                proliferated: Some(active), completion: None, placements: vec![placement],
+                next: 0, used: Vec::new(),
+            };
+            assert_eq!(current_player_counter(&batch, active), Some((active, crate::cards::PlayerCounterKind::Poison)));
+            batch.next_player = 1;
+            assert_eq!(current_player_counter(&batch, active), None);
+            batch.next = 1;
+            assert_eq!(current_player_counter(&batch, active), Some((active.other(), crate::cards::PlayerCounterKind::Poison)));
+            batch.next_player = 2;
+            assert_eq!(current_player_counter(&batch, active), None);
         }
     }
 }

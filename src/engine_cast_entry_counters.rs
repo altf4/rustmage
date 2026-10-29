@@ -27,7 +27,7 @@ impl Game {
             .state
             .stack
             .iter()
-            .any(|spell| spell.kind == StackKind::Spell && spell.object == event.object)
+            .any(|spell| spell.kind == StackKind::Spell && spell.source.is_some_and(|source| source.object == event.object))
         {
             return;
         }

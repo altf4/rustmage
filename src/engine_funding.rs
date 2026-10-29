@@ -828,9 +828,9 @@ impl<'g> FundingState<'g> {
                 .source
                 .as_ref()
                 .is_some_and(|(r, index, _, definition, slot)| {
-                    a.item.object == *r
+                    a.item.source.expect("cost announcement has object source").object == *r
                         && a.item.kind == StackKind::ActivatedAbility { ability: *index }
-                        && a.item.source_card == *definition
+                        && a.item.source.expect("cost announcement has object source").card == *definition
                         && a.item.borrowed_slot == *slot
                 })
             && let Some(frames) = game.state.mana_announcement_stack.as_deref()
@@ -842,7 +842,7 @@ impl<'g> FundingState<'g> {
                     .mana_lots
                     .as_deref()
                     .and_then(|m| m.announcement_quality.as_ref())
-                    .filter(|(source, _)| *source == a.item.object)
+                    .filter(|(source, _)| *source == a.item.source.expect("cost announcement has object source").object)
                     .map(|(_, q)| q),
             );
         }
@@ -1464,7 +1464,7 @@ impl<'g> FundingState<'g> {
             p.hand_size.forget(reference);
         }
         let is_announcement_source = |item: &SpellView| {
-            matches!(item.kind, StackKind::ActivatedAbility { .. }) && item.object == reference
+            matches!(item.kind, StackKind::ActivatedAbility { .. }) && item.source.is_some_and(|source| source.object == reference)
         };
         if self.payment_source != Some(reference)
             && !self
@@ -2598,7 +2598,7 @@ impl Game {
             let spec = a.additional_cost().expect("selected tap cost");
             if !group
                 .iter()
-                .all(|&r| self.additional_candidate(spec, a.item.controller, a.item.object, r))
+                .all(|&r| self.additional_candidate(spec, a.item.controller, a.item.source.expect("cost announcement has object source").object, r))
             {
                 return false;
             }
@@ -2696,7 +2696,7 @@ impl Game {
     ) -> bool {
         let current = self.state.announcing.as_ref().filter(|a| {
             a.item.controller == goal.actor
-                && matches!(purpose, mana_lots::Purpose::Spell(spell) if a.item.source_card == spell.card)
+                && matches!(purpose, mana_lots::Purpose::Spell(spell) if a.item.source.expect("cost announcement has object source").card == spell.card)
         });
         let selection = current.and_then(|a| a.evidence.as_deref());
         if let Some(result) = self.preview_optional_cast_costs(
@@ -2707,7 +2707,7 @@ impl Game {
                     card: CardId::MAX,
                     generation: 0,
                 },
-                |a| a.item.object,
+                |a| a.item.source.expect("cost announcement has object source").object,
             ),
             Some(evidence::cost(threshold)),
             None,
@@ -2751,7 +2751,7 @@ impl Game {
             || a.needs_evidence()
             || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()
             || a.needs_mana_cost()
-            || (a.item.source_card.tiered_costs().is_some() && a.item.mode.is_none())
+            || (a.item.source.expect("cost announcement has object source").card.tiered_costs().is_some() && a.item.mode.is_none())
             || (a
                 .additional_cost()
                 .is_some_and(|spec| !forage::is_forage_cost(spec))
@@ -2785,10 +2785,10 @@ impl Game {
         if let Some(reference) = object {
             proposal.add_cast_cost_clause(CastCostClause::Harmonize(reference));
         }
-        proposal.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+        proposal.initialize_cast_costs(improvise::potential(self, a.item.source.expect("cost announcement has object source").card));
         let goal = self.funding_goal(&proposal);
         let mut world =
-            FundingState::from_game_with_convoke(self, &goal, a.item.source_card.has_convoke());
+            FundingState::from_game_with_convoke(self, &goal, a.item.source.expect("cost announcement has object source").card.has_convoke());
         world.set_purpose(self.purpose_for_item(&a.item));
         world.set_cost_context(Some(&proposal));
         world.reachable(&goal, &mut HashSet::new())
@@ -2805,7 +2805,7 @@ impl Game {
                 .any(|id| self.harmonize_choice_fundable(a, Some(self.object_ref(id as CardId))));
         }
         if let StackKind::ActivatedAbility { ability } = a.item.kind
-            && Self::activation_target_sensitive(a.item.source_card, ability)
+            && Self::activation_target_sensitive(a.item.source.expect("cost announcement has object source").card, ability)
         {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
@@ -2814,9 +2814,9 @@ impl Game {
         if a.item
             .cast
             .is_some_and(|c| c.method == CastMethod::Flashback)
-            && let Some(spec) = a.item.source_card.flashback_additional()
+            && let Some(spec) = a.item.source.expect("cost announcement has object source").card.flashback_additional()
         {
-            let Some(cost) = self.reduced_spell_cost(a.item.controller, a.item.card, cost) else {
+            let Some(cost) = self.reduced_spell_cost(a.item.controller, a.item.source.expect("cost announcement has object source").id, cost) else {
                 return false;
             };
             let goal = FundingGoal {
@@ -2833,11 +2833,11 @@ impl Game {
                     | EffectChoiceKind::ExileGraveyardCards(_)
                     | EffectChoiceKind::ExileGraveyardSymbols { .. }
             ) {
-                return self.group_cost_fundable(goal, purpose, spec, a.item.object, &[]);
+                return self.group_cost_fundable(goal, purpose, spec, a.item.source.expect("cost announcement has object source").object, &[]);
             }
             return self.state.objects.iter().enumerate().any(|(id, _)| {
                 let candidate = self.object_ref(id as CardId);
-                self.additional_candidate(spec, a.item.controller, a.item.object, candidate)
+                self.additional_candidate(spec, a.item.controller, a.item.source.expect("cost announcement has object source").object, candidate)
                     && self.can_fund_for(
                         FundingGoal {
                             reserve: Some((candidate, spec)),
@@ -2848,7 +2848,7 @@ impl Game {
             });
         }
         if a.graveyard_origin_counter_cost().is_some() {
-            let Some(cost) = self.reduced_spell_cost(a.item.controller, a.item.card, cost) else {
+            let Some(cost) = self.reduced_spell_cost(a.item.controller, a.item.source.expect("cost announcement has object source").id, cost) else {
                 return false;
             };
             return self.creature_counter_fundable(
@@ -2874,7 +2874,7 @@ impl Game {
                 )
             })
         {
-            let definition = a.item.source_card;
+            let definition = a.item.source.expect("cost announcement has object source").card;
             let base = Self::with_kicker_cost(
                 Self::with_offspring_cost(
                     cost,
@@ -2888,26 +2888,26 @@ impl Game {
                 return match a.item.cast.and_then(|c| c.bargain) {
                     Some(true) => self.bargain_cost_fundable(
                         a.item.controller,
-                        a.item.card,
+                        a.item.source.expect("cost announcement has object source").id,
                         base,
                         a.additional,
                     ),
                     Some(false) => {
-                        self.bargain_cost_fundable(a.item.controller, a.item.card, base, None)
+                        self.bargain_cost_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, base, None)
                     }
-                    None => self.initial_bargain_fundable(a.item.controller, a.item.card, base),
+                    None => self.initial_bargain_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, base),
                 };
             }
             if definition.collect_evidence_cost().is_some() {
                 return match a.item.cast.and_then(|c| c.evidence) {
                     Some(collect) => {
-                        self.evidence_cast_fundable(a.item.controller, a.item.card, base, collect)
+                        self.evidence_cast_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, base, collect)
                     }
                     None => {
-                        self.evidence_cast_fundable(a.item.controller, a.item.card, base, false)
+                        self.evidence_cast_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, base, false)
                             || self.evidence_cast_fundable(
                                 a.item.controller,
-                                a.item.card,
+                                a.item.source.expect("cost announcement has object source").id,
                                 base,
                                 true,
                             )
@@ -2915,7 +2915,7 @@ impl Game {
                 };
             }
             let Some(total) =
-                self.spell_total_for_definition(a.item.controller, a.item.card, base, definition)
+                self.spell_total_for_definition(a.item.controller, a.item.source.expect("cost announcement has object source").id, base, definition)
             else {
                 return false;
             };
@@ -2935,7 +2935,7 @@ impl Game {
             }
             return self.spell_can_fund_total_for_definition(
                 a.item.controller,
-                a.item.card,
+                a.item.source.expect("cost announcement has object source").id,
                 total,
                 None,
                 definition,
@@ -2948,55 +2948,55 @@ impl Game {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
             proposal.cast_costs = Some(Box::default());
-            proposal.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+            proposal.initialize_cast_costs(improvise::potential(self, a.item.source.expect("cost announcement has object source").card));
             let goal = self.funding_goal(&proposal);
             let mut world =
-                FundingState::from_game_with_convoke(self, &goal, a.item.source_card.has_convoke());
+                FundingState::from_game_with_convoke(self, &goal, a.item.source.expect("cost announcement has object source").card.has_convoke());
             world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(&proposal);
             return world.reachable(&goal, &mut HashSet::new());
         }
         if a.item.kind == StackKind::Spell
-            && !self.spell_cost_option_available(a.item.controller, a.item.card, cost)
+            && !self.spell_cost_option_available(a.item.controller, a.item.source.expect("cost announcement has object source").id, cost)
         {
             return false;
         }
-        if a.item.kind == StackKind::Spell && a.item.source_card.x_symbols() > 0 {
+        if a.item.kind == StackKind::Spell && a.item.source.expect("cost announcement has object source").card.x_symbols() > 0 {
             return a.item.x.is_some_and(|x| {
-                self.scalar_x_total(a.item.controller, a.item.card, cost, x)
+                self.scalar_x_total(a.item.controller, a.item.source.expect("cost announcement has object source").id, cost, x)
                     .is_some_and(|total| {
-                        self.spell_can_fund_total(a.item.controller, a.item.card, total, None)
+                        self.spell_can_fund_total(a.item.controller, a.item.source.expect("cost announcement has object source").id, total, None)
                     })
             });
         }
-        if a.item.source_card.target_cost_reduction().is_some() && a.item.kind == StackKind::Spell {
+        if a.item.source.expect("cost announcement has object source").card.target_cost_reduction().is_some() && a.item.kind == StackKind::Spell {
             return self.announcement_target_fundable(a, None, Some(cost), None, None, false);
         }
-        if a.item.kind == StackKind::Spell && a.item.source_card.collect_evidence_cost().is_some() {
+        if a.item.kind == StackKind::Spell && a.item.source.expect("cost announcement has object source").card.collect_evidence_cost().is_some() {
             return self.evidence_cast_fundable(
                 a.item.controller,
-                a.item.card,
+                a.item.source.expect("cost announcement has object source").id,
                 cost,
                 a.item.cast.is_some_and(|c| c.evidence == Some(true)),
             );
         }
-        if a.item.kind == StackKind::Spell && a.item.source_card.has_bargain() {
-            return self.bargain_cost_fundable(a.item.controller, a.item.card, cost, a.additional);
+        if a.item.kind == StackKind::Spell && a.item.source.expect("cost announcement has object source").card.has_bargain() {
+            return self.bargain_cost_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, cost, a.additional);
         }
         match a.item.kind {
             StackKind::Spell => self.spell_can_fund_for_definition(
                 a.item.controller,
-                a.item.card,
+                a.item.source.expect("cost announcement has object source").id,
                 Self::with_kicker_cost(
                     Self::with_offspring_cost(
                         cost,
-                        a.item.source_card,
+                        a.item.source.expect("cost announcement has object source").card,
                         a.item.cast.is_some_and(|c| c.offspring == Some(true)),
                     ),
-                    a.item.source_card,
+                    a.item.source.expect("cost announcement has object source").card,
                     a.item.cast.is_some_and(|c| c.kicker == Some(true)),
                 ),
-                a.item.source_card,
+                a.item.source.expect("cost announcement has object source").card,
             ),
             StackKind::ActivatedAbility { ability } => self.activation_can_fund(
                 FundingGoal {
@@ -3005,10 +3005,10 @@ impl Game {
                     required: cost.colored,
                     generic: cost.generic,
                     source: Some((
-                        a.item.object,
+                        a.item.source.expect("cost announcement has object source").object,
                         ability,
                         a.counter_payment.clone(),
-                        a.item.source_card,
+                        a.item.source.expect("cost announcement has object source").card,
                         a.item.borrowed_slot,
                     )),
                 },
@@ -3023,6 +3023,7 @@ impl Game {
             | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedManifestDread
             | StackKind::DelayedWarpExile
+            | StackKind::InherentRule { .. }
             | StackKind::SiegeDefeat => false,
         }
     }
@@ -3051,11 +3052,11 @@ impl Game {
                     .map(|f| f.remaining)
                     .or(announcement.total_cost)
                     .unwrap_or_else(|| {
-                        if announcement.item.source_card.x_symbols() > 0 {
+                        if announcement.item.source.expect("cost announcement has object source").card.x_symbols() > 0 {
                             return self
                                 .scalar_x_total(
                                     announcement.item.controller,
-                                    announcement.item.card,
+                                    announcement.item.source.expect("cost announcement has object source").id,
                                     Self::announcement_base_cost(announcement),
                                     announcement.item.x.unwrap_or(0),
                                 )
@@ -3077,7 +3078,7 @@ impl Game {
                 }
             }
             StackKind::ActivatedAbility { ability } => {
-                let cost = announcement.item.source_card.activation(ability).cost;
+                let cost = announcement.item.source.expect("cost announcement has object source").card.activation(ability).cost;
                 let power_up = announcement.total_cost.or_else(|| {
                     announcement.power_up_costs.as_ref().map(|_| {
                         announcement.cost.unwrap_or_else(|| {
@@ -3106,7 +3107,7 @@ impl Game {
                                 .checked_mul(
                                     announcement
                                         .item
-                                        .source_card
+                                        .source.expect("object-backed announcement").card
                                         .activation(ability)
                                         .x_symbols(),
                                 )
@@ -3116,10 +3117,10 @@ impl Game {
                         })
                         .capacity("activation cost exhausted"),
                     source: Some((
-                        announcement.item.object,
+                        announcement.item.source.expect("cost announcement has object source").object,
                         ability,
                         announcement.counter_payment.clone(),
-                        announcement.item.source_card,
+                        announcement.item.source.expect("cost announcement has object source").card,
                         announcement.item.borrowed_slot,
                     )),
                 }
@@ -3133,6 +3134,7 @@ impl Game {
             | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedManifestDread
             | StackKind::DelayedWarpExile
+            | StackKind::InherentRule { .. }
             | StackKind::SiegeDefeat => unreachable!(),
         }
     }
@@ -3219,7 +3221,7 @@ impl Game {
         let mut world = FundingState::from_game_with_convoke(
             self,
             &goal,
-            proposal.item.source_card.has_convoke(),
+            proposal.item.source.expect("cost announcement has object source").card.has_convoke(),
         );
         world.set_purpose(self.purpose_for_item(&proposal.item));
         world.set_payment_context(&proposal);
@@ -3243,7 +3245,7 @@ impl Game {
         let mut state = FundingState::from_game_with_convoke(
             self,
             &goal,
-            frame.announcement.item.source_card.has_convoke(),
+            frame.announcement.item.source.expect("cost announcement has object source").card.has_convoke(),
         );
         state.set_payment_context(&frame.announcement);
         state.set_purpose(self.purpose_for_item(&frame.announcement.item));
@@ -3253,7 +3255,7 @@ impl Game {
             frame.quality.as_ref().map(|(_, q)| q),
         );
         state.moves(&goal).into_iter().any(|step| {
-            if state.resources[step.resource].id != child.item.card
+            if child.item.source.is_none_or(|source| state.resources[step.resource].id != source.id)
                 || step.ability
                     != match child.item.kind {
                         StackKind::ActivatedAbility { ability } => Some(ability),
@@ -3289,7 +3291,7 @@ impl Game {
         }
         let goal = self.funding_goal(announcement);
         let convoke = announcement.item.kind == StackKind::Spell
-            && announcement.item.source_card.has_convoke();
+            && announcement.item.source.expect("cost announcement has object source").card.has_convoke();
         let state = FundingState::from_game_with_convoke(self, &goal, convoke);
         let mut done = false;
         let mut direct = state.clone();
@@ -3330,7 +3332,7 @@ impl Game {
         let artifact = self.item_improvise(&announcement.item)
             || (announcement.item.kind == StackKind::Spell
                 && announcement.cast_costs.is_some()
-                && improvise::potential(self, announcement.item.source_card));
+                && improvise::potential(self, announcement.item.source.expect("cost announcement has object source").card));
         if (convoke || artifact)
             && (if state.has_ordered_convoke() {
                 state.cost_completion()
@@ -3572,7 +3574,7 @@ impl Game {
                 let a = self.state.announcing.as_ref().unwrap();
                 (
                     self.funding_goal(a),
-                    a.item.kind == StackKind::Spell && a.item.source_card.has_convoke(),
+                    a.item.kind == StackKind::Spell && a.item.source.expect("cost announcement has object source").card.has_convoke(),
                     a.evidence.as_ref().map(|e| e.threshold),
                 )
             }

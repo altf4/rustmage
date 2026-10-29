@@ -354,6 +354,7 @@ fn hob_storied_transient_threshold_inside_one_typed_resolution() {
         sacrificed_power: None,
         immediate_blink_return: None,
         connive: None,
+        proliferate: None,
         explore: None,
         evidence: None,
         item,

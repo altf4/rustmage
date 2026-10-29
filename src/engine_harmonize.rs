@@ -45,7 +45,7 @@ impl Game {
         let extra = Self::announcement_optional_reduction(a) + u64::from(discount);
         let Some(total) = self.target_spell_cost_with_extra(
             a.item.controller,
-            a.item.card,
+            a.item.source.expect("cost announcement has object source").id,
             base,
             &a.item.targets,
             extra,
@@ -76,7 +76,7 @@ impl Game {
     }
 
     pub(super) fn choose_harmonizer(&mut self, object: Option<ObjectRef>) {
-        let definition = self.state.announcing.as_ref().unwrap().item.source_card;
+        let definition = self.state.announcing.as_ref().unwrap().item.source.expect("cast announcement has source").card;
         let can_improvise = improvise::potential(self, definition);
         let a = self.state.announcing.as_mut().unwrap();
         a.harmonizer = Some(object);

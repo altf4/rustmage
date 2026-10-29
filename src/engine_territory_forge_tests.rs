@@ -134,8 +134,8 @@ fn territory_forge_inherited_sacrifice_draw_and_target_costs_use_actual_source_l
         let count = g.hand_count(p);
         announce(&mut g, id, 1);
         let item = &g.state.announcing.as_ref().unwrap().item;
-        assert_eq!(item.source_card.name(), "Hedron Archive");
-        assert_eq!(item.source_facts.card.name(), "Territory Forge");
+        assert_eq!(item.source.unwrap().card.name(), "Hedron Archive");
+        assert_eq!(item.source.unwrap().facts.card.name(), "Territory Forge");
         assert_eq!(
             item.source_copy_recipe.as_ref().unwrap().definition.name(),
             "Territory Forge"

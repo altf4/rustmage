@@ -170,7 +170,7 @@ fn main() {
             }
             let paid = if let Some(root) = before.announcing.as_ref()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && is_new(root.source_card.name(), ability)
+                && is_new(root.source().expect("example expects an object-backed packet").card.name(), ability)
                 && let Action::PayCosts { payment } = a
             {
                 let v = before.additional_cost.as_ref().unwrap();
@@ -232,23 +232,23 @@ fn main() {
                         .iter()
                         .any(|b| b.id == selected.card && b.zone == Zone::Graveyard)
                 );
-                if root.source_card.name() == "Masked Meower" {
+                if root.source().is_some_and(|source| source.card.name() == "Masked Meower") {
                     assert!(
                         after
                             .objects
                             .iter()
-                            .any(|b| b.id == root.card && b.zone == Zone::Graveyard)
+                            .any(|b| b.id == root.source().expect("example expects an object-backed packet").id && b.zone == Zone::Graveyard)
                     );
                 }
                 if matches!(
-                    root.source_card.name(),
+                    root.source().expect("example expects an object-backed packet").card.name(),
                     "Charging Strifeknight" | "Murmuring Volume"
                 ) {
                     assert!(
                         after
                             .objects
                             .iter()
-                            .any(|b| b.reference == root.object && b.tapped)
+                            .any(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.tapped)
                     );
                 }
             }
@@ -272,22 +272,22 @@ fn main() {
             }
             if let Some(root) = before.stack.last()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && is_new(root.source_card.name(), ability)
+                && is_new(root.source().expect("example expects an object-backed packet").card.name(), ability)
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()
             {
-                let name = root.source_card.name();
+                let name = root.source().expect("example expects an object-backed packet").card.name();
                 let p = root.controller.index();
                 if matches!(name, "Inner Demons Gangsters" | "Iron-Shield Elf") {
                     if let Some(b) = after
                         .objects
                         .iter()
-                        .find(|b| b.reference == root.object && b.zone == Zone::Battlefield)
+                        .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
                     {
                         let old = before
                             .objects
                             .iter()
-                            .find(|b| b.reference == root.object)
+                            .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object)
                             .unwrap();
                         if name == "Inner Demons Gangsters" {
                             assert_eq!(b.power, old.power + 1);
@@ -312,7 +312,7 @@ fn main() {
             }
             // Gecko's entry-trigger mana resolves on the stack, independently of its draw activation.
             if let Some(root) = before.stack.last()
-                && root.source_card.name() == "Flamecache Gecko"
+                && root.source().is_some_and(|source| source.card.name() == "Flamecache Gecko")
                 && matches!(root.kind, StackKind::TriggeredAbility { .. })
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()
