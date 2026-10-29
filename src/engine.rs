@@ -6552,7 +6552,10 @@ impl Game {
                 )
             })
             .collect();
-        self.refresh_controllers();
+        // A surveil caller must first restore reserved library positions.
+        if positions.is_none() {
+            self.refresh_controllers();
+        }
         events
     }
 

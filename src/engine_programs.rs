@@ -154,6 +154,7 @@ impl Game {
         let library = &mut self.state.players[player.index()].library;
         library.splice(0..0, choice.bottom.iter().rev().copied());
         library.extend(choice.top.iter().rev().copied());
+        self.refresh_controllers();
         self.finish_zone_events(&events, &[]);
         self.scry_or_surveil_event(player);
         for reference in return_cards {
