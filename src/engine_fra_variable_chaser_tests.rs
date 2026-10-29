@@ -86,3 +86,33 @@ fn arc_draws_seven_even_when_discard_is_replaced_or_the_hand_is_empty() {
         assert_eq!(g.object_view(discarded).zone, Zone::Exile);
     }
 }
+
+#[test]
+fn arc_discards_both_hands_before_interrupted_first_draw() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let (_, copy) = variable_prepare(&mut g, p);
+        put(&mut g, p, "Rest in Peace", Zone::Battlefield);
+        put(&mut g, p, "Lorehold, the Historian", Zone::Battlefield);
+        let first = put(&mut g, p, "Forest", Zone::Hand);
+        let second = put(&mut g, p.other(), "Island", Zone::Hand);
+        put(&mut g, p, "Shock", Zone::Library);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 2];
+        act(&mut g, Action::AnnounceExile { card: copy.card });
+        pay(&mut g);
+        variable_wait_choice(&mut g);
+        act(&mut g, Action::ChooseOptional { accept: true });
+        let saved = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        for replay in 0..2 {
+            if replay == 1 { g.restore(&saved).unwrap(); }
+            act(&mut g, Action::ChooseOptional { accept: true });
+            assert!(matches!(g.state.pending, Pending::MiracleReveal { player } if player == p));
+            assert_eq!(g.object_view(first).zone, Zone::Exile);
+            assert_eq!(g.object_view(second).zone, Zone::Exile);
+            assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 1);
+            assert_eq!(g.state.players[p.other().index()].cards_discarded_this_turn, 1);
+            assert_eq!(g.state.players[p.other().index()].cards_drawn_this_turn, 0);
+        }
+    }
+}

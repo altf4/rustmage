@@ -13,7 +13,6 @@ pub(super) enum DiscardAfter {
     Recruit(Player, Card),
     LoseLife(Player, i128),
     DrawActual { players: [bool; 2], bonus: u16 },
-    DrawFixed { player: Player, amount: u16 },
     RememberActual,
     ConniveCounters(ObjectRef, u64, Player),
     ChooseLand { player: Player, tapped: bool },
@@ -311,7 +310,6 @@ impl Game {
                     .collect();
                 self.start_discarded_land_choice(player, tapped, objects);
             }
-            Some(DiscardAfter::DrawFixed { player, amount }) => self.draw_many(player, u128::from(amount)),
             Some(DiscardAfter::DrawActual { players, bonus }) => {
                 for player in [self.state.active, self.state.active.other()] {
                     if players[player.index()] {

@@ -2321,24 +2321,28 @@ impl Game {
             .collect()
     }
 
-    /// Advance one chosen player's discard and draw; entry and Miracle choices
-    /// suspend the interpreter before the next player's action.
+    /// Discard all chosen hands together, then draw in APNAP order.
+    /// Entry replacements and interrupted draws suspend between stages.
     fn advance_optional_wheel(&mut self) -> bool {
         let Some(wheel) = self.state.resolving.as_ref().and_then(|r| r.optional_wheel) else { return false; };
         if !wheel.running { return false; }
-        if wheel.next >= 2 {
+        if wheel.next >= 3 {
             self.state.resolving.as_mut().unwrap().optional_wheel = None;
             return false;
         }
-        let player = if wheel.next == 0 { wheel.first } else { wheel.first.other() };
         self.state.resolving.as_mut().unwrap().optional_wheel.as_mut().unwrap().next += 1;
-        if wheel.choices[player.index()] == Some(true) {
+        if wheel.next == 0 {
             let cause = self.state.resolving.as_ref().unwrap().item.controller;
             let cards: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(id, object)|
-                (object.zone == Zone::Hand && object.owner == player).then_some(id as CardId)
+                (object.zone == Zone::Hand && wheel.choices[object.owner.index()] == Some(true))
+                    .then_some(id as CardId)
             ).collect();
-            self.discard_batch_with_after(&cards, None, Some(cause),
-                Some(discard_events::DiscardAfter::DrawFixed { player, amount: wheel.amount }));
+            self.discard_batch_with_after(&cards, None, Some(cause), None);
+        } else {
+            let player = if wheel.next == 1 { wheel.first } else { wheel.first.other() };
+            if wheel.choices[player.index()] == Some(true) {
+                self.draw_many(player, u128::from(wheel.amount));
+            }
         }
         true
     }
