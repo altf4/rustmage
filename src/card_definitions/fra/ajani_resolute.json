@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "002f166966a1baa6d2d298c0dd13518bbbfdcd9d9100ae70fe308481bff55691"
   },
-  "physical_metadata_sha256": "a8c3548f60ba860f7b647615224b22435932969a181654fd27e23fc24979f806"
+  "physical_metadata_sha256": "a8c3548f60ba860f7b647615224b22435932969a181654fd27e23fc24979f806",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AjaniResolute.java",
+  "java_sha256": "ed137d64bdf7183fb8429789634bd23fd751fb109da3386a2b8149317e160f7f",
+  "rules_tests": "src/engine_fra_ajani_resolute_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/AjanisPridemateToken.java",
+      "sha256": "7231f60bc2ba29904904290efdc91ac8deba3d23d2151415f85141a8a81cba86"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/command/emblems/AjaniResoluteEmblem.java",
+      "sha256": "c37c87e101fc5129f43fbf390f0e9d01db92945459f5658489605eee08f980ac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+      "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ]
 }

@@ -1,0 +1,10 @@
+{
+  "name": "@token/fra-ajani-pridemate",
+  "catalogue_id": 5462,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/AjanisPridemateToken.java",
+  "java_sha256": "7231f60bc2ba29904904290efdc91ac8deba3d23d2151415f85141a8a81cba86"
+}
