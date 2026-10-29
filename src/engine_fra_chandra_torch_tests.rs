@@ -251,3 +251,44 @@ fn torch_foreign_entry_choice_can_reverse_unfundable_cast_before_declining() {
         assert_eq!(g.state.players[player.other().index()].life, life - 2);
     }
 }
+
+#[test]
+fn torch_paid_offer_preserves_chosen_x_and_normal_mana_cost() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let chandra = put(&mut g, player, "Chandra, Torch of Defiance", Zone::Battlefield);
+        g.state.objects[chandra as usize].counters.loyalty = 4;
+        let spell = put(&mut g, player, "Ajani's Anguish", Zone::Library);
+        g.state.players[player.index()].mana = [0, 0, 0, 1, 0, 2];
+        torch_activate(&mut g, chandra, 0);
+        g.resolve_top();
+        let object = g.object_ref(spell);
+        act(&mut g, Action::CastExiledDuringResolution { object, face: CastFace::Normal });
+        act(&mut g, Action::ChooseX { value: 2 });
+        pay(&mut g);
+        assert_eq!(g.state.stack.last().unwrap().x, Some(2));
+        assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+        act(&mut g, Action::FinishResolutionCasts);
+    }
+}
+
+#[test]
+fn torch_paid_offer_keeps_modal_spell_choices_and_opponent_tax() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let chandra = put(&mut g, player, "Chandra, Torch of Defiance", Zone::Battlefield);
+        g.state.objects[chandra as usize].counters.loyalty = 4;
+        put(&mut g, player.other(), "Thalia, the Survivor", Zone::Battlefield);
+        let charm = put(&mut g, player, "Konstrari Charm", Zone::Library);
+        g.state.players[player.index()].mana = [0, 0, 0, 1, 1, 1];
+        torch_activate(&mut g, chandra, 0);
+        g.resolve_top();
+        let object = g.object_ref(charm);
+        act(&mut g, Action::CastExiledDuringResolution { object, face: CastFace::Normal });
+        act(&mut g, Action::ChooseMode { mode: 2 });
+        pay(&mut g);
+        assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+        assert_eq!(g.state.stack.last().unwrap().mode, Some(2));
+        act(&mut g, Action::FinishResolutionCasts);
+    }
+}
