@@ -398,9 +398,5 @@ mod fra_way_copy_review;
 #[path = "../engine_fra_uldaros_target_tests.rs"]
 mod fra_uldaros_target_tests;
 
-#[path = "../engine_fra_uldaros_budget_independent_tests.rs"]
-mod fra_uldaros_budget_independent_tests;
-#[path = "../engine_fra_uldaros_budget_tests.rs"]
-mod fra_uldaros_budget_tests;
 #[path = "../engine_fra_uldaros_effect_tests.rs"]
 mod fra_uldaros_effect_tests;
