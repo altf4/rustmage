@@ -82,6 +82,8 @@ jobs:
           git init "$RUSTMAGE_XMAGE_SOURCE"
           git -C "$RUSTMAGE_XMAGE_SOURCE" remote add origin https://github.com/magefree/mage.git
           git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin "$revision"
+          # Null Summoner is pinned to the immutable head of unmerged XMage PR #16468.
+          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin 11d430e97f277fad0fafe604fabbaa97f944d441
           # check_sources reads immutable blobs with one git cat-file process.
           # No full XMage working tree or Java build is needed.
 

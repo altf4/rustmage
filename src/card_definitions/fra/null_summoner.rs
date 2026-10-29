@@ -1,4 +1,4 @@
-// Full frozen Oracle draft. Pinned XMage implementation is unavailable; gated.
+// Full frozen Oracle and immutable upstream PR implementation reviewed; gated.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 2),
     triggers: &[TriggeredAbility {
