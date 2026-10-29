@@ -179,6 +179,15 @@ impl Game {
                 self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)
             }
             ActivationGuard::OwnTurn => self.state.active == actor,
+            ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype, minimum } => {
+                let world = self.characteristic_query();
+                self.state.objects.iter().enumerate().filter(|(id, object)| {
+                    object.zone == Zone::Battlefield && object.controller == actor
+                        && ability_world::CharacteristicWorld::kinds(&world, *id as CardId) & 64 != 0
+                        && ability_world::CharacteristicWorld::subtypes(&world, *id as CardId).has(object.card, subtype)
+                }).fold(0u64, |sum, (id, _)| sum.saturating_add(
+                    ability_world::CharacteristicWorld::counter_count(&world, id as CardId, CounterKind::Loyalty))) >= minimum
+            }
             ActivationGuard::ControlLandsAtLeast(minimum) => {
                 self.state
                     .objects

@@ -3869,6 +3869,7 @@ pub(crate) enum ActivationGuard {
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
     ControlLandsAtLeast(u16),
+    ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype: &'static str, minimum: u64 },
     ControlCreatureToughnessAtLeast(u16),
     SourceEnteredOrControlsBasicLand,
     HandSizeAtLeast(u16),
@@ -3887,6 +3888,7 @@ impl ActivationGuard {
             | Self::OpponentNoncombatDamageThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
+            | Self::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. }
             | Self::ControlCreatureToughnessAtLeast(_)
             | Self::SourceEnteredOrControlsBasicLand
             | Self::HandSizeAtLeast(_)

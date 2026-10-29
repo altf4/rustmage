@@ -1117,6 +1117,14 @@ impl<'g> FundingState<'g> {
                 }) >= STARTING_LIFE + i128::from(extra)
             }
             ActivationGuard::OwnTurn => self.active == actor,
+            ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype, minimum } => {
+                self.resources.iter().filter(|r| {
+                    r.object.zone == Zone::Battlefield && r.object.controller == actor
+                        && self.kinds(r) & 64 != 0
+                        && self.granted_subtypes(r.id).has(r.object.card, subtype)
+                }).fold(0u64, |sum, r| sum.saturating_add(
+                    ability_world::CharacteristicWorld::counter_count(self, r.id, CounterKind::Loyalty))) >= minimum
+            }
             ActivationGuard::ControlLandsAtLeast(minimum) => {
                 self.resources
                     .iter()
