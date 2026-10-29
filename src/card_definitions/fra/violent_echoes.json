@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a3dbeada180fa1ecca79438ebcdd2f8f657d3171498077e894f5e5c7f09ffc09"
   },
-  "physical_metadata_sha256": "f78238ca5be80257a2945535d15c4357d9ea023a4e31860515f010dc1ba836ee"
+  "physical_metadata_sha256": "f78238ca5be80257a2945535d15c4357d9ea023a4e31860515f010dc1ba836ee",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/ViolentEchoes.java",
+  "java_sha256": "9934a9a925085663575fd48a8330424d97b8aadbe36403d32690a70c3ed78aa2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+      "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+    }
+  ]
 }

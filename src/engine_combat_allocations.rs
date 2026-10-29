@@ -90,7 +90,13 @@ impl Game {
             state.excess = None;
         }
         if let Some(target) = bound.object {
-            let lethal = self.lethal_assignment(source, target.card);
+            // Excess is the greatest result for every applicable permanent type
+            // (CR 120.10), equivalently the least applicable threshold.
+            let kinds = self.current_kinds(target.card);
+            let creature = (kinds & 1 != 0).then(|| self.lethal_assignment(source, target.card));
+            let loyalty = (kinds & 64 != 0).then(|| i128::from(self.counter_count(target.card, CounterKind::Loyalty)));
+            let defense = (kinds & crate::cards::BATTLE_KIND != 0).then(|| i128::from(self.counter_count(target.card, CounterKind::Defense)));
+            let lethal = [creature, loyalty, defense].into_iter().flatten().min().unwrap_or(0);
             self.state
                 .combat_rules
                 .get_or_insert_with(Default::default)

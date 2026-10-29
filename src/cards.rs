@@ -1365,6 +1365,8 @@ pub(crate) enum Instruction {
     },
     /// Consume the tracked excess and amass it for the packet controller.
     AmassExcessDamage,
+    /// Consume the tracked excess and empower Jace by that amount.
+    EmpowerJaceExcessDamage,
     /// Track actual positive damage and the recipient's subtype at that event.
     DamageForSubtypeDestruction {
         amount: u16,

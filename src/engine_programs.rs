@@ -3912,6 +3912,12 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::EmpowerJaceExcessDamage => {
+                    let amount = self.take_tracked_excess_damage();
+                    if self.empower_jace(&item, amount) {
+                        return;
+                    }
+                }
                 Instruction::DamageForSubtypeDestruction { amount, subtype } => {
                     self.damage_for_subtype_destruction(&item, amount, subtype);
                 }
