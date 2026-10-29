@@ -369,6 +369,7 @@ fn sphinx_synchronous_staged_failure_keeps_live_replay_until_caller_consumes_it(
             act(&mut g, Action::SelectResolutionExile { object });
         }
         assert!(matches!(g.state.pending, Pending::ZoneReplacement { player: p } if p == player));
+        let original_refs = cards.iter().map(|&id| g.object_ref(id)).collect::<Vec<_>>();
         let saved = g.snapshot();
         for _ in 0..2 {
             act(
@@ -389,6 +390,10 @@ fn sphinx_synchronous_staged_failure_keeps_live_replay_until_caller_consumes_it(
                     .all(|&id| g.object_view(id).zone == Zone::Graveyard)
             );
             assert_ne!(g.object_view(source).zone, Zone::Exile);
+            assert_eq!(
+                cards.iter().map(|&id| g.object_ref(id)).collect::<Vec<_>>(),
+                original_refs
+            );
             g.restore(&saved).unwrap();
         }
     }

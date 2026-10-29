@@ -534,7 +534,11 @@ impl Game {
                             })
                     }))
         });
-        if batch.choices.is_empty()
+        // Atomic costs must always pass through advance_entries, even when
+        // there are no entry choices: that path revalidates every component
+        // and rolls the entire payment back before any event is committed.
+        if batch.atomic_cost.is_none()
+            && batch.choices.is_empty()
             && !batch
                 .moves
                 .iter()
