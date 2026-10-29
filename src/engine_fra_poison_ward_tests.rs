@@ -1354,7 +1354,7 @@ fn mixed_permanent_and_split_player_replacements_follow_apnap() {
             active,
             origin,
             effects,
-            replacements::ResumeMode::Program,
+            replacements::ResumeMode::Pending,
         );
         assert!(game.advance_replacements(false));
         assert!(matches!(game.state.pending, Pending::Replacement { player } if player == active));
@@ -1366,7 +1366,7 @@ fn mixed_permanent_and_split_player_replacements_follow_apnap() {
                 &mut game,
                 Action::ChooseReplacement {
                     source: reference,
-                    ability: 0,
+                    ability: 1,
                 },
             );
             assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 3);
