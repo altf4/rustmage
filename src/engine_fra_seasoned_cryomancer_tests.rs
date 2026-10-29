@@ -74,3 +74,103 @@ fn seasoned_exiles_itself_as_cost_and_draws_two_at_instant_speed() {
         }
     }
 }
+
+fn cryomancer_until_discard(g: &mut Game, source: CardId) {
+    act(g, Action::AnnounceCast { card: source });
+    pay(g);
+    for _ in 0..64 {
+        g.prepare_triggers();
+        if matches!(g.state.pending, Pending::EffectDiscard { .. }) { return; }
+        choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    panic!("discard choice not reached: {:?}", g.state.pending);
+}
+
+#[test]
+fn seasoned_replaced_discards_count_and_trigger_survives_source_departure() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        put(&mut g, player, "Rest in Peace", Zone::Battlefield);
+        let source = cryomancer(&mut g, player, Zone::Hand);
+        let discarded = put(&mut g, player, "Shock", Zone::Hand);
+        let land = put(&mut g, player, "Forest", Zone::Hand);
+        let victim = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        cryomancer_until_discard(&mut g, source);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::Discard { card: discarded });
+            act(&mut g, Action::Discard { card: land });
+            assert_eq!(g.object_view(discarded).zone, Zone::Exile);
+            g.move_object(source, Zone::Exile);
+            for _ in 0..48 {
+                g.prepare_triggers();
+                if g.legal_actions().contains(&Action::ChooseTarget { target: Target::Card(victim) }) { break; }
+                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+            }
+            act(&mut g, Action::ChooseTarget { target: Target::Card(victim) });
+            if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+            settle(&mut g);
+            assert!(g.object_view(victim).tapped);
+            assert_eq!(g.counter_count(victim, CounterKind::Stun), 1);
+            g.restore(&saved).unwrap();
+            assert_eq!(g.snapshot(), saved);
+        }
+    }
+}
+
+#[test]
+fn seasoned_miracle_interrupts_draw_before_discard_and_snapshot_replays() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = cryomancer(&mut g, player, Zone::Hand);
+        let miracle = put(&mut g, player, "Group Project", Zone::Library);
+        act(&mut g, Action::AnnounceCast { card: source });
+        pay(&mut g);
+        for _ in 0..64 {
+            g.prepare_triggers();
+            if matches!(g.state.pending, Pending::MiracleReveal { .. }) { break; }
+            choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        }
+        assert!(matches!(g.state.pending, Pending::MiracleReveal { player: p } if p == player));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::DeclineMiracle);
+            assert!(matches!(g.state.pending, Pending::EffectDiscard { player: p, .. } if p == player));
+            assert_eq!(g.state.players[player.index()].cards_drawn_this_turn, 2);
+            assert_eq!(g.object_view(miracle).zone, Zone::Hand);
+            assert!(g.state.pending_triggers.iter().all(|item| item.card != source));
+            g.restore(&saved).unwrap();
+            assert_eq!(g.snapshot(), saved);
+        }
+    }
+}
+
+#[test]
+fn seasoned_target_leaving_after_trigger_is_announced_cannot_receive_stun() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = cryomancer(&mut g, player, Zone::Hand);
+        let shock = put(&mut g, player, "Shock", Zone::Hand);
+        let land = put(&mut g, player, "Forest", Zone::Hand);
+        let victim = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        cryomancer_until_discard(&mut g, source);
+        act(&mut g, Action::Discard { card: shock });
+        act(&mut g, Action::Discard { card: land });
+        for _ in 0..48 {
+            g.prepare_triggers();
+            if g.legal_actions().contains(&Action::ChooseTarget { target: Target::Card(victim) }) { break; }
+            choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        }
+        act(&mut g, Action::ChooseTarget { target: Target::Card(victim) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.move_object(victim, Zone::Exile);
+            g.move_object(victim, Zone::Battlefield);
+            settle(&mut g);
+            assert!(!g.object_view(victim).tapped);
+            assert_eq!(g.counter_count(victim, CounterKind::Stun), 0);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
