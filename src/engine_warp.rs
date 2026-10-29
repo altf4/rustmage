@@ -92,7 +92,7 @@ impl Game {
                 self_granted_activation: None,
                 target_controller_lki: None,
                 target_kinds_lki: None,
-            target_type_slots: None,
+                target_type_slots: None,
                 gift: None,
                 reflexive_subject: None,
                 delayed_warp_exile: Some(Box::new(view)),

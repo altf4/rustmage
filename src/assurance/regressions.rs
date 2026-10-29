@@ -4977,7 +4977,18 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 189) {
+    if schema_projection.is_some_and(|schema| schema < 190) {
+        if !uldaros_schema_candidate::prior_type_slots_owned_safe(&g.state) {
+            projection_error =
+                Some("owned Uldaros target slots cannot be projected to schema 189".to_owned());
+        } else {
+            match uldaros_schema_candidate::project_before_type_slots(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 189) {
         if !prior_outside_state_supported(&g.state) {
             projection_error =
                 Some("owned outside-game rules cannot be projected to schema 188".to_owned());

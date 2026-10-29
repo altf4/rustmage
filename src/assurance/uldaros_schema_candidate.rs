@@ -1,7 +1,7 @@
 //! Conservative candidate prior-schema audit; integration assigns a schema and dispatch.
 use super::*;
 
-fn project_before_type_slots(input: &str) -> Result<String, String> {
+pub(super) fn project_before_type_slots(input: &str) -> Result<String, String> {
     fn visit(value: &serde_json::Value) -> Result<(), String> {
         match value {
             serde_json::Value::Array(values) => {
@@ -130,84 +130,152 @@ fn type_slot_packet_supported(item: &SpellView) -> bool {
     true
 }
 
-fn prior_type_slots_owned_safe(state: &State) -> bool {
-    // A complete inspection must include hidden copied recipes and all retained
-    // nested packets. Reject opaque containers rather than claim equivalence.
-    if state
-        .objects
-        .iter()
-        .any(|o| o.card.identity() == "Uldaros Theorix")
-        || state
-            .explore_data
-            .as_ref()
-            .and_then(|data| data.last.as_ref())
-            .is_some_and(|event| {
-                event.explorer.card.identity() == "Uldaros Theorix"
-                    || event
-                        .revealed
-                        .is_some_and(|card| card.card.identity() == "Uldaros Theorix")
-            })
-        || state
-            .last_target_library_move
-            .as_ref()
-            .is_some_and(|event| event.card.identity() == "Uldaros Theorix")
-        || state
-            .library_top
-            .as_ref()
-            .and_then(|data| data.reveal.as_ref())
-            .is_some_and(|event| event.revealed.card.identity() == "Uldaros Theorix")
-        || state.hits.iter().any(|event| event.source.facts.card.identity() == "Uldaros Theorix")
-        || state.damage_choices.iter().any(|event| event.source.facts.card.identity() == "Uldaros Theorix")
-        || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| row.granting_card.identity() == "Uldaros Theorix"))
-        || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| row.granting_card.identity() == "Uldaros Theorix"))
+pub(super) fn prior_type_slots_owned_safe(state: &State) -> bool {
+    if state.outside_game.as_ref().is_some_and(|outside| outside.pools.iter().flatten().copied().any(type_slot_new_card) || outside.choice.is_some())
+        || state.resolving.is_some() || state.announcing.is_some()
+        || state.mana_announcement_stack.is_some() || state.replacements.is_some()
+        || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
+        || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
+        || state.objects.iter().any(|o| type_slot_new_card(o.card))
+        || state.explore_data.as_ref().and_then(|data| data.last.as_ref()).is_some_and(|event|
+            type_slot_new_card(event.explorer.card)
+                || event.revealed.is_some_and(|card| type_slot_new_card(card.card)))
+        || state.last_target_library_move.as_ref().is_some_and(|event| type_slot_new_card(event.card))
+        || state.library_top.as_ref().and_then(|data| data.reveal.as_ref())
+            .is_some_and(|event| type_slot_new_card(event.revealed.card))
+        || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| type_slot_new_card(row.granting_card)))
+        || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| type_slot_new_card(row.granting_card)))
         || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
-            row.provider.identity() == "Uldaros Theorix" || row.definition.identity() == "Uldaros Theorix"))
-        // Slot registry internals are intentionally opaque here.
-        || state.borrowed_slots.is_some()
-        || state.announcing.is_some()
-        || state.resolving.is_some()
-        || state.stack_copy_data.is_some()
-        || state.paradigm.is_some()
-        || state.replacements.is_some()
-        || state
-            .zone_rules
-            .as_ref()
-            .is_some_and(|z| z.has_checkpoint())
-        || state.entry_batch.is_some()
-        || state.mana_announcement_stack.is_some()
-        || state.linked_choices.is_some()
-        || state.copy_recipes.is_some()
-        || state.temporary_copies.is_some()
-        || state.stack.iter().chain(&state.pending_triggers).chain(&state.ordering_triggers)
-            .any(|item| !type_slot_packet_supported(item))
-        || state.adventures.is_some()
-        || state.plot.is_some()
+            type_slot_new_card(row.provider) || type_slot_new_card(row.definition)))
+        // Slots retain an optional immutable donor definition; all other slot
+        // fields are object references or numeric acquisition/use identities.
+        || state.borrowed_slots.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            row.definition.is_some_and(type_slot_new_card)))
+        || state.warp.as_ref().is_some_and(|w| !w.delayed.is_empty())
+        // Delayed sacrifice packets retain public source-card identity and
+        // frozen damage facts, including hidden/copied subtype overlays.
+        || state.delayed_sacrifices.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            type_slot_new_card(row.view.source_card) || !type_slot_facts_supported(&row.facts)))
+        || state.mobilize.is_some() || state.miracle.is_some()
+        || state.adventures.as_ref().is_some_and(|a| a.permissions.iter().any(|v| type_slot_new_card(v.card)))
+        || state.plot.as_ref().and_then(|p| p.payment.as_ref()).is_some_and(|p| type_slot_new_card(p.source_card))
+        || state.hits.iter().any(|hit| !type_slot_facts_supported(&hit.source.facts))
+        || state.damage_choices.iter().any(|hit| !type_slot_facts_supported(&hit.source.facts))
+        || state.manifest.as_ref().is_some_and(|manifest| {
+            manifest.permanents.iter().chain(manifest.spells.iter())
+                .any(|row| type_slot_new_card(row.underlying))
+        })
+        || state.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row| !type_slot_recipe_supported(&row.recipe)))
+        || state.temporary_copies.as_ref().is_some_and(|rows| rows.iter().any(|row| {
+            type_slot_new_card(row.physical_card)
+                || row.original_recipe.as_ref().is_some_and(|r| !type_slot_recipe_supported(r))
+                || row.layers.iter().any(|layer| !type_slot_recipe_supported(&layer.value.recipe))
+        }))
     {
         return false;
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
-            || rollback.replay.is_some()
-            || rollback.capture.is_some()
-            || !prior_type_slots_owned_safe(&rollback.before)
+    if let Some(mana) = &state.mana_lots {
+        let copy_safe = |source: &mana_lots::ManaCopySource| {
+            !type_slot_new_card(source.card)
+                && !type_slot_new_card(source.definition)
+                && type_slot_facts_supported(&source.facts)
+        };
+        let quality_safe =
+            |quality: &mana_lots::Quality| quality.copy_source.as_ref().is_none_or(copy_safe);
+        if mana.trace.is_some()
+            || mana.replay.is_some()
+            || mana.choice.is_some()
+            || mana
+                .pools
+                .iter()
+                .flat_map(|rows| rows.iter())
+                .any(|lot| !quality_safe(&lot.quality))
+            || mana
+                .effect_quality
+                .as_ref()
+                .is_some_and(|q| !quality_safe(q))
+            || mana
+                .announcement_quality
+                .as_ref()
+                .is_some_and(|(_, q)| !quality_safe(q))
         {
             return false;
         }
     }
-    // Other delayed stores are deliberately rejected pending typed inspection.
-    state.delayed_artifact_copies.is_none()
-        && state.delayed_returns.is_none()
-        && state.delayed_attack_this_turn.is_none()
-        && state.delayed_opponent_attack_until_next_turn.is_none()
-        && state.delayed_main_mana.is_none()
-        && state.delayed_upkeep_tokens.is_none()
-        && state.earthbend_returns.is_none()
-        && state.manifest.is_none()
-        && state.mana_lots.is_none()
-        && state.warp.is_none()
-        && state.miracle.is_none()
-        && state.mobilize.is_none()
-        && state.delayed_sacrifices.is_none()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
+            || rollback.replay.is_some()
+            || rollback.capture.is_some()
+            || !prior_type_slots_owned_safe(&rollback.before))
+    {
+        return false;
+    }
+    state
+        .stack
+        .iter()
+        .chain(&state.pending_triggers)
+        .chain(&state.ordering_triggers)
+        .chain(
+            state
+                .delayed_artifact_copies
+                .as_deref()
+                .into_iter()
+                .flatten(),
+        )
+        .chain(
+            state
+                .delayed_attack_this_turn
+                .as_deref()
+                .into_iter()
+                .flatten(),
+        )
+        .chain(
+            state
+                .delayed_opponent_attack_until_next_turn
+                .as_deref()
+                .into_iter()
+                .flatten(),
+        )
+        .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
+        .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
+        .chain(
+            state
+                .stack_copy_data
+                .as_ref()
+                .into_iter()
+                .flat_map(|s| s.packets()),
+        )
+        .chain(
+            state
+                .paradigm
+                .as_ref()
+                .into_iter()
+                .flat_map(|s| s.packets()),
+        )
+        .chain(
+            state
+                .delayed_returns
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .map(|r| &r.item),
+        )
+        .chain(
+            state
+                .earthbend_returns
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .map(|r| &r.item),
+        )
+        .chain(
+            state
+                .manifest
+                .as_ref()
+                .into_iter()
+                .flat_map(|s| s.deaths.iter().map(|d| &d.source)),
+        )
+        .all(type_slot_packet_supported)
 }
 
 #[test]
@@ -222,7 +290,7 @@ fn type_slot_projection_rejects_new_action_and_nested_view() {
         let mut g = scenario(player);
         assert!(prior_type_slots_owned_safe(&g.state));
         let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[source as usize].card = Card::from_name("Uldaros Theorix").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(4739);
         g.begin_attack_rollback(player);
         g.state.objects[source as usize].card = Card::from_name("Bear Cub").unwrap();
         assert!(!prior_type_slots_owned_safe(&g.state));
@@ -240,7 +308,7 @@ fn historical_uldaros_identity_is_rejected_even_after_the_object_changes() {
         let mut g = scenario(player);
         let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         let object = g.object_ref(id);
-        let card = Card::from_name("Uldaros Theorix").unwrap();
+        let card = Card::test_index(4739);
         g.state.explore_data.get_or_insert_default().last = Some(explore::ExploreEventView {
             sequence: 1,
             explorer: explore::ExplorerView {
@@ -289,7 +357,7 @@ fn retained_damage_grants_and_borrowed_registries_are_audited() {
         let mut g = scenario(player);
         let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         let reference = g.object_ref(id);
-        let card = Card::from_name("Uldaros Theorix").unwrap();
+        let card = Card::test_index(4739);
         let mut source = g.damage_source(id);
         source.facts.card = card;
         g.state.hits.push(DamageEvent {
@@ -356,12 +424,12 @@ fn retained_damage_grants_and_borrowed_registries_are_audited() {
         assert!(!prior_type_slots_owned_safe(&g.state));
         g.state.graveyard_borrowing = None;
         g.state.borrowed_slots = Some(Default::default());
-        assert!(!prior_type_slots_owned_safe(&g.state));
+        assert!(prior_type_slots_owned_safe(&g.state));
         let snapshot = g.snapshot();
         g.state.borrowed_slots = None;
         assert!(prior_type_slots_owned_safe(&g.state));
         g.restore(&snapshot).unwrap();
-        assert!(!prior_type_slots_owned_safe(&g.state));
+        assert!(prior_type_slots_owned_safe(&g.state));
     }
 }
 
@@ -371,7 +439,7 @@ fn nested_packets_and_opaque_permissions_are_rejected_across_rollback() {
         let mut g = scenario(player);
         let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         let mut nested = g.activation_item(player, id, 0);
-        nested.source_card = Card::from_name("Uldaros Theorix").unwrap();
+        nested.source_card = Card::test_index(4739);
         let mut outer = g.activation_item(player, id, 0);
         outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
             spell: nested,
@@ -389,10 +457,10 @@ fn nested_packets_and_opaque_permissions_are_rejected_across_rollback() {
         assert!(!prior_type_slots_owned_safe(&g.state));
         g.state.cast_rollback = None;
         g.state.adventures = Some(Default::default());
-        assert!(!prior_type_slots_owned_safe(&g.state));
+        assert!(prior_type_slots_owned_safe(&g.state));
         g.state.adventures = None;
         g.state.plot = Some(Default::default());
-        assert!(!prior_type_slots_owned_safe(&g.state));
+        assert!(prior_type_slots_owned_safe(&g.state));
     }
 }
 
@@ -411,7 +479,7 @@ fn normal_stack_packets_remain_representable_but_slots_and_hidden_nested_identit
         g.state.pending_triggers[0] = typed;
         assert!(!prior_type_slots_owned_safe(&g.state));
         let mut inner = normal.clone();
-        inner.source_facts.card = Card::from_name("Uldaros Theorix").unwrap();
+        inner.source_facts.card = Card::test_index(4739);
         let mut outer = normal;
         outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
             spell: inner,

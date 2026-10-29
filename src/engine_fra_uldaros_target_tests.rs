@@ -82,7 +82,7 @@ fn uldaros_actual_target_actions_freeze_explicit_slots_and_restore() {
         let foreign = put(&mut g, player.other(), "Shock", Zone::Graveyard);
         let land = put(&mut g, player, "Forest", Zone::Graveyard);
         let source = put(&mut g, player, "Shock", Zone::Hand);
-        g.state.objects[source as usize].card = Card::from_name("Uldaros Theorix").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(4739);
         act(&mut g, Action::AnnounceCast { card: source });
         pay(&mut g);
         for _ in 0..40 {

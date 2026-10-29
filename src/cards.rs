@@ -1162,7 +1162,9 @@ pub(crate) enum Instruction {
     CopyCastSpellChosenX,
     CopyPreparedCastSpell,
     /// Exile legal graveyard targets together, then copy the exiled cards and offer free casts.
-    ExileTargetsCopyFreeWithBudget { mana_value: u64 },
+    ExileTargetsCopyFreeWithBudget {
+        mana_value: u64,
+    },
     CopyPaidExiledCardsFree {
         maximum_casts: u16,
     },

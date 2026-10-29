@@ -10,35 +10,62 @@ impl Game {
         item: &SpellView,
         mana_value: u64,
     ) -> bool {
-        let ids: Vec<_> = item.targets.iter().filter_map(|bound| {
-            let Target::Card(id) = bound.target else { return None; };
-            (self.same_target_object(*bound)
-                && self.state.objects[id as usize].zone == Zone::Graveyard
-                && !self.state.objects[id as usize].is_token()
-                && !self.state.objects[id as usize].is_spell_copy()).then_some(id)
-        }).collect();
+        let ids: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let Target::Card(id) = bound.target else {
+                    return None;
+                };
+                (self.same_target_object(*bound)
+                    && self.state.objects[id as usize].zone == Zone::Graveyard
+                    && !self.state.objects[id as usize].is_token()
+                    && !self.state.objects[id as usize].is_spell_copy())
+                .then_some(id)
+            })
+            .collect();
         let events = self.move_objects_raw(&ids, Zone::Exile);
         self.finish_zone_events(&events, &[]);
-        let recipes: Vec<_> = events.iter().filter(|event| {
-            event.moved && event.destination == Zone::Exile
-                && self.object_ref(event.after.card) == event.after
-                && self.state.objects[event.after.card as usize].zone == Zone::Exile
-                && !self.state.objects[event.after.card as usize].is_token()
-                && !self.state.objects[event.after.card as usize].is_spell_copy()
-        }).map(|event| self.copiable_recipe(event.after)).collect();
-        if recipes.is_empty() { return false; }
-        let remaining = recipes.into_iter().map(|recipe| {
-            let copy = self.allocate_card_copy(recipe.definition, item.controller);
-            self.set_copy_recipe(copy, recipe);
-            copy
-        }).collect();
+        let recipes: Vec<_> = events
+            .iter()
+            .filter(|event| {
+                event.moved
+                    && event.destination == Zone::Exile
+                    && self.object_ref(event.after.card) == event.after
+                    && self.state.objects[event.after.card as usize].zone == Zone::Exile
+                    && !self.state.objects[event.after.card as usize].is_token()
+                    && !self.state.objects[event.after.card as usize].is_spell_copy()
+            })
+            .map(|event| self.copiable_recipe(event.after))
+            .collect();
+        if recipes.is_empty() {
+            return false;
+        }
+        let remaining = recipes
+            .into_iter()
+            .map(|recipe| {
+                let copy = self.allocate_card_copy(recipe.definition, item.controller);
+                self.set_copy_recipe(copy, recipe);
+                copy
+            })
+            .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
-            siege_transformed: false, paid: None, casts_remaining: None,
-            pending_cast: None, remaining_mana_value: Some(mana_value),
-            alternative_cost: None, maximum_mana_value: None, origin: Zone::Exile,
-            exile_on_graveyard: false, allow_lands: false, player: item.controller, remaining,
+            siege_transformed: false,
+            paid: None,
+            casts_remaining: None,
+            pending_cast: None,
+            remaining_mana_value: Some(mana_value),
+            alternative_cost: None,
+            maximum_mana_value: None,
+            origin: Zone::Exile,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player: item.controller,
+            remaining,
         }));
-        self.state.pending = Pending::ResolutionCasts { player: item.controller };
+        self.state.pending = Pending::ResolutionCasts {
+            player: item.controller,
+        };
         true
     }
     pub(super) fn graveyard_symbol_total(&self, cards: &[ObjectRef], color: ChoiceColor) -> u128 {

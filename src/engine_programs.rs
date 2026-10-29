@@ -2119,8 +2119,13 @@ impl Game {
             .filter(|bound| !self.resolution_target_relations_hold(&item, *bound, spec))
             .collect();
         // Keep type slots paired with their targets when some targets go illegal.
-        let type_bindings = item.target_type_slots.as_ref().map(|slots|
-            item.targets.iter().copied().zip(slots.iter().copied()).collect::<Vec<_>>());
+        let type_bindings = item.target_type_slots.as_ref().map(|slots| {
+            item.targets
+                .iter()
+                .copied()
+                .zip(slots.iter().copied())
+                .collect::<Vec<_>>()
+        });
         // Retain the existing allocation while borrowing the packet's source facts.
         let mut targets = std::mem::take(&mut item.targets);
         targets.retain(|bound| {
@@ -2132,9 +2137,18 @@ impl Game {
         });
         item.targets = targets;
         if let Some(bindings) = type_bindings {
-            item.target_type_slots = Some(Box::new(item.targets.iter().map(|target|
-                bindings.iter().find(|(bound, _)| bound == target).expect("retained target slot").1
-            ).collect()));
+            item.target_type_slots = Some(Box::new(
+                item.targets
+                    .iter()
+                    .map(|target| {
+                        bindings
+                            .iter()
+                            .find(|(bound, _)| bound == target)
+                            .expect("retained target slot")
+                            .1
+                    })
+                    .collect(),
+            ));
         }
         self.retain_resolution_target_budgets(&mut item, spec);
         let valid = !was_targeted || !item.targets.is_empty();

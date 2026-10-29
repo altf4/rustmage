@@ -5285,23 +5285,48 @@ impl Game {
                         &announcement.item,
                         announcement.spec.rule,
                         |target| {
-                            if matches!(announcement.spec.rule, TargetRule::Grouped {
-                                constraint: TargetGroupConstraint::DistinctCardTypeSlots, ..
-                            }) {
-                                let Target::Card(id) = target else { return false; };
-                                if announcement.item.targets.iter().any(|bound| bound.group == announcement.group && bound.target == target) {
+                            if matches!(
+                                announcement.spec.rule,
+                                TargetRule::Grouped {
+                                    constraint: TargetGroupConstraint::DistinctCardTypeSlots,
+                                    ..
+                                }
+                            ) {
+                                let Target::Card(id) = target else {
+                                    return false;
+                                };
+                                if announcement.item.targets.iter().any(|bound| {
+                                    bound.group == announcement.group && bound.target == target
+                                }) {
                                     return false;
                                 }
-                                let used = announcement.item.target_type_slots.as_ref().map_or(0, |slots|
-                                    slots.iter().fold(0u16, |mask, kind| mask | *kind));
-                                if !self.announcement_target_fundable(announcement, None, None, None, Some(target), false) {
+                                let used = announcement
+                                    .item
+                                    .target_type_slots
+                                    .as_ref()
+                                    .map_or(0, |slots| {
+                                        slots.iter().fold(0u16, |mask, kind| mask | *kind)
+                                    });
+                                if !self.announcement_target_fundable(
+                                    announcement,
+                                    None,
+                                    None,
+                                    None,
+                                    Some(target),
+                                    false,
+                                ) {
                                     return false;
                                 }
                                 let mut available = self.current_kinds(id) & !used;
                                 while available != 0 {
                                     let kind = 1u16 << available.trailing_zeros();
                                     available &= !kind;
-                                    if emit(Action::ChooseTargetCardType { target, type_mask: kind }) { return true; }
+                                    if emit(Action::ChooseTargetCardType {
+                                        target,
+                                        type_mask: kind,
+                                    }) {
+                                        return true;
+                                    }
                                 }
                                 return false;
                             }
@@ -6332,9 +6357,20 @@ impl Game {
                 self.target_becomes_bound(&item, bound);
                 let announcement = self.state.announcing.as_mut().unwrap();
                 bound.group = announcement.group;
-                announcement.item.target_type_slots.get_or_insert_default().push(type_mask);
+                announcement
+                    .item
+                    .target_type_slots
+                    .get_or_insert_default()
+                    .push(type_mask);
                 announcement.item.targets.push(bound);
-                if announcement.item.targets.iter().filter(|bound| bound.group == announcement.group).count() == announcement.spec.max {
+                if announcement
+                    .item
+                    .targets
+                    .iter()
+                    .filter(|bound| bound.group == announcement.group)
+                    .count()
+                    == announcement.spec.max
+                {
                     self.finish_target_group();
                 }
             }
