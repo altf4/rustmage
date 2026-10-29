@@ -121,3 +121,22 @@ fn cannot_exile_prohibition_precedes_ordinary_prevention_for_cost() {
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn nonentry_cost_commit_revalidates_all_incarnations_before_any_movement() {
+    for player in [Player::P0, Player::P1] {
+        for stale in 0..2 {
+            let mut g = scenario(player);
+            let first = put(&mut g, player, "Bear Cub", Zone::Graveyard);
+            let second = put(&mut g, player, "Hill Giant", Zone::Graveyard);
+            let ids = [first, second];
+            let moves = ids.map(|id| (g.object_ref(id), Zone::Exile));
+            let plans = g.plan_atomic_zone_cost(&moves).unwrap();
+            g.move_object(ids[stale], Zone::Hand);
+            let after_departure = g.snapshot();
+            assert!(g.commit_atomic_zone_cost(plans).is_none());
+            assert_eq!(g.snapshot(), after_departure);
+            assert_eq!(g.object_view(ids[1 - stale]).zone, Zone::Graveyard);
+        }
+    }
+}

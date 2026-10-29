@@ -6595,7 +6595,11 @@ impl Game {
     fn commit_atomic_zone_cost(
         &mut self, plans: Vec<(ObjectView, zone_replacements::Plan)>,
     ) -> Option<Vec<ZoneChange>> {
-        if plans.iter().any(|(_, plan)| !plan.prevented && plan.destination == Zone::Battlefield) { return None; }
+        if plans.iter().any(|(view, plan)| {
+            self.state.objects.get(view.id as usize).is_none_or(|object|
+                object.generation != view.reference.generation || object.zone != view.zone)
+                || (!plan.prevented && plan.destination == Zone::Battlefield)
+        }) { return None; }
         let graveyard_observers = plans.iter().any(|(view, _)| view.zone == Zone::Graveyard)
             .then(|| self.freeze_graveyard_observers()).flatten();
         let returned_hand_observers = plans.iter().any(|(view, plan)| view.zone == Zone::Battlefield && plan.destination == Zone::Hand)
