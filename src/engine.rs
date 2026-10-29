@@ -6554,38 +6554,16 @@ impl Game {
     /// Sacrifices are an explicit action, including costs paid for mana abilities.
     /// Freeze every observer and departing object before the simultaneous batch.
     fn sacrifice_batch(&mut self, sacrifices: &[(Player, CardId)]) {
-        self.refresh_enduring_stories();
-        for (index, &(actor, id)) in sacrifices.iter().enumerate() {
+        // Effects do as much as possible; prohibited permanents remain put.
+        // All permitted sacrifices still share one frozen replacement boundary.
+        let permitted: Vec<_> = sacrifices.iter().copied().filter(|&(actor, id)| {
             let object = &self.state.objects[id as usize];
-            assert_eq!(
-                object.zone,
-                Zone::Battlefield,
-                "sacrifice requires a permanent"
-            );
+            assert_eq!(object.zone, Zone::Battlefield, "sacrifice requires a permanent");
             assert_eq!(object.controller, actor, "sacrifice requires control");
-            debug_assert!(
-                !sacrifices[..index].iter().any(|&(_, prior)| prior == id),
-                "duplicate sacrifice"
-            );
-        }
-        let sources = self.death_trigger_sources();
-        self.food_sacrifice_triggers(sacrifices, &sources);
-        // Most sacrifice costs move one object. Avoid batch-vector allocations
-        // in this hot path while retaining the same frozen observer boundary.
-        if let [(actor, id)] = sacrifices {
-            let mut event = self.move_object_raw(*id, Zone::Graveyard);
-            event.sacrificed_by = Some(*actor);
-            self.record_own_sacrifices(std::slice::from_ref(&event));
-            self.finish_zone_events(std::slice::from_ref(&event), &sources);
-            return;
-        }
-        let ids: Vec<_> = sacrifices.iter().map(|&(_, id)| id).collect();
-        let mut events = self.move_objects_raw(&ids, Zone::Graveyard);
-        for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) {
-            event.sacrificed_by = Some(actor);
-        }
-        self.record_own_sacrifices(&events);
-        self.finish_zone_events(&events, &sources);
+            !ability_world::CharacteristicWorld::sacrifice_prohibited(self, id)
+        }).collect();
+        if permitted.is_empty() { return; }
+        assert!(self.sacrifice_cost_batch_atomic(&permitted), "legal sacrifice batch");
     }
 
     /// Freeze and choose every replacement before committing a zone-change

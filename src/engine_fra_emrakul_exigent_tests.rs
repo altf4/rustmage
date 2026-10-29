@@ -439,3 +439,31 @@ fn atomic_zone_cost_preflight_preserves_each_prevented_replacement_without_movem
         assert!(g.plan_atomic_zone_cost(&moves).is_some());
     }
 }
+
+#[test]
+fn replacement_prevented_sacrifice_mana_cost_is_paid_and_replays() {
+    use zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let treasure = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[treasure as usize].card = Card::test_index(5437);
+        g.state.objects[treasure as usize].summoning_sick = false;
+        let reference = g.object_ref(treasure);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(reference)));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            let action = g.legal_actions().into_iter().find(|a| matches!(a,
+                Action::ActivateMana { card, production: [0, 0, 0, 0, 1, 0], .. } if *card == treasure)).unwrap();
+            act(&mut g, action);
+            assert_eq!(g.object_ref(treasure), reference);
+            assert_eq!(g.object_view(treasure).zone, Zone::Battlefield);
+            assert!(g.object_view(treasure).tapped);
+            assert_eq!(g.state.players[player.index()].mana[4], 1);
+            g.restore(&saved).unwrap();
+        }
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
