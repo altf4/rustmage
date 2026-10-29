@@ -1757,6 +1757,8 @@ pub(crate) enum Instruction {
     },
     CreateTokenIfControllerSacrificed(Card),
     OpponentsDiscardTwoDrawUnlessTwoNonland,
+    /// Discard two, then create a reflexive trigger for actual nonland discards.
+    DiscardTwoNonlandReflexive(u16),
     TargetStatsUntilNextTurn { power: i32, toughness: i32 },
     ChooseObjects {
         kind: EffectChoiceKind,

@@ -8,5 +8,6 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c64c2dbd07970dc4e69d87ea3f52e0507623ba2c9c335897183af8b01d7a9df1"
   },
-  "physical_metadata_sha256": "7f130ae0d02b5b965bb88b4c722148708687f4d6b61be91ed3a7f483cd93dbef"
+  "physical_metadata_sha256": "7f130ae0d02b5b965bb88b4c722148708687f4d6b61be91ed3a7f483cd93dbef",
+  "source_note": "Complete frozen Oracle reviewed; pinned XMage implementation is unavailable. Definition remains gated."
 }

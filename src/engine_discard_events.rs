@@ -15,6 +15,7 @@ pub(super) enum DiscardAfter {
     DrawActual { players: [bool; 2], bonus: u16 },
     RememberActual,
     DrawUnlessOpponentDiscardedTwoNonland(Player),
+    NonlandReflexive { controller: Player, ability: u16 },
     ConniveCounters(ObjectRef, u64, Player),
     ChooseLand { player: Player, tapped: bool },
     ReturnLandFromGraveyard { player: Player, tapped: bool },
@@ -249,6 +250,20 @@ impl Game {
         events: &[ZoneChange],
     ) {
         match after {
+            Some(DiscardAfter::NonlandReflexive { controller, ability }) => {
+                let count = events.iter().filter(|event| event.moved
+                    && event.before.owner == controller && event.before.kinds & 2 == 0).count();
+                if count > 0 {
+                    let item = self.state.resolving.as_ref().unwrap().item.clone();
+                    let before = self.state.pending_triggers.len();
+                    self.queue_reflexive(&item, ability, None);
+                    if self.state.pending_triggers.len() > before {
+                        let trigger = self.state.pending_triggers.last_mut().unwrap();
+                        trigger.x = Some(u32::try_from(count).expect("discard count exceeds u32"));
+                        trigger.loyalty_x = None;
+                    }
+                }
+            }
             Some(DiscardAfter::DrawUnlessOpponentDiscardedTwoNonland(controller)) => {
                 let nonland = events.iter().filter(|event| event.moved
                     && event.before.owner == controller.other() && event.before.kinds & 2 == 0).count();

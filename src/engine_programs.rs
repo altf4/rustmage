@@ -5208,6 +5208,11 @@ impl Game {
                     }
                     self.discard_batch_caused(&selected, None, Some(item.controller));
                 }
+                Instruction::DiscardTwoNonlandReflexive(ability) => {
+                    self.state.resolving.as_mut().unwrap().discards[item.controller.index()] = 2;
+                    self.state.resolving.as_mut().unwrap().discard_after =
+                        Some(discard_events::DiscardAfter::NonlandReflexive { controller: item.controller, ability });
+                }
                 Instruction::OpponentsDiscardTwoDrawUnlessTwoNonland => {
                     self.state.resolving.as_mut().unwrap().discards[item.controller.other().index()] = 2;
                     self.state.resolving.as_mut().unwrap().discard_after =
