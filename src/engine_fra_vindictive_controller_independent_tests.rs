@@ -7,11 +7,14 @@ fn vindictive_copy_uses_copy_controller_for_return_and_entry_replacement() {
         let copy_controller = caster.other();
         put(&mut g, copy_controller, "Doubling Season", Zone::Battlefield);
         let target = put(&mut g, caster, "Ajani, Caller of the Pride", Zone::Battlefield);
+        // The bare battlefield fixture does not apply printed entry loyalty.
+        g.state.objects[target as usize].counters.loyalty = 4;
         let spell = put(&mut g, caster, "Vindictive Triumph", Zone::Hand);
         cast(&mut g, spell, Some(Target::Card(target)));
         let original = g.state.stack.last().unwrap().clone();
         let copy = g.allocate_spell_copy(&original, copy_controller);
         g.state.stack.push(copy);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
         let before = g.object_ref(target);
         let saved = g.snapshot();
         for _ in 0..2 {
