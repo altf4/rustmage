@@ -8,6 +8,61 @@ thread_local! {
     static TEST_PROVIDER_TRACE: std::cell::RefCell<Option<Vec<(ObjectRef, u16)>>> = const { std::cell::RefCell::new(None) };
     static TEST_SELF_TRACE: std::cell::RefCell<Option<Vec<(u64, u16)>>> = const { std::cell::RefCell::new(None) };
 }
+
+#[cfg(test)]
+mod accounting_tests {
+    use super::*;
+
+    #[test]
+    fn pending_entry_counts_initialized_elements_only() {
+        let mut game = Game::new_with_outside(
+            Config {
+                decks: [vec![Card::Forest; 60], vec![Card::Forest; 60]],
+                seed: 7,
+                starting_player: Player::P0,
+                deck_rules: DeckRules::Freeform,
+            },
+            OutsideGameConfig {
+                mode: OutsideGameMode::CasualCollection,
+                pools: [
+                    vec![Card::Forest, Card::from_name("Shock").unwrap()],
+                    vec![],
+                ],
+            },
+        )
+        .unwrap();
+        assert!(game.start_outside_choice(Player::P0));
+        game.choose_outside_card(Selection::Pool(0));
+        game.choose_outside_card(Selection::Pool(1));
+        assert!(game.plan_outside_hand(0));
+        let before = game.state_bytes();
+        let event = game
+            .state
+            .outside_game
+            .as_mut()
+            .unwrap()
+            .pending_entry
+            .as_mut()
+            .unwrap();
+        event.choices.reserve(16);
+        event.applied.reserve(16);
+        event.self_applied.reserve(16);
+        event.self_choices.reserve(16);
+        event.provider_applied.reserve(16);
+        event.provider_choices.reserve(16);
+        assert_eq!(game.state_bytes(), before);
+        game.state
+            .outside_game
+            .as_mut()
+            .unwrap()
+            .pending_entry
+            .as_mut()
+            .unwrap()
+            .applied
+            .push(1);
+        assert_eq!(game.state_bytes(), before + std::mem::size_of::<u64>());
+    }
+}
 #[cfg(test)]
 pub(super) fn start_self_trace() {
     TEST_SELF_TRACE.with(|trace| *trace.borrow_mut() = Some(Vec::new()));
@@ -434,12 +489,12 @@ impl Game {
             .as_ref()
             .and_then(|s| s.pending_entry.as_ref())
             .map_or(0, |event| {
-                event.choices.capacity() * std::mem::size_of::<OutsideEntryReplacement>()
-                    + event.applied.capacity() * std::mem::size_of::<u64>()
-                    + (event.self_applied.capacity() + event.self_choices.capacity())
+                event.choices.len() * std::mem::size_of::<OutsideEntryReplacement>()
+                    + event.applied.len() * std::mem::size_of::<u64>()
+                    + (event.self_applied.len() + event.self_choices.len())
                         * std::mem::size_of::<u16>()
-                    + event.provider_applied.capacity() * std::mem::size_of::<(ObjectRef, u16)>()
-                    + event.provider_choices.capacity()
+                    + event.provider_applied.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                    + event.provider_choices.len()
                         * std::mem::size_of::<(ObjectRef, u16, OutsideEntryDestination)>()
             })
     }
