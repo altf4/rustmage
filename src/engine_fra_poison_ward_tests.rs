@@ -365,3 +365,39 @@ fn tam_simultaneous_player_and_permanent_replacements_wait_for_public_choice() {
         }
     }
 }
+
+#[test]
+fn mixed_counter_batch_preserves_atomicity_across_prohibition_and_opponent_choice() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for active in [Player::P0, Player::P1] {
+        let mut game = scenario(active);
+        let recipient = active.other();
+        // Active player cannot receive poison. The other player chooses the
+        // order of two applicable replacements for their own poison event.
+        put(&mut game, active, "Bear Cub", Zone::Battlefield);
+        let double = put(&mut game, recipient, "Hill Giant", Zone::Battlefield);
+        let plus = put(&mut game, recipient, "Grizzly Bears", Zone::Battlefield);
+        let permanent = put(&mut game, active, "Healer's Hawk", Zone::Battlefield);
+        let object = game.object_ref(permanent);
+        game.effect_counters_with_poison(
+            vec![(object, Counters::of(CounterKind::PlusOne, 1))],
+            [1, 1], recipient, replacements::ResumeMode::Pending,
+        );
+        assert!(game.advance_replacements(false));
+        assert!(matches!(game.state.pending, Pending::Replacement { player } if player == recipient));
+        assert_eq!(game.counter_count(permanent, CounterKind::PlusOne), 0);
+        assert_eq!(game.state.players[active.index()].poison_counters, 0);
+        assert_eq!(game.state.players[recipient.index()].poison_counters, 0);
+        let saved = game.snapshot();
+        for (first, expected) in [(double, 3), (plus, 4)] {
+            game.restore(&saved).unwrap();
+            let action = Action::ChooseReplacement { source: game.object_ref(first), ability: 0 };
+            assert!(game.apply(active, action.clone()).is_err());
+            assert_eq!(game.snapshot(), saved);
+            act(&mut game, action);
+            assert_eq!(game.counter_count(permanent, CounterKind::PlusOne), 1);
+            assert_eq!(game.state.players[active.index()].poison_counters, 0);
+            assert_eq!(game.state.players[recipient.index()].poison_counters, expected);
+        }
+    }
+}
