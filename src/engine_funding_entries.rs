@@ -1756,6 +1756,10 @@ impl<'g> FundingState<'g> {
         if departed {
             next.resources[step.resource].object.zone = Zone::Battlefield;
         }
+        // The staged source remains present until a replacement plan commits.
+        next.refresh_control_projection();
+        next.prune_source_linked_projection();
+        next.refresh_enduring_projection();
         if let Some((external, _)) = external {
             // Selection belongs to this incarnation. Never silently substitute a
             // returned card or allow an object already spent by another cost.

@@ -1623,9 +1623,9 @@ impl<'g> FundingState<'g> {
         }
         // visit_applied commits source and selected additional cost components
         // in executor order, refreshing eligibility and replacement facts between them.
-        self.refresh_control_projection();
-        self.prune_source_linked_projection();
         if !preserve_departure_counters {
+            self.refresh_control_projection();
+            self.prune_source_linked_projection();
             self.refresh_enduring_projection();
         }
         for (pool, produced) in self.mana.iter_mut().zip(step.production) {

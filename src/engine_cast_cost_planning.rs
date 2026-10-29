@@ -415,6 +415,7 @@ impl FundingState<'_> {
             // two once afterward, before linked returns or the next cost can use
             // a creature whose former control effect has just left.
             world.refresh_control_projection();
+            world.prune_source_linked_projection();
             world.refresh_enduring_projection();
             world.visit_linked_returns(emit)
         })
