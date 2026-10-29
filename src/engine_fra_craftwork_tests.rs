@@ -45,6 +45,7 @@ fn craftwork_nontargeted_pair_remains_legal_without_a_target() {
             if matches!(game.state.pending, Pending::Modes { .. }) { break; }
             choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
         }
+        game.move_object(crusher, Zone::Exile);
         assert!(!game.legal_actions().contains(&Action::ChooseMode { mode: 0 }));
         assert!(!game.legal_actions().contains(&Action::ChooseMode { mode: 1 }));
         assert!(game.legal_actions().contains(&Action::ChooseMode { mode: 2 }));
