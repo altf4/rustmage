@@ -26,7 +26,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     artifact_enchantment_or_token: false,
                     keywords: Keywords::NONE,
                     source_only: true,
-                    kinds: 1,
+                    kinds: 0,
                     nonland: false,
                     other: false,
                     tokens: None,
