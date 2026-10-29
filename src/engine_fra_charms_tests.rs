@@ -7788,3 +7788,6 @@ mod engine_fra_null_independent_tests;
 
 #[path = "engine_fra_sanctum_additional_review_tests.rs"]
 mod engine_fra_sanctum_additional_review_tests;
+
+#[path = "engine_fra_funding_public_independent_tests.rs"]
+mod engine_fra_funding_public_independent_tests;
