@@ -760,7 +760,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     } else if let Some(packet) = o.stack.iter().find(|v| {
                         v.controller == p
-                            && v.source_card == focal
+                            && v.source().is_some_and(|source| source.card == focal)
                             && matches!(v.kind, StackKind::TriggeredAbility { .. })
                     }) {
                         assert_eq!(o.active, p);
@@ -870,7 +870,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     scry: 0,
                 };
                 if item.kind == StackKind::Spell
-                    && item.source_card == focal
+                    && item.source().is_some_and(|source| source.card == focal)
                     && progress[actor.index()].permission
                     && !progress[actor.index()].normal
                 {
@@ -878,7 +878,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if matches!(item.kind, StackKind::ActivatedAbility { .. })
                     && !progress[actor.index()].extra
-                    && (item.source_card == focal
+                    && (item.source().is_some_and(|source| source.card == focal)
                         || (i == 3 && item.source().is_some_and(|source| source.card.has_subtype("Food"))))
                 {
                     progress[actor.index()].activation = Some(flight());

@@ -259,7 +259,7 @@ fn main() {
                 && before
                     .announcing
                     .as_ref()
-                    .is_some_and(|s| CARDS.contains(&s.source_card.name()))
+                    .is_some_and(|s| s.source().is_some_and(|source| CARDS.contains(&source.card.name())))
             {
                 let total = payment.iter().sum::<u32>();
                 assert_eq!(total, cost.generic + cost.colored.iter().sum::<u32>());
@@ -296,7 +296,7 @@ fn main() {
             let after = game.observe(actor);
             if let Some(item) = before.stack.last()
                 && after.stack.iter().all(|s| s.id != item.id)
-                && CARDS.contains(&item.source_card.name())
+                && item.source().is_some_and(|source| CARDS.contains(&source.card.name()))
             {
                 origins.entry(item.id).or_insert_with(|| before.clone());
             }
@@ -311,7 +311,7 @@ fn main() {
                     })
                 });
             if let Some(item) = completed
-                && CARDS.contains(&item.source_card.name())
+                && item.source().is_some_and(|source| CARDS.contains(&source.card.name()))
             {
                 let origin = origins.remove(&item.id).unwrap_or_else(|| before.clone());
                 let n = check(&origin, &after, item);

@@ -375,7 +375,7 @@ fn main() {
                 && live_items(&after).all(|s| s.id != root.id)
             {
                 if let StackKind::ActivatedAbility { ability } = root.kind {
-                    if NEW.contains(&root.source_card.name()) {
+                    if root.source().is_some_and(|source| NEW.contains(&source.card.name())) {
                         resolved.insert((root.source_card.name(), ability));
                         let amount = match (root.source_card.name(), ability) {
                             ("Camera Launcher", 0)

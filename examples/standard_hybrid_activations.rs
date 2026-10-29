@@ -193,7 +193,7 @@ fn main() {
             }
             if let Some(root) = before.announcing.as_ref()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && NEW.contains(&root.source_card.name())
+                && root.source().is_some_and(|source| NEW.contains(&source.card.name()))
                 && let Action::PayCosts { payment } = a
             {
                 let request = before.payment_request.as_ref().unwrap();
@@ -256,7 +256,7 @@ fn main() {
             }
             if let Some(root) = before.stack.last()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && NEW.contains(&root.source_card.name())
+                && root.source().is_some_and(|source| NEW.contains(&source.card.name()))
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()
             {

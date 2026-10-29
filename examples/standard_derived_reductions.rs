@@ -448,13 +448,13 @@ fn main() {
             }
             let after = game.observe(actor);
             for item in &after.stack {
-                if item.kind == StackKind::Spell && NEW.contains(&item.source_card.name()) {
+                if item.kind == StackKind::Spell && item.source().is_some_and(|source| NEW.contains(&source.card.name())) {
                     casted.insert(item.source_card.name());
                 }
             }
             if let Some(item) = before.stack.last()
                 && after.stack.iter().all(|s| s.id != item.id)
-                && NEW.contains(&item.source_card.name())
+                && item.source().is_some_and(|source| NEW.contains(&source.card.name()))
             {
                 origins.entry(item.id).or_insert_with(|| before.clone());
             }
@@ -469,7 +469,7 @@ fn main() {
                     })
                 });
             if let Some(item) = complete
-                && NEW.contains(&item.source_card.name())
+                && item.source().is_some_and(|source| NEW.contains(&source.card.name()))
             {
                 let origin = origins.remove(&item.id).unwrap_or_else(|| before.clone());
                 let n = body(&origin, &after, item);

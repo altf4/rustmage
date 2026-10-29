@@ -207,7 +207,7 @@ fn main() {
             }
             for item in before.stack.iter().filter(|s| {
                 matches!(s.kind, StackKind::TriggeredAbility { .. })
-                    && NEW.contains(&s.source_card.name())
+                    && s.source().is_some_and(|source| NEW.contains(&source.card.name()))
             }) {
                 assert!(before.players[item.controller.other().index()].life_lost_this_turn > 0);
                 if after.stack.iter().all(|s| s.id != item.id) {

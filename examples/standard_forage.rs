@@ -495,7 +495,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             for s in packets(&a) {
                 if let StackKind::TriggeredAbility { ability } = s.kind
-                    && NAMES.contains(&s.source_card.name())
+                    && s.source().is_some_and(|source| NAMES.contains(&source.card.name()))
                     && seen_trigger.insert(s.id)
                 {
                     let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {

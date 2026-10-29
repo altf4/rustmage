@@ -252,7 +252,7 @@ fn main() {
             let after = game.observe(actor);
             if let Some(item) = before.stack.last()
                 && after.stack.iter().all(|s| s.id != item.id)
-                && COUNTERS.contains(&item.source_card.name())
+                && item.source().is_some_and(|source| COUNTERS.contains(&source.card.name()))
             {
                 if let Some(Target::Spell(id)) = item.targets.first().map(|b| b.target) {
                     let Some(victim) = before.stack.iter().find(|s| s.card == id) else {

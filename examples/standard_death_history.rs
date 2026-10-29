@@ -205,7 +205,7 @@ fn main() {
             }
             for item in before.stack.iter().filter(|s| {
                 matches!(s.kind, StackKind::TriggeredAbility { ability } if ability == u16::from(s.source().is_some_and(|source| source.card.name() == "Cackling Prowler")))
-                    && NEW.contains(&s.source_card.name())
+                    && s.source().is_some_and(|source| NEW.contains(&source.card.name()))
             }) {
                 assert!(deaths > 0, "morbid trigger requires death history");
                 if after.stack.iter().all(|s| s.id != item.id) {

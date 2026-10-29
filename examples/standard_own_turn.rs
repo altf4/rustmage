@@ -225,7 +225,7 @@ fn main() {
             let root = before
                 .stack
                 .last()
-                .filter(|s| NEW.contains(&s.source_card.name()) && s.kind != StackKind::Spell)
+                .filter(|s| s.source().is_some_and(|source| NEW.contains(&source.card.name())) && s.kind != StackKind::Spell)
                 .cloned();
             let saved = g.snapshot();
             let expected =

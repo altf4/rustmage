@@ -195,7 +195,7 @@ fn main() {
                 .stack
                 .last()
                 .filter(|s| {
-                    NEW.contains(&s.source_card.name())
+                    s.source().is_some_and(|source| NEW.contains(&source.card.name()))
                         && matches!(s.kind, StackKind::ActivatedAbility { .. })
                 })
                 .cloned();

@@ -476,7 +476,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     Action::ChooseMode { mode }
                         if b.announcing
                             .as_ref()
-                            .is_some_and(|s| s.source_card == focus && family == 5) =>
+                            .is_some_and(|s| s.source().is_some_and(|source| source.card == focus) && family == 5) =>
                     {
                         if *mode == u16::from(wants_counter) {
                             400
