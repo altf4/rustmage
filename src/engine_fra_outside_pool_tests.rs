@@ -1176,3 +1176,64 @@ fn outside_card_does_not_supply_ordinary_battlefield_replacement() {
         }
     }
 }
+
+#[test]
+fn resolving_instruction_self_replacements_precede_battlefield_providers() {
+    let _providers = crate::cards::test_counter_providers::activate_outside();
+    let _spell = crate::cards::test_counter_providers::activate_outside_self();
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut game = outside_scenario(owner, vec![shock, bear]);
+        let provider = put(&mut game, owner, "Healer's Hawk", Zone::Battlefield);
+        let provider = game.object_ref(provider);
+        cast_extrapolate(&mut game, owner);
+        let origin = game.state.resolving.as_ref().unwrap().item.id;
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+        let waiting = game.snapshot();
+        assert_eq!(game.state.resolving.as_ref().unwrap().item.id, origin);
+        let view = game.observe(owner).outside_entry_replacement.unwrap();
+        assert_eq!(view.self_effects, vec![0, 1]);
+        assert!(view.providers.is_empty());
+        assert!(
+            game.observe(owner.other())
+                .outside_entry_replacement
+                .is_none()
+        );
+        let ordinary = Action::ChooseOutsideEntryReplacement {
+            source: provider,
+            ability: 0,
+        };
+        assert!(!game.legal_actions().contains(&ordinary));
+        assert!(game.apply(owner, ordinary).is_err());
+        assert_eq!(game.snapshot(), waiting);
+        for effect in [0, 1] {
+            let choice = Action::ChooseOutsideSelfReplacement { effect };
+            assert!(game.legal_actions().contains(&choice));
+            assert!(game.apply(owner.other(), choice.clone()).is_err());
+            act(&mut game, choice);
+            if effect == 0 {
+                assert!(
+                    game.state
+                        .objects
+                        .iter()
+                        .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Exile)
+                );
+                assert!(game.state.cards_exiled_this_turn);
+            } else {
+                assert_eq!(
+                    game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+                    vec![shock, bear]
+                );
+                assert!(!game.state.cards_exiled_this_turn);
+            }
+            let after = game.snapshot();
+            game.restore(&waiting).unwrap();
+            act(&mut game, Action::ChooseOutsideSelfReplacement { effect });
+            assert_eq!(game.snapshot(), after);
+            game.restore(&waiting).unwrap();
+        }
+    }
+}

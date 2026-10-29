@@ -26,6 +26,8 @@ pub(super) struct Choice {
     owner: Player,
     first: Option<Selection>,
     pair: Option<[Selection; 2]>,
+    self_origin: Option<u64>,
+    self_effects: &'static [crate::cards::SelfOutsideEntryTemplate],
 }
 /// Frozen pre-event card facts. This has no `ObjectRef` or in-game origin:
 /// the physical outside entry acquires an object identity only on admission.
@@ -81,6 +83,10 @@ pub(super) struct OutsideHandEvent {
     destination: OutsideEntryDestination,
     choices: Vec<OutsideEntryReplacement>,
     applied: Vec<u64>,
+    self_origin: Option<u64>,
+    self_effects: &'static [crate::cards::SelfOutsideEntryTemplate],
+    self_applied: Vec<u16>,
+    self_choices: Vec<u16>,
     provider_applied: Vec<(ObjectRef, u16)>,
     provider_choices: Vec<(ObjectRef, u16, OutsideEntryDestination)>,
 }
@@ -101,6 +107,8 @@ pub struct OutsideChoiceView {
 pub struct OutsideEntryReplacementView {
     pub player: Player,
     pub providers: Vec<(ObjectRef, u16)>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub self_effects: Vec<u16>,
 }
 // Count names rather than testing every pair. Large casual collections may
 // contain many duplicates, and action enumeration must not become quadratic.
@@ -188,6 +196,23 @@ impl OutsideGameState {
 }
 impl Game {
     pub(super) fn start_outside_choice(&mut self, owner: Player) -> bool {
+        self.start_outside_choice_inner(owner, None, &[])
+    }
+    pub(super) fn start_outside_choice_with_self(
+        &mut self,
+        owner: Player,
+        origin: u64,
+        effects: &'static [crate::cards::SelfOutsideEntryTemplate],
+    ) -> bool {
+        u16::try_from(effects.len()).capacity("outside self replacement count exhausted");
+        self.start_outside_choice_inner(owner, Some(origin), effects)
+    }
+    fn start_outside_choice_inner(
+        &mut self,
+        owner: Player,
+        self_origin: Option<u64>,
+        self_effects: &'static [crate::cards::SelfOutsideEntryTemplate],
+    ) -> bool {
         // Always offer a private decline, even with no valid pair: skipping
         // this decision would disclose information about the hidden pool.
         let state = self.state.outside_game.get_or_insert_with(|| {
@@ -214,6 +239,8 @@ impl Game {
             owner,
             first: None,
             pair: None,
+            self_origin,
+            self_effects,
         });
         self.state.pending = Pending::OutsideGameChoice { player: owner };
         true
@@ -367,6 +394,10 @@ impl Game {
             destination: OutsideEntryDestination::Hand,
             choices: Vec::new(),
             applied: Vec::new(),
+            self_origin: choice.self_origin,
+            self_effects: choice.self_effects,
+            self_applied: Vec::new(),
+            self_choices: Vec::new(),
             provider_applied: Vec::new(),
             provider_choices: Vec::new(),
         });
@@ -382,6 +413,8 @@ impl Game {
             .map_or(0, |event| {
                 event.choices.capacity() * std::mem::size_of::<OutsideEntryReplacement>()
                     + event.applied.capacity() * std::mem::size_of::<u64>()
+                    + (event.self_applied.capacity() + event.self_choices.capacity())
+                        * std::mem::size_of::<u16>()
                     + event.provider_applied.capacity() * std::mem::size_of::<(ObjectRef, u16)>()
                     + event.provider_choices.capacity()
                         * std::mem::size_of::<(ObjectRef, u16, OutsideEntryDestination)>()
@@ -447,8 +480,8 @@ impl Game {
 
     /// Prepare the next live provider decision. No card is consumed here; a
     /// suspended continuation owns both candidate and already-applied keys.
-    /// The public decision is exposed; resolving-effect self replacements and
-    /// generic outside-entry observers remain unimplemented.
+    /// Resolving-effect self replacements are prepared before battlefield
+    /// providers; generic outside-entry observers remain unimplemented.
     pub(super) fn prepare_outside_entry_providers(&mut self) -> bool {
         let Some(event) = self
             .state
@@ -458,18 +491,105 @@ impl Game {
         else {
             return false;
         };
-        if !event.provider_choices.is_empty() || !event.choices.is_empty() {
+        if !event.provider_choices.is_empty()
+            || !event.self_choices.is_empty()
+            || !event.choices.is_empty()
+        {
             return false;
         }
-        let providers = self.outside_entry_providers(event, &event.provider_applied);
-        self.state
+        let current = match event.destination {
+            OutsideEntryDestination::Hand => crate::cards::OutsideEntryEffectDestination::Hand,
+            OutsideEntryDestination::Exile => crate::cards::OutsideEntryEffectDestination::Exile,
+            OutsideEntryDestination::Prevent => {
+                crate::cards::OutsideEntryEffectDestination::Prevent
+            }
+        };
+        let self_choices: Vec<u16> =
+            if current == crate::cards::OutsideEntryEffectDestination::Prevent {
+                Vec::new()
+            } else {
+                event
+                    .self_effects
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(i, effect)| {
+                        let id = u16::try_from(i).expect("validated self effect index");
+                        (effect.from == current && !event.self_applied.contains(&id)).then_some(id)
+                    })
+                    .collect()
+            };
+        // CR 616.1a: resolving-effect self replacements precede other providers.
+        let providers = if self_choices.is_empty() {
+            self.outside_entry_providers(event, &event.provider_applied)
+        } else {
+            Vec::new()
+        };
+        let event = self
+            .state
             .outside_game
             .as_mut()
             .unwrap()
             .pending_entry
             .as_mut()
+            .unwrap();
+        event.self_choices = self_choices;
+        event.provider_choices = providers;
+        true
+    }
+
+    fn outside_event_is_current(&self) -> bool {
+        let Some(state) = self.state.outside_game.as_ref() else {
+            return false;
+        };
+        let Some(event) = state.pending_entry.as_ref() else {
+            return false;
+        };
+        let Some(choice) = state.choice.as_ref() else {
+            return false;
+        };
+        choice.owner == event.owner
+            && event.self_origin.is_none_or(|origin| {
+                self.state
+                    .resolving
+                    .as_ref()
+                    .is_some_and(|resolving| resolving.item.id == origin)
+            })
+            && choice.id == event.choice_id
+            && choice.pair == Some(event.pair)
+            && choice.self_origin == event.self_origin
+            && choice.self_effects == event.self_effects
+            && state.pool_versions[event.owner.index()] == event.pool_version
+            && state.checked_card(event.owner, event.pair[0]) == Some(event.revealed[0])
+            && state.checked_card(event.owner, event.pair[1]) == Some(event.revealed[1])
+    }
+    fn apply_outside_self(&mut self, id: u16) -> bool {
+        if !self.outside_event_is_current() {
+            return false;
+        }
+        let event = self
+            .state
+            .outside_game
+            .as_mut()
             .unwrap()
-            .provider_choices = providers;
+            .pending_entry
+            .as_mut()
+            .unwrap();
+        if !event.self_choices.contains(&id)
+            || event.self_applied.contains(&id)
+            || event.self_origin.is_none()
+        {
+            return false;
+        }
+        let effect = event.self_effects[usize::from(id)];
+        event.destination = match effect.to {
+            crate::cards::OutsideEntryEffectDestination::Hand => OutsideEntryDestination::Hand,
+            crate::cards::OutsideEntryEffectDestination::Exile => OutsideEntryDestination::Exile,
+            crate::cards::OutsideEntryEffectDestination::Prevent => {
+                OutsideEntryDestination::Prevent
+            }
+        };
+        event.self_applied.push(id);
+        event.self_choices.clear();
         true
     }
 
@@ -596,6 +716,19 @@ impl Game {
                 .pending_entry
                 .as_ref()
                 .unwrap();
+            match event.self_choices.as_slice() {
+                [effect] => {
+                    let effect = *effect;
+                    assert!(self.apply_outside_self(effect));
+                    continue;
+                }
+                [_, _, ..] => {
+                    let player = event.owner;
+                    self.state.pending = Pending::OutsideEntryReplacement { player };
+                    return;
+                }
+                [] => {}
+            }
             match event.provider_choices.as_slice() {
                 [] => {
                     assert!(
@@ -629,6 +762,13 @@ impl Game {
         else {
             return false;
         };
+        if event
+            .self_choices
+            .iter()
+            .any(|effect| emit(Action::ChooseOutsideSelfReplacement { effect: *effect }))
+        {
+            return true;
+        }
         event.provider_choices.iter().any(|(source, ability, _)| {
             emit(Action::ChooseOutsideEntryReplacement {
                 source: *source,
@@ -649,12 +789,20 @@ impl Game {
         let event = self.state.outside_game.as_ref()?.pending_entry.as_ref()?;
         Some(OutsideEntryReplacementView {
             player,
+            self_effects: event.self_choices.clone(),
             providers: event
                 .provider_choices
                 .iter()
                 .map(|(source, ability, _)| (*source, *ability))
                 .collect(),
         })
+    }
+    pub(super) fn choose_outside_self(&mut self, effect: u16) {
+        assert!(
+            self.apply_outside_self(effect),
+            "validated outside self replacement"
+        );
+        self.advance_outside_entry();
     }
     pub(super) fn choose_outside_provider(&mut self, source: ObjectRef, ability: u16) {
         assert!(
@@ -708,6 +856,9 @@ impl Game {
         };
         if !event.choices.is_empty()
             || !event.provider_choices.is_empty()
+            || !event.self_choices.is_empty()
+            || choice.self_origin != event.self_origin
+            || choice.self_effects != event.self_effects
             || choice.owner != event.owner
             || choice.id != event.choice_id
             || choice.pair != Some(event.pair)

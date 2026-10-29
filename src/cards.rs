@@ -1801,6 +1801,12 @@ pub(crate) enum Instruction {
     CreateTokenIfControllerSacrificed(Card),
     OpponentsDiscardTwoDrawUnlessTwoNonland,
     RevealTwoOutsideCards,
+    /// The instruction owns these self-replacements; they precede other effects.
+    #[allow(
+        dead_code,
+        reason = "Synthetic outside admission self-replacement foundation"
+    )]
+    RevealTwoOutsideCardsWithSelf(&'static [SelfOutsideEntryTemplate]),
     /// Discard two, then create a reflexive trigger for actual nonland discards.
     DiscardTwoNonlandReflexive(u16),
     TargetStatsUntilNextTurn {
@@ -2791,6 +2797,13 @@ pub(crate) enum OutsideEntryEffectDestination {
         reason = "Only synthetic outside-entry prevention providers exist"
     )]
     Prevent,
+}
+
+/// A replacement belonging to the resolving outside-admission instruction.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SelfOutsideEntryTemplate {
+    pub from: OutsideEntryEffectDestination,
+    pub to: OutsideEntryEffectDestination,
 }
 
 /// One descendant event produced by a split player-counter replacement.
@@ -4644,6 +4657,10 @@ impl Card {
         kinds & 8 != 0
     }
     pub(crate) fn effect(self) -> Effect {
+        #[cfg(test)]
+        if let Some(effect) = test_counter_providers::outside_self_spell(self) {
+            return effect;
+        }
         generated::DEFINITIONS[self.0 as usize].effect
     }
     pub(crate) fn spell_program(

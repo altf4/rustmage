@@ -1142,7 +1142,8 @@ fn project_prior_schema192(input: &str) -> Result<String, String> {
         match value {
             serde_json::Value::String(text)
                 if text == "outside_entry_replacement"
-                    || text == "ChooseOutsideEntryReplacement" =>
+                    || text == "ChooseOutsideEntryReplacement"
+                    || text == "ChooseOutsideSelfReplacement" =>
             {
                 Err("outside-entry replacement has no schema 191 representation".into())
             }
@@ -1154,7 +1155,9 @@ fn project_prior_schema192(input: &str) -> Result<String, String> {
             }
             serde_json::Value::Object(fields) => {
                 for (key, value) in fields {
-                    if key == "outside_entry_replacement" || key == "ChooseOutsideEntryReplacement"
+                    if key == "outside_entry_replacement"
+                        || key == "ChooseOutsideEntryReplacement"
+                        || key == "ChooseOutsideSelfReplacement"
                     {
                         return Err(
                             "outside-entry replacement has no schema 191 representation".into()
@@ -7483,6 +7486,7 @@ fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
     for json in [
         r#"{"decision":"outside_entry_replacement"}"#,
         r#"{"actions":[{"kind":"ChooseOutsideEntryReplacement","ability":0}]}"#,
+        r#"{"actions":[{"kind":"ChooseOutsideSelfReplacement","effect":0}]}"#,
         r#"{"outside_entry_replacement":{}}"#,
     ] {
         assert!(project_prior_schema192(json).is_err());

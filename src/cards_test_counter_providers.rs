@@ -5,6 +5,37 @@ use super::*;
 use std::cell::Cell;
 thread_local! { static ACTIVE: Cell<bool> = const { Cell::new(false) }; }
 thread_local! { static OUTSIDE_ACTIVE: Cell<bool> = const { Cell::new(false) }; }
+thread_local! { static OUTSIDE_SELF_ACTIVE: Cell<bool> = const { Cell::new(false) }; }
+pub(crate) struct OutsideSelfGuard;
+impl Drop for OutsideSelfGuard {
+    fn drop(&mut self) {
+        OUTSIDE_SELF_ACTIVE.with(|v| v.set(false));
+    }
+}
+pub(crate) fn activate_outside_self() -> OutsideSelfGuard {
+    OUTSIDE_SELF_ACTIVE.with(|v| assert!(!v.replace(true)));
+    OutsideSelfGuard
+}
+const OUTSIDE_SELF_EFFECTS: &[SelfOutsideEntryTemplate] = &[
+    SelfOutsideEntryTemplate {
+        from: OutsideEntryEffectDestination::Hand,
+        to: OutsideEntryEffectDestination::Exile,
+    },
+    SelfOutsideEntryTemplate {
+        from: OutsideEntryEffectDestination::Hand,
+        to: OutsideEntryEffectDestination::Prevent,
+    },
+];
+pub(super) fn outside_self_spell(card: Card) -> Option<Effect> {
+    (OUTSIDE_SELF_ACTIVE.with(Cell::get)
+        && Some(card) == Card::from_name("Extrapolate the Impossible"))
+    .then_some(Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::RevealTwoOutsideCardsWithSelf(
+            OUTSIDE_SELF_EFFECTS,
+        )],
+    ))
+}
 pub(crate) struct OutsideGuard;
 impl Drop for OutsideGuard {
     fn drop(&mut self) {

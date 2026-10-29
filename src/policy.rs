@@ -342,7 +342,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseOutsideCard { .. }
             | Action::ChooseOutsideBasic { .. }
             | Action::ChooseOutsideRevealed { .. }
-            | Action::ChooseOutsideEntryReplacement { .. } => 60,
+            | Action::ChooseOutsideEntryReplacement { .. }
+            | Action::ChooseOutsideSelfReplacement { .. } => 60,
             Action::CancelOutsideCard | Action::DeclineOutsideCards => -1,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
             Action::ChooseSearchDestination { destination } => {

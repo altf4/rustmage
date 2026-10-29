@@ -177,9 +177,9 @@ Extrapolate remains gated pending those rules, validation and source provenance.
 The isolated scheduler exposes a public competing-provider choice and rechecks
 live battlefield providers after each replacement. Synthetic providers exercise
 prevention, redirect, repeat selection and snapshot restoration; no printed
-outside-entry providers have been identified. The scheduler does not yet handle
-resolving-effect self-replacements or generic outside-entry observers, so it is not
-complete general replacement support.
+outside-entry providers have been identified. The scheduler now stages typed
+resolving-effect self-replacements before battlefield providers, but generic
+outside-entry observers remain incomplete.
 
 ## Isolated scheduler limitations
 
@@ -194,11 +194,13 @@ the incoming card or manufacture an ObjectRef for it.
 
 Separately, CR 614.15 and 616.1a define a self-replacement as an effect of the
 resolving spell or ability that replaces its own effect, and require it to be
-applied before ordinary competing replacements. The current scheduler has no
-owned instruction-supplied self-replacement list or corresponding choice and
-replay support. No printed admission instruction requiring this has been
-identified in the current catalogue. Do not mark the general rule complete or
-enable a card whose admission depends on this path.
+applied before ordinary competing replacements. The isolated scheduler owns
+instruction-supplied self-replacement templates and their resolving stack-item
+identity, choices and applied indices. It re-evaluates applicability after each
+transformation and retains those choices across snapshots. This foundation is
+limited to destination changes and prevention; no printed admission instruction
+requiring it has been identified, and its synthetic tests remain unvalidated.
+Do not claim complete replacement support.
 
 Rules source: [Magic Comprehensive Rules, June 19, 2026](https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf).
 

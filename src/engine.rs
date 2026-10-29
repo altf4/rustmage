@@ -791,6 +791,7 @@ define_actions! {
     DeclineOutsideCards,
     ChooseOutsideRevealed { index: u8 },
     ChooseOutsideEntryReplacement { source: ObjectRef, ability: u16 },
+    ChooseOutsideSelfReplacement { effect: u16 },
     ChooseSearch {
         card: CardId,
     },
@@ -5772,6 +5773,7 @@ impl Game {
             Action::ChooseOutsideEntryReplacement { source, ability } => {
                 self.choose_outside_provider(source, ability)
             }
+            Action::ChooseOutsideSelfReplacement { effect } => self.choose_outside_self(effect),
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
