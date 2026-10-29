@@ -118,6 +118,7 @@ impl Game {
         let Some(link) = &item.return_link else {
             return;
         };
+        let Some(source) = item.source else { return; };
         if self
             .state
             .objects
@@ -133,10 +134,11 @@ impl Game {
         }
     }
     fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
+        let Some(source) = item.source else { return; };
         let view = DelayedReturnView {
             id: self.next_stack_id(),
-            source: item.object,
-            source_card: item.source_card,
+            source: source.object,
+            source_card: source.card,
             controller: item.controller,
             returning,
         };
@@ -279,14 +281,14 @@ impl Game {
             }
             ReturnKind::HeroFinality => {
                 link.counter = Some((CounterKind::Finality, 1));
-                self.stage_linked_return(&link, Some((kind, item.object)));
+                self.stage_linked_return(&link, Some((kind, source.object)));
             }
             ReturnKind::Demon | ReturnKind::Angel => {
                 link.counter = Some((
                     CounterKind::PlusOne,
                     if kind == ReturnKind::Demon { 2 } else { 1 },
                 ));
-                self.stage_linked_return(&link, Some((kind, item.object)));
+                self.stage_linked_return(&link, Some((kind, source.object)));
             }
         }
     }
