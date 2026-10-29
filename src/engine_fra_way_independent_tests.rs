@@ -66,7 +66,6 @@ fn necromancer_counts_simultaneous_friendly_token_deaths_and_replaces_each_count
             "Way of the Necromancer",
             Zone::Battlefield,
         );
-        put(&mut game, player, "Doubling Season", Zone::Battlefield);
         let walker = put(
             &mut game,
             player,
@@ -90,6 +89,7 @@ fn necromancer_counts_simultaneous_friendly_token_deaths_and_replaces_each_count
                 .then_some(id as CardId)
             })
             .unwrap();
+        put(&mut game, player, "Doubling Season", Zone::Battlefield);
         let observers = game.death_trigger_sources();
         let events = game.move_objects_raw(&[creature, token, opposing], Zone::Graveyard);
         game.finish_zone_events(&events, &observers);

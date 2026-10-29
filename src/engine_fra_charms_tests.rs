@@ -7522,3 +7522,12 @@ mod engine_fra_five_candidates_independent_tests;
 
 #[path = "engine_fra_way_independent_tests.rs"]
 mod engine_fra_way_independent_tests;
+
+#[path = "engine_fra_clash_tests.rs"]
+mod engine_fra_clash_tests;
+
+#[path = "engine_fra_clash_independent_tests.rs"]
+mod engine_fra_clash_independent_tests;
+
+#[path = "engine_fra_karn_tether_independent_tests.rs"]
+mod engine_fra_karn_tether_independent_tests;
