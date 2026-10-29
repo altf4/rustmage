@@ -100,7 +100,9 @@ fn kiora_activation_on_opponents_turn_keeps_its_controller_after_theft() {
             .state
             .objects
             .iter()
-            .filter(|o| o.zone == Zone::Battlefield && o.is_token() && o.card == Card(5288))
+            .filter(|o| {
+                o.zone == Zone::Battlefield && o.is_token() && o.card == Card::test_index(5288)
+            })
             .collect::<Vec<_>>();
         assert_eq!(dragons.len(), 1);
         assert_eq!(dragons[0].controller, p);

@@ -49022,8 +49022,62 @@ pub(super) mod card_5446 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/prepare_prudent_fateseer_peer_review.rs");
 }
+pub(super) mod card_5447 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_hallway_heckler_vicious_verse.rs");
+}
+pub(super) mod card_5448 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_stingerquill_voxmancer_vicious_verse.rs");
+}
+pub(super) mod card_5449 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_whiplash_wordsmith_vicious_verse.rs");
+}
+pub(super) mod card_5450 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_paradox_shaper_omit_variables.rs");
+}
+pub(super) mod card_5451 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_theorix_metamage_omit_variables.rs");
+}
+pub(super) mod card_5452 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_void_extrapolator_omit_variables.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5447] = [
+pub(super) static RULES: [&CardRules; 5453] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54471,6 +54525,12 @@ pub(super) static RULES: [&CardRules; 5447] = [
     &card_5444::RULES,
     &card_5445::RULES,
     &card_5446::RULES,
+    &card_5447::RULES,
+    &card_5448::RULES,
+    &card_5449::RULES,
+    &card_5450::RULES,
+    &card_5451::RULES,
+    &card_5452::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

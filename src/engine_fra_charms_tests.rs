@@ -7235,3 +7235,45 @@ mod noncombat_history_tests;
 
 #[path = "engine_fra_noncombat_followup.rs"]
 mod noncombat_followup;
+
+#[path = "engine_fra_prepared_extra_tests.rs"]
+mod engine_fra_prepared_extra_tests;
+
+#[path = "engine_fra_teyo_followup_tests.rs"]
+mod engine_fra_teyo_followup_tests;
+
+#[path = "engine_fra_scry_followup_tests.rs"]
+mod engine_fra_scry_followup_tests;
+
+#[path = "engine_fra_kiora_teyo_tests.rs"]
+mod engine_fra_kiora_teyo_tests;
+
+#[path = "engine_fra_fifth_followup_tests.rs"]
+mod engine_fra_fifth_followup_tests;
+
+#[path = "engine_fra_sixth_followup_tests.rs"]
+mod engine_fra_sixth_followup_tests;
+
+#[path = "engine_fra_seventh_followup_tests.rs"]
+mod engine_fra_seventh_followup_tests;
+
+#[path = "engine_fra_eighth_followup_tests.rs"]
+mod engine_fra_eighth_followup_tests;
+
+#[path = "engine_fra_ninth_followup_tests.rs"]
+mod engine_fra_ninth_followup_tests;
+
+#[path = "engine_fra_tenth_followup_tests.rs"]
+mod engine_fra_tenth_followup_tests;
+
+#[path = "engine_fra_eleventh_followup_tests.rs"]
+mod engine_fra_eleventh_followup_tests;
+
+#[path = "engine_fra_artifact_review_tests.rs"]
+mod engine_fra_artifact_review_tests;
+
+#[path = "engine_fra_cohort_review.rs"]
+mod engine_fra_cohort_review;
+
+#[path = "engine_fra_peer_lifecycle_review_tests.rs"]
+mod engine_fra_peer_lifecycle_review_tests;
