@@ -40,7 +40,7 @@ impl Game {
     pub(super) fn mobilize_choice(&self) -> Option<MobilizeChoiceView> {
         let f = self.state.mobilize.as_ref()?;
         Some(MobilizeChoiceView {
-            source: self.state.resolving.as_ref()?.item.object,
+            source: self.state.resolving.as_ref()?.item.source?.object,
             token: f.token,
             tokens: f.groups.clone(),
             amount: f.amount,
@@ -162,6 +162,7 @@ impl Game {
         let f = self.state.mobilize.take().unwrap();
         assert_eq!(f.amount, f.defenders.len());
         let item = self.state.resolving.as_ref().unwrap().item.clone();
+        let Some(source) = item.source else { return; };
         assert!(
             f.defenders
                 .iter()
@@ -175,14 +176,14 @@ impl Game {
         let batch = DelayedBatch {
             view: DelayedSacrificeView {
                 id,
-                source: item.object,
-                source_card: item.source_card,
+                source: source.object,
+                source_card: source.card,
                 controller: item.controller,
                 tokens,
             },
             keywords: item.source_keywords,
             tapped: item.source_tapped,
-            facts: item.source_facts,
+            facts: source.facts,
             attachment: item.source_attachment,
         };
         let batches = self
@@ -195,20 +196,21 @@ impl Game {
         batches.push(batch);
     }
     pub(super) fn finish_temporary_copy(&mut self, item: &SpellView, tokens: Vec<ObjectRef>) {
+        let Some(source) = item.source else { return; };
         let ids = tokens.iter().map(|r| r.card).collect::<Vec<_>>();
-        self.grant_keyword_effects(&ids, item.object, Keywords::HASTE);
+        self.grant_keyword_effects(&ids, source.object, Keywords::HASTE);
         let id = self.next_stack_id();
         let batch = DelayedBatch {
             view: DelayedSacrificeView {
                 id,
-                source: item.object,
-                source_card: item.source_card,
+                source: source.object,
+                source_card: source.card,
                 controller: item.controller,
                 tokens,
             },
             keywords: item.source_keywords,
             tapped: item.source_tapped,
-            facts: item.source_facts,
+            facts: source.facts,
             attachment: item.source_attachment,
         };
         self.state
