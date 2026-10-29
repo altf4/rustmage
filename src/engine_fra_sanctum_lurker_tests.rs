@@ -59,6 +59,8 @@ fn lurker_grant_raises_loyalty_and_uses_walker_as_damage_source() {
             settle(&mut g);
             assert_eq!(g.state.players[p.index()].life, 21);
             assert_eq!(g.state.players[p.other().index()].life, 19);
+            assert!(!g.legal_actions().iter().any(|a| matches!(a,
+                Action::AnnounceActivate { card, .. } if *card == walker)));
             assert!(g.state.objects[walker as usize].dealt_damage_this_turn);
             g.restore(&saved).unwrap();
         }
@@ -130,5 +132,55 @@ fn lurker_paid_cast_empowers_a_new_jace_and_replays() {
             assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 1);
             g.restore(&saved).unwrap();
         }
+    }
+}
+
+#[test]
+fn lurker_lethal_damage_dies_first_then_zero_loyalty_walker_dies() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let provider = lurker(&mut g, p);
+        let walker = put(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 0;
+        g.state.objects[provider as usize].damage = 2;
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.state_based_actions();
+            assert_eq!(g.object_view(provider).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(walker).zone, Zone::Graveyard);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn lurker_grant_follows_controller_and_ability_removal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let provider = lurker(&mut g, p);
+        let walker = put(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 3;
+        let source = g.object_ref(walker);
+        let grantor = g.object_ref(provider);
+        let action = Action::AnnouncePlaneswalkerGrant {
+            source,
+            grantor,
+            ability: 0,
+        };
+        assert!(g.legal_actions().contains(&action));
+        let saved = g.snapshot();
+        let mut blank = g.activation_item(p, provider, 0);
+        blank.targets = vec![BoundTarget {
+            group: 0,
+            target: Target::Card(provider),
+            object: Some(grantor),
+        }];
+        g.remove_target_abilities_until_end_of_turn(&blank);
+        assert!(!g.legal_actions().contains(&action));
+        g.restore(&saved).unwrap();
+        g.change_controller(grantor, p.other());
+        assert!(!g.legal_actions().contains(&action));
+        g.restore(&saved).unwrap();
+        assert!(g.legal_actions().contains(&action));
     }
 }
