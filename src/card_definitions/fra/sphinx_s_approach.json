@@ -39,5 +39,9 @@
       "sha256": "0dee422806fe7335978ad7f9ae7e4a8a7d43f83db8058792e806719725ee1fd4"
     }
   ],
-  "rules_tests": "src/engine_fra_sphinxs_approach_tests.rs"
+  "rules_tests": "src/engine_fra_sphinxs_approach_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_fra_sphinx_mixed_cost_tests.rs",
+    "src/engine_fra_mixed_zone_cost_tests.rs"
+  ]
 }
