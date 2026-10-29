@@ -78,9 +78,12 @@ fn fra_admitted_decks_finish_and_replay_in_both_seats() {
     );
     for game in &report.games {
         assert!(
-            !game.cards_cast.is_empty() && game.witnesses.get("actual_cast").copied().unwrap_or(0) > 0,
+            !game.cards_cast.is_empty()
+                && game.witnesses.get("actual_cast").copied().unwrap_or(0) > 0,
             "game did not observe an actual FRA spell cast: pair {} seed {} swapped {}",
-            game.pair, game.seed, game.deck_swapped
+            game.pair,
+            game.seed,
+            game.deck_swapped
         );
     }
     assert!(
