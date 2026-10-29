@@ -650,9 +650,11 @@ fn schema180_rejects_live_wheel_and_construct_for_both_viewers_and_restore() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let target = put(&mut g, player, "Gideon's Memorial", Zone::Battlefield);
-        let aura = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let aura = put(&mut g, player, "Bear Cub", Zone::Hand);
         g.state.objects[aura as usize].card = Card::from_name("Puppet Crafting").unwrap();
+        g.move_object(aura, Zone::Battlefield);
         g.state.objects[aura as usize].attached_to = Some(g.object_ref(target));
+        assert!(g.has_subtype(target, "Construct"));
         for viewer in [Player::P0, Player::P1] {
             let view = serde_json::to_string(&g.observe(viewer)).unwrap();
             assert!(project_prior_schema180(&view).is_err());
