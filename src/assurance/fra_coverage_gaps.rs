@@ -204,3 +204,122 @@ fn proctor_self_entry_triggers_after_supper_makes_it_noncreature_food() {
         assert!(matches!(g.state.pending, Pending::EffectLibrary { .. }));
     }
 }
+
+#[test]
+fn memory_trap_links_only_the_exiled_incarnation() {
+    for player in [Player::P0, Player::P1] {
+        for move_exiled_card in [false, true] {
+            let mut g = scenario(player);
+            let enemy = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+            let own = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+            let trap = put(&mut g, player, "Memory Trap", Zone::Hand);
+            cast(&mut g, trap, None);
+            advance_until(&mut g, |g| {
+                g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                })
+            });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            finish(&mut g);
+            assert_eq!(g.object_view(enemy).zone, Zone::Exile);
+            let exiled = g.object_ref(enemy);
+            let saved = g.snapshot();
+            super::contracts::branch_contract(g.clone());
+            if move_exiled_card {
+                g.move_object(enemy, Zone::Graveyard);
+                assert_ne!(g.object_ref(enemy), exiled);
+            }
+            g.move_object(trap, Zone::Graveyard);
+            finish(&mut g);
+            assert_eq!(
+                g.object_view(enemy).zone,
+                if move_exiled_card {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(g.object_view(enemy).controller, player.other());
+            g.restore(&saved).unwrap();
+            assert_eq!(g.object_ref(enemy), exiled);
+            assert_eq!(g.object_view(enemy).zone, Zone::Exile);
+        }
+    }
+}
+
+#[test]
+fn koth_plains_entry_creates_both_independent_triggers() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let koth = put(&mut g, player, "Koth of the Homestead", Zone::Battlefield);
+        let creature = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let opponent_land = put(&mut g, player.other(), "Plains", Zone::Hand);
+        g.move_object(opponent_land, Zone::Battlefield);
+        assert!(g.state.pending_triggers.is_empty());
+        let plains = put(&mut g, player, "Plains", Zone::Hand);
+        let life = g.state.players[player.index()].life;
+        g.move_object(plains, Zone::Battlefield);
+        let mut abilities: Vec<_> = g
+            .state
+            .pending_triggers
+            .iter()
+            .filter_map(|item| {
+                if item.source.is_some_and(|source| source.id == koth)
+                    && let StackKind::TriggeredAbility { ability } = item.kind
+                {
+                    Some(ability)
+                } else {
+                    None
+                }
+            })
+            .collect();
+        abilities.sort_unstable();
+        assert_eq!(abilities, vec![0, 1]);
+        g.prepare_triggers();
+        for _ in 0..64 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.ordering_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            }
+            let actions = g.legal_actions();
+            let target = Action::ChooseTarget {
+                target: Target::Card(creature),
+            };
+            let action = if actions.contains(&target) {
+                target
+            } else {
+                actions
+                    .into_iter()
+                    .find(|a| {
+                        matches!(
+                            a,
+                            Action::Pass | Action::PutTrigger { .. } | Action::FinishTargets
+                        )
+                    })
+                    .expect("Koth trigger decision")
+            };
+            act(&mut g, action);
+        }
+        assert_eq!(g.state.players[player.index()].life, life + 1);
+        assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 1);
+        assert!(g.state.stack.is_empty() && g.state.pending_triggers.is_empty());
+    }
+}
