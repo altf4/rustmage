@@ -101,9 +101,13 @@ fn torch_emblem_survives_source_and_triggers_for_its_controllers_casts() {
         g.state.players[player.index()].mana = [0, 0, 0, 0, 1, 1];
         cast(&mut g, spell, None);
         g.prepare_triggers();
-        let trigger = g.state.stack.iter().chain(g.state.pending_triggers.iter()).chain(g.state.ordering_triggers.iter())
-            .find(|s| s.source_card == Card::test_index(5465)).expect("emblem cast trigger");
+        act(&mut g, Action::ChooseTarget { target: Target::Player(player.other()) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        let trigger = g.state.stack.iter().find(|s| s.source_card == Card::test_index(5465)).expect("emblem cast trigger");
         assert_eq!(trigger.controller, player);
+        let life = g.state.players[player.other().index()].life;
+        g.resolve_top();
+        assert_eq!(g.state.players[player.other().index()].life, life - 5);
     }
 }
 
