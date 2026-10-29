@@ -2659,7 +2659,25 @@ impl<'g> FundingState<'g> {
         if !visited.insert(self.key(goal)) {
             return false;
         }
-        for step in self.moves(goal) {
+        let mut moves = self.moves(goal);
+        if matches!(purpose, mana_lots::Purpose::Activation(_)) {
+            // Spell-only mana cannot pay this activation or any mana ability.
+            // Try usable sources first, but retain every move: tapping an
+            // otherwise unusable source can still change the projected world.
+            moves.sort_by_key(|step| {
+                step.quality.is_some_and(|quality| {
+                    matches!(
+                        quality.restriction,
+                        mana_lots::ManaRestrictionView::ArtifactSpell
+                            | mana_lots::ManaRestrictionView::InstantSorcery
+                            | mana_lots::ManaRestrictionView::NoncreatureSpell
+                            | mana_lots::ManaRestrictionView::PlaneswalkerSpell
+                            | mana_lots::ManaRestrictionView::SpellSubtype(_)
+                    )
+                })
+            });
+        }
+        for step in moves {
             if self.visit_applied(&step, &mut |next| {
                 next.reachable_with_evidence(goal, evidence, visited)
             }) {
