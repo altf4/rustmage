@@ -182,3 +182,30 @@ fn chill_large_loyalty_x_survives_copy_observation_and_restore() {
         assert_eq!(g.counter_count(target, CounterKind::Stun), 0);
     }
 }
+
+#[test]
+fn chill_loyalty_x_choice_rejects_wrong_actor_and_restores_before_choice() {
+    for player in [Player::P0, Player::P1] {
+        for amount in [0, u64::from(u32::MAX) + 17] {
+            let mut g = scenario(player);
+            let source = chill(&mut g, player, amount + 1);
+            put(&mut g, player.other(), "Gilded Lotus", Zone::Battlefield);
+            act(&mut g, Action::AnnounceActivate { card: source, ability: 2, counter_payment: Counters::default() });
+            let before = g.snapshot();
+            let revision = g.revision();
+            let action = Action::ChooseSourceCounterAmount { amount };
+            assert_eq!(g.apply(player.other(), action.clone()), Err(Error::WrongActor));
+            assert_eq!(g.snapshot(), before);
+            assert_eq!(g.revision(), revision);
+            for _ in 0..2 {
+                act(&mut g, action.clone());
+                let item = &g.state.announcing.as_ref().unwrap().item;
+                assert_eq!(item.loyalty_x, Some(amount));
+                assert_eq!(item.x, u32::try_from(amount).ok());
+                assert_eq!(g.counter_count(source, CounterKind::Loyalty), amount + 1);
+                g.restore(&before).unwrap();
+                assert_eq!(g.source_counter_choice().unwrap().maximum, amount + 1);
+            }
+        }
+    }
+}

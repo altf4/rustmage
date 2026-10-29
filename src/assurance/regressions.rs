@@ -3246,3 +3246,29 @@ fn schema181_rejects_ajani_and_older_live_emblem_semantics_in_hidden_state() {
 
 #[path = "schema183_garruk_independent.rs"]
 mod schema183_garruk_independent;
+
+#[test]
+fn schema185_rejects_full_width_loyalty_x_in_nested_packets_and_rollback() {
+    for player in [Player::P0, Player::P1] {
+        for amount in [0, u64::from(u32::MAX) + 17] {
+            let mut g = scenario(player);
+            let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+            let mut inner = g.activation_item(player, source, 0);
+            inner.loyalty_x = Some(amount);
+            let mut outer = g.activation_item(player, source, 0);
+            outer.copy_event = Some(Box::new(stack_copies::CopyEvent { spell: inner, amount: 1 }));
+            let json = serde_json::to_string(&outer).unwrap();
+            assert!(project_prior_schema185(&json).is_err());
+            g.state.pending_triggers.push(outer);
+            assert!(!prior_schema185_state_supported(&g.state));
+            g.begin_attack_rollback(player);
+            g.state.pending_triggers.clear();
+            assert!(!prior_schema185_state_supported(&g.state));
+            let saved = g.snapshot();
+            g.state.cast_rollback = None;
+            assert!(prior_schema185_state_supported(&g.state));
+            g.restore(&saved).unwrap();
+            assert!(!prior_schema185_state_supported(&g.state));
+        }
+    }
+}
