@@ -959,6 +959,12 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
         let bear = Card::from_name("Bear Cub").unwrap();
         let mut game = outside_scenario(owner, vec![shock, bear]);
         let provider = put(&mut game, owner, "Healer's Hawk", Zone::Battlefield);
+        let ennis = put(
+            &mut game,
+            owner,
+            "Ennis, Debate Moderator",
+            Zone::Battlefield,
+        );
         let source = game.object_ref(provider);
         cast_extrapolate(&mut game, owner);
         act(&mut game, Action::ChooseOutsideCard { index: 0 });
@@ -1002,13 +1008,17 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
         );
         assert_eq!(game.snapshot(), before);
         let before_objects = game.state.objects.len();
-        act(&mut game, prevent);
+        act(&mut game, prevent.clone());
         assert_eq!(game.state.objects.len(), before_objects);
         assert!(!game.state.cards_exiled_this_turn);
         assert_eq!(
             game.state.outside_game.as_ref().unwrap().pools[owner.index()],
             vec![shock, bear]
         );
+        game.restore(&before).unwrap();
+        game.state.cards_exiled_this_turn = true;
+        act(&mut game, prevent);
+        assert!(game.state.cards_exiled_this_turn);
         game.restore(&before).unwrap();
         act(&mut game, exile.clone());
         assert_eq!(
@@ -1026,5 +1036,13 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
         game.restore(&before).unwrap();
         act(&mut game, exile);
         assert_eq!(game.snapshot(), after);
+        // Ennis observes the actual admission at its controller's end step.
+        for _ in 0..2 {
+            game.begin_step(Step::End);
+            game.prepare_triggers();
+            settle(&mut game);
+            assert_eq!(game.counter_count(ennis, CounterKind::PlusOne), 1);
+            game.restore(&after).unwrap();
+        }
     }
 }
