@@ -211,3 +211,35 @@ fn jace_granted_activation_retains_its_trigger_definition() {
         }
     }
 }
+
+#[test]
+fn jace_empower_uses_live_island_control_and_chooses_between_existing_tokens() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let jace = jace_fixture(&mut g, player);
+        let land = put(&mut g, player, "Island", Zone::Battlefield);
+        put(&mut g, player, "Island", Zone::Battlefield);
+        g.create_tokens(player, Card::JacePlaneswalkerToken, 2, false);
+        let tokens: Vec<CardId> = g.state.objects.iter().enumerate().filter_map(|(id, object)|
+            (object.zone == Zone::Battlefield && object.controller == player
+                && object.card == Card::JacePlaneswalkerToken).then_some(id as CardId)).collect();
+        assert_eq!(tokens.len(), 2);
+        for &token in &tokens { g.state.objects[token as usize].counters.loyalty = 1; }
+        activate_jace(&mut g, jace, 0);
+        g.change_controller(g.object_ref(land), player.other());
+        g.resolve_top();
+        let first = g.object_ref(tokens[0]);
+        let second = g.object_ref(tokens[1]);
+        assert!(g.legal_actions().contains(&Action::ChooseJace { object: first }));
+        assert!(g.legal_actions().contains(&Action::ChooseJace { object: second }));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::ChooseJace { object: second });
+            settle(&mut g);
+            assert_eq!(g.counter_count(tokens[0], CounterKind::Loyalty), 1);
+            assert_eq!(g.counter_count(tokens[1], CounterKind::Loyalty), 2);
+            assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 6);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
