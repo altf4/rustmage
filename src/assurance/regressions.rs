@@ -5608,11 +5608,55 @@ fn prior_projection_rejects_hidden_retained_borrowing_state() {
     }
 }
 
+/// Classify only live, exact prepared copies for the separate final-byte audit.
+/// Check all other retained state with the unmodified owned guard. Masking the
+/// copies is used only in this temporary clone and does not assert anything
+/// about future moves, actions, rollback, or replay under the previous schema.
+fn prior_schema191_prepared_observation_candidate(state: &State) -> bool {
+    let mut copy = state.clone();
+    let mut found = false;
+    for (id, object) in state.objects.iter().enumerate() {
+        if !object.is_spell_copy()
+            || (object.zone == Zone::Outside && state.free_tokens.contains(&(id as CardId)))
+        {
+            continue;
+        }
+        let reference = ObjectRef {
+            card: id as CardId,
+            generation: object.generation,
+        };
+        if object.copy_kind != CopyKind::Card
+            || object.zone != Zone::Exile
+            || !state
+                .preparations
+                .as_ref()
+                .is_some_and(|rows| rows.iter().any(|row| row.spell_copy == reference))
+        {
+            return false;
+        }
+        copy.objects[id].copy_kind = CopyKind::None;
+        found = true;
+    }
+    found && prior_schema191_state_supported(&copy)
+}
+
 fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
     trace_candidate(card, schema_projection, false)
 }
 
 fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: bool) -> Trace {
+    trace_candidate_with_prepared_observation_audit(card, schema_projection, compare_mana, false)
+}
+
+// This separate, opt-in audit compares the final public bytes only. It is not
+// an owned-state or future-continuation projection and must never select the
+// ordinary compatibility result.
+fn trace_candidate_with_prepared_observation_audit(
+    card: Card,
+    schema_projection: Option<u32>,
+    compare_mana: bool,
+    observation_only: bool,
+) -> Trace {
     let mut g = fixture();
     let id = put(&mut g, Player::P0, card.identity(), Zone::Hand);
     let opening = if card.is_land() {
@@ -5763,7 +5807,11 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
     if schema_projection.is_some_and(|schema| schema < 191) {
-        if !prior_schema191_state_supported(&g.state) {
+        if !prior_schema191_state_supported(&g.state)
+            && !(observation_only
+                && schema_projection == Some(190)
+                && prior_schema191_prepared_observation_candidate(&g.state))
+        {
             projection_error = Some(
                 "owned Sphinx or zone-cost state cannot be projected to schema 190".to_owned(),
             );
@@ -6138,6 +6186,38 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
                 serde_json::to_string_pretty(&previous).unwrap() + "\n",
             )
             .unwrap();
+            if schema == 190
+                && std::env::var_os("RUSTMAGE_AUDIT_PREPARED_OBSERVATIONS_ONLY").is_some()
+            {
+                let rows: BTreeMap<String, Trace> = coverage["cards"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .filter(|row| row["implemented"] == true)
+                    .map(|row| {
+                        let name = row["name"].as_str().unwrap();
+                        (
+                            name.to_owned(),
+                            trace_candidate_with_prepared_observation_audit(
+                                Card::from_name(name).unwrap(),
+                                Some(190),
+                                false,
+                                true,
+                            ),
+                        )
+                    })
+                    .collect();
+                let report = serde_json::json!({
+                    "scope": "Final observation bytes only; not owned-state, action, rollback, or continuation compatibility.",
+                    "schema": 190,
+                    "traces": rows,
+                });
+                std::fs::write(
+                    path.with_extension("prior-prepared-observations-only.json"),
+                    serde_json::to_string_pretty(&report).unwrap() + "\n",
+                )
+                .unwrap();
+            }
             // Opt-in evidence only: exact whole-trace equality against the
             // existing baseline; no historical re-recording or acceptance.
             // Observations are final only, and the historical digest is FNV64.
@@ -7143,6 +7223,85 @@ fn schema191_checks_card_copy_free_slot_and_rejects_unowned_outside_copy() {
         for viewer in [player, player.other()] {
             let wire = serde_json::to_string(&game.observe(viewer)).unwrap();
             assert_eq!(project_prior_schema191(&wire).unwrap(), wire);
+        }
+    }
+}
+
+#[test]
+fn schema191_prepared_observation_audit_does_not_claim_owned_equivalence() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let id = put(
+            &mut game,
+            player,
+            "Hallway Heckler // Vicious Verse",
+            Zone::Battlefield,
+        );
+        game.prepare_permanent(game.object_ref(id));
+        let copy = game.state.preparations.as_ref().unwrap()[0].spell_copy;
+        assert_eq!(
+            game.state.objects[copy.card as usize].copy_kind,
+            CopyKind::Card
+        );
+        assert_eq!(game.state.objects[copy.card as usize].zone, Zone::Exile);
+        assert!(!prior_schema191_state_supported(&game.state));
+        assert!(prior_schema191_prepared_observation_candidate(&game.state));
+        for viewer in [player, player.other()] {
+            let mut view = game.observe(viewer);
+            view.schema = 190;
+            view.catalogue = "";
+            let bytes = serde_json::to_string(&view).unwrap();
+            assert_eq!(project_prior_schema191(&bytes).unwrap(), bytes);
+        }
+        // A live unassociated copy must not qualify for the restricted audit.
+        let unrelated = game.allocate_card_copy(Card::from_name("Shock").unwrap(), player);
+        assert!(!prior_schema191_prepared_observation_candidate(&game.state));
+        game.cease_card_copy(unrelated);
+        assert!(prior_schema191_prepared_observation_candidate(&game.state));
+        let saved = game.snapshot();
+        game.move_object(id, Zone::Graveyard);
+        game.restore(&saved).unwrap();
+        assert!(!prior_schema191_state_supported(&game.state));
+        assert!(prior_schema191_prepared_observation_candidate(&game.state));
+    }
+}
+
+#[test]
+fn prepared_copy_can_produce_a_real_stack_to_graveyard_event_before_sba() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let id = put(
+            &mut game,
+            player,
+            "Hallway Heckler // Vicious Verse",
+            Zone::Battlefield,
+        );
+        game.prepare_permanent(game.object_ref(id));
+        let copy = game.state.preparations.as_ref().unwrap()[0].spell_copy;
+        act(&mut game, Action::AnnounceExile { card: copy.card });
+        for _ in 0..20 {
+            if game.state.announcing.is_none() {
+                break;
+            }
+            let actions = game.legal_actions();
+            let action = actions.iter().find(|a| matches!(a, Action::ChooseTarget { target: Target::Player(p) } if *p == player.other()))
+                .or_else(|| actions.iter().find(|a| matches!(a, Action::ChooseSpellCost { .. } | Action::FinishTargets | Action::PayCosts { .. })))
+                .expect("prepared cast continuation").clone();
+            act(&mut game, action);
+        }
+        assert_eq!(game.state.objects[copy.card as usize].zone, Zone::Stack);
+        let before = game.snapshot();
+        for _ in 0..2 {
+            let event = game.move_object_raw(copy.card, Zone::Graveyard);
+            assert!(event.moved);
+            assert_eq!(event.before.zone, Zone::Stack);
+            assert_eq!(event.destination, Zone::Graveyard);
+            assert!(!event.was_card);
+            assert_eq!(game.state.objects[copy.card as usize].zone, Zone::Graveyard);
+            game.finish_zone_events(&[event], &[]);
+            game.state_based_actions();
+            assert_eq!(game.state.objects[copy.card as usize].zone, Zone::Outside);
+            game.restore(&before).unwrap();
         }
     }
 }
