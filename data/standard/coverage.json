@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7bdcbf881e27e8c19f0439534914710f48ca87eb1c0626b28ce9d8e19a4e4111",
+  "catalogue_version": "c8d2c1ea1ef53b1a5546500cbb7ec1997ab2f4bfac6bd76a2bd7fd8eadb6854e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2931,
-  "implemented_total": 2937,
+  "implemented_standard_cards": 2930,
+  "implemented_total": 2936,
   "token_definitions": 146,
   "emblem_definitions": 6,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 284,
-      "gated": 1
+      "complete": 283,
+      "gated": 2
     },
     "frc": {
       "total": 6,
@@ -38115,8 +38115,8 @@
     {
       "name": "Uldaros Theorix",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/fra/uldaros_theorix.rs",
       "set": "fra"
     },
