@@ -2916,6 +2916,16 @@ mod proliferate_player_replacement_unit_tests {
         assert!(!player_counter_rule_matches(effect_only, Player::P0, Player::P0, Player::P0, true));
         assert!(!player_counter_rule_matches(effect_only, Player::P0, Player::P1, Player::P1, true));
         assert!(!player_counter_rule_matches(effect_only, Player::P0, Player::P1, Player::P0, false));
+        let cost_and_effect = ReplacementSpec::PlayerCounters {
+            kind: crate::cards::PlayerCounterKind::Poison,
+            relation: CastRelation::Opponent, placed_by: Some(CastRelation::You),
+            effects_only: false, factor: 0, add: 0,
+        };
+        assert!(player_counter_rule_matches(cost_and_effect, Player::P0, Player::P1, Player::P0, false));
+        assert_eq!(modified_player_counters(cost_and_effect, 5), 0);
+        // A zero-result replacement does not turn the original cost into an
+        // effects-only event for another player-counter replacement.
+        assert!(!player_counter_rule_matches(effect_only, Player::P0, Player::P1, Player::P0, false));
     }
 
     #[test]
