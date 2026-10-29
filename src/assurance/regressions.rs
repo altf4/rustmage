@@ -414,7 +414,7 @@ fn project_prior_schema179_copy_abilities(input: &str) -> Result<String, String>
 /// continuations can retain private recipes; reject them rather than guessing.
 fn prior_schema179_copy_owned_state_supported(game: &Game) -> bool {
     let state = &game.state;
-    if state.cast_rollback.is_some() || state.replacements.is_some()
+    if state.paradigm.is_some() || state.cast_rollback.is_some() || state.replacements.is_some()
         || state.entry_batch.is_some() || state.zone_rules.is_some()
         || state.linked_choices.is_some() || state.stack_copy_data.is_some()
         || state.delayed_returns.is_some() || state.earthbend_returns.is_some()
@@ -440,6 +440,30 @@ fn prior_schema179_copy_owned_state_supported(game: &Game) -> bool {
         .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
         .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
         .all(|item| serde_json::to_string(item).is_ok_and(|json| project_prior_schema179_copy_abilities(&json).is_ok()))
+}
+
+#[test]
+fn prior_schema179_rejects_private_paradigm_copy_packets() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        assert!(prior_schema179_copy_owned_state_supported(&g));
+        let source = put(&mut g, player, "Germination Practicum", Zone::Hand);
+        let reference = g.object_ref(source);
+        let mut item = g.cast_preview(player, source, Zone::Hand, reference, 0, [0; 6]);
+        let recipe = CopyRecipe::new(Card::from_name("Bear Cub").unwrap()).with_exceptions(
+            CopyExceptions { conditional_sacrifice_abilities: 1, ..CopyExceptions::NONE });
+        item.source_copy_recipe = Some(Box::new(recipe));
+        // The delayed packet survives after the source packet and live recipe
+        // are gone; the public paradigm view does not expose its recipe.
+        g.resolve_paradigm(&item, 0);
+        assert!(g.state.paradigm.is_some());
+        assert!(g.state.stack.is_empty());
+        assert!(g.state.copy_recipes.is_none());
+        assert!(!prior_schema179_copy_owned_state_supported(&g));
+        g.queue_paradigm_triggers();
+        assert!(g.state.pending_triggers.iter().any(|trigger|
+            trigger.source_copy_recipe.as_deref() == Some(&recipe)));
+    }
 }
 
 #[test]
