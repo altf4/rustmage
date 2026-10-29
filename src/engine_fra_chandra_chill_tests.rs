@@ -142,3 +142,43 @@ fn chill_copied_x_activation_preserves_paid_amount_and_target_incarnation() {
         }
     }
 }
+
+#[test]
+fn chill_large_loyalty_x_survives_copy_observation_and_restore() {
+    let amount = u64::from(u32::MAX) + 17;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = chill(&mut g, player, amount + 1);
+        let target = put(&mut g, player.other(), "Gilded Lotus", Zone::Battlefield);
+        let initial = g.snapshot();
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 2, counter_payment: Counters::default() });
+        assert_eq!(g.source_counter_choice().unwrap().maximum, amount + 1);
+        reject(&mut g, Action::ChooseSourceCounterAmount { amount: amount + 2 });
+        act(&mut g, Action::ChooseSourceCounterAmount { amount });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(target) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        let original = g.state.stack.last().unwrap().clone();
+        assert_eq!(original.loyalty_x, Some(amount));
+        assert_eq!(original.loyalty_counters_paid, amount);
+        for viewer in [player, player.other()] {
+            let json = serde_json::to_value(g.observe(viewer)).unwrap();
+            assert!(json.to_string().contains(&format!("\"loyalty_x\":{amount}")));
+        }
+        let mut copier = original.clone();
+        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        g.copy_target_ability(&copier, 0);
+        if g.legal_actions().contains(&Action::FinishStackTargets) { act(&mut g, Action::FinishStackTargets); }
+        assert_eq!(g.state.stack.last().unwrap().loyalty_x, Some(amount));
+        g.move_object(source, Zone::Graveyard);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert_eq!(g.counter_count(target, CounterKind::Stun), amount * 2);
+            g.restore(&saved).unwrap();
+        }
+        g.restore(&initial).unwrap();
+        assert_eq!(g.counter_count(source, CounterKind::Loyalty), amount + 1);
+        assert_eq!(g.counter_count(target, CounterKind::Stun), 0);
+    }
+}

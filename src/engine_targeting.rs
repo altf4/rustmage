@@ -1662,6 +1662,7 @@ impl Game {
             delayed_warp_exile: None,
             return_link: None,
             x: None,
+            loyalty_x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
                 spend_any_mana: self.exile_cast_modifiers(actor, card).0,

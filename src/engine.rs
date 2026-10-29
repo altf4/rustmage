@@ -1129,6 +1129,9 @@ pub struct SpellView {
     pub return_link: Option<Box<ReturnLinkView>>,
     /// Chosen X, retained independently by a spell and its own entry-trigger packets.
     pub x: Option<u32>,
+    /// Full-width X for loyalty costs, retained by ability copies and snapshots.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub loyalty_x: Option<u64>,
     pub attachment_trigger: Option<Box<AttachmentTriggerView>>,
     pub cast: Option<CastInfo>,
     /// The exact event object; this is a non-targeted reference, never rebound.

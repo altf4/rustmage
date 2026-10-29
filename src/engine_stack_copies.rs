@@ -214,6 +214,7 @@ impl Game {
                 trigger.cast = None;
                 trigger.mode = None;
                 trigger.x = None;
+                trigger.loyalty_x = None;
                 trigger.gift = None;
                 trigger.cast_event = None;
                 trigger.source_counter_lki = None;

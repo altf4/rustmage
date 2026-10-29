@@ -252,6 +252,7 @@ impl Game {
                 delayed_warp_exile: None,
                 return_link: None,
                 x: None,
+                loyalty_x: None,
                 attachment_trigger: None,
                 cast: None,
                 entering_object: None,

@@ -108,6 +108,7 @@ impl Game {
                 is_copy: false,
                 delayed_sacrifice: None,
                 x: None,
+                loyalty_x: None,
                 attachment_trigger: None,
                 cast: None,
                 entering_object: None,

@@ -390,7 +390,7 @@ fn project_prior_schema185(input: &str) -> Result<String, String> {
                 return Err("Pyre rules have no schema-184 baseline".to_owned());
             }
             serde_json::Value::Object(map) => {
-                if ["mountain_mana_bonus", "mana_tap_bonus", "mountain_bonus"]
+                if ["mountain_mana_bonus", "mana_tap_bonus", "mountain_bonus", "loyalty_x"]
                     .iter().any(|key| map.contains_key(*key)) {
                     return Err("Mountain mana trigger state has no schema-184 representation".to_owned());
                 }

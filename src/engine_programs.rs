@@ -1180,6 +1180,7 @@ impl Game {
             delayed_warp_exile: None,
             return_link: None,
             x: None,
+            loyalty_x: None,
             attachment_trigger: event,
             cast: None,
             id,
