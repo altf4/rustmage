@@ -583,3 +583,23 @@ fn radiation_copy_keeps_affected_player_when_controller_changes() {
         }
     }
 }
+
+#[test]
+fn countered_radiation_trigger_neither_mills_nor_changes_counters() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let top = put(&mut game, player, "Shock", Zone::Library);
+        game.state.players[player.index()].add_player_counter(crate::cards::PlayerCounterKind::Rad, 1);
+        game.begin_step(Step::Main1);
+        game.prepare_triggers();
+        let id = game.state.stack.last().unwrap().id;
+        let saved = game.snapshot();
+        for _ in 0..2 {
+            assert!(game.counter_stack_item(id, false));
+            assert_eq!(game.object_view(top).zone, Zone::Library);
+            assert_eq!(game.state.players[player.index()].life, 20);
+            assert_eq!(game.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad), 1);
+            game.restore(&saved).unwrap();
+        }
+    }
+}
