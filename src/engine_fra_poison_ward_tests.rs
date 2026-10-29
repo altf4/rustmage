@@ -257,3 +257,33 @@ fn proliferate_replacement_sibling_survives_provider_departure_and_restore() {
         }
     }
 }
+
+#[test]
+fn forbidden_poison_ward_cost_cannot_use_ordinary_replacement_to_escape() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for owner in [Player::P0, Player::P1] {
+        let mut game = scenario(owner);
+        let payer = owner.other();
+        let society = put(&mut game, owner, "The Serpent Society", Zone::Battlefield);
+        put(&mut game, payer, "Bear Cub", Zone::Battlefield);
+        put(&mut game, payer, "Hill Giant", Zone::Battlefield);
+        put(&mut game, payer, "Grizzly Bears", Zone::Battlefield);
+        let spell = put(&mut game, payer, "Unsummon", Zone::Hand);
+        game.state.priority = payer;
+        game.state.players[payer.index()].mana = [0, 1, 0, 0, 0, 0];
+        act(&mut game, Action::Cast {
+            card: spell, target: Some(Target::Card(society)), payment: [0, 1, 0, 0, 0, 0],
+        });
+        let saved = game.snapshot();
+        for _ in 0..2 {
+            act(&mut game, Action::Pass);
+            act(&mut game, Action::Pass);
+            assert!(!matches!(game.state.pending, Pending::EffectOptional { .. } | Pending::Replacement { .. }));
+            settle(&mut game);
+            assert_eq!(game.state.players[payer.index()].poison_counters, 0);
+            assert_eq!(game.object_view(society).zone, Zone::Battlefield);
+            assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+            game.restore(&saved).unwrap();
+        }
+    }
+}
