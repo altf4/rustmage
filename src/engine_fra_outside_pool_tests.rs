@@ -989,7 +989,7 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
         );
         assert!(game.observe(owner.other()).actions.contains(&prevent));
         game.restore(&before).unwrap();
-        assert!(game.apply(owner.other(), prevent).is_err());
+        assert!(game.apply(owner.other(), prevent.clone()).is_err());
         assert!(
             game.apply(
                 owner,
@@ -1004,7 +1004,7 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
             vec![shock, bear]
         );
         game.restore(&before).unwrap();
-        act(&mut game, exile);
+        act(&mut game, exile.clone());
         assert_eq!(
             game.state.outside_game.as_ref().unwrap().pools[owner.index()],
             vec![bear]

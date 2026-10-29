@@ -1126,6 +1126,10 @@ fn prior_schema190_state_supported(state: &State) -> bool {
 /// complete future behavior has an equivalent old-contract proof.
 fn prior_schema192_state_supported(state: &State) -> bool {
     state.outside_game.is_none()
+        // Both containers can retain an older complete State in a checkpoint.
+        // Reject the containers conservatively, including passive zone rules.
+        && state.entry_batch.is_none()
+        && state.zone_rules.is_none()
         && !matches!(state.pending, Pending::OutsideEntryReplacement { .. })
         && !state
             .cast_rollback
@@ -7478,7 +7482,7 @@ fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
     );
     for json in [
         r#"{"decision":"outside_entry_replacement"}"#,
-        r#"{"actions":[{"ChooseOutsideEntryReplacement":{"ability":0}}]}"#,
+        r#"{"actions":[{"kind":"ChooseOutsideEntryReplacement","ability":0}]}"#,
         r#"{"outside_entry_replacement":{}}"#,
     ] {
         assert!(project_prior_schema192(json).is_err());
@@ -7496,5 +7500,42 @@ fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
             known: [Vec::new(), Vec::new()],
         }));
         assert!(!prior_schema192_state_supported(&game.state));
+        // The saved checkpoint may contain an outside state even when the
+        // current outer state no longer does.
+        let saved = Box::new(game.state.clone());
+        game.state.outside_game = None;
+        game.state.entry_batch = Some(Box::new(entries::EntryBatch {
+            atomic_cost: Some(Box::new(entries::AtomicCostCheckpoint {
+                before: saved,
+                bytes: 0,
+                failure_pc: None,
+                components: Vec::new(),
+            })),
+            temporary_copy: None,
+            discard_context: None,
+            moves: Vec::new(),
+            choices: Vec::new(),
+            next: 0,
+            counter_next: 0,
+            entry_bonuses_ready: false,
+            counter_order: Vec::new(),
+            timestamp_order: Vec::new(),
+            timestamps_ready: false,
+            resume: None,
+            shuffle_after: None,
+            replacement_resume: None,
+            tap_events: Vec::new(),
+            tap_next: 0,
+        }));
+        assert!(!prior_schema192_state_supported(&game.state));
+        game.state.entry_batch = None;
+        game.state.zone_rules = Some(Box::default());
+        assert!(!prior_schema192_state_supported(&game.state));
+        game.state.zone_rules = None;
+        let source = game.object_ref(0);
+        let action = Action::ChooseOutsideEntryReplacement { source, ability: 0 };
+        let wire = serde_json::to_string(&action).unwrap();
+        assert!(wire.contains("\"kind\":\"ChooseOutsideEntryReplacement\""));
+        assert!(project_prior_schema192(&wire).is_err());
     }
 }
