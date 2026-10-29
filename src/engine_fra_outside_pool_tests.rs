@@ -775,6 +775,12 @@ fn planned_outside_entry_validates_exact_slot_and_replays() {
         let identical = g.snapshot();
         assert!(!g.commit_outside_hand());
         assert_eq!(g.snapshot(), identical);
+        assert!(g.plan_outside_hand(0));
+        assert!(g.commit_outside_hand());
+        assert_eq!(
+            g.state.outside_game.as_ref().unwrap().pools[owner.index()],
+            vec![shock, bear, Card::Forest]
+        );
         g.restore(&planned).unwrap();
         // Declining clears the staged plan; a restarted choice cannot reuse it.
         g.decline_outside_cards();
@@ -811,6 +817,8 @@ fn planned_outside_entry_validates_exact_slot_and_replays() {
         let overlapping = g.snapshot();
         assert!(!g.commit_outside_hand());
         assert_eq!(g.snapshot(), overlapping);
+        assert!(g.plan_outside_hand(0));
+        assert!(g.commit_outside_hand());
         g.restore(&planned).unwrap();
         // Even if the pair IDs match, changed unselected revealed facts reject.
         g.state.outside_game.as_mut().unwrap().pools[owner.index()][1] = Card::Forest;

@@ -141,6 +141,8 @@ impl Game {
             .capacity("outside choice identity exhausted");
         let id = state.next_choice_id;
         state.next_choice_id = next_choice_id;
+        // Replacing the choice invalidates its old uncommitted plan.
+        state.pending_entry = None;
         state.choice = Some(Choice {
             id,
             owner,
