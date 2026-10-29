@@ -296,7 +296,7 @@ impl Serialize for GrantedSubtypes {
 
 // CR205.3g-k,m,q. Creature names come from the pinned complete type inventory.
 // Any remaining printed subtype in this permanent pool is a planeswalker type.
-fn subtype_card_types(subtype: &str) -> u16 {
+pub(super) fn subtype_card_types(subtype: &str) -> u16 {
     if crate::cards::is_creature_type(subtype) {
         return 1 | 128;
     }

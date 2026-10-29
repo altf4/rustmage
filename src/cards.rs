@@ -2387,6 +2387,8 @@ pub(crate) enum SourceCharacteristicFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    /// Number of different planeswalker types among planeswalkers controlled by the source controller.
+    DistinctControlledPlaneswalkerTypes,
     /// The source has not dealt combat damage in its current incarnation.
     SourceHasNotDealtCombatDamage,
     ControlledCreatureDiedThisTurn,

@@ -107,6 +107,22 @@ impl Game {
             StatValue::SourceHasNotDealtCombatDamage => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |(_, object)| i128::from(!object.dealt_combat_damage_this_incarnation)),
+            StatValue::DistinctControlledPlaneswalkerTypes => {
+                let mut distinct = std::collections::BTreeSet::new();
+                for (id, object) in objects() {
+                    if object.zone != Zone::Battlefield || object.controller != owner || kinds(id, object) & 64 == 0 { continue; }
+                    let printed = object.card.token_info().map_or_else(
+                        || object.card.info().type_line.split_once(" — ").map_or("", |(_, types)| types),
+                        |token| token.subtypes,
+                    );
+                    for subtype in printed.split_whitespace() {
+                        if subtypes::subtype_card_types(subtype) == 64 && subtypes(id).has(object.card, subtype) {
+                            distinct.insert(subtype);
+                        }
+                    }
+                }
+                i128::try_from(distinct.len()).capacity("planeswalker type count exhausted")
+            }
             StatValue::Fixed(n) => i128::from(n),
             StatValue::HasEnduringStory => i128::from(enduring_story),
             StatValue::SourceCounters(kind) => objects()
