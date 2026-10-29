@@ -29,7 +29,9 @@ pub(super) fn graveyard_cards_at_least<W: ability_world::CharacteristicWorld + ?
             let object = world.object(id);
             object.zone == Zone::Graveyard
                 && object.owner == actor
-                && object.is_card()
+                && !object.is_token()
+                && !object.is_spell_copy()
+                && !object.card.is_emblem()
                 && (kind == 0 || world.kinds(id) & kind != 0)
         })
         .take(usize::from(minimum))
