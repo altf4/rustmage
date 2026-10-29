@@ -75,6 +75,12 @@ fn graveyard_type_slots_allow_reassignment_but_reject_duplicates_and_collisions(
 fn uldaros_actual_target_actions_freeze_explicit_slots_and_restore() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
+        let echo = put(
+            &mut g,
+            player,
+            "Echo, Perceptive Prodigy",
+            Zone::Battlefield,
+        );
         let dual = put(&mut g, player, "Solemn Simulacrum", Zone::Graveyard);
         let creature = put(&mut g, player, "Bear Cub", Zone::Graveyard);
         let artifact = put(&mut g, player, "Gilded Lotus", Zone::Graveyard);
@@ -124,13 +130,26 @@ fn uldaros_actual_target_actions_freeze_explicit_slots_and_restore() {
                 .position(|target| target.target == Target::Card(creature))
                 .unwrap();
             g.move_object(dual, Zone::Exile);
-            let mut copier = template.clone();
-            copier.targets = vec![BoundTarget {
-                group: 0,
-                target: Target::Stack(template.id),
-                object: None,
-            }];
-            assert!(g.copy_target_ability(&copier, 0));
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: echo,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Stack(template.id),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            pay(&mut g);
+            act(&mut g, Action::Pass);
+            act(&mut g, Action::Pass);
             assert!(!g.legal_actions().contains(&Action::SetStackTarget {
                 index: creature_index as u32,
                 target: Target::Card(artifact),

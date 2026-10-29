@@ -177,13 +177,20 @@ fn uldaros_copies_cast_for_free_consume_budget_and_replay_observations() {
                 game.state.objects[reference.card as usize].card.identity() == "Gilded Lotus"
             })
             .unwrap();
-        let views = [player, player.other()]
-            .map(|viewer| serde_json::to_string(&game.observe(viewer)).unwrap());
+        let views = [player, player.other()].map(|viewer| {
+            let mut view = game.observe(viewer);
+            view.revision = 0;
+            serde_json::to_string(&view).unwrap()
+        });
+        let revision = game.revision();
         let checkpoint = game.snapshot();
         for _ in 0..2 {
             assert_eq!(
-                [player, player.other()]
-                    .map(|viewer| serde_json::to_string(&game.observe(viewer)).unwrap()),
+                [player, player.other()].map(|viewer| {
+                    let mut view = game.observe(viewer);
+                    view.revision = 0;
+                    serde_json::to_string(&view).unwrap()
+                }),
                 views
             );
             let cast = Action::CastExiledDuringResolution {
@@ -217,6 +224,11 @@ fn uldaros_copies_cast_for_free_consume_budget_and_replay_observations() {
             );
             assert!(game.state.objects[bear.card as usize].is_token());
             game.restore(&checkpoint).unwrap();
+            assert!(game.revision() > revision);
+            assert_eq!(
+                game.apply_index(player, revision, 0),
+                Err(Error::StaleRevision)
+            );
         }
     }
 }
@@ -243,16 +255,35 @@ fn uldaros_all_targets_illegal_fizzles_even_when_source_left() {
 fn copied_uldaros_trigger_survives_source_departure() {
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
+        let echo = put(
+            &mut game,
+            player,
+            "Echo, Perceptive Prodigy",
+            Zone::Battlefield,
+        );
         let target = put(&mut game, player, "Bear Cub", Zone::Graveyard);
         let source = uldaros_trigger(&mut game, player, &[(target, 1)]);
-        let original = game.state.stack.last().unwrap().clone();
-        let mut copier = original.clone();
-        copier.targets = vec![BoundTarget {
-            group: 0,
-            target: Target::Stack(original.id),
-            object: None,
-        }];
-        assert!(game.copy_target_ability(&copier, 0));
+        let original = game.state.stack.last().unwrap().id;
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: echo,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Stack(original),
+            },
+        );
+        if game.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut game, Action::FinishTargets);
+        }
+        pay(&mut game);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
         act(&mut game, Action::FinishStackTargets);
         game.move_object(source, Zone::Graveyard);
         let saved = game.snapshot();

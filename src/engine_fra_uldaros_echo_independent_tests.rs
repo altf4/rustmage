@@ -58,10 +58,19 @@ fn echo_legally_copies_uldaros_trigger_and_retargets_with_rollback() {
         act(&mut g, Action::Pass);
         assert!(matches!(g.state.pending, Pending::Retarget { player: p } if p == player));
         let saved = g.snapshot();
-        let views = [player, player.other()].map(|p| serde_json::to_string(&g.observe(p)).unwrap());
+        let views = [player, player.other()].map(|p| {
+            let mut view = g.observe(p);
+            view.revision = 0;
+            serde_json::to_string(&view).unwrap()
+        });
+        let revision = g.revision();
         for _ in 0..2 {
             assert_eq!(
-                [player, player.other()].map(|p| serde_json::to_string(&g.observe(p)).unwrap()),
+                [player, player.other()].map(|p| {
+                    let mut view = g.observe(p);
+                    view.revision = 0;
+                    serde_json::to_string(&view).unwrap()
+                }),
                 views
             );
             act(
@@ -98,6 +107,11 @@ fn echo_legally_copies_uldaros_trigger_and_retargets_with_rollback() {
                 Some(6)
             );
             g.restore(&saved).unwrap();
+            assert!(g.revision() > revision);
+            assert_eq!(
+                g.apply_index(player, revision, 0),
+                Err(Error::StaleRevision)
+            );
         }
     }
 }
