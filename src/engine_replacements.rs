@@ -1271,7 +1271,11 @@ impl Game {
         proliferated: Option<Player>,
         mode: ResumeMode,
     ) {
-        let placements = changes
+        let placements = self.create_counter_placements(changes, placed_by);
+        self.stage_counter_placements_inner(placements, player_counters, placed_by.or_else(|| self.state.resolving.as_ref().map(|r| r.item.controller)), player_effect, proliferated, mode, None, Vec::new());
+    }
+    fn create_counter_placements(&self, changes: Vec<(ObjectRef, Counters)>, placed_by: Option<Player>) -> Vec<CounterPlacement> {
+        changes
             .into_iter()
             .filter_map(|(object, amount)| {
                 if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
@@ -1299,8 +1303,17 @@ impl Game {
                     private: false,
                 })
             })
-            .collect();
-        self.stage_counter_placements_inner(placements, player_counters, placed_by.or_else(|| self.state.resolving.as_ref().map(|r| r.item.controller)), player_effect, proliferated, mode, None, Vec::new());
+            .collect()
+    }
+    pub(super) fn effect_mixed_counters_with_self(
+        &mut self, changes: Vec<(ObjectRef, Counters)>, counters: [[u64; 5]; 2], placed_by: Player,
+        origin_stack_id: u64, effects: Vec<SelfPlayerCounterReplacement>, mode: ResumeMode,
+    ) {
+        assert!(self.state.resolving.as_ref().is_some_and(|r| r.item.id == origin_stack_id));
+        assert!(effects.iter().all(|e| e.origin_stack_id == origin_stack_id));
+        assert!(effects.iter().enumerate().all(|(i, e)| effects[..i].iter().all(|prior| prior.effect != e.effect || prior.player != e.player || prior.kind != e.kind)));
+        let placements = self.create_counter_placements(changes, Some(placed_by));
+        self.stage_counter_placements_inner(placements, counters, Some(placed_by), true, None, mode, None, effects);
     }
     /// Stage a mixed event from an existing poison-only caller.
     pub(super) fn effect_counters_with_poison(

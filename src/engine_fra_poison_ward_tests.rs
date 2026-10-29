@@ -752,3 +752,58 @@ fn split_self_events_choose_affected_players_in_apnap_order() {
         }
     }
 }
+
+#[test]
+fn mixed_permanent_and_split_player_replacements_follow_apnap() {
+    use crate::cards::PlayerCounterSplit;
+    static SPLIT: &[PlayerCounterSplit] = &[
+        PlayerCounterSplit { to_opponent: true, kind: Some(crate::cards::PlayerCounterKind::Energy), factor: 1, add: 0 },
+        PlayerCounterSplit { to_opponent: false, kind: Some(crate::cards::PlayerCounterKind::Energy), factor: 1, add: 0 },
+    ];
+    for active in [Player::P0, Player::P1] {
+        let mut game = scenario(active);
+        let walker = put(&mut game, active, "Jace, the Perfected Mind", Zone::Battlefield);
+        game.state.objects[walker as usize].counters.loyalty = 3;
+        let double = put(&mut game, active, "Doubling Season", Zone::Battlefield);
+        put(&mut game, active, "Doc Samson, Super Psychiatrist", Zone::Battlefield);
+        put(&mut game, active, "Forest", Zone::Library);
+        let opt = put(&mut game, active, "Opt", Zone::Hand);
+        cast(&mut game, opt, None);
+        game.resolve_top();
+        let origin = game.state.resolving.as_ref().unwrap().item.id;
+        let make = |effect, player, kind, factor, add, split: &'static [PlayerCounterSplit]| replacements::SelfPlayerCounterReplacement {
+            origin_stack_id: origin, effect, player, kind, factor, add,
+            redirect_player: None, redirect_kind: None, split,
+        };
+        let mut counters = [[0; 5]; 2];
+        counters[active.index()][crate::cards::PlayerCounterKind::Poison.index()] = 1;
+        let effects = vec![
+            make(0, active, crate::cards::PlayerCounterKind::Poison, 1, 0, SPLIT),
+            make(1, active, crate::cards::PlayerCounterKind::Energy, 2, 0, &[]),
+            make(2, active, crate::cards::PlayerCounterKind::Energy, 1, 1, &[]),
+            make(3, active.other(), crate::cards::PlayerCounterKind::Energy, 2, 0, &[]),
+            make(4, active.other(), crate::cards::PlayerCounterKind::Energy, 1, 1, &[]),
+        ];
+        let walker_ref = game.object_ref(walker);
+        game.effect_mixed_counters_with_self(vec![(walker_ref, Counters::of(CounterKind::Loyalty, 1))],
+            counters, active, origin, effects, replacements::ResumeMode::Program);
+        assert!(game.advance_replacements(false));
+        assert!(matches!(game.state.pending, Pending::Replacement { player } if player == active));
+        let before = game.snapshot();
+        for _ in 0..2 {
+            // The active player's permanent event precedes that player's split event.
+            act(&mut game, Action::ChooseReplacement { source: game.object_ref(double), ability: 0 });
+            assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 3);
+            assert!(matches!(game.state.pending, Pending::Replacement { player } if player == active));
+            act(&mut game, Action::ChooseSelfCounterReplacement { effect: 1 });
+            assert!(matches!(game.state.pending, Pending::Replacement { player } if player == active.other()));
+            assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 3);
+            act(&mut game, Action::ChooseSelfCounterReplacement { effect: 3 });
+            assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 6);
+            for player in [active, active.other()] {
+                assert_eq!(game.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Energy), 3);
+            }
+            game.restore(&before).unwrap();
+        }
+    }
+}
