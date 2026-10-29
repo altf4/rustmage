@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1d5123811a4d748c0f3624462fa1288cbe8f9887f328fc1ec972ebd3046acb74",
+  "catalogue_version": "fe3283312f8453fa0c70a13a82069f2c8c7285a95ec7462665db6357f5039b7a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2775,
-  "implemented_total": 2781,
+  "implemented_standard_cards": 2776,
+  "implemented_total": 2782,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 128,
-      "gated": 157
+      "complete": 129,
+      "gated": 156
     },
     "frc": {
       "total": 6,
@@ -12187,8 +12187,8 @@
     {
       "name": "Ferocity of the Hunt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/ferocity_of_the_hunt.rs",
       "set": "fra"
     },

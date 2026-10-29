@@ -7205,3 +7205,6 @@ mod hapatra_extra_assurance;
 
 #[path = "engine_fra_hapatra_final_tests.rs"]
 mod hapatra_final_assurance;
+
+#[path = "engine_fra_ferocity_extra_tests.rs"]
+mod ferocity_extra_assurance;
