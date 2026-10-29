@@ -333,7 +333,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::PayAttackCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
-            Action::ChooseOutsideCard { .. } | Action::ChooseOutsideBasic { .. } | Action::ChooseOutsideRevealed { .. } => 60,
+            Action::ChooseOutsideCard { .. }
+            | Action::ChooseOutsideBasic { .. }
+            | Action::ChooseOutsideRevealed { .. } => 60,
             Action::CancelOutsideCard | Action::DeclineOutsideCards => -1,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
             Action::ChooseSearchDestination { destination } => {

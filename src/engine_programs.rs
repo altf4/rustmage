@@ -5405,7 +5405,9 @@ impl Game {
                         });
                 }
                 Instruction::RevealTwoOutsideCards => {
-                    if self.start_outside_choice(item.controller) { return; }
+                    if self.start_outside_choice(item.controller) {
+                        return;
+                    }
                 }
                 Instruction::OpponentsDiscardTwoDrawUnlessTwoNonland => {
                     self.state.resolving.as_mut().unwrap().discards

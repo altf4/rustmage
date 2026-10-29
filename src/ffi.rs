@@ -57,22 +57,46 @@ pub unsafe extern "C" fn rm_new(input: *const c_char, error: *mut *mut c_char) -
 /// # Safety
 /// `input` must be a NUL-terminated UTF-8 JSON envelope and `error` writable.
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn rm_new_with_outside(input: *const c_char, error: *mut *mut c_char) -> *mut Session {
-    if error.is_null() { return std::ptr::null_mut(); }
-    unsafe { *error = std::ptr::null_mut(); }
+pub unsafe extern "C" fn rm_new_with_outside(
+    input: *const c_char,
+    error: *mut *mut c_char,
+) -> *mut Session {
+    if error.is_null() {
+        return std::ptr::null_mut();
+    }
+    unsafe {
+        *error = std::ptr::null_mut();
+    }
     #[derive(serde::Deserialize)]
     #[serde(deny_unknown_fields)]
-    struct Envelope { config: crate::Config, outside: crate::OutsideGameConfig }
+    struct Envelope {
+        config: crate::Config,
+        outside: crate::OutsideGameConfig,
+    }
     let result = catch_unwind(AssertUnwindSafe(|| -> Result<Session, String> {
-        if input.is_null() { return Err("null config".into()); }
-        let text = unsafe { CStr::from_ptr(input) }.to_str().map_err(|e| e.to_string())?;
+        if input.is_null() {
+            return Err("null config".into());
+        }
+        let text = unsafe { CStr::from_ptr(input) }
+            .to_str()
+            .map_err(|e| e.to_string())?;
         let envelope: Envelope = serde_json::from_str(text).map_err(|e| e.to_string())?;
         Session::new_with_outside(envelope.config, envelope.outside).map_err(|e| e.to_string())
     }));
     match result {
         Ok(Ok(session)) => Box::into_raw(Box::new(session)),
-        Ok(Err(message)) => { unsafe { *error = output(message); } std::ptr::null_mut() }
-        Err(_) => { unsafe { *error = output("engine panic"); } std::ptr::null_mut() }
+        Ok(Err(message)) => {
+            unsafe {
+                *error = output(message);
+            }
+            std::ptr::null_mut()
+        }
+        Err(_) => {
+            unsafe {
+                *error = output("engine panic");
+            }
+            std::ptr::null_mut()
+        }
     }
 }
 

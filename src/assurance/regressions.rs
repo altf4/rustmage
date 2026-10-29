@@ -391,16 +391,40 @@ fn project_prior_schema181(input: &str) -> Result<String, String> {
 fn project_prior_outside(input: &str) -> Result<String, String> {
     fn check(value: &serde_json::Value) -> Result<(), String> {
         match value {
-            serde_json::Value::Array(rows) => for row in rows { check(row)?; },
-            serde_json::Value::String(name) if matches!(name.as_str(), "Extrapolate the Impossible" | "ChooseOutsideCard" | "ChooseOutsideBasic" | "CancelOutsideCard" | "DeclineOutsideCards" | "ChooseOutsideRevealed" | "outside_game_choice") => {
+            serde_json::Value::Array(rows) => {
+                for row in rows {
+                    check(row)?;
+                }
+            }
+            serde_json::Value::String(name)
+                if matches!(
+                    name.as_str(),
+                    "Extrapolate the Impossible"
+                        | "ChooseOutsideCard"
+                        | "ChooseOutsideBasic"
+                        | "CancelOutsideCard"
+                        | "DeclineOutsideCards"
+                        | "ChooseOutsideRevealed"
+                        | "outside_game_choice"
+                ) =>
+            {
                 return Err("outside-game rules have no earlier baseline".to_owned());
             }
             serde_json::Value::Object(map) => {
-                if ["outside_choice", "owned_outside", "known_outside", "sideboard_counts"]
-                    .iter().any(|key| map.contains_key(*key)) {
+                if [
+                    "outside_choice",
+                    "owned_outside",
+                    "known_outside",
+                    "sideboard_counts",
+                ]
+                .iter()
+                .any(|key| map.contains_key(*key))
+                {
                     return Err("outside-game observation has no earlier representation".to_owned());
                 }
-                for value in map.values() { check(value)?; }
+                for value in map.values() {
+                    check(value)?;
+                }
             }
             _ => (),
         }
@@ -416,10 +440,18 @@ fn outside_new_card(card: Card) -> bool {
 }
 
 fn outside_recipe_supported(recipe: &CopyRecipe) -> bool {
-    if outside_new_card(recipe.definition) { return false; }
+    if outside_new_card(recipe.definition) {
+        return false;
+    }
     match recipe.faces {
-        Some(copies::CopyFaces::Double { physical_front, front, back, .. }) =>
-            ![physical_front, front, back].into_iter().any(outside_new_card),
+        Some(copies::CopyFaces::Double {
+            physical_front,
+            front,
+            back,
+            ..
+        }) => ![physical_front, front, back]
+            .into_iter()
+            .any(outside_new_card),
         _ => true,
     }
 }
@@ -433,26 +465,70 @@ fn outside_facts_supported(facts: &DamageFacts) -> bool {
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn outside_packet_supported(item: &SpellView) -> bool {
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_outside(&json).is_ok())
-        || outside_new_card(item.source_card) || !outside_facts_supported(&item.source_facts)
+        || outside_new_card(item.source_card)
+        || !outside_facts_supported(&item.source_facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if outside_new_card(token))
-        || item.source_copy_recipe.as_deref().is_some_and(|r| !outside_recipe_supported(r))
-        || item.captured_artifact_copy.as_deref().is_some_and(|r| !outside_recipe_supported(r))
-        || item.attachment_trigger.as_ref().is_some_and(|v| outside_new_card(v.granting_card))
-        || item.delayed_sacrifice.as_ref().is_some_and(|v| outside_new_card(v.source_card))
-        || item.delayed_warp_exile.as_ref().is_some_and(|v| outside_new_card(v.source_card))
-        || item.cast_event.as_ref().is_some_and(|v| outside_new_card(v.card))
-        || item.cast.and_then(|v| v.physical_card).is_some_and(outside_new_card)
-        || item.mana_copy_sources.as_ref().is_some_and(|sources| sources.iter().any(|(v, _)|
-            outside_new_card(v.card) || outside_new_card(v.definition) || !outside_facts_supported(&v.facts)))
-        || item.copy_event.as_ref().is_some_and(|event| !outside_packet_supported(&event.spell))
-    { return false; }
+        || item
+            .source_copy_recipe
+            .as_deref()
+            .is_some_and(|r| !outside_recipe_supported(r))
+        || item
+            .captured_artifact_copy
+            .as_deref()
+            .is_some_and(|r| !outside_recipe_supported(r))
+        || item
+            .attachment_trigger
+            .as_ref()
+            .is_some_and(|v| outside_new_card(v.granting_card))
+        || item
+            .delayed_sacrifice
+            .as_ref()
+            .is_some_and(|v| outside_new_card(v.source_card))
+        || item
+            .delayed_warp_exile
+            .as_ref()
+            .is_some_and(|v| outside_new_card(v.source_card))
+        || item
+            .cast_event
+            .as_ref()
+            .is_some_and(|v| outside_new_card(v.card))
+        || item
+            .cast
+            .and_then(|v| v.physical_card)
+            .is_some_and(outside_new_card)
+        || item.mana_copy_sources.as_ref().is_some_and(|sources| {
+            sources.iter().any(|(v, _)| {
+                outside_new_card(v.card)
+                    || outside_new_card(v.definition)
+                    || !outside_facts_supported(&v.facts)
+            })
+        })
+        || item
+            .copy_event
+            .as_ref()
+            .is_some_and(|event| !outside_packet_supported(&event.spell))
+    {
+        return false;
+    }
     if let Some(event) = &item.event_object {
-        if event.subtype_lki.as_ref().is_some_and(|facts| !outside_facts_supported(facts)) {
+        if event
+            .subtype_lki
+            .as_ref()
+            .is_some_and(|facts| !outside_facts_supported(facts))
+        {
             return false;
         }
         match &event.facts {
-            event_objects::EventObjectFacts::DamageActor(source) if !outside_facts_supported(&source.facts) => return false,
-            event_objects::EventObjectFacts::Copiable(recipe) if !outside_recipe_supported(recipe) => return false,
+            event_objects::EventObjectFacts::DamageActor(source)
+                if !outside_facts_supported(&source.facts) =>
+            {
+                return false;
+            }
+            event_objects::EventObjectFacts::Copiable(recipe)
+                if !outside_recipe_supported(recipe) =>
+            {
+                return false;
+            }
             _ => {}
         }
     }
@@ -501,39 +577,113 @@ fn prior_outside_state_supported(state: &State) -> bool {
                 || row.original_recipe.as_ref().is_some_and(|r| !outside_recipe_supported(r))
                 || row.layers.iter().any(|layer| !outside_recipe_supported(&layer.value.recipe))
         }))
-    { return false; }
+    {
+        return false;
+    }
     if let Some(mana) = &state.mana_lots {
         let copy_safe = |source: &mana_lots::ManaCopySource| {
-            !outside_new_card(source.card) && !outside_new_card(source.definition)
+            !outside_new_card(source.card)
+                && !outside_new_card(source.definition)
                 && outside_facts_supported(&source.facts)
         };
-        let quality_safe = |quality: &mana_lots::Quality| {
-            quality.copy_source.as_ref().is_none_or(copy_safe)
-        };
-        if mana.trace.is_some() || mana.replay.is_some() || mana.choice.is_some()
-            || mana.pools.iter().flat_map(|rows| rows.iter()).any(|lot| !quality_safe(&lot.quality))
-            || mana.effect_quality.as_ref().is_some_and(|q| !quality_safe(q))
-            || mana.announcement_quality.as_ref().is_some_and(|(_, q)| !quality_safe(q))
-        { return false; }
+        let quality_safe =
+            |quality: &mana_lots::Quality| quality.copy_source.as_ref().is_none_or(copy_safe);
+        if mana.trace.is_some()
+            || mana.replay.is_some()
+            || mana.choice.is_some()
+            || mana
+                .pools
+                .iter()
+                .flat_map(|rows| rows.iter())
+                .any(|lot| !quality_safe(&lot.quality))
+            || mana
+                .effect_quality
+                .as_ref()
+                .is_some_and(|q| !quality_safe(q))
+            || mana
+                .announcement_quality
+                .as_ref()
+                .is_some_and(|(_, q)| !quality_safe(q))
+        {
+            return false;
+        }
     }
     if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty() || rollback.replay.is_some() || rollback.capture.is_some()
-            || !prior_outside_state_supported(&rollback.before) { return false; }
+        if !rollback.events.is_empty()
+            || rollback.replay.is_some()
+            || rollback.capture.is_some()
+            || !prior_outside_state_supported(&rollback.before)
+        {
+            return false;
+        }
     }
-    state.stack.iter().chain(&state.pending_triggers).chain(&state.ordering_triggers)
-        .chain(state.delayed_artifact_copies.as_deref().into_iter().flatten())
-        .chain(state.delayed_attack_this_turn.as_deref().into_iter().flatten())
-        .chain(state.delayed_opponent_attack_until_next_turn.as_deref().into_iter().flatten())
+    state
+        .stack
+        .iter()
+        .chain(&state.pending_triggers)
+        .chain(&state.ordering_triggers)
+        .chain(
+            state
+                .delayed_artifact_copies
+                .as_deref()
+                .into_iter()
+                .flatten(),
+        )
+        .chain(
+            state
+                .delayed_attack_this_turn
+                .as_deref()
+                .into_iter()
+                .flatten(),
+        )
+        .chain(
+            state
+                .delayed_opponent_attack_until_next_turn
+                .as_deref()
+                .into_iter()
+                .flatten(),
+        )
         .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
         .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
-        .chain(state.stack_copy_data.as_ref().into_iter().flat_map(|s| s.packets()))
-        .chain(state.paradigm.as_ref().into_iter().flat_map(|s| s.packets()))
-        .chain(state.delayed_returns.as_deref().into_iter().flatten().map(|r| &r.item))
-        .chain(state.earthbend_returns.as_deref().into_iter().flatten().map(|r| &r.item))
-        .chain(state.manifest.as_ref().into_iter().flat_map(|s| s.deaths.iter().map(|d| &d.source)))
+        .chain(
+            state
+                .stack_copy_data
+                .as_ref()
+                .into_iter()
+                .flat_map(|s| s.packets()),
+        )
+        .chain(
+            state
+                .paradigm
+                .as_ref()
+                .into_iter()
+                .flat_map(|s| s.packets()),
+        )
+        .chain(
+            state
+                .delayed_returns
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .map(|r| &r.item),
+        )
+        .chain(
+            state
+                .earthbend_returns
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .map(|r| &r.item),
+        )
+        .chain(
+            state
+                .manifest
+                .as_ref()
+                .into_iter()
+                .flat_map(|s| s.deaths.iter().map(|d| &d.source)),
+        )
         .all(outside_packet_supported)
 }
-
 
 /// Schema 188 adds Cryomancer's public target limit and new Null/Sanctum rules.
 /// Reject new retained behavior rather than fabricating a schema-187 baseline.
@@ -4827,7 +4977,8 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     let mut projection_error = None;
     if schema_projection.is_some_and(|schema| schema < 189) {
         if !prior_outside_state_supported(&g.state) {
-            projection_error = Some("owned outside-game rules cannot be projected to schema 188".to_owned());
+            projection_error =
+                Some("owned outside-game rules cannot be projected to schema 188".to_owned());
         } else {
             match project_prior_outside(&observation_bytes) {
                 Ok(projected) => observation_bytes = projected,
@@ -5844,7 +5995,10 @@ fn schema188_preserves_schema187_jace_and_rejects_new_cards_and_hidden_null_link
 
 #[test]
 fn outside_projection_rejects_hidden_pools_nested_packets_and_rollback() {
-    assert_eq!(project_prior_outside(r#"[{"jace_loyalty_anytime":true}]"#).unwrap(), r#"[{"jace_loyalty_anytime":true}]"#);
+    assert_eq!(
+        project_prior_outside(r#"[{"jace_loyalty_anytime":true}]"#).unwrap(),
+        r#"[{"jace_loyalty_anytime":true}]"#
+    );
     assert!(project_prior_outside(r#"[{"known_outside":[[],[]]}]"#).is_err());
     assert!(project_prior_outside(r#"[{"card":"Extrapolate the Impossible"}]"#).is_err());
     assert!(project_prior_outside(r#"[{"kind":"ChooseOutsideCard","index":0}]"#).is_err());
@@ -5852,8 +6006,10 @@ fn outside_projection_rejects_hidden_pools_nested_packets_and_rollback() {
         let mut g = scenario(player);
         assert!(prior_outside_state_supported(&g.state));
         g.state.outside_game = Some(Box::new(OutsideGameState {
-            mode: OutsideGameMode::LimitedSideboard, pools: [Vec::new(), Vec::new()],
-            choice: None, known: [Vec::new(), Vec::new()],
+            mode: OutsideGameMode::LimitedSideboard,
+            pools: [Vec::new(), Vec::new()],
+            choice: None,
+            known: [Vec::new(), Vec::new()],
         }));
         assert!(!prior_outside_state_supported(&g.state));
         g.begin_attack_rollback(player);
@@ -5869,7 +6025,10 @@ fn outside_projection_rejects_hidden_pools_nested_packets_and_rollback() {
         let mut inner = g.activation_item(player, source, 0);
         inner.source_card = Card::from_name("Extrapolate the Impossible").unwrap();
         let mut outer = g.activation_item(player, source, 0);
-        outer.copy_event = Some(Box::new(stack_copies::CopyEvent { spell: inner, amount: 1 }));
+        outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
+            spell: inner,
+            amount: 1,
+        }));
         g.state.pending_triggers.push(outer);
         assert!(!prior_outside_state_supported(&g.state));
     }
@@ -5884,7 +6043,10 @@ fn outside_projection_checks_actual_private_and_public_views_for_both_players() 
         let mut pools = [vec![], vec![]];
         pools[owner.index()] = vec![Card::from_name("Shock").unwrap(), Card::Forest];
         g.state.outside_game = Some(Box::new(OutsideGameState {
-            mode: OutsideGameMode::ConstructedSideboard, pools, choice: None, known: [Vec::new(), Vec::new()],
+            mode: OutsideGameMode::ConstructedSideboard,
+            pools,
+            choice: None,
+            known: [Vec::new(), Vec::new()],
         }));
         assert!(!prior_outside_state_supported(&g.state));
         for viewer in [Player::P0, Player::P1] {
