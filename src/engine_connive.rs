@@ -187,6 +187,8 @@ impl Game {
             object: Some(current.object),
             effects,
             counters: None,
+            player_counters: None,
+            proliferate: None,
             tokens: Vec::new(),
             copy_recipes: Vec::new(),
             role_attachments: Vec::new(),

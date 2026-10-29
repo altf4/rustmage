@@ -192,7 +192,8 @@ mod sagas;
 mod shield_harness;
 pub use replacements::{
     CreatedTokenChoiceView, DamageEventOrderView, DamagePreventionKind, DamagePreventionView,
-    ReplacementChoiceView, ReplacementEffectView, TokenGroupView,
+    PlayerCounterPlacementView, ProliferateReplacementView, ReplacementChoiceView,
+    ReplacementEffectView, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;

@@ -1,4 +1,5 @@
 use super::*;
+use crate::cards::CastFilter;
 
 #[test]
 fn tam_reduces_only_own_planeswalker_spells() {

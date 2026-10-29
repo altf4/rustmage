@@ -2647,6 +2647,15 @@ pub(crate) enum ReplacementSpec {
         add: u32,
         effects_only: bool,
     },
+    /// Replace a proliferate event by a number of events for the related player.
+    Proliferate { relation: CastRelation, factor: u32, add: u32 },
+    /// Replace counters placed on a player related to the source controller.
+    PlayerCounters {
+        kind: PlayerCounterKind,
+        relation: CastRelation,
+        factor: u32,
+        add: u32,
+    },
     DoubleTokens {
         effects_only: bool,
     },
@@ -2654,6 +2663,10 @@ pub(crate) enum ReplacementSpec {
     ReplaceArtifactTokens(Card),
     AddArtifactToken(Card),
 }
+
+/// Player counters currently represented by the game state.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum PlayerCounterKind { Poison }
 
 /// Card-type bit reserved for battles.
 pub(crate) const BATTLE_KIND: u16 = 256;

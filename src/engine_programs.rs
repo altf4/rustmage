@@ -3095,12 +3095,11 @@ impl Game {
                     self.add_combat_red(item.controller, amount);
                 }
                 Instruction::AddPoison(set, amount) => {
+                    let mut poison = [0; 2];
                     for player in self.program_players(set, &item) {
-                        let counters = &mut self.state.players[player.index()].poison_counters;
-                        *counters = counters
-                            .checked_add(u64::from(amount))
-                            .capacity("player poison counters exhausted");
+                        poison[player.index()] = u64::from(amount);
                     }
+                    self.effect_counters_with_poison(Vec::new(), poison, item.controller, replacements::ResumeMode::Program);
                 }
                 Instruction::ExileAttackingCreatures(players) => {
                     self.exile_attacking_creatures(players, &item)
@@ -5802,6 +5801,7 @@ impl Game {
                 }
                 Instruction::AddOneOfEachCounterKind => {
                     let mut changes = Vec::new();
+                    let mut poison = [0; 2];
                     for bound in &item.targets {
                         if !self.same_target_object(*bound) {
                             continue;
@@ -5809,11 +5809,8 @@ impl Game {
                         match bound.target {
                             Target::Player(player) => {
                                 // Poison is the pool's represented player counter kind.
-                                let count = &mut self.state.players[player.index()].poison_counters;
-                                if *count > 0 {
-                                    *count = count
-                                        .checked_add(1)
-                                        .capacity("player poison counters exhausted");
+                                if self.state.players[player.index()].poison_counters > 0 {
+                                    poison[player.index()] = 1;
                                 }
                             }
                             Target::Card(id) if self.on_battlefield(id) => {
@@ -5828,7 +5825,7 @@ impl Game {
                             _ => {}
                         }
                     }
-                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                    self.effect_counters_with_poison(changes, poison, item.controller, replacements::ResumeMode::Program);
                 }
                 Instruction::DoubleCounters => {
                     // Doubling puts the existing quantity of each kind on the object.
