@@ -373,7 +373,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     StackKind::ActivatedAbility { .. } if item.source().is_some_and(|source| is_map(source.card)) => {
-                        if let Some(k) = provenance.get(&item.object) {
+                        if let Some(k) = provenance.get(&item.source().expect("example expects an object-backed packet").object) {
                             activations[*k][p.index()] += 1;
                         }
                     }
@@ -523,7 +523,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 if item.kind == StackKind::Spell && item.source().is_some_and(|source| source.card.is_creature()) {
-                    let v = view.objects.iter().find(|v| v.id == item.card).unwrap();
+                    let v = view.objects.iter().find(|v| v.id == item.source().expect("example expects an object-backed packet").id).unwrap();
                     assert_eq!(v.zone, Zone::Battlefield);
                     let expected = [
                         (2, 1),
@@ -629,12 +629,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                         14 => {
                             if let Some(v) =
-                                view.objects.iter().find(|v| v.reference == item.object)
+                                view.objects.iter().find(|v| v.reference == item.source().expect("example expects an object-backed packet").object)
                             {
                                 let old = base
                                     .objects
                                     .iter()
-                                    .find(|v| v.reference == item.object)
+                                    .find(|v| v.reference == item.source().expect("example expects an object-backed packet").object)
                                     .unwrap();
                                 assert_eq!(v.power, old.power + 1);
                                 assert!(v.keywords.contains(Keywords::CANT_BE_BLOCKED));

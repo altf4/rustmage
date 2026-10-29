@@ -163,7 +163,7 @@ fn main() {
                         after
                             .objects
                             .iter()
-                            .any(|o| o.reference == item.object && o.zone == Zone::Command)
+                            .any(|o| o.reference == item.source().expect("example expects an object-backed packet").object && o.zone == Zone::Command)
                     );
                     checks += 2;
                 }

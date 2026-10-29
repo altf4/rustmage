@@ -247,7 +247,7 @@ fn verify(i: usize, p: Player, item: &SpellView, b: &Observation, a: &Observatio
     };
     match (i, ch) {
         (0, _) => {
-            let others: Vec<_> = creatures().filter(|v| v.id != item.card).collect();
+            let others: Vec<_> = creatures().filter(|v| v.id != item.source().expect("example expects an object-backed packet").id).collect();
             assert!(!others.is_empty());
             for v in others {
                 let n = now(v.id);

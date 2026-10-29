@@ -85,7 +85,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
             let o = after
                 .objects
                 .iter()
-                .find(|o| o.id == item.card && o.zone == Zone::Battlefield)
+                .find(|o| o.id == item.source().expect("example expects an object-backed packet").id && o.zone == Zone::Battlefield)
                 .unwrap();
             assert_eq!(o.power, colors(after, p));
             assert!(o.keywords.contains(Keywords::DOUBLE_STRIKE));
@@ -133,7 +133,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         ("Peer Past the Veil", StackKind::Spell) => {
             let mut types = BTreeSet::new();
             for o in after.objects.iter().filter(|o| {
-                o.owner == p && o.zone == Zone::Graveyard && !o.card.is_token() && o.id != item.card
+                o.owner == p && o.zone == Zone::Graveyard && !o.card.is_token() && o.id != item.source().expect("example expects an object-backed packet").id
             }) {
                 for word in o
                     .card

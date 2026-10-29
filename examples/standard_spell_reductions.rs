@@ -344,7 +344,7 @@ fn body(before: &Observation, after: &Observation, item: &SpellView) -> usize {
             "Voyager Quickwelder" => (2, 4),
             _ => return 0,
         };
-        let source = after.objects.iter().find(|o| o.id == item.card).unwrap();
+        let source = after.objects.iter().find(|o| o.id == item.source().expect("example expects an object-backed packet").id).unwrap();
         assert_eq!(source.zone, Zone::Battlefield);
         assert_eq!((source.power, source.toughness), stats);
         return 3;
@@ -383,12 +383,12 @@ fn body(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         if let Some(old) = before
             .objects
             .iter()
-            .find(|o| o.reference == item.object && o.zone == Zone::Battlefield)
+            .find(|o| o.reference == item.source().expect("example expects an object-backed packet").object && o.zone == Zone::Battlefield)
         {
             let new = after
                 .objects
                 .iter()
-                .find(|o| o.reference == item.object)
+                .find(|o| o.reference == item.source().expect("example expects an object-backed packet").object)
                 .unwrap();
             assert_eq!(
                 (new.power, new.toughness),

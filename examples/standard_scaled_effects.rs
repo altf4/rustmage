@@ -157,7 +157,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     let keywords = before
         .objects
         .iter()
-        .find(|o| o.reference == item.object)
+        .find(|o| o.reference == item.source().expect("example expects an object-backed packet").object)
         .map_or(item.source_keywords, |o| o.keywords);
     if keywords.contains(Keywords::LIFELINK) {
         life[p.index()] += amount;

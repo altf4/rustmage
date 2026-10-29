@@ -269,7 +269,7 @@ fn body(before: &Observation, after: &Observation, item: &SpellView) -> usize {
             "Storm Fleet Spy" => (2, 2),
             _ => return 0,
         };
-        let o = after.objects.iter().find(|o| o.id == item.card).unwrap();
+        let o = after.objects.iter().find(|o| o.id == item.source().expect("example expects an object-backed packet").id).unwrap();
         assert_eq!(o.zone, Zone::Battlefield);
         assert_eq!((o.power, o.toughness), stats);
         return 3;

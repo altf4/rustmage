@@ -283,7 +283,7 @@ fn main() {
                 } else if item.source().is_some_and(|source| source.card.name() == "Voracious Greatshark")
                     && item.kind == StackKind::Spell
                 {
-                    let source = after.objects.iter().find(|o| o.id == item.card).unwrap();
+                    let source = after.objects.iter().find(|o| o.id == item.source().expect("example expects an object-backed packet").id).unwrap();
                     assert_eq!(source.zone, Zone::Battlefield);
                     assert_eq!((source.power, source.toughness), (5, 4));
                     checks += 1;

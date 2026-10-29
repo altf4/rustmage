@@ -546,7 +546,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 };
                 let i =
                     item.source().and_then(|source| index(source.card)).expect("only qualified cast triggers in these decks");
-                let n = debt.get_mut(&(item.object, ability)).unwrap_or_else(|| {
+                let n = debt.get_mut(&(item.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
                     panic!("unexpected {} trigger seed{seed}", item.source().expect("example expects an object-backed packet").card.name())
                 });
                 assert!(*n > 0);

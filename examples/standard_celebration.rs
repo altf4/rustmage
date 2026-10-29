@@ -387,7 +387,7 @@ fn main() -> Result<(), Error> {
                 let source = view
                     .objects
                     .iter()
-                    .find(|v| v.reference == item.object && v.zone == Zone::Battlefield);
+                    .find(|v| v.reference == item.source().expect("example expects an object-backed packet").object && v.zone == Zone::Battlefield);
                 let target = item.targets.first().and_then(|t| t.object).and_then(|r| {
                     view.objects
                         .iter()
@@ -400,7 +400,7 @@ fn main() -> Result<(), Error> {
                     .and_then(|r| base.objects.iter().find(|v| v.reference == r));
                 let ok = match i {
                     1 | 7 => source
-                        .zip(base.objects.iter().find(|v| v.reference == item.object))
+                        .zip(base.objects.iter().find(|v| v.reference == item.source().expect("example expects an object-backed packet").object))
                         .is_some_and(|(n, b)| n.counters.plus_one == b.counters.plus_one + 1),
                     2 => target.zip(old_target).is_some_and(|(n, b)| {
                         n.power == b.power + 1 && n.keywords.contains(Keywords::MENACE)

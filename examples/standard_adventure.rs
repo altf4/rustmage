@@ -924,14 +924,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert!(!traits.type_line.contains("Creature"));
                 assert!(!traits.type_line.contains("Land"));
                 if progress[actor.index()].normal {
-                    progress[actor.index()].second_id = Some(item.card);
+                    progress[actor.index()].second_id = Some(item.source().expect("example expects an object-backed packet").id);
                     progress[actor.index()].second_effect = Some(Flight {
                         before: o.clone(),
                         targets: item.targets.clone(),
                         scry: 0,
                     });
                 } else {
-                    progress[actor.index()].inset = Some(item.card);
+                    progress[actor.index()].inset = Some(item.source().expect("example expects an object-backed packet").id);
                     progress[actor.index()].first_effect = Some(Flight {
                         before: o.clone(),
                         targets: item.targets.clone(),

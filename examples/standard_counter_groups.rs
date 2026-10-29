@@ -63,7 +63,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         };
         let own = old.owner == item.controller;
         let targeted = item.targets.iter().any(|t| t.object == Some(old.reference));
-        let other = old.reference != item.object;
+        let other = old.reference != item.source().expect("example expects an object-backed packet").object;
         let mode = match name {
             "Darkness Descends" if old.card.is_creature() => Some(1),
             "The Crystal's Chosen" | "Duty Beyond Death" if own && old.card.is_creature() => {

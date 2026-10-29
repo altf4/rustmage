@@ -228,7 +228,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 if let StackKind::TriggeredAbility { ability } = item.kind {
-                    let count = debt.get_mut(&(item.object, ability)).unwrap_or_else(|| {
+                    let count = debt.get_mut(&(item.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
                         panic!(
                             "unexpected trigger {} ability {ability} game {seed}",
                             item.source().expect("example expects an object-backed packet").card.name()

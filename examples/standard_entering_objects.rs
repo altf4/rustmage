@@ -339,7 +339,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let r = item
                         .entering_object
                         .expect("entry reference must be owned by the packet");
-                    let count = debt.get_mut(&(item.object, r, ability)).unwrap_or_else(|| {
+                    let count = debt.get_mut(&(item.source().expect("example expects an object-backed packet").object, r, ability)).unwrap_or_else(|| {
                         panic!(
                             "unexpected trigger {} context {r:?} seed{seed}",
                             item.source().expect("example expects an object-backed packet").card.name()
