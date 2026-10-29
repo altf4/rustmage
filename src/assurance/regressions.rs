@@ -435,6 +435,20 @@ fn schema185_rejects_owned_bonus_nested_packets_receipts_and_rollback() {
         assert!(!prior_schema185_state_supported(&g.state));
         g.state.cast_rollback = None;
         assert!(prior_schema185_state_supported(&g.state));
+        let hidden_id = put(&mut g, player, "Bear Cub", Zone::Hand);
+        let hidden_object = g.object_ref(hidden_id);
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let pyre = Card::from_name("Pyre Rhymer // Molten Tide").unwrap();
+        let ordinary = CopyRecipe::new(bear);
+        for card in [pyre, Card::test_index(5461)] {
+            let hidden = ordinary.with_faces(copies::CopyFaces::Double {
+                physical_front: bear, front: bear, back: card, back_up: false,
+            });
+            g.set_copy_recipe(hidden_object, hidden);
+            assert!(!prior_schema185_state_supported(&g.state));
+        }
+        g.set_copy_recipe(hidden_object, ordinary);
+        assert!(prior_schema185_state_supported(&g.state));
         let mut inner = g.activation_item(player, source, 0);
         inner.mana_tap_bonus = Some(1);
         let mut outer = g.activation_item(player, source, 0);
