@@ -274,3 +274,36 @@ fn veiled_modifier_expires_at_actual_extra_turn_not_skipped_turn() {
         }
     }
 }
+
+#[test]
+fn veiled_simultaneous_sacrifices_suspend_for_each_competing_zone_replacement() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = veiled_fixture(&mut g, player);
+        put(&mut g, player, "Rest in Peace", Zone::Battlefield);
+        let own = put(&mut g, player, "Progenitus", Zone::Battlefield);
+        let other = put(&mut g, player.other(), "Progenitus", Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 1, counter_payment: Counters::default() });
+        pay(&mut g);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        let own_ref = g.object_ref(own);
+        let other_ref = g.object_ref(other);
+        act(&mut g, Action::Sacrifice { object: own_ref });
+        assert_eq!(g.object_view(own).zone, Zone::Battlefield);
+        act(&mut g, Action::Sacrifice { object: other_ref });
+        assert!(matches!(g.state.pending, Pending::ZoneReplacement { player: actor } if actor == player));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::ChooseZoneReplacement { effect: ZoneReplacementKind::RevealShuffle });
+            assert!(matches!(g.state.pending, Pending::ZoneReplacement { player: actor } if actor == player.other()));
+            act(&mut g, Action::ChooseZoneReplacement { effect: ZoneReplacementKind::Exile });
+            settle(&mut g);
+            assert_eq!(g.object_view(own).zone, Zone::Library);
+            assert_eq!(g.object_view(other).zone, Zone::Exile);
+            assert!(g.state.objects.iter().any(|o| o.zone == Zone::Battlefield
+                && o.controller == player && o.card == Card::test_index(5239)));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
