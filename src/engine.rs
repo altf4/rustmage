@@ -2069,6 +2069,8 @@ struct State {
     delayed_artifact_copies: Option<Box<Vec<SpellView>>>,
     #[allow(clippy::box_collection)]
     delayed_attack_this_turn: Option<Box<Vec<SpellView>>>,
+    // Keep this rarely used state out of the hot State allocation.
+    #[allow(clippy::box_collection)]
     delayed_opponent_attack_until_next_turn: Option<Box<Vec<SpellView>>>,
     #[allow(
         clippy::box_collection,
@@ -7865,13 +7867,10 @@ impl Game {
             obj.growth = Stats::default();
             obj.gained_keywords = Keywords::NONE;
         }
-        let expired_legend_rule = self
-            .state
-            .players
-            .iter_mut()
-            .fold(false, |expired, player| {
-                std::mem::take(&mut player.legend_rule_ignored_this_turn) || expired
-            });
+        let mut expired_legend_rule = false;
+        for player in &mut self.state.players {
+            expired_legend_rule |= std::mem::take(&mut player.legend_rule_ignored_this_turn);
+        }
         let expired_copies = self.expire_temporary_copies(true);
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.

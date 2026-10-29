@@ -20,6 +20,7 @@ impl Game {
         }).fold(0u64, u64::saturating_add)
     }
     /// Keep increases and all reductions wide until the final payable total.
+    #[allow(clippy::too_many_arguments)] // Keep the distinct cost components explicit.
     pub(super) fn spell_total_with_reductions(
         &self,
         actor: Player,
@@ -402,12 +403,12 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
-                    .filter_map(|(id, object)| {
-                        (object.zone == Zone::Battlefield
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
                             && object.controller == actor
-                            && self.is_creature(id as CardId))
-                        .then(|| self.stats_without_hand(id as CardId, departing).toughness)
+                            && self.is_creature(*id as CardId)
                     })
+                    .map(|(id, _)| self.stats_without_hand(id as CardId, departing).toughness)
                     .max()
                     .unwrap_or(0)
                     .max(0);

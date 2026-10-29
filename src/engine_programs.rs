@@ -189,7 +189,7 @@ impl Game {
                 if ability.condition.event() == TriggerCondition::ScryOrSurveil
                     && source.controller == player
                 {
-                    self.queue_trigger_from(&source, index, grant.clone().map(Box::new));
+                    self.queue_trigger_from(&source, index, grant.map(Box::new));
                 }
             }
         }
@@ -5327,12 +5327,12 @@ impl Game {
                         .objects
                         .iter()
                         .enumerate()
-                        .filter_map(|(id, o)| {
-                            (o.zone == Zone::Battlefield
+                        .filter(|(id, o)| {
+                            o.zone == Zone::Battlefield
                                 && o.controller == player
-                                && self.is_creature(id as CardId))
-                            .then(|| self.stats(id as CardId).power)
+                                && self.is_creature(*id as CardId)
                         })
+                        .map(|(id, _)| self.stats(id as CardId).power)
                         .max()
                         .unwrap_or(0)
                         .max(0);

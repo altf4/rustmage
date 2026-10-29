@@ -203,13 +203,12 @@ pub(super) trait CharacteristicWorld {
         if !card.is_land() && card.mana_color().is_some() {
             return card.mana_color();
         }
-        if self.kinds(id) & 2 != 0 {
-            if let Some(color) = ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+        if self.kinds(id) & 2 != 0
+            && let Some(color) = ["Plains", "Island", "Swamp", "Mountain", "Forest"]
                 .iter()
                 .position(|subtype| self.subtypes(id).has(card, subtype))
-            {
-                return Some(color);
-            }
+        {
+            return Some(color);
         }
         if card.is_land() && card.printed_intrinsic_mana_colors().next().is_some() {
             None
@@ -651,17 +650,16 @@ pub(super) trait CharacteristicWorld {
                 && !(!self.definition(id).is_land()
                     && evaluation.result.objects[id as usize].printed
                     && self.definition(id).mana_color().is_some())
+                && let Some(first) = self.intrinsic_mana_color(id)
             {
-                if let Some(first) = self.intrinsic_mana_color(id) {
-                    let mut production = [0; 6];
-                    production[first] = 1;
-                    if let Some(index) = result.iter().position(|grant| {
-                        grant.subtype_derived
-                            && grant.source == self.reference(id)
-                            && grant.production == ManaProduction::Fixed(production)
-                    }) {
-                        result.remove(index);
-                    }
+                let mut production = [0; 6];
+                production[first] = 1;
+                if let Some(index) = result.iter().position(|grant| {
+                    grant.subtype_derived
+                        && grant.source == self.reference(id)
+                        && grant.production == ManaProduction::Fixed(production)
+                }) {
+                    result.remove(index);
                 }
             }
             return result;
