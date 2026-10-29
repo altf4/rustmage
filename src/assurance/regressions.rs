@@ -90,6 +90,123 @@ fn previous_schema_projection_removes_battle_protector() {
     );
 }
 
+/// Split-second and combat cast restrictions have no prior-schema semantics.
+/// False spell flags are skipped by serde, so compatible observations need no
+/// byte rewriting. All unexpected explicit fields are rejected conservatively.
+fn project_prior_split_second(input: &str) -> Result<String, String> {
+    fn check(v: &serde_json::Value, keyword_choice: bool) -> Result<(), String> {
+        match v {
+            serde_json::Value::Array(rows) => {
+                for row in rows {
+                    check(row, keyword_choice)?;
+                }
+            }
+            serde_json::Value::Object(map) => {
+                if map.contains_key("split_second") {
+                    return Err("split-second spell view has no prior-schema representation".into());
+                }
+                for (key, value) in map {
+                    let keyword_field = matches!(
+                        key.as_str(),
+                        "keywords"
+                            | "source_keywords"
+                            | "granted_keywords"
+                            | "gained_keywords"
+                            | "keyword"
+                            | "rules"
+                            | "without"
+                    );
+                    if keyword_field && value.as_u64().is_some_and(|bits| bits & (1u64 << 31) != 0)
+                    {
+                        return Err(
+                            "split-second keyword has no prior-schema representation".into()
+                        );
+                    }
+                    if keyword_choice && key == "choices" {
+                        let values = value.as_array().ok_or("invalid keyword choice")?;
+                        if values
+                            .iter()
+                            .any(|v| v.as_u64().is_none_or(|bits| bits & (1u64 << 31) != 0))
+                        {
+                            return Err("split-second or invalid keyword choice has no prior-schema representation".into());
+                        }
+                    }
+                    check(value, key == "keyword_choice")?;
+                }
+            }
+            _ => (),
+        }
+        Ok(())
+    }
+    let parsed: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&parsed, false)?;
+    Ok(input.to_owned())
+}
+
+/// Providers must be rejected even when blanked or currently outside combat:
+/// their future cast/activation restrictions cannot be represented in schema 177.
+fn prior_split_second_owned_state_supported(game: &Game) -> bool {
+    !game.state.objects.iter().any(|object| {
+        object.zone == Zone::Battlefield
+            && object.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond
+                            | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
+                    )
+                })
+            })
+    }) && !game.nonmana_actions_prohibited()
+}
+
+#[test]
+fn prior_split_second_projection_rejects_new_flags_and_keyword_bits() {
+    let old = r#"[{"objects":[{"keywords":256}],"stack":[{"source_keywords":0}]}]"#;
+    assert_eq!(project_prior_split_second(old).unwrap(), old);
+    for input in [
+        r#"[{"stack":[{"split_second":true}]}]"#,
+        r#"[{"announcing":{"split_second":false}}]"#,
+        r#"[{"objects":[{"keywords":2147483648}]}]"#,
+        r#"[{"stack":[{"source_keywords":2147483649}]}]"#,
+        r#"[{"keyword_effects":[{"rules":2147483648}]}]"#,
+        r#"[{"keyword_choice":{"choices":[256,2147483648]}}]"#,
+    ] {
+        assert!(project_prior_split_second(input).is_err(), "{input}");
+    }
+    // Other u64 fields are not keyword bitsets.
+    let large_id = r#"[{"id":2147483648,"keywords":0}]"#;
+    assert_eq!(project_prior_split_second(large_id).unwrap(), large_id);
+}
+
+#[test]
+fn prior_split_second_projection_handles_actual_views_for_both_players() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let encoded =
+            serde_json::to_string(&[g.observe(player), g.observe(player.other())]).unwrap();
+        assert!(prior_split_second_owned_state_supported(&g));
+        assert_eq!(project_prior_split_second(&encoded).unwrap(), encoded);
+        g.state.objects[id as usize].gained_keywords = Keywords::SPLIT_SECOND;
+        let encoded =
+            serde_json::to_string(&[g.observe(player), g.observe(player.other())]).unwrap();
+        assert!(project_prior_split_second(&encoded).is_err());
+    }
+}
+
+#[test]
+fn prior_split_second_projection_rejects_dormant_restriction_provider() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        // Install an actual provider definition in a fixture without requiring
+        // an unsupported candidate card to be admitted for the unit test.
+        g.state.objects[id as usize].card = Card::from_name("Samut, Tyrant of Naktamun").unwrap();
+        assert!(!prior_split_second_owned_state_supported(&g));
+    }
+}
+
 /// Recording-only projection to the schema preceding behold and universal
 /// basic-land mana. Reject cases whose old wire representation cannot preserve
 /// the observed ability identity or land-subtype semantics.
@@ -619,7 +736,17 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 177) {
+    if schema_projection.is_some_and(|schema| schema < 178) {
+        if !prior_split_second_owned_state_supported(&g) {
+            projection_error = Some(
+                "split-second or combat restriction provider has no prior-schema representation"
+                    .to_owned(),
+            );
+        } else if let Err(reason) = project_prior_split_second(&observation_bytes) {
+            projection_error = Some(reason);
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 177) {
         if !prior_behold_owned_state_supported(&g) {
             projection_error = Some(
                 "owned borrowing acquisition state cannot be reconstructed in the prior schema"

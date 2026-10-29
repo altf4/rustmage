@@ -7537,3 +7537,42 @@ mod engine_fra_hunters_axe_independent_tests;
 
 #[path = "engine_fra_candidate_control_replacement_tests.rs"]
 mod engine_fra_candidate_control_replacement_tests;
+
+#[path = "engine_fra_combat_restrictions_tests.rs"]
+mod engine_fra_combat_restrictions_tests;
+
+#[path = "engine_fra_combat_review_tests.rs"]
+mod engine_fra_combat_review_tests;
+
+#[path = "engine_fra_split_second_tests.rs"]
+mod engine_fra_split_second_tests;
+
+#[path = "engine_fra_split_face_review_tests.rs"]
+mod engine_fra_split_face_review_tests;
+
+#[path = "engine_fra_player_alone_tests.rs"]
+mod engine_fra_player_alone_tests;
+
+#[path = "engine_fra_jiang_alone_followup.rs"]
+mod engine_fra_jiang_alone_followup;
+
+#[path = "engine_fra_tetsuko_pursuer_tests.rs"]
+mod engine_fra_tetsuko_pursuer_tests;
+
+#[path = "engine_fra_tetsuko_pursuer_independent_tests.rs"]
+mod engine_fra_tetsuko_pursuer_independent_tests;
+
+#[path = "engine_fra_loot_nexus_tests.rs"]
+mod engine_fra_loot_nexus_tests;
+
+#[path = "engine_fra_loot_nexus_independent_tests.rs"]
+mod engine_fra_loot_nexus_independent_tests;
+
+#[path = "engine_fra_omnipresence_tests.rs"]
+mod engine_fra_omnipresence_tests;
+
+#[path = "engine_fra_omnipresence_adversarial_tests.rs"]
+mod engine_fra_omnipresence_adversarial_tests;
+
+#[path = "engine_fra_anguish_independent_tests.rs"]
+mod engine_fra_anguish_independent_tests;
