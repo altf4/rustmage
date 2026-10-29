@@ -583,9 +583,9 @@ impl Game {
         };
         item.cast.as_mut().unwrap().exile_on_graveyard = exile_on_graveyard
             || paid.is_some_and(|p| {
-                p.exile_instants_sorceries && item.source_card.kind_mask() & (4 | 8) != 0
+                p.exile_instants_sorceries && item.source.expect("cast spell has source").card.kind_mask() & (4 | 8) != 0
             });
-        if paid.is_none() && item.source_card.x_symbols() > 0 {
+        if paid.is_none() && item.source.expect("cast spell has source").card.x_symbols() > 0 {
             item.x = Some(0);
         }
         self.open_payment_announcement(item, Counters::default(), None);

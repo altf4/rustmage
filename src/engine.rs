@@ -3724,7 +3724,7 @@ impl Game {
                 }
             }
             Pending::LinkedExile { .. } => {
-                let source = s.resolving.as_ref().unwrap().item.object;
+                let Some(source) = s.resolving.as_ref().and_then(|r| r.item.source).map(|s| s.object) else { return false; };
                 for object in self.linked_exile_candidates(source) {
                     if emit(Action::ChooseLinkedExile { object }) {
                         return true;
@@ -5635,10 +5635,10 @@ impl Game {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 self.set_cast_face(&mut item, face);
                 let origin_counter_cost =
-                    counter_origin.then(|| item.source_card.graveyard_counter_cost().unwrap());
+                    counter_origin.then(|| item.source.expect("cast or activated ability has a source").card.graveyard_counter_cost().unwrap());
                 item.cast.as_mut().unwrap().method = CastMethod::Free;
                 item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement_with_origin_cost(
@@ -5668,7 +5668,7 @@ impl Game {
                 self.set_cast_face(&mut item, face);
                 item.cast.as_mut().unwrap().method = CastMethod::Free;
                 item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
@@ -5771,7 +5771,7 @@ impl Game {
             Action::AnnouncePlotted { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Plot;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
@@ -5779,7 +5779,7 @@ impl Game {
             Action::AnnounceHarmonize { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Harmonize;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 // Reuse the exact-object leave-stack exile replacement.
@@ -5789,7 +5789,7 @@ impl Game {
             Action::AnnounceFlashback { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Flashback;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.state.objects[card as usize].flashback = true;
@@ -5846,13 +5846,13 @@ impl Game {
                 let mut item = self.borrowed_activation_item(actor, card, exiled, ability);
                 let quality = self
                     .mana_quality(
-                        item.source_card
+                        item.source.expect("cast or activated ability has a source").card
                             .activation(ability)
                             .mana_production()
                             .unwrap(),
                         card,
                     )
-                    .map(|quality| quality.with_definition(item.source_card));
+                    .map(|quality| quality.with_definition(item.source.expect("cast or activated ability has a source").card));
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
                 self.committed_mana_reflexive(&item);
@@ -5985,7 +5985,7 @@ impl Game {
                     let item = self.state.stack.last().unwrap().clone();
                     let outcome = self.spend_mana_for(actor, payment, self.purpose_for_item(&item));
                     if outcome.haste {
-                        self.grant_stack_keywords(item.object, Keywords::HASTE);
+                        self.grant_stack_keywords(item.source.expect("cast or activated ability has a source").object, Keywords::HASTE);
                     }
                     self.state
                         .stack
@@ -6088,7 +6088,7 @@ impl Game {
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
                 let a = self.state.announcing.as_mut().unwrap();
-                if a.item.kind == StackKind::Spell && a.item.source_card.life_x_cost() {
+                if a.item.kind == StackKind::Spell && a.item.source.expect("cast or activated ability has a source").card.life_x_cost() {
                     a.add_cast_cost_clause(CastCostClause::Life(value));
                 }
                 if self
@@ -6282,7 +6282,7 @@ impl Game {
                     .map(|r| r.card)
                     .collect();
                 let keywords = choices[usize::from(index)];
-                let source = self.state.resolving.as_ref().unwrap().item.object;
+                let source = self.state.resolving.as_ref().unwrap().item.source.expect("cast or activated ability has a source").object;
                 self.grant_keyword_effects(&ids, source, keywords);
                 self.run_program();
             }
@@ -6981,8 +6981,7 @@ impl Game {
         {
             self.state.stack.retain(|item| {
                 !(item.kind == StackKind::Spell
-                    && item.card == id
-                    && item.object == before.reference)
+                    && item.source.is_some_and(|source| source.id == id && source.object == before.reference))
             });
             self.clear_copy_recipe(before.reference);
             let object = &mut self.state.objects[id as usize];
@@ -7217,7 +7216,7 @@ impl Game {
         if before.zone == Zone::Stack {
             self.state
                 .stack
-                .retain(|spell| spell.kind != StackKind::Spell || spell.object != before.reference);
+                .retain(|spell| spell.kind != StackKind::Spell || !spell.source.is_some_and(|source| source.object == before.reference));
         }
         if before.zone == Zone::Battlefield {
             self.capture_delayed_copy_source_departure(&before);
@@ -8871,7 +8870,7 @@ impl Game {
                     .map(|(index, mode)| ModeChoiceView {
                         mode: index as u16,
                         text: mode.text,
-                        additional_mana: item.source_card.tiered_costs().map(|costs| costs[index]),
+                        additional_mana: item.source.and_then(|source| source.card.tiered_costs().map(|costs| costs[index])),
                     })
                     .collect()
             } else {
