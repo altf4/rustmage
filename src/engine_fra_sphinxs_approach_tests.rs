@@ -46,7 +46,7 @@ fn approach_selects_four_atomically_and_searches_with_snapshot_replay() {
         assert_eq!(g.object_view(spell).zone, Zone::Stack);
         assert!(graves.iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
         let partial = g.snapshot();
-        super::super::contracts::branch_contract(g.clone());
+        super::contracts::branch_contract(g.clone());
         for _ in 0..2 {
             for &id in &graves[1..4] {
                 let object = g.object_ref(id);
