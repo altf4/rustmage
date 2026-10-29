@@ -49112,8 +49112,17 @@ pub(super) mod card_5456 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/prepare_vigorbloom_vanguard_seed_suture.rs");
 }
+pub(super) mod card_5457 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_fra_blue_angel.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5457] = [
+pub(super) static RULES: [&CardRules; 5458] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54571,6 +54580,7 @@ pub(super) static RULES: [&CardRules; 5457] = [
     &card_5454::RULES,
     &card_5455::RULES,
     &card_5456::RULES,
+    &card_5457::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

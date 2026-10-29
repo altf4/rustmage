@@ -7483,3 +7483,18 @@ mod engine_fra_grapple_independent_tests;
 
 #[path = "engine_fra_moon_exception_tests.rs"]
 mod engine_fra_moon_exception_tests;
+
+#[path = "engine_fra_lyra_tests.rs"]
+mod engine_fra_lyra_tests;
+
+#[path = "engine_fra_lyra_independent_tests.rs"]
+mod engine_fra_lyra_independent_tests;
+
+#[path = "engine_fra_lyra_combat_independent_tests.rs"]
+mod engine_fra_lyra_combat_independent_tests;
+
+#[path = "engine_fra_liliana_repentant_tests.rs"]
+mod engine_fra_liliana_repentant_tests;
+
+#[path = "engine_fra_liliana_independent_tests.rs"]
+mod engine_fra_liliana_independent_tests;

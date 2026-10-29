@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "4b523e6bff68234b1da70c16211a8e6b4fc810a8d1568cd6c221feccb90ccaea",
+  "catalogue_version": "89bf5183a6268e7f85ae509574cf13366b88cd88002cff30427545b5c0ba12bd",
   "standard_legal_cards": 5164,
   "implemented_standard_cards": 2874,
   "implemented_total": 2880,
-  "token_definitions": 143,
+  "token_definitions": 144,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
   "omen_definitions": 13,
