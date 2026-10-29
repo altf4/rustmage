@@ -2,30 +2,29 @@
 
 Pinned Oracle 4421ab7d-6d9b-4edd-b5a0-53a8ed84da6f and XMage revision
 492369c7844b8d76479f0393ff9eb6b0b0cf30d7 are recorded in the provenance file.
-The partial typed draft implements 12/12, flying, trample and the on-cast
-untap-all-controlled-lands trigger, independent of spell resolution. Tests are
-unlinked and unbuilt; no completeness or throughput claim is made.
+The gated typed draft includes 12/12, flying, trample, the on-cast
+untap-controlled-lands trigger, ward's optional three-permanent sacrifice,
+and the {3} hand activation. Ward captures its payer and related stack item;
+the hand activation captures the exiled incarnation, grants the target land a
+layer-six mana ability and offers its controller permission to cast the exiled
+card. The grant expires when the linked incarnation is cast, while permission
+also depends on that incarnation remaining in exile.
 
-Two printed obligations are not yet implemented. Ward requires a payer-owned,
-optional atomic selection of exactly three controlled permanents, validation of
-all selected incarnations and sacrifice prohibitions before committing, one
-simultaneous sacrifice event with replacement choices and correct unpaid
-countering even if the original ward source has left. The choice, payer,
-related stack item, partial selection, replacement continuation and rollback
-must remain owned, private/public as appropriate and serializable; countering an
-uncounterable spell must still allow paying or declining.
+The primary and independent Emrakul modules are linked under assurance, and the
+funding-sacrifice module is linked under the funding engine. They exercise ward
+payment and decline, countered and uncounterable spells, copied ability packets,
+source departure, retargeting, layer suppression, projected funding and owned
+restore. Some departure, copied-controller, prohibition and replacement cases
+use synthetic setup; the independent Food-only type change is also synthetic.
+Passing evidence must come from a completed coordinated guarded run against the
+exact candidate; linkage alone is not validation. No completeness or throughput
+claim is made.
 
-The {3} hand activation must exile the source as a mandatory cost, target any
-land, and on resolution separately grant that exact land a layer-six {T}: {C}{C}
-ability and give the captured player permission to cast the exact exiled card.
-The cast permission lasts only while that incarnation remains in exile. The
-land grant ends when the linked card is cast from exile, not merely when the
-card leaves exile or changes controller; exact timing, departure and return,
-ability suppression order, copied abilities, funding projections and rollback
-need independent tests. A countered or targetless activation must not create
-either resolution effect. Both features need shared mechanic implementation,
-compatibility/schema review and guarded validation before this card can be
-marked complete.
+The mixed-zone planner and copied-spell lifecycle remain shared draft work. The
+CR 614.17 self-replacement exception, replacement/entry choices and general
+funding behavior require further evidence and review; see
+`fra-mixed-zone-cost-draft.md`. Keep Emrakul gated until those obligations and
+the funding termination problem below are resolved.
 
 ### Funding termination blocker
 
@@ -69,7 +68,8 @@ cannot be reached: the converter cannot spend those lots, but the color upper
 bound can count its blue production. Dropping or arbitrarily capping the green
 lots would need a proof that no later reachable goal or cost can use them.
 
-The fixed-purpose test is unlinked and unbuilt. Full termination still requires
+The fixed-purpose tests are linked in the funding engine; their presence does not
+establish general termination. Full termination still requires
 a finite-control argument and a sound coverability treatment across nested
 payment choices, conversions, and quality-changing or source-changing events.
 

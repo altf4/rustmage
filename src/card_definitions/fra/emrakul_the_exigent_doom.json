@@ -38,5 +38,11 @@
       "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
       "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
     }
+  ],
+  "rules_tests": "src/engine_fra_emrakul_exigent_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_fra_emrakul_ward_independent_tests.rs",
+    "src/engine_fra_mixed_zone_cost_tests.rs",
+    "src/engine_funding_sacrifice_tests.rs"
   ]
 }
