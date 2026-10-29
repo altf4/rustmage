@@ -271,7 +271,7 @@ fn sos_preparation_public_copy_paid_cast_transaction_and_exact_departure() {
         assert!(!g.object_view(source).prepared);
         assert!(g.state.preparations.is_none());
         assert_eq!(
-            g.state.stack.last().unwrap().source_card.name(),
+            g.state.stack.last().unwrap().source.unwrap().card.name(),
             "Vibrant Idea"
         );
         assert_eq!(

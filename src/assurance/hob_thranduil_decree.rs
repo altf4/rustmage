@@ -228,7 +228,7 @@ fn hob_decree_actual_countered_adventure_permanent_can_cast_either_face_for_free
             assert_eq!(packet.cast.unwrap().method, CastMethod::Free);
             assert_eq!(packet.cast.unwrap().payment, [0; 6]);
             assert_eq!(
-                packet.source_card.name(),
+                packet.source.unwrap().card.name(),
                 if face == CastFace::Normal {
                     "Great Ugly-Looking Goblin"
                 } else {
@@ -272,13 +272,13 @@ fn hob_decree_copied_permanent_spell_counter_creates_no_card_permission() {
             g.state
                 .stack
                 .iter()
-                .any(|s| s.is_copy && s.source_card == Card::from_name("Bear Cub").unwrap())
+                .any(|s| s.is_copy && s.source.unwrap().card == Card::from_name("Bear Cub").unwrap())
         });
         let copied = g
             .state
             .stack
             .iter()
-            .find(|s| s.is_copy && s.source_card == Card::from_name("Bear Cub").unwrap())
+            .find(|s| s.is_copy && s.source.unwrap().card == Card::from_name("Bear Cub").unwrap())
             .unwrap()
             .id;
         assert_ne!(copied, original);

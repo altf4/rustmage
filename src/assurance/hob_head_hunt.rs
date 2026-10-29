@@ -339,7 +339,7 @@ fn hob_hunt_copied_provider_and_old_incarnation_packet_survive_later_source_chan
         let old = g.object_ref(h);
         assert_eq!(g.state.stack.last().unwrap().object, old);
         assert_eq!(
-            g.state.stack.last().unwrap().source_card,
+            g.state.stack.last().unwrap().source.unwrap().card,
             Card::from_name("Head of the Hunt").unwrap()
         );
         g.move_object(h, Zone::Hand);

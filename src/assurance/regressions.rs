@@ -1455,7 +1455,7 @@ fn prior_schema179_inspects_both_hidden_retarget_packets() {
             let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
             let zero = g.activation_item(player, source, 0);
             let mut active = zero.clone();
-            active.source_copy_recipe = Some(Box::new(CopyRecipe::new(active.source_card).with_exceptions(
+            active.source_copy_recipe = Some(Box::new(CopyRecipe::new(active.source.unwrap().card).with_exceptions(
                 CopyExceptions { conditional_sacrifice_abilities: 1, ..CopyExceptions::NONE })));
             g.state.stack_copy_data = Some(Box::new(stack_copies::CopyState::test_retarget(zero.clone(), zero.clone())));
             assert!(prior_schema179_copy_owned_state_supported(&g));
@@ -1477,7 +1477,7 @@ fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
             let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
             let reference = g.object_ref(source);
             let mut packet = g.activation_item(player, source, 0);
-            packet.source_copy_recipe = Some(Box::new(CopyRecipe::new(packet.source_card).with_exceptions(
+            packet.source_copy_recipe = Some(Box::new(CopyRecipe::new(packet.source.unwrap().card).with_exceptions(
                 CopyExceptions { conditional_sacrifice_abilities: 1, ..CopyExceptions::NONE })));
             if earthbend {
                 packet.targets.push(BoundTarget { group: 0, target: Target::Card(source), object: Some(reference) });
@@ -1487,7 +1487,7 @@ fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
                 let link = return_links::ReturnLinkView { additional_returning: None, object: reference,
                     zone: Zone::Graveyard, controller: player, counter: None, tapped: false };
                 let view = return_links::DelayedReturnView { id: 1, source: reference,
-                    source_card: packet.source_card, controller: player, returning: link };
+                    source_card: packet.source.unwrap().card, controller: player, returning: link };
                 g.state.delayed_returns = Some(Box::new(vec![return_links::DelayedReturn { view, item: packet }]));
             }
             assert!(g.observe(player).stack.is_empty());

@@ -174,7 +174,7 @@ fn sos_review_mica_copy_of_flashed_back_antiquities_has_no_cast_origin_bonus() {
             .iter()
             .find(|item| {
                 item.is_copy
-                    && item.source_card == Card::from_name("Antiquities on the Loose").unwrap()
+                    && item.source.unwrap().card == Card::from_name("Antiquities on the Loose").unwrap()
             })
             .unwrap();
         let copy_id = copied.id;

@@ -212,7 +212,7 @@ fn sos_storm_cannot_copy_choreographed_sparks_and_does_not_recast_copies() {
                 !g.state
                     .stack
                     .iter()
-                    .any(|s| s.is_copy && s.source_card == definition)
+                    .any(|s| s.is_copy && s.source.unwrap().card == definition)
             );
             if g.state.stack.is_empty()
                 && g.state.resolving.is_none()

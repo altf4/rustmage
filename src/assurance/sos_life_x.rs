@@ -33,7 +33,7 @@ fn pay_life(g: &mut Game, spell: CardId, x: u32) {
         let item = g.state.stack.iter().find(|s| s.card == spell).unwrap();
         assert_eq!(item.x, Some(x));
         assert_eq!(item.mana_value(), 4);
-        assert_eq!(item.source_card.x_symbols(), 0);
+        assert_eq!(item.source.unwrap().card.x_symbols(), 0);
     }
 }
 #[test]
