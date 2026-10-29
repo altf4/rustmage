@@ -1,5 +1,24 @@
 use super::*;
 
+// Model the resolving copy effect: retargeting is an owned continuation of
+// a resolving ability, rather than a stand-alone engine operation.
+fn copy_ability_in_resolution(g: &mut Game, copier: &SpellView) {
+    assert!(g.state.resolving.is_none());
+    g.state.resolving = Some(Resolution {
+        chosen_creature_type: None, target_counter_removal: None, linked_copy: None,
+        cascade: None, target_card_facts: None, immediate_blink_return: None,
+        connive: None, explore: None, evidence: None, item: copier.clone(),
+        mana_payment: None, forage: None, target_library: None, program: &[], pc: 0,
+        target_group: 0, moved_count: None, remembered_draws: None, sacrificed_power: None,
+        discard_after: None, optional_wheel: None, discards: [0; 2],
+        selected_discards: [Vec::new(), Vec::new()], milled: Vec::new(),
+        milled_selection: None, library: None, selection: None, return_attachment: None,
+        search: None, search_result: None, optional_searches: None, choice: None,
+    });
+    assert!(g.copy_target_ability(copier, 0));
+}
+
+
 fn chill(g: &mut Game, player: Player, loyalty: u64) -> CardId {
     let id = put(g, player, "Bear Cub", Zone::Battlefield);
     g.state.objects[id as usize].card = Card::from_name("Chandra, Chill of Compliance").unwrap();
@@ -122,7 +141,7 @@ fn chill_copied_x_activation_preserves_paid_amount_and_target_incarnation() {
             let original = g.state.stack.last().unwrap().clone();
             let mut copier = original.clone();
             copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
-            g.copy_target_ability(&copier, 0);
+            copy_ability_in_resolution(&mut g, &copier);
             if g.legal_actions().contains(&Action::FinishStackTargets) { act(&mut g, Action::FinishStackTargets); }
             let copied = g.state.stack.last().unwrap();
             assert!(copied.is_copy);
@@ -167,7 +186,7 @@ fn chill_large_loyalty_x_survives_copy_observation_and_restore() {
         }
         let mut copier = original.clone();
         copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
-        g.copy_target_ability(&copier, 0);
+        copy_ability_in_resolution(&mut g, &copier);
         if g.legal_actions().contains(&Action::FinishStackTargets) { act(&mut g, Action::FinishStackTargets); }
         assert_eq!(g.state.stack.last().unwrap().loyalty_x, Some(amount));
         g.move_object(source, Zone::Graveyard);
@@ -248,7 +267,7 @@ fn chill_copied_minus_x_retargets_for_new_controller_and_shares_loyalty_use() {
         let mut copier = original.clone();
         copier.controller = player.other();
         copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
-        g.copy_target_ability(&copier, 0);
+        copy_ability_in_resolution(&mut g, &copier);
         act(&mut g, Action::SetStackTarget { index: 0, target: Target::Card(second) });
         act(&mut g, Action::FinishStackTargets);
         assert_eq!(g.state.stack.last().unwrap().controller, player.other());
@@ -341,9 +360,16 @@ fn chill_restricted_blue_pays_prepared_noncreature_face() {
         g.state.players[player.index()].mana = [0; 6];
         activate(&mut g, source, 1);
         g.resolve_top();
+        assert_eq!(g.state.players[player.index()].mana[1], 1);
+        assert!(g.mana_lots(player).iter().any(|lot| lot.quality.restriction == ManaRestrictionView::NoncreatureSpell));
         let saved = g.snapshot();
         for _ in 0..2 {
             act(&mut g, Action::AnnounceExile { card: copy.card });
+            let announcement = g.state.announcing.as_ref().unwrap();
+            assert_eq!(announcement.item.source_card, Card::test_index(5451));
+            let blue = announcement.cost_options().next().unwrap();
+            assert_eq!(blue.colored, [0, 1, 0, 0, 0, 0]);
+            assert!(g.announcement_cost_fundable(announcement, blue), "prepared sorcery face must be fundable with restricted blue");
             for _ in 0..20 {
                 if g.state.announcing.is_none() { break; }
                 choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. } | Action::FinishTargets | Action::PayCosts { .. }));

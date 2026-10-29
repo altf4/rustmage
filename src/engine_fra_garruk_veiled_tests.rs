@@ -1,5 +1,24 @@
 use super::*;
 
+// Model the resolving copy effect: retargeting is an owned continuation of
+// a resolving ability, rather than a stand-alone engine operation.
+fn copy_ability_in_resolution(g: &mut Game, copier: &SpellView) {
+    assert!(g.state.resolving.is_none());
+    g.state.resolving = Some(Resolution {
+        chosen_creature_type: None, target_counter_removal: None, linked_copy: None,
+        cascade: None, target_card_facts: None, immediate_blink_return: None,
+        connive: None, explore: None, evidence: None, item: copier.clone(),
+        mana_payment: None, forage: None, target_library: None, program: &[], pc: 0,
+        target_group: 0, moved_count: None, remembered_draws: None, sacrificed_power: None,
+        discard_after: None, optional_wheel: None, discards: [0; 2],
+        selected_discards: [Vec::new(), Vec::new()], milled: Vec::new(),
+        milled_selection: None, library: None, selection: None, return_attachment: None,
+        search: None, search_result: None, optional_searches: None, choice: None,
+    });
+    assert!(g.copy_target_ability(copier, 0));
+}
+
+
 fn veiled_fixture(g: &mut Game, player: Player) -> CardId {
     let id = put(g, player, "Bear Cub", Zone::Battlefield);
     g.state.objects[id as usize].card = Card::from_name("Garruk, Veiled Butcher").unwrap();
@@ -215,7 +234,8 @@ fn veiled_copied_modifier_uses_each_controller_and_stacks_with_base_set_and_blan
         let mut copier = original.clone();
         copier.controller = player.other();
         copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
-        g.copy_target_ability(&copier, 0);
+        copy_ability_in_resolution(&mut g, &copier);
+        act(&mut g, Action::FinishStackTargets);
         g.move_object(source, Zone::Graveyard);
         settle(&mut g);
         assert_eq!(stats(&g, target), (-5, 1));
