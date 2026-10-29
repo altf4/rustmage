@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "066c1e51c536a8531461bdf42c990fd04ecc41d49b8f54b2f880a9a8bc1408db",
+  "catalogue_version": "ddf564c8c6d1afe41a59255419b2f977464e226e28eac88f362b534c4f1718eb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2897,
-  "implemented_total": 2903,
+  "implemented_standard_cards": 2908,
+  "implemented_total": 2914,
   "token_definitions": 144,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 250,
-      "gated": 35
+      "complete": 261,
+      "gated": 24
     },
     "frc": {
       "total": 6,
@@ -1107,8 +1107,8 @@
     {
       "name": "Ajani's Anguish",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/ajani_s_anguish.rs",
       "set": "fra"
     },
@@ -6507,8 +6507,8 @@
     {
       "name": "Codie, Ravenous Codex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/codie_ravenous_codex.rs",
       "set": "fra"
     },
@@ -11587,8 +11587,8 @@
     {
       "name": "Face Yourself",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/face_yourself.rs",
       "set": "fra"
     },
@@ -15643,8 +15643,8 @@
     {
       "name": "Hall of Echoes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/hall_of_echoes.rs",
       "set": "fra"
     },
@@ -18419,8 +18419,8 @@
     {
       "name": "Jiang Yanggu, Alone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/jiang_yanggu_alone.rs",
       "set": "fra"
     },
@@ -20619,8 +20619,8 @@
     {
       "name": "Loot, the Nexus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/loot_the_nexus.rs",
       "set": "fra"
     },
@@ -24355,8 +24355,8 @@
     {
       "name": "Omnipresence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/omnipresence.rs",
       "set": "fra"
     },
@@ -29211,8 +29211,8 @@
     {
       "name": "Ruric Thar, Magecrusher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/ruric_thar_magecrusher.rs",
       "set": "fra"
     },
@@ -29547,8 +29547,8 @@
     {
       "name": "Samut, Tyrant of Naktamun",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/samut_tyrant_of_naktamun.rs",
       "set": "fra"
     },
@@ -35451,8 +35451,8 @@
     {
       "name": "Tetsuko Umezawa, Pursuer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/tetsuko_umezawa_pursuer.rs",
       "set": "fra"
     },
@@ -41379,8 +41379,8 @@
     {
       "name": "Yuriko, Blade of the Mighty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/yuriko_blade_of_the_mighty.rs",
       "set": "fra"
     },

@@ -7616,3 +7616,9 @@ mod engine_fra_face_yourself_tests;
 
 #[path = "engine_fra_face_yourself_independent_tests.rs"]
 mod engine_fra_face_yourself_independent_tests;
+
+#[path = "engine_fra_ruric_yuriko_review_tests.rs"]
+mod engine_fra_ruric_yuriko_review_tests;
+
+#[path = "engine_fra_anguish_cost_tests.rs"]
+mod engine_fra_anguish_cost_tests;

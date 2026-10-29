@@ -3,12 +3,12 @@
   "catalogue_id": 113,
   "oracle_id": "4a37f4a0-2869-4f81-b51b-4c3e7e0e0671",
   "facts_sha256": "fcdb558e619d37ed096aa6222f22630e329b3e249739f9e6be03a125835e16cc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "edf1949668227fee8b085d9d14eaaf20043a1643dc076e8bf64f5d8ce72c3214"
   },
-  "physical_metadata_sha256": "f4ef75fbc29c2e6020224810cd0e0f561be6252319c9f420e3f30cae66ce9e1f",
+  "physical_metadata_sha256": "1eb5beadeceb41b694684e3ae444d34bc34201bab64b8327aac07d95728f2fb3",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/a/AjanisAnguish.java",
   "java_sha256": "d1ee19adc05b3be4b3c6134ff640889619936ca5676fe17bda710cac1ae2db5a",
@@ -28,5 +28,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
       "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_anguish_independent_tests.rs"
 }
