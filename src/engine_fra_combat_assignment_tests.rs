@@ -110,3 +110,101 @@ fn copying_and_losing_ghalta_acquires_and_removes_combat_rules() {
         assert_eq!(game.combat_assignment_amount(wall), 4);
     }
 }
+
+#[test]
+fn ghalta_removal_after_declaration_changes_damage_but_not_the_attack() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Ghalta the Immovable", Zone::Battlefield);
+        let wall = put(&mut game, player, "Monoist Sentry", Zone::Battlefield);
+        game.state.objects[wall as usize].growth.toughness = 7;
+        game.state.step = Step::Attackers;
+        game.state.pending = Pending::Attackers;
+        act(&mut game, Action::Attack { card: wall });
+        act(&mut game, Action::FinishAttackers);
+        game.move_object(source, Zone::Graveyard);
+        for _ in 0..32 {
+            if game.state.pending == Pending::Blockers { break; }
+            act(&mut game, Action::Pass);
+        }
+        act(&mut game, Action::FinishBlockers);
+        for _ in 0..32 {
+            if game.state.players[player.other().index()].life == 16 { break; }
+            act(&mut game, Action::Pass);
+        }
+        assert_eq!(game.state.players[player.other().index()].life, 16);
+    }
+}
+
+#[test]
+fn ghalta_trample_assigns_lethal_then_excess_from_toughness() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        put(&mut game, player, "Ghalta the Immovable", Zone::Battlefield);
+        let attacker = put(&mut game, player, "Monoist Sentry", Zone::Battlefield);
+        game.state.objects[attacker as usize].growth.toughness = 7;
+        game.state.objects[attacker as usize].gained_keywords = Keywords::TRAMPLE;
+        let blocker = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        game.state.step = Step::Attackers;
+        game.state.pending = Pending::Attackers;
+        act(&mut game, Action::Attack { card: attacker });
+        act(&mut game, Action::FinishAttackers);
+        for _ in 0..32 {
+            if game.state.pending == Pending::Blockers { break; }
+            act(&mut game, Action::Pass);
+        }
+        act(&mut game, Action::Block { blocker, attacker });
+        act(&mut game, Action::FinishBlockers);
+        for _ in 0..32 {
+            if game.damage_assignment_range().is_some() { break; }
+            act(&mut game, Action::Pass);
+        }
+        let range = game.damage_assignment_range().unwrap();
+        assert_eq!(range.target, Target::Card(blocker));
+        assert_eq!((range.minimum, range.maximum), (2, 8));
+        act(&mut game, Action::AssignDamage { target: range.target, amount: range.minimum });
+        for _ in 0..32 {
+            if game.state.players[player.other().index()].life == 14 { break; }
+            act(&mut game, Action::Pass);
+        }
+        assert_eq!(game.state.players[player.other().index()].life, 14);
+        assert_eq!(game.object_view(blocker).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn ghalta_does_not_replace_power_for_noncombat_damage() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        put(&mut game, player, "Ghalta the Immovable", Zone::Battlefield);
+        let attacker = put(&mut game, player, "Monoist Sentry", Zone::Battlefield);
+        let enemy = put(&mut game, player.other(), "Monoist Sentry", Zone::Battlefield);
+        game.state.objects[attacker as usize].growth.toughness = 7;
+        game.state.objects[enemy as usize].growth.toughness = 7;
+        let spell = put(&mut game, player, "Bite Down", Zone::Hand);
+        big_helpers::cast(&mut game, spell, None, &[Target::Card(attacker), Target::Card(enemy)]);
+        settle(&mut game);
+        assert_eq!(game.state.objects[enemy as usize].damage, 4);
+    }
+}
+
+#[test]
+fn ghalta_reduction_clamps_to_zero_and_cannot_pay_the_white_symbol() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let spell = put(&mut game, player, "Ghalta the Immovable", Zone::Hand);
+        let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        game.state.objects[creature as usize].growth.toughness = -10;
+        assert_eq!(game.spell_reduction(player, spell), 0);
+        game.state.objects[creature as usize].growth.toughness = 8;
+        assert_eq!(game.spell_reduction(player, spell), 10);
+        game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 8];
+        reject(&mut game, Action::AnnounceCast { card: spell });
+        game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 0];
+        act(&mut game, Action::AnnounceCast { card: spell });
+        pay(&mut game);
+        assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+        settle(&mut game);
+        assert_eq!(game.object_view(spell).zone, Zone::Battlefield);
+    }
+}
