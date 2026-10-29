@@ -450,3 +450,29 @@ fn tam_proliferates_all_player_counter_types_with_atomic_replacements() {
         }
     }
 }
+
+#[test]
+fn radiation_mill_counts_only_nonland_cards_actually_milled() {
+    for player in [Player::P0, Player::P1] {
+        for replacement in [false, true] {
+            let mut game = scenario(player);
+            if replacement { put(&mut game, player, "Rest in Peace", Zone::Battlefield); }
+            let land = put(&mut game, player, "Forest", Zone::Library);
+            let creature = put(&mut game, player, "Bear Cub", Zone::Library);
+            let spell = put(&mut game, player, "Shock", Zone::Library);
+            let opt = put(&mut game, player, "Opt", Zone::Hand);
+            cast(&mut game, opt, None);
+            game.resolve_top();
+            assert!(game.state.resolving.is_some());
+            let before = game.snapshot();
+            for _ in 0..2 {
+                // A request larger than the library still mills only existing cards.
+                let actual = game.mill_radiation(player, 7);
+                assert_eq!(actual, if replacement { 0 } else { 2 });
+                let destination = if replacement { Zone::Exile } else { Zone::Graveyard };
+                for card in [land, creature, spell] { assert_eq!(game.object_view(card).zone, destination); }
+                game.restore(&before).unwrap();
+            }
+        }
+    }
+}
