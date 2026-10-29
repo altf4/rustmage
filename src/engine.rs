@@ -8181,9 +8181,9 @@ impl Game {
         obj.loyalty_activated_this_turn = false;
         obj.class_level = 1;
         obj.attached_to = None;
-        // This ordered index enumerates library cards, not transient tokens.
-        // Tokens still enter the actual zone and cease only at the next SBA;
-        // CR111.6/111.8 prevent looking at, drawing, or moving them as cards.
+        // Preserve the zone order of physical cards and transient spell/card
+        // copies until state-based cleanup. Card-only library operations filter
+        // copies; tokens do not enter this ordered index.
         if destination == Zone::Library && !obj.is_token() {
             self.state.players[obj.owner.index()].library.push(id);
         }

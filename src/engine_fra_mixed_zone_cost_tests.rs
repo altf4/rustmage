@@ -5,14 +5,21 @@ use super::*;
 fn mixed_zone_exile_prohibition_is_atomic_and_replays() {
     use ability_world::TEST_EXILE_PROHIBITOR;
     struct Reset;
-    impl Drop for Reset { fn drop(&mut self) { TEST_EXILE_PROHIBITOR.with(|p| p.set(None)); } }
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
+        }
+    }
     let _reset = Reset;
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let provider = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
         let source = put(&mut g, player, "Shock", Zone::Hand);
         let grave = put(&mut g, player, "Bear Cub", Zone::Graveyard);
-        let moves = [(g.object_ref(source), Zone::Exile), (g.object_ref(grave), Zone::Exile)];
+        let moves = [
+            (g.object_ref(source), Zone::Exile),
+            (g.object_ref(grave), Zone::Exile),
+        ];
         TEST_EXILE_PROHIBITOR.with(|p| p.set(Some(g.object_ref(provider))));
         let before = g.snapshot();
         for _ in 0..2 {
@@ -32,7 +39,11 @@ fn frozen_mixed_replacement_redirects_stage_together_and_prevented_cost_is_paid(
         let redirect = put(&mut g, player, "Bear Cub", Zone::Graveyard);
         let exile = put(&mut g, player, "Hill Giant", Zone::Graveyard);
         let prevented = put(&mut g, player, "Shock", Zone::Hand);
-        let inputs = [(g.object_ref(redirect), Zone::Exile), (g.object_ref(exile), Zone::Exile), (g.object_ref(prevented), Zone::Exile)];
+        let inputs = [
+            (g.object_ref(redirect), Zone::Exile),
+            (g.object_ref(exile), Zone::Exile),
+            (g.object_ref(prevented), Zone::Exile),
+        ];
         let before = g.snapshot();
         for _ in 0..2 {
             let checkpoint = g.atomic_zone_cost_checkpoint(None);
@@ -59,14 +70,19 @@ fn mixed_cost_waits_for_real_entry_life_choice_and_replays_owned_state() {
             let mut g = scenario(player);
             let land = put(&mut g, player, "Watery Grave", Zone::Graveyard);
             let other = put(&mut g, player, "Bear Cub", Zone::Graveyard);
-            let moves = [(g.object_ref(land), Zone::Exile), (g.object_ref(other), Zone::Exile)];
+            let moves = [
+                (g.object_ref(land), Zone::Exile),
+                (g.object_ref(other), Zone::Exile),
+            ];
             let checkpoint = g.atomic_zone_cost_checkpoint(None);
             let mut plans = g.plan_atomic_zone_cost(&moves).unwrap();
             plans[0].1.destination = Zone::Battlefield;
             let before = g.snapshot();
             g.stage_atomic_zone_cost(plans, checkpoint);
             assert!(g.advance_entries());
-            assert!(matches!(g.state.pending, Pending::EntryLife { player: actor } if actor == player));
+            assert!(
+                matches!(g.state.pending, Pending::EntryLife { player: actor } if actor == player)
+            );
             assert_eq!(g.object_view(land).zone, Zone::Graveyard);
             assert_eq!(g.object_view(other).zone, Zone::Graveyard);
             let pending = g.snapshot();
@@ -112,10 +128,15 @@ fn cannot_exile_prohibition_precedes_ordinary_prevention_for_cost() {
         TEST_EXILE_PROHIBITOR.with(|p| p.set(Some(g.object_ref(provider))));
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(reference)));
         let before = g.snapshot();
-        assert!(g.plan_atomic_zone_cost(&[(reference, Zone::Exile)]).is_none());
+        assert!(
+            g.plan_atomic_zone_cost(&[(reference, Zone::Exile)])
+                .is_none()
+        );
         assert_eq!(g.snapshot(), before);
         TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
-        let plans = g.plan_atomic_zone_cost(&[(reference, Zone::Exile)]).unwrap();
+        let plans = g
+            .plan_atomic_zone_cost(&[(reference, Zone::Exile)])
+            .unwrap();
         assert!(plans[0].1.prevented);
         let events = g.commit_atomic_zone_cost(plans).unwrap();
         assert!(!events[0].moved);
@@ -161,7 +182,9 @@ fn suspended_mixed_cost_restores_entire_checkpoint_if_any_component_changes() {
             plans[2].1.prevented = true;
             g.stage_atomic_zone_cost(plans, checkpoint);
             assert!(g.advance_entries());
-            assert!(matches!(g.state.pending, Pending::EntryLife { player: actor } if actor == player));
+            assert!(
+                matches!(g.state.pending, Pending::EntryLife { player: actor } if actor == player)
+            );
             // Model a future nested replacement which changes an incarnation
             // during the suspended entry transaction, including a prevented
             // component. Both the movement and life choice must roll back.
