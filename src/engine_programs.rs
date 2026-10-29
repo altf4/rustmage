@@ -3560,6 +3560,23 @@ impl Game {
                         Some(discard_events::DiscardAfter::RememberActual),
                     );
                 }
+                Instruction::PutPlayerCountersWithSelf { players, kind, amount, effects } => {
+                    let players: Vec<_> = self.program_players(players, &item).collect();
+                    let mut counters = [[0; 5]; 2];
+                    let mut owned = Vec::new();
+                    for player in players {
+                        counters[player.index()][kind.index()] = amount;
+                        for (index, effect) in effects.iter().enumerate() {
+                            owned.push(replacements::SelfPlayerCounterReplacement {
+                                origin_stack_id: item.id, effect: u16::try_from(index).expect("self replacement index"),
+                                player, kind, factor: effect.factor, add: effect.add,
+                                redirect_player: effect.redirect_to_opponent.then(|| player.other()),
+                                redirect_kind: effect.redirect_kind,
+                            });
+                        }
+                    }
+                    self.effect_mixed_player_counters_with_self(counters, item.controller, item.id, owned, replacements::ResumeMode::Program);
+                }
                 Instruction::ResolveRadiation => {
                     let StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player: player } = item.kind else { unreachable!() };
                     let count = self.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad);

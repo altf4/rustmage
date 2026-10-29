@@ -1681,6 +1681,8 @@ pub(crate) enum Instruction {
     Mill(PlayerSet, MillAmount),
     /// Inherent rad-counter trigger: mill, lose life, then remove rad counters.
     ResolveRadiation,
+    /// Event-local self-replacements belong to this resolving instruction.
+    PutPlayerCountersWithSelf { players: PlayerSet, kind: PlayerCounterKind, amount: u64, effects: &'static [SelfPlayerCounterTemplate] },
     /// Mill the specified number, then queue a reflexive ability only if all were milled.
     MillThenReflexive {
         amount: u16,
@@ -2674,6 +2676,16 @@ pub(crate) enum ReplacementSpec {
     AddToken(Card),
     ReplaceArtifactTokens(Card),
     AddArtifactToken(Card),
+}
+
+/// One typed same-effect counter replacement. Redirects are relative to each
+/// affected player; absence retains the original player or counter kind.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SelfPlayerCounterTemplate {
+    pub factor: u32,
+    pub add: u32,
+    pub redirect_to_opponent: bool,
+    pub redirect_kind: Option<PlayerCounterKind>,
 }
 
 /// Player counters currently represented by the game state.

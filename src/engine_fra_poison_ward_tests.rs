@@ -673,3 +673,35 @@ fn redirected_self_event_stays_distinct_from_simultaneous_matching_event() {
         }
     }
 }
+
+#[test]
+fn authored_self_replacement_instruction_uses_real_resolving_packet() {
+    use crate::cards::SelfPlayerCounterTemplate;
+    static REPLACEMENTS: &[SelfPlayerCounterTemplate] = &[
+        SelfPlayerCounterTemplate { factor: 1, add: 0, redirect_to_opponent: true, redirect_kind: Some(crate::cards::PlayerCounterKind::Energy) },
+    ];
+    static PROGRAM: &[Instruction] = &[Instruction::PutPlayerCountersWithSelf {
+        players: PlayerSet::Controller, kind: crate::cards::PlayerCounterKind::Poison,
+        amount: 1, effects: REPLACEMENTS,
+    }];
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        put(&mut game, player, "Forest", Zone::Library);
+        let opt = put(&mut game, player, "Opt", Zone::Hand);
+        cast(&mut game, opt, None);
+        game.resolve_top();
+        assert!(matches!(game.state.pending, Pending::EffectLibrary { .. }));
+        let r = game.state.resolving.as_mut().unwrap();
+        r.library = None;
+        r.program = PROGRAM;
+        r.pc = 0;
+        game.state.pending = Pending::Priority;
+        let before = game.snapshot();
+        for _ in 0..2 {
+            game.run_program();
+            assert_eq!(game.state.players[player.index()].poison_counters, 0);
+            assert_eq!(game.state.players[player.other().index()].player_counter(crate::cards::PlayerCounterKind::Energy), 1);
+            game.restore(&before).unwrap();
+        }
+    }
+}

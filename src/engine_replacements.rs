@@ -1304,7 +1304,7 @@ impl Game {
     ) {
         assert!(self.state.resolving.as_ref().is_some_and(|r| r.item.id == origin_stack_id));
         assert!(effects.iter().all(|e| e.origin_stack_id == origin_stack_id && e.player == player && e.kind == kind));
-        assert!(effects.iter().enumerate().all(|(i, e)| effects[..i].iter().all(|prior| prior.effect != e.effect)));
+        assert!(effects.iter().enumerate().all(|(i, e)| effects[..i].iter().all(|prior| prior.effect != e.effect || prior.player != e.player || prior.kind != e.kind)));
         let mut counters = [[0; 5]; 2];
         counters[player.index()][kind.index()] = amount;
         self.stage_counter_placements_inner(Vec::new(), counters, Some(player), true, None, mode, None, effects);
@@ -1315,7 +1315,7 @@ impl Game {
     ) {
         assert!(self.state.resolving.as_ref().is_some_and(|r| r.item.id == origin_stack_id));
         assert!(effects.iter().all(|e| e.origin_stack_id == origin_stack_id));
-        assert!(effects.iter().enumerate().all(|(i, e)| effects[..i].iter().all(|prior| prior.effect != e.effect)));
+        assert!(effects.iter().enumerate().all(|(i, e)| effects[..i].iter().all(|prior| prior.effect != e.effect || prior.player != e.player || prior.kind != e.kind)));
         self.stage_counter_placements_inner(Vec::new(), counters, Some(placed_by), true, None, mode, None, effects);
     }
     // CR 118.11: replacement-modified actions still pay the cost.
