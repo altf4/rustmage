@@ -6399,6 +6399,14 @@
     "journal": "db2cfe10d24b90d4",
     "observations": "5bb823fd01eee568"
   },
+  "Extrapolate the Impossible": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "520a0edb1fe4e54f",
+    "observations": "c9784d64bf6cc241"
+  },
   "Extravagant Replication": {
     "root": "main",
     "status": "completed",
@@ -10351,6 +10359,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "f8f82479650c43dd"
   },
+  "Jace's Machinations": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "5a37305467443acc",
+    "observations": "66a58e0470f4db67"
+  },
   "Jace, Reality Sculptor": {
     "root": "main",
     "status": "completed",
@@ -11606,6 +11622,14 @@
     "zone": "Battlefield",
     "journal": "7c50116fb450cf1c",
     "observations": "e87d204c5aef17a6"
+  },
+  "Loot, the Anomaly": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "4324aa4c9fd9325c",
+    "observations": "3a966eafed7ccd27"
   },
   "Loot, the Key to Everything": {
     "root": "main",
@@ -16711,6 +16735,14 @@
     "journal": "e6f10f04b2e13e8f",
     "observations": "2a2dd90cbffc6497"
   },
+  "Sanctum Lurker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "c74d47fdf1bf30fc",
+    "observations": "b4214236c5918e21"
+  },
   "Sandman, Shifting Scoundrel": {
     "root": "main",
     "status": "completed",
@@ -17094,6 +17126,14 @@
     "zone": "Battlefield",
     "journal": "ce93789b5fa64c9f",
     "observations": "d8a459cf9a843c1e"
+  },
+  "Seasoned Cryomancer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 11,
+    "zone": "Battlefield",
+    "journal": "0dd0f348d0fef314",
+    "observations": "61909c8432ae2da3"
   },
   "Secluded Courtyard": {
     "root": "main",
