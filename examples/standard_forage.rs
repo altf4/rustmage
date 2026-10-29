@@ -310,7 +310,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     paid.insert(id);
                     if !f.cost && f.name == NAMES[3] {
-                        credit(&mut debt, context.unwrap().object, 1);
+                        credit(&mut debt, context.unwrap().source().expect("forage packet has source").object, 1);
                         if !a.objects.iter().any(|v| {
                             v.owner == f.player
                                 && v.zone == Zone::Graveyard
