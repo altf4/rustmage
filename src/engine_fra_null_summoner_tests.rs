@@ -204,6 +204,12 @@ fn null_sacrifice_mana_action_rechecks_permission_and_restores_payment() {
                 // Payment visitors reject a mana action that would strand the
                 // announcement. Red is only viable with the independent grant.
                 assert_eq!(g.legal_actions().contains(&red), independent_permission);
+                if !independent_permission {
+                    let checkpoint = g.snapshot();
+                    assert!(g.apply(player, red.clone()).is_err());
+                    assert_eq!(g.snapshot(), checkpoint);
+                    assert!(g.legal_actions().contains(&blue));
+                }
                 act(&mut g, if independent_permission { red } else { blue });
                 assert_eq!(g.object_view(source).zone, Zone::Graveyard);
                 let item = g.state.announcing.as_ref().unwrap().item.clone();
