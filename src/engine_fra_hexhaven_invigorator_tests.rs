@@ -2,7 +2,9 @@ use super::*;
 
 fn hexhaven_optional(g: &mut Game) {
     for _ in 0..48 {
-        if matches!(g.state.pending, Pending::EffectOptional { .. }) { return; }
+        if matches!(g.state.pending, Pending::EffectOptional { .. }) {
+            return;
+        }
         choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
     }
     panic!("damage trigger did not reach optional decision");
@@ -19,8 +21,13 @@ fn hexhaven_searches_up_to_damage_amount_and_puts_selected_lands_tapped() {
         let c = put(&mut g, p, "Island", Zone::Library);
         let invalid = put(&mut g, p, "Bear Cub", Zone::Library);
         assert!(g.keywords(source).contains(Keywords::VIGILANCE));
-        let event = DamageEvent { preventable: true, source: g.damage_source(dealer),
-            target: Target::Card(source), amount: 2, combat: false };
+        let event = DamageEvent {
+            preventable: true,
+            source: g.damage_source(dealer),
+            target: Target::Card(source),
+            amount: 2,
+            combat: false,
+        };
         g.apply_damage_batch(&[event]);
         assert_eq!(g.state.pending_triggers.len(), 1);
         // The amount is frozen even if the original permanent leaves before resolution.
@@ -50,16 +57,24 @@ fn hexhaven_decline_and_empty_search_are_distinct_choices() {
     for p in [Player::P0, Player::P1] {
         for accept in [false, true] {
             let mut g = scenario(p);
+            let original_library = g.state.players[p.index()].library.len();
             let source = put(&mut g, p, "Hexhaven Invigorator", Zone::Battlefield);
             let dealer = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-            let event = DamageEvent { preventable: true, source: g.damage_source(dealer),
-                target: Target::Card(source), amount: 1, combat: true };
+            let event = DamageEvent {
+                preventable: true,
+                source: g.damage_source(dealer),
+                target: Target::Card(source),
+                amount: 1,
+                combat: true,
+            };
             g.apply_damage_batch(&[event]);
             hexhaven_optional(&mut g);
             act(&mut g, Action::ChooseOptional { accept });
-            if accept { act(&mut g, Action::FinishSearch); }
+            if accept {
+                act(&mut g, Action::FinishSearch);
+            }
             settle(&mut g);
-            assert!(g.state.players[p.index()].library.is_empty());
+            assert_eq!(g.state.players[p.index()].library.len(), original_library);
         }
     }
 }

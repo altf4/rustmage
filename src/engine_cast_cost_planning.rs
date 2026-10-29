@@ -337,6 +337,7 @@ impl FundingState<'_> {
                     if before.zone == Zone::Graveyard {
                         n.graveyard_left[before.owner.index()] = true;
                     }
+                    let face_down_physical = n.projected_face_down_physical(*r);
                     n.resources[i].object.zone = zone;
                     n.resources[i].object.generation = n.resources[i]
                         .object
@@ -347,9 +348,15 @@ impl FundingState<'_> {
                     // outside stack/battlefield has only its physical front.
                     let object = &mut n.resources[i].object;
                     n.game.restore_projected_copy_identity(*r, object);
-                    if !object.is_token() && !object.is_spell_copy() {
+                    if let Some(physical) = face_down_physical {
+                        object.card = physical.front_face();
+                    } else if !object.is_token() && !object.is_spell_copy() {
                         object.card = object.card.front_face();
                     }
+                    if let Some(projection) = &mut n.entry_projection {
+                        projection.manifested.retain(|(source, _)| *source != *r);
+                    }
+                    live_counters::set(&mut n.named_counters, *r, None);
                     n.resources[i].object.counters = InitialCounters::default();
                     n.resources[i].object.growth = Stats::default();
                     n.resources[i].object.attached_to = None;
@@ -366,6 +373,8 @@ impl FundingState<'_> {
                     let after = n.reference(r.card);
                     n.project_copy_departure(*r, after);
                     n.resources[i].object.flashback = false;
+                    n.resources[i].object.cast_for_warp = false;
+                    n.resources[i].object.class_level = 1;
                     n.resources[i].attacking = false;
                     next.push(n);
                 }

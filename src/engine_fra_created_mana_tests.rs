@@ -115,7 +115,7 @@ fn kiora_rechecks_that_its_target_is_still_attacking() {
             &mut g,
             Action::AnnounceActivate {
                 card: jace,
-                ability: 0,
+                ability: 1,
                 counter_payment: Counters::default(),
             },
         );
@@ -177,7 +177,7 @@ fn copying_opponents_loyalty_ability_does_not_count_as_your_activation() {
             &mut g,
             Action::AnnounceActivate {
                 card: jace,
-                ability: 0,
+                ability: 1,
                 counter_payment: Counters::default(),
             },
         );

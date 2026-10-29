@@ -7444,3 +7444,21 @@ mod engine_fra_token_name_tests;
 
 #[path = "engine_fra_created_mana_tests.rs"]
 mod engine_fra_created_mana_tests;
+
+#[path = "engine_fra_fblthp_tests.rs"]
+mod engine_fra_fblthp_tests;
+
+#[path = "engine_fra_fblthp_independent_tests.rs"]
+mod engine_fra_fblthp_independent_tests;
+
+#[path = "engine_fra_hexhaven_invigorator_tests.rs"]
+mod engine_fra_hexhaven_invigorator_tests;
+
+#[path = "engine_fra_hexhaven_invigorator_independent_tests.rs"]
+mod engine_fra_hexhaven_invigorator_independent_tests;
+
+#[path = "engine_fra_fblthp_domain_tests.rs"]
+mod engine_fra_fblthp_domain_tests;
+
+#[path = "engine_fra_fblthp_domain_payment_tests.rs"]
+mod engine_fra_fblthp_domain_payment_tests;

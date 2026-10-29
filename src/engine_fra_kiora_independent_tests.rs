@@ -24,7 +24,7 @@ fn activate_jace(g: &mut Game, walker: CardId) {
         g,
         Action::AnnounceActivate {
             card: walker,
-            ability: 0,
+            ability: 1,
             counter_payment: Counters::default(),
         },
     );

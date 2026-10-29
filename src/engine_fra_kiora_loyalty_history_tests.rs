@@ -2,8 +2,18 @@ use super::*;
 
 fn walker(g: &mut Game, p: Player) -> CardId {
     g.create_tokens(p, Card::JacePlaneswalkerToken, 1, false);
-    g.state.objects.iter().enumerate().find_map(|(id, o)|
-        (o.zone == Zone::Battlefield && o.controller == p && o.is_token() && g.has_subtype(id as CardId, "Jace")).then_some(id as CardId)).unwrap()
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .find_map(|(id, o)| {
+            (o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.is_token()
+                && g.has_subtype(id as CardId, "Jace"))
+            .then_some(id as CardId)
+        })
+        .unwrap()
 }
 
 #[test]
@@ -12,7 +22,11 @@ fn loyalty_history_records_committed_player_and_resets_with_turn() {
         let mut g = scenario(p);
         let jace = walker(&mut g, p);
         g.state.objects[jace as usize].counters.loyalty = 5;
-        let action = Action::AnnounceActivate { card: jace, ability: 0, counter_payment: Counters::default() };
+        let action = Action::AnnounceActivate {
+            card: jace,
+            ability: 1,
+            counter_payment: Counters::default(),
+        };
         let before = g.snapshot();
         assert!(!g.observe(p.other()).players[p.index()].loyalty_ability_activated_this_turn);
         act(&mut g, action.clone());
@@ -41,7 +55,14 @@ fn kiora_attack_requires_a_real_loyalty_activation_and_targets_an_attacker() {
             if activated {
                 let jace = walker(&mut g, p);
                 g.state.objects[jace as usize].counters.loyalty = 5;
-                act(&mut g, Action::AnnounceActivate { card: jace, ability: 0, counter_payment: Counters::default() });
+                act(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: jace,
+                        ability: 1,
+                        counter_payment: Counters::default(),
+                    },
+                );
                 pay(&mut g);
                 settle(&mut g);
             }
@@ -50,21 +71,47 @@ fn kiora_attack_requires_a_real_loyalty_activation_and_targets_an_attacker() {
             act(&mut g, Action::Attack { card: bear });
             act(&mut g, Action::FinishAttackers);
             if !activated {
-                assert!(!g.state.pending_triggers.iter().chain(g.state.stack.iter()).any(|item| item.card == kiora));
+                assert!(
+                    !g.state
+                        .pending_triggers
+                        .iter()
+                        .chain(g.state.stack.iter())
+                        .any(|item| item.card == kiora)
+                );
                 continue;
             }
             for _ in 0..48 {
-                if g.legal_actions().contains(&Action::ChooseTarget { target: Target::Card(bear) }) { break; }
-                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+                if g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Card(bear),
+                }) {
+                    break;
+                }
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
             }
-            reject(&mut g, Action::ChooseTarget { target: Target::Card(idle) });
-            act(&mut g, Action::ChooseTarget { target: Target::Card(bear) });
-            if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(idle),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
             g.move_object(kiora, Zone::Graveyard);
             let before = g.snapshot();
             super::super::contracts::branch_contract(g.clone());
             for replay in 0..2 {
-                if replay == 1 { g.restore(&before).unwrap(); }
+                if replay == 1 {
+                    g.restore(&before).unwrap();
+                }
                 settle(&mut g);
                 assert!(!g.object_view(bear).tapped);
                 assert!(g.keywords(bear).contains(Keywords::CANT_BE_BLOCKED));
@@ -80,7 +127,11 @@ fn kiora_grants_loyalty_minus_eight_and_creates_hexproof_leviathan() {
         let kiora = put(&mut g, p, "Kiora of Salt and Sand", Zone::Battlefield);
         let jace = walker(&mut g, p);
         g.state.objects[jace as usize].counters.loyalty = 7;
-        let action = Action::AnnouncePlaneswalkerGrant { source: g.object_ref(jace), grantor: g.object_ref(kiora), ability: 0 };
+        let action = Action::AnnouncePlaneswalkerGrant {
+            source: g.object_ref(jace),
+            grantor: g.object_ref(kiora),
+            ability: 0,
+        };
         reject(&mut g, action.clone());
         assert!(!g.observe(p.other()).players[p.index()].loyalty_ability_activated_this_turn);
         g.state.objects[jace as usize].counters.loyalty = 9;
@@ -91,8 +142,19 @@ fn kiora_grants_loyalty_minus_eight_and_creates_hexproof_leviathan() {
         assert!(g.observe(p.other()).players[p.index()].loyalty_ability_activated_this_turn);
         g.move_object(kiora, Zone::Graveyard);
         settle(&mut g);
-        let leviathan = g.state.objects.iter().enumerate().find_map(|(id, o)|
-            (o.is_token() && o.zone == Zone::Battlefield && o.controller == p && o.card == Card::test_index(5455)).then_some(id as CardId)).unwrap();
+        let leviathan = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(id, o)| {
+                (o.is_token()
+                    && o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.card == Card::test_index(5455))
+                .then_some(id as CardId)
+            })
+            .unwrap();
         assert_eq!(stats(&g, leviathan), (8, 8));
         assert!(g.keywords(leviathan).contains(Keywords::HEXPROOF));
     }

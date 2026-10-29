@@ -579,6 +579,7 @@ fn borrowed_links_reserve_stable_slots_for_multiple_and_initially_ability_free_d
             });
         }
         g.exile_and_borrow_activated_abilities(&item);
+        g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
         let links = g.state.borrowed_links.as_ref().unwrap();
         assert_eq!(links.len(), 2);
         assert!(links[0].first_slot + links[0].width <= links[1].first_slot);
@@ -639,6 +640,7 @@ fn borrowed_donor_definition_changes_replay_and_restore_slots() {
             });
         }
         g.exile_and_borrow_activated_abilities(&item);
+        g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
         let checkpoint = g.snapshot();
         let mut replay = g.clone();
         let exercise = |game: &mut Game| {

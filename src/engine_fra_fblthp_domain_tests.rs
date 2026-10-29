@@ -37,9 +37,13 @@ fn fblthp_paid_x_limits_search_to_distinct_basic_land_names() {
             act(&mut g, Action::ChooseX { value: x });
             pay(&mut g);
             for _ in 0..48 {
-                if matches!(g.state.pending, Pending::EffectSearch { .. }) { break; }
+                if matches!(g.state.pending, Pending::EffectSearch { .. }) {
+                    break;
+                }
                 g.prepare_triggers();
-                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
             }
             assert!(matches!(g.state.pending, Pending::EffectSearch { .. }));
             assert!(g.observe(p).search_choice.is_some());
@@ -56,8 +60,14 @@ fn fblthp_paid_x_limits_search_to_distinct_basic_land_names() {
             super::contracts::branch_contract(g.clone());
             act(&mut g, Action::FinishSearch);
             settle(&mut g);
-            assert_eq!(g.object_view(first).zone, if x == 0 { Zone::Library } else { Zone::Hand });
-            assert_eq!(g.object_view(island).zone, if x == 0 { Zone::Library } else { Zone::Hand });
+            assert_eq!(
+                g.object_view(first).zone,
+                if x == 0 { Zone::Library } else { Zone::Hand }
+            );
+            assert_eq!(
+                g.object_view(island).zone,
+                if x == 0 { Zone::Library } else { Zone::Hand }
+            );
             assert_eq!(g.object_view(swamp).zone, Zone::Library);
         }
     }
