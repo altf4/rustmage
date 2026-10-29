@@ -158,6 +158,11 @@ impl Game {
         );
         let timestamp = self.next_role_timestamp();
         for &id in ids {
+            if matches!(granting_card.triggers()[usize::from(ability)].condition.event(), TriggerCondition::PlayerDamaged { .. })
+                && !self.state.damage_sources.contains(&id)
+            {
+                self.state.damage_sources.push(id);
+            }
             let grant = TemporaryAbilityView {
                 recipient: self.object_ref(id),
                 grantor: item.object,

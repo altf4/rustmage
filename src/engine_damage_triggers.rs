@@ -195,6 +195,39 @@ impl Game {
                 }
             }
         }
+        // Timed grants are distinct abilities, even if the same source was
+        // activated multiple times. The saved timestamp tests layer-six removal.
+        let grants = self.state.temporary_abilities.as_deref().cloned().unwrap_or_default();
+        for grant in grants {
+            if !(grant.permanent || grant.expires_turn == self.state.turn)
+                || !self.on_battlefield(grant.recipient.card)
+                || self.object_ref(grant.recipient.card) != grant.recipient { continue; }
+            let ability = grant.granting_card.triggers()[usize::from(grant.ability)];
+            let TriggerCondition::PlayerDamaged { subject, combat_only, opponent_only, one_or_more } = ability.condition.event() else { continue; };
+            let source = self.object_view(grant.recipient.card);
+            if !source.grant_available(grant.grantor, grant.granting_card, grant.ability, Some(grant.timestamp)) { continue; }
+            let context = Some(AttachmentTriggerView { grantor: grant.grantor,
+                granting_card: grant.granting_card, recipient: grant.recipient,
+                defender: None, granted: true, origin: grant.origin });
+            let mut aggregate = std::collections::BTreeMap::new();
+            for (&(dealer, player, combat), &amount) in &hits {
+                if (matches!(subject, DamageSubject::AnyNoncombatSources | DamageSubject::ControlledNoncombatSources) && combat)
+                    || (combat_only && !combat) || (opponent_only && source.controller == player)
+                    || !self.damage_qualified(&source, dealer, subject) { continue; }
+                if one_or_more {
+                    let total = aggregate.entry(player).or_insert((0u128, true));
+                    total.0 = total.0.checked_add(amount).capacity("damage amount exhausted");
+                    total.1 &= combat;
+                } else {
+                    self.queue_damage_trigger(&source, usize::from(grant.ability), context,
+                        DamageTriggerView { dealer: Some(dealer.reference), player, amount, combat });
+                }
+            }
+            for (player, (amount, combat)) in aggregate {
+                self.queue_damage_trigger(&source, usize::from(grant.ability), context,
+                    DamageTriggerView { dealer: None, player, amount, combat });
+            }
+        }
     }
 
     /// Observe the completed damage event before state-based actions. In

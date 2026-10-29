@@ -1952,6 +1952,8 @@ pub(crate) enum Instruction {
     GrantPermanentSelfAbility(crate::engine::SelfGrantedAbilityKind),
     /// Grant the exact source a triggered template until it changes zones.
     GrantSourcePermanentTrigger(u16),
+    /// Grant a triggered ability to this exact source until cleanup.
+    GrantSourceTriggerUntilEndOfTurn(u16),
     /// Grant keywords only to targets cast for their warp cost.
     GrantWarpedTargetsKeywords(Keywords),
     /// Register the exact targets for earthbend's delayed return.

@@ -5391,6 +5391,11 @@ impl Game {
                     self.return_granted_source(&item, counter, role)
                 }
                 Instruction::GrantSelfAbility(kind) => self.grant_self_ability(&item, kind),
+                Instruction::GrantSourceTriggerUntilEndOfTurn(ability) => {
+                    if self.on_battlefield(item.object.card) && self.object_ref(item.object.card) == item.object {
+                        self.grant_temporary_ability_to(&item, ability, &[item.object.card]);
+                    }
+                }
                 Instruction::GrantSourcePermanentTrigger(ability) => {
                     if self.on_battlefield(item.object.card)
                         && self.object_ref(item.object.card) == item.object
