@@ -91,6 +91,7 @@ impl Game {
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {

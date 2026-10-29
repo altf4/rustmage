@@ -830,6 +830,7 @@ impl Game {
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledEquippedCreatureAttacks
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
@@ -1665,6 +1666,17 @@ impl Game {
                         .last_mut()
                         .unwrap()
                         .entering_object = Some(attacker);
+                }
+                if ability.condition.event() == TriggerCondition::ControlledCreatureAttacks {
+                    for attacker in declared {
+                        let object = self.object_ref(attacker.card);
+                        let facts = EventObjectFacts::DamageActor(self.damage_source(attacker.card));
+                        if self.queue_trigger(&source, index) {
+                            self.state.pending_triggers.last_mut().unwrap().event_object = Some(Box::new(EventObjectView {
+                                object, facts, conniver_creature: None, subtype_lki: None,
+                            }));
+                        }
+                    }
                 }
                 if ability.condition.event() == TriggerCondition::ControlledEquippedCreatureAttacks
                 {

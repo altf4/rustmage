@@ -3543,6 +3543,8 @@ pub(crate) enum TriggerCondition {
     SelfAttacksAlone,
     /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
     ControlledCreatureAttacksAlone,
+    /// One event for each creature declared attacking by the source controller.
+    ControlledCreatureAttacks,
     ControlledEquippedCreatureAttacks,
     EquippedAttacks,
     /// Attachment recipient was the sole creature declared in this attack event.
