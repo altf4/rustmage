@@ -3,7 +3,7 @@
   "catalogue_id": 5456,
   "oracle_id": "bd416426-d037-45e3-9647-816bf982cbea",
   "facts_sha256": "76765959fd0d476206d1354adf8961128c5fdba4abeb59fa8c91955f461c55d1",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "7d664f170eed5ccc947767749ed5209338bdf11b77cc0a0daf55324c095a1ab2",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/v/VigorbloomVanguard.java",

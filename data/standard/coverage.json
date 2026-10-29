@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7a050e241f4f379c9d592f091c11920629de81860f9fa89e1899410ca13f37a7",
+  "catalogue_version": "4b523e6bff68234b1da70c16211a8e6b4fc810a8d1568cd6c221feccb90ccaea",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2860,
-  "implemented_total": 2866,
+  "implemented_standard_cards": 2874,
+  "implemented_total": 2880,
   "token_definitions": 143,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 213,
-      "gated": 72
+      "complete": 227,
+      "gated": 58
     },
     "frc": {
       "total": 6,
@@ -7155,8 +7155,8 @@
     {
       "name": "Countersculpt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/countersculpt.rs",
       "set": "fra"
     },
@@ -11859,8 +11859,8 @@
     {
       "name": "Fblthp, Impossibly Lost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/fblthp_impossibly_lost.rs",
       "set": "fra"
     },
@@ -12747,8 +12747,8 @@
     {
       "name": "Flourishing Grapple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/flourishing_grapple.rs",
       "set": "fra"
     },
@@ -16387,8 +16387,8 @@
     {
       "name": "Hexhaven Invigorator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/hexhaven_invigorator.rs",
       "set": "fra"
     },
@@ -17235,8 +17235,8 @@
     {
       "name": "Identity Echo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/identity_echo.rs",
       "set": "fra"
     },
@@ -19139,8 +19139,8 @@
     {
       "name": "Kiora of Salt and Sand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/kiora_of_salt_and_sand.rs",
       "set": "fra"
     },
@@ -19603,8 +19603,8 @@
     {
       "name": "Kwia Vigorbloom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/kwia_vigorbloom.rs",
       "set": "fra"
     },
@@ -26227,8 +26227,8 @@
     {
       "name": "Proft, Sinister Mastermind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/proft_sinister_mastermind.rs",
       "set": "fra"
     },
@@ -28515,8 +28515,8 @@
     {
       "name": "Rise of the Deathbringer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/rise_of_the_deathbringer.rs",
       "set": "fra"
     },
@@ -28819,8 +28819,8 @@
     {
       "name": "Roiling Canopy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/roiling_canopy.rs",
       "set": "fra"
     },
@@ -36379,16 +36379,16 @@
     {
       "name": "Theorist's Proxy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/theorist_s_proxy.rs",
       "set": "fra"
     },
     {
       "name": "Theorist's Sanctum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/theorist_s_sanctum.rs",
       "set": "fra"
     },
@@ -39195,8 +39195,8 @@
     {
       "name": "Verdant Kraken",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/verdant_kraken.rs",
       "set": "fra"
     },
@@ -39331,8 +39331,8 @@
     {
       "name": "Vigorbloom Vanguard // Seed Suture",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/vigorbloom_vanguard_seed_suture.rs",
       "set": "fra"
     },

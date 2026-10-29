@@ -3,7 +3,7 @@
   "catalogue_id": 4874,
   "oracle_id": "83c61083-b357-4775-a855-5a9013cc2bdf",
   "facts_sha256": "e0e94fe624aa7ab9baf3a4af24216821f18009a8e0004813585862d719222fed",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "03e4867c3db71c50333fb41204027a4890540962541482aae5a563cd5101714c"

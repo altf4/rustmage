@@ -7468,3 +7468,18 @@ mod engine_fra_proft_threshold_tests;
 
 #[path = "engine_fra_proft_independent_tests.rs"]
 mod engine_fra_proft_independent_tests;
+
+#[path = "engine_fra_identity_echo_tests.rs"]
+mod engine_fra_identity_echo_tests;
+
+#[path = "engine_fra_identity_echo_independent_tests.rs"]
+mod engine_fra_identity_echo_independent_tests;
+
+#[path = "engine_fra_flourishing_grapple_tests.rs"]
+mod engine_fra_flourishing_grapple_tests;
+
+#[path = "engine_fra_grapple_independent_tests.rs"]
+mod engine_fra_grapple_independent_tests;
+
+#[path = "engine_fra_moon_exception_tests.rs"]
+mod engine_fra_moon_exception_tests;

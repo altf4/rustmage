@@ -106,6 +106,12 @@ fn project_prior_behold_candidate(input: &str, compare_mana: bool) -> Result<Str
                 }
             }
             serde_json::Value::Object(map) => {
+                if map.get("kind").and_then(|v| v.as_str()) == Some("RemoveAbilitiesUntilEndOfTurn")
+                {
+                    return Err(
+                        "temporary ability removal has no prior-schema representation".into(),
+                    );
+                }
                 if map
                     .get("loyalty_ability_activated_this_turn")
                     .is_some_and(|v| v.as_bool() != Some(false))
@@ -252,6 +258,14 @@ fn project_prior_behold_candidate(input: &str, compare_mana: bool) -> Result<Str
 /// Hidden retained acquisitions affect future identities even when current
 /// public views and action sets happen to be empty.
 fn prior_behold_owned_state_supported(game: &Game) -> bool {
+    if game.state.roles.as_ref().is_some_and(|roles| {
+        roles
+            .source_linked_effects
+            .iter()
+            .any(|row| row.kind == SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn)
+    }) {
+        return false;
+    }
     game.state
         .borrowed_links
         .as_ref()
@@ -318,6 +332,7 @@ fn prior_behold_projection_preserves_order_and_rejects_unrepresentable_state() {
         r#"{"graveyard_borrowed_abilities":[{"ability":0,"slot":0}]}"#,
         r#"{"borrowed_slot":0}"#,
         r#"{"loyalty_ability_activated_this_turn":true}"#,
+        r#"{"kind":"RemoveAbilitiesUntilEndOfTurn"}"#,
         r#"{"next_spell_uncounterable":true}"#,
         r#"{"uncounterable_spell_ids":[1]}"#,
         r#"{"decision":"entry_behold"}"#,
@@ -808,6 +823,9 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
             if std::env::var_os("RUSTMAGE_AUDIT_PRIOR_MANA_ACTIONS").is_some() {
                 let baseline: BTreeMap<String, Trace> =
                     serde_json::from_str(include_str!("card_traces.json")).unwrap();
+                // This report contains only trace summaries and fixed projector
+                // error messages; it never emits raw observations or hidden cards.
+                let mut exceptions: BTreeMap<String, (Trace, Option<&Trace>)> = BTreeMap::new();
                 let results: BTreeMap<String, &str> = coverage["cards"]
                     .as_array()
                     .unwrap()
@@ -817,13 +835,22 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
                         let name = row["name"].as_str().unwrap();
                         let candidate =
                             trace_candidate(Card::from_name(name).unwrap(), Some(schema), true);
-                        let result = classify_mana_candidate(&candidate, baseline.get(name));
+                        let previous = baseline.get(name);
+                        let result = classify_mana_candidate(&candidate, previous);
+                        if result != "matches_baseline" {
+                            exceptions.insert(name.to_owned(), (candidate, previous));
+                        }
                         (name.to_owned(), result)
                     })
                     .collect();
                 std::fs::write(
                     path.with_extension("prior-mana-audit.json"),
                     serde_json::to_string_pretty(&results).unwrap() + "\n",
+                )
+                .unwrap();
+                std::fs::write(
+                    path.with_extension("prior-mana-exceptions.json"),
+                    serde_json::to_string_pretty(&exceptions).unwrap() + "\n",
                 )
                 .unwrap();
             }

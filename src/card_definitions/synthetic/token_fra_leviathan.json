@@ -3,7 +3,7 @@
   "catalogue_id": 5455,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "a0aeb7b5485c2c87ea1c180f6de192d23bde4d42aa883437d8e2ea809c93062b",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/Leviathan88Token.java",
