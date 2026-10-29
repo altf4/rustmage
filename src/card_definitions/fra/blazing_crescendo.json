@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b3c8d181e0df7aed8090feaf3f14c93d5898d92be640a68c20889ea70e457a2f"
   },
-  "physical_metadata_sha256": "aa34d8937cafe6a9a22fee4e3782a3b6b1f0120ac67c2f536b8563e61f8b5187"
+  "physical_metadata_sha256": "aa34d8937cafe6a9a22fee4e3782a3b6b1f0120ac67c2f536b8563e61f8b5187",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BlazingCrescendo.java",
+  "java_sha256": "19a2021a71538f0151aafdf03aaee4ed475fa12578b22fac8afd5c652f056d11"
 }

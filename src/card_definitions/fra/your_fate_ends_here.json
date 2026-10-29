@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ab21d7ef8094ce9f41f007118eb5ee9177e29715f08faa1decc43fc403a66d23"
   },
-  "physical_metadata_sha256": "86fb8e6b309f112a20ee201efffc9accbcbceaa18b7eac4a7676842367992936"
+  "physical_metadata_sha256": "86fb8e6b309f112a20ee201efffc9accbcbceaa18b7eac4a7676842367992936",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/y/YourFateEndsHere.java",
+  "java_sha256": "088d39b08b66f98d7e3de7265a93a8959cdb5cd9964a7ade3ca86706e474609a"
 }

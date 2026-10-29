@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ce341af124f1426a0732ea9f3d45f32f3850a1dc667de66c250dcb5d4f3752d2"
   },
-  "physical_metadata_sha256": "b7ded231f29b9600053322403b8292ab0fb8f750306af005f1846e6bdc3ec996"
+  "physical_metadata_sha256": "b7ded231f29b9600053322403b8292ab0fb8f750306af005f1846e6bdc3ec996",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/Bloombrute.java",
+  "java_sha256": "ec8f74db5af2b2efb5a75e1239d24727875e4c4d693639df41ca96aec3406e72"
 }

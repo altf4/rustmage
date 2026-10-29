@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c7c0e86461bcc5d34063ea748ce4ad198c9c19e7c511ed119fa6df7b2bbce5c5"
   },
-  "physical_metadata_sha256": "a02b40dd1d66941ec74c40fb241ec9ed434e65dc73801e2bbea323936d7d3470"
+  "physical_metadata_sha256": "a02b40dd1d66941ec74c40fb241ec9ed434e65dc73801e2bbea323936d7d3470",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VinelasherAdept.java",
+  "java_sha256": "21ef32f31ab8edf2985e01ad86d344754a847cd194f8877a0bc83aeef8fb4e60"
 }

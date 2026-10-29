@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "00b3fb6c55992406c092737e5d075e92f833dd890efcb70bb8bfdde68edee75a"
   },
-  "physical_metadata_sha256": "6fc216b347f5d2ec9ed3cdcfb59896dfa4a2bed6ab3154924add18a47af49239"
+  "physical_metadata_sha256": "6fc216b347f5d2ec9ed3cdcfb59896dfa4a2bed6ab3154924add18a47af49239",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WinterTeamPlayer.java",
+  "java_sha256": "70011d831fa3a7000495a7558d9c4b0cb3c863c7a2b633b14da3bacae49a9708"
 }

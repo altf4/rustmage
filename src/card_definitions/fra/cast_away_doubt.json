@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cfed0e0f6814f6867e72a0651903addd6cf4aa78f1d44ded4b62ebe6b8d4b1b4"
   },
-  "physical_metadata_sha256": "5c73d0bb33e7bd76d021f4c1f92d350941bd6219d524addf9a8a24db2f3c3833"
+  "physical_metadata_sha256": "5c73d0bb33e7bd76d021f4c1f92d350941bd6219d524addf9a8a24db2f3c3833",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CastAwayDoubt.java",
+  "java_sha256": "25eebe4f39b267f74e30a1c11c277913b99a72dce954f3a6e1b83108be2fada3"
 }

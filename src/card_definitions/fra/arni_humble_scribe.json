@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "97dbc89eece83d2da2a9e3499760d26e21c433c75163eec126a7ae272fc9dfb8"
   },
-  "physical_metadata_sha256": "03dee5aa0bb11fd33e0fd666c4599dba8969bf655ed655ce53691973e60d56b5"
+  "physical_metadata_sha256": "03dee5aa0bb11fd33e0fd666c4599dba8969bf655ed655ce53691973e60d56b5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArniHumbleScribe.java",
+  "java_sha256": "b2f5d04637b2fd3bc6354dc37c4c981dee88649f6b1ca39c47ba204088a3dd43"
 }

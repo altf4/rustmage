@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "37f42c3f26720178e87ca17a16f8830461edc31b5e1c6062ff62a17e32c2cba0"
   },
-  "physical_metadata_sha256": "e428e76102227d083c77b253e6dd0c2af40ebf42bbad160f742a26c5ec3fbace"
+  "physical_metadata_sha256": "e428e76102227d083c77b253e6dd0c2af40ebf42bbad160f742a26c5ec3fbace",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArtifistAcumen.java",
+  "java_sha256": "97e97cc0db41fa6662f245b4f38bb0eb5104b5968f947e055921c3b9b422a495"
 }

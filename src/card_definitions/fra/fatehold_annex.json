@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "12650fd6b611dde4729886f15de68b729ce2a898dbda0137772f54e38689d080"
   },
-  "physical_metadata_sha256": "fab9d619b0046b3ac06548f3b8d5e0d7e87c1bd72f8767102853f88935183185"
+  "physical_metadata_sha256": "fab9d619b0046b3ac06548f3b8d5e0d7e87c1bd72f8767102853f88935183185",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FateholdAnnex.java",
+  "java_sha256": "fc005cee7e1a965399be8fc4e46fa0b0a0e7ece20590b03e01eee74e8e6be9b4"
 }

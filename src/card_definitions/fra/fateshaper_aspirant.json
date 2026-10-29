@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f80282c9aa45443e4aab1273322c4a732dd925790cb25d62bc354fde0f79b001"
   },
-  "physical_metadata_sha256": "c8cc660b069822f46895e65ce4be2efa30ec70de117d6a862e5a52847511c56a"
+  "physical_metadata_sha256": "c8cc660b069822f46895e65ce4be2efa30ec70de117d6a862e5a52847511c56a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FateshaperAspirant.java",
+  "java_sha256": "a464938670ed931bb4952b58ef534f83e8e3c882a6cad6c98f69acf9990c8881"
 }

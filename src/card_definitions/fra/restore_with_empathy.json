@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "27f0ac58efa0f2db30109e745b855da857d11ad1e51d23748f6794d5b93669b1"
   },
-  "physical_metadata_sha256": "45be8d772fc94dbad851f15ead383bf2eb9481e9e75c8a0909f16d68541ee12f"
+  "physical_metadata_sha256": "45be8d772fc94dbad851f15ead383bf2eb9481e9e75c8a0909f16d68541ee12f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RestoreWithEmpathy.java",
+  "java_sha256": "be79f406e5a5c2eb418cbc96622820e351b095f2f85b0b30f5eb75007d8703f0"
 }

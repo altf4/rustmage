@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "780fc566d0750daf41d91bde72e9c244dc2fea147318323b64a854b3deca72b4"
   },
-  "physical_metadata_sha256": "0133c6cb9172dbecc41417c952a4fa1546abccdbce692355b787a8c4c8b738cb"
+  "physical_metadata_sha256": "0133c6cb9172dbecc41417c952a4fa1546abccdbce692355b787a8c4c8b738cb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheoreticalNecromancer.java",
+  "java_sha256": "97607ae1b75fbf4ae61d5d2c42ef859048c1b4ea0e817d543d8e035902824a77"
 }

@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "506b4a3c328cc42cd39084d4e008397ccc3eb98393c2cd995fe0c928aa0d98d3"
   },
-  "physical_metadata_sha256": "cb91517c590318351a8b0aff985e5f606e047c6d850d6139f30e6bfb9cc850ec"
+  "physical_metadata_sha256": "cb91517c590318351a8b0aff985e5f606e047c6d850d6139f30e6bfb9cc850ec",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FulminousForte.java",
+  "java_sha256": "763c8b9d54ef8a069cd86f5f88b3505fe35424c61817a3fad70c6ac08bc6a16a"
 }

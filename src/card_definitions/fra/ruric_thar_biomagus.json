@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4a3d8140904f0c8ce2231fc47d6e59f971c3e41ff7ce5c35948fc09bf54f13fd"
   },
-  "physical_metadata_sha256": "36943a6634d8b45b95d044010adc08deff213038ffd307451e2c63675bbc5cb3"
+  "physical_metadata_sha256": "36943a6634d8b45b95d044010adc08deff213038ffd307451e2c63675bbc5cb3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RuricTharBiomagus.java",
+  "java_sha256": "99361acc31aefca60ec631e996434e47e291883ae3bd6d42f1988a4456c25ca2"
 }

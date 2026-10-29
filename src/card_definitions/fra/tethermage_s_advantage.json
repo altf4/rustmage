@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "25875ffd54964711857e1f0338a42714c880959fc0b3c9352bd3dc255e534f5a"
   },
-  "physical_metadata_sha256": "010cf256e994dc0710288ee888ef147dabc732fbcd80522feca961e7bfbdf78c"
+  "physical_metadata_sha256": "010cf256e994dc0710288ee888ef147dabc732fbcd80522feca961e7bfbdf78c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TethermagesAdvantage.java",
+  "java_sha256": "f946c35989f5c9574cc4252444a55ed5fe7ea7a51aa41d914cf4c8875ce04adf"
 }

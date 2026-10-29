@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c16029a085f86ea8d8b79df19973a5648577908e0a4b2af9c3b1d85af2c89dfb"
   },
-  "physical_metadata_sha256": "43a909b600a2afe116af73601ede76b4cb065fe5ec514af83f53d97e51902889"
+  "physical_metadata_sha256": "43a909b600a2afe116af73601ede76b4cb065fe5ec514af83f53d97e51902889",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScreechingSoulbreaker.java",
+  "java_sha256": "ddbeee3c054685846d993414129f554af1e20d2f05f67f96ce9f40d64ca4ecb4"
 }

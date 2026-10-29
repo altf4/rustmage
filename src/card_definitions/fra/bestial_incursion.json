@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4cc5af749eefe8311433b0e6c7f1066ca45bc699061bafcd13699bba0e54e38f"
   },
-  "physical_metadata_sha256": "5cd53d6b8a2c7ab5d89a414c3a5e5c9b5666d1921222878415521e588d47875f"
+  "physical_metadata_sha256": "5cd53d6b8a2c7ab5d89a414c3a5e5c9b5666d1921222878415521e588d47875f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BestialIncursion.java",
+  "java_sha256": "7348ed9ca2bf2d8ed4485a92d3bbe31584308a8f108a5b63bf954532760fca3d"
 }

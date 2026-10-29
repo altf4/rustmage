@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ae307fa515ba3a79d23eb0f0ee70ada2a7b952010d838e9333d19e2c6b15df96"
   },
-  "physical_metadata_sha256": "6e95f9b7cc9233f4c46ee08faaa484de889ef86799659b72f7b34788be1acbb2"
+  "physical_metadata_sha256": "6e95f9b7cc9233f4c46ee08faaa484de889ef86799659b72f7b34788be1acbb2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AfterthoughtSentry.java",
+  "java_sha256": "600e75c8afec3803be5e9e3feb3d8a10d8fc18add86714f8e1615318152b2079"
 }

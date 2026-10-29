@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d1b7afaf26e6aad0c3ac852354a3ee190323958ace609618766bdabd8ffa1aba"
   },
-  "physical_metadata_sha256": "a7c00f051eba0fd4471d43c45a8e421671f2002a70130380f759a336299bb87d"
+  "physical_metadata_sha256": "a7c00f051eba0fd4471d43c45a8e421671f2002a70130380f759a336299bb87d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FormidableCommons.java",
+  "java_sha256": "3fd8696c0d047df17b5387c43a1b2c5e67fb6e951a5813594f3050b81afce3b9"
 }

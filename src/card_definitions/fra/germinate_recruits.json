@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "02c8031fb32b5da5c424e8286cb115f574f0de08fd2e166c1ee1f8cc3d2fb2ad"
   },
-  "physical_metadata_sha256": "faa375624a877c24c0f8e5ed79d01fc22e334bb565883e8fc5d69728e008f655"
+  "physical_metadata_sha256": "faa375624a877c24c0f8e5ed79d01fc22e334bb565883e8fc5d69728e008f655",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GerminateRecruits.java",
+  "java_sha256": "aecd0edc48f485e13300ba2ab5c0015f67aafd32a934a52ce2b020240574ed8c"
 }

@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c11c410feb2f110f5e9b72ed2b0edc1ec7b5bcc29111e5bc3524ddc6fdf861c2"
   },
-  "physical_metadata_sha256": "0c83e97a4ceb0f057b5b9a669ca4bc91fad17de68885fbfc5f3cfb10df5c4dab"
+  "physical_metadata_sha256": "0c83e97a4ceb0f057b5b9a669ca4bc91fad17de68885fbfc5f3cfb10df5c4dab",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WreckingGecko.java",
+  "java_sha256": "064224ca13bf6d150bb37a35a9ae9cb63704ae97939504dd3b1992299d08825f"
 }

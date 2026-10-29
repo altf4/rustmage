@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1a5d51243f2e68add101e87ccfbbb9b8f1489a35f0239245217a0eedc3ac7902"
   },
-  "physical_metadata_sha256": "a3379cf8d9381e473d9060c06e71c625e3ba5fc3c82b99da1b0c9bd7b893120b"
+  "physical_metadata_sha256": "a3379cf8d9381e473d9060c06e71c625e3ba5fc3c82b99da1b0c9bd7b893120b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BlessedGhoul.java",
+  "java_sha256": "3dbe2c9b0bc47eca7c546f2af5b857f7946a5a5cf8a3c1177b89140c84f0ecf5"
 }

@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b257f66cf7632fd662ecb176d67a45a2f3c0785c63d85239c25c04d6f45ea147"
   },
-  "physical_metadata_sha256": "08733ba4d8d10bc1d98fd6822cf564cb869299e23360fac3d83648ce8333e0ae"
+  "physical_metadata_sha256": "08733ba4d8d10bc1d98fd6822cf564cb869299e23360fac3d83648ce8333e0ae",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CryotheoryAdept.java",
+  "java_sha256": "71e5708f59f28de1f354dc0f5168a1af1c3eb6faa3927c77243bf2e331f2cbd9"
 }
