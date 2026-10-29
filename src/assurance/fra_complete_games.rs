@@ -62,14 +62,11 @@ fn fra_pool_audit_and_cases_preserve_the_acceptance_gate() {
 // This bounded smoke is not set acceptance; `run` retains its full-pool gate.
 #[test]
 fn fra_admitted_decks_finish_and_replay_in_both_seats() {
-    let cases: Vec<_> = workload::cases(2)
-        .into_iter()
-        .filter(|(pair, _, _, _)| *pair == 0)
-        .collect();
-    assert_eq!(cases.len(), 4);
+    let cases = workload::cases(2);
+    assert_eq!(cases.len(), 24);
     let report = workload::run_admitted_smoke(&cases).unwrap();
     assert_eq!(report.workload, "FRA_ADMITTED_SMOKE_ONLY");
-    assert_eq!(report.games.len(), 4);
+    assert_eq!(report.games.len(), 24);
     // Record the observed cards and mechanics so a terminal game caused by
     // empty-library draws alone cannot be mistaken for exercised spell play.
     println!(
@@ -92,13 +89,13 @@ fn fra_admitted_decks_finish_and_replay_in_both_seats() {
             .iter()
             .all(|game| game.owned_branches > 0 && game.replayed_actions == game.decisions)
     );
-    for swapped in [false, true] {
-        for player in [Player::P0, Player::P1] {
-            assert!(
-                cases
-                    .iter()
-                    .any(|&(_, _, start, swap)| start == player && swap == swapped)
-            );
+    for pair in 0..6 {
+        for swapped in [false, true] {
+            for player in [Player::P0, Player::P1] {
+                assert!(cases.iter().any(|&(p, _, start, swap)| {
+                    p == pair && start == player && swap == swapped
+                }));
+            }
         }
     }
 }
