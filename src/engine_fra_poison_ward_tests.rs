@@ -491,14 +491,9 @@ fn sourceless_stack_identity_survives_copy_and_snapshot() {
         assert_eq!(packet.source_less_rule(), None);
         assert_eq!(game.program_players(PlayerSet::SourceOwner, &packet).collect::<Vec<_>>(), vec![player]);
         packet.source_less_rule = Some(SourceLessRule::Radiation);
-        packet.source_card = Card::SOURCELESS;
-        packet.card = CardId::MAX;
-        packet.object = ObjectRef { card: CardId::MAX, generation: 0 };
-        packet.source_facts.card = Card::SOURCELESS;
+        packet.source = None;
         let serialized = serde_json::to_value(&packet).unwrap();
-        for field in ["card", "object", "source_card", "source_facts"] {
-            assert!(serialized[field].is_null(), "{field} should have no source");
-        }
+        assert!(serialized["source"].is_null());
         assert_eq!(packet.source_identity(), None);
         assert_eq!(packet.source(), None);
         assert_eq!(packet.source_less_rule(), Some(SourceLessRule::Radiation));
@@ -542,7 +537,7 @@ fn radiation_trigger_is_sourceless_and_uses_current_counters_on_resolution() {
                 let observed = serde_json::to_value(native_view).unwrap();
                 let stack = observed["stack"].as_array().unwrap();
                 let source = stack.last().unwrap();
-                for field in ["card", "object", "source_card", "source_facts"] { assert!(source[field].is_null()); }
+                assert!(source["source"].is_null());
             }
             // Additional rad acquired after the trigger changes its resolution count.
             game.state.players[player.index()].add_player_counter(crate::cards::PlayerCounterKind::Rad, 1);

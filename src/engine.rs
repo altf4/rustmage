@@ -7278,11 +7278,11 @@ impl Game {
                         history.push((before.reference, before.controller));
                     }
                 }
-                if item.object == before.reference {
+                if item.source.is_some_and(|source| source.object == before.reference) {
                     item.source_keywords = before.keywords;
                     item.source_tapped = before.tapped;
                     item.source_attachment = before.attached_to;
-                    item.source_facts = DamageFacts::from_view(&before);
+                    item.source.as_mut().expect("matched source").facts = DamageFacts::from_view(&before);
                     // Opt-in copy continuations read the last battlefield blueprint,
                     // not the blueprint from when the ability originally triggered.
                     if item.program().is_some_and(|(_, program)| {
@@ -7299,7 +7299,7 @@ impl Game {
                         let recipe = before
                             .copy_recipe
                             .unwrap_or_else(|| CopyRecipe::new(before.card));
-                        item.source_copy_recipe = (recipe.definition != item.source_card
+                        item.source_copy_recipe = (recipe.definition != item.source.expect("matched source").card
                             || recipe.exceptions != CopyExceptions::NONE
                             || recipe.overrides.is_some()
                             || recipe.faces.is_some())
