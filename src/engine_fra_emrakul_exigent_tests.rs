@@ -63,8 +63,9 @@ fn emrakul_cast_untap_uses_live_control_types_and_stun() {
 #[test]
 fn emrakul_ward_sacrifice_three_is_selected_before_atomic_payment() {
     for player in [Player::P0, Player::P1] {
-        for pay_ward in [false, true] {
+        for (pay_ward, redirect) in [(false, false), (true, false), (true, true)] {
             let mut g = scenario(player);
+            if redirect { put(&mut g, player, "Rest in Peace", Zone::Battlefield); }
             let emrakul = put(&mut g, player, "Bear Cub", Zone::Battlefield);
             g.state.objects[emrakul as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
             g.register_battlefield_sources(emrakul);
@@ -94,7 +95,7 @@ fn emrakul_ward_sacrifice_three_is_selected_before_atomic_payment() {
                 }
                 settle(&mut g);
                 for &id in &permanents {
-                    assert_eq!(g.object_view(id).zone, if pay_ward { Zone::Graveyard } else { Zone::Battlefield });
+                    assert_eq!(g.object_view(id).zone, if pay_ward { if redirect { Zone::Exile } else { Zone::Graveyard } } else { Zone::Battlefield });
                 }
                 assert_eq!(g.object_view(emrakul).damage, if pay_ward { 2 } else { 0 });
                 g.restore(&saved).unwrap();
