@@ -7670,3 +7670,12 @@ mod engine_fra_emblem_stats_independent_tests;
 
 #[path = "engine_fra_way_mind_sculptor_tests.rs"]
 mod engine_fra_way_mind_sculptor_tests;
+
+#[path = "engine_fra_theorist_jace_tests.rs"]
+mod engine_fra_theorist_jace_tests;
+
+#[path = "engine_fra_theorist_jace_independent_tests.rs"]
+mod engine_fra_theorist_jace_independent_tests;
+
+#[path = "engine_fra_theorist_extra_tests.rs"]
+mod engine_fra_theorist_extra_tests;

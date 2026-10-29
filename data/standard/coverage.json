@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "ce2989789d06ee687851892f9c33944b4b74b62bb34014d1e45a003a698ecadb",
+  "catalogue_version": "3502707fde78482e568ec62ec3f8671fb122c9ca86fd6c00fb2962dcef57b70f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2915,
-  "implemented_total": 2921,
-  "token_definitions": 145,
+  "implemented_standard_cards": 2916,
+  "implemented_total": 2922,
+  "token_definitions": 146,
   "emblem_definitions": 4,
   "adventure_definitions": 49,
   "omen_definitions": 13,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 268,
-      "gated": 17
+      "complete": 269,
+      "gated": 16
     },
     "frc": {
       "total": 6,
@@ -36275,8 +36275,8 @@
     {
       "name": "The Theorist, Jace Beleren",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/the_theorist_jace_beleren.rs",
       "set": "fra"
     },
