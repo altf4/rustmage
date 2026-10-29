@@ -5469,7 +5469,8 @@
     2,
     8,
     1,
-    0
+    0,
+    2
   ],
   "aliases": [
     [
@@ -6335,6 +6336,10 @@
     [
       "@token/fra-lotus",
       5453
+    ],
+    [
+      "@token/fra-theorist-illusion",
+      5464
     ],
     [
       "@token/goblin_army",
@@ -28963,6 +28968,12 @@
       "name": "Ajani's Pridemate",
       "subtypes": "Cat Soldier",
       "colors": 1
+    },
+    {
+      "factory_identity": "@token/fra-theorist-illusion",
+      "name": "Illusion Token",
+      "subtypes": "Illusion",
+      "colors": 2
     }
   ],
   "emblems": [
@@ -185199,6 +185210,33 @@
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5464,
+      "module": "card_5464",
+      "path": "synthetic/token_fra_theorist_illusion.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fra-theorist-illusion",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Illusion",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
