@@ -226,10 +226,11 @@ impl Game {
     pub(super) fn capture_copy_cast(&mut self, stack: Option<usize>, first_trigger: usize) {
         let Some(index) = stack else { return };
         let spell = self.state.stack[index].clone();
-        if !crate::cards::CastFilter::InstantSorcery.matches(spell.source_card) {
+        let instant_or_sorcery = crate::cards::CastFilter::InstantSorcery.matches(spell.source_card);
+        if !instant_or_sorcery && !spell.source_card.is_prepared_face() {
             return;
         }
-        let prior = self.state.players[spell.controller.index()].instant_sorcery_cast_this_turn - 1;
+        let prior = self.state.players[spell.controller.index()].instant_sorcery_cast_this_turn.saturating_sub(1);
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
             if let Some((_, program)) = trigger.program()
                 && let Some(amount) = program.iter().find_map(|i| match i {
@@ -237,6 +238,7 @@ impl Game {
                         Some(if *prior_spells { prior } else { 1 })
                     }
                     Instruction::CopyCastSpellChosenX => Some(u64::from(spell.x.unwrap_or(0))),
+                    Instruction::CopyPreparedCastSpell => Some(1),
                     _ => None,
                 })
             {
@@ -434,6 +436,15 @@ impl Game {
             .map_or(item.source_facts.kinds, |_| {
                 self.current_kinds(item.object.card)
             })
+    }
+    /// Codie's trigger refers to the actual spell, not its last known copy.
+    pub(super) fn copy_captured_prepared_spell(&mut self, item: &SpellView) -> bool {
+        let Some(event) = &item.copy_event else { return false };
+        if !self.state.stack.iter().any(|spell| spell.id == event.spell.id
+            && spell.object == event.spell.object && spell.kind == StackKind::Spell) {
+            return false;
+        }
+        self.copy_captured_spell(item)
     }
     pub(super) fn copy_captured_spell(&mut self, item: &SpellView) -> bool {
         let Some(event) = &item.copy_event else {

@@ -1054,6 +1054,7 @@ pub(crate) enum Instruction {
     DamageTargetController(u16),
     ExileUntilManaValueCastFree(u16),
     PrepareSource,
+    PrepareControlledCreatures,
     ChooseLandCardName,
     Prepare {
         subject: Subject,
@@ -1126,6 +1127,7 @@ pub(crate) enum Instruction {
     },
     /// Copy the actual triggering spell its chosen X times.
     CopyCastSpellChosenX,
+    CopyPreparedCastSpell,
     CopyPaidExiledCardsFree {
         maximum_casts: u16,
     },
@@ -3094,6 +3096,8 @@ pub(crate) enum CastTarget {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
+    /// A spell cast from an actual prepared card copy.
+    PreparedSpell,
     NotOwnedByYou,
     HasX,
     SourceChosenColor,
@@ -3149,7 +3153,8 @@ impl CastFilter {
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
             }
             // Contextual cast observers use Game::cast_filter_matches instead.
-            Self::NotOwnedByYou
+            Self::PreparedSpell
+            | Self::NotOwnedByYou
             | Self::SourceChosenColor
             | Self::SourceChosenManaValueParity
             | Self::Targeted { .. }
@@ -4248,6 +4253,9 @@ impl Card {
     }
     pub(crate) fn spell_cannot_be_copied(self) -> bool {
         authored::rules(self).is_some_and(|r| r.extras.spell_cannot_be_copied)
+    }
+    pub(crate) fn is_prepared_face(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.prepared_identity.is_some())
     }
     pub(crate) fn prepared_spell(self) -> Option<Card> {
         authored::rules(self).and_then(|rules| rules.extras.prepared_spell)

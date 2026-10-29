@@ -1437,7 +1437,13 @@ impl Game {
                         )
                         && (!ability.condition.requires_opponents_turn()
                             || self.state.active != source.controller)
-                        && self.cast_filter_matches_value(
+                        && (if filter == CastFilter::PreparedSpell {
+                            stack.is_some_and(|i| {
+                                let spell = &self.state.stack[i];
+                                spell.source_card.is_prepared_face()
+                                    && self.state.objects[spell.card as usize].is_spell_copy()
+                            })
+                        } else { self.cast_filter_matches_value(
                             spell_owner,
                             filter,
                             card,
@@ -1449,7 +1455,7 @@ impl Game {
                             stack
                                 .map(|i| self.state.stack[i].targets.as_slice())
                                 .unwrap_or(&[]),
-                        )
+                        ) })
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                         && self.queue_trigger_from(&source, index, grant.map(Box::new))
                     {
@@ -2463,6 +2469,13 @@ impl Game {
                     }
                 }
                 Instruction::PrepareSource => self.prepare_permanent(item.object),
+                Instruction::PrepareControlledCreatures => {
+                    let creatures: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(id, object)| {
+                        (object.zone == Zone::Battlefield && object.controller == item.controller
+                            && self.is_creature(id as CardId)).then_some(self.object_ref(id as CardId))
+                    }).collect();
+                    for creature in creatures { self.prepare_permanent(creature); }
+                }
                 Instruction::ChooseLandCardName => {
                     self.state.pending = Pending::LandCardName {
                         player: item.controller,
@@ -2543,6 +2556,9 @@ impl Game {
                     if self.copy_paid_exiled_cards_free(&item, maximum_casts) {
                         return;
                     }
+                }
+                Instruction::CopyPreparedCastSpell => {
+                    if self.copy_captured_prepared_spell(&item) { return; }
                 }
                 Instruction::CopyCastSpell { .. }
                 | Instruction::CopyCastSpellChosenX
