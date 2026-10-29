@@ -1679,6 +1679,8 @@ pub(crate) enum Instruction {
     DiscardHandRememberCount(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
+    /// Inherent rad-counter trigger: mill, lose life, then remove rad counters.
+    ResolveRadiation,
     /// Mill the specified number, then queue a reflexive ability only if all were milled.
     MillThenReflexive {
         amount: u16,

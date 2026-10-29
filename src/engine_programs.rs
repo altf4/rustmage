@@ -1969,6 +1969,12 @@ impl Game {
 
     pub(super) fn resolve_top(&mut self) {
         let mut item = self.state.stack.pop().unwrap();
+        // Radiation has an intervening-if condition at trigger and resolution.
+        if let StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player } = item.kind
+            && self.state.players[affected_player.index()].player_counter(crate::cards::PlayerCounterKind::Rad) == 0 {
+            self.give_priority();
+            return;
+        }
         if let StackKind::TriggeredAbility { ability } = item.kind
             && (!self.cast_payment_condition(
                 item.trigger_definition().triggers()[ability as usize].condition,
@@ -2032,6 +2038,7 @@ impl Game {
             | StackKind::DelayedManifestDread
             | StackKind::DelayedWarpExile
             | StackKind::SiegeDefeat
+            | StackKind::InherentRule { .. }
             | StackKind::ActivatedAbility { .. } => {
                 item.program().expect("selected ability program").1
             }
@@ -3552,6 +3559,16 @@ impl Game {
                         Some(item.controller),
                         Some(discard_events::DiscardAfter::RememberActual),
                     );
+                }
+                Instruction::ResolveRadiation => {
+                    let StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player: player } = item.kind else { unreachable!() };
+                    let count = self.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad);
+                    let nonland = self.mill_radiation(player, count);
+                    self.lose_life(player, i128::from(nonland));
+                    if let Some(counters) = self.state.players[player.index()].other_player_counters.as_mut() {
+                        let rad = &mut counters[crate::cards::PlayerCounterKind::Rad.index() - 1];
+                        *rad = rad.saturating_sub(nonland);
+                    }
                 }
                 Instruction::MillLifeEvent => {
                     let player = item.life_event.expect("saved life event").player;

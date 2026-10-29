@@ -1437,7 +1437,7 @@ impl SpellView {
             | StackKind::CasualtyCopy
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. } => None,
-            StackKind::DelayedManifestDread => None,
+            StackKind::DelayedManifestDread | StackKind::InherentRule { .. } => None,
         }
     }
     pub(crate) fn bounded_mode_count(&self, mode: usize) -> Option<u8> {
@@ -1588,6 +1588,7 @@ impl SpellView {
                 Some((TargetPlan::NONE, &[Instruction::ExileWarpedPermanent]))
             }
             StackKind::SiegeDefeat => Some((TargetPlan::NONE, &[Instruction::ResolveSiegeDefeat])),
+            StackKind::InherentRule { rule: SourceLessRule::Radiation, .. } => Some((TargetPlan::NONE, &[Instruction::ResolveRadiation])),
         }
     }
 }
@@ -1625,6 +1626,7 @@ pub struct DamageTriggerView {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum StackKind {
     Spell,
+    InherentRule { rule: SourceLessRule, affected_player: Player },
     TriggeredAbility { ability: u16 },
     ActivatedAbility { ability: u16 },
     DelayedSacrifice,

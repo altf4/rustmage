@@ -2939,6 +2939,7 @@ impl Game {
             | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedManifestDread
             | StackKind::DelayedWarpExile
+            | StackKind::InherentRule { .. }
             | StackKind::SiegeDefeat => false,
         }
     }
@@ -3049,6 +3050,7 @@ impl Game {
             | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedManifestDread
             | StackKind::DelayedWarpExile
+            | StackKind::InherentRule { .. }
             | StackKind::SiegeDefeat => unreachable!(),
         }
     }

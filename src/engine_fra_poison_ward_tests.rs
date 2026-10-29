@@ -506,3 +506,43 @@ fn sourceless_stack_identity_survives_copy_and_snapshot() {
         assert_eq!(game.state.pending_triggers.last().unwrap().source_less_rule, Some(SourceLessRule::Radiation));
     }
 }
+
+#[test]
+fn radiation_trigger_is_sourceless_and_uses_current_counters_on_resolution() {
+    for player in [Player::P0, Player::P1] {
+        for replacement in [false, true] {
+            let mut game = scenario(player);
+            if replacement { put(&mut game, player, "Rest in Peace", Zone::Battlefield); }
+            let land = put(&mut game, player, "Forest", Zone::Library);
+            let creature = put(&mut game, player, "Bear Cub", Zone::Library);
+            let spell = put(&mut game, player, "Shock", Zone::Library);
+            game.state.players[player.index()].add_player_counter(crate::cards::PlayerCounterKind::Rad, 2);
+            game.begin_step(Step::Main1);
+            game.prepare_triggers();
+            let packet = game.state.stack.last().unwrap();
+            assert_eq!(packet.source_identity(), None);
+            assert_eq!(packet.kind, StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player: player });
+            for viewer in [player, player.other()] {
+                let observed = serde_json::to_value(game.observe(viewer)).unwrap();
+                let stack = observed["stack"].as_array().unwrap();
+                let source = stack.last().unwrap();
+                for field in ["card", "object", "source_card", "source_facts"] { assert!(source[field].is_null()); }
+            }
+            // Additional rad acquired after the trigger changes its resolution count.
+            game.state.players[player.index()].add_player_counter(crate::cards::PlayerCounterKind::Rad, 1);
+            let before = game.snapshot();
+            for _ in 0..2 {
+                game.resolve_top();
+                assert_eq!(game.state.players[player.index()].life, if replacement { 20 } else { 18 });
+                assert_eq!(game.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad), if replacement { 3 } else { 1 });
+                let destination = if replacement { Zone::Exile } else { Zone::Graveyard };
+                for card in [land, creature, spell] { assert_eq!(game.object_view(card).zone, destination); }
+                game.restore(&before).unwrap();
+            }
+            game.state.players[player.index()].other_player_counters.as_mut().unwrap()[crate::cards::PlayerCounterKind::Rad.index() - 1] = 0;
+            game.resolve_top();
+            assert_eq!(game.object_view(spell).zone, Zone::Library);
+            assert_eq!(game.state.players[player.index()].life, 20);
+        }
+    }
+}

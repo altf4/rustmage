@@ -140,6 +140,7 @@ impl Announcement {
             | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedManifestDread
             | StackKind::DelayedWarpExile
+            | StackKind::InherentRule { .. }
             | StackKind::SiegeDefeat => None,
         }
     }
@@ -231,6 +232,7 @@ impl Announcement {
             | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedManifestDread
             | StackKind::DelayedWarpExile
+            | StackKind::InherentRule { .. }
             | StackKind::SiegeDefeat => {
                 unreachable!("triggered ability has no activation cost")
             }
@@ -410,7 +412,8 @@ impl Announcement {
                 | StackKind::DelayedTokenCreation { .. }
                 | StackKind::DelayedManifestDread
                 | StackKind::DelayedWarpExile
-                | StackKind::SiegeDefeat => false,
+                | StackKind::InherentRule { .. }
+            | StackKind::SiegeDefeat => false,
             }
     }
 }
