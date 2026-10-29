@@ -1204,8 +1204,11 @@ fn schema191_facts_supported(facts: &DamageFacts) -> bool {
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema191_packet_supported(item: &SpellView) -> bool {
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema191(&json).is_ok())
-        || item.source_less_rule.is_some()
-        || item.source.is_none_or(|source| {
+        || !matches!(
+            (item.source, item.source_less_rule),
+            (Some(_), None) | (None, Some(SourceLessRule::Radiation))
+        )
+        || item.source.is_some_and(|source| {
             schema191_new_card(source.card) || !schema191_facts_supported(&source.facts)
         })
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema191_new_card(token))
@@ -7017,5 +7020,46 @@ fn schema191_retains_old_bytes_and_rejects_new_zone_cost_state() {
         let object = put(&mut game, player, "Shock", Zone::Hand);
         game.state.objects[object as usize].card = Card::test_index(4016);
         assert!(!prior_schema191_state_supported(&game.state));
+    }
+}
+
+#[test]
+fn schema191_preserves_published_radiation_packets_in_nested_state_and_rollback() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        game.state.players[player.index()]
+            .add_player_counter(crate::cards::PlayerCounterKind::Rad, 1);
+        game.begin_step(Step::Main1);
+        game.prepare_triggers();
+        let radiation = game.state.stack.last().unwrap().clone();
+        assert_eq!(radiation.source_less_rule, Some(SourceLessRule::Radiation));
+        assert!(radiation.source.is_none());
+        assert!(schema191_packet_supported(&radiation));
+        assert!(prior_schema191_state_supported(&game.state));
+        for viewer in [player, player.other()] {
+            let wire = serde_json::to_string(&game.observe(viewer)).unwrap();
+            assert_eq!(project_prior_schema191(&wire).unwrap(), wire);
+        }
+        let source = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let mut outer = game.activation_item(player, source, 0);
+        outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
+            spell: radiation,
+            amount: 1,
+        }));
+        game.state.stack.clear();
+        game.state.pending_triggers.push(outer);
+        assert!(prior_schema191_state_supported(&game.state));
+        for viewer in [player, player.other()] {
+            let wire = serde_json::to_string(&game.observe(viewer)).unwrap();
+            assert_eq!(project_prior_schema191(&wire).unwrap(), wire);
+        }
+        game.begin_attack_rollback(player);
+        game.state.pending_triggers.clear();
+        assert!(prior_schema191_state_supported(&game.state));
+        let checkpoint = game.snapshot();
+        for _ in 0..2 {
+            assert!(prior_schema191_state_supported(&game.state));
+            game.restore(&checkpoint).unwrap();
+        }
     }
 }
