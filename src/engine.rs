@@ -9669,6 +9669,7 @@ impl Game {
         std::mem::size_of::<State>()
             + s.outside_game.as_ref().map_or(0, |v| {
                 std::mem::size_of::<OutsideGameState>()
+                    + self.outside_entry_bytes()
                     + v.pools
                         .iter()
                         .map(|p| p.capacity() * std::mem::size_of::<Card>())

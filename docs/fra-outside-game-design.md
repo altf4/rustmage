@@ -173,3 +173,11 @@ pool mutations must do the same. The plan has no in-game ObjectRef and the
 current normal path commits it immediately. This is not a replacement-event
 scheduler or evidence that outside-to-hand replacements and observers work.
 Extrapolate remains gated pending those rules, validation and source provenance.
+
+The isolated draft also owns a list of synthetic competing replacement
+outcomes in the pending plan. Test-only helpers select prevention or an exile
+redirect and exercise stale choices, both seats and snapshot restoration. This
+is only a narrow transaction fixture: it exposes no public replacement decision,
+has no production replacement providers, does not dispatch outside-entry
+observers, and does not model repeated or self-replacement ordering. Those must
+be implemented and reviewed before treating this as general replacement support.

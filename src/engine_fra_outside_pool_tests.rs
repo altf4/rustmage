@@ -869,3 +869,64 @@ fn planned_virtual_basic_entry_does_not_consume_outside_pool() {
         }
     }
 }
+
+#[test]
+fn synthetic_outside_entry_replacement_choices_are_owned_and_transactional() {
+    use outside_choices::{OutsideEntryDestination, OutsideEntryReplacement};
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut g = outside_scenario(owner, vec![shock, bear]);
+        cast_extrapolate(&mut g, owner);
+        act(&mut g, Action::ChooseOutsideCard { index: 0 });
+        act(&mut g, Action::ChooseOutsideCard { index: 1 });
+        assert!(g.plan_outside_hand(0));
+        let choices = vec![
+            OutsideEntryReplacement {
+                id: 11,
+                destination: OutsideEntryDestination::Prevent,
+            },
+            OutsideEntryReplacement {
+                id: 12,
+                destination: OutsideEntryDestination::Exile,
+            },
+        ];
+        assert!(g.offer_outside_entry_replacements(choices));
+        let waiting = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert!(!g.choose_outside_entry_replacement(99));
+        assert_eq!(g.snapshot(), waiting);
+        for (effect, prevented) in [(11, true), (12, false)] {
+            for _ in 0..2 {
+                assert!(g.choose_outside_entry_replacement(effect));
+                assert!(g.commit_outside_hand());
+                let state = g.state.outside_game.as_ref().unwrap();
+                assert!(state.pending_entry.is_none());
+                assert_eq!(
+                    state.pools[owner.index()],
+                    if prevented {
+                        vec![shock, bear]
+                    } else {
+                        vec![bear]
+                    }
+                );
+                assert_eq!(
+                    g.state
+                        .objects
+                        .iter()
+                        .filter(|o| o.owner == owner && o.card == shock && o.zone == Zone::Exile)
+                        .count(),
+                    usize::from(!prevented)
+                );
+                assert!(
+                    !g.state
+                        .objects
+                        .iter()
+                        .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Hand)
+                );
+                g.restore(&waiting).unwrap();
+                assert_eq!(g.snapshot(), waiting);
+            }
+        }
+    }
+}

@@ -16,6 +16,25 @@ pub(super) struct Choice {
 /// Frozen pre-event card facts. This has no `ObjectRef` or in-game origin:
 /// the physical outside entry acquires an object identity only on admission.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum OutsideEntryDestination {
+    Hand,
+    #[allow(
+        dead_code,
+        reason = "Synthetic replacement foundation is not publicly enabled"
+    )]
+    Exile,
+    #[allow(
+        dead_code,
+        reason = "Synthetic replacement foundation is not publicly enabled"
+    )]
+    Prevent,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct OutsideEntryReplacement {
+    pub id: u64,
+    pub destination: OutsideEntryDestination,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct OutsideHandEvent {
     owner: Player,
     choice_id: u64,
@@ -24,6 +43,8 @@ pub(super) struct OutsideHandEvent {
     revealed: [Card; 2],
     card: Card,
     pool_version: u64,
+    destination: OutsideEntryDestination,
+    choices: Vec<OutsideEntryReplacement>,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -298,7 +319,65 @@ impl Game {
             revealed: [first, second],
             card,
             pool_version: state.pool_versions[choice.owner.index()],
+            destination: OutsideEntryDestination::Hand,
+            choices: Vec::new(),
         });
+        true
+    }
+
+    /// Memory owned by an uncommitted replacement continuation.
+    pub(super) fn outside_entry_bytes(&self) -> usize {
+        self.state
+            .outside_game
+            .as_ref()
+            .and_then(|s| s.pending_entry.as_ref())
+            .map_or(0, |event| {
+                event.choices.capacity() * std::mem::size_of::<OutsideEntryReplacement>()
+            })
+    }
+
+    /// Synthetic providers exercise the owned plan without exposing an
+    /// incomplete replacement decision in the production public API.
+    #[cfg(test)]
+    pub(super) fn offer_outside_entry_replacements(
+        &mut self,
+        choices: Vec<OutsideEntryReplacement>,
+    ) -> bool {
+        let Some(event) = self
+            .state
+            .outside_game
+            .as_mut()
+            .and_then(|state| state.pending_entry.as_mut())
+        else {
+            return false;
+        };
+        if !event.choices.is_empty()
+            || choices.is_empty()
+            || choices
+                .iter()
+                .enumerate()
+                .any(|(i, effect)| choices[..i].iter().any(|prior| prior.id == effect.id))
+        {
+            return false;
+        }
+        event.choices = choices;
+        true
+    }
+    #[cfg(test)]
+    pub(super) fn choose_outside_entry_replacement(&mut self, id: u64) -> bool {
+        let Some(event) = self
+            .state
+            .outside_game
+            .as_mut()
+            .and_then(|state| state.pending_entry.as_mut())
+        else {
+            return false;
+        };
+        let Some(effect) = event.choices.iter().find(|effect| effect.id == id).copied() else {
+            return false;
+        };
+        event.destination = effect.destination;
+        event.choices.clear();
         true
     }
 
@@ -316,13 +395,14 @@ impl Game {
         let Some(state) = self.state.outside_game.as_mut() else {
             return false;
         };
-        let Some(event) = state.pending_entry else {
+        let Some(event) = state.pending_entry.clone() else {
             return false;
         };
         let Some(choice) = state.choice.as_ref() else {
             return false;
         };
-        if choice.owner != event.owner
+        if !event.choices.is_empty()
+            || choice.owner != event.owner
             || choice.id != event.choice_id
             || choice.pair != Some(event.pair)
             || state.pool_versions[event.owner.index()] != event.pool_version
@@ -330,6 +410,11 @@ impl Game {
             || state.checked_card(event.owner, event.pair[1]) != Some(event.revealed[1])
         {
             return false;
+        }
+        if event.destination == OutsideEntryDestination::Prevent {
+            state.choice = None;
+            state.pending_entry = None;
+            return true;
         }
         let next_version = match event.selected {
             Selection::Pool(_) => Some(
@@ -361,7 +446,13 @@ impl Game {
             copy_kind: CopyKind::None,
             owner: event.owner,
             controller: event.owner,
-            zone: Zone::Hand,
+            zone: match event.destination {
+                OutsideEntryDestination::Hand => Zone::Hand,
+                OutsideEntryDestination::Exile => Zone::Exile,
+                OutsideEntryDestination::Prevent => {
+                    unreachable!("prevented entry did not allocate")
+                }
+            },
             generation: 0,
             tapped: false,
             summoning_sick: false,
@@ -380,7 +471,9 @@ impl Game {
             class_level: 1,
             attached_to: None,
         });
-        self.state.known_hand.push(self.object_ref(id));
+        if event.destination == OutsideEntryDestination::Hand {
+            self.state.known_hand.push(self.object_ref(id));
+        }
         true
     }
 }
