@@ -74,6 +74,7 @@ pub(crate) enum StaticAbilityFragment {
         condition: StatValue,
     },
     FreeHandCast,
+    FreeHandCastAtMostControlledCreatures,
     GrantInstantSorceryStorm {
         ability: u16,
     },

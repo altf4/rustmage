@@ -4240,6 +4240,25 @@ impl Game {
                     {
                         return true;
                     }
+                    if !casting_prohibited && !obj.is_token() && obj.zone == Zone::Hand && (!free_hand_cast || obj.card.is_land()) {
+                        for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen, CastFace::Back] {
+                            let definition = match face {
+                                CastFace::Normal => Some(obj.card),
+                                CastFace::Adventure => obj.card.adventure_spell(),
+                                CastFace::Omen => obj.card.omen_spell(),
+                                CastFace::Back => obj.card.back_face(),
+                            };
+                            let Some(definition) = definition else { continue };
+                            if !self.creature_count_free_hand_cast_available(actor, definition)
+                                || self.turn_free_creature_available(actor, definition)
+                            { continue; }
+                            for flash_surcharge in [false, true] {
+                                if self.permitted_cast_available(actor, card, CastMethod::Free, face, sorcery, flash_surcharge)
+                                    && emit(Action::AnnounceFree { card, face, flash_surcharge })
+                                { return true; }
+                            }
+                        }
+                    }
                     if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
                         if free_hand_cast && obj.zone == Zone::Hand {
                             for face in [

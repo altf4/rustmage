@@ -310,6 +310,7 @@ impl Game {
                 group.fragments.iter().any(|fragment| matches!(fragment,
                     crate::cards::StaticAbilityFragment::ControlledAttackWithoutDefender
                     | crate::cards::StaticAbilityFragment::ControlledCombatDamageByGreaterToughness)))
+            || self.state.objects[id as usize].card.has_creature_count_free_hand_cast()
             || self.state.objects[id as usize].card.has_free_hand_cast()
             || self.state.objects[id as usize].card.has_storm_grant()
             || self.state.objects[id as usize]

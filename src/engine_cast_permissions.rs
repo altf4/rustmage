@@ -25,6 +25,11 @@ impl Card {
                 .any(|f| matches!(f, StaticAbilityFragment::OwnTurnFreeHandInstantSorcery))
         })
     }
+    pub(super) fn has_creature_count_free_hand_cast(self) -> bool {
+        self.static_ability_groups().iter().any(|group| group.fragments.iter().any(|f| {
+            matches!(f, StaticAbilityFragment::FreeHandCastAtMostControlledCreatures)
+        }))
+    }
     pub(super) fn has_free_hand_cast(self) -> bool {
         self.static_ability_groups().iter().any(|group| {
             group
@@ -82,6 +87,24 @@ impl Game {
                 && object.zone == Zone::Battlefield
                 && object.card.has_free_hand_cast()
                 && self.printed_abilities_available(id)
+        })
+    }
+    /// Evaluate against the selected spell face at announcement, before any
+    /// additional cost can remove creatures. A free X spell has X equal to zero.
+    pub(super) fn creature_count_free_hand_cast_available(&self, player: Player, definition: Card) -> bool {
+        let count = self.state.objects.iter().enumerate().filter(|(id, object)| {
+            object.zone == Zone::Battlefield && object.controller == player
+                && self.is_creature(*id as CardId)
+        }).count();
+        if u128::from(definition.fixed_mana_value()) > count as u128 {
+            return false;
+        }
+        self.state.static_sources.iter().any(|&id| {
+            let object = &self.state.objects[id as usize];
+            object.zone == Zone::Battlefield && object.controller == player
+                && object.card.has_creature_count_free_hand_cast()
+                && self.continuous_fragment_available(id, |fragment| matches!(fragment,
+                    StaticAbilityFragment::FreeHandCastAtMostControlledCreatures))
         })
     }
     pub(super) fn has_graveyard_cast(
