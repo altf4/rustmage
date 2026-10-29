@@ -4,6 +4,12 @@
 use super::*;
 use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 
+#[cfg(test)]
+thread_local! {
+    /// Test-only provider identity; the query still uses live control and ability layers.
+    pub(super) static TEST_SACRIFICE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+}
+
 pub(super) trait CharacteristicWorld {
     fn power(&self, id: CardId) -> i128 {
         characteristic_query::CharacteristicQuery::in_world(self)
@@ -295,6 +301,27 @@ pub(super) trait CharacteristicWorld {
         } else {
             keywords
         }
+    }
+    /// Whether a permanent can be sacrificed in this world, including projected
+    /// source control and live layer-six suppression.
+    fn sacrifice_prohibited(&self, id: CardId) -> bool {
+        let target = self.object(id);
+        if target.zone != Zone::Battlefield { return true; }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        (0..self.game().state.objects.len()).any(|index| {
+            let source = index as CardId;
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield || provider.controller != target.controller { return false; }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| matches!(f, crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed);
+            let printed = provider.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(fragment))
+                && query.continuous_fragment_available(source, fragment);
+            #[cfg(test)]
+            let synthetic = TEST_SACRIFICE_PROHIBITOR.with(|p| p.get() == Some(self.reference(source)))
+                && self.printed_abilities_available(source);
+            #[cfg(not(test))]
+            let synthetic = false;
+            printed || synthetic
+        })
     }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);

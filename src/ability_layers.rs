@@ -47,6 +47,8 @@ pub(crate) enum AdditionalTriggerScope {
 pub(crate) enum StaticAbilityFragment {
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
+    /// Permanents controlled by this source's controller cannot be sacrificed.
+    ControlledPermanentsCannotBeSacrificed,
     /// During combat no spells or nonmana activated abilities may be started.
     NoSpellsOrNonmanaDuringCombat,
 

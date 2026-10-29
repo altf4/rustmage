@@ -226,7 +226,8 @@ impl FundingState<'_> {
             return false;
         }
         let spec = spec.in_zone(o.zone);
-        (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+        (!matches!(spec.kind, EffectChoiceKind::Sacrifice | EffectChoiceKind::SacrificeDifferentNames(_) | EffectChoiceKind::SacrificeAttachedEquipment) || !self.sacrifice_prohibited(r.card))
+            && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
             || (self.game.sneak_attacker(self.actor, r) && self.attacking(r.card)))
             && self.reference(r.card) == r
             && (r != source

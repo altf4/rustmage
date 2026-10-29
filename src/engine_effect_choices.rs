@@ -1,5 +1,6 @@
 //! Simultaneous public sacrifices and private exact resolution-cost payments.
 use super::*;
+use ability_world::CharacteristicWorld;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct DiscardDrawChoice {
     players: [bool; 2],
@@ -217,6 +218,8 @@ impl Game {
             return false;
         }
         let f = choice.filter;
+        if matches!(choice.kind, EffectChoiceKind::Sacrifice | EffectChoiceKind::SacrificeGreatestManaValue | EffectChoiceKind::SacrificeDifferentNames(_) | EffectChoiceKind::SacrificeOrDiscard { .. })
+            && self.sacrifice_prohibited(object.card) { return false; }
         o.zone == Zone::Battlefield
             && self.keywords(object.card).contains(f.keywords)
             && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)
@@ -1013,6 +1016,24 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        // A ward cost is paid as one event: revalidate the complete selection
+        // before making any sacrifice, including live restrictions.
+        let ward = self.state.resolving.as_ref().unwrap().program
+            .get(self.state.resolving.as_ref().unwrap().pc.saturating_sub(1))
+            .is_some_and(|i| matches!(i, Instruction::CounterRelatedUnlessSacrifice(_)));
+        if ward {
+            let valid = choice.selected.iter().enumerate().all(|(seat, rows)| {
+                let player = if seat == 0 { Player::P0 } else { Player::P1 };
+                let mut empty = choice.clone();
+                empty.selected = std::array::from_fn(|_| Vec::new());
+                rows.iter().all(|&r| self.effect_choice_candidate(&empty, player, r))
+            });
+            if !valid {
+                let related = self.state.resolving.as_ref().unwrap().item.related_stack;
+                if let Some(related) = related { self.counter_stack_item(related.id, false); }
+                return false;
+            }
+        }
         if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             // The owned selection seat is the amassing player. The resolving

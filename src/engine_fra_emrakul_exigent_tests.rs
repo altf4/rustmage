@@ -286,3 +286,45 @@ fn exile_cast_history_waits_for_retained_stack_packets_and_restores() {
         }
     }
 }
+
+#[test]
+fn ward_sacrifice_prohibition_and_partial_decline_preserve_all_permanents() {
+    use ability_world::{CharacteristicWorld, TEST_SACRIFICE_PROHIBITOR};
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) { TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(None)); }
+    }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let emrakul = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[emrakul as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.register_battlefield_sources(emrakul);
+        let payer = player.other();
+        let permanents: Vec<_> = (0..3).map(|_| put(&mut g, payer, "Forest", Zone::Battlefield)).collect();
+        let provider = put(&mut g, payer, "Bear Cub", Zone::Battlefield);
+        let shock = put(&mut g, payer, "Shock", Zone::Hand);
+        g.state.active = payer;
+        g.state.priority = payer;
+        cast(&mut g, shock, Some(Target::Card(emrakul)));
+        for _ in 0..48 {
+            if matches!(g.state.pending, Pending::EffectChoice { player: p } if p == payer) { break; }
+            choose(&mut g, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
+        }
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(None));
+            let first = g.object_ref(permanents[0]);
+            act(&mut g, Action::Sacrifice { object: first });
+            TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(Some(g.object_ref(provider))));
+            assert!(g.sacrifice_prohibited(permanents[0]));
+            assert!(!g.legal_actions().iter().any(|a| matches!(a, Action::Sacrifice { .. })));
+            act(&mut g, Action::DeclineEffectPayment);
+            settle(&mut g);
+            assert!(permanents.iter().all(|&id| g.object_view(id).zone == Zone::Battlefield));
+            assert_eq!(g.object_view(emrakul).damage, 0);
+            g.restore(&saved).unwrap();
+        }
+        TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(None));
+    }
+}
