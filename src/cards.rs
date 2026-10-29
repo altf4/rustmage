@@ -1899,6 +1899,8 @@ pub(crate) enum Instruction {
     UntapCreatures(CreatureFilter),
     /// Untap every token currently controlled by the resolving player.
     UntapControlledTokens,
+    /// Untap every land currently controlled by the resolving player.
+    UntapControlledLands,
     UntapPlayerCreatures(PlayerSet),
     /// Controlled creatures other than exact objects in the selected target group.
     PutOtherControlledCreatureCounters {

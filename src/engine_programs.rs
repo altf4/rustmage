@@ -5412,6 +5412,13 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::UntapControlledLands => {
+                    let ids: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(id, object)| {
+                        (object.zone == Zone::Battlefield && object.controller == item.controller
+                            && self.current_kinds(id as CardId) & 2 != 0).then_some(id as CardId)
+                    }).collect();
+                    self.untap_objects(&ids, untap_rules::UntapCause::Effect);
+                }
                 Instruction::UntapControlledTokens => {
                     let ids: Vec<_> = self
                         .state
