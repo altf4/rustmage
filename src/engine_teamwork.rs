@@ -53,7 +53,7 @@ impl Game {
         .unwrap_or(false)
     }
     pub(super) fn teamwork_mode_allowed(&self, item: &SpellView, mode: usize) -> bool {
-        let Some(spec) = item.source_card.teamwork() else {
+        let Some(spec) = item.source.and_then(|source| source.card.teamwork()) else {
             return true;
         };
         let bits = if item.cast.is_some_and(|c| c.teamwork == Some(true)) {
@@ -84,7 +84,7 @@ impl Game {
     pub(super) fn choose_teamwork(&mut self, pay: bool) {
         let improvise = improvise::potential(
             self,
-            self.state.announcing.as_ref().unwrap().item.source_card,
+            self.state.announcing.as_ref().unwrap().item.source.expect("cast announcement has source").card,
         );
         let a = self.state.announcing.as_mut().unwrap();
         a.item.cast.as_mut().unwrap().teamwork = Some(pay);

@@ -37,7 +37,8 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return base;
         };
-        if let Some(rule) = item.source_card.activation_target_reduction(ability)
+        let Some(source) = item.source else { return base; };
+        if let Some(rule) = source.card.activation_target_reduction(ability)
             && item.targets.iter().any(|b| {
                 self.same_target_object(*b) && self.item_target_matches(item, rule.rule, b.target)
             })
@@ -46,7 +47,7 @@ impl Game {
         }
         for target in item.targets.iter().filter(|b| self.same_target_object(**b)) {
             if let (Some(kind), Target::Card(id)) = (
-                item.source_card.activation_target_counter_discount(ability),
+                source.card.activation_target_counter_discount(ability),
                 target.target,
             ) && self.on_battlefield(id)
             {
@@ -56,7 +57,7 @@ impl Game {
             }
             base.generic = base.generic.saturating_sub(self.equip_target_reduction(
                 item.controller,
-                item.source_card,
+                source.card,
                 ability,
                 target.target,
             ));

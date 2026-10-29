@@ -205,7 +205,7 @@ impl Game {
         if face == CastFace::Normal {
             return;
         }
-        let physical = self.state.objects[item.card as usize].card;
+        let physical = self.state.objects[item.source.expect("cast spell has source").id as usize].card;
         let definition = match face {
             CastFace::Adventure => physical.adventure_spell(),
             CastFace::Omen => physical.omen_spell(),
