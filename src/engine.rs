@@ -892,6 +892,7 @@ struct OutsideGameState {
     choice: Option<outside_choices::Choice>,
     pending_entry: Option<outside_choices::OutsideHandEvent>,
     pool_versions: [u64; 2],
+    next_choice_id: u64,
     known: [Vec<u16>; 2],
 }
 fn first_player() -> Player {
@@ -3228,6 +3229,7 @@ impl Game {
                         choice: None,
                         pending_entry: None,
                         pool_versions: [0; 2],
+                        next_choice_id: 0,
                         known: [Vec::new(), Vec::new()],
                     })
                 }),

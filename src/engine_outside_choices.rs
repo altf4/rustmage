@@ -8,6 +8,7 @@ pub enum Selection {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Choice {
+    id: u64,
     owner: Player,
     first: Option<Selection>,
     pair: Option<[Selection; 2]>,
@@ -17,6 +18,7 @@ pub(super) struct Choice {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct OutsideHandEvent {
     owner: Player,
+    choice_id: u64,
     selected: Selection,
     pair: [Selection; 2],
     revealed: [Card; 2],
@@ -129,10 +131,18 @@ impl Game {
                 choice: None,
                 pending_entry: None,
                 pool_versions: [0; 2],
+                next_choice_id: 0,
                 known: [Vec::new(), Vec::new()],
             })
         });
+        let next_choice_id = state
+            .next_choice_id
+            .checked_add(1)
+            .capacity("outside choice identity exhausted");
+        let id = state.next_choice_id;
+        state.next_choice_id = next_choice_id;
         state.choice = Some(Choice {
+            id,
             owner,
             first: None,
             pair: None,
@@ -248,7 +258,9 @@ impl Game {
             .first = None;
     }
     pub(super) fn decline_outside_cards(&mut self) {
-        self.state.outside_game.as_mut().unwrap().choice = None;
+        let state = self.state.outside_game.as_mut().unwrap();
+        state.choice = None;
+        state.pending_entry = None;
         self.run_program();
     }
     /// Freeze the physical slot and pool version without consuming the card.
@@ -278,6 +290,7 @@ impl Game {
         let card = if index == 0 { first } else { second };
         state.pending_entry = Some(OutsideHandEvent {
             owner: choice.owner,
+            choice_id: choice.id,
             selected,
             pair,
             revealed: [first, second],
@@ -308,6 +321,7 @@ impl Game {
             return false;
         };
         if choice.owner != event.owner
+            || choice.id != event.choice_id
             || choice.pair != Some(event.pair)
             || state.pool_versions[event.owner.index()] != event.pool_version
             || state.checked_card(event.owner, event.pair[0]) != Some(event.revealed[0])

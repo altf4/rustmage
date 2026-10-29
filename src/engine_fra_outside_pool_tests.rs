@@ -101,6 +101,7 @@ fn outside_scenario(player: Player, cards: Vec<Card>) -> Game {
         choice: None,
         pending_entry: None,
         pool_versions: [0; 2],
+        next_choice_id: 0,
         known: [Vec::new(), Vec::new()],
     }));
     g
@@ -767,6 +768,42 @@ fn planned_outside_entry_validates_exact_slot_and_replays() {
             );
             g.restore(&planned).unwrap();
         }
+        // An identical pair in a new choice has a distinct owned identity.
+        assert!(g.start_outside_choice(owner));
+        g.choose_outside_card(outside_choices::Selection::Pool(2));
+        g.choose_outside_card(outside_choices::Selection::Pool(1));
+        let identical = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), identical);
+        g.restore(&planned).unwrap();
+        // Declining clears the staged plan; a restarted choice cannot reuse it.
+        g.decline_outside_cards();
+        assert!(
+            g.state
+                .outside_game
+                .as_ref()
+                .unwrap()
+                .pending_entry
+                .is_none()
+        );
+        assert!(g.start_outside_choice(owner));
+        g.choose_outside_card(outside_choices::Selection::Pool(2));
+        g.choose_outside_card(outside_choices::Selection::Pool(1));
+        let restarted = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), restarted);
+        g.restore(&planned).unwrap();
+        // Overflow is signalled before replacing an existing choice or plan.
+        g.state.outside_game.as_mut().unwrap().next_choice_id = u64::MAX;
+        let full = g.snapshot();
+        assert!(
+            std::panic::catch_unwind(std::panic::AssertUnwindSafe(
+                || g.start_outside_choice(owner)
+            ))
+            .is_err()
+        );
+        assert_eq!(g.snapshot(), full);
+        g.restore(&planned).unwrap();
         // Replacing the revealed pair cannot reuse an overlapping selected slot.
         assert!(g.start_outside_choice(owner));
         g.choose_outside_card(outside_choices::Selection::Pool(2));

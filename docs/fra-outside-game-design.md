@@ -166,7 +166,7 @@ gated.
 ## Owned outside-entry plan draft
 
 The isolated plan/commit foundation retains the selected pool slot (or virtual
-basic), owner, card and pool mutation version in owned state before committing.
+basic), owner, card, choice-instance ID and pool mutation version in owned state before committing.
 A stale slot, changed choice or version rejects without removing a card or
 changing public knowledge. Pool removal increments its owner's version; future
 pool mutations must do the same. The plan has no in-game ObjectRef and the
