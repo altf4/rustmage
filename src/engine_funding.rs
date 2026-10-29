@@ -1494,13 +1494,6 @@ impl<'g> FundingState<'g> {
             self.life -= i128::from(cost.life);
             self.life_lost[self.actor.index()] |= cost.life > 0;
         }
-        // Evaluate the current projected characteristics at the paid tap,
-        // before the same activation can sacrifice or otherwise move its source.
-        let tap_bonus = if cost.is_none_or(|c| c.tap)
-            && CharacteristicWorld::object(self, id).zone == Zone::Battlefield
-            && CharacteristicWorld::object(self, id).controller == self.actor
-            && CharacteristicWorld::subtypes(self, id).has(CharacteristicWorld::object(self, id).card, "Mountain")
-        { self.game.state.players[self.actor.index()].mountain_mana_bonus } else { 0 };
         let object = &mut self.resources[step.resource].object;
         let mut departure = None;
         if let Some(index) = step.ability {
@@ -1519,9 +1512,6 @@ impl<'g> FundingState<'g> {
             } else {
                 object.used_abilities |= 1u64 << index;
             }
-            if cost.tap {
-                object.tapped = true;
-            }
             let reference = ObjectRef {
                 card: id,
                 generation: object.generation,
@@ -1538,12 +1528,18 @@ impl<'g> FundingState<'g> {
                     Zone::Graveyard
                 });
             }
-        } else {
-            object.tapped = true;
-            if sacrifice_grant {
-                departure = Some(Zone::Graveyard);
-            }
+        } else if sacrifice_grant {
+            departure = Some(Zone::Graveyard);
         }
+        // Match the owned executor: counters and life are paid before the tap,
+        // while the source is still in its current zone and incarnation.
+        let pays_tap = cost.is_none_or(|c| c.tap);
+        let tap_bonus = if pays_tap
+            && CharacteristicWorld::object(self, id).zone == Zone::Battlefield
+            && CharacteristicWorld::object(self, id).controller == self.actor
+            && CharacteristicWorld::subtypes(self, id).has(CharacteristicWorld::object(self, id).card, "Mountain")
+        { self.game.state.players[self.actor.index()].mountain_mana_bonus } else { 0 };
+        if pays_tap { self.resources[step.resource].object.tapped = true; }
         // Tap/counter costs are real prior states, even when the departure below
         // still needs replacement planning. Do not award from a tentative raw
         // destination in the preserve-departure path.
