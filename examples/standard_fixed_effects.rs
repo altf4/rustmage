@@ -81,7 +81,7 @@ fn check(o: &Observation) -> u64 {
 fn classify(s: &SpellView) -> Option<usize> {
     if matches!(s.kind, StackKind::ActivatedAbility { .. }) {
         return s
-            .source_card
+            .source().expect("example expects an object-backed packet").card
             .token_info()
             .filter(|t| t.subtypes == "Clue")
             .map(|_| 12);

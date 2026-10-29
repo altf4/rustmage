@@ -179,7 +179,7 @@ fn classify(s: &SpellView) -> Option<usize> {
             Some(1) => Some(8),
             Some(5) => Some(9),
             _ => s
-                .source_card
+                .source().expect("example expects an object-backed packet").card
                 .token_info()
                 .filter(|t| t.subtypes == "Mutagen")
                 .map(|_| 10),

@@ -519,7 +519,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && a.controller == p
                 && !s.done
             {
-                let n = a.source_card.name();
+                let n = a.source().expect("spell has source").card.name();
                 if n == NAMES[i] && !s.paid {
                     s.paid = true;
                     s.library = o.players[p.index()].library_count;

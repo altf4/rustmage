@@ -288,7 +288,7 @@ fn main() -> Result<(), Error> {
                     casts[i][p.index()] += 1
                 }
                 let printed: u32 = item
-                    .source_card
+                    .source().expect("example expects an object-backed packet").card
                     .info()
                     .mana_cost
                     .split('}')

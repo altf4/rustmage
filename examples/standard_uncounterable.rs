@@ -83,7 +83,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && before
                         .stack
                         .iter()
-                        .any(|v| v.id == victim && v.source_card.cannot_be_countered())
+                        .any(|v| v.id == victim && v.source().is_some_and(|source| source.card.cannot_be_countered()))
                 {
                     attempts.push((s.id, victim, kind));
                 }

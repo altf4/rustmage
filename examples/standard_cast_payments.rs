@@ -140,7 +140,7 @@ fn score(o: &Observation, a: &Action, p: Player, i: usize, s: &Pilot, high: bool
                     return if o.stack.iter().any(|v| {
                         v.kind == StackKind::Spell
                             && v.controller != p
-                            && v.source_card.name()
+                            && v.source().expect("spell has source").card.name()
                                 == if high { "Bygone Colossus" } else { "Shock" }
                     }) {
                         2300
