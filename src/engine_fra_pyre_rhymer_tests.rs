@@ -50,7 +50,7 @@ fn pyre_rhymer_prowess_responds_only_to_own_noncreature_cast() {
     }
 }
 
-fn grant_molten_tide(g: &mut Game, player: Player) {
+fn grant_molten_tide(g: &mut Game, player: Player) -> CardId {
     let source = pyre_fixture(g, player, Zone::Battlefield);
     let reference = g.object_ref(source);
     g.prepare_permanent(reference);
@@ -62,7 +62,7 @@ fn grant_molten_tide(g: &mut Game, player: Player) {
     for _ in 0..96 {
         g.prepare_triggers();
         if g.state.pending == Pending::Priority && g.state.stack.is_empty()
-            && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { return; }
+            && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { return source; }
         choose(g, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
     }
     panic!("Molten Tide resolution did not finish");
@@ -200,7 +200,9 @@ fn molten_tide_extra_mana_follows_kept_or_reversed_mana_event() {
     for player in [Player::P0, Player::P1] {
         for keep in [false, true] {
             let mut g = scenario(player);
-            grant_molten_tide(&mut g, player);
+            let pyre = grant_molten_tide(&mut g, player);
+            // The granting creature would otherwise remain eligible for casualty.
+            g.move_object(pyre, Zone::Graveyard);
             let silver = put(&mut g, player, "Silverquill, the Disputant", Zone::Battlefield);
             g.state.objects[silver as usize].growth.power = -1;
             let enemy = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
@@ -251,7 +253,7 @@ fn molten_tide_announced_mana_pauses_before_the_mountain_is_tapped() {
         let timestamp = g.next_role_timestamp();
         g.state.roles.get_or_insert_default().animations.push(AnimationView {
             object: bolg_ref, timestamp, artifact: false, land: true,
-            preserve_card_types: true, food_only: false, artifact_noncreature: false,
+            preserve_card_types: false, food_only: false, artifact_noncreature: false,
             colors: None, creature_types: None, all_creature_types: false,
             base: None, keywords: Keywords::NONE, expires_turn: None,
         });
@@ -284,6 +286,16 @@ fn molten_tide_borrowed_mana_uses_the_mountain_source_not_the_exiled_donor() {
         let mut g = scenario(player);
         grant_molten_tide(&mut g, player);
         let donor = put(&mut g, player.other(), "Bolg's Company", Zone::Battlefield);
+        // Forge can target only an artifact or land, so give the Goblin
+        // artifact type while preserving the ability that will be borrowed.
+        let donor_ref = g.object_ref(donor);
+        let timestamp = g.next_role_timestamp();
+        g.state.roles.get_or_insert_default().animations.push(AnimationView {
+            object: donor_ref, timestamp, artifact: true, land: false,
+            preserve_card_types: true, food_only: false, artifact_noncreature: false,
+            colors: None, creature_types: None, all_creature_types: false,
+            base: None, keywords: Keywords::NONE, expires_turn: None,
+        });
         let forge = put(&mut g, player, "Territory Forge", Zone::Hand);
         g.state.players[player.index()].mana = [8; 6];
         cast(&mut g, forge, None);
@@ -296,6 +308,13 @@ fn molten_tide_borrowed_mana_uses_the_mountain_source_not_the_exiled_donor() {
         }
         assert_eq!(g.object_view(donor).zone, Zone::Exile);
         let forge_ref = g.object_ref(forge);
+        let timestamp = g.next_role_timestamp();
+        g.state.roles.get_or_insert_default().animations.push(AnimationView {
+            object: forge_ref, timestamp, artifact: true, land: true,
+            preserve_card_types: true, food_only: false, artifact_noncreature: false,
+            colors: None, creature_types: None, all_creature_types: false,
+            base: None, keywords: Keywords::NONE, expires_turn: None,
+        });
         let item = g.cast_preview(player, forge, Zone::Battlefield, forge_ref, 0, [0; 6]);
         g.add_basic_land_type(&item, Subject::Source, crate::cards::BasicLandType::Mountain);
         let goblin = put(&mut g, player, "Goblin Piker", Zone::Battlefield);
