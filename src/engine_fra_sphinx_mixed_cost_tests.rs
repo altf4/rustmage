@@ -139,3 +139,34 @@ fn sphinx_copy_created_through_legal_cast_exiles_then_ceases_after_resolution() 
         }
     }
 }
+
+#[test]
+fn sphinx_prohibition_revalidates_the_whole_payment_before_any_exile() {
+    use ability_world::TEST_EXILE_PROHIBITOR;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_EXILE_PROHIBITOR.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let provider = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let cards: Vec<_> = (0..4).map(|_| sphinx_card(&mut g, player, Zone::Graveyard)).collect();
+        let source = sphinx_card(&mut g, player, Zone::Hand);
+        cast(&mut g, source, None);
+        wait_for_sphinx_choice(&mut g);
+        for &id in &cards[..3] {
+            let object = g.object_ref(id);
+            act(&mut g, Action::SelectResolutionExile { object });
+        }
+        TEST_EXILE_PROHIBITOR.with(|p| p.set(Some(g.object_ref(provider))));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            let last = g.object_ref(cards[3]);
+            act(&mut g, Action::SelectResolutionExile { object: last });
+            assert!(cards.iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
+            assert_ne!(g.object_view(source).zone, Zone::Exile);
+            assert!(!matches!(g.state.pending, Pending::Search { .. }));
+            g.restore(&saved).unwrap();
+        }
+        TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
+    }
+}
