@@ -970,7 +970,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         grants.push(GrantedAbilityView {
                             grantor: source,
                             granting_card: self.object(id).card,
-                            ability,
+                            ability: Some(ability),
+                            static_rule: None,
                             grantor_controller: self.object(id).controller,
                             timestamp,
                         });
@@ -1003,7 +1004,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .map(|grant| GrantedAbilityView {
                     grantor: grant.source,
                     granting_card: grant.granting_card,
-                    ability: grant.ability,
+                    ability: match grant.kind { ability_order::GrantedAbilityKind::Template(index) => Some(index), _ => None },
+                    static_rule: match grant.kind { ability_order::GrantedAbilityKind::PlaneswalkerAttackLimit => Some(ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit), _ => None },
                     grantor_controller: grant.grantor_controller,
                     timestamp: grant.timestamp,
                 })

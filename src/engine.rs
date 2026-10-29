@@ -330,7 +330,7 @@ mod growth_cost;
 mod source_counter_cost;
 #[path = "engine_untap_rules.rs"]
 mod untap_rules;
-pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
+pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView, GrantedStaticRule};
 #[path = "engine_ability_order.rs"]
 mod ability_order;
 #[path = "engine_ability_timeline.rs"]

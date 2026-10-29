@@ -166,7 +166,7 @@ impl Game {
             giver.zone == Zone::Battlefield && giver.controller == object.controller
                 && giver.card.static_ability_groups().iter().any(|g| g.fragments.iter().any(|f|
                     matches!(f, crate::cards::StaticAbilityFragment::ControlledPlaneswalkerAttackLimit)))
-                && view.grant_available(self.object_ref(provider), giver.card, u16::MAX, None)
+                && view.static_grant_available(self.object_ref(provider), giver.card, ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit)
         })
     }
     pub(super) fn attack_slot_free(&self, defender: ObjectRef, except: Option<CardId>) -> bool {
@@ -195,7 +195,13 @@ impl Game {
         let mut edges = Vec::new();
         for &id in &self.state.static_sources {
             if !self.attacks_each_combat(id) || !self.can_declare_attacker(actor, id) { continue; }
-            let player_free = self.attack_controller_tax(actor.other()) == 0
+            // A voluntarily selected taxable attack is already paid for purposes
+            // of maximizing the remaining requirements; no unchosen attacker is
+            // compelled to pay the tax.
+            let selected_paid = self.attack_controller_tax(actor.other()) != 0
+                && self.state.selected_attackers.iter().any(|a| a.card == id
+                    && a.defender == Some(CombatDefender::Player(actor.other())));
+            let player_free = selected_paid || self.attack_controller_tax(actor.other()) == 0
                 && self.can_attack_defender(id, CombatDefender::Player(actor.other()));
             let battle_free = self.state.objects.iter().enumerate().any(|(n, _)| {
                 let r = self.object_ref(n as CardId);

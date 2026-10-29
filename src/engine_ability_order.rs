@@ -3,9 +3,12 @@
 use super::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum GrantedAbilityKind { Template(u16), PlaneswalkerAttackLimit }
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct GrantedAbilityKey {
     pub source: ObjectRef,
-    pub ability: u16,
+    pub kind: GrantedAbilityKind,
     pub granting_card: Card,
     pub grantor_controller: Player,
     pub timestamp: u64,
