@@ -38,22 +38,23 @@ impl Game {
             .chain(self.state.announcing.iter().map(|a| &a.item))
             .chain(self.state.resolving.iter().map(|r| &r.item))
             .filter(|s| s.kind == StackKind::Spell)
-            .map(|s| {
-                let info = s.source_card.info();
-                SpellCharacteristicsView {
+            .filter_map(|s| {
+                let source = s.source?;
+                let info = source.card.info();
+                Some(SpellCharacteristicsView {
                     id: s.id,
-                    object: s.object,
+                    object: source.object,
                     physical_card: s
                         .cast
                         .and_then(|c| c.physical_card)
-                        .unwrap_or(s.source_card),
+                        .unwrap_or(source.card),
                     face: s.cast.map_or(CastFace::Normal, |c| c.face),
                     name: info.name,
                     mana_cost: info.mana_cost,
                     mana_value: s.mana_value(),
                     type_line: info.type_line,
-                    colors: s.source_card.colors(),
-                }
+                    colors: source.card.colors(),
+                })
             })
             .collect()
     }

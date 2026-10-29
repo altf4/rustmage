@@ -1379,7 +1379,7 @@ impl Game {
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
         // Every committed path classifies the selected spell face, including
         // manual direct-payment insertion. The physical front may differ.
-        let card = stack.map_or(card, |i| self.state.stack[i].source_card);
+        let card = stack.and_then(|i| self.state.stack[i].source.map(|source| source.card)).unwrap_or(card);
         self.consume_resolution_cast_quota(caster, stack);
         self.consume_next_spell_uncounterable(caster, stack);
         self.consume_turn_cast_grants(caster, card);
@@ -1445,7 +1445,7 @@ impl Game {
                         && (if filter == CastFilter::PreparedSpell {
                             stack.is_some_and(|i| {
                                 let spell = &self.state.stack[i];
-                                spell.source_card.is_prepared_face()
+                                spell.source.is_some_and(|source| source.card.is_prepared_face())
                                     && self.state.objects[spell.card as usize].is_spell_copy()
                             })
                         } else { self.cast_filter_matches_value(

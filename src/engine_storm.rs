@@ -14,7 +14,7 @@ impl Card {
 impl Game {
     pub(super) fn queue_instant_sorcery_storm(&mut self, index: usize) {
         let spell = &self.state.stack[index];
-        if spell.is_copy || !CastFilter::InstantSorcery.matches(spell.source_card) {
+        if spell.is_copy || !spell.source.is_some_and(|source| CastFilter::InstantSorcery.matches(source.card)) {
             return;
         }
         let spell = spell.clone();

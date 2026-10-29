@@ -28,14 +28,15 @@ impl Game {
         };
         let victim = &self.state.stack[index];
         if victim.kind == StackKind::Spell {
+            let Some(source) = victim.source else { return false; };
             if self.state.uncounterable_spell_ids.as_deref().is_some_and(|ids| ids.contains(&victim.id))
-                || victim.source_card.cannot_be_countered()
-                || self.controlled_spells_uncounterable(victim.controller, victim.source_card)
+                || source.card.cannot_be_countered()
+                || self.controlled_spells_uncounterable(victim.controller, source.card)
             {
                 return false;
             }
             self.move_object(
-                victim.card,
+                source.id,
                 if exile { Zone::Exile } else { Zone::Graveyard },
             );
         } else {
@@ -49,13 +50,14 @@ impl Game {
             let Some(victim) = self.bound_stack_item(bound).cloned() else {
                 continue;
             };
+            let Some(source) = victim.source else { continue; };
             let permanent = victim.kind == StackKind::Spell && PermanentType::ALL
                 .into_iter()
-                .any(|kind| victim.source_card.kind_mask() & kind.mask() != 0);
+                .any(|kind| source.card.kind_mask() & kind.mask() != 0);
             if self.counter_stack_item(victim.id, permanent) && permanent && !victim.is_copy {
-                let after = self.object_ref(victim.card);
-                if after != victim.object
-                    && self.state.objects[victim.card as usize].zone == Zone::Exile
+                let after = self.object_ref(source.id);
+                if after != source.object
+                    && self.state.objects[source.id as usize].zone == Zone::Exile
                 {
                     self.grant_exile_free_permission(item.controller, after);
                 }
