@@ -1509,7 +1509,8 @@ fn project_prior_player_counter_schema(input: &str) -> Result<String, String> {
         match value {
             serde_json::Value::Array(rows) => for row in rows { check(row)?; },
             serde_json::Value::Object(map) => {
-                if map.contains_key("other_counters") || map.contains_key("source_less_rule") || map.contains_key("InherentRule") {
+                if map.contains_key("other_counters") || map.contains_key("source_less_rule") || map.contains_key("InherentRule")
+                    || map.contains_key("self_counter_effects") || map.contains_key("ChooseSelfCounterReplacement") {
                     return Err("player counters or source-less rule have no prior-schema representation".into());
                 }
                 for value in map.values() { check(value)?; }
