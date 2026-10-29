@@ -5461,7 +5461,8 @@
     6,
     0,
     16,
-    2
+    2,
+    17
   ],
   "aliases": [
     [
@@ -169113,10 +169114,15 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Vigorbloom Vanguard",
+        "mana_cost": "{1}{G/W}",
+        "type_line": "Creature — Troll Druid"
+      }
     },
     {
       "index": 4892,
@@ -184929,6 +184935,33 @@
         0,
         0,
         0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5456,
+      "module": "card_5456",
+      "path": "synthetic/prepare_vigorbloom_vanguard_seed_suture.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Seed Suture",
+      "oracle_id": "bd416426-d037-45e3-9647-816bf982cbea",
+      "facts_sha256": "76765959fd0d476206d1354adf8961128c5fdba4abeb59fa8c91955f461c55d1",
+      "mana_cost": "{G/W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
         0
       ],
       "generic": 0
