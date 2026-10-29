@@ -327,7 +327,7 @@ pub(super) struct ReplacementState {
 impl ReplacementState {
     pub fn bytes(&self) -> usize {
         let counter_bytes = |b: &CounterBatch| {
-            b.player_events.bytes()
+            b.player_events.owned_bytes()
                 + b.self_effects.len() * std::mem::size_of::<SelfPlayerCounterReplacement>()
                 + b.placements.len() * std::mem::size_of::<CounterPlacement>()
                 + b.placements

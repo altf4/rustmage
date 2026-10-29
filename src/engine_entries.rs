@@ -177,7 +177,7 @@ impl EntryBatch {
             + self.temporary_copy.as_ref().map_or(0, |item| {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             })
-            + self.discard_context.as_ref().map_or(0, |c| c.bytes())
+            + self.discard_context.as_ref().map_or(0, |c| c.owned_bytes())
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self
                 .moves

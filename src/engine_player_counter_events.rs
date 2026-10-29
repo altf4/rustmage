@@ -123,9 +123,9 @@ impl PlayerCounterEvents {
         event.applied_external.push(effect);
         true
     }
-    pub fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>()
-            + self.events.len() * std::mem::size_of::<PlayerCounterEvent>()
+    /// Heap-owned initialized elements; the containing batch owns the inline struct.
+    pub fn owned_bytes(&self) -> usize {
+        self.events.len() * std::mem::size_of::<PlayerCounterEvent>()
             + self
                 .events
                 .iter()
@@ -140,6 +140,17 @@ impl PlayerCounterEvents {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn owned_bytes_excludes_inline_queue_and_counts_events() {
+        let mut events = PlayerCounterEvents::default();
+        assert_eq!(events.owned_bytes(), 0);
+        events.push(Player::P0, PlayerCounterKind::Poison, 1, 0);
+        assert_eq!(
+            events.owned_bytes(),
+            std::mem::size_of::<PlayerCounterEvent>()
+        );
+    }
+
     #[test]
     fn redirected_and_split_events_keep_separate_replacement_history() {
         for player in [Player::P0, Player::P1] {

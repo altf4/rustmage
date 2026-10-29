@@ -28,9 +28,9 @@ pub(super) struct DiscardContext {
     pub after: Option<DiscardAfter>,
 }
 impl DiscardContext {
-    pub fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>()
-            + self.sources.len() * std::mem::size_of::<ObjectView>()
+    /// Heap-owned initialized elements; the entry batch owns the inline context.
+    pub fn owned_bytes(&self) -> usize {
+        self.sources.len() * std::mem::size_of::<ObjectView>()
             + self
                 .sources
                 .iter()
@@ -401,6 +401,22 @@ impl Game {
 mod balin_result_tests {
     use super::*;
     use crate::engine::assurance::big_helpers::{named, setup};
+    #[test]
+    fn discard_context_counts_only_owned_elements() {
+        let mut context = DiscardContext {
+            sources: Vec::new(),
+            cycled: None,
+            shuffles: Vec::new(),
+            after: None,
+        };
+        assert_eq!(context.owned_bytes(), 0);
+        context.shuffles.push(ObjectRef {
+            card: 0,
+            generation: 0,
+        });
+        assert_eq!(context.owned_bytes(), std::mem::size_of::<ObjectRef>());
+    }
+
     fn root(p: Player) -> Game {
         let mut g = setup(p);
         named(&mut g, p, "Balin, Loremaster", Zone::Battlefield);
