@@ -637,8 +637,11 @@ pub fn run_admitted_smoke(cases: &[(usize, u64, Player, bool)]) -> Result<Report
 
 /// Optional 20-game survey; never invoked by the routine acceptance tests.
 #[allow(dead_code, reason = "The optional survey is a separate example")]
-pub fn run_survey(trace_dir: Option<&Path>) -> Result<Report, String> {
-    let cases: Vec<_> = (0..5)
+pub fn run_survey(
+    trace_dir: Option<&Path>,
+    single: Option<(usize, u64, bool)>,
+) -> Result<Report, String> {
+    let mut cases: Vec<_> = (0..5)
         .flat_map(|pair| {
             (0..2).flat_map(move |seed| {
                 [false, true].into_iter().map(move |swap| {
@@ -652,6 +655,14 @@ pub fn run_survey(trace_dir: Option<&Path>) -> Result<Report, String> {
             })
         })
         .collect();
+    if let Some((pair, seed, swapped)) = single {
+        if pair >= 5 || seed >= 2 {
+            return Err("case requires pair 0..4 and seed index 0..1".into());
+        }
+        cases.retain(|&(p, s, _, swap)| {
+            p == pair && s == 946000 + pair as u64 * 100 + seed && swap == swapped
+        });
+    }
     run_inner(&cases, Mode::Verify, trace_dir, true, true)
 }
 
@@ -762,12 +773,19 @@ fn run_inner(
     } else {
         BTreeSet::new()
     };
+    let trace_decisions =
+        survey && std::env::var_os("RUSTMAGE_FRA_SURVEY_TRACE_DECISIONS").is_some();
     let started = Instant::now();
     let mut games = Vec::new();
     let mut total_witnesses = BTreeMap::new();
     let mut colors = 0;
     let mut total_decisions = 0;
     for &(pair, seed, starting_player, swapped) in cases {
+        if survey {
+            eprintln!(
+                "FRA_SURVEY start pair={pair} seed={seed} swapped={swapped} starting={starting_player:?}"
+            );
+        }
         let (left, right) = pairings[pair];
         let (a, b) = if swapped {
             (right, left)
@@ -800,6 +818,9 @@ fn run_inner(
                     game.observe(game.actor().unwrap()).decision,
                     &trace[trace.len().saturating_sub(12)..]
                 ));
+            }
+            if trace_decisions {
+                eprintln!("FRA_SURVEY decision={decisions} stage=legal_actions");
             }
             game.legal_actions_into(&mut actions);
             let eligible: Vec<(usize, Action)> = actions
@@ -835,6 +856,11 @@ fn run_inner(
             }
             if matches!(action, Action::Concede) {
                 return Err("smoke policy selected concession".into());
+            }
+            if trace_decisions {
+                eprintln!(
+                    "FRA_SURVEY decision={decisions} stage=apply actor={actor:?} action={action:?}"
+                );
             }
             let before = game.observe(actor);
             if mode.verifies() {
@@ -893,9 +919,17 @@ fn run_inner(
             }
             decisions += 1;
         }
+        if survey {
+            eprintln!(
+                "FRA_SURVEY replay pair={pair} seed={seed} swapped={swapped} decisions={decisions}"
+            );
+        }
         if mode.verifies() {
             let mut replay = Game::new(config.clone()).map_err(|e| format!("replay init {e:?}"))?;
-            for (actor, action) in &trace {
+            for (index, (actor, action)) in trace.iter().enumerate() {
+                if trace_decisions {
+                    eprintln!("FRA_SURVEY replay_action={index} actor={actor:?} action={action:?}");
+                }
                 replay
                     .apply(*actor, action.clone())
                     .map_err(|e| format!("complete replay {e:?}"))?;
@@ -905,6 +939,12 @@ fn run_inner(
                     "complete deterministic replay mismatch pair{pair}/seed{seed}"
                 ));
             }
+        }
+        if survey {
+            eprintln!(
+                "FRA_SURVEY done pair={pair} seed={seed} swapped={swapped} decisions={decisions} elapsed={:.3}s",
+                started.elapsed().as_secs_f64()
+            );
         }
         let trace_file = if mode.verifies() {
             if let Some(dir) = trace_dir {
@@ -985,7 +1025,7 @@ fn run_inner(
             "benchmark"
         },
         scope: if survey {
-            "Optional 20 games across ten FRA-only Standard decks, 20 basics and eight additional lands per deck; physical cast, other face and actual land play ledgers; natural terminals; not exhaustive gameplay coverage"
+            "Optional selected games from a 20-case corpus across ten FRA-only Standard decks, 20 basics and eight additional lands per deck; physical cast, other face and actual land play ledgers; natural terminals; not exhaustive gameplay coverage"
         } else {
             "Selected cases from ten exactly 60-card Standard decks; physical FRA members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory; not exhaustive gameplay coverage"
         },
