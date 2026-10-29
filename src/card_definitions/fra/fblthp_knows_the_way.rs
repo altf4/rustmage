@@ -10,7 +10,7 @@ const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(0, 2),
     static_groups: GROUPS,
-    extras: &CardExtras { static_ability_groups: GROUPS, dynamic_stats: Some(DOMAIN), ..CardExtras::EMPTY },
+    extras: &CardExtras { x_symbols: 1, static_ability_groups: GROUPS, dynamic_stats: Some(DOMAIN), ..CardExtras::EMPTY },
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::SelfEnters,
         targets: TargetPlan::NONE,
