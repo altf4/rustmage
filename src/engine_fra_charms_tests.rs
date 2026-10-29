@@ -7208,3 +7208,6 @@ mod hapatra_final_assurance;
 
 #[path = "engine_fra_ferocity_extra_tests.rs"]
 mod ferocity_extra_assurance;
+
+#[path = "engine_fra_candidate_followup_tests.rs"]
+mod candidate_followup;
