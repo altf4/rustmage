@@ -386,8 +386,8 @@ fn project_prior_schema181(input: &str) -> Result<String, String> {
     Ok(input.to_owned())
 }
 
-/// Candidate audit for outside-game pools and selections.
-/// Integration assigns the next schema number and wires dispatch.
+/// Schema 189 adds outside-game state and cumulative free-cast budgets.
+/// Reject both kinds of new state when projecting to schema 188.
 fn project_prior_outside(input: &str) -> Result<String, String> {
     fn check(value: &serde_json::Value) -> Result<(), String> {
         match value {
@@ -416,6 +416,7 @@ fn project_prior_outside(input: &str) -> Result<String, String> {
                     "owned_outside",
                     "known_outside",
                     "sideboard_counts",
+                    "remaining_mana_value",
                 ]
                 .iter()
                 .any(|key| map.contains_key(*key))
@@ -538,7 +539,8 @@ fn outside_packet_supported(item: &SpellView) -> bool {
 /// Conservatively reject opaque continuations, while checking copy layers and
 /// retained packets by type. Rollback snapshots retain independent hidden state.
 fn prior_outside_state_supported(state: &State) -> bool {
-    if state.outside_game.is_some() || state.resolving.is_some() || state.announcing.is_some()
+    if state.resolution_free_casts.as_ref().is_some_and(|offer| offer.remaining_mana_value.is_some())
+        || state.outside_game.is_some() || state.resolving.is_some() || state.announcing.is_some()
         || state.mana_announcement_stack.is_some() || state.replacements.is_some()
         || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
         || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
@@ -6064,3 +6066,38 @@ fn outside_projection_checks_actual_private_and_public_views_for_both_players() 
 
 #[path = "schema189_independent_tests.rs"]
 mod schema189_independent_tests;
+
+#[test]
+fn schema189_budget_projection_rejects_public_hidden_and_rollback_state() {
+    let old = r#"[{"resolution_free_casts":{"paid":null}}]"#;
+    assert_eq!(project_prior_outside(old).unwrap(), old);
+    for amount in [0, 6] {
+        assert!(project_prior_outside(&serde_json::json!({"nested":{"remaining_mana_value":amount}}).to_string()).is_err());
+    }
+    for player in [Player::P0, Player::P1] {
+        for origin in [Zone::Exile, Zone::Library] {
+            let mut g = scenario(player);
+            g.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+                siege_transformed: false, paid: None, casts_remaining: None,
+                pending_cast: None, remaining_mana_value: Some(0), alternative_cost: None,
+                maximum_mana_value: None, origin, exile_on_graveyard: false,
+                allow_lands: false, player, remaining: Vec::new(),
+            }));
+            assert!(!prior_outside_state_supported(&g.state));
+            for viewer in [player, player.other()] {
+                let view = serde_json::to_string(&g.observe(viewer)).unwrap();
+                if origin == Zone::Exile || viewer == player {
+                    assert!(project_prior_outside(&view).is_err());
+                }
+            }
+            g.begin_attack_rollback(player);
+            g.state.resolution_free_casts = None;
+            assert!(!prior_outside_state_supported(&g.state));
+            let saved = g.snapshot();
+            g.state.cast_rollback = None;
+            assert!(prior_outside_state_supported(&g.state));
+            g.restore(&saved).unwrap();
+            assert!(!prior_outside_state_supported(&g.state));
+        }
+    }
+}

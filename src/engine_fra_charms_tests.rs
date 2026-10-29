@@ -7749,3 +7749,9 @@ mod engine_fra_seasoned_cryomancer_independent_tests;
 
 #[path = "engine_fra_outside_pool_tests.rs"]
 mod engine_fra_outside_pool_tests;
+
+#[path = "engine_fra_uldaros_budget_tests.rs"]
+mod engine_fra_uldaros_budget_tests;
+
+#[path = "engine_fra_uldaros_budget_independent_tests.rs"]
+mod engine_fra_uldaros_budget_independent_tests;

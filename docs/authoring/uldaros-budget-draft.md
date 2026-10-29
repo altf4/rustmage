@@ -19,3 +19,10 @@ payment caused by an opposing entry choice. The latter does not exercise mana
 replay; a case with irreversible or selectively reversible mana events remains
 necessary. No Uldaros behavior is admitted by this change. Its target selection,
 exile replacements and shared copied-card lifecycle remain separate prerequisites.
+
+The current isolated candidate combines this field with unpublished schema 189.
+The 189-to-188 audit rejects the new field even when zero, including private
+owned offers and nested rollback; the published 188-to-187 projector remains
+unchanged. If schema 189 is published before this change lands, a new schema 190
+migration is required. No trace comparison or test build has yet verified this
+candidate. The definition remains gated.
