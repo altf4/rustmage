@@ -3,11 +3,41 @@
   "catalogue_id": 4739,
   "oracle_id": "020d561b-2e5d-439e-9e6a-318d23e73542",
   "facts_sha256": "c09a65786ae94da44321cd0daea19910a0b00a9faa4f58951a359bc94623dcf6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a7d2b19fcec887cd7354cad892aa449bdac38e44c0cd7d108647acdd095f8d15"
   },
   "physical_metadata_sha256": "c295907c3630338a2bc75234beb64efa4122dbe46d0568643c4071e4a59c48f5",
-  "source_note": "Complete frozen Oracle reviewed; pinned XMage inventory has no Uldaros implementation. Target-slot assignment, exile and copy casting remain gated pending authoritative source evidence, review and validation."
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "020d561b-2e5d-439e-9e6a-318d23e73542",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory has xmage_name null and empty implementations; the card-specific XMage class is unavailable. User authorized Oracle and official rules implementation; listed Java classes are analogues, not this card."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/m/MizzixsMastery.java",
+      "sha256": "08496a78ece411105a670fdaa3bcefc80b8374217651d60ba73a7258807eb80d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes",
+    "section": "Uldaros Theorix",
+    "notes": "Official release notes confirm casting a copy without its mana cost selects X=0. Distinct type-slot assignment through retargeting and revalidation follows the current implementation; authoritative card-specific ruling is not identified."
+  },
+  "rules_tests": "src/engine_fra_uldaros_target_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_fra_uldaros_effect_tests.rs",
+    "src/engine_fra_uldaros_budget_tests.rs",
+    "src/engine_fra_uldaros_budget_independent_tests.rs",
+    "src/engine_fra_uldaros_echo_independent_tests.rs"
+  ]
 }

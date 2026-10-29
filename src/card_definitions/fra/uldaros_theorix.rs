@@ -1,5 +1,4 @@
-// Partial target-choice draft only; Oracle source lacks a pinned XMage class.
-// Exile and free-copy casting are drafted; keep gated pending integration validation.
+// Oracle and official release notes supply this definition; XMage class is absent.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(5, 5),
     triggers: &[TriggeredAbility {

@@ -3,12 +3,37 @@
   "catalogue_id": 1416,
   "oracle_id": "1f47c869-f4a9-43b0-aec0-8da4e3a3fec5",
   "facts_sha256": "32052fb66aaad10ca9b88c9d04686abdc6bf7656f5404ff9f34aa8f2849a1e3c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "61597cd5f760739d2dfdaa5490112867702e5d89fc87a5b416b6a966628b1f95"
   },
   "physical_metadata_sha256": "28d64b81c97d67eaa7b6e5f38700951c3311e9146a4b63837cff43aaf419d992",
-  "source_note": "Complete frozen Oracle and official release notes reviewed; pinned XMage class is unavailable. Remains gated pending outside-game foundation and full validation.",
-  "oracle_rulings": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes"
+  "oracle_rulings": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "1f47c869-f4a9-43b0-aec0-8da4e3a3fec5",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory has xmage_name null and empty implementations; the card-specific XMage class is unavailable. User authorized Oracle and official rules implementation; listed Java classes are analogues, not this card."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/f/FaeOfWishes.java",
+      "sha256": "8fa87dae0a1ad44b3e0c1d96226367019ea159533fd82d48efad2cd536299b75"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/WishEffect.java",
+      "sha256": "3bb158cdd2db62a102f8ef91482deb63c3989d1376bd6ca8f04ae1866345f847"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes",
+    "section": "Extrapolate the Impossible",
+    "notes": "Official release notes confirm the other revealed card remains outside and tournament selection is from sideboard. Generic outside-to-exile observers remain an engine limitation; no production provider redirects this card from outside to exile."
+  },
+  "rules_tests": "src/engine_fra_outside_pool_tests.rs",
+  "additional_rules_tests": []
 }
