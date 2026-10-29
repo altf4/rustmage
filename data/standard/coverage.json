@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a02873f6ae8b7805d53b0a673d969b60ce8bf59c647c81f585121be45728ce16",
+  "catalogue_version": "7bdcbf881e27e8c19f0439534914710f48ca87eb1c0626b28ce9d8e19a4e4111",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2925,
-  "implemented_total": 2931,
+  "implemented_standard_cards": 2931,
+  "implemented_total": 2937,
   "token_definitions": 146,
   "emblem_definitions": 6,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 278,
-      "gated": 7
+      "complete": 284,
+      "gated": 1
     },
     "frc": {
       "total": 6,
@@ -11531,8 +11531,8 @@
     {
       "name": "Extrapolate the Impossible",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/extrapolate_the_impossible.rs",
       "set": "fra"
     },
@@ -18187,8 +18187,8 @@
     {
       "name": "Jace's Machinations",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/jace_s_machinations.rs",
       "set": "fra"
     },
@@ -20603,8 +20603,8 @@
     {
       "name": "Loot, the Anomaly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/loot_the_anomaly.rs",
       "set": "fra"
     },
@@ -29587,8 +29587,8 @@
     {
       "name": "Sanctum Lurker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/sanctum_lurker.rs",
       "set": "fra"
     },
@@ -30243,8 +30243,8 @@
     {
       "name": "Seasoned Cryomancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/seasoned_cryomancer.rs",
       "set": "fra"
     },
@@ -38115,8 +38115,8 @@
     {
       "name": "Uldaros Theorix",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/uldaros_theorix.rs",
       "set": "fra"
     },
