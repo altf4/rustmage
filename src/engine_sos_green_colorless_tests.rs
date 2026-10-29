@@ -1238,7 +1238,7 @@ fn sos_lumarets_favor_source_copy_survives_countered_original_and_keeps_targets(
             .state
             .stack
             .iter()
-            .find(|s| s.card == original && s.kind == StackKind::Spell)
+            .find(|s| s.source.is_some_and(|source| source.id == original) && s.kind == StackKind::Spell)
             .unwrap()
             .id;
         g.counter_stack_item(spell, false);
@@ -1585,7 +1585,7 @@ fn sos_wildgrowth_incoming_controller_places_counters_after_spell_control_change
             .state
             .stack
             .iter_mut()
-            .find(|s| s.card == source && s.kind == StackKind::Spell)
+            .find(|s| s.source.is_some_and(|source| source.id == source) && s.kind == StackKind::Spell)
             .unwrap();
         spell.controller = p.other();
         g.state.objects[source as usize].controller = p.other();
@@ -1610,7 +1610,7 @@ fn sos_wildgrowth_countered_spell_and_new_incarnation_cannot_inherit_pending_bon
                 .state
                 .stack
                 .iter()
-                .find(|s| s.card == creature && s.kind == StackKind::Spell)
+                .find(|s| s.source.is_some_and(|source| source.id == creature) && s.kind == StackKind::Spell)
                 .unwrap()
                 .id;
             if resolve_trigger {
@@ -1727,7 +1727,7 @@ fn sos_dawning_free_sorcery_during_combat_x_zero_and_exile_after_resolution_or_c
                 .state
                 .stack
                 .iter()
-                .find(|s| s.card == target && s.kind == StackKind::Spell)
+                .find(|s| s.source.is_some_and(|source| source.id == target) && s.kind == StackKind::Spell)
                 .unwrap();
             assert_eq!(spell.x, Some(0));
             assert_eq!(spell.cast.unwrap().origin, Zone::Graveyard);

@@ -947,7 +947,7 @@ fn fatehold_charm_returns_creature_spell_and_spell_copy() {
                         .state
                         .stack
                         .iter()
-                        .find(|s| s.card == target)
+                        .find(|s| s.source.is_some_and(|source| source.id == target))
                         .unwrap()
                         .clone();
                     let copy = g.allocate_spell_copy(&template, p.other());
