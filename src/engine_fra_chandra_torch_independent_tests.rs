@@ -23,7 +23,8 @@ fn chandra_can_cast_the_adventure_face_from_exile_and_replay() {
             pay(&mut g);
             let spell = g.state.stack.last().unwrap();
             assert_eq!(spell.cast.unwrap().face, CastFace::Adventure);
-            assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+            // Clap! Snap! costs {1}{B}, leaving one colorless mana.
+            assert_eq!(g.state.players[player.index()].mana, [0, 0, 0, 0, 0, 1]);
             act(&mut g, Action::FinishResolutionCasts);
             assert_eq!(g.state.players[player.other().index()].life, life);
             g.restore(&saved).unwrap();

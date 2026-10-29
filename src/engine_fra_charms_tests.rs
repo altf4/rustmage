@@ -7688,3 +7688,12 @@ mod engine_fra_garruk_curse_independent_tests;
 
 #[path = "engine_fra_garruk_curse_timing_tests.rs"]
 mod engine_fra_garruk_curse_timing_tests;
+
+#[path = "engine_fra_chandra_torch_tests.rs"]
+mod engine_fra_chandra_torch_tests;
+
+#[path = "engine_fra_chandra_torch_independent_tests.rs"]
+mod engine_fra_chandra_torch_independent_tests;
+
+#[path = "engine_fra_chandra_ward_independent_tests.rs"]
+mod engine_fra_chandra_ward_independent_tests;
