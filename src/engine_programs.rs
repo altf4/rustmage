@@ -4337,12 +4337,12 @@ impl Game {
                     self.mill_batch(&players, amount, item.controller);
                 }
                 Instruction::MillThenReflexive { amount, ability } => {
-                    self.mill_batch(
+                    let milled = self.mill_batch(
                         &[item.controller],
                         MillAmount::Fixed(amount),
                         item.controller,
                     );
-                    if self.state.resolving.as_ref().unwrap().milled.len() == usize::from(amount) {
+                    if milled == usize::from(amount) {
                         self.queue_reflexive(&item, ability, None);
                     }
                 }

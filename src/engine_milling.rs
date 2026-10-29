@@ -7,7 +7,7 @@ impl Game {
         players: &[Player],
         amount: MillAmount,
         controller: Player,
-    ) {
+    ) -> usize {
         // Freeze all players' top cards before moving anything. Mandatory milling
         // does as much as possible and never attempts a draw from an empty library.
         let maximum = match amount {
@@ -33,7 +33,10 @@ impl Game {
                     .unwrap_or(usize::MAX)
             }
         };
-        self.mill_batch_up_to(players, maximum);
+        self.mill_batch_up_to(players, maximum)
+            .iter()
+            .filter(|event| event.moved || event.shuffled_in_place)
+            .count()
     }
 
     /// The rad-trigger continuation uses the exact committed destinations and

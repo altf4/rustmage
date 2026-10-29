@@ -2524,6 +2524,9 @@ struct ZoneObservers {
 pub struct ZoneChange {
     /// Whether the departing object was represented by a physical card.
     pub(super) was_card: bool,
+    /// An attempted library departure was replaced by revealing and shuffling
+    /// the same card into that library; no zone change occurred.
+    pub(super) shuffled_in_place: bool,
     pub(super) cast_event: Option<Box<CastPaymentEvent>>,
     /// CR122.6a: intrinsic entry counters are put on by the incoming controller.
     pub(super) entry_counter_player: Option<Player>,
@@ -7768,6 +7771,7 @@ impl Game {
         if plan.prevented {
             return ZoneChange {
                 was_card,
+                shuffled_in_place: false,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -7813,6 +7817,7 @@ impl Game {
         {
             return ZoneChange {
                 was_card,
+                shuffled_in_place: false,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -7835,6 +7840,7 @@ impl Game {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
                 was_card,
+                shuffled_in_place: true,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -8307,6 +8313,7 @@ impl Game {
         }
         ZoneChange {
             was_card,
+            shuffled_in_place: false,
             cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
             graveyard_observers,
