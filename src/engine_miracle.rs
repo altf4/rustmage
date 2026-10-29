@@ -252,8 +252,9 @@ impl Game {
         }
     }
     pub(super) fn offer_miracle_cast(&mut self, item: &SpellView, cost: ManaCost) -> bool {
-        if self.object_ref(item.card) != item.object
-            || self.state.objects[item.card as usize].zone != Zone::Hand
+        let Some(source) = item.source else { return false; };
+        if self.object_ref(source.id) != source.object
+            || self.state.objects[source.id as usize].zone != Zone::Hand
         {
             return false;
         }
@@ -268,7 +269,7 @@ impl Game {
             exile_on_graveyard: false,
             allow_lands: false,
             player: item.controller,
-            remaining: vec![item.object],
+            remaining: vec![source.object],
         }));
         self.state.pending = Pending::ResolutionCasts {
             player: item.controller,

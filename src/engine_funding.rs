@@ -1414,7 +1414,7 @@ impl<'g> FundingState<'g> {
             p.hand_size.forget(reference);
         }
         let is_announcement_source = |item: &SpellView| {
-            matches!(item.kind, StackKind::ActivatedAbility { .. }) && item.object == reference
+            matches!(item.kind, StackKind::ActivatedAbility { .. }) && item.source.is_some_and(|source| source.object == reference)
         };
         if self.payment_source != Some(reference)
             && !self
@@ -3171,7 +3171,7 @@ impl Game {
             frame.quality.as_ref().map(|(_, q)| q),
         );
         state.moves(&goal).into_iter().any(|step| {
-            if state.resources[step.resource].id != child.item.card
+            if child.item.source.is_none_or(|source| state.resources[step.resource].id != source.id)
                 || step.ability
                     != match child.item.kind {
                         StackKind::ActivatedAbility { ability } => Some(ability),
