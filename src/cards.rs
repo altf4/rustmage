@@ -1782,6 +1782,8 @@ pub(crate) enum Instruction {
         haste_at: Option<u32>,
     },
     Search(SearchSpec),
+    /// Search up to the damage actually dealt to the source in this trigger event.
+    SearchDamageReceived(SearchSpec),
     /// Choose hidden hand/library search zones, then find up to one card.
     SearchHandAndOrLibrary(SearchFilter),
     /// Remember the exact result of the immediately following library search.

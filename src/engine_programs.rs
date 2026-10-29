@@ -4249,12 +4249,18 @@ impl Game {
                     return;
                 }
                 Instruction::Search(spec)
+                | Instruction::SearchDamageReceived(spec)
                 | Instruction::SearchTargetController(spec)
                 | Instruction::SearchTargetPlayer(spec)
                 | Instruction::SearchTargetPlayerMovedCount(spec)
                 | Instruction::SearchRequired(spec)
                 | Instruction::SearchDifferentNames(spec) => {
                     let mut spec = spec;
+                    if matches!(instruction, Instruction::SearchDamageReceived(_)) {
+                        spec.maximum = u64::try_from(
+                            item.damage_received.as_ref().expect("damage event").amount
+                        ).unwrap_or(u64::MAX);
+                    }
                     if matches!(instruction, Instruction::SearchTargetPlayerMovedCount(_)) {
                         spec.maximum = resolution.moved_count.unwrap_or(0);
                     }
