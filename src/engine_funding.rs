@@ -1486,23 +1486,26 @@ impl<'g> FundingState<'g> {
                 .iter()
                 .any(|g| g.source == source && g.sacrifice)
         });
+        let cost = step.ability.map(|index| step.frozen.as_deref().map_or_else(
+            || step.borrowed.map_or_else(|| self.resources[step.resource].object.card.activation(index), |a| a.rules()),
+            |(definition, _)| definition.activation(index),
+        ).cost);
+        if let Some(cost) = cost {
+            self.life -= i128::from(cost.life);
+            self.life_lost[self.actor.index()] |= cost.life > 0;
+        }
+        // Evaluate the current projected characteristics at the paid tap,
+        // before the same activation can sacrifice or otherwise move its source.
+        let tap_bonus = if cost.is_none_or(|c| c.tap)
+            && CharacteristicWorld::object(self, id).zone == Zone::Battlefield
+            && CharacteristicWorld::object(self, id).controller == self.actor
+            && CharacteristicWorld::subtypes(self, id).has(CharacteristicWorld::object(self, id).card, "Mountain")
+        { self.game.state.players[self.actor.index()].mountain_mana_bonus } else { 0 };
         let object = &mut self.resources[step.resource].object;
         let mut departure = None;
         if let Some(index) = step.ability {
-            let cost = step
-                .frozen
-                .as_deref()
-                .map_or_else(
-                    || {
-                        step.borrowed
-                            .map_or_else(|| object.card.activation(index), |a| a.rules())
-                    },
-                    |(definition, _)| definition.activation(index),
-                )
-                .cost;
+            let cost = cost.expect("activation cost");
             let borrowed = step.borrowed;
-            self.life -= i128::from(cost.life);
-            self.life_lost[self.actor.index()] |= cost.life > 0;
             if let Some(slot) = step.frozen.as_deref().and_then(|(_, slot)| *slot) {
                 self.borrowed_uses.push((
                     ObjectRef {
@@ -1627,6 +1630,10 @@ impl<'g> FundingState<'g> {
                 .checked_add(u128::from(produced))
                 .capacity("mana representation exhausted");
         }
+        // Triggered mana is ordinary even when the activated ability's own
+        // production has a spending restriction or other quality.
+        self.mana[3] = self.mana[3].checked_add(u128::from(tap_bonus))
+            .capacity("mana representation exhausted");
     }
     fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
@@ -1838,6 +1845,8 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             if !object.tapped {
+                // Overcount all possible tap sources; subtype may change during funding.
+                total = total.saturating_add(u128::from(self.game.state.players[self.actor.index()].mountain_mana_bonus));
                 total = total.saturating_add(u128::from(
                     object.card.mana_color().is_some() || self.kinds(resource) & 2 != 0,
                 ));
@@ -1926,6 +1935,9 @@ impl<'g> FundingState<'g> {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != self.actor {
                 continue;
+            }
+            if !object.tapped {
+                upper[3] = upper[3].saturating_add(u128::from(self.game.state.players[self.actor.index()].mountain_mana_bonus));
             }
             let mut add = |production: ManaProduction, uses: u128| {
                 let production = match production.base() {
@@ -2122,6 +2134,8 @@ impl<'g> FundingState<'g> {
                     || ability_world::CharacteristicWorld::activation_keywords(self, resource.id)
                         .contains(Keywords::HASTE));
             if tap_ready {
+                // Overestimate: a later payment may change this source's subtype.
+                upper[3] = upper[3].saturating_add(u128::from(self.game.state.players[self.actor.index()].mountain_mana_bonus));
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, resource.id) {
                     grant.production.visit(|mana| {
                         for i in 0..6 {

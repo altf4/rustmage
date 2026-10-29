@@ -1189,6 +1189,7 @@ impl Game {
             split_second: false,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
+            mana_tap_bonus: None,
             source_facts: DamageFacts::from_view(source),
             related_stack: None,
             entering_object: None,
@@ -3598,6 +3599,10 @@ impl Game {
                     if self.state.resolving.as_ref().unwrap().moved_count == Some(1) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
+                }
+                Instruction::AddMountainManaTrigger => {
+                    let bonus = &mut self.state.players[item.controller.index()].mountain_mana_bonus;
+                    *bonus = bonus.checked_add(1).capacity("mountain mana trigger count exhausted");
                 }
                 Instruction::ExileEachLibraryTopCastFree => {
                     self.exile_each_top_cast_free(item.controller);

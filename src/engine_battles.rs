@@ -46,6 +46,7 @@ impl Game {
             split_second: false,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
+            mana_tap_bonus: None,
             source_attachment: source.attached_to,
             source_transform: None,
             source_facts: DamageFacts::from_view(&source),

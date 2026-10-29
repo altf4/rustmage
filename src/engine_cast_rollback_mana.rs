@@ -26,6 +26,8 @@ pub(super) struct ManaEvent {
     pub actor: Player,
     pub kind: ManaEventKind,
     pub production: Mana,
+    /// Unrestricted mana produced by triggered mana abilities after this event.
+    pub mountain_bonus: u32,
     pub quality: Option<mana_lots::Quality>,
     pub spent_lots: Vec<(mana_lots::Quality, Mana)>,
     pub entries: Vec<entries::EntryBatch>,
@@ -110,6 +112,8 @@ pub struct ManaRollbackView {
     pub source: ObjectRef,
     pub definition: Card,
     pub production: Mana,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mountain_bonus: Option<u32>,
     pub payment: Mana,
     pub irreversible: bool,
     pub can_keep: bool,
@@ -173,6 +177,7 @@ impl Game {
             source,
             definition,
             production: event.production,
+            mountain_bonus: (event.mountain_bonus > 0).then_some(event.mountain_bonus),
             payment: event.payment(),
             irreversible: event.irreversible,
             can_keep: self.mana_rollback_option(true),
@@ -405,6 +410,9 @@ impl Game {
             }
         }
         self.add_quality_mana(event.actor, event.production, event.quality);
+        if event.mountain_bonus > 0 {
+            self.add_mana(event.actor, [0, 0, 0, event.mountain_bonus, 0, 0]);
+        }
         let active = self
             .state
             .cast_rollback

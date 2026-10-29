@@ -41,3 +41,187 @@ fn pyre_rhymer_prowess_responds_only_to_own_noncreature_cast() {
         assert_eq!(stats(&g, source), (3, 3));
     }
 }
+
+fn grant_molten_tide(g: &mut Game, player: Player) {
+    let source = put(g, player, "Pyre Rhymer // Molten Tide", Zone::Battlefield);
+    let reference = g.object_ref(source);
+    g.prepare_permanent(reference);
+    let copy = g.state.preparations.as_ref().unwrap().iter()
+        .find(|row| row.permanent == reference).unwrap().spell_copy;
+    g.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
+    act(g, Action::AnnounceExile { card: copy.card });
+    pay(g);
+    settle(g);
+}
+
+#[test]
+fn molten_tide_stacks_and_only_actual_mountain_mana_taps_trigger() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        grant_molten_tide(&mut g, player);
+        grant_molten_tide(&mut g, player);
+        assert_eq!(g.observe(player).players[player.index()].mountain_mana_bonus, Some(2));
+        assert_eq!(g.observe(player.other()).players[player.index()].mountain_mana_bonus, Some(2));
+        let mountain = put(&mut g, player, "Mountain", Zone::Battlefield);
+        let forest = put(&mut g, player, "Forest", Zone::Battlefield);
+        let tapped_without_mana = put(&mut g, player, "Mountain", Zone::Battlefield);
+        g.state.players[player.index()].mana = [0; 6];
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.tap_objects(&[tapped_without_mana]);
+            assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+            act(&mut g, Action::TapMana { card: forest });
+            assert_eq!(g.state.players[player.index()].mana, [0, 0, 0, 0, 1, 0]);
+            act(&mut g, Action::TapMana { card: mountain });
+            assert_eq!(g.state.players[player.index()].mana, [0, 0, 0, 3, 1, 0]);
+            g.finish_cleanup();
+            assert_eq!(g.observe(player).players[player.index()].mountain_mana_bonus, None);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn molten_tide_bonus_makes_a_real_taxed_cast_fundable() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        grant_molten_tide(&mut g, player);
+        let mountain = put(&mut g, player, "Mountain", Zone::Battlefield);
+        put(&mut g, player.other(), "Thalia, the Survivor", Zone::Battlefield);
+        let spell = put(&mut g, player, "Shock", Zone::Hand);
+        g.state.players[player.index()].mana = [0; 6];
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseTarget { target: Target::Player(player.other()) });
+            act(&mut g, Action::TapMana { card: mountain });
+            assert_eq!(g.state.players[player.index()].mana, [0, 0, 0, 2, 0, 0]);
+            pay(&mut g);
+            assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn molten_tide_bonus_is_unrestricted_when_original_mana_is_restricted() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        grant_molten_tide(&mut g, player);
+        let land = put(&mut g, player, "Castle Doom", Zone::Battlefield);
+        let reference = g.object_ref(land);
+        let item = g.cast_preview(player, land, Zone::Battlefield, reference, 0, [0; 6]);
+        g.add_basic_land_type(&item, Subject::Source, crate::cards::BasicLandType::Mountain);
+        g.state.players[player.index()].mana = [0; 6];
+        let activation = g.legal_actions().into_iter().find(|a| matches!(a,
+            Action::ActivateMana { card, ability: 1, production: [0,0,0,1,0,0], .. } if *card == land)).unwrap();
+        act(&mut g, activation);
+        assert_eq!(g.state.players[player.index()].mana[3], 2);
+        let shock = put(&mut g, player, "Shock", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: shock });
+        act(&mut g, Action::ChooseTarget { target: Target::Player(player.other()) });
+        pay(&mut g);
+        assert_eq!(g.state.players[player.index()].mana[3], 1);
+        assert_eq!(g.mana_lots(player).iter().find(|lot|
+            lot.quality.restriction == ManaRestrictionView::ArtifactSpell).unwrap().amounts[3], 1);
+    }
+}
+
+#[test]
+fn molten_tide_counts_mountain_sacrificed_for_mana() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        grant_molten_tide(&mut g, player);
+        let land = put(&mut g, player, "Great Hall of the Biblioplex", Zone::Battlefield);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 5];
+        act(&mut g, Action::AnnounceActivate { card: land, ability: 2, counter_payment: Counters::default() });
+        pay(&mut g);
+        settle(&mut g);
+        let land_ref = g.object_ref(land);
+        let item = g.cast_preview(player, land, Zone::Battlefield, land_ref, 0, [0; 6]);
+        g.add_basic_land_type(&item, Subject::Source, crate::cards::BasicLandType::Mountain);
+        let ring = put(&mut g, player, "Lotus Ring", Zone::Battlefield);
+        let ring_ref = g.object_ref(ring);
+        assert!(g.attach_equipment(ring_ref, land_ref));
+        g.state.players[player.index()].mana = [0; 6];
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::TapGrantedMana { card: land, grantor: ring_ref, production: [0, 0, 0, 0, 3, 0] });
+            assert_eq!(g.object_view(land).zone, Zone::Graveyard);
+            assert_eq!(g.state.players[player.index()].mana, [0, 0, 0, 1, 3, 0]);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn copied_molten_tide_creates_a_separate_trigger_for_its_controller() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Pyre Rhymer // Molten Tide", Zone::Battlefield);
+        let reference = g.object_ref(source);
+        g.prepare_permanent(reference);
+        let copy = g.state.preparations.as_ref().unwrap().iter().find(|row| row.permanent == reference).unwrap().spell_copy;
+        g.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
+        act(&mut g, Action::AnnounceExile { card: copy.card });
+        pay(&mut g);
+        let original = g.state.stack.iter().find(|item| item.kind == StackKind::Spell
+            && item.source_card == Card::test_index(5461)).unwrap().clone();
+        let copy = g.allocate_spell_copy(&original, player.other());
+        g.state.stack.push(copy);
+        g.move_object(source, Zone::Graveyard);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.resolve_top();
+            settle(&mut g);
+            assert_eq!(g.observe(player).players[player.index()].mountain_mana_bonus, Some(1));
+            assert_eq!(g.observe(player).players[player.other().index()].mountain_mana_bonus, Some(1));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn molten_tide_extra_mana_follows_kept_or_reversed_mana_event() {
+    for player in [Player::P0, Player::P1] {
+        for keep in [false, true] {
+            let mut g = scenario(player);
+            grant_molten_tide(&mut g, player);
+            let silver = put(&mut g, player, "Silverquill, the Disputant", Zone::Battlefield);
+            g.state.objects[silver as usize].growth.power = -1;
+            let enemy = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+            let aura = put(&mut g, player.other(), "Witness Protection", Zone::Battlefield);
+            g.state.objects[aura as usize].attached_to = Some(g.object_ref(enemy));
+            let prison = put(&mut g, player, "Banishing Light", Zone::Hand);
+            g.state.players[player.index()].mana = [8; 6];
+            super::super::big_helpers::cast(&mut g, prison, None, &[]);
+            for _ in 0..40 {
+                if g.state.pending != Pending::Priority { break; }
+                act(&mut g, Action::Pass);
+            }
+            act(&mut g, Action::ChooseTarget { target: Target::Card(aura) });
+            super::super::big_helpers::settle(&mut g);
+            let mountain = put(&mut g, player, "Mountain", Zone::Battlefield);
+            let spell = put(&mut g, player, "Candy Grapple", Zone::Hand);
+            g.state.players[player.index()].mana = [0, 0, 1, 0, 0, 0];
+            act(&mut g, Action::AnnounceCast { card: spell });
+            let sacrifice = g.object_ref(prison);
+            act(&mut g, Action::ChooseBargain { sacrifice: Some(sacrifice) });
+            act(&mut g, Action::ChooseCasualty { pay: true });
+            act(&mut g, Action::ChooseTarget { target: Target::Card(enemy) });
+            act(&mut g, Action::TapMana { card: mountain });
+            pay(&mut g);
+            let clause = g.observe(player).cast_costs.unwrap().clauses.iter()
+                .position(|row| row.clause == CastCostClause::Additional).unwrap() as u16;
+            act(&mut g, Action::ChooseCastCost { clause });
+            let silver = g.object_ref(silver);
+            act(&mut g, Action::ChooseAuraAttachment { object: silver });
+            assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
+            assert_eq!(g.observe(player).mana_rollback.unwrap().mountain_bonus, Some(1));
+            act(&mut g, Action::ChooseManaRollback { keep });
+            assert_eq!(g.object_view(spell).zone, Zone::Hand);
+            assert_eq!(g.object_view(mountain).tapped, keep);
+            assert_eq!(g.state.players[player.index()].mana, [0, 0, 1, if keep { 2 } else { 0 }, 0, 0]);
+        }
+    }
+}

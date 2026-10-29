@@ -1576,6 +1576,8 @@ impl Game {
                     for (pool, amount) in next.mana.iter_mut().zip(production) {
                         *pool += u128::from(amount);
                     }
+                    next.mana[3] = next.mana[3].checked_add(u128::from(a.item.mana_tap_bonus.unwrap_or(0)))
+                        .capacity("mana representation exhausted");
                     if let Some((_, quality)) = self
                         .state
                         .mana_lots

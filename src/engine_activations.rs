@@ -615,6 +615,7 @@ impl Game {
             split_second: false,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
+            mana_tap_bonus: None,
             source_facts: self.damage_facts(card),
             related_stack: None,
             entering_object: None,
@@ -762,6 +763,10 @@ impl Game {
         // Capture the tap event before a subsequent sacrifice/discard/exile
         // changes the source incarnation. All other paid source costs are set.
         if cost.tap {
+            if definition.mana_production().is_some() {
+                let bonus = self.mountain_tap_bonus(item.controller, item.card);
+                item.mana_tap_bonus = (bonus > 0).then_some(bonus);
+            }
             self.tap_objects(&[item.card]);
             if let Some(grant) = &item.attachment_trigger
                 && item.source_card.grants_activation(ability)

@@ -541,6 +541,18 @@ impl Game {
                 .announcement_quality = Some((item.object, quality));
         }
     }
+    pub(super) fn mountain_tap_bonus(&self, actor: Player, card: CardId) -> u32 {
+        let object = &self.state.objects[card as usize];
+        if object.zone == Zone::Battlefield && object.controller == actor && self.has_subtype(card, "Mountain") {
+            self.state.players[actor.index()].mountain_mana_bonus
+        } else { 0 }
+    }
+    pub(super) fn produce_mountain_tap_bonus(&mut self, actor: Player, amount: u32) {
+        if amount > 0 {
+            self.record_cast_mana_bonus(actor, amount);
+            self.add_mana(actor, [0, 0, 0, amount, 0, 0]);
+        }
+    }
     pub(super) fn add_announced_mana(&mut self, item: &SpellView, mana: Mana) {
         let quality = self.state.mana_lots.as_mut().and_then(|state| {
             state.announcement_quality.take().map(|(source, quality)| {
@@ -549,6 +561,7 @@ impl Game {
             })
         });
         self.add_quality_mana(item.controller, mana, quality);
+        self.produce_mountain_tap_bonus(item.controller, item.mana_tap_bonus.unwrap_or(0));
     }
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
         self.record_cast_mana_production(actor, mana, quality);

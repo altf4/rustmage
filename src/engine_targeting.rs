@@ -1691,6 +1691,7 @@ impl Game {
             split_second: false,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
+            mana_tap_bonus: None,
             source_facts: self.damage_facts(card),
             related_stack: None,
             entering_object: None,

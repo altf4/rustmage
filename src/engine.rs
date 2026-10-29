@@ -926,6 +926,7 @@ struct PlayerState {
     enduring_story: bool,
     turn_facts: TurnFactsView,
     hexproof_until_end_turn: bool,
+    mountain_mana_bonus: u32,
     /// Presence of a lasting grant; its authoritative order is in HandSizeState.
     no_maximum_hand_size: bool,
     extra_land_plays_remaining: u64,
@@ -1144,6 +1145,9 @@ pub struct SpellView {
     pub split_second: bool,
     pub source_keywords: Keywords,
     pub source_tapped: bool,
+    /// Extra red mana frozen when this mana ability's source was tapped.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mana_tap_bonus: Option<u32>,
     pub source_attachment: Option<ObjectRef>,
     pub damage_event: Option<DamageTriggerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2328,6 +2332,8 @@ pub struct PlayerView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_cast_grants: Option<PlayerCastGrantsView>,
     pub hexproof_until_end_turn: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mountain_mana_bonus: Option<u32>,
     pub turns_to_skip: u64,
     /// Actual turns begun, capped at four (four means four or more).
     pub turns_started: u8,
@@ -2846,6 +2852,7 @@ impl Game {
             enduring_story: false,
             turn_facts: TurnFactsView::default(),
             hexproof_until_end_turn: false,
+            mountain_mana_bonus: 0,
             no_maximum_hand_size: false,
             extra_land_plays_remaining: 0,
             extra_land_plays_granted: 0,
@@ -5508,12 +5515,14 @@ impl Game {
                     })
                     .expect("legal granted mana ability");
                 let quality = self.mana_quality(grant.production, card);
+                let bonus = self.mountain_tap_bonus(actor, card);
                 self.tap_objects(&[card]);
                 let creature = self.is_creature(card);
                 if grant.sacrifice {
                     self.sacrifice_batch(&[(actor, card)]);
                 }
                 self.add_quality_mana(actor, production, quality);
+                self.produce_mountain_tap_bonus(actor, bonus);
                 self.creature_ability_activated(actor, creature);
                 self.state.passes = 0;
             }
@@ -5523,6 +5532,7 @@ impl Game {
                 let mut production = [0; 6];
                 production[color] = 1;
                 let quality = self.mana_quality(ManaProduction::Fixed(production), card);
+                let bonus = self.mountain_tap_bonus(actor, card);
                 self.tap_objects(&[card]);
                 if quality.is_some() {
                     self.add_quality_mana(actor, production, quality);
@@ -5532,6 +5542,7 @@ impl Game {
                         .checked_add(1)
                         .capacity("mana representation exhausted");
                 }
+                self.produce_mountain_tap_bonus(actor, bonus);
                 if self.state.activation_observers.is_some() {
                     self.creature_ability_activated(actor, self.is_creature(card));
                 }
@@ -5787,6 +5798,7 @@ impl Game {
                     .map(|quality| quality.with_definition(item.source_card));
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
+                self.produce_mountain_tap_bonus(actor, item.mana_tap_bonus.unwrap_or(0));
                 self.committed_mana_reflexive(&item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
@@ -5879,6 +5891,7 @@ impl Game {
                 let quality = self.mana_quality(definition, card);
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
+                self.produce_mountain_tap_bonus(actor, item.mana_tap_bonus.unwrap_or(0));
                 self.committed_mana_reflexive(&item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
@@ -7747,6 +7760,7 @@ impl Game {
         self.state.damage_prevention_prohibited = false;
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
+            player.mountain_mana_bonus = 0;
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_spell_copies();
@@ -8529,6 +8543,7 @@ impl Game {
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 turns_started: s.players[i].turns_started,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
+                mountain_mana_bonus: (s.players[i].mountain_mana_bonus > 0).then_some(s.players[i].mountain_mana_bonus),
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
                 no_maximum_hand_size: self.no_maximum_hand_size(if i == 0 {
                     Player::P0

@@ -262,6 +262,7 @@ impl Game {
                 split_second: false,
                 source_keywords: b.keywords,
                 source_tapped: b.tapped,
+                mana_tap_bonus: None,
                 source_attachment: b.attachment,
                 source_transform: None,
                 source_facts: b.facts,

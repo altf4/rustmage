@@ -1170,6 +1170,8 @@ pub(crate) enum Instruction {
         next_turn: bool,
     },
     ExileEachLibraryTopCastFree,
+    /// Until cleanup, each tap of a Mountain for mana triggers an extra red mana.
+    AddMountainManaTrigger,
     /// Exile the controller’s top card, then offer one normal-cost cast.
     ExileTopMayCastPaid,
     /// Skip the following instructions if that offered cast committed.
