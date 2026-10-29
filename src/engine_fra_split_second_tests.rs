@@ -9,8 +9,11 @@ fn samut_grant_is_visible_and_tracks_spell_copy_controller_and_source() {
         let shock = put(&mut g, p, "Shock", Zone::Hand);
         cast(&mut g, shock, Some(Target::Player(p.other())));
         let original = g.state.stack.last().unwrap().clone();
-        assert!(!original.source_keywords.contains(Keywords::SPLIT_SECOND));
+        // The source snapshot includes real continuous grants at cast time.
+        assert!(original.source_keywords.contains(Keywords::SPLIT_SECOND));
         let copy = g.allocate_spell_copy(&original, p.other());
+        // The other player's copy is a new source and does not inherit that grant.
+        assert!(!copy.source_keywords.contains(Keywords::SPLIT_SECOND));
         let copy_id = copy.id;
         let copy_card = copy.card;
         g.state.stack.push(copy);
@@ -26,7 +29,7 @@ fn samut_grant_is_visible_and_tracks_spell_copy_controller_and_source() {
             assert!(visible(&g, viewer, original.id));
             let observed = g.observe(viewer);
             assert!(
-                !observed
+                observed
                     .stack
                     .iter()
                     .find(|v| v.id == original.id)
@@ -90,7 +93,7 @@ fn resolving_split_second_spell_still_blocks_its_own_free_casts() {
         let resolving = g.observe(p).resolving.unwrap();
         assert_eq!(resolving.card, capstone);
         assert!(resolving.split_second);
-        assert!(!resolving.source_keywords.contains(Keywords::SPLIT_SECOND));
+        assert!(resolving.source_keywords.contains(Keywords::SPLIT_SECOND));
         assert!(g.nonmana_actions_prohibited());
         assert!(
             !g.legal_actions()
@@ -117,7 +120,7 @@ fn announcing_spell_projects_current_split_second_for_both_viewers() {
         for viewer in [p, p.other()] {
             let spell = g.observe(viewer).announcing.unwrap();
             assert!(spell.split_second);
-            assert!(!spell.source_keywords.contains(Keywords::SPLIT_SECOND));
+            assert!(spell.source_keywords.contains(Keywords::SPLIT_SECOND));
         }
         g.move_object(provider, Zone::Graveyard);
         for viewer in [p, p.other()] {

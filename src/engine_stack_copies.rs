@@ -348,6 +348,10 @@ impl Game {
             self.set_copy_recipe(copy.object, recipe);
             copy.source_copy_recipe = Some(Box::new(recipe));
         }
+        // Source keywords are an LKI snapshot, not copied characteristics.
+        // Evaluate after installing the recipe so the new spell has its own
+        // copiable values and the continuous effects of its own controller.
+        copy.source_keywords = self.keywords(card);
         copy
     }
     pub(super) fn copy_target_spell(

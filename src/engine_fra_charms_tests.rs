@@ -7577,3 +7577,18 @@ mod engine_fra_omnipresence_adversarial_tests;
 
 #[path = "engine_fra_anguish_independent_tests.rs"]
 mod engine_fra_anguish_independent_tests;
+
+#[path = "engine_fra_combined_combat_tests.rs"]
+mod engine_fra_combined_combat_tests;
+
+#[path = "engine_fra_ruric_magecrusher_tests.rs"]
+mod engine_fra_ruric_magecrusher_tests;
+
+#[path = "engine_fra_ruric_history_independent_tests.rs"]
+mod engine_fra_ruric_history_independent_tests;
+
+#[path = "engine_fra_hall_of_echoes_tests.rs"]
+mod engine_fra_hall_of_echoes_tests;
+
+#[path = "engine_fra_hall_independent_tests.rs"]
+mod engine_fra_hall_independent_tests;

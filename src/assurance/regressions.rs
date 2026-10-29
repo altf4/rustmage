@@ -207,6 +207,156 @@ fn prior_split_second_projection_rejects_dormant_restriction_provider() {
     }
 }
 
+/// These schema-178 flags have no earlier representation. Only false values
+/// may be removed; even hidden owned flags can affect later game behavior.
+fn prior_schema178_history_owned_state_supported(game: &Game) -> bool {
+    !game
+        .state
+        .objects
+        .iter()
+        .any(|o| o.dealt_combat_damage_this_incarnation)
+        && !game
+            .state
+            .players
+            .iter()
+            .any(|p| p.legend_rule_ignored_this_turn)
+}
+
+fn project_prior_schema178_history(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::Array(rows) => {
+                for row in rows {
+                    check(row)?;
+                }
+            }
+            serde_json::Value::Object(map) => {
+                for (key, value) in map {
+                    if matches!(
+                        key.as_str(),
+                        "dealt_combat_damage_this_incarnation" | "legend_rule_ignored_this_turn"
+                    ) && value != &serde_json::Value::Bool(false)
+                    {
+                        return Err(format!("{key} has no prior-schema representation"));
+                    }
+                    check(value)?;
+                }
+            }
+            _ => (),
+        }
+        Ok(())
+    }
+    let parsed: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&parsed)?;
+    // Copy tokens without decoding strings, so escaped text and ordering stay
+    // byte-for-byte identical to the trace. Serde's output is compact JSON.
+    let bytes = input.as_bytes();
+    let mut result = String::with_capacity(input.len());
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] != b'"' {
+            let ch = input[i..].chars().next().unwrap();
+            result.push(ch);
+            i += ch.len_utf8();
+            continue;
+        }
+        let start = i;
+        i += 1;
+        while i < bytes.len() {
+            if bytes[i] == b'\\' {
+                i += 2;
+            } else if bytes[i] == b'"' {
+                i += 1;
+                break;
+            } else {
+                i += 1;
+            }
+        }
+        let key = &input[start..i];
+        if matches!(
+            key,
+            "\"dealt_combat_damage_this_incarnation\"" | "\"legend_rule_ignored_this_turn\""
+        ) && input[i..].starts_with(":false")
+        {
+            i += 6;
+            if bytes.get(i) == Some(&b',') {
+                i += 1;
+            } else if bytes.get(i) == Some(&b'}') {
+                if result.ends_with(',') {
+                    result.pop();
+                }
+            } else {
+                return Err("unexpected schema-178 field encoding".into());
+            }
+        } else {
+            result.push_str(key);
+        }
+    }
+    Ok(result)
+}
+
+#[test]
+fn prior_schema178_history_projection_preserves_text_and_rejects_nonfalse() {
+    let input = r#"[{"text":"escaped \\\"dealt_combat_damage_this_incarnation\\\":false,", "dealt_combat_damage_this_incarnation":false,"legend_rule_ignored_this_turn":false,"other":1}]"#;
+    // Actual traces are compact serde output.
+    let value: serde_json::Value = serde_json::from_str(input).unwrap();
+    let compact = serde_json::to_string(&value).unwrap();
+    let projected = project_prior_schema178_history(&compact).unwrap();
+    let output: serde_json::Value = serde_json::from_str(&projected).unwrap();
+    assert_eq!(output[0]["text"], value[0]["text"]);
+    assert_eq!(output[0]["other"], value[0]["other"]);
+    assert!(
+        output[0]
+            .get("dealt_combat_damage_this_incarnation")
+            .is_none()
+    );
+    assert!(output[0].get("legend_rule_ignored_this_turn").is_none());
+    for key in [
+        "dealt_combat_damage_this_incarnation",
+        "legend_rule_ignored_this_turn",
+    ] {
+        for v in ["true", "null", "1"] {
+            assert!(project_prior_schema178_history(&format!("{{\"{key}\":{v}}}")).is_err());
+        }
+    }
+}
+
+#[test]
+fn prior_schema178_history_projection_checks_both_views_and_hidden_owned_objects() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let visible = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let hidden = put(&mut g, player, "Bear Cub", Zone::Hand);
+        let views =
+            || serde_json::to_string(&[g.observe(player), g.observe(player.other())]).unwrap();
+        let encoded = views();
+        assert!(prior_schema178_history_owned_state_supported(&g));
+        let projected = project_prior_schema178_history(&encoded).unwrap();
+        assert!(!projected.contains("\"dealt_combat_damage_this_incarnation\":"));
+        assert!(!projected.contains("\"legend_rule_ignored_this_turn\":"));
+        g.state.objects[visible as usize].dealt_combat_damage_this_incarnation = true;
+        assert!(!prior_schema178_history_owned_state_supported(&g));
+        assert!(
+            project_prior_schema178_history(
+                &serde_json::to_string(&[g.observe(player), g.observe(player.other())]).unwrap()
+            )
+            .is_err()
+        );
+        g.state.objects[visible as usize].dealt_combat_damage_this_incarnation = false;
+        g.state.objects[hidden as usize].dealt_combat_damage_this_incarnation = true;
+        assert!(!prior_schema178_history_owned_state_supported(&g));
+        g.state.objects[hidden as usize].dealt_combat_damage_this_incarnation = false;
+        g.state.players[player.index()].legend_rule_ignored_this_turn = true;
+        assert!(!prior_schema178_history_owned_state_supported(&g));
+        assert!(
+            project_prior_schema178_history(
+                &serde_json::to_string(&[g.observe(player), g.observe(player.other())]).unwrap()
+            )
+            .is_err()
+        );
+    }
+}
+
 /// Recording-only projection to the schema preceding behold and universal
 /// basic-land mana. Reject cases whose old wire representation cannot preserve
 /// the observed ability identity or land-subtype semantics.
@@ -744,6 +894,16 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
             );
         } else if let Err(reason) = project_prior_split_second(&observation_bytes) {
             projection_error = Some(reason);
+        } else if !prior_schema178_history_owned_state_supported(&g) {
+            projection_error = Some(
+                "owned combat-damage or legend-rule history has no prior-schema representation"
+                    .to_owned(),
+            );
+        } else {
+            match project_prior_schema178_history(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
         }
     }
     if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 177) {

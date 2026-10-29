@@ -267,6 +267,7 @@ struct ResourceKey {
     counters: InitialCounters,
     used: u64,
     loyalty_activated_this_turn: bool,
+    dealt_combat_damage_this_incarnation: bool,
     gained: Keywords,
     owned: bool,
     controlled: bool,
@@ -1573,6 +1574,7 @@ impl<'g> FundingState<'g> {
                 object.damage = 0;
                 object.damaged_this_turn = false;
                 object.dealt_damage_this_turn = false;
+                object.dealt_combat_damage_this_incarnation = false;
                 object.deathtouch_since_sba = false;
                 object.growth = Stats::default();
                 object.gained_keywords = Keywords::NONE;
@@ -1657,6 +1659,7 @@ impl<'g> FundingState<'g> {
                 counters: r.object.counters,
                 used: r.object.used_abilities,
                 loyalty_activated_this_turn: r.object.loyalty_activated_this_turn,
+                dealt_combat_damage_this_incarnation: r.object.dealt_combat_damage_this_incarnation,
                 gained: r.object.gained_keywords,
                 // Ownership still determines whose graveyard receives a sacrificed
                 // resource; control determines who can use it before that move.
@@ -1727,7 +1730,7 @@ impl<'g> FundingState<'g> {
                 ],
                 r.used,
                 r.gained,
-                r.attacking,
+                (r.attacking, r.dealt_combat_damage_this_incarnation),
                 (r.owned, r.controlled, r.identity, r.attached),
             )
         });
@@ -3912,3 +3915,7 @@ mod engine_fra_slow_departure_tests;
 #[cfg(test)]
 #[path = "engine_fra_manifest_cost_departures_tests.rs"]
 mod engine_fra_manifest_cost_departures_tests;
+
+#[cfg(test)]
+#[path = "engine_fra_ruric_fast_projection_tests.rs"]
+mod engine_fra_ruric_fast_projection_tests;
