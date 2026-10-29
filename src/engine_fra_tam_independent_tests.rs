@@ -54,8 +54,10 @@ fn tam_zero_and_two_types_use_resolution_controller_after_source_changes() {
                 let mut g = scenario(player);
                 let tam = put(&mut g, player, "Tam, the Possibility", Zone::Battlefield);
                 if count == 2 {
-                    put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
-                    put(&mut g, player, "Kaito, Cunning Infiltrator", Zone::Battlefield);
+                    let ajani = put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
+                    let kaito = put(&mut g, player, "Kaito, Cunning Infiltrator", Zone::Battlefield);
+                    g.state.objects[ajani as usize].counters.loyalty = 3;
+                    g.state.objects[kaito as usize].counters.loyalty = 3;
                 }
                 let creature = put(&mut g, player, "Bear Cub", Zone::Battlefield);
                 g.add_counter(creature, CounterKind::PlusOne, 1);
@@ -88,8 +90,10 @@ fn copied_tam_activation_uses_copy_controllers_planeswalker_types() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let tam = put(&mut g, player, "Tam, the Possibility", Zone::Battlefield);
-        put(&mut g, player.other(), "Ajani, Caller of the Pride", Zone::Battlefield);
-        put(&mut g, player.other(), "Kaito, Cunning Infiltrator", Zone::Battlefield);
+        let ajani = put(&mut g, player.other(), "Ajani, Caller of the Pride", Zone::Battlefield);
+        let kaito = put(&mut g, player.other(), "Kaito, Cunning Infiltrator", Zone::Battlefield);
+        g.state.objects[ajani as usize].counters.loyalty = 3;
+        g.state.objects[kaito as usize].counters.loyalty = 3;
         let creature = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
         g.add_counter(creature, CounterKind::PlusOne, 1);
         activate_tam(&mut g, tam);
