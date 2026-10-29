@@ -413,6 +413,8 @@ fn schema180_packet_supported(item: &SpellView) -> bool {
         || item.source_copy_recipe.as_deref().is_some_and(|r| !schema180_recipe_supported(r))
         || item.captured_artifact_copy.as_deref().is_some_and(|r| !schema180_recipe_supported(r))
         || item.attachment_trigger.as_ref().is_some_and(|v| schema180_new_card(v.granting_card))
+        || item.delayed_sacrifice.as_ref().is_some_and(|v| schema180_new_card(v.source_card))
+        || item.delayed_warp_exile.as_ref().is_some_and(|v| schema180_new_card(v.source_card))
         || item.cast_event.as_ref().is_some_and(|v| schema180_new_card(v.card))
         || item.cast.and_then(|v| v.physical_card).is_some_and(schema180_new_card)
         || item.mana_copy_sources.as_ref().is_some_and(|sources| sources.iter().any(|(v, _)|
@@ -447,6 +449,8 @@ fn prior_schema180_state_supported(state: &State) -> bool {
         // Borrowed slot definitions and warp continuations contain private cards.
         || state.borrowed_slots.as_ref().is_some_and(|rows| !rows.is_empty())
         || state.warp.as_ref().is_some_and(|w| !w.delayed.is_empty())
+        || state.delayed_sacrifices.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.mobilize.is_some() || state.miracle.is_some()
         || state.adventures.as_ref().is_some_and(|a| a.permissions.iter().any(|v| schema180_new_card(v.card)))
         || state.plot.as_ref().and_then(|p| p.payment.as_ref()).is_some_and(|p| schema180_new_card(p.source_card))
         || state.hits.iter().any(|hit| !schema180_facts_supported(&hit.source.facts))
