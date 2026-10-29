@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "08741ffb92a2a0a671a8ce144644052fd46f4e2044c563be6b25415ea7961385",
+  "catalogue_version": "cd5194e827ef19737a984efec31000f631d6e38607baec1650134d90e8d5c19d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2922,
-  "implemented_total": 2928,
+  "implemented_standard_cards": 2923,
+  "implemented_total": 2929,
   "token_definitions": 146,
   "emblem_definitions": 6,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 275,
-      "gated": 10
+      "complete": 276,
+      "gated": 9
     },
     "frc": {
       "total": 6,
@@ -34843,8 +34843,8 @@
     {
       "name": "Tam, the Possibility",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/tam_the_possibility.rs",
       "set": "fra"
     },

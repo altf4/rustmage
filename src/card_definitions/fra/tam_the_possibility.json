@@ -3,7 +3,7 @@
   "catalogue_id": 4330,
   "oracle_id": "c92c7744-0c92-4a36-9ada-4ffca812009e",
   "facts_sha256": "510408e26ba3d7ad8b7ebbf5a472476702e1dd38606c7052f647eab51013af29",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b76463aff636f14252e051a6e976716bcc330c6fb48a1b5ded7e4c1bc8a9482c"
@@ -41,6 +41,7 @@
     "src/engine_fra_proliferate_batch_tests.rs",
     "src/engine_fra_poison_ward_tests.rs",
     "src/engine_fra_self_replacement_tests.rs",
-    "src/engine_fra_radiation_order_tests.rs"
+    "src/engine_fra_radiation_order_tests.rs",
+    "src/engine_fra_tam_owned_branch_tests.rs"
   ]
 }
