@@ -200,16 +200,18 @@ fn null_sacrifice_mana_action_rechecks_permission_and_restores_payment() {
             let before_payment = g.snapshot();
             for _ in 0..2 {
                 let red = Action::TapGrantedMana { card: source, grantor: ring_ref, production: [0, 0, 0, 3, 0, 0] };
-                act(&mut g, red);
+                let blue = Action::TapGrantedMana { card: source, grantor: ring_ref, production: [0, 3, 0, 0, 0, 0] };
+                // Payment visitors reject a mana action that would strand the
+                // announcement. Red is only viable with the independent grant.
+                assert_eq!(g.legal_actions().contains(&red), independent_permission);
+                act(&mut g, if independent_permission { red } else { blue });
                 assert_eq!(g.object_view(source).zone, Zone::Graveyard);
                 let item = g.state.announcing.as_ref().unwrap().item.clone();
                 let purpose = g.purpose_for_item(&item);
                 assert_eq!(cast_origins::spends_any_type(&g, player, purpose), independent_permission);
-                assert_eq!(g.can_fund_for(goal.clone(), purpose), independent_permission);
-                if independent_permission {
-                    pay(&mut g);
-                    assert_eq!(g.object_view(card).zone, Zone::Stack);
-                }
+                assert!(g.can_fund_for(goal.clone(), purpose));
+                pay(&mut g);
+                assert_eq!(g.object_view(card).zone, Zone::Stack);
                 g.restore(&before_payment).unwrap();
                 assert_eq!(g.snapshot(), before_payment);
                 let item = g.state.announcing.as_ref().unwrap().item.clone();
