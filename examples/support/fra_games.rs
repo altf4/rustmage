@@ -35,6 +35,7 @@ struct Deck {
 pub struct GameReport {
     pub pair: usize,
     pub seed: u64,
+    pub deck_swapped: bool,
     pub starting_player: Player,
     pub decisions: usize,
     pub turns: u32,
@@ -68,28 +69,19 @@ pub struct Report {
 }
 impl Report {
     pub fn missing_mechanics(&self) -> Vec<&'static str> {
-        ["prepared_created", "empower_counters", "fatehold_trigger", "scry_or_surveil_completed", "loyalty_activation"]
+        ["prepared_created", "prepared_spell_cast", "prepared_spell_resolved", "empower_counters", "fatehold_scry_trigger", "scry_or_surveil_completed", "loyalty_activation"]
         .into_iter()
         .filter(|m| self.witnesses.get(*m).copied().unwrap_or(0) == 0)
         .collect()
     }
 }
-pub fn cases(seeds_per_pair: u64) -> Vec<(usize, u64, Player)> {
-    (0..6)
-        .flat_map(|pair| {
-            (0..seeds_per_pair).map(move |seed| {
-                (
-                    pair,
-                    897500 + pair as u64 * 100 + seed,
-                    if seed % 2 == 0 {
-                        Player::P0
-                    } else {
-                        Player::P1
-                    },
-                )
-            })
-        })
-        .collect()
+pub fn cases(seeds_per_pair: u64) -> Vec<(usize, u64, Player, bool)> {
+    (0..6).flat_map(|pair| (0..seeds_per_pair).flat_map(move |seed| {
+        [false, true].into_iter().map(move |swapped| (
+            pair, 897500 + pair as u64 * 100 + seed,
+            if seed % 2 == 0 { Player::P0 } else { Player::P1 }, swapped,
+        ))
+    })).collect()
 }
 /// Audit every physical identity; an unknown card is as incomplete as a gated one.
 pub fn missing_pool_members() -> Result<Vec<String>, String> {
@@ -187,6 +179,8 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
 struct Tracker {
     seen_packets: BTreeSet<u64>,
     seen_events: BTreeSet<String>,
+    prepared_copies: BTreeSet<ObjectRef>,
+    prepared_spell_packets: BTreeSet<u64>,
     cards: BTreeSet<String>,
     witnesses: BTreeMap<String, u64>,
     colors: u8,
@@ -198,6 +192,13 @@ impl Tracker {
         }
     }
     fn inspect(&mut self, _before: &Observation, after: &Observation, _action: &Action) {
+        for row in &_before.preparations {
+            self.prepared_copies.insert(row.spell_copy);
+        }
+        for row in &after.preparations {
+            self.prepared_copies.insert(row.spell_copy);
+            self.hit("prepared_created", format!("{:?}", row.spell_copy));
+        }
         for s in after.stack.iter().chain(after.resolving.iter()) {
             if !self.seen_packets.insert(s.id) {
                 continue;
@@ -206,11 +207,17 @@ impl Tracker {
                 self.cards.insert(s.source_card.name().into());
                 self.colors |= s.source_card.colors();
                 self.hit("actual_cast", s.id.to_string());
+                if s.cast.is_some_and(|cast| cast.origin == Zone::Exile)
+                    && self.prepared_copies.iter().any(|r| r.card == s.object.card
+                        && r.generation.checked_add(1) == Some(s.object.generation)) {
+                    self.prepared_spell_packets.insert(s.id);
+                    self.hit("prepared_spell_cast", s.id.to_string());
+                }
             }
-            if matches!(s.kind, StackKind::TriggeredAbility { .. })
-                && matches!(s.source_card.name(), "Proctor of Potential" | "Surveillance Phantasm" | "Diviner of Victory" | "Fatehold Chronologist")
-            {
-                self.hit("fatehold_trigger", s.id.to_string());
+            if s.source_card.name() == "Diviner of Victory"
+                && s.kind == (StackKind::TriggeredAbility { ability: 0 })
+                && s.source_ability_origin.is_none() && s.attachment_trigger.is_none() {
+                self.hit("fatehold_scry_trigger", s.id.to_string());
             }
             if matches!(s.kind, StackKind::ActivatedAbility { .. })
                 && matches!(s.source_card.name(), "Ajani Resolute" | "The Theorist, Jace Beleren")
@@ -218,13 +225,26 @@ impl Tracker {
                 self.hit("loyalty_activation", s.id.to_string());
             }
         }
-        for row in &after.preparations {
-            self.hit("prepared_created", format!("{:?}", row.spell_copy));
+        // Only count a directly observed resolving packet. An instantaneous
+        // resolution may go unseen; it is intentionally not inferred from exit.
+        if let Some(packet) = &after.resolving {
+            if self.prepared_spell_packets.contains(&packet.id) {
+                self.hit("prepared_spell_resolving", packet.id.to_string());
+            }
+        }
+        if let Some(packet) = &_before.resolving {
+            if self.prepared_spell_packets.contains(&packet.id)
+                && !after.resolving.as_ref().is_some_and(|next| next.id == packet.id)
+                && !after.stack.iter().any(|next| next.id == packet.id) {
+                self.hit("prepared_spell_resolved", packet.id.to_string());
+            }
         }
         // Witness a real loyalty increase on the Jace token while a known
         // empower instruction is resolving. This excludes merely casting or
         // putting the corresponding trigger on the stack.
-        if let Some(packet) = _before.resolving.as_ref().or_else(|| _before.stack.last()) {
+        if let Some(packet) = _before.resolving.as_ref().or_else(|| {
+            matches!(_action, Action::Pass).then(|| _before.stack.last()).flatten()
+        }) {
             if matches!(packet.source_card.name(), "Campus Crier" | "Repurposed Enforcer"
                 | "Theorist's Proxy" | "Avatar of Burgeoning Echoes"
                 | "Arcane Amphisbaena" | "Fatehold Charm") {
@@ -256,7 +276,7 @@ fn digest(mut hash: u64, actor: Player, action: &Action) -> u64 {
     hash
 }
 pub fn run(
-    cases: &[(usize, u64, Player)],
+    cases: &[(usize, u64, Player, bool)],
     mode: Mode,
     trace_dir: Option<&Path>,
 ) -> Result<Report, String> {
@@ -267,8 +287,9 @@ pub fn run(
     let mut total_witnesses = BTreeMap::new();
     let mut colors = 0;
     let mut total_decisions = 0;
-    for &(pair, seed, starting_player) in cases {
-        let (a, b) = pairings[pair];
+    for &(pair, seed, starting_player, swapped) in cases {
+        let (left, right) = pairings[pair];
+        let (a, b) = if swapped { (right, left) } else { (left, right) };
         let config = Config {
             decks: [decks[a].cards.clone(), decks[b].cards.clone()],
             seed,
@@ -404,7 +425,7 @@ pub fn run(
         let trace_file = if mode.verifies() {
             if let Some(dir) = trace_dir {
                 std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
-                let path = dir.join(format!("pair-{pair}-seed-{seed}.json"));
+                let path = dir.join(format!("pair-{pair}-seed-{seed}-swap-{swapped}.json"));
                 let payload = serde_json::json!({"catalogue":CATALOGUE_VERSION,"decks":[decks[a].report.cards,decks[b].report.cards],"ordered_decks":[decks[a].cards,decks[b].cards],"seed":seed,"starting_player":starting_player,"actions":trace});
                 std::fs::write(&path, serde_json::to_vec(&payload).unwrap())
                     .map_err(|e| e.to_string())?;
@@ -425,6 +446,7 @@ pub fn run(
         games.push(GameReport {
             pair,
             seed,
+            deck_swapped: swapped,
             starting_player,
             decisions,
             turns,
