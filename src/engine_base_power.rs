@@ -22,12 +22,6 @@ impl Game {
         for id in providers {
             let source = &self.state.objects[id as usize];
             if combat
-                && self.continuous_fragment_available(id, |f| {
-                    matches!(
-                        f,
-                        crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
-                    )
-                })
                 && source.card.static_ability_groups().iter().any(|g| {
                     g.fragments.iter().any(|f| {
                         matches!(
@@ -35,6 +29,12 @@ impl Game {
                             crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                         )
                     })
+                })
+                && self.continuous_fragment_available(id, |f| {
+                    matches!(
+                        f,
+                        crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
+                    )
                 })
             {
                 return true;
