@@ -77,7 +77,7 @@ impl Game {
                         CastRelation::Any => true,
                     };
                     if matches {
-                        self.queue_trigger_from(&source, index, grant.clone().map(Box::new));
+                        self.queue_trigger_from(&source, index, grant.map(Box::new));
                     }
                 }
             }

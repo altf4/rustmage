@@ -1638,7 +1638,7 @@ impl Game {
         payment: Mana,
     ) -> SpellView {
         SpellView {
-            source: Some(StackSourceView { id: card, object: object, card: self.state.objects[card as usize].card, facts: self.damage_facts(card) }),
+            source: Some(StackSourceView { id: card, object, card: self.state.objects[card as usize].card, facts: self.damage_facts(card) }),
             source_less_rule: None,
             additional_triggers: 0,
             gift: None,

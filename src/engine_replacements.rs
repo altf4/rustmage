@@ -1091,6 +1091,7 @@ impl Game {
     ) {
         self.stage_counter_placements_inner(placements, [[0; 5]; 2], None, true, None, mode, None, Vec::new());
     }
+    #[allow(clippy::too_many_arguments, reason = "Counter batches retain distinct event and continuation context")]
     fn stage_counter_placements_inner(
         &mut self,
         mut placements: Vec<CounterPlacement>,

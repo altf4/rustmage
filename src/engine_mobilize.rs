@@ -232,7 +232,7 @@ impl Game {
             let card = b.view.source_card;
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
-            source: Some(StackSourceView { id: source.card, object: source, card: card, facts: b.facts }),
+            source: Some(StackSourceView { id: source.card, object: source, card, facts: b.facts }),
                 source_less_rule: None,
                 additional_triggers: 0,
                 source_move: None,
