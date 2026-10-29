@@ -765,6 +765,34 @@ impl Game {
         if matches!(
             spec.rule,
             TargetRule::Grouped {
+                constraint: TargetGroupConstraint::TotalManaValueAtMost(_),
+                ..
+            }
+        ) {
+            // Ignore inherited targets that are already individually illegal,
+            // just as resolution does. The final set of legal targets must
+            // still satisfy the joint budget after all retargeting edits.
+            let other_legal: Vec<_> = item
+                .targets
+                .iter()
+                .enumerate()
+                .filter(|(i, other)| {
+                    *i != index
+                        && self.same_target_object(**other)
+                        && self.item_target_matches(item, spec.rule, other.target)
+                })
+                .map(|(_, bound)| *bound)
+                .collect();
+            return self.target_group_compatible(
+                spec.rule,
+                bound.group,
+                &other_legal,
+                bound.target,
+            );
+        }
+        if matches!(
+            spec.rule,
+            TargetRule::Grouped {
                 constraint: TargetGroupConstraint::SameGraveyard
                     | TargetGroupConstraint::SharedCardType
                     | TargetGroupConstraint::OtherThanGroup(_),

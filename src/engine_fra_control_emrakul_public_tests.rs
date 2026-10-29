@@ -162,3 +162,87 @@ fn saga_control_returns_emrakul_granted_land_during_payment() {
         assert!(g.apply_index(player, fresh, index).is_ok());
     }
 }
+
+#[test]
+fn copied_civil_war_ability_enforces_total_mana_value_on_new_targets() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let echo = put(
+            &mut g,
+            player,
+            "Echo, Perceptive Prodigy",
+            Zone::Battlefield,
+        );
+        let small = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let large = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+        let other_large = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+        let other_small = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let saga = put(&mut g, player, "The Super Hero Civil War", Zone::Hand);
+        cast(&mut g, saga, None);
+        for _ in 0..40 {
+            if matches!(g.state.pending, Pending::Targets { .. }) {
+                break;
+            }
+            choose(&mut g, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
+        }
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(small),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(large),
+            },
+        );
+        act(&mut g, Action::FinishTargets);
+        let original = g.state.stack.last().unwrap().id;
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: echo,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Stack(original),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        assert!(matches!(g.state.pending, Pending::Retarget { player: p } if p == player));
+        let before = g.snapshot();
+        act(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(other_large),
+            },
+        );
+        assert!(!g.legal_actions().contains(&Action::FinishStackTargets));
+        reject(&mut g, Action::FinishStackTargets);
+        act(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(other_small),
+            },
+        );
+        assert!(g.legal_actions().contains(&Action::FinishStackTargets));
+        act(&mut g, Action::FinishStackTargets);
+        assert!(g.state.stack.last().unwrap().is_copy);
+        g.restore(&before).unwrap();
+        assert!(matches!(g.state.pending, Pending::Retarget { player: p } if p == player));
+    }
+}
