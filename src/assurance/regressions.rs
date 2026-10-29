@@ -239,6 +239,16 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
         }
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
+    if schema_projection.is_some_and(|schema| schema < 175) {
+        for field in [
+            "\"noncombat_damage_this_turn\":true,",
+            "\"noncombat_damage_this_turn\":false,",
+            "\"noncombat_damage_last_turn\":true,",
+            "\"noncombat_damage_last_turn\":false,",
+        ] {
+            observation_bytes = observation_bytes.replace(field, "");
+        }
+    }
     if schema_projection.is_some_and(|schema| schema < 174) {
         for field in [
             "\"scried_or_surveilled_this_turn\":true,",

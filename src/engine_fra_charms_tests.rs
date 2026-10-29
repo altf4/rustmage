@@ -7229,3 +7229,9 @@ mod fourth_followup;
 
 #[path = "engine_fra_peer_review_tests.rs"]
 mod peer_review_tests;
+
+#[path = "engine_fra_noncombat_history_tests.rs"]
+mod noncombat_history_tests;
+
+#[path = "engine_fra_noncombat_followup.rs"]
+mod noncombat_followup;
