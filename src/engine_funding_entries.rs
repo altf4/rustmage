@@ -2217,7 +2217,16 @@ mod loyalty_incarnation_tests {
                 reserve: None,
                 source: None,
             };
-            let world = FundingState::from_game(&g, &goal);
+            let mut world = FundingState::from_game(&g, &goal);
+            // A real cast-cost context retains candidates before projecting their
+            // departure; this direct fixture must retain its candidate as well.
+            if !world.resources.iter().any(|r| r.id == walker) {
+                world.resources.push(Resource {
+                    id: walker,
+                    attacking: false,
+                    object: g.state.objects[walker as usize].clone(),
+                });
+            }
             let mut seen = false;
             world.cost_departures(&[old], Zone::Graveyard, &mut |next| {
                 assert!(!next.object(walker).loyalty_activated_this_turn);
