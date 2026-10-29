@@ -4734,6 +4734,15 @@ impl Game {
                         replacements::TokenCompletion::AttachCreatedTo(item.object),
                     );
                 }
+                Instruction::CreateTokenThenCounterOtherWizards { token } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        1,
+                        false,
+                        replacements::TokenCompletion::CounterOtherWizards,
+                    );
+                }
                 Instruction::CreateTokens {
                     token,
                     amount,

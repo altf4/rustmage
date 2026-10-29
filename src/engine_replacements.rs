@@ -106,6 +106,7 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    CounterOtherWizards,
     Counters {
         kind: CounterKind,
         amount: u64,
@@ -1737,7 +1738,8 @@ impl Game {
                             } else {
                                 let capture = matches!(
                                     batch.completion,
-                                    TokenCompletion::JobAttach(_)
+                                    TokenCompletion::CounterOtherWizards
+                                        | TokenCompletion::JobAttach(_)
                                         | TokenCompletion::AttachCreatedTo(_)
                                         | TokenCompletion::Counters { .. }
                                         | TokenCompletion::CounterSet(_)
@@ -1774,6 +1776,38 @@ impl Game {
                                         capture,
                                     ),
                                 };
+                                if matches!(batch.completion, TokenCompletion::CounterOtherWizards)
+                                {
+                                    let others = self
+                                        .state
+                                        .objects
+                                        .iter()
+                                        .enumerate()
+                                        .filter_map(|(id, object)| {
+                                            let id = id as CardId;
+                                            let reference = self.object_ref(id);
+                                            (object.zone == Zone::Battlefield
+                                                && object.controller == batch.player
+                                                && object.is_token()
+                                                && !created.contains(&reference)
+                                                && self.has_subtype(id, "Wizard"))
+                                            .then_some(reference)
+                                        })
+                                        .collect::<Vec<_>>();
+                                    let placements = self.created_token_counter_placements(
+                                        batch.player,
+                                        &others,
+                                        &Counters::of(CounterKind::PlusOne, 1),
+                                    );
+                                    if !placements.is_empty() {
+                                        state.work.push_front(Work::Counters(CounterBatch {
+                                            completion: None,
+                                            placements,
+                                            next: 0,
+                                            used: Vec::new(),
+                                        }));
+                                    }
+                                }
                                 let counters = match &batch.completion {
                                     TokenCompletion::Counters { kind, amount } => {
                                         Some(Counters::of(*kind, *amount))

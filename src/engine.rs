@@ -934,6 +934,8 @@ struct PlayerState {
     equip_activated_this_turn: bool,
     cards_drawn_this_turn: u64,
     scried_or_surveilled_this_turn: bool,
+    noncombat_damage_this_turn: bool,
+    noncombat_damage_last_turn: bool,
     drew_in_own_draw_step: bool,
     cards_discarded_this_turn: u64,
     cards_library_to_graveyard_this_turn: u64,
@@ -2306,6 +2308,8 @@ pub struct PlayerView {
     pub cards_drawn_this_turn: u64,
     /// Whether this player completed a positive scry or surveil this turn.
     pub scried_or_surveilled_this_turn: bool,
+    pub noncombat_damage_this_turn: bool,
+    pub noncombat_damage_last_turn: bool,
     pub cards_discarded_this_turn: u64,
     /// Number of actual library-to-graveyard moves this turn, without card identities.
     pub cards_library_to_graveyard_this_turn: u64,
@@ -2810,6 +2814,8 @@ impl Game {
             equip_activated_this_turn: false,
             cards_drawn_this_turn: 0,
             scried_or_surveilled_this_turn: false,
+            noncombat_damage_this_turn: false,
+            noncombat_damage_last_turn: false,
             drew_in_own_draw_step: false,
             cards_discarded_this_turn: 0,
             cards_library_to_graveyard_this_turn: 0,
@@ -4484,7 +4490,10 @@ impl Game {
                                 }
                                 // Object-specific mana permissions cannot share the
                                 // printed-definition-only prefunding cache.
-                                if self.opponent_noncreature_spell_tax(actor, self.effective_spell_card(card)) != 0
+                                if self.opponent_noncreature_spell_tax(
+                                    actor,
+                                    self.effective_spell_card(card),
+                                ) != 0
                                     || self.foreign_stash(actor, card)
                                     || self.exile_cast_modifiers(actor, card).0
                                     || obj.card.has_convoke()
@@ -4541,7 +4550,9 @@ impl Game {
                         }
                     }
                     if target_cost
-                        && self.opponent_noncreature_spell_tax(actor, self.effective_spell_card(card)) == 0
+                        && self
+                            .opponent_noncreature_spell_tax(actor, self.effective_spell_card(card))
+                            == 0
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.kicker_cost().is_none()
@@ -4561,7 +4572,11 @@ impl Game {
                                 let bound = target.map(|t| self.bind_target(t));
                                 let targets = bound.as_slice();
                                 for base in obj.card.cost_options() {
-                                    let Some(total) = self.target_spell_cost(actor, card, base, targets) else { continue; };
+                                    let Some(total) =
+                                        self.target_spell_cost(actor, card, base, targets)
+                                    else {
+                                        continue;
+                                    };
                                     payments(
                                         s.players[actor.index()].mana,
                                         total.colored,
@@ -4599,7 +4614,9 @@ impl Game {
                     }
                     if flashback
                         || exile
-                        || self.opponent_noncreature_spell_tax(actor, self.effective_spell_card(card)) != 0
+                        || self
+                            .opponent_noncreature_spell_tax(actor, self.effective_spell_card(card))
+                            != 0
                         || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.teamwork().is_some()
@@ -7457,6 +7474,8 @@ impl Game {
             player.equip_activated_this_turn = false;
             player.cards_drawn_this_turn = 0;
             player.scried_or_surveilled_this_turn = false;
+            player.noncombat_damage_last_turn = player.noncombat_damage_this_turn;
+            player.noncombat_damage_this_turn = false;
             player.cards_discarded_this_turn = 0;
             player.cards_library_to_graveyard_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
@@ -7744,6 +7763,9 @@ impl Game {
             self.qualify_damage_destruction(event);
             match event.target {
                 Target::Player(p) => {
+                    if !event.combat {
+                        self.state.players[p.index()].noncombat_damage_this_turn = true;
+                    }
                     self.lose_life_unobserved(p, event.amount);
                     losses[p.index()] = losses[p.index()]
                         .checked_add(event.amount)
@@ -8375,6 +8397,8 @@ impl Game {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 scried_or_surveilled_this_turn: s.players[i].scried_or_surveilled_this_turn,
+                noncombat_damage_this_turn: s.players[i].noncombat_damage_this_turn,
+                noncombat_damage_last_turn: s.players[i].noncombat_damage_last_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
                 cards_library_to_graveyard_this_turn: s.players[i]
                     .cards_library_to_graveyard_this_turn,

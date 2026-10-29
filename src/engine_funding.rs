@@ -1041,6 +1041,9 @@ impl<'g> FundingState<'g> {
             ActivationGuard::ScriedOrSurveilledThisTurn => {
                 self.game.state.players[actor.index()].scried_or_surveilled_this_turn
             }
+            ActivationGuard::OpponentNoncombatDamageThisTurn => {
+                self.game.state.players[actor.other().index()].noncombat_damage_this_turn
+            }
             ActivationGuard::SourceSolved => self.game.case_solved(self.reference(source)),
             ActivationGuard::SourceAttackedThisTurn => self
                 .game

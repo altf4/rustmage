@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "07034a2b1af5b62d642950fe4e64cca7e644d7e3feddf0e5953c2dc8c7e7ceef"
   },
-  "physical_metadata_sha256": "1e80642cf6cf911ddf1bf030c5426b85c8f71edb6d328d977cdf43be761debc5"
+  "physical_metadata_sha256": "1e80642cf6cf911ddf1bf030c5426b85c8f71edb6d328d977cdf43be761debc5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CommandTheStage.java",
+  "java_sha256": "2025155338bd6c73ac75a9968945ae79e266aa0b7a405f4f292448297295afb5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/NoncombatDamageToPlayersWatcher.java",
+      "sha256": "b2ea02b60e0276dfc3376e5f9af775918c5e5fc829acf3d0ae6ee69fdb9e1275"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/OpponentDealtNoncombatDamageCondition.java",
+      "sha256": "d3466679793e8ac658d2a960695fd30490e2010219cf2cff6c6ec0af16a55072"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/CadetToken.java",
+      "sha256": "9e9b0eaec4d6f703141db5932b446205f25adb25e8fea103cd16d937fb0ef52a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    }
+  ],
+  "rules_tests": "src/engine_fra_noncombat_history_tests.rs"
 }

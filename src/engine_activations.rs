@@ -153,6 +153,9 @@ impl Game {
             ActivationGuard::ScriedOrSurveilledThisTurn => {
                 self.state.players[actor.index()].scried_or_surveilled_this_turn
             }
+            ActivationGuard::OpponentNoncombatDamageThisTurn => {
+                self.state.players[actor.other().index()].noncombat_damage_this_turn
+            }
             ActivationGuard::SourceSolved => self.case_solved(self.object_ref(source)),
             ActivationGuard::Always => true,
             ActivationGuard::SourceAttackedThisTurn => self

@@ -2121,6 +2121,10 @@ pub(crate) enum Instruction {
         token: Card,
         amount: u16,
     },
+    /// Create a token, then put counters on other controlled Wizard tokens.
+    CreateTokenThenCounterOtherWizards {
+        token: Card,
+    },
     CreateTokens {
         token: Card,
         amount: u16,
@@ -3226,6 +3230,7 @@ pub(crate) enum StepGuard {
     OpponentLostLife,
     GainedLife,
     ScriedOrSurveilledThisTurn,
+    OpponentNoncombatDamageLastTurn,
     GainedAndLostLife,
     SourceTapped,
     Expression {
@@ -3753,6 +3758,7 @@ pub(crate) enum ActivationGuard {
     SourceSolved,
     CastInstantSorceryThisTurn,
     ScriedOrSurveilledThisTurn,
+    OpponentNoncombatDamageThisTurn,
     SourceAttackedThisTurn,
     Always,
     OwnTurn,
@@ -3773,6 +3779,7 @@ impl ActivationGuard {
             | Self::SourceAttackedThisTurn
             | Self::CastInstantSorceryThisTurn
             | Self::ScriedOrSurveilledThisTurn
+            | Self::OpponentNoncombatDamageThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
             | Self::ControlCreatureToughnessAtLeast(_)
