@@ -54,6 +54,7 @@ fn lurker_grant_raises_loyalty_and_uses_walker_as_damage_source() {
             act(&mut g, action.clone());
             pay(&mut g);
             assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 2);
+            assert!(!g.legal_actions().contains(&action));
             g.move_object(provider, Zone::Exile);
             settle(&mut g);
             assert_eq!(g.state.players[p.index()].life, 21);
