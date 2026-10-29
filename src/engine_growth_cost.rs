@@ -60,7 +60,7 @@ impl Game {
                         &readiness,
                         usize::from(index),
                         actor,
-                        sorcery,
+                        self.loyalty_timing(card, ability, actor, sorcery),
                     )
                     || !self.targets_available(ability.targets, actor, source)
                     || !self.initial_activation_target_fundable(

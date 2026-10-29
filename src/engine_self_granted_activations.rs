@@ -46,7 +46,7 @@ impl Game {
                     &readiness,
                     usize::from(ability),
                     actor,
-                    sorcery,
+                    self.loyalty_timing(card, rules, actor, sorcery),
                 )
             {
                 continue;

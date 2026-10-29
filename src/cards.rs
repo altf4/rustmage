@@ -1174,6 +1174,7 @@ pub(crate) enum Instruction {
     ExileEachLibraryTopCastFree,
     /// Until cleanup, each tap of a Mountain for mana triggers an extra red mana.
     AddMountainManaTrigger,
+    AllowJaceLoyaltyAnytime,
     /// Exile the controller’s top card, then offer one normal-cost cast.
     ExileTopMayCastPaid,
     /// Skip the following instructions if that offered cast committed.

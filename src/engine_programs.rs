@@ -3604,6 +3604,9 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::AllowJaceLoyaltyAnytime => {
+                    self.state.players[item.controller.index()].jace_loyalty_anytime = true;
+                }
                 Instruction::AddMountainManaTrigger => {
                     let bonus = &mut self.state.players[item.controller.index()].mountain_mana_bonus;
                     *bonus = bonus.checked_add(1).capacity("mountain mana trigger count exhausted");

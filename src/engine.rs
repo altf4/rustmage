@@ -927,6 +927,7 @@ struct PlayerState {
     turn_facts: TurnFactsView,
     hexproof_until_end_turn: bool,
     mountain_mana_bonus: u32,
+    jace_loyalty_anytime: bool,
     /// Presence of a lasting grant; its authoritative order is in HandSizeState.
     no_maximum_hand_size: bool,
     extra_land_plays_remaining: u64,
@@ -2337,6 +2338,8 @@ pub struct PlayerView {
     pub hexproof_until_end_turn: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mountain_mana_bonus: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jace_loyalty_anytime: Option<bool>,
     pub turns_to_skip: u64,
     /// Actual turns begun, capped at four (four means four or more).
     pub turns_started: u8,
@@ -2858,6 +2861,7 @@ impl Game {
             turn_facts: TurnFactsView::default(),
             hexproof_until_end_turn: false,
             mountain_mana_bonus: 0,
+            jace_loyalty_anytime: false,
             no_maximum_hand_size: false,
             extra_land_plays_remaining: 0,
             extra_land_plays_granted: 0,
@@ -7767,6 +7771,7 @@ impl Game {
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
             player.mountain_mana_bonus = 0;
+            player.jace_loyalty_anytime = false;
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_spell_copies();
@@ -8550,6 +8555,7 @@ impl Game {
                 turns_started: s.players[i].turns_started,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 mountain_mana_bonus: (s.players[i].mountain_mana_bonus > 0).then_some(s.players[i].mountain_mana_bonus),
+                jace_loyalty_anytime: s.players[i].jace_loyalty_anytime.then_some(true),
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
                 no_maximum_hand_size: self.no_maximum_hand_size(if i == 0 {
                     Player::P0

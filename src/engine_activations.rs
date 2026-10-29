@@ -213,6 +213,15 @@ impl Game {
             }
         }
     }
+    /// Loyalty timing permission follows current controller, type, and subtype.
+    pub(super) fn loyalty_timing(&self, card: CardId, ability: &ActivatedAbility, actor: Player, sorcery: bool) -> bool {
+        sorcery || (ability.cost.loyalty.is_some()
+            && self.state.players[actor.index()].jace_loyalty_anytime
+            && self.state.objects[card as usize].controller == actor
+            && self.current_kinds(card) & 64 != 0
+            && self.has_subtype(card, "Jace"))
+    }
+
     pub(super) fn activation_cost_available(
         &self,
         card: CardId,
@@ -242,7 +251,7 @@ impl Game {
                 &readiness,
                 index,
                 actor,
-                sorcery,
+                self.loyalty_timing(card, ability, actor, sorcery),
             )
     }
 

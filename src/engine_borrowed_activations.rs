@@ -477,7 +477,7 @@ impl Game {
                     &readiness,
                     0,
                     actor,
-                    sorcery,
+                    self.loyalty_timing(card, ability, actor, sorcery),
                 )
             {
                 continue;
