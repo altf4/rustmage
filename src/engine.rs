@@ -751,7 +751,7 @@ define_actions! {
     ChooseTarget {
         target: Target,
     },
-    /// Select one target and its chosen distinct card-type bit.
+    // Select one target and its chosen distinct card-type bit.
     ChooseTargetCardType { target: Target, type_mask: u16 },
     FinishTargets,
     Attack {
