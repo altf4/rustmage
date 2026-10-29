@@ -70,6 +70,19 @@ fn fra_admitted_decks_finish_and_replay_in_both_seats() {
     let report = workload::run_admitted_smoke(&cases).unwrap();
     assert_eq!(report.workload, "FRA_ADMITTED_SMOKE_ONLY");
     assert_eq!(report.games.len(), 4);
+    // Record the observed cards and mechanics so a terminal game caused by
+    // empty-library draws alone cannot be mistaken for exercised spell play.
+    println!(
+        "FRA_ADMITTED_SMOKE_EVIDENCE {}",
+        serde_json::to_string(&report).unwrap()
+    );
+    for game in &report.games {
+        assert!(
+            !game.cards_cast.is_empty() && game.witnesses.get("actual_cast").copied().unwrap_or(0) > 0,
+            "game did not observe an actual FRA spell cast: pair {} seed {} swapped {}",
+            game.pair, game.seed, game.deck_swapped
+        );
+    }
     assert!(
         report
             .games
