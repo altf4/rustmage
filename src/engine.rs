@@ -1374,6 +1374,7 @@ impl SpellView {
             | StackKind::DelayedWarpExile
             | StackKind::SiegeDefeat
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. } => None,
@@ -1508,6 +1509,9 @@ impl SpellView {
             StackKind::CopyEndStepSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeSource]))
             }
+            StackKind::CopyEndStepConditionalSacrifice => {
+                Some((TargetPlan::NONE, &[Instruction::SacrificeSourceIfNoPlaneswalker]))
+            }
             StackKind::DelayedTokenCreation { .. } => Some((
                 TargetPlan::NONE,
                 &[Instruction::ResolveDelayedTokenCreation],
@@ -1568,6 +1572,7 @@ pub enum StackKind {
     DelayedWarpExile,
     SiegeDefeat,
     CopyEndStepSacrifice,
+    CopyEndStepConditionalSacrifice,
     CasualtyCopy,
     DelayedReturn,
     DelayedTokenCreation { token: Card, amount: u64 },

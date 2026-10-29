@@ -2021,6 +2021,7 @@ impl Game {
         let program = match item.kind {
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
@@ -3901,6 +3902,9 @@ impl Game {
                         self.stage_copy_creation(item.controller, recipe, u128::from(amount));
                     }
                 }
+                Instruction::CopyTargetPlayersCreaturesWithConditionalSacrifice => {
+                    self.copy_target_players_creatures_with_conditional_sacrifice(&item);
+                }
                 Instruction::CopyControlledNontokenCreaturesNonlegendary => {
                     self.copy_controlled_nontoken_creatures_nonlegendary(item.controller);
                 }
@@ -3961,6 +3965,11 @@ impl Game {
                             1,
                             replacements::TokenCompletion::Counters { kind, amount },
                         );
+                    }
+                }
+                Instruction::SacrificeSourceIfNoPlaneswalker => {
+                    if !self.controls_planeswalker(item.controller) {
+                        self.sacrifice_exact_source(&item);
                     }
                 }
                 Instruction::SacrificeSource => self.sacrifice_exact_source(&item),

@@ -2932,6 +2932,7 @@ impl Game {
             ),
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
@@ -3041,6 +3042,7 @@ impl Game {
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn

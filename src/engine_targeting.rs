@@ -133,6 +133,7 @@ impl Announcement {
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
@@ -223,6 +224,7 @@ impl Announcement {
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
@@ -401,6 +403,7 @@ impl Announcement {
                 StackKind::ActivatedAbility { .. } => self.cost_options().count() > 1,
                 StackKind::TriggeredAbility { .. }
                 | StackKind::CopyEndStepSacrifice
+            | StackKind::CopyEndStepConditionalSacrifice
                 | StackKind::CasualtyCopy
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn

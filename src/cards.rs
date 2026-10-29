@@ -17,6 +17,8 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct CopyExceptions {
     pub sacrifice_abilities: u16,
+    /// Copiable intervening-if sacrifice triggers granted with haste.
+    pub conditional_sacrifice_abilities: u16,
     pub nightmare: bool,
     pub artifact: bool,
     pub golem: bool,
@@ -38,6 +40,7 @@ pub(crate) struct InPlaceCopySpec {
 impl CopyExceptions {
     pub const NONE: Self = Self {
         sacrifice_abilities: 0,
+        conditional_sacrifice_abilities: 0,
         nightmare: false,
         artifact: false,
         golem: false,
@@ -46,6 +49,7 @@ impl CopyExceptions {
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
+        conditional_sacrifice_abilities: 0,
         nightmare: false,
         artifact: false,
         golem: false,
@@ -54,6 +58,7 @@ impl CopyExceptions {
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
+        conditional_sacrifice_abilities: 0,
         nightmare: true,
         artifact: false,
         golem: false,
@@ -81,6 +86,9 @@ impl CopyExceptions {
                 .sacrifice_abilities
                 .checked_add(other.sacrifice_abilities)
                 .capacity("copy sacrifice abilities"),
+            conditional_sacrifice_abilities: self.conditional_sacrifice_abilities
+                .checked_add(other.conditional_sacrifice_abilities)
+                .capacity("copy conditional sacrifice abilities"),
             nightmare: self.nightmare || other.nightmare,
             artifact: self.artifact || other.artifact,
             golem: self.golem || other.golem,
@@ -1010,6 +1018,7 @@ pub(crate) enum Instruction {
     RemoveCreatureCounterThenDraw,
     /// One simultaneous creation event, with all original recipes frozen first.
     CopyControlledNontokenCreaturesNonlegendary,
+    CopyTargetPlayersCreaturesWithConditionalSacrifice,
     /// Preserve all copiable values except the legendary supertype.
     CreateNonlegendaryCopyTokens {
         subject: Subject,
@@ -1340,6 +1349,7 @@ pub(crate) enum Instruction {
     },
     SacrificeDelayedTokens,
     SacrificeSource,
+    SacrificeSourceIfNoPlaneswalker,
     /// Continue in this resolution only if sacrificing the exact source succeeds.
     SacrificeSourceOrSkip {
         skip: usize,

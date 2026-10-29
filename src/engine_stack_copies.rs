@@ -402,7 +402,7 @@ impl Game {
             recipe = recipe.with_exceptions(exceptions);
             self.set_copy_recipe(copy.object, recipe);
             copy.source_copy_recipe = Some(Box::new(recipe));
-            if exceptions.sacrifice_abilities != 0 {
+            if exceptions.sacrifice_abilities != 0 || exceptions.conditional_sacrifice_abilities != 0 {
                 copy.source_keywords = copy.source_keywords.union(Keywords::HASTE);
             }
         }

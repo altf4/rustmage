@@ -139,7 +139,7 @@ pub(super) trait CharacteristicWorld {
         let keywords = recipe
             .overrides
             .map_or(Keywords::NONE, |value| value.keywords);
-        if recipe.exceptions.sacrifice_abilities != 0 {
+        if recipe.exceptions.sacrifice_abilities != 0 || recipe.exceptions.conditional_sacrifice_abilities != 0 {
             keywords.union(Keywords::HASTE)
         } else {
             keywords
