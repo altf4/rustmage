@@ -643,29 +643,36 @@ fn paid_exile_top_offer_ignores_transient_copy_at_library_top() {
 #[test]
 fn approach_unlimited_deck_limit_survives_constructed_combined_count() {
     let approach = Card::test_index(4016);
+    let shock = Card::from_name("Shock").unwrap();
     assert_eq!(approach.info().deck_limit, None);
-    assert!(!approach.is_supported(), "fixture is deliberately gated");
+    assert!(approach.is_supported(), "conditional admission requires regenerated catalogue");
     for player in [Player::P0, Player::P1] {
         let mut decks = [vec![Card::Forest; 60], vec![Card::Forest; 60]];
-        decks[player.index()].extend([approach; 8]);
+        decks[player.index()][..8].fill(approach);
         let config = Config {
             decks,
             seed: 7,
             starting_player: player,
             deck_rules: DeckRules::Constructed,
         };
-        let expected = Error::InvalidDeck("rules not implemented: Sphinx's Approach".into());
-        assert_eq!(Game::new(config.clone()).err(), Some(expected.clone()));
+        assert!(Game::new(config.clone()).is_ok());
+        let mut pools = [vec![], vec![]];
+        pools[player.index()] = vec![approach; 7];
         let outside = OutsideGameConfig {
             mode: OutsideGameMode::ConstructedSideboard,
-            pools: [vec![], vec![]],
+            pools,
         };
-        // The constructor counts deck and sideboard first, so this reaches the
-        // expected support gate only if the combined count accepts eight.
-        assert_eq!(
-            Game::new_with_outside(config, outside).err(),
-            Some(expected)
-        );
+        let game = Game::new_with_outside(config.clone(), outside.clone()).unwrap();
+        let mut counts = [0, 0];
+        counts[player.index()] = 7;
+        assert_eq!(game.observe(player.other()).sideboard_counts, Some(counts));
+
+        // The ordinary four-copy rule still applies across the same two zones.
+        let mut limited = config;
+        limited.decks[player.index()][8..12].fill(shock);
+        let mut limited_outside = outside;
+        limited_outside.pools[player.index()].push(shock);
+        assert!(Game::new_with_outside(limited, limited_outside).is_err());
     }
 }
 
