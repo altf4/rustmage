@@ -1504,3 +1504,49 @@ fn standalone_spell_only_key_preserves_qualities_substitution_and_exact_pool() {
         assert!(!world.reachable(&goal, &mut HashSet::new()));
     }
 }
+
+#[test]
+fn projected_control_return_can_unlock_linked_land_mana() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        g.state.players[player.index()].mana = [0; 6];
+        let land = named(&mut g, player, "Forest", Zone::Battlefield);
+        let controller = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let ring = named(&mut g, player, "Lotus Ring", Zone::Battlefield);
+        let exile = named(&mut g, player, "Shock", Zone::Exile);
+        let land_ref = g.object_ref(land);
+        let controller_ref = g.object_ref(controller);
+        let ring_ref = g.object_ref(ring);
+        g.state.objects[controller as usize].summoning_sick = false;
+        g.state.objects[ring as usize].attached_to = Some(controller_ref);
+        g.ensure_control_base(land_ref);
+        let control_time = g.next_role_timestamp();
+        let grant_time = g.next_role_timestamp();
+        let source = g.object_ref(exile);
+        let rows = &mut g.state.roles.get_or_insert_default().source_linked_effects;
+        rows.push(SourceLinkedEffectView {
+            source: controller_ref, recipient: land_ref, controller: player.other(),
+            kind: SourceLinkedEffectKind::Control, timestamp: control_time,
+        });
+        rows.push(SourceLinkedEffectView {
+            source, recipient: land_ref, controller: player,
+            kind: SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast, timestamp: grant_time,
+        });
+        g.refresh_controllers();
+        assert_eq!(g.object_view(land).controller, player.other());
+        let goal = FundingGoal { actor: player, required: [0; 6], generic: 5, reserve: None, source: None };
+        let world = FundingState::from_game(&g, &goal);
+        assert!(world.total_mana_upper() < 5, "current controller inventory misses the land");
+        assert!(world.optimistic(&goal), "dynamic control must bypass that bound");
+        let step = world.moves(&goal).into_iter().find(|step|
+            world.resources[step.resource].id == controller && step.grantor == Some(ring_ref)
+        ).expect("Lotus Ring grants sacrifice mana");
+        let mut projected = None;
+        assert!(world.visit_applied(&step, &mut |next| { projected = Some(next.clone()); true }));
+        let projected = projected.unwrap();
+        assert_eq!(projected.object(land).controller, player);
+        assert!(projected.moves(&goal).iter().any(|step|
+            projected.resources[step.resource].id == land && step.production[5] == 2));
+        assert!(projected.reachable(&goal, &mut HashSet::new()));
+    }
+}
