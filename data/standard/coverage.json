@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3502707fde78482e568ec62ec3f8671fb122c9ca86fd6c00fb2962dcef57b70f",
+  "catalogue_version": "c3216552d037edf012f6b4c103d7f8fc354934249b9de43e24400bc7c633c523",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2916,
-  "implemented_total": 2922,
+  "implemented_standard_cards": 2917,
+  "implemented_total": 2923,
   "token_definitions": 146,
   "emblem_definitions": 4,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 269,
-      "gated": 16
+      "complete": 270,
+      "gated": 15
     },
     "frc": {
       "total": 6,
@@ -13699,8 +13699,8 @@
     {
       "name": "Garruk, Curse Breaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/garruk_curse_breaker.rs",
       "set": "fra"
     },

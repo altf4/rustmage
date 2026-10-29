@@ -452,7 +452,7 @@ fn schema183_inspects_hidden_faces_delayed_packets_and_rollback() {
         let saved = g.snapshot();
         g.state.delayed_opponent_attack_until_next_turn = None;
         assert!(prior_schema183_state_supported(&g.state));
-        g.restore(saved);
+        g.restore(&saved).unwrap();
         assert!(!prior_schema183_state_supported(&g.state));
     }
 }
@@ -2788,3 +2788,6 @@ fn schema181_rejects_ajani_and_older_live_emblem_semantics_in_hidden_state() {
         }
     }
 }
+
+#[path = "schema183_garruk_independent.rs"]
+mod schema183_garruk_independent;

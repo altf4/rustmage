@@ -7679,3 +7679,12 @@ mod engine_fra_theorist_jace_independent_tests;
 
 #[path = "engine_fra_theorist_extra_tests.rs"]
 mod engine_fra_theorist_extra_tests;
+
+#[path = "engine_fra_garruk_curse_breaker_tests.rs"]
+mod engine_fra_garruk_curse_breaker_tests;
+
+#[path = "engine_fra_garruk_curse_independent_tests.rs"]
+mod engine_fra_garruk_curse_independent_tests;
+
+#[path = "engine_fra_garruk_curse_timing_tests.rs"]
+mod engine_fra_garruk_curse_timing_tests;
