@@ -173,6 +173,8 @@ fn copied_civil_war_ability_enforces_total_mana_value_on_new_targets() {
             "Echo, Perceptive Prodigy",
             Zone::Battlefield,
         );
+        // Flash permits Puppet Crafting to resolve above the chapter ability.
+        put(&mut g, player, "High Fae Trickster", Zone::Battlefield);
         let small = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
         let large = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
         let other_large = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
