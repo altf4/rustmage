@@ -10,7 +10,7 @@ pub(super) struct SlotRow {
     source: ObjectRef,
     acquisition: u64,
     graveyard: bool,
-    definition: Option<Card>,
+    pub(super) definition: Option<Card>,
     ability: u16,
     slot: u64,
 }

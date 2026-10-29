@@ -450,10 +450,15 @@ fn prior_schema180_state_supported(state: &State) -> bool {
         || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema180_new_card(row.granting_card)))
         || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
             schema180_new_card(row.provider) || schema180_new_card(row.definition)))
-        // Borrowed slot definitions and warp continuations contain private cards.
-        || state.borrowed_slots.as_ref().is_some_and(|rows| !rows.is_empty())
+        // Slots retain an optional immutable donor definition; all other slot
+        // fields are object references or numeric acquisition/use identities.
+        || state.borrowed_slots.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            row.definition.is_some_and(schema180_new_card)))
         || state.warp.as_ref().is_some_and(|w| !w.delayed.is_empty())
-        || state.delayed_sacrifices.as_ref().is_some_and(|rows| !rows.is_empty())
+        // Delayed sacrifice packets retain public source-card identity and
+        // frozen damage facts, including hidden/copied subtype overlays.
+        || state.delayed_sacrifices.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            schema180_new_card(row.view.source_card) || !schema180_facts_supported(&row.facts)))
         || state.mobilize.is_some() || state.miracle.is_some()
         || state.adventures.as_ref().is_some_and(|a| a.permissions.iter().any(|v| schema180_new_card(v.card)))
         || state.plot.as_ref().and_then(|p| p.payment.as_ref()).is_some_and(|p| schema180_new_card(p.source_card))
@@ -618,6 +623,75 @@ fn schema180_rejects_hidden_manifest_underlying_in_live_and_rollback_state() {
             manifest.spells.push(face);
             assert!(!prior_schema180_state_supported(&g.state));
         }
+    }
+}
+
+#[test]
+fn schema180_audits_delayed_sacrifice_cards_and_frozen_construct_facts() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let bear = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let molten = put(&mut g, player, "Molten Duplication", Zone::Hand);
+        cast(&mut g, molten, Some(Target::Card(bear)));
+        settle(&mut g);
+        assert_eq!(g.state.delayed_sacrifices.as_ref().unwrap().len(), 1);
+        assert!(prior_schema180_state_supported(&g.state));
+        let safe = g.snapshot();
+        let newer = Card::from_name("Puppet Crafting").unwrap();
+        g.state.delayed_sacrifices.as_mut().unwrap()[0].view.source_card = newer;
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.restore(&safe).unwrap();
+        g.state.delayed_sacrifices.as_mut().unwrap()[0].facts.card = newer;
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.restore(&safe).unwrap();
+        // Obtain an actual additive Construct overlay, then remove the source;
+        // the old packet's frozen facts remain independently meaningful.
+        let reference = g.object_ref(bear);
+        let timestamp = g.next_role_timestamp();
+        g.state.roles.get_or_insert_default().creature_types.push(subtypes::CreatureTypesEffectView {
+            recipient: reference, source: reference, types: &["Construct"], additional: true, timestamp,
+        });
+        let facts = g.damage_facts(bear);
+        assert!(facts.granted_subtypes.contains("Construct"));
+        g.state.roles.as_mut().unwrap().creature_types.clear();
+        g.state.delayed_sacrifices.as_mut().unwrap()[0].facts = facts;
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.begin_attack_rollback(player);
+        let safe_facts = g.damage_facts(bear);
+        g.state.delayed_sacrifices.as_mut().unwrap()[0].facts = safe_facts;
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.state.cast_rollback = None;
+        assert!(prior_schema180_state_supported(&g.state));
+    }
+}
+
+#[test]
+fn schema180_audits_hidden_borrowed_slot_definitions_and_rollbacks() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let forge = put(&mut g, player, "Territory Forge", Zone::Battlefield);
+        let donor = put(&mut g, player, "Hedron Archive", Zone::Exile);
+        let source = g.object_ref(forge);
+        let exiled = g.object_ref(donor);
+        g.state.borrowed_links.get_or_insert_default().push(borrowed_activations::Link {
+            source, origin: None, exiled, first_slot: 0, width: 1,
+        });
+        g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
+        let slots = g.state.borrowed_slots.as_ref().unwrap();
+        assert!(slots.iter().any(|row| row.definition.is_some()));
+        assert!(prior_schema180_state_supported(&g.state));
+        let saved = g.snapshot();
+        let safe_slots = g.state.borrowed_slots.clone();
+        let slot = g.state.borrowed_slots.as_mut().unwrap().iter_mut().find(|row| row.definition.is_some()).unwrap();
+        slot.definition = Some(Card::from_name("Puppet Crafting").unwrap());
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.begin_attack_rollback(player);
+        g.state.borrowed_slots = safe_slots;
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.state.cast_rollback = None;
+        assert!(prior_schema180_state_supported(&g.state));
+        g.restore(&saved).unwrap();
+        assert!(prior_schema180_state_supported(&g.state));
     }
 }
 

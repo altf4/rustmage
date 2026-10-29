@@ -18,7 +18,7 @@ pub(super) struct DelayedBatch {
     pub view: DelayedSacrificeView,
     keywords: Keywords,
     tapped: bool,
-    facts: DamageFacts,
+    pub(super) facts: DamageFacts,
     attachment: Option<ObjectRef>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
