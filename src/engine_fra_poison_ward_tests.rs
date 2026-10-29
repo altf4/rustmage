@@ -496,6 +496,9 @@ fn sourceless_stack_identity_survives_copy_and_snapshot() {
         assert_eq!(packet.source_identity(), None);
         assert_eq!(packet.source(), None);
         assert_eq!(packet.mana_value(), 0);
+        assert!(!game.stack_target_rule_matches(
+            TargetRule::YourAbilityFromSourceKinds { kinds: 1 }, &packet, player,
+        ));
         let copy = packet.clone();
         assert_eq!(copy.source_identity(), None);
         assert_eq!(copy.source_less_rule, Some(SourceLessRule::Radiation));
