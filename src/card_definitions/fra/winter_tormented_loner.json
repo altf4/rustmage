@@ -3,7 +3,7 @@
   "catalogue_id": 5087,
   "oracle_id": "84eaac2e-74ce-4a16-9faa-409df7c58eb3",
   "facts_sha256": "afe4905c93940de09ccefb743fa3801e410d3c55c6db4abe63662669769e8aca",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "49b00423648597ab9c5b957f398d7de6345505583e4549ca2455109ea1b1b64b"
@@ -48,5 +48,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
       "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_winter_tests.rs"
 }

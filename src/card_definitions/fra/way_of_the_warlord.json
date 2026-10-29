@@ -3,7 +3,7 @@
   "catalogue_id": 5015,
   "oracle_id": "10721d62-dc68-43b4-bfa2-dcb8cf8ea980",
   "facts_sha256": "71c08bf71aec03a00771885303d0d560e8913a9f9900fc0b76a94b038f3b610d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5d1bae9a6f13fbcc4b5b3281ee56e71020531800e1501cddd4af4491113e3926"
@@ -38,5 +38,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetAndTargetEffect.java",
       "sha256": "23bed77af2f847ef446bbb6c293ae9d3c1f8b38a50fb37eb828b628a34a6f27e"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_loyalty_grants_extra_tests.rs"
 }

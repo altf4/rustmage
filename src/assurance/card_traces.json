@@ -271,6 +271,14 @@
     "journal": "77fe8ec276f5ddde",
     "observations": "bad74025cec71e4d"
   },
+  "Aerid Konstrari": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "a0f071eeddba6e9d",
+    "observations": "b98c5c90258c97d7"
+  },
   "Aetherize": {
     "root": "main",
     "status": "completed",
@@ -1199,6 +1207,14 @@
     "journal": "3ad6d4893695dc9c",
     "observations": "36f281f291be0778"
   },
+  "Avatar of Burgeoning Echoes": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "21c94e12108ffb3f",
+    "observations": "b31a19c83b387f40"
+  },
   "Avenger of the Fallen": {
     "root": "main",
     "status": "completed",
@@ -1246,6 +1262,14 @@
     "zone": "Battlefield",
     "journal": "c840d8a2ea15c38d",
     "observations": "e0e703801970dede"
+  },
+  "Awaken the Inferno": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "3aa60a9f63cd466e",
+    "observations": "8bd35262569a16fc"
   },
   "Axebane Ferox": {
     "root": "main",
@@ -2839,6 +2863,14 @@
     "journal": "b3f39d5b44da38ed",
     "observations": "ff21ea2bfdba6a6d"
   },
+  "Campus Crier": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "dccca306b46f6c62"
+  },
   "Campus Guide": {
     "root": "main",
     "status": "completed",
@@ -3815,6 +3847,14 @@
     "journal": "543918deceb4be8c",
     "observations": "e3a04e035c4273fa"
   },
+  "Craftwork Crusher": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "7f346029c93083f1",
+    "observations": "49d8b63b7e3191cc"
+  },
   "Crash Through": {
     "root": "main",
     "status": "completed",
@@ -4070,6 +4110,14 @@
     "zone": "Graveyard",
     "journal": "77c57a6e575cdafd",
     "observations": "eec16516cefeae7b"
+  },
+  "Curse-Marred Demon": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "201b2c3b3b67b6f9",
+    "observations": "3a346b2eb9075b92"
   },
   "Cursed Courtier": {
     "root": "main",
@@ -5535,6 +5583,22 @@
     "journal": "e03c2be4cd5a0345",
     "observations": "b6e4fb7ef375073c"
   },
+  "Edgar, Ancient Bloodlord": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "200cf1b001199a8f",
+    "observations": "9b23ef692ff55783"
+  },
+  "Edgar, Moonlit Sovereign": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "f833142f3ffafc96",
+    "observations": "def6a309bc2d02b1"
+  },
   "Edgewall Pack": {
     "root": "main",
     "status": "completed",
@@ -6238,6 +6302,14 @@
     "zone": "Battlefield",
     "journal": "78a585eeb3f83501",
     "observations": "323d421b7b30ebf9"
+  },
+  "Eye of Jace": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ae05947724786c5e",
+    "observations": "169336ecf4fa306b"
   },
   "Fabled Passage": {
     "root": "main",
@@ -7599,6 +7671,14 @@
     "journal": "5a37305467443acc",
     "observations": "a590cab428db565a"
   },
+  "Ghalta the Immovable": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1ee756735d2f017d",
+    "observations": "23c3c1e1566e46f4"
+  },
   "Ghalta the Unstoppable": {
     "root": "main",
     "status": "completed",
@@ -8174,6 +8254,14 @@
     "zone": "Battlefield",
     "journal": "97f197e40a843eee",
     "observations": "19bdd36c6cb34381"
+  },
+  "Graft Surgeon": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3ad6d4893695dc9c",
+    "observations": "305d71be439c2360"
   },
   "Grand Abolisher": {
     "root": "main",
@@ -9031,6 +9119,22 @@
     "journal": "543918deceb4be8c",
     "observations": "fac3356736378673"
   },
+  "Hexhaven Battalion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "be2da01652de6859",
+    "observations": "1f7ad981de4d2e84"
+  },
+  "Hexhaven Dueling Arena": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "5400642a7c342854"
+  },
   "Hidden Grotto": {
     "root": "main",
     "status": "completed",
@@ -9358,6 +9462,14 @@
     "zone": "Battlefield",
     "journal": "3effe1facfce1be7",
     "observations": "1eedabaac9e8d4dc"
+  },
+  "Hungering Puppetbeast": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "3a899e2580c6c1c6",
+    "observations": "ddf369f1d0e3978b"
   },
   "Hungry Ghoul": {
     "root": "main",
@@ -10287,6 +10399,14 @@
     "journal": "1fcdea1ddc86e57e",
     "observations": "1e3cf642d25dbb3d"
   },
+  "Keeper of the Quiet Hour": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "6f6edcc050f7e76c",
+    "observations": "ee7b5c82f15c3de1"
+  },
   "Kellan's Lightblades": {
     "root": "combat",
     "status": "completed",
@@ -10374,6 +10494,14 @@
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
     "observations": "15ad19e3a402fbf2"
+  },
+  "Kindred Judgment": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "c778b7606630fe6e",
+    "observations": "bd0eb2ef90ba7bb7"
   },
   "King T'Challa // Black Panther, Hope Enduring": {
     "root": "main",
@@ -10878,6 +11006,14 @@
     "zone": "Battlefield",
     "journal": "ad0926541e55fa73",
     "observations": "e606d0267084c920"
+  },
+  "Lich's Relic": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "b09baf7e6d26b241",
+    "observations": "c2259a86cfe832d5"
   },
   "Lifecreed Duo": {
     "root": "main",
@@ -11415,6 +11551,14 @@
     "journal": "473fb2616fa08dfa",
     "observations": "a1b74ad9ab2d531e"
   },
+  "Mabel, Valley Hero": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "03601fa49ced6f3a",
+    "observations": "79ab93b8e6765cd6"
+  },
   "Macabre Waltz": {
     "root": "main",
     "status": "completed",
@@ -11734,6 +11878,14 @@
     "zone": "Battlefield",
     "journal": "c4b8f6d37ca7169e",
     "observations": "137089cffaf8c711"
+  },
+  "Massacre Girl, Most Wanted": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b681d3b088ac0c32",
+    "observations": "446748f797d5dcf6"
   },
   "Massacre Wurm": {
     "root": "main",
@@ -12167,6 +12319,14 @@
     "journal": "c724ba46238df6f8",
     "observations": "a92bc8e30cb90251"
   },
+  "Mind Meanderer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "45d0b77f73d50c9e",
+    "observations": "d4febe35a7289bf6"
+  },
   "Mind Roots": {
     "root": "main",
     "status": "completed",
@@ -12206,6 +12366,14 @@
     "zone": "Battlefield",
     "journal": "57367694ff0129ef",
     "observations": "e45035e54f25091a"
+  },
+  "Mindseeker Oculus": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "7cab70b24f8e18ec",
+    "observations": "26a4f620365acf7a"
   },
   "Mindsparker": {
     "root": "main",
@@ -13567,6 +13735,14 @@
     "journal": "a4570c800d9dee1d",
     "observations": "9a1a16a0ad729c65"
   },
+  "Overwrite the Multiverse": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "0d39482255511c19",
+    "observations": "c61e65b4ccfe8995"
+  },
   "Ovika, Enigma Goliath": {
     "root": "main",
     "status": "completed",
@@ -13999,6 +14175,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "dc9a053cffffd1d7"
   },
+  "Plan for All Outcomes": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "4288b8a6341e6c68",
+    "observations": "44828edd6ad46633"
+  },
   "Planar Engineering": {
     "root": "main",
     "status": "completed",
@@ -14406,6 +14590,14 @@
     "zone": "Graveyard",
     "journal": "7168443b9134f2a2",
     "observations": "8eb66438cefdcb84"
+  },
+  "Protege's Awakening": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "b3f39d5b44da38ed",
+    "observations": "51e4749816cbff35"
   },
   "Provisions Merchant": {
     "root": "main",
@@ -15239,6 +15431,14 @@
     "journal": "c365eee4e21cb831",
     "observations": "ab13c5e073020023"
   },
+  "Repurposed Enforcer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "f1c5745ec4369980"
+  },
   "Reputable Merchant": {
     "root": "main",
     "status": "completed",
@@ -15702,6 +15902,14 @@
     "zone": "Battlefield",
     "journal": "b3f39d5b44da38ed",
     "observations": "01867371f8fb5a04"
+  },
+  "Room of Refuge": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 2,
+    "zone": "Battlefield",
+    "journal": "cae38838aa70fc3b",
+    "observations": "32f28303744a587f"
   },
   "Root Manipulation": {
     "root": "main",
@@ -18095,6 +18303,14 @@
     "journal": "9d78478b460edd3d",
     "observations": "659153c7a75c49c0"
   },
+  "Stingcaster Mage": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "91e834e73cb813d7",
+    "observations": "5bf997efb1f11bbe"
+  },
   "Stingerback Terror": {
     "root": "main",
     "status": "completed",
@@ -18991,6 +19207,14 @@
     "journal": "c10b483f1ce1dd54",
     "observations": "fc2da07a17a077dd"
   },
+  "Tam's Resistance": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "3670ccd863263693",
+    "observations": "d0d12aab681b2fe1"
+  },
   "Tam, Observant Sequencer": {
     "root": "main",
     "status": "completed",
@@ -19262,6 +19486,14 @@
     "zone": "Battlefield",
     "journal": "1cf44c3255a028f2",
     "observations": "015e578cfd420658"
+  },
+  "Tenured Tethermage": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "5ff62361bffb2e1d",
+    "observations": "1c6ed1acbbc51ee8"
   },
   "Terminal Criticism": {
     "root": "main",
@@ -20198,6 +20430,14 @@
     "zone": "Graveyard",
     "journal": "7f796ee01d0406c9",
     "observations": "c5e8f502e5ee62c1"
+  },
+  "Tomik, Izzet Sparkmage": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "3b314bccb14b2cda"
   },
   "Tony Stark // The Invincible Iron Man": {
     "root": "main",
@@ -21535,6 +21775,14 @@
     "journal": "3ad6d4893695dc9c",
     "observations": "bf4db98f4c352338"
   },
+  "Vraska, Soul of Stone": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "8813ec4e2e411a6e",
+    "observations": "b726be980ed9ce0a"
+  },
   "Vraska, the Cutting Glare": {
     "root": "main",
     "status": "completed",
@@ -21759,6 +22007,22 @@
     "journal": "12e1a713ea13279c",
     "observations": "7b0bc332fee8ef5b"
   },
+  "Way of the Cryomancer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "7cab70b24f8e18ec",
+    "observations": "bea62744fe156f3b"
+  },
+  "Way of the Deathbringer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "c74d47fdf1bf30fc",
+    "observations": "bb792c089adf88c3"
+  },
   "Way of the Healer": {
     "root": "main",
     "status": "completed",
@@ -21774,6 +22038,22 @@
     "zone": "Battlefield",
     "journal": "3b0efd4279e3b89f",
     "observations": "151c41e9e2aab23a"
+  },
+  "Way of the Warlord": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "996b3f354b3811ac",
+    "observations": "05d080e3d29670fb"
+  },
+  "Way of the Wildspeaker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "1707eabb445652c2",
+    "observations": "7f224ce6f440fa19"
   },
   "Waylaying Pirates": {
     "root": "main",
@@ -22111,6 +22391,14 @@
     "journal": "a8a230506a4f0c62",
     "observations": "1f69645c53f613de"
   },
+  "Winter, Tormented Loner": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "ddf13a507d275e5b",
+    "observations": "e720f40fd1eca74c"
+  },
   "Wisdom of Ages": {
     "root": "main",
     "status": "completed",
@@ -22390,6 +22678,14 @@
     "zone": "Battlefield",
     "journal": "3ad6d4893695dc9c",
     "observations": "ee550d59c98484d1"
+  },
+  "Yoshimaru, Scrappy Stray": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "a86f27fa632f387c",
+    "observations": "845da5a174c519f5"
   },
   "You're Not Alone": {
     "root": "main",

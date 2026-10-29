@@ -3,7 +3,7 @@
   "catalogue_id": 5016,
   "oracle_id": "501580b9-692c-4804-be34-012a25ba8adf",
   "facts_sha256": "c49f3344f5b6a06fe2790b72c66beb321d32175e70ea3c3b4c7e7a50fec36667",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1aa181061f384bcd6ce32af4eb03288c4b05e8d814fb12e284c33bdb746baa30"
@@ -43,5 +43,6 @@
       "path": "Mage/src/main/java/mage/game/permanent/token/Beast44TrampleToken.java",
       "sha256": "d01eff64448ec12809f0bef95945926780c6fc62167ddee59e5eecb3307c41f5"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_beast_ways_tests.rs"
 }

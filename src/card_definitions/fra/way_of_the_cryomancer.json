@@ -3,7 +3,7 @@
   "catalogue_id": 5007,
   "oracle_id": "7d32c63d-aa9e-4f5d-a3e6-51377a786009",
   "facts_sha256": "27ccbd4dad82ef5171cf12aabc4b806f95e5bbf424101a9985cb1981b757babb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ab88435d7b826f9a92065aaa3020d81cab958e205a38b51a362c6827f5187c30"
@@ -43,5 +43,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
       "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_cryomancer_tests.rs"
 }

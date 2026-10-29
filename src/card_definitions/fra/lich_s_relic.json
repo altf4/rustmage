@@ -3,7 +3,7 @@
   "catalogue_id": 2488,
   "oracle_id": "0540eaca-0e03-4831-955a-192ae2b87d35",
   "facts_sha256": "fac3f9f22c10b4bc643fc44a4a9b7fc91a0f360744fa4de39560e5cb568e104d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "adeacd28890d14b2ebc8879b0ccf4c330626a561e9d2e4adb13de0b462732037"
@@ -43,5 +43,6 @@
       "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
       "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_conditional_artifacts_tests.rs"
 }

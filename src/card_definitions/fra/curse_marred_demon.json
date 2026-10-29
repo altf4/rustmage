@@ -3,7 +3,7 @@
   "catalogue_id": 935,
   "oracle_id": "f30a084c-5705-40f5-8e0d-2083d33973c7",
   "facts_sha256": "1158ad8254efb7353afcc42a02bcf5d83c44e2c619bf61329d4d3b8c0f95743f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4aff505d63a5cf6152d74b3ed7f33be772e5c52215ef9b8c23fec045ceccf834"
@@ -23,5 +23,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
       "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

@@ -3,7 +3,7 @@
   "catalogue_id": 3467,
   "oracle_id": "b775a404-ec0a-47ff-bb9d-eae2273d945b",
   "facts_sha256": "6f26d69b11ff9b87b50711a4fa9a022c85843337d1025bbdd05c7e2d9d8903c5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "75c6d59dad1b644caf6a6ba9495a7910617e4f364c0d179c16601dc98fcbd9e5"
@@ -28,5 +28,6 @@
       "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
       "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

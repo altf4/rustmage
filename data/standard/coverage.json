@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c2e502b85c79bb6df8696c82e423cd5a4aff97c46a5674e1b49b8e9ededce761",
+  "catalogue_version": "c96c618169a7fdfaec0b1cf35c614ea4c65e6b47e09eb04c027ab354f34d109d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2812,
-  "implemented_total": 2818,
+  "implemented_standard_cards": 2849,
+  "implemented_total": 2855,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 165,
-      "gated": 120
+      "complete": 202,
+      "gated": 83
     },
     "frc": {
       "total": 6,
@@ -755,8 +755,8 @@
     {
       "name": "Aerid Konstrari",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/aerid_konstrari.rs",
       "set": "fra"
     },
@@ -2427,8 +2427,8 @@
     {
       "name": "Avatar of Burgeoning Echoes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/avatar_of_burgeoning_echoes.rs",
       "set": "fra"
     },
@@ -2515,8 +2515,8 @@
     {
       "name": "Awaken the Inferno",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/awaken_the_inferno.rs",
       "set": "fra"
     },
@@ -5227,8 +5227,8 @@
     {
       "name": "Campus Crier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/campus_crier.rs",
       "set": "fra"
     },
@@ -7219,8 +7219,8 @@
     {
       "name": "Craftwork Crusher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/craftwork_crusher.rs",
       "set": "fra"
     },
@@ -7683,8 +7683,8 @@
     {
       "name": "Curse-Marred Demon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/curse_marred_demon.rs",
       "set": "fra"
     },
@@ -10299,8 +10299,8 @@
     {
       "name": "Edgar, Ancient Bloodlord",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/edgar_ancient_bloodlord.rs",
       "set": "fra"
     },
@@ -10315,8 +10315,8 @@
     {
       "name": "Edgar, Moonlit Sovereign",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/edgar_moonlit_sovereign.rs",
       "set": "fra"
     },
@@ -11547,8 +11547,8 @@
     {
       "name": "Eye of Jace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/eye_of_jace.rs",
       "set": "fra"
     },
@@ -14011,8 +14011,8 @@
     {
       "name": "Ghalta the Immovable",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/ghalta_the_immovable.rs",
       "set": "fra"
     },
@@ -14923,8 +14923,8 @@
     {
       "name": "Graft Surgeon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/graft_surgeon.rs",
       "set": "fra"
     },
@@ -16371,16 +16371,16 @@
     {
       "name": "Hexhaven Battalion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/hexhaven_battalion.rs",
       "set": "fra"
     },
     {
       "name": "Hexhaven Dueling Arena",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/hexhaven_dueling_arena.rs",
       "set": "fra"
     },
@@ -17003,8 +17003,8 @@
     {
       "name": "Hungering Puppetbeast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/hungering_puppetbeast.rs",
       "set": "fra"
     },
@@ -18883,8 +18883,8 @@
     {
       "name": "Keeper of the Quiet Hour",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/keeper_of_the_quiet_hour.rs",
       "set": "fra"
     },
@@ -19083,8 +19083,8 @@
     {
       "name": "Kindred Judgment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/kindred_judgment.rs",
       "set": "fra"
     },
@@ -20107,8 +20107,8 @@
     {
       "name": "Lich's Relic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/lich_s_relic.rs",
       "set": "fra"
     },
@@ -21011,8 +21011,8 @@
     {
       "name": "Mabel, Valley Hero",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/mabel_valley_hero.rs",
       "set": "fra"
     },
@@ -21619,8 +21619,8 @@
     {
       "name": "Massacre Girl, Most Wanted",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/massacre_girl_most_wanted.rs",
       "set": "fra"
     },
@@ -22291,8 +22291,8 @@
     {
       "name": "Mind Meanderer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/mind_meanderer.rs",
       "set": "fra"
     },
@@ -22347,8 +22347,8 @@
     {
       "name": "Mindseeker Oculus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/mindseeker_oculus.rs",
       "set": "fra"
     },
@@ -24827,8 +24827,8 @@
     {
       "name": "Overwrite the Multiverse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/overwrite_the_multiverse.rs",
       "set": "fra"
     },
@@ -25627,8 +25627,8 @@
     {
       "name": "Plan for All Outcomes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/plan_for_all_outcomes.rs",
       "set": "fra"
     },
@@ -26315,8 +26315,8 @@
     {
       "name": "Protege's Awakening",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/protege_s_awakening.rs",
       "set": "fra"
     },
@@ -27939,8 +27939,8 @@
     {
       "name": "Repurposed Enforcer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/repurposed_enforcer.rs",
       "set": "fra"
     },
@@ -28883,8 +28883,8 @@
     {
       "name": "Room of Refuge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/room_of_refuge.rs",
       "set": "fra"
     },
@@ -33339,8 +33339,8 @@
     {
       "name": "Stingcaster Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/stingcaster_mage.rs",
       "set": "fra"
     },
@@ -34819,8 +34819,8 @@
     {
       "name": "Tam's Resistance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/tam_s_resistance.rs",
       "set": "fra"
     },
@@ -35283,8 +35283,8 @@
     {
       "name": "Tenured Tethermage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/tenured_tethermage.rs",
       "set": "fra"
     },
@@ -37219,8 +37219,8 @@
     {
       "name": "Tomik, Izzet Sparkmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/tomik_izzet_sparkmage.rs",
       "set": "fra"
     },
@@ -39771,8 +39771,8 @@
     {
       "name": "Vraska, Soul of Stone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/vraska_soul_of_stone.rs",
       "set": "fra"
     },
@@ -40259,16 +40259,16 @@
     {
       "name": "Way of the Cryomancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_cryomancer.rs",
       "set": "fra"
     },
     {
       "name": "Way of the Deathbringer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_deathbringer.rs",
       "set": "fra"
     },
@@ -40323,16 +40323,16 @@
     {
       "name": "Way of the Warlord",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_warlord.rs",
       "set": "fra"
     },
     {
       "name": "Way of the Wildspeaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_wildspeaker.rs",
       "set": "fra"
     },
@@ -40899,8 +40899,8 @@
     {
       "name": "Winter, Tormented Loner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/winter_tormented_loner.rs",
       "set": "fra"
     },
@@ -41331,8 +41331,8 @@
     {
       "name": "Yoshimaru, Scrappy Stray",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/yoshimaru_scrappy_stray.rs",
       "set": "fra"
     },

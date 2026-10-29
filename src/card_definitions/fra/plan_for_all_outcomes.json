@@ -3,7 +3,7 @@
   "catalogue_id": 3178,
   "oracle_id": "7fd2cac5-cd29-4a47-9e89-9c6be39a0b67",
   "facts_sha256": "f47fde6fa3ffcbbeef67a688600a3cdfbc922137bbaddeaa9d6a2b6988bd2b4a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5265fe7a93b5172b9e0f6eadeb5c86e4e8e2601b4d096fa8d393aac1faf1eca7"
@@ -23,5 +23,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
       "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

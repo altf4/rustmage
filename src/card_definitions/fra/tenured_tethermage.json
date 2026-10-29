@@ -3,7 +3,7 @@
   "catalogue_id": 4385,
   "oracle_id": "571cb06d-55b5-46e4-9678-1f74aca73068",
   "facts_sha256": "d9e1c2ff54820cad9791ff6d84a213a4f008e264a5894ca8f2545c6615e1bcc2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db2b52b79095c2a96403647ad13020435a0a3df204e1a381c863306508306fa3"
@@ -43,5 +43,6 @@
       "path": "Mage/src/main/java/mage/game/permanent/token/HeartwoodToken.java",
       "sha256": "956f8bf81061e436da05478f1923f01ec377b0563b620d0751ba6a5e35680a91"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

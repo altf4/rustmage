@@ -3,7 +3,7 @@
   "catalogue_id": 628,
   "oracle_id": "c1a9d60f-a469-48f9-8f1c-3ca5ae86bd64",
   "facts_sha256": "5ccbab753eaf0233128284063773c0cde34155ab640bbd9129091f51e1371834",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4247640541ef538dd7651a5ff23bc9f900c1e357998e78b568880fa17d71cbd0"
@@ -23,5 +23,6 @@
       "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
       "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

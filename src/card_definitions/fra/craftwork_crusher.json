@@ -3,7 +3,7 @@
   "catalogue_id": 877,
   "oracle_id": "d25284b9-50e4-4dcb-9aaf-6f6478c4a90a",
   "facts_sha256": "d0bfa934a022f840068e960e6a7e166eebd65f0cfe58936bc94b55c26d24d5ec",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4a436129114853f2825407ca29c9349aabf1e6d9b04a8641a7fda5952aa3f3a9"
@@ -43,5 +43,6 @@
       "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
       "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_craftwork_tests.rs"
 }

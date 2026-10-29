@@ -3,7 +3,7 @@
   "catalogue_id": 1726,
   "oracle_id": "0d496c6e-8f7b-420f-9197-dacd2feb528f",
   "facts_sha256": "6deb9ba1829ccb45d46abb39c86804399fd54a4e1f9eff81e6407015198cbc85",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c773b27a2780cca6efdc3a0b7b4d358c58df0db99bf37dcfc9520bde3a4a12b3"
@@ -33,5 +33,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CombatDamageByToughnessControlledEffect.java",
       "sha256": "f53d12244705d3bec02687372af643608ee307af417a19d2f4ee28f072e6732b"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_combat_assignment_tests.rs"
 }

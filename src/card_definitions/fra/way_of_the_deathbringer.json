@@ -3,7 +3,7 @@
   "catalogue_id": 5008,
   "oracle_id": "54775625-bf44-4035-969e-7e70578c8b98",
   "facts_sha256": "e6ec05a431f0fc240d643d6dcb5cd8c6a2854d4e4638f442b54cfc79ad756873",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db14738fb107c4131bc007489f02e47bc4df645c0a9b481e9f35258f3c7fe420"
@@ -53,5 +53,6 @@
       "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
       "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_beast_ways_tests.rs"
 }

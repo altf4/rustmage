@@ -3,7 +3,7 @@
   "catalogue_id": 1262,
   "oracle_id": "cab2bc93-f38b-4301-ac42-05765615586b",
   "facts_sha256": "2836ad8a3f02533e7051d60b62c8fc615fd123a159cc9b9ea8dba1586d576694",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "01b5433f8b77fe0844c1f90eedb04275036a6ff1bf3a41dc6c92dc4713b39958"
@@ -38,5 +38,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
       "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

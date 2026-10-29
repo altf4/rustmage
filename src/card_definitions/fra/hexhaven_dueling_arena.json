@@ -3,7 +3,7 @@
   "catalogue_id": 2022,
   "oracle_id": "2cc075da-f79b-4050-84eb-2c1b9a30260c",
   "facts_sha256": "616a442c095e74e2d8829d2b3c4abc3b9789556fff574bf3099ff456d4d60ea7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7b4b3d675c1cdc3fe3a6c9315d23ebe4e30285b2765d080d7b313bd10dc3ff09"
@@ -33,5 +33,6 @@
       "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
       "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }
