@@ -2314,6 +2314,7 @@ impl<'g> FundingState<'g> {
         {
             return false;
         }
+        let mut upper = mana_lots::available(self.mana, &self.lots, purpose);
         for (id, object) in self.game.state.objects.iter().enumerate() {
             if object.zone != Zone::Battlefield {
                 continue;
@@ -2341,20 +2342,28 @@ impl<'g> FundingState<'g> {
             }) {
                 return false;
             }
-            if object.controller == goal.actor
-                && !object.tapped
-                && ability_world::CharacteristicWorld::intrinsic_mana_color(self, id as CardId)
-                    .is_some()
-            {
-                return false;
+            if object.controller == goal.actor && !object.tapped {
+                // Count every intrinsic color independently. This may count a
+                // single land several times, so it only raises the bound.
+                if let Some(color) =
+                    ability_world::CharacteristicWorld::intrinsic_mana_color(self, id as CardId)
+                {
+                    upper[color] = upper[color].saturating_add(1);
+                }
+                for grant in ability_world::CharacteristicWorld::granted_mana(self, id as CardId) {
+                    if grant.subtype_derived {
+                        grant.production.visit(|mana| {
+                            for (amount, produced) in upper.iter_mut().zip(mana) {
+                                *amount = amount.saturating_add(u128::from(produced));
+                            }
+                            false
+                        });
+                    }
+                }
             }
         }
         let adjusted = cast_origins::payment_goal(self, goal, purpose);
-        !payable(
-            mana_lots::available(self.mana, &self.lots, purpose),
-            adjusted.required,
-            adjusted.generic,
-        )
+        !payable(upper, adjusted.required, adjusted.generic)
     }
     fn optimistic(&self, goal: &FundingGoal) -> bool {
         if self.fixed_ineligible_spell_mana_cannot_pay(goal) {

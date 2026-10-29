@@ -1655,6 +1655,7 @@ fn lute_spell_mana_does_not_fund_emrakul_hand_activation() {
         assert!(world.fixed_ineligible_spell_mana_cannot_pay(&goal));
         let legal = g.legal_actions();
         assert!(!legal.contains(&announcement));
+        assert!(!legal.contains(&Action::AnnounceCast { card: source }));
         assert!(legal.contains(&Action::AnnounceCast { card: instant }));
         let before = g.snapshot();
         assert!(!g.can_fund(goal.clone()));
@@ -1678,7 +1679,10 @@ fn lute_spell_mana_does_not_fund_emrakul_hand_activation() {
         let world = FundingState::from_game(&g, &goal);
         assert!(!world.fixed_ineligible_spell_mana_cannot_pay(&goal));
         assert!(g.can_fund(goal));
-        assert!(g.legal_actions().contains(&announcement));
+        let legal = g.legal_actions();
+        assert!(legal.contains(&announcement));
+        assert!(!legal.contains(&Action::AnnounceCast { card: source }));
+        assert!(legal.contains(&Action::AnnounceCast { card: instant }));
         assert!(!g.object_view(forest).tapped);
     }
 }
