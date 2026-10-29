@@ -137,7 +137,6 @@ impl Game {
         // Freeze replacement plans before committing any member of the batch,
         // then dispatch batch observers exactly once using actual destinations.
         let events = self.move_objects_raw(&choice.graveyard, Zone::Graveyard);
-        self.finish_zone_events(&events, &[]);
         let mut return_cards = Vec::new();
         for event in &events {
             let card = event.before.reference.card;
@@ -155,6 +154,7 @@ impl Game {
         let library = &mut self.state.players[player.index()].library;
         library.splice(0..0, choice.bottom.iter().rev().copied());
         library.extend(choice.top.iter().rev().copied());
+        self.finish_zone_events(&events, &[]);
         self.scry_or_surveil_event(player);
         for reference in return_cards {
             if self.object_ref(reference.card) == reference
@@ -167,6 +167,7 @@ impl Game {
     }
 
     fn scry_or_surveil_event(&mut self, player: Player) {
+        self.state.players[player.index()].scried_or_surveilled_this_turn = true;
         let sources = self.indexed_trigger_sources(&self.state.scry_sources);
         for (source, grant) in sources {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);

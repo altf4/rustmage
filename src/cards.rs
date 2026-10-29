@@ -3225,6 +3225,7 @@ pub(crate) enum StepGuard {
     CreatureDied,
     OpponentLostLife,
     GainedLife,
+    ScriedOrSurveilledThisTurn,
     GainedAndLostLife,
     SourceTapped,
     Expression {
@@ -3751,6 +3752,7 @@ pub(crate) enum ActivationGuard {
     ClassLevelExactly(u8),
     SourceSolved,
     CastInstantSorceryThisTurn,
+    ScriedOrSurveilledThisTurn,
     SourceAttackedThisTurn,
     Always,
     OwnTurn,
@@ -3770,6 +3772,7 @@ impl ActivationGuard {
             | Self::SourceSolved
             | Self::SourceAttackedThisTurn
             | Self::CastInstantSorceryThisTurn
+            | Self::ScriedOrSurveilledThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
             | Self::ControlCreatureToughnessAtLeast(_)

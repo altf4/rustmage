@@ -49,6 +49,8 @@ pub(crate) enum StaticAbilityFragment {
     Storied,
     /// This source continuously acquires activations from matching cards in its controller graveyard.
     BorrowGraveyardActivations(&'static str),
+    /// This creature can attack despite defender after its controller scries or surveils.
+    AttackWithoutDefenderIfScried,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
     /// Generic cost per creature declared attacking this source's controller.

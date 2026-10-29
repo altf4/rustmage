@@ -1038,6 +1038,9 @@ impl<'g> FundingState<'g> {
                 self.game.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::ScriedOrSurveilledThisTurn => {
+                self.game.state.players[actor.index()].scried_or_surveilled_this_turn
+            }
             ActivationGuard::SourceSolved => self.game.case_solved(self.reference(source)),
             ActivationGuard::SourceAttackedThisTurn => self
                 .game

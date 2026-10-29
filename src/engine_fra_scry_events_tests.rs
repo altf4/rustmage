@@ -335,3 +335,255 @@ fn fra_surveil_shuffle_replacement_preserves_selected_position_and_all_cards() {
         }
     }
 }
+
+#[test]
+fn fra_scry_turn_fact_and_proctor_graveyard_activation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let proctor = put(&mut g, p, "Proctor of Potential", Zone::Graveyard);
+        let action = Action::AnnounceActivate {
+            card: proctor,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        reject(&mut g, action.clone());
+        assert!(!g.observe(p.other()).players[p.index()].scried_or_surveilled_this_turn);
+        scry(&mut g, p);
+        wait_for_choice(&mut g);
+        assert!(!g.observe(p.other()).players[p.index()].scried_or_surveilled_this_turn);
+        arrange(&mut g, LibraryDestination::Top);
+        settle(&mut g);
+        assert!(g.observe(p.other()).players[p.index()].scried_or_surveilled_this_turn);
+        assert!(!g.observe(p).players[p.other().index()].scried_or_surveilled_this_turn);
+        super::super::contracts::branch_contract(g.clone());
+        act(&mut g, action);
+        pay(&mut g);
+        wait_for_choice(&mut g); // Proctor's own entry triggers surveil.
+        assert_eq!(g.state.objects[proctor as usize].zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(proctor, CounterKind::Finality), 1);
+        arrange(&mut g, LibraryDestination::Top);
+        settle(&mut g);
+        g.finish_cleanup();
+        g.state.turn += 1;
+        g.begin_turn();
+        assert!(!g.observe(p.other()).players[p.index()].scried_or_surveilled_this_turn);
+    }
+}
+
+#[test]
+fn fra_futurescribe_uses_live_scry_history_at_resolution() {
+    for p in [Player::P0, Player::P1] {
+        for has_scried in [false, true] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Desperate Futurescribe", Zone::Battlefield);
+            let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            if has_scried {
+                scry(&mut g, p);
+                wait_for_choice(&mut g);
+                arrange(&mut g, LibraryDestination::Top);
+                settle(&mut g);
+            }
+            g.begin_step(Step::BeginCombat);
+            g.prepare_triggers();
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(source),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            settle(&mut g);
+            assert_eq!(stats(&g, bear), (3, 3));
+            assert_eq!(
+                g.counter_count(bear, CounterKind::PlusOne),
+                u64::from(has_scried)
+            );
+            g.finish_cleanup();
+            assert_eq!(stats(&g, bear), if has_scried { (3, 3) } else { (2, 2) });
+        }
+    }
+}
+
+#[test]
+fn fra_phantasm_can_attack_after_its_controller_surveils() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Surveillance Phantasm", Zone::Battlefield);
+        let other_defender = put(&mut g, p, "Fog Bank", Zone::Battlefield);
+        assert!(g.keywords(source).contains(Keywords::DEFENDER));
+        assert!(!g.can_declare_attacker(p, source));
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        wait_for_choice(&mut g);
+        arrange(&mut g, LibraryDestination::Top);
+        settle(&mut g);
+        assert!(g.can_declare_attacker(p, source));
+        assert!(!g.can_declare_attacker(p, other_defender));
+        assert!(g.keywords(source).contains(Keywords::DEFENDER));
+        g.change_controller(g.object_ref(source), p.other());
+        g.state.objects[source as usize].summoning_sick = false;
+        assert!(!g.can_declare_attacker(p.other(), source));
+        g.change_controller(g.object_ref(source), p);
+        g.state.objects[source as usize].summoning_sick = false;
+        assert!(g.can_declare_attacker(p, source));
+        g.finish_cleanup();
+        g.state.turn += 1;
+        g.begin_turn();
+        assert!(!g.can_declare_attacker(p, source));
+    }
+}
+
+#[test]
+fn fra_surveil_mixed_batch_shuffle_and_competing_exile_are_atomic() {
+    for p in [Player::P0, Player::P1] {
+        for replacement in [
+            None,
+            Some(ZoneReplacementKind::RevealShuffle),
+            Some(ZoneReplacementKind::Exile),
+        ] {
+            let mut g = scenario(p);
+            let plan = put(&mut g, p, "Robot Domination", Zone::Battlefield);
+            if replacement.is_some() {
+                put(&mut g, p, "Rest in Peace", Zone::Battlefield);
+            }
+            let bear = put(&mut g, p, "Bear Cub", Zone::Library);
+            let progenitus = put(&mut g, p, "Progenitus", Zone::Library);
+            let retained = put(&mut g, p, "Island", Zone::Library);
+            let original = g.state.players[p.index()].library.clone();
+            scry(&mut g, p);
+            wait_for_choice(&mut g);
+            let resolution = g.state.resolving.as_mut().unwrap();
+            resolution.library = None;
+            resolution.program = &[Instruction::Surveil(3)];
+            resolution.pc = 0;
+            g.state.pending = Pending::Priority;
+            g.run_program();
+            super::super::contracts::branch_contract(g.clone());
+            act(
+                &mut g,
+                Action::ArrangeLibrary {
+                    card: retained,
+                    destination: LibraryDestination::Top,
+                },
+            );
+            act(
+                &mut g,
+                Action::ArrangeLibrary {
+                    card: progenitus,
+                    destination: LibraryDestination::Graveyard,
+                },
+            );
+            act(
+                &mut g,
+                Action::ArrangeLibrary {
+                    card: bear,
+                    destination: LibraryDestination::Graveyard,
+                },
+            );
+            if let Some(effect) = replacement {
+                super::super::contracts::branch_contract(g.clone());
+                act(&mut g, Action::ChooseZoneReplacement { effect });
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[bear as usize].zone,
+                if replacement.is_some() {
+                    Zone::Exile
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            assert_eq!(
+                g.state.objects[progenitus as usize].zone,
+                if replacement == Some(ZoneReplacementKind::Exile) {
+                    Zone::Exile
+                } else {
+                    Zone::Library
+                }
+            );
+            assert_eq!(
+                g.counter_count(plan, CounterKind::Plan),
+                u64::from(replacement.is_none())
+            );
+            assert_eq!(
+                g.state.objects[retained as usize].zone,
+                if replacement.is_none() {
+                    Zone::Hand
+                } else {
+                    Zone::Library
+                }
+            );
+            if replacement.is_some() {
+                assert_eq!(g.state.players[p.index()].library.last(), Some(&retained));
+            }
+            let library = &g.state.players[p.index()].library;
+            for card in original.iter().copied() {
+                assert_eq!(
+                    library.iter().filter(|id| **id == card).count(),
+                    usize::from(g.state.objects[card as usize].zone == Zone::Library)
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn fra_scry_trigger_multiplier_and_once_per_turn_limit() {
+    for p in [Player::P0, Player::P1] {
+        for limited in [false, true] {
+            let mut g = scenario(p);
+            let source = put(
+                &mut g,
+                p,
+                if limited {
+                    "Saheeli, Consul of Oversight"
+                } else {
+                    "Denzilore Fatehold"
+                },
+                Zone::Battlefield,
+            );
+            let staff = put(&mut g, p, "Wizard's Staff", Zone::Battlefield);
+            g.state.objects[staff as usize].attached_to = Some(g.object_ref(source));
+            scry(&mut g, p);
+            wait_for_choice(&mut g);
+            arrange(&mut g, LibraryDestination::Top);
+            for _ in 0..64 {
+                if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.resolving.is_none()
+                    && g.state.pending_triggers.is_empty()
+                {
+                    break;
+                }
+                choose(&mut g, |action| {
+                    matches!(action, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+            assert!(g.state.stack.is_empty());
+            if limited {
+                assert_eq!(thopters(&g, p), 1);
+            } else {
+                assert_eq!(g.counter_count(source, CounterKind::PlusOne), 2);
+            }
+        }
+    }
+}

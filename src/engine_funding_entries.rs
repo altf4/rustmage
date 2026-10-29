@@ -275,6 +275,7 @@ impl FundingState<'_> {
             }
             StepGuard::YourTurn => self.active == player,
             StepGuard::GainedLife => self.gained_life(player),
+            StepGuard::ScriedOrSurveilledThisTurn => state.scried_or_surveilled_this_turn,
             StepGuard::GainedAndLostLife => self.gained_life(player) && self.lost_life(player),
             StepGuard::Attacked => state.attacked_this_turn,
             StepGuard::CreatureDied => self.creatures_died > 0,

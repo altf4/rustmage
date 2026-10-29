@@ -150,6 +150,9 @@ impl Game {
             ActivationGuard::CastInstantSorceryThisTurn => {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
+            ActivationGuard::ScriedOrSurveilledThisTurn => {
+                self.state.players[actor.index()].scried_or_surveilled_this_turn
+            }
             ActivationGuard::SourceSolved => self.case_solved(self.object_ref(source)),
             ActivationGuard::Always => true,
             ActivationGuard::SourceAttackedThisTurn => self

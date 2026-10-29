@@ -933,6 +933,7 @@ struct PlayerState {
     creature_spells_cast_this_turn: u64,
     equip_activated_this_turn: bool,
     cards_drawn_this_turn: u64,
+    scried_or_surveilled_this_turn: bool,
     drew_in_own_draw_step: bool,
     cards_discarded_this_turn: u64,
     cards_library_to_graveyard_this_turn: u64,
@@ -2303,6 +2304,8 @@ pub struct PlayerView {
     pub nonland_permanents_entered_this_turn: u64,
     pub spells_cast_this_turn: u64,
     pub cards_drawn_this_turn: u64,
+    /// Whether this player completed a positive scry or surveil this turn.
+    pub scried_or_surveilled_this_turn: bool,
     pub cards_discarded_this_turn: u64,
     /// Number of actual library-to-graveyard moves this turn, without card identities.
     pub cards_library_to_graveyard_this_turn: u64,
@@ -2806,6 +2809,7 @@ impl Game {
             creature_spells_cast_this_turn: 0,
             equip_activated_this_turn: false,
             cards_drawn_this_turn: 0,
+            scried_or_surveilled_this_turn: false,
             drew_in_own_draw_step: false,
             cards_discarded_this_turn: 0,
             cards_library_to_graveyard_this_turn: 0,
@@ -7430,6 +7434,7 @@ impl Game {
             player.creature_spells_cast_this_turn = 0;
             player.equip_activated_this_turn = false;
             player.cards_drawn_this_turn = 0;
+            player.scried_or_surveilled_this_turn = false;
             player.cards_discarded_this_turn = 0;
             player.cards_library_to_graveyard_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
@@ -8347,6 +8352,7 @@ impl Game {
                     .nonland_permanents_entered_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
+                scried_or_surveilled_this_turn: s.players[i].scried_or_surveilled_this_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
                 cards_library_to_graveyard_this_turn: s.players[i]
                     .cards_library_to_graveyard_this_turn,

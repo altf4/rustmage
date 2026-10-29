@@ -105,7 +105,22 @@ impl Game {
         }
         let keywords = self.keywords(id);
         (!object.summoning_sick || keywords.contains(Keywords::HASTE))
-            && !keywords.contains(Keywords::DEFENDER)
+            && (!keywords.contains(Keywords::DEFENDER)
+                || (self.state.players[actor.index()].scried_or_surveilled_this_turn
+                    && object.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::AttackWithoutDefenderIfScried
+                            )
+                        })
+                    })
+                    && self.continuous_fragment_available(id, |fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::AttackWithoutDefenderIfScried
+                        )
+                    })))
             && !self.combat_restricted(id, true)
     }
 
