@@ -975,6 +975,15 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
         let exile = Action::ChooseOutsideEntryReplacement { source, ability: 1 };
         assert!(game.legal_actions().contains(&prevent));
         assert!(game.legal_actions().contains(&exile));
+        assert!(game.apply(owner.other(), prevent).is_err());
+        assert!(
+            game.apply(
+                owner,
+                Action::ChooseOutsideEntryReplacement { source, ability: 2 }
+            )
+            .is_err()
+        );
+        assert_eq!(game.snapshot(), before);
         act(&mut game, prevent);
         assert_eq!(
             game.state.outside_game.as_ref().unwrap().pools[owner.index()],
