@@ -1,4 +1,4 @@
-//! One legal SOS workload for native replay assurance and a separate plain benchmark.
+//! One legal FRA workload for native replay assurance and a separate plain benchmark.
 //! Action selection always delegates to the shared actor-observation smoke policy.
 use super::*;
 use serde::Serialize;
@@ -68,7 +68,7 @@ pub struct Report {
 }
 impl Report {
     pub fn missing_mechanics(&self) -> Vec<&'static str> {
-        ["prepared_created", "fatehold_trigger", "scry_or_surveil_completed", "loyalty_activation"]
+        ["prepared_created", "empower_counters", "fatehold_trigger", "scry_or_surveil_completed", "loyalty_activation"]
         .into_iter()
         .filter(|m| self.witnesses.get(*m).copied().unwrap_or(0) == 0)
         .collect()
@@ -220,6 +220,26 @@ impl Tracker {
         }
         for row in &after.preparations {
             self.hit("prepared_created", format!("{:?}", row.spell_copy));
+        }
+        // Witness a real loyalty increase on the Jace token while a known
+        // empower instruction is resolving. This excludes merely casting or
+        // putting the corresponding trigger on the stack.
+        if let Some(packet) = _before.resolving.as_ref().or_else(|| _before.stack.last()) {
+            if matches!(packet.source_card.name(), "Campus Crier" | "Repurposed Enforcer"
+                | "Theorist's Proxy" | "Avatar of Burgeoning Echoes"
+                | "Arcane Amphisbaena" | "Fatehold Charm") {
+                for object in &after.objects {
+                    if object.zone != Zone::Battlefield || object.controller != packet.controller
+                        || object.card.name() != "@token/jace-planeswalker" {
+                        continue;
+                    }
+                    let prior = _before.objects.iter().find(|o| o.reference == object.reference)
+                        .map_or(0, |o| o.counters.get(CounterKind::Loyalty));
+                    if object.counters.get(CounterKind::Loyalty) > prior {
+                        self.hit("empower_counters", format!("{}/{:?}", packet.id, object.reference));
+                    }
+                }
+            }
         }
         if _before.library_choice.is_some() && after.library_choice.is_none()
             && matches!(_action, Action::ArrangeLibrary { .. })

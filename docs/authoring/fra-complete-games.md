@@ -13,15 +13,17 @@ The acceptance entry point first requires all 285 distinct physical Oracle
 identities to resolve to the matching supported catalogue card. Missing identities
 are reported; neither verification nor benchmark bypasses this gate. The tests
 also check both seats for every pairing and that an incomplete pool is refused.
-Mechanic telemetry requires observed prepared copies, selected Fatehold triggers,
+Mechanic telemetry requires observed prepared copies, source-attributed empower loyalty counters, selected Fatehold triggers,
 scry or surveil completion and listed planeswalker ability activations, plus
 actual casts covering all five colors. These witnesses and the proposed decks
 are unvalidated design targets, not claims that the policy will reach them; an
 unreached witness or decision limit must be investigated and the fixed corpus
 adjusted, not waived. The corpus is not exhaustive coverage of every card.
 
-The test module is intentionally unlinked while the full set is incomplete. No
-Cargo, games, replay or benchmark has run for this draft. Link the module only
-when the full-pool gate can pass, run the guarded verification and a separate
+The current-pool gate and seat checks are linked into ordinary assurance. The
+full-game test is explicitly ignored until the pool is complete; final acceptance
+requires explicitly running that ignored test with its full-pool gate enabled.
+The standalone verification and benchmark both enforce the same gate. No Cargo,
+games, replay or benchmark has run for this draft. Run the guarded verification and a separate
 release benchmark with fixed inputs, retain evidence, and obtain the required
 independent nonauthor reviews before claiming completion or throughput.
