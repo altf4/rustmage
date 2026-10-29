@@ -511,14 +511,14 @@ impl Game {
         item: &SpellView,
         production: ManaProduction,
     ) -> Option<Quality> {
+        let source = item.source?;
         let mut quality = self
-            .mana_quality(production, item.card)
+            .mana_quality(production, source.id)
             .unwrap_or(Quality::ORDINARY);
-        if self.object_ref(item.card) != item.object {
-            quality.treasure_source = item
-                .source_facts
+        if self.object_ref(source.id) != source.object {
+            quality.treasure_source = source.facts
                 .granted_subtypes
-                .has(item.source_facts.card, "Treasure");
+                .has(source.facts.card, "Treasure");
         }
         (quality != Quality::ORDINARY).then_some(quality)
     }
@@ -528,23 +528,23 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return;
         };
-        let quality = item
-            .source_card
+        let Some(source) = item.source else { return; };
+        let quality = source.card
             .activation(ability)
             .mana_production()
-            .and_then(|production| self.mana_quality(production, item.object.card))
-            .map(|quality| quality.with_definition(item.source_card));
+            .and_then(|production| self.mana_quality(production, source.object.card))
+            .map(|quality| quality.with_definition(source.card));
         if let Some(quality) = quality {
             self.state
                 .mana_lots
                 .get_or_insert_default()
-                .announcement_quality = Some((item.object, quality));
+                .announcement_quality = Some((source.object, quality));
         }
     }
     pub(super) fn add_announced_mana(&mut self, item: &SpellView, mana: Mana) {
         let quality = self.state.mana_lots.as_mut().and_then(|state| {
             state.announcement_quality.take().map(|(source, quality)| {
-                assert_eq!(source, item.object);
+                assert_eq!(Some(source), item.source.map(|identity| identity.object));
                 quality
             })
         });
@@ -724,15 +724,16 @@ impl Game {
         self.apply_transaction(actor, choice.action)
     }
     pub(super) fn purpose_for_item(&self, item: &SpellView) -> Purpose {
+        let Some(identity) = item.source else { return Purpose::Other; };
         if item.kind == StackKind::Spell {
-            let mut source = Source::printed(item.source_card);
+            let mut source = Source::printed(identity.card);
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
             source.cast_from_hand = item.cast.is_some_and(|c| {
                 c.origin == Zone::Hand
                     && self
                         .state
                         .objects
-                        .get(item.object.card as usize)
+                        .get(identity.object.card as usize)
                         .is_some_and(|object| object.owner == c.caster)
             });
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
@@ -741,15 +742,15 @@ impl Game {
             let source = if self
                 .state
                 .objects
-                .get(item.object.card as usize)
+                .get(identity.object.card as usize)
                 .is_some_and(|o| {
-                    o.zone != Zone::Outside && self.object_ref(item.object.card) == item.object
+                    o.zone != Zone::Outside && self.object_ref(identity.object.card) == identity.object
                 }) {
-                Source::in_world(self, item.object.card)
+                Source::in_world(self, identity.object.card)
             } else {
-                item.source_facts.into()
+                identity.facts.into()
             };
-            Purpose::Activation(source.with_activation(item.source_card.activation(ability)))
+            Purpose::Activation(source.with_activation(identity.card.activation(ability)))
         } else {
             // Costs of triggered abilities (including ward) are not activations.
             Purpose::Other
@@ -1013,10 +1014,9 @@ impl Game {
                         .map(|frame| &frame.announcement.item),
                 )
                 .find(|item| {
-                    item.object == *source
+                    item.source.is_some_and(|identity| identity.object == *source && identity.card == *definition)
                         && item.controller == goal.actor
                         && item.kind == StackKind::ActivatedAbility { ability: *ability }
-                        && item.source_card == *definition
                         && item.borrowed_slot == *slot
                 })
             {
