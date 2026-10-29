@@ -45,7 +45,8 @@ fn null_reveals_hand_requires_nonland_choice_and_casts_at_threshold() {
             assert!(!g.can_play_exiled(player, card));
             put(&mut g, player, "Forest", Zone::Graveyard);
             assert!(g.can_play_exiled(player, card));
-            assert_eq!(g.exile_cast_modifiers(player, card), (true, false));
+            let purpose = g.spell_mana_purpose_for_card(player, card, g.state.objects[card as usize].card);
+            assert!(cast_origins::spends_any_type(&g, player, purpose));
             g.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
             act(&mut g, Action::AnnounceExile { card });
             pay(&mut g);
@@ -126,5 +127,47 @@ fn null_does_not_trigger_when_not_cast_and_reveals_land_only_hand() {
         assert!(g.observe(player).known_hand.contains(&g.object_ref(land)));
         assert_eq!(g.object_view(land).zone, Zone::Hand);
         assert!(g.state.linked_choices.as_ref().is_none_or(|data| data.null_cast_links.is_empty()));
+    }
+}
+
+#[test]
+fn null_mana_permission_tracks_live_and_projected_payment_world() {
+    for player in [Player::P0, Player::P1] {
+        for loss in 0..4 {
+            let mut g = scenario(player);
+            let card = put(&mut g, player.other(), "Spectral Sailor", Zone::Hand);
+            let source = cast_null(&mut g, player);
+            until_hand_choice(&mut g, player);
+            let chosen = g.object_ref(card);
+            act(&mut g, Action::ChooseHandCard { object: Some(chosen) });
+            let graves: Vec<_> = (0..7).map(|_| put(&mut g, player, "Forest", Zone::Graveyard)).collect();
+            g.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
+            act(&mut g, Action::AnnounceExile { card });
+            let saved = g.snapshot();
+            let source_ref = g.object_ref(source);
+            for _ in 0..2 {
+                match loss {
+                    0 => { g.move_object(source, Zone::Graveyard); }
+                    1 => { g.move_object(graves[0], Zone::Hand); }
+                    2 => g.change_controller(source_ref, player.other()),
+                    _ => {
+                        let mut item = g.activation_item(player, source, 0);
+                        item.targets = vec![BoundTarget { group: 0, target: Target::Card(source), object: Some(source_ref) }];
+                        g.remove_target_abilities_until_end_of_turn(&item);
+                    }
+                }
+                let item = g.state.announcing.as_ref().unwrap().item.clone();
+                let purpose = g.purpose_for_item(&item);
+                let goal = FundingGoal { actor: player, required: [0, 1, 0, 0, 0, 0], generic: 0, reserve: None, source: None };
+                assert!(!cast_origins::spends_any_type(&g, player, purpose));
+                assert!(!g.can_fund_for(goal.clone(), purpose));
+                // A separate live rule may still authorize red mana.
+                put(&mut g, player, "Vizier of the Menagerie", Zone::Battlefield);
+                assert!(cast_origins::spends_any_type(&g, player, purpose));
+                assert!(g.can_fund_for(goal, purpose));
+                g.restore(&saved).unwrap();
+                assert_eq!(g.snapshot(), saved);
+            }
+        }
     }
 }

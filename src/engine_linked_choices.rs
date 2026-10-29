@@ -590,7 +590,7 @@ impl Game {
         });
         data.null_cast_links.retain(|link| {
             let o = &objects[link.exiled.card as usize];
-            o.zone == Zone::Exile && o.generation == link.exiled.generation
+            matches!(o.zone, Zone::Exile | Zone::Stack) && o.generation == link.exiled.generation
         });
         data.links.retain(|link| {
             let o = &objects[link.exiled.card as usize];

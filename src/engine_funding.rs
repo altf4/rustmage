@@ -671,6 +671,9 @@ impl<'g> FundingState<'g> {
                         .source.as_ref()
                         .is_some_and(|(source, _, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
+                        && game.state.linked_choices.as_ref().is_some_and(|data|
+                            data.null_cast_links.iter().any(|link| link.source.card == *id as CardId))
+                    || object.zone == Zone::Battlefield
                         && (loyalty_threshold_sensitive || sacrifice_mana_cost || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
                             || object.card.attachment_bonus().is_some()
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
@@ -1325,6 +1328,7 @@ impl<'g> FundingState<'g> {
                             foreign_stash: false,
                             cast_from_hand: false,
                             spend_any_mana: false,
+                            linked_mana_source: None,
                             equip: ability.is_equip(),
                             kinds: self.kinds(entry),
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),

@@ -8284,7 +8284,8 @@ impl Game {
             hand_deployment: self.public_hand_deployment_view(),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
                 c.links
-                    .iter().chain(c.null_cast_links.iter())
+                    .iter().chain(c.null_cast_links.iter().filter(|link|
+                        s.objects[link.exiled.card as usize].zone == Zone::Exile))
                     .copied()
                     .filter(|link| self.can_view_hideaway(viewer, link.exiled))
                     .collect()

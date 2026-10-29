@@ -47,21 +47,16 @@ pub(super) fn top_library_cards(library: &[CardId], amount: u128) -> Vec<CardId>
 impl Game {
     /// The linked permission is controlled by the source's current controller
     /// and follows its ability and threshold, not the entry trigger's controller.
+    pub(super) fn threshold_linked_source(&self, card: CardId) -> Option<ObjectRef> {
+        let reference = self.object_ref(card);
+        self.state.linked_choices.as_ref()?.null_cast_links.iter()
+            .find(|link| link.exiled == reference).map(|link| link.source)
+    }
     fn can_cast_threshold_linked_exile(&self, player: Player, card: CardId) -> bool {
         let Some(object) = self.state.objects.get(card as usize) else { return false };
-        if object.zone != Zone::Exile || object.card.is_land()
-            || !activations::graveyard_cards_at_least(self, player, 0, 7) { return false; }
-        let exiled = self.object_ref(card);
-        self.state.linked_choices.as_ref().is_some_and(|data| data.null_cast_links.iter().any(|link| {
-            link.exiled == exiled && self.on_battlefield(link.source.card)
-                && self.object_ref(link.source.card) == link.source
-                && self.state.objects[link.source.card as usize].controller == player
-                && self.state.objects[link.source.card as usize].card.static_ability_groups().iter().any(|group|
-                    group.fragments.iter().any(|fragment| matches!(fragment,
-                        crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold)))
-                && self.continuous_fragment_available(link.source.card, |fragment| matches!(fragment,
-                    crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold))
-        }))
+        object.zone == Zone::Exile && !object.card.is_land()
+            && self.threshold_linked_source(card).is_some_and(|source|
+                threshold_linked_source_available(self, player, source))
     }
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
         if self.can_cast_threshold_linked_exile(player, card)
@@ -106,7 +101,7 @@ impl Game {
                     && row.expiry.active(self.state.turn)
                     && self.exile_permission_guard(row)
             })
-            .fold((self.can_cast_threshold_linked_exile(player, card), false), |flags, row| {
+            .fold((false, false), |flags, row| {
                 (
                     flags.0 || row.spend_any_mana,
                     flags.1 || row.exile_on_graveyard,
@@ -603,4 +598,18 @@ impl Game {
         }
         self.finish_zone_events(&events, &[]);
     }
+}
+
+/// Re-evaluate the continuous permission in the live or speculative world.
+pub(super) fn threshold_linked_source_available<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W, player: Player, source: ObjectRef,
+) -> bool {
+    let object = world.object(source.card);
+    object.zone == Zone::Battlefield && world.reference(source.card) == source
+        && object.controller == player
+        && activations::graveyard_cards_at_least(world, player, 0, 7)
+        && object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment|
+            matches!(fragment, crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold)))
+        && characteristic_query::CharacteristicQuery::in_world(world).continuous_fragment_available(source.card, |fragment|
+            matches!(fragment, crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold))
 }

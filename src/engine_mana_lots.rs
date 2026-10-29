@@ -247,6 +247,7 @@ pub(super) struct Source {
     /// Frozen cast origin; irrelevant for abilities and non-cast payments.
     pub cast_from_hand: bool,
     pub spend_any_mana: bool,
+    pub linked_mana_source: Option<ObjectRef>,
     pub equip: bool,
 }
 impl Source {
@@ -265,6 +266,7 @@ impl Source {
             foreign_stash: false,
             cast_from_hand: false,
             spend_any_mana: false,
+            linked_mana_source: None,
             equip: false,
         }
     }
@@ -279,6 +281,7 @@ impl Source {
             foreign_stash: false,
             cast_from_hand: false,
             spend_any_mana: false,
+            linked_mana_source: None,
             equip: false,
         }
     }
@@ -292,6 +295,7 @@ impl From<DamageFacts> for Source {
             foreign_stash: false,
             cast_from_hand: false,
             spend_any_mana: false,
+            linked_mana_source: None,
             equip: false,
         }
     }
@@ -754,6 +758,7 @@ impl Game {
                         .is_some_and(|object| object.owner == c.caster)
             });
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
+            source.linked_mana_source = self.threshold_linked_source(item.card);
             Purpose::Spell(source)
         } else if let StackKind::ActivatedAbility { ability } = item.kind {
             let source = if self
@@ -793,6 +798,7 @@ impl Game {
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item.card == card && a.item.cast.is_some_and(|c| c.spend_any_mana)
             });
+        source.linked_mana_source = self.threshold_linked_source(card);
         source.foreign_stash = self.foreign_stash(actor, card)
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item.card == card && a.item.cast.is_some_and(|c| c.stash_origin)

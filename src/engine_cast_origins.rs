@@ -64,7 +64,9 @@ pub(super) fn spends_any_type<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     purpose: mana_lots::Purpose,
 ) -> bool {
-    matches!(purpose, mana_lots::Purpose::Spell(source) if source.spend_any_mana)
+    matches!(purpose, mana_lots::Purpose::Spell(source) if source.spend_any_mana
+        || source.linked_mana_source.is_some_and(|linked|
+            exile::threshold_linked_source_available(world, player, linked)))
         || (matches!(purpose, mana_lots::Purpose::Spell(source) if source.kinds & 1 != 0)
             && has_fragment(world, player, |f| {
                 matches!(f, StaticAbilityFragment::SpendAnyManaForCreatures)

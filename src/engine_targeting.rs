@@ -1615,6 +1615,13 @@ impl Game {
             Counters::default(),
             Some(actor),
         );
+        if origin == Zone::Exile && event.moved && event.destination == Zone::Stack {
+            if let Some(data) = &mut self.state.linked_choices {
+                for link in &mut data.null_cast_links {
+                    if link.exiled == event.before.reference { link.exiled = event.after; }
+                }
+            }
+        }
         self.finish_zone_events(std::slice::from_ref(&event), &[]);
         let object = event.after;
         self.advance_prepared_copy(event.before.reference, event.after);
