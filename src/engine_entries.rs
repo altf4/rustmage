@@ -336,7 +336,7 @@ impl Game {
         temporary_copy: Option<Box<SpellView>>,
         atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     ) {
-        if self.replay_frozen_mana_entries() {
+        if atomic_cost.is_none() && self.replay_frozen_mana_entries() {
             return;
         }
         assert!(

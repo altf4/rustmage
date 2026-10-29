@@ -6618,6 +6618,7 @@ impl Game {
     /// replacement choices and every other effect of this proposed payment.
     fn atomic_zone_cost_checkpoint(&self, failure_pc: Option<usize>) -> entries::AtomicCostCheckpoint {
         assert!(self.state.entry_batch.is_none());
+        assert!(self.state.resolving.is_none() || failure_pc.is_some(), "resolving atomic cost requires an unpaid continuation");
         entries::AtomicCostCheckpoint { before: Box::new(self.state.clone()), bytes: self.state_bytes(),
             failure_pc, components: Vec::new() }
     }
