@@ -105,3 +105,23 @@ fn resolving_split_second_spell_still_blocks_its_own_free_casts() {
         assert!(!g.observe(p).resolving.unwrap().split_second);
     }
 }
+
+#[test]
+fn announcing_spell_projects_current_split_second_for_both_viewers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let provider = put(&mut g, p, "Samut, Tyrant of Naktamun", Zone::Battlefield);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
+        act(&mut g, Action::AnnounceCast { card: shock });
+        for viewer in [p, p.other()] {
+            let spell = g.observe(viewer).announcing.unwrap();
+            assert!(spell.split_second);
+            assert!(!spell.source_keywords.contains(Keywords::SPLIT_SECOND));
+        }
+        g.move_object(provider, Zone::Graveyard);
+        for viewer in [p, p.other()] {
+            assert!(!g.observe(viewer).announcing.unwrap().split_second);
+        }
+    }
+}

@@ -8650,7 +8650,7 @@ impl Game {
                 .as_deref()
                 .map_or_else(Vec::new, |rows| rows.clone()),
             announcing: s.announcing.as_ref().map(|announcement| {
-                let mut item = announcement.item.clone();
+                let mut item = self.spell_with_current_abilities(&announcement.item);
                 if !owns_choice {
                     item.targets.clear();
                 }
