@@ -453,7 +453,7 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .any(|row| return_ability_modification::active(self, row))
                 || state.source_linked_effects.iter().any(|row| {
-                    row.kind == SourceLinkedEffectKind::RemoveAbilities
+                    matches!(row.kind, SourceLinkedEffectKind::RemoveAbilities | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn)
                         && source_linked_effects::active(self, row)
                 })
                 || state.ability_removal_sources.iter().any(|&source| {
@@ -512,7 +512,7 @@ pub(super) trait CharacteristicWorld {
                     && return_ability_modification::active(self, row)
             }) || state.source_linked_effects.iter().any(|row| {
                 row.recipient == self.reference(id)
-                    && row.kind == SourceLinkedEffectKind::RemoveAbilities
+                    && matches!(row.kind, SourceLinkedEffectKind::RemoveAbilities | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn)
                     && source_linked_effects::active(self, row)
             })
         }) {

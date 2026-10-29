@@ -5,6 +5,8 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum SourceLinkedEffectKind {
     RemoveAbilities,
+    /// Source-independent removal lasting until cleanup.
+    RemoveAbilitiesUntilEndOfTurn,
     GrantHexproof,
     PreventDamageBy,
     PreventUntap,
@@ -22,8 +24,9 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
     world: &W,
     row: &SourceLinkedEffectView,
 ) -> bool {
-    world.object(row.source.card).zone == Zone::Battlefield
-        && world.reference(row.source.card) == row.source
+    (row.kind == SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
+        || (world.object(row.source.card).zone == Zone::Battlefield
+            && world.reference(row.source.card) == row.source))
         && (row.kind == SourceLinkedEffectKind::PreventDamageBy
             || (world.object(row.recipient.card).zone == Zone::Battlefield
                 && world.reference(row.recipient.card) == row.recipient))
@@ -76,10 +79,31 @@ impl Game {
             self.refresh_copy_grant_availability();
         }
     }
+    pub(super) fn remove_target_abilities_until_end_of_turn(&mut self, item: &SpellView) {
+        let recipients: Vec<_> = self.keyword_subjects(item, Subject::Targets).into_iter()
+            .filter(|&id| self.on_battlefield(id)).map(|id| self.object_ref(id)).collect();
+        if recipients.is_empty() { return; }
+        let timestamp = self.next_role_timestamp();
+        let rows = &mut self.state.roles.as_mut().unwrap().source_linked_effects;
+        for recipient in recipients {
+            rows.push(SourceLinkedEffectView { source: item.object, recipient,
+                controller: item.controller, kind: SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn,
+                timestamp });
+        }
+        self.refresh_copy_grant_availability();
+    }
+    pub(super) fn expire_temporary_ability_removals(&mut self) {
+        let changed = if let Some(roles) = &mut self.state.roles {
+            let before = roles.source_linked_effects.len();
+            roles.source_linked_effects.retain(|row| row.kind != SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn);
+            before != roles.source_linked_effects.len()
+        } else { false };
+        if changed { self.refresh_copy_grant_availability(); }
+    }
     pub(super) fn forget_source_linked_effects(&mut self, reference: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
             state.source_linked_effects.retain(|row| {
-                row.source != reference
+                (row.source != reference || row.kind == SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn)
                     && (row.recipient != reference
                         || row.kind == SourceLinkedEffectKind::PreventDamageBy)
             });

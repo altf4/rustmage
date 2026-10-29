@@ -5891,6 +5891,9 @@ impl Game {
                 Instruction::GainControlTargetsUntilSourceLeaves => {
                     self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::Control);
                 }
+                Instruction::RemoveTargetAbilitiesUntilEndOfTurn => {
+                    self.remove_target_abilities_until_end_of_turn(&item);
+                }
                 Instruction::RemoveTargetAbilitiesUntilSourceLeaves => {
                     self.resolve_source_linked_effect(
                         &item,

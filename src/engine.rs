@@ -7672,6 +7672,7 @@ impl Game {
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_spell_copies();
+        self.expire_temporary_ability_removals();
         self.expire_temporary_controls();
         if let Some(rows) = &mut self.state.self_granted_abilities {
             rows.retain(|row| row.expires_turn.is_none());

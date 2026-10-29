@@ -2053,6 +2053,7 @@ pub(crate) enum Instruction {
     Tap,
     GainControlTargetsUntilSourceLeaves,
     RemoveTargetAbilitiesUntilSourceLeaves,
+    RemoveTargetAbilitiesUntilEndOfTurn,
     GrantTargetHexproofUntilSourceLeaves,
     PreventTargetDamageUntilSourceLeaves,
     PreventTargetUntapWhileSourceControlled,

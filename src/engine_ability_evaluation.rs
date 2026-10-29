@@ -553,7 +553,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 continue;
             }
             let action = match row.kind {
-                SourceLinkedEffectKind::RemoveAbilities => LayerSixAction::Remove,
+                SourceLinkedEffectKind::RemoveAbilities | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn => LayerSixAction::Remove,
                 SourceLinkedEffectKind::GrantHexproof => LayerSixAction::Grant {
                     keywords: Keywords::HEXPROOF,
                     abilities: Vec::new(),
