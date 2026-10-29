@@ -21,7 +21,7 @@ fn radiation_orders_with_a_sourced_main_phase_trigger_and_replays() {
                 .state
                 .ordering_triggers
                 .iter()
-                .find(|item| item.card == source)
+                .find(|item| item.source.is_some_and(|identity| identity.id == source))
                 .unwrap()
                 .id;
             let snapshot = game.snapshot();

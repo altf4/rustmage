@@ -1509,6 +1509,12 @@ fn project_prior_player_counter_schema(input: &str) -> Result<String, String> {
         match value {
             serde_json::Value::Array(rows) => for row in rows { check(row)?; },
             serde_json::Value::Object(map) => {
+                // New packets own a nested optional source; the preceding wire
+                // schema used separate top-level source fields. Reject rather than
+                // silently compare distinct representations, including hidden packets.
+                if map.contains_key("source") && map.contains_key("source_keywords") && map.contains_key("targets") {
+                    return Err("owned stack source has no prior-schema projection".into());
+                }
                 if map.contains_key("other_counters") || map.contains_key("source_less_rule") || map.contains_key("InherentRule")
                     || map.contains_key("self_counter_effects") || map.contains_key("ChooseSelfCounterReplacement") {
                     return Err("player counters or source-less rule have no prior-schema representation".into());
@@ -1546,6 +1552,29 @@ fn prior_player_counter_state_supported(state: &State) -> bool {
         .chain(state.earthbend_returns.as_deref().into_iter().flatten().map(|r| &r.item))
         .chain(state.manifest.as_ref().into_iter().flat_map(|s| s.deaths.iter().map(|d| &d.source)))
         .all(safe)
+}
+
+#[test]
+fn player_counter_prior_schema_guard_rejects_owned_stack_sources() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let object = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let packet = game.activation_item(player, object, 0);
+        game.state.pending_triggers.push(packet);
+        assert!(!prior_player_counter_state_supported(&game.state));
+        let saved = game.snapshot();
+        game.state.pending_triggers.clear();
+        assert!(prior_player_counter_state_supported(&game.state));
+        game.restore(&saved).unwrap();
+        assert!(!prior_player_counter_state_supported(&game.state));
+        for viewer in [player, player.other()] {
+            // Pending packets need not be public, but an explicitly serialized
+            // owned packet must never be silently treated as the old layout.
+            let packet = &game.state.pending_triggers[0];
+            assert!(project_prior_player_counter_schema(&serde_json::to_string(packet).unwrap()).is_err());
+            let _ = game.observe(viewer);
+        }
+    }
 }
 
 #[test]
