@@ -7005,42 +7005,6 @@ impl Game {
         if before.zone == Zone::Stack {
             self.capture_stack_copy_departure(id);
         }
-        if before.zone == Zone::Stack
-            && plan.destination != Zone::Battlefield
-            && self.state.objects[id as usize].is_spell_copy()
-        {
-            self.state.stack.retain(|item| {
-                !(item.kind == StackKind::Spell
-                    && item.card == id
-                    && item.object == before.reference)
-            });
-            self.clear_copy_recipe(before.reference);
-            let object = &mut self.state.objects[id as usize];
-            object.zone = Zone::Outside;
-            object.generation = object
-                .generation
-                .checked_add(1)
-                .capacity("object generation exhausted");
-            self.state.free_tokens.push(id);
-            return ZoneChange {
-                cast_event: None,
-                entry_counter_player: None,
-                graveyard_observers: None,
-                returned_hand_observers: None,
-                was_cast: false,
-                gift: None,
-                after: self.object_ref(id),
-                destination: Zone::Outside,
-                before,
-                moved: false,
-                sacrificed_by: None,
-                offspring_paid: false,
-                kicked: false,
-                bargained: false,
-                x: 0,
-                evidence_collected: false,
-            };
-        }
         let destination = plan.destination;
         if before.zone == Zone::Graveyard
             && destination != Zone::Graveyard
@@ -7053,10 +7017,7 @@ impl Game {
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
         let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
-        if (self.state.objects[id as usize].copy_kind == CopyKind::Spell
-            && before.zone != Zone::Stack)
-            || (self.state.objects[id as usize].copy_kind == CopyKind::Card
-                && before.zone == Zone::Outside)
+        if (self.state.objects[id as usize].is_spell_copy() && before.zone == Zone::Outside)
             || before.card.is_emblem()
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {

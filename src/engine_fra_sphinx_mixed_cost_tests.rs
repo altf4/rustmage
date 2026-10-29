@@ -35,10 +35,19 @@ fn sphinx_competing_exile_replacements_replay_atomically() {
         act(&mut g, Action::SelectResolutionExile { object: last });
         assert!(matches!(g.state.pending, Pending::ZoneReplacement { player: p } if p == player));
         let pending = g.snapshot();
-        let views = [player, player.other()].map(|p| serde_json::to_string(&g.observe(p)).unwrap());
+        let view = |game: &Game, p| {
+            let mut value = serde_json::to_value(game.observe(p)).unwrap();
+            value.as_object_mut().unwrap().remove("revision");
+            value
+        };
+        let views = [player, player.other()].map(|p| view(&g, p));
         for outcome in [ZoneReplacementKind::Prevent, ZoneReplacementKind::Battlefield] {
+            let prior_revision = g.revision();
+            let old_index = g.legal_actions().iter().position(|a| matches!(a, Action::ChooseZoneReplacement { .. })).unwrap();
             g.restore(&pending).unwrap();
-            assert_eq!([player, player.other()].map(|p| serde_json::to_string(&g.observe(p)).unwrap()), views);
+            assert!(g.revision() > prior_revision);
+            assert!(g.apply_index(player, prior_revision, old_index).is_err());
+            assert_eq!([player, player.other()].map(|p| view(&g, p)), views);
             let action = Action::ChooseZoneReplacement { effect: outcome };
             let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
             let mut raw = g.clone();

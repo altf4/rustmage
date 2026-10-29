@@ -251,7 +251,8 @@ impl Game {
         let own = before.card.zone_replacement();
         let own_available =
             before.zone != Zone::Battlefield || self.printed_abilities_available(before.id);
-        let spell = before.kinds & 12 != 0 && !before.is_token();
+        let card_or_token = !self.state.objects[before.id as usize].is_spell_copy() || before.is_token();
+        let spell = before.kinds & 12 != 0 && !before.is_token() && card_or_token;
         let reflexive_exiles = if before.zone == Zone::Battlefield && before.is_creature() {
             self.state
                 .static_sources
@@ -282,7 +283,7 @@ impl Game {
                     self.on_battlefield(id)
                         && self.printed_abilities_available(id)
                         && match self.state.objects[id as usize].card.zone_replacement() {
-                            Some(ZoneReplacementRule::ExileAllCardsAndTokens) => true,
+                            Some(ZoneReplacementRule::ExileAllCardsAndTokens) => card_or_token,
                             Some(ZoneReplacementRule::ExileInstantSorceryCards) => spell,
                             Some(ZoneReplacementRule::ExileOpposingCreatureDeathPlain) =>
                                 before.zone == Zone::Battlefield && before.is_creature()
@@ -314,18 +315,6 @@ impl Game {
         requested: Zone,
         rules: FrozenRules,
     ) -> Plan {
-        // A stack copy ceases without a physical card event or replacement choice.
-        if before.zone == Zone::Stack
-            && requested != Zone::Battlefield
-            && self.state.objects[before.id as usize].is_spell_copy()
-        {
-            return Plan {
-                destination: Zone::Outside,
-                prevented: false,
-                shuffle: false,
-                reflexive: None,
-            };
-        }
         #[cfg(test)]
         let test_redirect = requested == Zone::Exile && TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|target| target.get() == Some(before.reference));
         #[cfg(not(test))]

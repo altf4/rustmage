@@ -60,7 +60,7 @@ impl Game {
             return;
         };
         if object.generation != reference.generation
-            || object.copy_kind != CopyKind::Card
+            || !matches!(object.copy_kind, CopyKind::Card | CopyKind::Spell)
             || matches!(object.zone, Zone::Stack | Zone::Outside)
         {
             return;

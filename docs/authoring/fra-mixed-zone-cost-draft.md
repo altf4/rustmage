@@ -25,3 +25,19 @@ The staged helper is not connected to Sphinx or Emrakul. Tests are synthetic,
 unlinked, and unbuilt. This draft must stay gated until end-to-end entry rollback, true
 self-replacement, provider layering, full caller integration, and independently
 reviewed guarded tests are complete.
+
+Sphinx now calls the staged planner with an owned failure continuation. The
+copy movement change reconciles the existing copy and SBA machinery: a spell
+copy can enter exile during a resolving payment and ceases at the next SBA,
+while card-only graveyard replacement effects exclude copies. The public-action
+copy test is unbuilt. The wider copy-card audit remains incomplete on this
+branch: historical copy-aware card-only consumers and zone-event identity from
+commits through 239f8bb5 have not been ported. Do not admit Sphinx or treat this
+as a generally reviewed lifecycle implementation before that audit, supported
+replacement/entry interaction coverage, and guarded validation complete.
+
+The synthetic competing exile redirect fixture is a plumbing test: it redirects
+an instant/sorcery card into the battlefield, so it does not establish a
+rules-reachable entry event. The separate Watery Grave staged-entry fixture
+exercises a real entry-life choice with a constructed replacement plan, not a
+real supported replacement provider.
