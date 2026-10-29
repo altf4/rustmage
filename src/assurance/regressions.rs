@@ -115,6 +115,33 @@ fn project_prior_behold_json(input: &str) -> Result<String, String> {
                 if map.get("borrowed_slot").is_some_and(|v| !v.is_null()) {
                     return Err("a borrowed ability on the stack has a new acquisition slot".into());
                 }
+                // Action uses serde's internally tagged `kind` representation.
+                // Offered actions matter even when no such action was selected.
+                if map
+                    .get("kind")
+                    .and_then(|v| v.as_str())
+                    .is_some_and(|kind| {
+                        matches!(
+                            kind,
+                            "TapMana"
+                                | "TapGrantedMana"
+                                | "AnnounceMana"
+                                | "ActivateMana"
+                                | "AnnounceGraveyardBorrowedAbility"
+                                | "AnnounceGraveyardBorrowedMana"
+                                | "ActivateGraveyardBorrowedMana"
+                                | "AnnounceBorrowedAbility"
+                                | "AnnounceBorrowedMana"
+                                | "ActivateBorrowedMana"
+                                | "ChooseEntryBehold"
+                        )
+                    })
+                {
+                    return Err(
+                        "an offered behold or mana-ability action has no proven prior identity"
+                            .into(),
+                    );
+                }
                 if map.get("decision").and_then(|v| v.as_str()) == Some("entry_behold")
                     || map.contains_key("ChooseEntryBehold")
                     || map.contains_key("Behold")
@@ -253,6 +280,93 @@ fn prior_behold_projection_preserves_order_and_rejects_unrepresentable_state() {
     assert!(!prior_behold_journal_supported(&[
         Action::ChooseEntryBehold { object: None }
     ]));
+}
+
+#[test]
+fn prior_projection_rejects_offered_actions_even_when_journal_is_empty() {
+    let donor = ObjectRef {
+        card: 7,
+        generation: 3,
+    };
+    let actions = [
+        Action::TapMana { card: 0 },
+        Action::TapGrantedMana {
+            card: 0,
+            grantor: donor,
+            production: [0, 1, 0, 0, 0, 0],
+        },
+        Action::AnnounceMana {
+            card: 0,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 1, 0, 0, 0, 0],
+        },
+        Action::ActivateMana {
+            card: 0,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [0, 1, 0, 0, 0, 0],
+        },
+        Action::AnnounceBorrowedAbility {
+            card: 0,
+            exiled: donor,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+        Action::AnnounceBorrowedMana {
+            card: 0,
+            exiled: donor,
+            ability: u16::MAX - 2,
+            counter_payment: Counters::default(),
+            production: [0, 1, 0, 0, 0, 0],
+        },
+        Action::ActivateBorrowedMana {
+            card: 0,
+            exiled: donor,
+            ability: u16::MAX - 2,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [0, 1, 0, 0, 0, 0],
+        },
+        Action::AnnounceGraveyardBorrowedAbility {
+            card: 0,
+            graveyard: donor,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+        Action::AnnounceGraveyardBorrowedMana {
+            card: 0,
+            graveyard: donor,
+            ability: u16::MAX,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 1, 0],
+        },
+        Action::ActivateGraveyardBorrowedMana {
+            card: 0,
+            graveyard: donor,
+            ability: u16::MAX,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 1, 0],
+        },
+        Action::ChooseEntryBehold { object: None },
+    ];
+    assert!(prior_behold_journal_supported(&[]));
+    for action in actions {
+        let offered = serde_json::json!({ "actions": [Action::Pass, action] }).to_string();
+        assert!(project_prior_behold_json(&offered).is_err(), "{offered}");
+    }
+    let safe = serde_json::json!({ "actions": [Action::Pass] }).to_string();
+    assert_eq!(project_prior_behold_json(&safe).unwrap(), safe);
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let land = put(&mut game, player, "Forest", Zone::Battlefield);
+        let view = game.observe(player);
+        assert!(view.actions.contains(&Action::TapMana { card: land }));
+        let observation = serde_json::to_string(&[view]).unwrap();
+        assert!(project_prior_behold_json(&observation).is_err());
+    }
 }
 
 fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
