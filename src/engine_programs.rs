@@ -783,6 +783,7 @@ impl Game {
                     | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CreatureAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivated
+                    | TriggerCondition::OpponentLoyaltyAbilityActivated
                     | TriggerCondition::CardsLeaveGraveyard
                     | TriggerCondition::CreatureCardLeavesYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
@@ -4667,6 +4668,11 @@ impl Game {
                         return;
                     }
                     self.scry_or_surveil_event(item.controller);
+                }
+                Instruction::CounterRelatedUnlessDiscard => {
+                    if self.start_ward_discard_only(&item) {
+                        return;
+                    }
                 }
                 Instruction::CounterRelatedUnlessDiscardOrPay(cost) => {
                     if self.start_ward_discard_or_mana(&item, cost) {

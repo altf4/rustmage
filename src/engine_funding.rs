@@ -3408,6 +3408,9 @@ impl Game {
         if emit(Action::DeclineResolutionMana) {
             return true;
         }
+        if request.discard_only {
+            return false;
+        }
         if request
             .life
             .is_some_and(|life| self.state.players[request.payer.index()].life < i128::from(life))

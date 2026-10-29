@@ -1173,6 +1173,8 @@ pub(crate) enum Instruction {
     CounterRelatedUnlessPayLife(u32),
     /// One captured ward payer may discard a card or pay this mana cost.
     CounterRelatedUnlessDiscardOrPay(ManaCost),
+    /// Ward payer may discard one card or decline and have the associated object countered.
+    CounterRelatedUnlessDiscard,
     /// One combined ward cost, paid atomically or the related item is countered.
     CounterRelatedUnlessPayManaLife {
         cost: ManaCost,
@@ -3407,6 +3409,8 @@ pub(crate) enum TriggerCondition {
     CreatureAbilityActivated,
     /// The controller committed an activation of a loyalty ability.
     LoyaltyAbilityActivated,
+    /// An opponent committed a loyalty activation.
+    OpponentLoyaltyAbilityActivated,
     CardsLeaveGraveyard,
     /// One trigger per actual creature CARD departing its owner's graveyard.
     CreatureCardLeavesYourGraveyard,

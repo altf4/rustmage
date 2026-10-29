@@ -7,6 +7,7 @@ pub(super) struct ResolutionPayment {
     pub alternatives: &'static [ManaCost],
     pub life: Option<u32>,
     pub discard: bool,
+    pub discard_only: bool,
     pub victim: Option<u64>,
     pub exile: bool,
     pub unpaid_pc: usize,
@@ -17,9 +18,12 @@ pub struct ResolutionPaymentView {
     pub cost: ManaCost,
     pub alternatives: Vec<ManaCost>,
     pub life: Option<u32>,
+    #[serde(skip_serializing_if = "is_false")]
+    pub discard_only: bool,
     pub victim: Option<u64>,
     pub exile: bool,
 }
+fn is_false(value: &bool) -> bool { !*value }
 impl Game {
     /// Explicit counters share one check. Abilities are independent of their source spell.
     pub(super) fn counter_stack_item(&mut self, id: u64, exile: bool) -> bool {
@@ -201,12 +205,19 @@ impl Game {
         self.start_ward_discard_choice(item, related.controller);
         true
     }
+    pub(super) fn start_ward_discard_only(&mut self, item: &SpellView) -> bool {
+        if !self.start_ward_discard_or_mana(item, ManaCost { colored: [0; 6], generic: 0 }) {
+            return false;
+        }
+        self.state.resolving.as_mut().unwrap().mana_payment.as_mut().unwrap().discard_only = true;
+        true
+    }
     pub(super) fn finish_ward_discard(&mut self, card: CardId) {
         let resolution = self.state.resolving.as_mut().unwrap();
         let request = resolution.mana_payment.take().unwrap();
         assert!(request.discard);
         resolution.choice = None;
-        let cause = resolution.item.controller;
+        let cause = if request.discard_only { request.payer } else { resolution.item.controller };
         self.discard_batch_caused(&[card], None, Some(cause));
         self.run_program();
     }
@@ -243,6 +254,7 @@ impl Game {
             alternatives: &[],
             life: None,
             discard: false,
+            discard_only: false,
             victim: Some(victim.id),
             exile,
             unpaid_pc,
@@ -267,6 +279,7 @@ impl Game {
             alternatives: &[],
             life: None,
             discard: false,
+            discard_only: false,
             victim: None,
             exile: false,
             unpaid_pc,
@@ -299,6 +312,7 @@ impl Game {
             alternatives: &[],
             life: Some(amount),
             discard: false,
+            discard_only: false,
             victim: Some(victim.id),
             exile: false,
             unpaid_pc: resolution.pc,

@@ -1,16 +1,22 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Gated direct Oracle behavior; ward payer is captured when the target is acquired.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(3, 3),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Ward,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CounterRelatedUnlessDiscard],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::CreatureEnters { relation: CastRelation::Opponent, other: false },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::DamagePlayers(PlayerSet::Opponent, 1)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::OpponentLoyaltyAbilityActivated,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::DamagePlayers(PlayerSet::Opponent, 1)],
+        },
+    ],
     ..CardRules::EMPTY
 };

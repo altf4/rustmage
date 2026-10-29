@@ -8719,6 +8719,7 @@ impl Game {
                     cost: p.cost,
                     alternatives: p.alternatives.to_vec(),
                     life: p.life,
+                    discard_only: p.discard_only,
                     victim: p.victim,
                     exile: p.exile,
                 }),

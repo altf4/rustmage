@@ -11,6 +11,7 @@ impl Game {
                     ability.condition.event(),
                     TriggerCondition::CreatureAbilityActivated
                         | TriggerCondition::LoyaltyAbilityActivated
+                        | TriggerCondition::OpponentLoyaltyAbilityActivated
                 )
             })
         {
@@ -67,7 +68,7 @@ impl Game {
         if self.state.activation_observers.is_none() {
             return;
         }
-        let StackKind::ActivatedAbility { ability } = item.kind else {
+        let StackKind::ActivatedAbility { ability: ability_index } = item.kind else {
             return;
         };
         if item.is_copy {
@@ -80,11 +81,11 @@ impl Game {
         {
             self.is_creature(item.object.card)
         } else {
-            item.source_card.activation(ability).source_zone() == Zone::Battlefield
+            item.source_card.activation(ability_index).source_zone() == Zone::Battlefield
                 && item.source_facts.is_creature()
         };
         self.creature_ability_activated(item.controller, creature);
-        if item.source_card.activation(ability).cost.loyalty.is_some()
+        if item.source_card.activation(ability_index).cost.loyalty.is_some()
             && !self
                 .state
                 .cast_rollback
@@ -99,13 +100,17 @@ impl Game {
                 .iter()
                 .filter(|&&id| {
                     self.on_battlefield(id)
-                        && self.state.objects[id as usize].controller == item.controller
                 })
                 .map(|&id| self.object_view(id))
                 .collect();
             for source in observers {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
-                    if ability.condition.event() == TriggerCondition::LoyaltyAbilityActivated {
+                    let triggered = match ability.condition.event() {
+                        TriggerCondition::LoyaltyAbilityActivated => source.controller == item.controller,
+                        TriggerCondition::OpponentLoyaltyAbilityActivated => source.controller != item.controller,
+                        _ => false,
+                    };
+                    if triggered {
                         self.queue_trigger(&source, index);
                     }
                 }
@@ -120,6 +125,7 @@ impl Game {
         if matches!(
             condition.event(),
             TriggerCondition::CreatureAbilityActivated | TriggerCondition::LoyaltyAbilityActivated
+                | TriggerCondition::OpponentLoyaltyAbilityActivated
         ) && condition.once_per_turn()
         {
             let used = TriggerUse {

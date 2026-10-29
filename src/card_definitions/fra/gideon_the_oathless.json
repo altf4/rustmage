@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "df6e26b18cdc0ed3c5726f2b484abb1fcc42fbff3405564ec79f31f604a7e737"
   },
-  "physical_metadata_sha256": "76d5c97d4f53b3189b31c6f31fe501a1dfebf1c017fc546b655537c2430981b9"
+  "physical_metadata_sha256": "76d5c97d4f53b3189b31c6f31fe501a1dfebf1c017fc546b655537c2430981b9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GideonTheOathless.java",
+  "java_sha256": "6c0722f268d8d91eee9bb8524aae9c25b0453e2df9364097eeadd8a4322179ca",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ],
+  "rules_tests": "src/engine_fra_loyalty_observer_tests.rs"
 }
