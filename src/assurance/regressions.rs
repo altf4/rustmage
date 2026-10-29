@@ -583,6 +583,14 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
             }
         }
     }
+    if schema_projection.is_some_and(|schema| schema < 177) {
+        for value in ["true", "false"] {
+            observation_bytes = observation_bytes.replace(
+                &format!("\"loyalty_ability_activated_this_turn\":{value},"),
+                "",
+            );
+        }
+    }
     if schema_projection.is_some_and(|schema| schema < 175) {
         for field in [
             "\"noncombat_damage_this_turn\":true,",

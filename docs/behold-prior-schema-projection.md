@@ -1,6 +1,6 @@
 # Prior-schema trace projection for behold and basic land mana
 
-Schema 177 introduces optional `added_basic_lands`, `effective_basic_lands`, and `suppress_printed_land` fields in serialized subtype overlays. It also introduces behold choice, pending, and cost variants; universal basic-land intrinsic abilities change some borrowed-ability indices, slots, and legal mana actions. These are API changes, not just formatting changes.
+Schema 177 also introduces the per-player `loyalty_ability_activated_this_turn` observation field, which the prior-schema recorder removes when projecting. It introduces optional `added_basic_lands`, `effective_basic_lands`, and `suppress_printed_land` fields in serialized subtype overlays. It also introduces behold choice, pending, and cost variants; universal basic-land intrinsic abilities change some borrowed-ability indices, slots, and legal mana actions. These are API changes, not just formatting changes.
 
 The bounded-trace recorder can project a subset of observations to earlier schemas. It validates the JSON recursively, removes only the three optional fields, and retains the original byte order of all other fields. A chosen basic type remains representable when the effective types are exactly that chosen type. A type addition, removal of previously printed land types without an equivalent chosen-type replacement, or a conflicting effective type cannot be expressed by the old subtype overlay. Such a trace is marked `prior_schema_unrepresentable` rather than reported as an equivalent historical hash.
 

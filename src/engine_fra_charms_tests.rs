@@ -7376,3 +7376,57 @@ mod engine_fra_guiding_hydra_payment_tests;
 
 #[path = "engine_fra_candidate_audit_tests.rs"]
 mod engine_fra_candidate_audit_tests;
+
+#[path = "engine_fra_behold_tests.rs"]
+mod engine_fra_behold_tests;
+
+#[path = "engine_fra_behold_funding_tests.rs"]
+mod engine_fra_behold_funding_tests;
+
+#[path = "engine_fra_behold_review_tests.rs"]
+mod engine_fra_behold_review_tests;
+
+#[path = "engine_fra_behold_subtype_tests.rs"]
+mod engine_fra_behold_subtype_tests;
+
+#[path = "engine_fra_behold_cross_tests.rs"]
+mod engine_fra_behold_cross_tests;
+
+#[path = "engine_fra_rise_draw_tests.rs"]
+mod engine_fra_rise_draw_tests;
+
+#[path = "engine_fra_mana_token_tests.rs"]
+mod engine_fra_mana_token_tests;
+
+#[path = "engine_fra_vanguard_tests.rs"]
+mod engine_fra_vanguard_tests;
+
+#[path = "engine_fra_roiling_canopy_tests.rs"]
+mod engine_fra_roiling_canopy_tests;
+
+#[path = "engine_fra_kiora_loyalty_history_tests.rs"]
+mod engine_fra_kiora_loyalty_history_tests;
+
+#[path = "engine_fra_kwia_kraken_tests.rs"]
+mod engine_fra_kwia_kraken_tests;
+
+#[path = "engine_fra_kiora_independent_tests.rs"]
+mod engine_fra_kiora_independent_tests;
+
+#[path = "engine_fra_kwia_kraken_independent_tests.rs"]
+mod engine_fra_kwia_kraken_independent_tests;
+
+#[path = "engine_fra_vanguard_independent_tests.rs"]
+mod engine_fra_vanguard_independent_tests;
+
+#[path = "engine_fra_roiling_canopy_independent_tests.rs"]
+mod engine_fra_roiling_canopy_independent_tests;
+
+#[path = "engine_fra_rise_draw_provenance_tests.rs"]
+mod engine_fra_rise_draw_provenance_tests;
+
+#[path = "engine_fra_land_timeline_funding_tests.rs"]
+mod engine_fra_land_timeline_funding_tests;
+
+#[path = "engine_fra_rise_independent_tests.rs"]
+mod engine_fra_rise_independent_tests;
