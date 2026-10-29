@@ -1102,6 +1102,11 @@ pub(crate) enum Instruction {
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
     ReturnOneLinkedExileToHand,
+    /// Trigger once per declaration attacking the resolving controller's opponent,
+    /// through (but not including) the beginning of that controller's next turn.
+    ScheduleOpponentAttackUntilNextTurn { ability: u16 },
+    /// Apply one temporary bonus to the exact attackers captured by that event.
+    GrowDeclaredAttackers { power: i32, toughness: i32, keywords: Keywords },
     ScheduleAttackTriggerThisTurn {
         ability: u16,
     },

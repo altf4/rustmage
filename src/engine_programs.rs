@@ -1652,6 +1652,19 @@ impl Game {
     ) {
         self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
+        let delayed = self.state.delayed_opponent_attack_until_next_turn.as_deref()
+            .into_iter().flatten().filter(|item| item.controller == actor).cloned().collect::<Vec<_>>();
+        for mut packet in delayed {
+            let attackers = declared.iter().filter(|attack| attack.defender == Some(CombatDefender::Player(actor.other())))
+                .map(|attack| self.object_ref(attack.card)).collect::<Vec<_>>();
+            if let Some((&first, rest)) = attackers.split_first() {
+                packet.id = self.next_stack_id();
+                packet.reflexive_subject = Some(Box::new(ReflexiveSubjectView {
+                    object: first, additional_objects: rest.to_vec(),
+                }));
+                self.state.pending_triggers.push(packet);
+            }
+        }
         if !declared.is_empty() {
             let packets: Vec<_> = self
                 .state
@@ -2562,6 +2575,26 @@ impl Game {
                         };
                         return;
                     }
+                }
+                Instruction::ScheduleOpponentAttackUntilNextTurn { ability } => {
+                    let mut delayed = item.clone();
+                    delayed.id = self.next_stack_id();
+                    delayed.kind = StackKind::TriggeredAbility { ability };
+                    delayed.targets.clear();
+                    delayed.mode = None;
+                    delayed.cast = None;
+                    delayed.is_copy = false;
+                    delayed.related_stack = None;
+                    delayed.additional_triggers = 0;
+                    self.state.delayed_opponent_attack_until_next_turn.get_or_insert_default().push(delayed);
+                }
+                Instruction::GrowDeclaredAttackers { power, toughness, keywords } => {
+                    let ids: Vec<_> = item.reflexive_subject.as_ref().into_iter().flat_map(|subject|
+                        std::iter::once(subject.object).chain(subject.additional_objects.iter().copied()))
+                        .filter(|reference| self.on_battlefield(reference.card) && self.object_ref(reference.card) == *reference)
+                        .map(|reference| reference.card).collect();
+                    for &id in &ids { self.state.objects[id as usize].growth += Stats { power: i128::from(power), toughness: i128::from(toughness) }; }
+                    self.grant_keyword_effects(&ids, item.object, keywords);
                 }
                 Instruction::ScheduleAttackTriggerThisTurn { ability } => {
                     let mut delayed = item.clone();

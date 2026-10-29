@@ -2057,6 +2057,7 @@ struct State {
     delayed_artifact_copies: Option<Box<Vec<SpellView>>>,
     #[allow(clippy::box_collection)]
     delayed_attack_this_turn: Option<Box<Vec<SpellView>>>,
+    delayed_opponent_attack_until_next_turn: Option<Box<Vec<SpellView>>>,
     #[allow(
         clippy::box_collection,
         reason = "Rare delayed main-phase packets use one pointer in ordinary states"
@@ -2640,6 +2641,8 @@ pub struct Observation {
     pub delayed_artifact_copies: Vec<SpellView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub delayed_attack_this_turn: Vec<SpellView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub delayed_opponent_attack_until_next_turn: Vec<SpellView>,
     pub delayed_main_mana: Vec<SpellView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delayed_upkeep_tokens: Option<Vec<SpellView>>,
@@ -2950,6 +2953,7 @@ impl Game {
                 stack_copy_data: None,
                 delayed_artifact_copies: None,
                 delayed_attack_this_turn: None,
+            delayed_opponent_attack_until_next_turn: None,
                 delayed_main_mana: None,
                 delayed_upkeep_tokens: None,
                 modal_history: None,
@@ -7525,6 +7529,10 @@ impl Game {
             .turns_started
             .saturating_add(1)
             .min(4);
+        if let Some(rows) = &mut self.state.delayed_opponent_attack_until_next_turn {
+            rows.retain(|item| item.controller != self.state.active);
+            if rows.is_empty() { self.state.delayed_opponent_attack_until_next_turn = None; }
+        }
         self.begin_player_control_turn();
         self.expire_temporary_copies(false);
         self.reset_copy_turn_uses();
@@ -8292,6 +8300,8 @@ impl Game {
                 .as_deref()
                 .cloned()
                 .unwrap_or_default(),
+            delayed_opponent_attack_until_next_turn: self.state.delayed_opponent_attack_until_next_turn
+                .as_deref().cloned().unwrap_or_default(),
             delayed_artifact_copies: self
                 .state
                 .delayed_artifact_copies
@@ -9054,6 +9064,10 @@ impl Game {
                         .iter()
                         .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
                         .sum::<usize>()
+            })
+            + s.delayed_opponent_attack_until_next_turn.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<SpellView>>() + rows.iter()
+                    .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes()).sum::<usize>()
             })
             + s.delayed_attack_this_turn.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<SpellView>>()
