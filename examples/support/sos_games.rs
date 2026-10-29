@@ -335,10 +335,13 @@ impl Tracker {
             if !self.seen_packets.insert(s.id) {
                 continue;
             }
+            let Some(source) = s.source() else {
+                continue;
+            };
             if s.kind == StackKind::Spell {
                 if let Some(cast) = s.cast.filter(|_| !s.is_copy) {
-                    self.cards.insert(s.source_card.name().into());
-                    self.colors |= s.source_card.colors();
+                    self.cards.insert(source.card.name().into());
+                    self.colors |= source.card.colors();
                     self.hit("actual_cast", s.id.to_string());
                     if s.source().is_some_and(|source| source.card.name() == "Witherbloom, the Balancer")
                         && cast.method == CastMethod::Normal
@@ -378,7 +381,7 @@ impl Tracker {
                         && cast.origin == Zone::Exile
                         && before.resolving.as_ref().is_some_and(|packet| {
                             matches!(packet.kind, StackKind::TriggeredAbility { .. })
-                                && packet.source_card == s.source_card
+                                && packet.source().is_some_and(|other| other.card == source.card)
                         })
                         && before.cascade.is_none()
                         && [
@@ -388,7 +391,7 @@ impl Tracker {
                             "Restoration Seminar",
                             "Improvisation Capstone",
                         ]
-                        .contains(&s.source_card.name())
+                        .contains(&source.card.name())
                     {
                         self.hit("paradigm_copy_cast", s.id.to_string());
                     }
@@ -408,7 +411,7 @@ impl Tracker {
                 self.hit("grandeur_paid", s.id.to_string());
             }
             if let StackKind::TriggeredAbility { ability } = s.kind {
-                let key = match (s.source_card.name(), ability) {
+                let key = match (source.card.name(), ability) {
                     ("Cuboid Colony", 0) | ("Textbook Tabulator", 1) => Some("increment_trigger"),
                     ("Informed Inkwright", 0)
                     | ("Inkling Mascot", 0)
