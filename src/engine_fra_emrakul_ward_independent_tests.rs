@@ -141,6 +141,105 @@ fn echoed_ward_survives_emrakul_departure_and_each_instance_can_be_paid() {
 }
 
 #[test]
+fn echoed_wards_offer_payment_even_after_targeting_spell_leaves() {
+    for owner in [Player::P0, Player::P1] {
+        let mut g = scenario(owner);
+        let emrakul = emrakul_permanent(&mut g, owner);
+        let echo = put(&mut g, owner, "Echo, Perceptive Prodigy", Zone::Battlefield);
+        let payer = owner.other();
+        let sacrifices: Vec<_> = (0..6)
+            .map(|_| put(&mut g, payer, "Forest", Zone::Battlefield))
+            .collect();
+        let shock = put(&mut g, payer, "Shock", Zone::Hand);
+        g.state.active = payer;
+        g.state.priority = payer;
+        cast(&mut g, shock, Some(Target::Card(emrakul)));
+        let ward = g
+            .state
+            .stack
+            .iter()
+            .find(|item| {
+                matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    && item.source.is_some_and(|source| source.id == emrakul)
+            })
+            .unwrap()
+            .id;
+        if g.actor() != Some(owner) {
+            act(&mut g, Action::Pass);
+        }
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: echo,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Stack(ward),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .any(|item| item.is_copy && item.source.is_some_and(|source| source.id == emrakul))
+        );
+        // Model a counter effect before either ward resolves. Ward has no target,
+        // so both instances still offer their optional payment.
+        let shock_id = g
+            .state
+            .stack
+            .iter()
+            .find(|item| {
+                item.kind == StackKind::Spell
+                    && item.source.is_some_and(|source| source.id == shock)
+            })
+            .unwrap()
+            .id;
+        assert!(g.counter_stack_item(shock_id, false));
+        assert_eq!(g.object_view(shock).zone, Zone::Graveyard);
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .filter(
+                    |item| matches!(item.kind, StackKind::TriggeredAbility { .. })
+                        && item.source.is_some_and(|source| source.id == emrakul)
+                )
+                .count(),
+            2
+        );
+        let checkpoint = g.snapshot();
+        for _ in 0..2 {
+            for group in sacrifices.chunks_exact(3) {
+                wait_for_ward_payment(&mut g, payer);
+                for &id in group {
+                    let object = g.object_ref(id);
+                    act(&mut g, Action::Sacrifice { object });
+                }
+            }
+            settle(&mut g);
+            assert!(
+                sacrifices
+                    .iter()
+                    .all(|&id| g.object_view(id).zone == Zone::Graveyard)
+            );
+            assert_eq!(g.object_view(shock).zone, Zone::Graveyard);
+            g.restore(&checkpoint).unwrap();
+        }
+    }
+}
+
+#[test]
 fn emrakul_hand_ability_fizzles_when_target_loses_land_type() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
