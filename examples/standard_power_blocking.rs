@@ -186,7 +186,7 @@ fn main() {
                 && before
                     .resolving
                     .as_ref()
-                    .is_some_and(|s| matches!(s.source_card.name(), APRIL | STOMPER))
+                    .is_some_and(|s| s.source().is_some_and(|source| matches!(source.card.name(), APRIL | STOMPER)))
             {
                 scry_choices += 1;
                 assert!(g.observe(actor.other()).library_choice.is_none());
@@ -251,7 +251,7 @@ fn main() {
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()
             {
-                if matches!(root.source_card.name(), STOMPER | OUTRIDER) {
+                if root.source().is_some_and(|source| matches!(source.card.name(), STOMPER | OUTRIDER)) {
                     if let Some(b) = after
                         .objects
                         .iter()

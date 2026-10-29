@@ -372,7 +372,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             casts[k][p.index()] += 1;
                         }
                     }
-                    StackKind::ActivatedAbility { .. } if is_map(item.source_card) => {
+                    StackKind::ActivatedAbility { .. } if item.source().is_some_and(|source| is_map(source.card)) => {
                         if let Some(k) = provenance.get(&item.object) {
                             activations[*k][p.index()] += 1;
                         }
@@ -382,7 +382,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(action, Action::Pass)
                 && let Some(item) = before.stack.last()
-                && (item.source().and_then(|source| index(source.card)).is_some() || is_map(item.source_card))
+                && (item.source().and_then(|source| index(source.card)).is_some() || item.source().is_some_and(|source| is_map(source.card)))
             {
                 active.insert(item.id, (item.clone(), g.observe(item.controller)));
             }
