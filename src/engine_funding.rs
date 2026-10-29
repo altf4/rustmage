@@ -2662,12 +2662,34 @@ impl<'g> FundingState<'g> {
             return false;
         }
         let mut moves = self.moves(goal);
-        // Prefer mana eligible for the final payment, but retain every move:
-        // an ineligible lot can still fund an intermediate ability or change
-        // the projected world. Stable sorting preserves order within groups.
+        // Prefer mana eligible for the final payment and colors that close
+        // its requirements. Retain every move: an ineligible lot can still
+        // fund an intermediate ability or change the projected world. Stable
+        // sorting preserves the order of equally useful moves.
+        let adjusted = cast_origins::payment_goal(self, goal, purpose);
+        let available = mana_lots::available(self.mana, &self.lots, purpose);
         moves.sort_by_key(|step| {
-            step.quality
-                .is_some_and(|quality| !quality.eligible(purpose))
+            let ineligible = step
+                .quality
+                .is_some_and(|quality| !quality.eligible(purpose));
+            let mut after = available;
+            if !ineligible {
+                for (amount, produced) in after.iter_mut().zip(step.production) {
+                    *amount = amount.saturating_add(u128::from(produced));
+                }
+            }
+            let missing =
+                after
+                    .iter()
+                    .zip(adjusted.required)
+                    .fold(0u128, |sum, (&amount, required)| {
+                        sum.saturating_add(u128::from(required).saturating_sub(amount))
+                    });
+            (
+                ineligible,
+                !payable(after, adjusted.required, adjusted.generic),
+                missing,
+            )
         });
         for step in moves {
             if self.visit_applied(&step, &mut |next| {
