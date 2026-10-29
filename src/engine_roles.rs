@@ -94,7 +94,7 @@ impl Game {
         reflexive.mode = None;
         if let Some((_, program)) = reflexive.program()
             && let Some(facts) = card_quantities::counter_quantity_facts(program, |kind| {
-                self.source_counter_quantity_live(reflexive.object, kind)
+                self.source_counter_quantity_live(source.object, kind)
                     .unwrap_or_else(|| {
                         item.source_counter_lki
                             .as_ref()
@@ -115,7 +115,7 @@ impl Game {
         } = condition
         {
             let count = self
-                .source_counter_quantity_live(reflexive.object, kind)
+                .source_counter_quantity_live(source.object, kind)
                 .unwrap_or(0);
             let facts = reflexive
                 .source_counter_lki

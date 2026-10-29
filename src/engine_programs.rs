@@ -1385,7 +1385,7 @@ impl Game {
         self.consume_turn_cast_grants(caster, card);
         let first_trigger = self.state.pending_triggers.len();
         let spell_owner =
-            stack.map(|i| self.state.objects[self.state.stack[i].card as usize].owner);
+            stack.and_then(|i| self.state.stack[i].source.and_then(|source| self.state.objects.get(source.id as usize)).map(|object| object.owner));
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;

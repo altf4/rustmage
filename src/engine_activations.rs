@@ -677,6 +677,7 @@ impl Game {
         ability: u16,
         definition: &ActivatedAbility,
     ) {
+        let source = item.source.expect("activated ability has an object source");
         let cost: ActivationCost = definition.cost;
         self.record_cast_mana_activation(item, payment, &counter_payment);
         self.spend_mana_for(item.controller, payment, self.purpose_for_item(item));

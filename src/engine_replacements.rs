@@ -946,7 +946,6 @@ impl Game {
         } else {
             ResumeMode::Pending
         };
-        let active = self.state.active;
         let state = self.state.replacements.get_or_insert_with(|| {
             Box::new(ReplacementState {
                 work: VecDeque::new(),
@@ -1130,6 +1129,7 @@ impl Game {
             self.finish_face_up_counter_replacement();
             return;
         }
+        let active = self.state.active;
         let state = self.state.replacements.get_or_insert_with(|| {
             Box::new(ReplacementState {
                 work: VecDeque::new(),

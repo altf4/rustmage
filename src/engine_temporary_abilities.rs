@@ -103,7 +103,7 @@ impl Game {
                 || (ability.condition.requires_opponents_turn()
                     && self.state.active == source.controller)
                 || !self.cast_filter_matches_value(
-                    stack.map(|i| self.state.objects[self.state.stack[i].card as usize].owner),
+                    stack.and_then(|i| self.state.stack[i].source.and_then(|source| self.state.objects.get(source.id as usize)).map(|object| object.owner)),
                     filter,
                     card,
                     event.map_or_else(|| card.fixed_mana_value(), |e| e.mana_value),
