@@ -357,6 +357,116 @@ fn prior_schema178_history_projection_checks_both_views_and_hidden_owned_objects
     }
 }
 
+/// Schema 181 adds frozen trigger players, discard-only ward payments, and
+/// delayed exile links. Inactive fields are omitted by serde; preserve bytes.
+fn project_prior_schema181(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::Array(rows) => for row in rows { check(row)?; },
+            serde_json::Value::Object(map) => {
+                for key in ["event_player", "discard_only", "exile_after"] {
+                    if map.contains_key(key) {
+                        return Err(format!("{key} has no schema-180 representation"));
+                    }
+                }
+                for value in map.values() { check(value)?; }
+            }
+            _ => (),
+        }
+        Ok(())
+    }
+    let value: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&value)?;
+    Ok(input.to_owned())
+}
+
+/// An intentionally conservative owned-state audit. Cards and packets can
+/// retain semantics not visible to either observer; opaque continuations and
+/// copy registries are rejected rather than inferred from their public views.
+fn prior_schema181_state_supported(state: &State) -> bool {
+    let new_card = |card: Card| matches!(card.identity(), "Gideon the Oathless" | "Vindictive Triumph");
+    if state.objects.iter().any(|o| new_card(o.card))
+        || state.resolving.is_some() || state.announcing.is_some()
+        || state.mana_announcement_stack.is_some() || state.entry_batch.is_some()
+        || state.replacements.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
+        || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
+        || !state.stack.is_empty() || !state.pending_triggers.is_empty() || !state.ordering_triggers.is_empty()
+        || state.copy_recipes.as_ref().is_some_and(|r| !r.is_empty())
+        || state.temporary_copies.as_ref().is_some_and(|r| !r.is_empty())
+        || state.temporary_abilities.as_ref().is_some_and(|r| !r.is_empty())
+        || state.self_granted_abilities.as_ref().is_some_and(|r| !r.is_empty())
+        || state.borrowed_slots.as_ref().is_some_and(|r| !r.is_empty())
+        || state.graveyard_borrowing.as_ref().is_some_and(|r| !r.is_empty())
+        || state.delayed_returns.as_ref().is_some_and(|r| !r.is_empty())
+        || state.earthbend_returns.as_ref().is_some_and(|r| !r.is_empty())
+        || state.delayed_sacrifices.as_ref().is_some_and(|r| !r.is_empty())
+        || state.delayed_artifact_copies.as_ref().is_some_and(|r| !r.is_empty())
+        || state.delayed_attack_this_turn.as_ref().is_some_and(|r| !r.is_empty())
+        || state.delayed_main_mana.as_ref().is_some_and(|r| !r.is_empty())
+        || state.delayed_upkeep_tokens.as_ref().is_some_and(|r| !r.is_empty())
+        || state.stack_copy_data.as_ref().is_some_and(|s| s.packets().next().is_some())
+        || state.paradigm.as_ref().is_some_and(|s| s.packets().next().is_some())
+        || state.manifest.is_some() || state.mana_lots.is_some() || state.mobilize.is_some()
+        || state.miracle.is_some() || state.warp.is_some() || state.adventures.is_some()
+        || state.plot.is_some() || state.explore_data.is_some() || state.last_target_library_move.is_some()
+        || !state.hits.is_empty() || !state.damage_choices.is_empty()
+    { return false; }
+    if let Some(rollback) = &state.cast_rollback {
+        if !rollback.events.is_empty() || rollback.replay.is_some() || rollback.capture.is_some()
+            || !prior_schema181_state_supported(&rollback.before) { return false; }
+    }
+    true
+}
+
+#[test]
+fn schema181_rejects_nested_new_fields_without_reserializing_safe_bytes() {
+    let safe = r#"[{"text":"event_player", "nested":{"counter":0}}]"#;
+    assert_eq!(project_prior_schema181(safe).unwrap(), safe);
+    for input in [r#"[{"stack":[{"copy_event":{"spell":{"event_player":"P0"}}}]}]"#,
+        r#"[{"payment":{"discard_only":true}}]"#,
+        r#"[{"delayed":{"returning":{"exile_after":true}}}]"#] {
+        assert!(project_prior_schema181(input).is_err(), "{input}");
+    }
+}
+
+#[test]
+fn schema181_rejects_owned_packets_and_rollback_for_both_viewers() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        for viewer in [Player::P0, Player::P1] {
+            let encoded = serde_json::to_string(&g.observe(viewer)).unwrap();
+            assert_eq!(project_prior_schema181(&encoded).unwrap(), encoded);
+        }
+        assert!(prior_schema181_state_supported(&g.state));
+        let mut packet = g.activation_item(player, source, 0);
+        packet.event_player = Some(player);
+        g.state.pending_triggers.push(packet);
+        // Pending triggers may not appear in either public view.
+        assert!(!prior_schema181_state_supported(&g.state));
+        let saved = g.snapshot();
+        g.begin_attack_rollback(player);
+        g.state.pending_triggers.clear();
+        assert!(!prior_schema181_state_supported(&g.state));
+        g.state.cast_rollback = None;
+        assert!(prior_schema181_state_supported(&g.state));
+        g.restore(&saved).unwrap();
+        assert!(!prior_schema181_state_supported(&g.state));
+        g.state.pending_triggers.clear();
+        let mut delayed = g.activation_item(player, source, 0);
+        delayed.return_link = Some(Box::new(ReturnLinkView {
+            exile_after: true, additional_returning: None, object: g.object_ref(source),
+            zone: Zone::Battlefield, controller: player, counter: None, tapped: false,
+        }));
+        g.state.stack.push(delayed);
+        for viewer in [Player::P0, Player::P1] {
+            let encoded = serde_json::to_string(&g.observe(viewer)).unwrap();
+            assert!(project_prior_schema181(&encoded).is_err());
+            assert!(!prior_schema181_state_supported(&g.state));
+        }
+    }
+}
+
 /// Schema 180 exposes optional wheel choices and adds an additive Construct
 /// subtype grant. Neither active feature has a schema-179 continuation.
 fn project_prior_schema180(input: &str) -> Result<String, String> {
@@ -1519,7 +1629,17 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 180) {
+    if schema_projection.is_some_and(|schema| schema < 181) {
+        if !prior_schema181_state_supported(&g.state) {
+            projection_error = Some("owned trigger, ward or delayed exile cannot be projected to schema 180".to_owned());
+        } else {
+            match project_prior_schema181(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 180) {
         if !prior_schema180_state_supported(&g.state) {
             projection_error = Some("owned wheel or additive subtype continuation cannot be projected to schema 179".to_owned());
         } else {
