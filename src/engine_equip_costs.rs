@@ -132,7 +132,7 @@ impl Game {
                 && let StackKind::ActivatedAbility { ability } = proposal.item.kind
                 && proposal
                     .item
-                    .source_card
+                    .source.expect("object-backed announcement").card
                     .activation(ability)
                     .cost
                     .remove

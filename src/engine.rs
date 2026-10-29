@@ -6097,7 +6097,7 @@ impl Game {
                     .as_ref()
                     .unwrap()
                     .item
-                    .source_card
+                    .source.expect("object-backed announcement").card
                     .targets_up_to_x()
                 {
                     let plan = self.target_spec(&self.state.announcing.as_ref().unwrap().item);
@@ -6121,7 +6121,7 @@ impl Game {
                     .as_ref()
                     .unwrap()
                     .item
-                    .source_card
+                    .source.expect("object-backed announcement").card
                     .kicked_targets()
                     .filter(|_| pay)
                 {

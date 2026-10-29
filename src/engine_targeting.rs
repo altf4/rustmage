@@ -107,7 +107,7 @@ impl Announcement {
                 if self.item.cast.is_some_and(|c| match c.method {
                     CastMethod::Normal => self.cost.is_some_and(|cost| {
                         self.item
-                            .source_card
+                            .source.expect("object-backed announcement").card
                             .mana_alternative_replaces_additional(cost)
                     }),
                     CastMethod::ExileLife
@@ -118,7 +118,7 @@ impl Announcement {
                             .is_some_and(|base| self.cost.is_some_and(|cost| cost != base))
                             && self
                                 .item
-                                .source_card
+                                .source.expect("object-backed announcement").card
                                 .mana_additional_alternative()
                                 .is_some()
                     }
@@ -188,7 +188,7 @@ impl Announcement {
             {
                 std::iter::once(
                     self.item
-                        .source_card
+                        .source.expect("object-backed announcement").card
                         .harmonize_cost()
                         .expect("harmonize cost"),
                 )
@@ -219,7 +219,7 @@ impl Announcement {
             StackKind::Spell => self.item.source.expect("announcement has object source").card.cost_options(),
             StackKind::ActivatedAbility { ability } => self
                 .item
-                .source_card
+                .source.expect("object-backed announcement").card
                 .activation(ability)
                 .cost
                 .mana_options(),
@@ -239,7 +239,7 @@ impl Announcement {
         };
         let extra = self.fixed_alternative_cost().and_then(|base| {
             self.item
-                .source_card
+                .source.expect("object-backed announcement").card
                 .mana_additional_alternative()
                 .map(|extra| ManaCost {
                     colored: std::array::from_fn(|i| {
@@ -310,7 +310,7 @@ impl Announcement {
                     || (self.item.source.expect("announcement has object source").card.cost_alternative_guard().is_none()
                         && !self
                             .item
-                            .source_card
+                            .source.expect("object-backed announcement").card
                             .mana_alternative_replaces_additional(*cost))
                     || *cost
                         == ManaCost {

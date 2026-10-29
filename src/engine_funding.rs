@@ -3023,7 +3023,7 @@ impl Game {
                                 .checked_mul(
                                     announcement
                                         .item
-                                        .source_card
+                                        .source.expect("object-backed announcement").card
                                         .activation(ability)
                                         .x_symbols(),
                                 )

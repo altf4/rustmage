@@ -697,7 +697,7 @@ impl Game {
         let external_planeswalker_grant = item.attachment_trigger.as_ref().is_some_and(|event| {
             event.granted
                 && item
-                    .source_card
+                    .source.expect("object-backed announcement").card
                     .static_ability_groups()
                     .iter()
                     .any(|group| {
