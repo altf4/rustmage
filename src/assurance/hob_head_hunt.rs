@@ -170,7 +170,7 @@ fn hob_hunt_multiple_replacements_are_distinct_owned_choices_only_selected_head_
             act(&mut g, Action::ChooseZoneReplacement { effect });
             packet(&mut g);
             assert_eq!(g.state.stack.len(), 1);
-            assert_eq!(g.state.stack[0].object, g.object_ref(chosen));
+            assert_eq!(g.state.stack[0].source.unwrap().object, g.object_ref(chosen));
             finish(&mut g);
             assert_eq!(wolves(&g, p).len(), 1);
         }

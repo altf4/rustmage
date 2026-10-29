@@ -357,7 +357,7 @@ fn hob_roads_old_incarnation_link_survives_reentry_and_queued_chapter() {
                 && g.state.resolving.is_none()
                 && g.state.pending_triggers.is_empty()
                 && g.state.stack.len() == 1
-                && g.state.stack[0].object == old_source
+                && g.state.stack[0].source.unwrap().object == old_source
         });
         assert_ne!(old_source, g.object_ref(saga));
         assert_eq!(g.object_view(old_card).zone, Zone::Exile);

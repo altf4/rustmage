@@ -93,7 +93,7 @@ fn score(obs: &Observation, action: &Action, paid: bool) -> i32 {
             ..
         } => {
             let object = obs.objects.iter().find(|o| o.id == *card).unwrap();
-            let victim = obs.stack.iter().find(|o| o.card == *id).unwrap();
+            let victim = obs.stack.iter().find(|o| o.source().is_some_and(|source| source.id == *id)).unwrap();
             if victim.controller != obs.actor.unwrap() && COUNTERS.contains(&object.card.name()) {
                 150
             } else {
@@ -214,7 +214,7 @@ fn main() {
                 {
                     let source = before.objects.iter().find(|o| o.id == *card).unwrap().card;
                     if COUNTERS.contains(&source.name()) {
-                        let victim = before.stack.iter().find(|o| o.card == *id).unwrap();
+                        let victim = before.stack.iter().find(|o| o.source().is_some_and(|source| source.id == *id)).unwrap();
                         assert!(matches(source.name(), victim.source().expect("example expects an object-backed packet").card));
                         assert_eq!(victim.kind, StackKind::Spell);
                         assert_ne!(*card, *id);
