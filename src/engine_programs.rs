@@ -2777,7 +2777,14 @@ impl Game {
                     }
                 }
                 Instruction::Unprepare { subject } => {
-                    for id in self.keyword_subjects(&item, subject) {
+                    // The Aura's last attached permanent can stop being a creature
+                    // before this ability resolves; it is still the same object.
+                    let recipients = if subject == Subject::Attached {
+                        self.attached_permanent(&item).into_iter().collect()
+                    } else {
+                        self.keyword_subjects(&item, subject)
+                    };
+                    for id in recipients {
                         self.forget_prepared(self.object_ref(id));
                     }
                 }

@@ -191,3 +191,40 @@ fn jiang_doubled_mowu_tokens_obey_legend_rule() {
         );
     }
 }
+
+#[test]
+fn infinite_coursework_unprepares_last_enchanted_object_after_type_change() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let creature = put(&mut g, p, "Pigment Wrangler", Zone::Hand);
+        cast(&mut g, creature, None);
+        settle(&mut g);
+        let prepared = g.object_ref(creature);
+        assert!(g.is_prepared(prepared));
+        let aura = put(&mut g, p.other(), "Infinite Coursework", Zone::Hand);
+        // Set priority for the opponent's public instant-speed fixture setup.
+        // The Aura itself is cast during that player's main phase.
+        g.state.active = p.other();
+        g.state.priority = p.other();
+        cast(&mut g, aura, Some(Target::Card(creature)));
+        for _ in 0..32 {
+            if g.object_view(aura).zone == Zone::Battlefield {
+                break;
+            }
+            choose(&mut g, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
+        }
+        assert_eq!(g.object_view(aura).zone, Zone::Battlefield);
+        assert!(g.is_prepared(prepared));
+        // Simulate an effect such as Sugar Coat changing the same permanent to a
+        // noncreature. Sugar Coat itself is currently unsupported in the pool.
+        g.state.objects[creature as usize].card = Card::Forest;
+        assert_eq!(g.object_ref(creature), prepared);
+        assert!(!g.is_creature(creature));
+        g.move_object(aura, Zone::Graveyard);
+        settle(&mut g);
+        assert!(g.object_view(creature).tapped);
+        assert!(!g.is_prepared(prepared));
+    }
+}
