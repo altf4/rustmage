@@ -1,20 +1,45 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Pinned Oracle and XMage rules; gated pending integration and review.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
-    extras: &CardExtras {
-        starting_loyalty: 3,
-        ..CardExtras::EMPTY
-    },
+    effect: Effect::Permanent,
+    extras: &CardExtras { starting_loyalty: 3, ..CardExtras::EMPTY },
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep { step: TriggerStep::Draw,
+            relation: CastRelation::Opponent, guard: StepGuard::Always },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+    }],
+    activated: &[
+        ActivatedAbility { exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
+            cycling: false, once_per_turn: false, sorcery: true,
+            cost: ActivationCost { colored: [0; 6], generic: 0, alternatives: &[], additional: None,
+                mana_component: false, tap: false, sacrifice: false, exile_self: false,
+                discard: false, life: 0, remove: None, loyalty: Some(1) },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateTokens { token: Card(5464), amount: 1, tapped: false }],
+        },
+        ActivatedAbility { exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
+            cycling: false, once_per_turn: false, sorcery: true,
+            cost: ActivationCost { colored: [0; 6], generic: 0, alternatives: &[], additional: None,
+                mana_component: false, tap: false, sacrifice: false, exile_self: false,
+                discard: false, life: 0, remove: None, loyalty: Some(-2) },
+            targets: TargetPlan::Single(TargetSpec { rule: TargetRule::Object {
+                zone: TargetZone::Battlefield, kinds: 1 | 16, relation: 1, other: false,
+                nonland: false, tapped: false, min_mana: 0, max_mana: u32::MAX,
+            }, min: 0, max: 1 }),
+            program: &[Instruction::ReturnToHand],
+        },
+        ActivatedAbility { exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
+            cycling: false, once_per_turn: false, sorcery: true,
+            cost: ActivationCost { colored: [0; 6], generic: 0, alternatives: &[], additional: None,
+                mana_component: false, tap: false, sacrifice: false, exile_self: false,
+                discard: false, life: 0, remove: None, loyalty: Some(-6) },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Draw(PlayerSet::Controller, 3), Instruction::PutPermanentCountersScaled {
+                filters: &[BattlefieldFilter { kinds: 1, relation: 0, nonland: false, tapped: None,
+                    without: Keywords::NONE, subtype: None, max_mana: u32::MAX }],
+                kind: CounterKind::PlusOne, amount: AmountValue::Stat(StatValue::ControllerHandSize),
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };
