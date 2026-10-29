@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3773a59d3d15b575ed4c42993b67d0ceb8d0e37d93deac27a79fd64a33b458c6"
   },
-  "physical_metadata_sha256": "ff015c8a40505b75e1066bfb1029c0e85226388c3a52aaa9706386d85d6db320"
+  "physical_metadata_sha256": "ff015c8a40505b75e1066bfb1029c0e85226388c3a52aaa9706386d85d6db320",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CodieRavenousCodex.java",
+  "java_sha256": "bc5f8a5ff085b8d3835f7037418ec3713e36386f4dc9f975d897b7c5a04d6ea5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyStackObjectEffect.java",
+      "sha256": "ced1d8312809beaec71b62e4a4fafd1291d6b1b5ce3d4cd6322bd56253e694b0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PreparedSpellCopy.java",
+      "sha256": "47b70902962be18fa763cc8854b371c9a36072815ae3dc5c67319bde72667c95"
+    }
+  ],
+  "rules_tests": "src/engine_fra_codie_tests.rs"
 }
