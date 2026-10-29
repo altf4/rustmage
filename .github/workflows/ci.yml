@@ -19,7 +19,7 @@ jobs:
   tests:
     name: Card and interaction assurance
     runs-on: ubuntu-24.04
-    timeout-minutes: 18
+    timeout-minutes: 35
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       RUSTUP_TOOLCHAIN: '1.98.0'
@@ -97,7 +97,7 @@ jobs:
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
         timeout-minutes: 16
-        run: python3 scripts/validate.py --release --python smoke --timeout 900 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+        run: python3 scripts/validate.py --release --python smoke --timeout 1800 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 
       - name: Stop any remaining build processes
         if: always() && steps.scope.outputs.code == 'true'

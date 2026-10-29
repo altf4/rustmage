@@ -26,6 +26,7 @@ class ValidatorTests(unittest.TestCase):
         self.source = self.root/'src/lib.rs'
         self.source.write_text('first source revision\n')
         self.commands = []
+        self.command_timeouts = []
         self.python_libraries = []
         self.library_bytes = b'first compiled library'
         self.release_exit = 0
@@ -57,6 +58,7 @@ class ValidatorTests(unittest.TestCase):
         command = [str(argument) for argument in command]
         target = Path(env['CARGO_TARGET_DIR'])
         self.commands.append((command, dict(env)))
+        self.command_timeouts.append(timeout)
         target.mkdir(parents=True, exist_ok=True)
         log = Path(log)
         log.parent.mkdir(parents=True, exist_ok=True)
@@ -157,6 +159,18 @@ class ValidatorTests(unittest.TestCase):
         self.assertNotEqual(original_snapshot, second_snapshot)
         self.assertEqual(hashlib.sha256(original_snapshot.read_bytes()).hexdigest(), original_digest)
         self.assertEqual(json.loads(first_path.read_text()), first)
+
+    def test_native_compile_budget_fits_inside_parent_deadline(self):
+        status, _, report, commands = self.invoke('--timeout', '1800')
+        self.assertEqual(status, 0)
+        index = next(i for i, (command, _) in enumerate(commands)
+                     if 'scripts/run_native_tests.py' in command)
+        command = commands[index][0]
+        self.assertEqual(command[command.index('--compile-timeout') + 1], '900')
+        self.assertEqual(command[command.index('--suite-timeout') + 1], '120')
+        self.assertGreaterEqual(self.command_timeouts[index], 1025)
+        self.assertLessEqual(self.command_timeouts[index], 1040)
+        self.assertTrue(report['success'])
 
     def test_environment_target_is_reused_and_explicit_target_takes_precedence(self):
         environment_target = self.directory/'environment-target'
