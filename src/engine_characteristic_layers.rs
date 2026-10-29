@@ -92,7 +92,10 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
 ) -> Vec<(u64, bool)> {
     let mut events: Vec<_> = aura_effects(world, id)
         .into_iter()
-        .map(|(time, spec)| (time, matches!(spec.form, PermanentForm::Land)))
+        .filter_map(|(time, spec)| match spec.form {
+            PermanentForm::AddCreature => None,
+            form => Some((time, matches!(form, PermanentForm::Land))),
+        })
         .collect();
     events.extend(animations(world, id).filter_map(|row| {
         if row.food_only || row.artifact_noncreature {
