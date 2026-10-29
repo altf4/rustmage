@@ -427,11 +427,12 @@ struct TargetSourceCharacteristics<'a> {
 }
 impl<'a> TargetSourceCharacteristics<'a> {
     fn from_item(item: &'a SpellView) -> Self {
+        let source = item.source.as_ref().expect("target source characteristics require an object source");
         Self {
-            reference: item.object,
-            snapshot: Some(&item.source_facts),
+            reference: source.object,
+            snapshot: Some(&source.facts),
             attachment: item.source_attachment,
-            spell: (item.kind == StackKind::Spell).then_some(item.source_card),
+            spell: (item.kind == StackKind::Spell).then_some(source.card),
         }
     }
 }
@@ -449,7 +450,7 @@ impl Game {
             spec.max = usize::try_from(self.item_amount(*value, item)).unwrap_or(usize::MAX);
             plan = TargetPlan::Single(spec);
         }
-        if item.kind == StackKind::Spell && item.source_card.targets_up_to_x() {
+        if item.kind == StackKind::Spell && item.source.expect("spell has source").card.targets_up_to_x() {
             let TargetPlan::Single(mut spec) = plan else {
                 panic!("X target maximum requires one homogeneous target group")
             };
@@ -593,6 +594,11 @@ impl Game {
         self.targets_available_with(plan, actor, source, None)
     }
     pub(super) fn item_targets_available(&self, item: &SpellView, plan: TargetPlan) -> bool {
+        if item.source.is_none() {
+            // The only supported source-less rule has no targets. Future rule
+            // abilities with targets need a source-optional target query.
+            return plan == TargetPlan::NONE;
+        }
         self.targets_available_with(
             plan,
             item.controller,
@@ -1737,7 +1743,7 @@ impl Game {
             assert!(
                 trigger,
                 "validated spell announcement: {} ({plan:?})",
-                item.source_card.name()
+                item.source.map_or("inherent rule", |source| source.card.name())
             );
             return false;
         }

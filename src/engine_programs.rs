@@ -1214,19 +1214,20 @@ impl Game {
         self.capture_transform_stack_serial(&mut item);
         if !item.is_copy
             && let StackKind::ActivatedAbility { ability } = item.kind
-            && item.source_card.activation(ability).is_equip()
+            && item.source.is_some_and(|source| source.card.activation(ability).is_equip())
         {
             self.state.players[item.controller.index()].equip_activated_this_turn = true;
         }
         let cast = (item.kind == StackKind::Spell && item.cast.is_some() && !item.is_copy)
-            .then_some((item.controller, item.source_card));
-        if cast.is_some() {
-            self.complete_prepared_cast(item.object);
+            .then(|| item.source.map(|source| (item.controller, source.card, source.object)))
+            .flatten();
+        if let Some((_, _, object)) = cast {
+            self.complete_prepared_cast(object);
         }
         self.register_stack_graveyard_exile(&item);
         self.committed_activation_observers(&item);
         self.state.stack.push(item);
-        let Some((caster, card)) = cast else { return };
+        let Some((caster, card, _)) = cast else { return };
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));
     }
 
@@ -1401,11 +1402,11 @@ impl Game {
         }
         let cast_event = stack.and_then(|i| {
             let item = &self.state.stack[i];
-            item.cast.map(|cast| CastPaymentEvent {
+            item.cast.zip(item.source).map(|(cast, source)| CastPaymentEvent {
                 mana_value: item.mana_value(),
                 stack_id: item.id,
-                object: item.object,
-                card: item.source_card,
+                object: source.object,
+                card: source.card,
                 controller: item.controller,
                 payment: cast.payment,
                 treasure_mana_spent: cast.treasure_mana_spent,
@@ -1978,7 +1979,7 @@ impl Game {
         if let StackKind::TriggeredAbility { ability } = item.kind
             && (!self.cast_payment_condition(
                 item.trigger_definition().triggers()[ability as usize].condition,
-                item.object,
+                item.source.expect("triggered ability has source").object,
                 item.cast_event.as_deref(),
             ) || !self.trigger_item_guards_hold(
                 &item,
@@ -2021,7 +2022,7 @@ impl Game {
                 {
                     self.move_adventure_spell(&item, Zone::Graveyard);
                 } else {
-                    self.move_object(item.card, Zone::Graveyard);
+                    self.move_object(item.source.expect("spell has source").id, Zone::Graveyard);
                 }
             }
             self.give_priority();
@@ -2042,11 +2043,13 @@ impl Game {
             | StackKind::ActivatedAbility { .. } => {
                 item.program().expect("selected ability program").1
             }
-            StackKind::Spell => match item.source_card.effect() {
+            StackKind::Spell => {
+                let source = item.source.expect("spell has source");
+                match source.card.effect() {
                 Effect::Aura(_) => {
                     self.record_resolved_spell_name(&item);
                     let target = item.targets[0].object.unwrap();
-                    let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
+                    let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
                     movement.attachment = Some(target);
                     movement.cast_event = item.actual_cast_event().map(Box::new);
                     movement.cast_payment = item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
@@ -2061,8 +2064,8 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
-                    if item.source_card.other_face().is_some() {
-                        self.state.objects[item.card as usize].card = item.source_card;
+                    if source.card.other_face().is_some() {
+                        self.state.objects[source.id as usize].card = source.card;
                     }
                     self.record_resolved_spell_name(&item);
                     if item.cast.is_some_and(|c| {
@@ -2075,7 +2078,7 @@ impl Game {
                                 c.method,
                                 CastMethod::Warp | CastMethod::Sneak | CastMethod::Disguise
                             )
-                            || item.source_card.entry_counter_rules().iter().any(|r| {
+                            || source.card.entry_counter_rules().iter().any(|r| {
                                 matches!(
                                     r.amount,
                                     EntryCounterAmount::ColorsSpent
@@ -2083,15 +2086,15 @@ impl Game {
                                 )
                             })
                     }) || item.x.is_some()
-                        || self.has_cast_entry_counters(item.object)
-                        || !item.source_card.hand_cast_entry_counters().is_empty()
-                        || !item.source_card.cast_entry_counters().is_empty()
-                        || item.source_card.entry_choice().is_some()
-                        || self.has_entry_counter_replacements(item.source_card)
-                        || item.source_card.kind_mask() & crate::cards::BATTLE_KIND != 0
+                        || self.has_cast_entry_counters(source.object)
+                        || !source.card.hand_cast_entry_counters().is_empty()
+                        || !source.card.cast_entry_counters().is_empty()
+                        || source.card.entry_choice().is_some()
+                        || self.has_entry_counter_replacements(source.card)
+                        || source.card.kind_mask() & crate::cards::BATTLE_KIND != 0
                     {
                         let mut movement = self.entry_move(
-                            item.card,
+                            source.id,
                             Zone::Battlefield,
                             item.cast.is_some_and(|c| c.method == CastMethod::Sneak),
                         );
@@ -2115,7 +2118,7 @@ impl Game {
                             item.cast.is_some_and(|c| c.evidence == Some(true));
                         self.stage_entries(vec![movement], None);
                     } else {
-                        let mut event = self.move_object_raw(item.card, Zone::Battlefield);
+                        let mut event = self.move_object_raw(source.id, Zone::Battlefield);
                         event.cast_event = item.actual_cast_event().map(Box::new);
                         event.was_cast = item.cast.is_some() && !item.is_copy;
                         self.finish_zone_events(std::slice::from_ref(&event), &[]);
@@ -2124,10 +2127,11 @@ impl Game {
                     return;
                 }
                 Effect::Spell(..) | Effect::Modal(_) => {
-                    item.source_card.spell_program(item.mode).unwrap().1
+                    source.card.spell_program(item.mode).unwrap().1
                 }
                 Effect::Land | Effect::Emblem | Effect::Unsupported => {
                     unreachable!("unsupported spell admitted")
+                }
                 }
             },
         };

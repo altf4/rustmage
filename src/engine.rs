@@ -1370,7 +1370,8 @@ impl SpellView {
     pub(crate) fn target_source(&self) -> ObjectRef {
         self.source_move
             .as_ref()
-            .map_or(self.object, |event| event.after)
+            .map(|event| event.after)
+            .unwrap_or_else(|| self.source.expect("source-relative operation needs an object source").object)
     }
 
     /// The inherent rule responsible for a source-less ability, if any.
