@@ -357,6 +357,138 @@ fn prior_schema178_history_projection_checks_both_views_and_hidden_owned_objects
     }
 }
 
+/// Schema 180 exposes optional wheel choices and adds an additive Construct
+/// subtype grant. Neither active feature has a schema-179 continuation.
+fn project_prior_schema180(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::Array(rows) => for row in rows { check(row)?; },
+            serde_json::Value::Object(map) => {
+                if map.contains_key("optional_wheel_choices") {
+                    return Err("optional wheel has no schema-179 representation".into());
+                }
+                if map.get("added").and_then(|v| v.as_array())
+                    .is_some_and(|rows| rows.iter().any(|v| v.as_str() == Some("Construct"))) {
+                    return Err("added Construct subtype has no schema-179 representation".into());
+                }
+                for value in map.values() { check(value)?; }
+            }
+            _ => (),
+        }
+        Ok(())
+    }
+    let parsed: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&parsed)?;
+    // Inactive fields are omitted by serde, so preserve the exact old bytes.
+    Ok(input.to_owned())
+}
+
+/// Reject opaque continuations and copies rather than inferring hidden state
+/// from either viewer's observation. Check rollback snapshots recursively.
+fn prior_schema180_state_supported(state: &State) -> bool {
+    if state.resolving.is_some() || state.announcing.is_some()
+        || state.mana_announcement_stack.is_some() || state.replacements.is_some()
+        || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
+        || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
+        || !state.stack.is_empty() || !state.pending_triggers.is_empty()
+        || !state.ordering_triggers.is_empty()
+        || state.copy_recipes.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.temporary_copies.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.objects.iter().any(|o| o.card.aura_artifact_or_non_aura_enchantment()
+            || o.card.name() == "Variable Chaser // Arc of Fortune"
+            || o.card.name() == "Arc of Fortune")
+    { return false; }
+    if let Some(rollback) = &state.cast_rollback {
+        if !rollback.events.is_empty() || rollback.replay.is_some() || rollback.capture.is_some()
+            || !prior_schema180_state_supported(&rollback.before) { return false; }
+    }
+    // Other retained private packets may carry card copies or continuations.
+    if state.delayed_artifact_copies.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.delayed_attack_this_turn.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.delayed_main_mana.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.delayed_upkeep_tokens.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.stack_copy_data.as_ref().is_some_and(|s| s.packets().next().is_some())
+        || state.paradigm.as_ref().is_some_and(|s| s.packets().next().is_some())
+        || state.delayed_returns.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.earthbend_returns.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.manifest.as_ref().is_some_and(|s| !s.deaths.is_empty())
+    { return false; }
+    true
+}
+
+#[test]
+fn schema180_projection_rejects_new_semantics_and_preserves_bytes() {
+    let safe = r#"[{"added":["Spirit"],"text":"Construct"}]"#;
+    assert_eq!(project_prior_schema180(safe).unwrap(), safe);
+    assert!(project_prior_schema180(r#"[{"added":["Construct"]}]"#).is_err());
+    assert!(project_prior_schema180(r#"[{"optional_wheel_choices":[null,true]}]"#).is_err());
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        for viewer in [Player::P0, Player::P1] {
+            let view = serde_json::to_string(&g.observe(viewer)).unwrap();
+            assert_eq!(project_prior_schema180(&view).unwrap(), view);
+        }
+        assert!(prior_schema180_state_supported(&g.state));
+        put(&mut g, player, "Puppet Crafting", Zone::Hand);
+        assert!(!prior_schema180_state_supported(&g.state));
+        for viewer in [Player::P0, Player::P1] {
+            let view = serde_json::to_string(&g.observe(viewer)).unwrap();
+            assert!(project_prior_schema180(&view).is_ok());
+            assert!(!prior_schema180_state_supported(&g.state));
+        }
+    }
+}
+
+#[test]
+fn schema180_rejects_live_wheel_and_construct_for_both_viewers_and_restore() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let target = put(&mut g, player, "Gideon's Memorial", Zone::Battlefield);
+        let aura = put(&mut g, player, "Puppet Crafting", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(target));
+        for viewer in [Player::P0, Player::P1] {
+            let view = serde_json::to_string(&g.observe(viewer)).unwrap();
+            assert!(project_prior_schema180(&view).is_err());
+            assert!(!prior_schema180_state_supported(&g.state));
+        }
+        let saved = g.snapshot();
+        g.move_object(aura, Zone::Graveyard);
+        g.restore(&saved).unwrap();
+        assert!(!prior_schema180_state_supported(&g.state));
+
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Variable Chaser // Arc of Fortune", Zone::Hand);
+        g.state.players[player.index()].mana = [0, 1, 0, 0, 0, 2];
+        act(&mut g, Action::AnnounceCast { card: source });
+        pay(&mut g);
+        for _ in 0..96 {
+            g.prepare_triggers();
+            if g.state.pending == Pending::Priority && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { break; }
+            choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        }
+        let prepared = g.state.preparations.as_ref().unwrap().iter()
+            .find(|row| row.permanent == g.object_ref(source)).unwrap().spell_copy;
+        g.state.players[player.index()].mana = [0, 1, 0, 0, 0, 2];
+        act(&mut g, Action::AnnounceExile { card: prepared.card });
+        pay(&mut g);
+        for _ in 0..64 {
+            if matches!(g.state.pending, Pending::EffectOptional { .. }) { break; }
+            choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        }
+        assert!(matches!(g.state.pending, Pending::EffectOptional { .. }));
+        let saved = g.snapshot();
+        for viewer in [Player::P0, Player::P1] {
+            let view = serde_json::to_string(&g.observe(viewer)).unwrap();
+            assert!(project_prior_schema180(&view).is_err());
+            assert!(!prior_schema180_state_supported(&g.state));
+        }
+        act(&mut g, Action::ChooseOptional { accept: true });
+        g.restore(&saved).unwrap();
+        assert!(!prior_schema180_state_supported(&g.state));
+    }
+}
+
 /// Schema 179 adds a copiable conditional sacrifice ability. A zero field is
 /// byte-projectable; a live ability or its stack packet has no old meaning.
 fn project_prior_schema179_copy_abilities(input: &str) -> Result<String, String> {
@@ -1103,7 +1235,17 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 179) {
+    if schema_projection.is_some_and(|schema| schema < 180) {
+        if !prior_schema180_state_supported(&g.state) {
+            projection_error = Some("owned wheel or additive subtype continuation cannot be projected to schema 179".to_owned());
+        } else {
+            match project_prior_schema180(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 179) {
         if !prior_schema179_copy_owned_state_supported(&g) {
             projection_error = Some("owned conditional copy ability has no prior-schema representation".to_owned());
         } else {
