@@ -64,7 +64,9 @@ pub(super) fn spends_any_type<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     purpose: mana_lots::Purpose,
 ) -> bool {
-    matches!(purpose, mana_lots::Purpose::Spell(source) if source.spend_any_mana)
+    matches!(purpose, mana_lots::Purpose::Spell(source) if source.spend_any_mana
+        || source.linked_mana_source.is_some_and(|linked|
+            exile::threshold_linked_source_available(world, player, linked)))
         || (matches!(purpose, mana_lots::Purpose::Spell(source) if source.kinds & 1 != 0)
             && has_fragment(world, player, |f| {
                 matches!(f, StaticAbilityFragment::SpendAnyManaForCreatures)
@@ -114,8 +116,7 @@ impl Game {
             && object.card.is_land()
             && object.is_card()
             && land_origin_available(self, player, object.zone)
-            && (object.zone != Zone::Library
-                || self.top_library_card(player) == Some(card))
+            && (object.zone != Zone::Library || self.top_library_card(player) == Some(card))
     }
     pub(super) fn can_cast_library_top(&self, player: Player, card: CardId) -> bool {
         self.can_cast_library_face(player, card, self.state.objects[card as usize].card)
@@ -348,6 +349,9 @@ pub struct ResolutionFreeCasts {
     /// Exact proposed child; only its committed cast consumes a quota.
     #[serde(skip)]
     pub(super) pending_cast: Option<u64>,
+    /// Inclusive total spell mana value remaining for this free-cast instruction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub remaining_mana_value: Option<u64>,
     pub alternative_cost: Option<ManaCost>,
     pub maximum_mana_value: Option<u64>,
     pub origin: Zone,
@@ -358,7 +362,7 @@ pub struct ResolutionFreeCasts {
 }
 impl Game {
     pub(super) fn exile_top_offer_paid_cast(&mut self, player: Player) -> bool {
-        let Some(card) = self.state.players[player.index()].library.last().copied() else {
+        let Some(card) = self.top_library_card(player) else {
             return false;
         };
         let event = self.move_object(card, Zone::Exile);
@@ -367,9 +371,13 @@ impl Game {
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             siege_transformed: false,
-            paid: Some(ResolutionPaidCast { kinds: u8::MAX, exile_instants_sorceries: false }),
+            paid: Some(ResolutionPaidCast {
+                kinds: u8::MAX,
+                exile_instants_sorceries: false,
+            }),
             casts_remaining: Some(1),
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
@@ -394,9 +402,7 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter(|(_, o)| {
-                o.owner == item.controller && o.zone == Zone::Graveyard && o.is_card()
-            })
+            .filter(|(_, o)| o.owner == item.controller && o.zone == Zone::Graveyard && o.is_card())
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
@@ -407,6 +413,7 @@ impl Game {
             }),
             casts_remaining: Some(1),
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Graveyard,
@@ -438,6 +445,7 @@ impl Game {
             paid: None,
             casts_remaining: None,
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Graveyard,
@@ -468,6 +476,7 @@ impl Game {
             paid: None,
             casts_remaining: None,
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
@@ -491,7 +500,13 @@ impl Game {
         let Some(free) = &self.state.resolution_free_casts else {
             return false;
         };
-        if free.casts_remaining == Some(0) {
+        // The cumulative budget models casting without paying mana costs.
+        // Paid and alternative-cost offers can choose nonzero X and need a
+        // separate announced-value legality check before they can use it.
+        if free.casts_remaining == Some(0)
+            || (free.remaining_mana_value.is_some()
+                && (free.paid.is_some() || free.alternative_cost.is_some()))
+        {
             return false;
         }
         for &object in &free.remaining {
@@ -520,7 +535,9 @@ impl Game {
             // A paid permission permits a card's alternative disguise cost.
             // Disguise is a creature spell with mana value zero regardless of
             // the printed face; free-cast permissions cannot pay this cost.
-            if free.paid.is_some_and(|paid| paid.kinds == u8::MAX || paid.kinds & 1 != 0)
+            if free
+                .paid
+                .is_some_and(|paid| paid.kinds == u8::MAX || paid.kinds & 1 != 0)
                 && !free.siege_transformed
                 && free.maximum_mana_value.is_none_or(|maximum| maximum > 0)
                 && self.disguise_mana_fundable(player, object.card)
@@ -546,12 +563,15 @@ impl Game {
                 };
                 if definition.is_some_and(|card| {
                     !card.is_land()
-                        && free
-                            .paid
-                            .is_none_or(|paid| paid.kinds == u8::MAX || card.kind_mask() & u16::from(paid.kinds) != 0)
+                        && free.paid.is_none_or(|paid| {
+                            paid.kinds == u8::MAX || card.kind_mask() & u16::from(paid.kinds) != 0
+                        })
                         && free
                             .maximum_mana_value
                             .is_none_or(|maximum| card.fixed_mana_value() < maximum)
+                        && free
+                            .remaining_mana_value
+                            .is_none_or(|left| card.fixed_mana_value() <= left)
                 }) && self.permitted_cast_available(
                     player,
                     object.card,
@@ -601,7 +621,7 @@ impl Game {
         self.reveal_hideaway_object(object);
         let mut item = self.cast_item(player, object.card, [0; 6]);
         if let Some(free) = self.state.resolution_free_casts.as_mut()
-            && free.casts_remaining.is_some()
+            && (free.casts_remaining.is_some() || free.remaining_mana_value.is_some())
         {
             free.pending_cast = Some(item.id);
         }
@@ -615,9 +635,10 @@ impl Game {
         };
         item.cast.as_mut().unwrap().exile_on_graveyard = exile_on_graveyard
             || paid.is_some_and(|p| {
-                p.exile_instants_sorceries && item.source_card.kind_mask() & (4 | 8) != 0
+                p.exile_instants_sorceries
+                    && item.source.expect("cast spell has source").card.kind_mask() & (4 | 8) != 0
             });
-        if paid.is_none() && item.source_card.x_symbols() > 0 {
+        if paid.is_none() && item.source.expect("cast spell has source").card.x_symbols() > 0 {
             item.x = Some(0);
         }
         self.open_payment_announcement(item, Counters::default(), None);
@@ -644,15 +665,20 @@ impl Game {
 
 impl Game {
     pub(super) fn consume_resolution_cast_quota(&mut self, player: Player, stack: Option<usize>) {
-        let Some(id) = stack.map(|i| self.state.stack[i].id) else {
+        let Some(item) = stack.map(|i| &self.state.stack[i]) else {
             return;
         };
+        let (id, value) = (item.id, item.mana_value());
         if let Some(free) = self.state.resolution_free_casts.as_mut()
             && free.player == player
             && free.pending_cast == Some(id)
-            && let Some(left) = &mut free.casts_remaining
         {
-            *left = left.checked_sub(1).expect("a legal quota cast");
+            if let Some(left) = &mut free.casts_remaining {
+                *left = left.checked_sub(1).expect("a legal quota cast");
+            }
+            if let Some(left) = &mut free.remaining_mana_value {
+                *left = left.checked_sub(value).expect("a legal budget cast");
+            }
             free.pending_cast = None;
         }
     }
@@ -680,10 +706,7 @@ impl Game {
         let Some(owner) = target else {
             return false;
         };
-        let ids = exile::top_library_cards(
-            self, owner,
-            u128::from(amount),
-        );
+        let ids = exile::top_library_cards(self, owner, u128::from(amount));
         let events = self.move_objects_raw(&ids, Zone::Exile);
         let remaining = events
             .iter()
@@ -696,6 +719,7 @@ impl Game {
             paid: None,
             casts_remaining: Some(maximum_casts),
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,

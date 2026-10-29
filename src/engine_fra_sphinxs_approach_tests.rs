@@ -8,7 +8,9 @@ fn put_approach(g: &mut Game, player: Player, zone: Zone) -> CardId {
 
 fn approach_until_choice(g: &mut Game) {
     for _ in 0..96 {
-        if matches!(g.state.pending, Pending::EffectChoice { .. }) { return; }
+        if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+            return;
+        }
         choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
     }
     panic!("approach choice not offered: {:?}", g.state.pending);
@@ -19,7 +21,9 @@ fn approach_selects_four_atomically_and_searches_with_snapshot_replay() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let mut graves = Vec::new();
-        for _ in 0..5 { graves.push(put_approach(&mut g, p, Zone::Graveyard)); }
+        for _ in 0..5 {
+            graves.push(put_approach(&mut g, p, Zone::Graveyard));
+        }
         let foreign = put_approach(&mut g, p.other(), Zone::Graveyard);
         let wrong = put(&mut g, p, "Bear Cub", Zone::Graveyard);
         let sphinx = put(&mut g, p, "Curator of Destinies", Zone::Library);
@@ -33,7 +37,12 @@ fn approach_selects_four_atomically_and_searches_with_snapshot_replay() {
         let before = g.snapshot();
         let foreign_ref = g.object_ref(foreign);
         let wrong_ref = g.object_ref(wrong);
-        reject(&mut g, Action::SelectResolutionExile { object: foreign_ref });
+        reject(
+            &mut g,
+            Action::SelectResolutionExile {
+                object: foreign_ref,
+            },
+        );
         reject(&mut g, Action::SelectResolutionExile { object: wrong_ref });
         assert_eq!(g.snapshot(), before);
         let first = g.object_ref(graves[0]);
@@ -44,7 +53,11 @@ fn approach_selects_four_atomically_and_searches_with_snapshot_replay() {
         }
         reject(&mut g, Action::SelectResolutionExile { object: first });
         assert_eq!(g.object_view(spell).zone, Zone::Stack);
-        assert!(graves.iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
+        assert!(
+            graves
+                .iter()
+                .all(|&id| g.object_view(id).zone == Zone::Graveyard)
+        );
         let partial = g.snapshot();
         super::contracts::branch_contract(g.clone());
         for _ in 0..2 {
@@ -53,9 +66,14 @@ fn approach_selects_four_atomically_and_searches_with_snapshot_replay() {
                 act(&mut g, Action::SelectResolutionExile { object });
             }
             assert_eq!(g.object_view(spell).zone, Zone::Exile);
-            for &id in &graves[..4] { assert_eq!(g.object_view(id).zone, Zone::Exile); }
+            for &id in &graves[..4] {
+                assert_eq!(g.object_view(id).zone, Zone::Exile);
+            }
             assert_eq!(g.object_view(graves[4]).zone, Zone::Graveyard);
-            assert!(g.legal_actions().contains(&Action::ChooseSearch { card: sphinx }));
+            assert!(
+                g.legal_actions()
+                    .contains(&Action::ChooseSearch { card: sphinx })
+            );
             act(&mut g, Action::ChooseSearch { card: sphinx });
             act(&mut g, Action::FinishSearch);
             settle(&mut g);
@@ -71,13 +89,22 @@ fn approach_decline_or_insufficient_graveyard_leaves_no_partial_payment() {
     for p in [Player::P0, Player::P1] {
         for count in [3, 4] {
             let mut g = scenario(p);
-            let cards: Vec<_> = (0..count).map(|_| put_approach(&mut g, p, Zone::Graveyard)).collect();
+            let cards: Vec<_> = (0..count)
+                .map(|_| put_approach(&mut g, p, Zone::Graveyard))
+                .collect();
             let spell = put_approach(&mut g, p, Zone::Hand);
             cast(&mut g, spell, None);
             for _ in 0..96 {
-                if matches!(g.state.pending, Pending::EffectChoice { .. }) ||
-                    (g.state.pending == Pending::Priority && g.state.stack.is_empty() && g.state.resolving.is_none()) { break; }
-                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+                if matches!(g.state.pending, Pending::EffectChoice { .. })
+                    || (g.state.pending == Pending::Priority
+                        && g.state.stack.is_empty()
+                        && g.state.resolving.is_none())
+                {
+                    break;
+                }
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
             }
             if count == 4 {
                 let reference = g.object_ref(cards[0]);
@@ -86,7 +113,11 @@ fn approach_decline_or_insufficient_graveyard_leaves_no_partial_payment() {
                 settle(&mut g);
             }
             assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
-            assert!(cards.iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
+            assert!(
+                cards
+                    .iter()
+                    .all(|&id| g.object_view(id).zone == Zone::Graveyard)
+            );
             assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
         }
     }
@@ -96,7 +127,9 @@ fn approach_decline_or_insufficient_graveyard_leaves_no_partial_payment() {
 fn approach_spell_copy_can_choose_the_resolution_payment_independently() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        let cards: Vec<_> = (0..4).map(|_| put_approach(&mut g, p, Zone::Graveyard)).collect();
+        let cards: Vec<_> = (0..4)
+            .map(|_| put_approach(&mut g, p, Zone::Graveyard))
+            .collect();
         let sphinx = put(&mut g, p, "Curator of Destinies", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
@@ -104,7 +137,7 @@ fn approach_spell_copy_can_choose_the_resolution_payment_independently() {
         cast(&mut g, spell, None);
         let original = g.state.stack.last().unwrap().clone();
         let copy = g.allocate_spell_copy(&original, p);
-        let copy_object = copy.object;
+        let copy_object = copy.source.unwrap().object;
         g.state.stack.push(copy);
         approach_until_choice(&mut g);
         for card in cards {
@@ -126,7 +159,9 @@ fn approach_revalidates_every_component_before_any_exile() {
     for p in [Player::P0, Player::P1] {
         for lost in 0..5 {
             let mut g = scenario(p);
-            let cards: Vec<_> = (0..4).map(|_| put_approach(&mut g, p, Zone::Graveyard)).collect();
+            let cards: Vec<_> = (0..4)
+                .map(|_| put_approach(&mut g, p, Zone::Graveyard))
+                .collect();
             let spell = put_approach(&mut g, p, Zone::Hand);
             cast(&mut g, spell, None);
             approach_until_choice(&mut g);
@@ -143,7 +178,15 @@ fn approach_revalidates_every_component_before_any_exile() {
                 // Select the fourth object, but construct its continuation with
                 // the stale exact reference before asking the commit helper.
                 let reference = g.object_ref(cards[3]);
-                g.state.resolving.as_mut().unwrap().choice.as_mut().unwrap().selected[p.index()].push(reference);
+                g.state
+                    .resolving
+                    .as_mut()
+                    .unwrap()
+                    .choice
+                    .as_mut()
+                    .unwrap()
+                    .selected[p.index()]
+                .push(reference);
                 g.move_object(stale, Zone::Hand);
                 assert!(!g.advance_effect_choice());
                 g.run_program();
@@ -159,7 +202,9 @@ fn approach_revalidates_every_component_before_any_exile() {
             assert_ne!(g.object_view(spell).zone, Zone::Exile);
             g.restore(&checkpoint).unwrap();
             assert_eq!(g.snapshot(), checkpoint);
-            for &id in &cards { assert_eq!(g.object_view(id).zone, Zone::Graveyard); }
+            for &id in &cards {
+                assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+            }
             assert_eq!(g.object_view(spell).zone, Zone::Stack);
         }
     }
@@ -174,7 +219,7 @@ fn copied_spell_exile_emits_zone_event_and_ceases_only_at_sba() {
         cast(&mut g, spell, Some(Target::Card(target)));
         let original = g.state.stack.last().unwrap().clone();
         let copy = g.allocate_spell_copy(&original, p);
-        let original_ref = copy.object;
+        let original_ref = copy.source.unwrap().object;
         g.state.stack.push(copy);
         let event = g.move_object(original_ref.card, Zone::Exile);
         assert!(event.moved);
@@ -204,7 +249,7 @@ fn copied_spell_moves_between_zones_before_sba_and_reuses_slot_safely() {
             cast(&mut g, spell, Some(Target::Card(target)));
             let original = g.state.stack.last().unwrap().clone();
             let copy = g.allocate_spell_copy(&original, p);
-            let initial = copy.object;
+            let initial = copy.source.unwrap().object;
             g.state.stack.push(copy);
             let first = g.move_object(initial.card, Zone::Exile);
             assert!(first.moved);
@@ -244,7 +289,7 @@ fn copied_spell_move_from_stack_to_nonbattlefield_zone_is_an_event() {
             cast(&mut g, spell, Some(Target::Card(target)));
             let original = g.state.stack.last().unwrap().clone();
             let copy = g.allocate_spell_copy(&original, p);
-            let reference = copy.object;
+            let reference = copy.source.unwrap().object;
             g.state.stack.push(copy);
             let event = g.move_object(reference.card, destination);
             assert!(event.moved);
@@ -267,7 +312,7 @@ fn copied_spell_is_not_a_card_for_graveyard_replacement() {
         cast(&mut g, spell, Some(Target::Card(target)));
         let original = g.state.stack.last().unwrap().clone();
         let copy = g.allocate_spell_copy(&original, p);
-        let reference = copy.object;
+        let reference = copy.source.unwrap().object;
         g.state.stack.push(copy);
         let event = g.move_object(reference.card, Zone::Graveyard);
         assert!(event.moved);
@@ -282,7 +327,9 @@ fn copied_spell_is_not_a_card_for_graveyard_replacement() {
 fn transient_spell_copy_is_not_a_card_for_draw_and_search_during_resolution() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        let graves: Vec<_> = (0..4).map(|_| put_approach(&mut g, p, Zone::Graveyard)).collect();
+        let graves: Vec<_> = (0..4)
+            .map(|_| put_approach(&mut g, p, Zone::Graveyard))
+            .collect();
         let sphinx = put(&mut g, p, "Curator of Destinies", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
@@ -294,7 +341,7 @@ fn transient_spell_copy_is_not_a_card_for_draw_and_search_during_resolution() {
         approach_until_choice(&mut g);
         // Put a copy above a real card while resolution is suspended, before SBA.
         let copy = g.allocate_spell_copy(&original, p);
-        let fake = copy.card;
+        let fake = copy.source.unwrap().id;
         g.state.stack.push(copy);
         let real_top = put(&mut g, p, "Island", Zone::Library);
         g.move_object(fake, Zone::Library);
@@ -308,8 +355,14 @@ fn transient_spell_copy_is_not_a_card_for_draw_and_search_during_resolution() {
             let object = g.object_ref(id);
             act(&mut g, Action::SelectResolutionExile { object });
         }
-        assert!(g.legal_actions().contains(&Action::ChooseSearch { card: sphinx }));
-        assert!(!g.legal_actions().contains(&Action::ChooseSearch { card: fake }));
+        assert!(
+            g.legal_actions()
+                .contains(&Action::ChooseSearch { card: sphinx })
+        );
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::ChooseSearch { card: fake })
+        );
     }
 }
 
@@ -317,18 +370,23 @@ fn transient_spell_copy_is_not_a_card_for_draw_and_search_during_resolution() {
 fn transient_named_spell_copy_cannot_pay_graveyard_card_cost() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        let cards: Vec<_> = (0..4).map(|_| put_approach(&mut g, p, Zone::Graveyard)).collect();
+        let cards: Vec<_> = (0..4)
+            .map(|_| put_approach(&mut g, p, Zone::Graveyard))
+            .collect();
         let spell = put_approach(&mut g, p, Zone::Hand);
         cast(&mut g, spell, None);
         let original = g.state.stack.last().unwrap().clone();
         approach_until_choice(&mut g);
         let copy = g.allocate_spell_copy(&original, p);
-        let fake = copy.card;
+        let fake = copy.source.unwrap().id;
         g.state.stack.push(copy);
         g.move_object(fake, Zone::Graveyard);
         let checkpoint = g.snapshot();
         let fake_ref = g.object_ref(fake);
-        assert!(!g.legal_actions().contains(&Action::SelectResolutionExile { object: fake_ref }));
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::SelectResolutionExile { object: fake_ref })
+        );
         reject(&mut g, Action::SelectResolutionExile { object: fake_ref });
         assert_eq!(g.snapshot(), checkpoint);
         for id in cards {
@@ -348,7 +406,7 @@ fn shuffle_keeps_transient_noncard_position_and_replays_card_order() {
         cast(&mut g, spell, Some(Target::Card(target)));
         let original = g.state.stack.last().unwrap().clone();
         let copy = g.allocate_spell_copy(&original, p);
-        let fake = copy.card;
+        let fake = copy.source.unwrap().id;
         g.state.stack.push(copy);
         g.move_object(fake, Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
@@ -373,7 +431,9 @@ fn shuffle_keeps_transient_noncard_position_and_replays_card_order() {
 fn transient_copy_in_hand_is_not_offered_as_a_discard_card() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        for _ in 0..4 { put_approach(&mut g, p, Zone::Graveyard); }
+        for _ in 0..4 {
+            put_approach(&mut g, p, Zone::Graveyard);
+        }
         let spell = put_approach(&mut g, p, Zone::Hand);
         cast(&mut g, spell, None);
         let original = g.state.stack.last().unwrap().clone();
@@ -381,12 +441,15 @@ fn transient_copy_in_hand_is_not_offered_as_a_discard_card() {
         let real = put(&mut g, p, "Shock", Zone::Hand);
         let before = g.hand_count(p);
         let copy = g.allocate_spell_copy(&original, p);
-        let fake = copy.card;
+        let fake = copy.source.unwrap().id;
         g.state.stack.push(copy);
         g.move_object(fake, Zone::Hand);
         assert_eq!(g.hand_count(p), before);
         // Model a discard choice nested in the same unresolved effect.
-        g.state.pending = Pending::EffectDiscard { player: p, remaining: 1 };
+        g.state.pending = Pending::EffectDiscard {
+            player: p,
+            remaining: 1,
+        };
         assert!(g.legal_actions().contains(&Action::Discard { card: real }));
         assert!(!g.legal_actions().contains(&Action::Discard { card: fake }));
         let checkpoint = g.snapshot();
@@ -410,7 +473,7 @@ fn transient_copy_graveyard_transitions_do_not_trigger_card_observers() {
         cast(&mut g, spell, Some(Target::Card(target)));
         let original = g.state.stack.last().unwrap().clone();
         let copy = g.allocate_spell_copy(&original, p);
-        let fake = copy.card;
+        let fake = copy.source.unwrap().id;
         g.state.stack.push(copy);
         let entry = g.move_object(fake, Zone::Graveyard);
         assert!(!entry.was_card);
@@ -435,15 +498,24 @@ fn second_from_top_counts_cards_around_a_transient_copy() {
         cast(&mut g, spell, Some(Target::Card(target)));
         let original = g.state.stack.last().unwrap().clone();
         let copy = g.allocate_spell_copy(&original, p);
-        let fake = copy.card;
+        let fake = copy.source.unwrap().id;
         g.state.stack.push(copy);
         g.move_object(fake, Zone::Library);
         let top = put(&mut g, p, "Island", Zone::Library);
         let permanent = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let object = g.object_ref(permanent);
-        assert!(g.move_target_to_library(original.object, object, LibraryDestination::SecondFromTop));
-        let cards: Vec<_> = g.state.players[p.index()].library.iter().rev().copied()
-            .filter(|&id| g.state.objects[id as usize].is_card()).collect();
+        assert!(g.move_target_to_library(
+            original.source.unwrap().object,
+            object,
+            LibraryDestination::SecondFromTop
+        ));
+        let cards: Vec<_> = g.state.players[p.index()]
+            .library
+            .iter()
+            .rev()
+            .copied()
+            .filter(|&id| g.state.objects[id as usize].is_card())
+            .collect();
         assert_eq!(&cards[..2], &[top, permanent]);
         assert!(g.state.players[p.index()].library.contains(&fake));
     }
@@ -458,7 +530,7 @@ fn transient_graveyard_copy_is_not_a_card_for_ability_guards() {
         cast(&mut g, spell, Some(Target::Card(target)));
         let original = g.state.stack.last().unwrap().clone();
         let copy = g.allocate_spell_copy(&original, p);
-        let fake = copy.card;
+        let fake = copy.source.unwrap().id;
         g.state.stack.push(copy);
         g.move_object(fake, Zone::Graveyard);
         assert!(!activations::graveyard_cards_at_least(&g, p, 0, 1));
@@ -480,21 +552,36 @@ fn revealed_discard_choice_excludes_transient_copy_and_replays() {
         cast(&mut game, spell, Some(Target::Player(victim)));
         let original = game.state.stack.last().unwrap().clone();
         let copy = game.allocate_spell_copy(&original, player);
-        let fake = copy.card;
+        let fake = copy.source.unwrap().id;
         game.state.objects[fake as usize].owner = victim;
         game.move_object(fake, Zone::Hand);
         for _ in 0..48 {
-            if matches!(game.state.pending, Pending::RevealedDiscard { .. }) { break; }
+            if matches!(game.state.pending, Pending::RevealedDiscard { .. }) {
+                break;
+            }
             act(&mut game, Action::Pass);
         }
-        assert!(matches!(game.state.pending, Pending::RevealedDiscard { .. }));
+        assert!(matches!(
+            game.state.pending,
+            Pending::RevealedDiscard { .. }
+        ));
         let checkpoint = game.snapshot();
         for _ in 0..2 {
             let fake_ref = game.object_ref(fake);
-            assert!(!game.legal_actions().contains(&Action::ChooseRevealedDiscard { object: fake_ref }));
-            reject(&mut game, Action::ChooseRevealedDiscard { object: fake_ref });
+            assert!(
+                !game
+                    .legal_actions()
+                    .contains(&Action::ChooseRevealedDiscard { object: fake_ref })
+            );
+            reject(
+                &mut game,
+                Action::ChooseRevealedDiscard { object: fake_ref },
+            );
             let actual_ref = game.object_ref(actual);
-            act(&mut game, Action::ChooseRevealedDiscard { object: actual_ref });
+            act(
+                &mut game,
+                Action::ChooseRevealedDiscard { object: actual_ref },
+            );
             assert_eq!(game.object_view(actual).zone, Zone::Graveyard);
             game.restore(&checkpoint).unwrap();
         }
@@ -510,7 +597,7 @@ fn half_hand_discard_quota_ignores_transient_spell_copy() {
         cast(&mut game, spell, None);
         let original = game.state.stack.last().unwrap().clone();
         let copy = game.allocate_spell_copy(&original, player);
-        let fake = copy.card;
+        let fake = copy.source.unwrap().id;
         game.move_object(fake, Zone::Hand);
         let saved = game.snapshot();
         for _ in 0..2 {
@@ -518,6 +605,37 @@ fn half_hand_discard_quota_ignores_transient_spell_copy() {
             assert_eq!(game.object_view(real).zone, Zone::Hand);
             assert_eq!(game.object_view(fake).zone, Zone::Outside);
             game.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn paid_exile_top_offer_ignores_transient_copy_at_library_top() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let spell = put(&mut g, player, "Shock", Zone::Hand);
+        let target = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        cast(&mut g, spell, Some(Target::Card(target)));
+        let original = g.state.stack.last().unwrap().clone();
+        let top = put(&mut g, player, "Island", Zone::Library);
+        let copy = g.allocate_spell_copy(&original, player);
+        let reference = copy.source.unwrap().object;
+        g.state.stack.push(copy);
+        g.move_object(reference.card, Zone::Library);
+        assert_eq!(
+            g.state.players[player.index()].library.last(),
+            Some(&reference.card)
+        );
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            assert!(g.exile_top_offer_paid_cast(player));
+            assert_eq!(g.object_view(top).zone, Zone::Exile);
+            assert_eq!(g.object_view(reference.card).zone, Zone::Library);
+            assert_eq!(
+                g.state.resolution_free_casts.as_ref().unwrap().remaining,
+                vec![g.object_ref(top)]
+            );
+            g.restore(&saved).unwrap();
         }
     }
 }

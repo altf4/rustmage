@@ -34,13 +34,22 @@ fn loot_production_rechecks_current_creature_control_and_departures() {
         let mut g = scenario(player);
         let loot = put(&mut g, player, "Loot, the Nexus", Zone::Battlefield);
         let other = put(&mut g, player, "Campus Crier", Zone::Battlefield);
-        assert_eq!(ManaProduction::DistinctCreaturePowers.in_world(&g, loot), ManaProduction::any_color(2));
+        assert_eq!(
+            ManaProduction::DistinctCreaturePowers.in_world(&g, loot),
+            ManaProduction::any_color(2)
+        );
         let object = g.object_ref(other);
         g.change_controller(object, player.other());
-        assert_eq!(ManaProduction::DistinctCreaturePowers.in_world(&g, loot), ManaProduction::any_color(1));
+        assert_eq!(
+            ManaProduction::DistinctCreaturePowers.in_world(&g, loot),
+            ManaProduction::any_color(1)
+        );
         g.change_controller(object, player);
         g.move_object(other, Zone::Graveyard);
-        assert_eq!(ManaProduction::DistinctCreaturePowers.in_world(&g, loot), ManaProduction::any_color(1));
+        assert_eq!(
+            ManaProduction::DistinctCreaturePowers.in_world(&g, loot),
+            ManaProduction::any_color(1)
+        );
     }
 }
 
@@ -53,7 +62,10 @@ fn loot_projected_mana_funds_a_spell_using_one_chosen_color() {
         let spell = put(&mut g, player, "Bear Cub", Zone::Hand);
         g.state.objects[loot as usize].summoning_sick = false;
         g.state.players[player.index()].mana = [0; 6];
-        assert!(g.legal_actions().contains(&Action::AnnounceCast { card: spell }));
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: spell })
+        );
         act(&mut g, Action::AnnounceCast { card: spell });
         let green = g.legal_actions().into_iter().find(|action| matches!(action,
             Action::ActivateMana { card, ability: 0, production: [0, 0, 0, 0, 2, 0], .. } if *card == loot)).unwrap();
@@ -73,7 +85,10 @@ fn loot_zero_creature_production_has_one_zero_mana_choice() {
         let production = ManaProduction::DistinctCreaturePowers.in_world(&g, source);
         assert_eq!(production, ManaProduction::Fixed([0; 6]));
         let mut rows = Vec::new();
-        production.visit(|mana| { rows.push(mana); false });
+        production.visit(|mana| {
+            rows.push(mana);
+            false
+        });
         assert_eq!(rows, vec![[0; 6]]);
     }
 }

@@ -8,5 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f6da7e624bc1776a7ebf273b2b3f47f4454f9b36772a0b4ee7ce775a37cdc483"
   },
-  "physical_metadata_sha256": "8087a0ced6cb42b605f08ecda1afd1d69214152d8685c10160f99ff977e65aec"
+  "physical_metadata_sha256": "8087a0ced6cb42b605f08ecda1afd1d69214152d8685c10160f99ff977e65aec",
+  "source_note": "Full Oracle text and official Reality Fracture release notes reviewed; pinned XMage implementation is unavailable. Definition remains gated.",
+  "oracle_rulings": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes"
 }

@@ -529,9 +529,9 @@ fn hob_sacrifice_funding_ordered_source_departure_matches_native_cost_executor()
             // Existing bounded typed executor fixture: retain the immutable Bolg
             // selected-cost definition, but make RIP the source paying a source
             // departure component before that additional cost.
-            announcement.item.card = rip;
-            announcement.item.object = source;
-            let mut definition = *announcement.item.source_card.activation(0);
+            announcement.item.source.as_mut().unwrap().id = rip;
+            announcement.item.source.as_mut().unwrap().object = source;
+            let mut definition = *announcement.item.source.unwrap().card.activation(0);
             definition.cost.sacrifice = !exile_source;
             definition.cost.exile_self = exile_source;
             let spec = definition.cost.additional.unwrap();

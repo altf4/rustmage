@@ -24,7 +24,7 @@ fn scourge_artifact_creature_cast_triggers_once_even_if_countered() {
                 .stack
                 .iter()
                 .filter(|item| {
-                    item.card == dragon && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.unwrap().id == dragon && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 })
                 .count();
             assert_eq!(triggers, usize::from(caster == p));
@@ -32,7 +32,7 @@ fn scourge_artifact_creature_cast_triggers_once_even_if_countered() {
                 .state
                 .stack
                 .iter()
-                .find(|item| item.card == artifact && item.kind == StackKind::Spell)
+                .find(|item| item.source.unwrap().id == artifact && item.kind == StackKind::Spell)
                 .unwrap()
                 .id;
             assert!(g.counter_stack_item(spell, false));
@@ -68,7 +68,7 @@ fn scourge_trigger_does_not_untap_a_new_incarnation_or_trigger_after_ability_los
                 .stack
                 .iter()
                 .filter(|item| {
-                    item.card == dragon && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.unwrap().id == dragon && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 })
                 .count();
             assert_eq!(triggers, usize::from(!suppressed));
@@ -83,7 +83,7 @@ fn scourge_trigger_does_not_untap_a_new_incarnation_or_trigger_after_ability_los
                 .state
                 .stack
                 .iter()
-                .find(|item| item.card == artifact && item.kind == StackKind::Spell)
+                .find(|item| item.source.unwrap().id == artifact && item.kind == StackKind::Spell)
                 .unwrap()
                 .id;
             assert!(g.counter_stack_item(spell, false));

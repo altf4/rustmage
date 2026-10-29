@@ -172,8 +172,8 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             b.players[s.controller.other().index()].life - 1
         ),
         2 => {
-            if live(s.object) {
-                bump(l, s.object, a.turn, 0, 0, Keywords::FLYING, 0);
+            if live(s.source().expect("example expects an object-backed packet").object) {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 0, Keywords::FLYING, 0);
             }
         }
         3 => {
@@ -195,13 +195,13 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             );
         }
         5 => {
-            if live(s.object) {
-                bump(l, s.object, a.turn, 0, 0, Keywords::NONE, 1);
+            if live(s.source().expect("example expects an object-backed packet").object) {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 0, Keywords::NONE, 1);
             }
         }
         7 => {
-            if live(s.object) {
-                bump(l, s.object, a.turn, 2, 0, Keywords::NONE, 0);
+            if live(s.source().expect("example expects an object-backed packet").object) {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 2, 0, Keywords::NONE, 0);
             }
         }
         _ => unreachable!(),
@@ -298,7 +298,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && matches!(root.kind, StackKind::TriggeredAbility { .. })
                 && !a.stack.iter().any(|s| s.id == root.id)
             {
-                let i = index(root.source_card).unwrap();
+                let i = root.source().and_then(|source| index(source.card)).unwrap();
                 pending.insert(root.id, (i, root.clone(), b.clone()));
             }
             let finished: Vec<_> = pending
@@ -350,13 +350,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 if item.kind == StackKind::Spell {
-                    if let Some(i) = index(item.source_card) {
+                    if let Some(i) = item.source().and_then(|source| index(source.card)) {
                         casts[i] += 1;
                     }
                 } else if let StackKind::TriggeredAbility { ability } = item.kind {
-                    let i = index(item.source_card).unwrap();
-                    let count = debt.get_mut(&(item.object, ability)).unwrap_or_else(|| {
-                        panic!("unexpected trigger {} seed{seed}", item.source_card.name())
+                    let i = item.source().and_then(|source| index(source.card)).unwrap();
+                    let count = debt.get_mut(&(item.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
+                        panic!("unexpected trigger {} seed{seed}", item.source().expect("example expects an object-backed packet").card.name())
                     });
                     assert!(*count > 0);
                     *count -= 1;

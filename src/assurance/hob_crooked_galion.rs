@@ -223,7 +223,7 @@ fn hob_crooked_galion_along_per_card_batches_before_owner_and_card_exclusions() 
             g.state
                 .pending_triggers
                 .iter()
-                .filter(|s| s.card == source)
+                .filter(|s| s.source.is_some_and(|identity| identity.id == source))
                 .count(),
             1
         );
@@ -239,7 +239,7 @@ fn hob_crooked_galion_along_per_card_batches_before_owner_and_card_exclusions() 
                 g.state
                     .pending_triggers
                     .iter()
-                    .filter(|s| s.card == source)
+                    .filter(|s| s.source.is_some_and(|identity| identity.id == source))
                     .count(),
                 2
             );
@@ -271,7 +271,7 @@ fn hob_crooked_galion_along_pre_event_observer_and_multiplier_survive_simultaneo
             .state
             .pending_triggers
             .iter()
-            .filter(|s| s.card == source)
+            .filter(|s| s.source.is_some_and(|identity| identity.id == source))
             .collect();
         assert_eq!(packets.len(), 2);
         assert!(
@@ -389,8 +389,8 @@ fn hob_crooked_galion_galion_paid_attack_optional_other_targets_and_decline() {
         g.state.pending = Pending::Attackers;
         act(&mut g, Action::Attack { card: other });
         act(&mut g, Action::FinishAttackers);
-        assert!(g.state.pending_triggers.iter().all(|s| s.card != source));
-        assert!(g.state.stack.iter().all(|s| s.card != source));
+        assert!(g.state.pending_triggers.iter().all(|s| s.source.is_none_or(|identity| identity.id != source)));
+        assert!(g.state.stack.iter().all(|s| s.source.is_none_or(|identity| identity.id != source)));
     }
 }
 #[test]

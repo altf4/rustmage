@@ -7,8 +7,9 @@ impl Game {
         filters: &[BattlefieldFilter],
         keywords: Keywords,
     ) {
+        let Some(source) = item.source else { return; };
         let recipients = self.battlefield_group(item, filters);
-        self.grant_keyword_effects(&recipients, item.object, keywords);
+        self.grant_keyword_effects(&recipients, source.object, keywords);
     }
     pub(super) fn grow_permanent_group(
         &mut self,
@@ -36,7 +37,7 @@ impl Game {
         let affected: Vec<_> = self
             .battlefield_group(item, filters)
             .into_iter()
-            .filter(|&id| !exclude_source || self.object_ref(id) != item.object)
+            .filter(|&id| !exclude_source || item.source.is_none_or(|source| self.object_ref(id) != source.object))
             .collect();
         for id in affected {
             self.state.objects[id as usize].growth += Stats {
@@ -152,14 +153,15 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
     pub(super) fn program_damage_source(&self, item: &SpellView) -> DamageSource {
-        if self.object_ref(item.card) == item.object {
-            self.damage_source(item.card)
+        let source = item.source.expect("damage instruction requires a source");
+        if self.object_ref(source.id) == source.object {
+            self.damage_source(source.id)
         } else {
             DamageSource {
-                facts: item.source_facts,
-                object: item.card,
-                reference: item.object,
-                controller: item.source_facts.controller,
+                facts: source.facts,
+                object: source.id,
+                reference: source.object,
+                controller: source.facts.controller,
                 keywords: item.source_keywords,
             }
         }
@@ -204,16 +206,30 @@ impl Game {
         self.apply_damage_batch(&events);
     }
     /// Freeze the complete recipients before the simultaneous damage event.
-    pub(super) fn damage_creatures_except_controlled_tokens(&mut self, item: &SpellView, amount: i32) {
+    pub(super) fn damage_creatures_except_controlled_tokens(
+        &mut self,
+        item: &SpellView,
+        amount: i32,
+    ) {
         let source = self.program_damage_source(item);
-        let events: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(id, o)| {
-            (o.zone == Zone::Battlefield && self.is_creature(id as CardId)
-                && !(o.is_token() && o.controller == item.controller)).then_some(DamageEvent {
-                    source, target: Target::Card(id as CardId), amount: i128::from(amount),
-                    combat: false, preventable: true,
-                })
-        }).collect();
+        let events: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                (o.zone == Zone::Battlefield
+                    && self.is_creature(id as CardId)
+                    && !(o.is_token() && o.controller == item.controller))
+                    .then_some(DamageEvent {
+                        source,
+                        target: Target::Card(id as CardId),
+                        amount: i128::from(amount),
+                        combat: false,
+                        preventable: true,
+                    })
+            })
+            .collect();
         self.apply_damage_batch(&events);
     }
-
 }

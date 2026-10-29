@@ -3,8 +3,13 @@ use super::*;
 fn finish_combat_trigger(g: &mut Game) {
     for _ in 0..96 {
         g.prepare_triggers();
-        if g.state.pending == Pending::Priority && g.state.stack.is_empty()
-            && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { return; }
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.pending_triggers.is_empty()
+            && g.state.resolving.is_none()
+        {
+            return;
+        }
         choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
     }
     panic!("combat triggers did not finish: {:?}", g.state.pending);
@@ -27,7 +32,12 @@ fn ruric_uncounterable_spell_survives_actual_cancel_and_enters_with_printed_keyw
             assert_eq!(g.object_view(cancel).zone, Zone::Graveyard);
             assert_eq!(g.object_view(ruric).zone, Zone::Battlefield);
             assert_eq!(stats(&g, ruric), (7, 7));
-            for keyword in [Keywords::REACH, Keywords::VIGILANCE, Keywords::TRAMPLE, Keywords::HEXPROOF] {
+            for keyword in [
+                Keywords::REACH,
+                Keywords::VIGILANCE,
+                Keywords::TRAMPLE,
+                Keywords::HEXPROOF,
+            ] {
                 assert!(g.keywords(ruric).contains(keyword));
             }
             g.restore(&saved).unwrap();
@@ -48,7 +58,7 @@ fn yuriko_never_grants_double_strike_when_two_creatures_attack() {
         act(&mut g, Action::Attack { card: second });
         act(&mut g, Action::FinishAttackers);
         assert!(!g.state.stack.iter().chain(g.state.pending_triggers.iter()).chain(g.state.ordering_triggers.iter())
-            .any(|s| s.card == yuriko && matches!(s.kind, StackKind::TriggeredAbility { .. })));
+            .any(|s| s.source.is_some_and(|source| source.id == yuriko) && matches!(s.kind, StackKind::TriggeredAbility { .. })));
         finish_combat_trigger(&mut g);
         assert!(!g.keywords(first).contains(Keywords::DOUBLE_STRIKE));
         assert!(!g.keywords(second).contains(Keywords::DOUBLE_STRIKE));
@@ -66,7 +76,7 @@ fn yuriko_trigger_does_not_grant_double_strike_to_reentered_attacker() {
         act(&mut g, Action::Attack { card: attacker });
         act(&mut g, Action::FinishAttackers);
         assert!(g.state.stack.iter().chain(g.state.pending_triggers.iter()).chain(g.state.ordering_triggers.iter())
-            .any(|s| s.card == yuriko && matches!(s.kind, StackKind::TriggeredAbility { .. })));
+            .any(|s| s.source.is_some_and(|source| source.id == yuriko) && matches!(s.kind, StackKind::TriggeredAbility { .. })));
         let prior = g.object_ref(attacker);
         g.move_object(attacker, Zone::Exile);
         g.move_object(attacker, Zone::Battlefield);

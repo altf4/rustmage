@@ -107,6 +107,19 @@ impl Game {
             StatValue::SourceHasNotDealtCombatDamage => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |(_, object)| i128::from(!object.dealt_combat_damage_this_incarnation)),
+            StatValue::DistinctControlledPlaneswalkerTypes => {
+                let mut distinct = std::collections::BTreeSet::new();
+                for (id, object) in objects() {
+                    if object.zone != Zone::Battlefield || object.controller != owner || kinds(id, object) & 64 == 0 { continue; }
+                    let live = subtypes(id);
+                    for &subtype in subtypes::PLANESWALKER_TYPES {
+                        if live.has(object.card, subtype) {
+                            distinct.insert(subtype);
+                        }
+                    }
+                }
+                i128::try_from(distinct.len()).capacity("planeswalker type count exhausted")
+            }
             StatValue::Fixed(n) => i128::from(n),
             StatValue::HasEnduringStory => i128::from(enduring_story),
             StatValue::SourceCounters(kind) => objects()
@@ -165,11 +178,20 @@ impl Game {
             StatValue::ControllerDomain => {
                 let mut mask = 0u8;
                 for (id, object) in objects() {
-                    if object.zone != Zone::Battlefield || object.controller != owner
-                        || kinds(id, object) & 2 == 0 { continue; }
+                    if object.zone != Zone::Battlefield
+                        || object.controller != owner
+                        || kinds(id, object) & 2 == 0
+                    {
+                        continue;
+                    }
                     let types = subtypes(id);
-                    for (bit, name) in ["Plains", "Island", "Swamp", "Mountain", "Forest"].iter().enumerate() {
-                        if types.has(object.card, name) { mask |= 1 << bit; }
+                    for (bit, name) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                        .iter()
+                        .enumerate()
+                    {
+                        if types.has(object.card, name) {
+                            mask |= 1 << bit;
+                        }
                     }
                 }
                 i128::from(mask.count_ones())
@@ -470,6 +492,7 @@ impl Game {
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount
             | AmountValue::ChosenX
+            | AmountValue::ReflexiveTargetLimit
             | AmountValue::ManaSpent
             | AmountValue::CastSpellManaValue
             | AmountValue::CastSpellManaSymbols(_)

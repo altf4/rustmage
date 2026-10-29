@@ -104,7 +104,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .count();
             attached += new
                 .iter()
-                .filter(|s| s.source_card.name() == "Goldvein Pick")
+                .filter(|s| s.source().is_some_and(|source| source.card.name() == "Goldvein Pick"))
                 .count();
             if !new.is_empty()
                 || before

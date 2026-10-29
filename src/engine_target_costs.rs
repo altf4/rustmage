@@ -99,7 +99,7 @@ impl Game {
             .state
             .announcing
             .as_ref()
-            .filter(|a| a.item.card == id && a.item.controller == actor)
+            .filter(|a| a.item.source.expect("cost announcement has object source").id == id && a.item.controller == actor)
             .map_or(0, Self::announcement_optional_reduction);
         self.target_spell_cost_with_extra(actor, id, base, targets, extra)
     }
@@ -161,11 +161,11 @@ impl Game {
         finished: bool,
     ) -> bool {
         if let StackKind::ActivatedAbility { ability } = a.item.kind
-            && Self::activation_target_sensitive(a.item.source_card, ability)
+            && Self::activation_target_sensitive(a.item.source.expect("cost announcement has object source").card, ability)
         {
             return self.announcement_activation_target_fundable(a, extra, finished);
         }
-        if a.item.kind != StackKind::Spell || a.item.source_card.target_cost_reduction().is_none() {
+        if a.item.kind != StackKind::Spell || a.item.source.expect("cost announcement has object source").card.target_cost_reduction().is_none() {
             return true;
         }
         if plan.is_none()
@@ -199,12 +199,12 @@ impl Game {
         let test = |cost| {
             let mut base = Self::with_offspring_cost(
                 cost,
-                a.item.source_card,
+                a.item.source.expect("cost announcement has object source").card,
                 offspring.unwrap_or_else(|| a.item.cast.is_some_and(|c| c.offspring == Some(true))),
             );
             base = Self::with_kicker_cost(
                 base,
-                a.item.source_card,
+                a.item.source.expect("cost announcement has object source").card,
                 a.item.cast.is_some_and(|c| c.kicker == Some(true)),
             );
             if a.forage
@@ -217,7 +217,7 @@ impl Game {
             }
             self.target_total(
                 a.item.controller,
-                a.item.card,
+                a.item.source.expect("cost announcement has object source").id,
                 base,
                 qualifies,
                 Self::announcement_optional_reduction(a),
@@ -225,7 +225,7 @@ impl Game {
             .is_some_and(|total| {
                 self.spell_can_fund_total(
                     a.item.controller,
-                    a.item.card,
+                    a.item.source.expect("cost announcement has object source").id,
                     total,
                     a.forage.as_ref().and_then(|f| f.route),
                 )
@@ -250,7 +250,7 @@ impl Game {
         let qualifies = self.completion_discount(&c) == Some(true);
         self.target_total(
             a.item.controller,
-            a.item.card,
+            a.item.source.expect("cost announcement has object source").id,
             base,
             qualifies,
             Self::announcement_optional_reduction(a),

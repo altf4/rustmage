@@ -14,7 +14,7 @@ impl Game {
             .state
             .announcing
             .as_ref()
-            .filter(|a| a.item.card == id && a.item.controller == actor)
+            .filter(|a| a.item.source.expect("cost announcement has object source").id == id && a.item.controller == actor)
             .map_or(0, Self::announcement_optional_reduction);
         self.scalar_x_total_with_extra(actor, id, base, x, self.effective_spell_card(id), extra)
     }
@@ -162,7 +162,7 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return Vec::new();
         };
-        let definition = a.item.source_card.activation(ability);
+        let definition = a.item.source.expect("cost announcement has object source").card.activation(ability);
         if a.power_up_costs.is_some() {
             let fundable = |value: u32| {
                 let mut probe = a.clone();
@@ -207,10 +207,10 @@ impl Game {
                             required: base.colored,
                             generic,
                             source: Some((
-                                a.item.object,
+                                a.item.source.expect("cost announcement has object source").object,
                                 ability,
                                 a.counter_payment.clone(),
-                                a.item.source_card,
+                                a.item.source.expect("cost announcement has object source").card,
                                 a.item.borrowed_slot,
                             )),
                         },
@@ -279,7 +279,7 @@ impl Game {
                 }
             }
             return Some(XChoiceView {
-                card: self.state.resolving.as_ref().unwrap().item.object,
+                card: self.state.resolving.as_ref()?.item.source?.object,
                 intervals: vec![XInterval {
                     minimum: 0,
                     maximum: lo as u32,
@@ -290,10 +290,10 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
-        let mut intervals = if a.item.kind == StackKind::Spell && a.item.source_card.life_x_cost() {
+        let mut intervals = if a.item.kind == StackKind::Spell && a.item.source.expect("cost announcement has object source").card.life_x_cost() {
             self.life_x_intervals(a)
         } else if a.item.kind == StackKind::Spell {
-            self.scalar_x_intervals(a.item.controller, a.item.card)
+            self.scalar_x_intervals(a.item.controller, a.item.source.expect("cost announcement has object source").id)
         } else {
             self.activation_x_intervals(a)
         };
@@ -309,7 +309,7 @@ impl Game {
             }
         }
         Some(XChoiceView {
-            card: a.item.object,
+            card: a.item.source.expect("cost announcement has object source").object,
             intervals,
         })
     }
@@ -416,11 +416,8 @@ impl Game {
                     .map_or(0, |f| f.power.max(0) as u128)
             }
             AmountValue::SourceLastKnownPower => {
-                if item.source_facts.is_creature() {
-                    item.source_facts.power.max(0) as u128
-                } else {
-                    0
-                }
+                item.source.filter(|source| source.facts.is_creature())
+                    .map_or(0, |source| source.facts.power.max(0) as u128)
             }
             AmountValue::SacrificedToughness => item
                 .sacrificed_toughness
@@ -439,8 +436,7 @@ impl Game {
                 .source_counter_payment
                 .filter(|payment| payment.paid && payment.kind == kind)
                 .map_or(0, |payment| u128::from(payment.amount)),
-            AmountValue::SourceCounterQuantity(kind) => self
-                .source_counter_quantity_live(item.object, kind)
+            AmountValue::SourceCounterQuantity(kind) => item.source.and_then(|source| self.source_counter_quantity_live(source.object, kind))
                 .map(u128::from)
                 .unwrap_or_else(|| {
                     item.source_counter_lki
@@ -451,11 +447,13 @@ impl Game {
             AmountValue::SourceToughness => self.source_toughness(item),
             AmountValue::SourceEquipmentCount => self.source_equipment_quantity(item),
             AmountValue::SourcePower => {
-                if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
-                    self.stats(item.card).power.max(0) as u128
-                } else {
-                    item.source_facts.power.max(0) as u128
-                }
+                item.source.map_or(0, |source| {
+                    if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
+                        self.stats(source.id).power.max(0) as u128
+                    } else {
+                        source.facts.power.max(0) as u128
+                    }
+                })
             }
             AmountValue::LifeEventAmount => {
                 item.life_event.expect("saved life event").amount.max(0) as u128
@@ -465,7 +463,13 @@ impl Game {
                     .checked_add(self.item_amount(*value, item))
                     .capacity("effect sum exhausted")
             }),
-            AmountValue::ChosenX => u128::from(item.loyalty_x.unwrap_or_else(|| u64::from(item.x.unwrap_or(0)))),
+            AmountValue::ReflexiveTargetLimit => {
+                u128::from(item.reflexive_target_limit.unwrap_or(0))
+            }
+            AmountValue::ChosenX => u128::from(
+                item.loyalty_x
+                    .unwrap_or_else(|| u64::from(item.x.unwrap_or(0))),
+            ),
             AmountValue::MilledCreatures => self
                 .state
                 .resolving
@@ -484,7 +488,7 @@ impl Game {
                 .item_amount(*value, item)
                 .checked_mul(u128::from(factor))
                 .capacity("effect amount representation exhausted"),
-            other => self.amount_value(other, item.object, item.controller),
+            other => item.source.map_or(0, |source| self.amount_value(other, source.object, item.controller)),
         }
     }
 }

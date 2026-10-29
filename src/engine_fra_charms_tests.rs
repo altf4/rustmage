@@ -947,7 +947,7 @@ fn fatehold_charm_returns_creature_spell_and_spell_copy() {
                         .state
                         .stack
                         .iter()
-                        .find(|s| s.card == target)
+                        .find(|s| s.source.is_some_and(|source| source.id == target))
                         .unwrap()
                         .clone();
                     let copy = g.allocate_spell_copy(&template, p.other());
@@ -7217,10 +7217,10 @@ mod candidate_followup;
 #[path = "engine_fra_second_followup_tests.rs"]
 mod second_followup;
 
-#[path = "engine_fra_scry_events_tests.rs"]
-mod scry_events;
 #[path = "engine_fra_tax_tests.rs"]
 mod fra_tax_tests;
+#[path = "engine_fra_scry_events_tests.rs"]
+mod scry_events;
 
 #[path = "engine_fra_third_followup_tests.rs"]
 mod third_followup;
@@ -7381,10 +7381,8 @@ mod engine_fra_candidate_audit_tests;
 #[path = "engine_fra_behold_tests.rs"]
 mod engine_fra_behold_tests;
 
-
 #[path = "engine_fra_behold_review_tests.rs"]
 mod engine_fra_behold_review_tests;
-
 
 #[path = "engine_fra_behold_cross_tests.rs"]
 mod engine_fra_behold_cross_tests;
@@ -7704,7 +7702,6 @@ mod engine_fra_jace_threshold_tests;
 #[path = "engine_fra_jace_reality_tests.rs"]
 mod engine_fra_jace_reality_tests;
 
-
 #[path = "engine_fra_jace_interaction_review_tests.rs"]
 mod engine_fra_jace_interaction_review_tests;
 
@@ -7719,3 +7716,66 @@ mod engine_fra_chandra_chill_tests;
 
 #[path = "engine_fra_pyre_jace_review_tests.rs"]
 mod engine_fra_pyre_jace_review_tests;
+
+#[path = "engine_fra_machinations_tests.rs"]
+mod engine_fra_machinations_tests;
+
+#[path = "engine_fra_loot_anomaly_tests.rs"]
+mod engine_fra_loot_anomaly_tests;
+
+#[path = "engine_fra_loot_anomaly_independent_tests.rs"]
+mod engine_fra_loot_anomaly_independent_tests;
+
+#[path = "engine_fra_null_summoner_tests.rs"]
+mod engine_fra_null_summoner_tests;
+
+#[path = "engine_fra_null_origin_independent_tests.rs"]
+mod engine_fra_null_origin_independent_tests;
+
+#[path = "engine_fra_sanctum_lurker_tests.rs"]
+mod engine_fra_sanctum_lurker_tests;
+
+#[path = "engine_fra_machinations_way_independent_tests.rs"]
+mod engine_fra_machinations_way_independent_tests;
+
+#[path = "engine_fra_seasoned_cryomancer_tests.rs"]
+mod engine_fra_seasoned_cryomancer_tests;
+
+#[path = "engine_fra_sanctum_lurker_independent_tests.rs"]
+mod engine_fra_sanctum_lurker_independent_tests;
+
+#[path = "engine_fra_seasoned_cryomancer_independent_tests.rs"]
+mod engine_fra_seasoned_cryomancer_independent_tests;
+
+#[path = "engine_fra_outside_pool_tests.rs"]
+mod engine_fra_outside_pool_tests;
+
+#[path = "engine_fra_uldaros_budget_tests.rs"]
+mod engine_fra_uldaros_budget_tests;
+
+#[path = "engine_fra_uldaros_budget_independent_tests.rs"]
+mod engine_fra_uldaros_budget_independent_tests;
+
+#[path = "engine_fra_planeswalker_type_count_tests.rs"]
+mod engine_fra_planeswalker_type_count_tests;
+
+#[path = "engine_fra_poison_ward_tests.rs"]
+mod engine_fra_poison_ward_tests;
+
+#[path = "engine_fra_proliferate_batch_tests.rs"]
+mod engine_fra_proliferate_batch_tests;
+
+#[path = "engine_fra_radiation_order_tests.rs"]
+mod engine_fra_radiation_order_tests;
+
+#[path = "engine_fra_self_replacement_tests.rs"]
+mod engine_fra_self_replacement_tests;
+
+#[path = "engine_fra_tam_proliferate_tests.rs"]
+mod engine_fra_tam_proliferate_tests;
+
+#[path = "engine_fra_tam_independent_tests.rs"]
+mod engine_fra_tam_independent_tests;
+
+#[path = "engine_fra_uldaros_echo_independent_tests.rs"]
+mod engine_fra_uldaros_echo_independent_tests;

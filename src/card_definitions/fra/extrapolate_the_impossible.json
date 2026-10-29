@@ -8,5 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "61597cd5f760739d2dfdaa5490112867702e5d89fc87a5b416b6a966628b1f95"
   },
-  "physical_metadata_sha256": "28d64b81c97d67eaa7b6e5f38700951c3311e9146a4b63837cff43aaf419d992"
+  "physical_metadata_sha256": "28d64b81c97d67eaa7b6e5f38700951c3311e9146a4b63837cff43aaf419d992",
+  "source_note": "Complete frozen Oracle and official release notes reviewed; pinned XMage class is unavailable. Remains gated pending outside-game foundation and full validation.",
+  "oracle_rulings": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes"
 }

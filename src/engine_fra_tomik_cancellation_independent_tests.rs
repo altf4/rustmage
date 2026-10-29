@@ -5,8 +5,17 @@ fn suppressed_copied_tomik_permits_two_attackers_and_reversible_cancellation() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let provider = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-        g.apply_temporary_copy(g.object_ref(provider), CopyRecipe::new(Card::from_name("Tomik, Orzhov Lawmage").unwrap()), CopyDeadline::EndOfTurn);
-        let walker = put(&mut g, p.other(), "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.apply_temporary_copy(
+            g.object_ref(provider),
+            CopyRecipe::new(Card::from_name("Tomik, Orzhov Lawmage").unwrap()),
+            CopyDeadline::EndOfTurn,
+        );
+        let walker = put(
+            &mut g,
+            p.other(),
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
         g.state.objects[walker as usize].counters.loyalty = 5;
         let a = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let b = put(&mut g, p, "Hill Giant", Zone::Battlefield);
@@ -29,7 +38,10 @@ fn suppressed_copied_tomik_permits_two_attackers_and_reversible_cancellation() {
         assert!(g.legal_actions().contains(&Action::FinishAttackers));
         g.restore(&selected).unwrap();
         assert!(!g.planeswalker_attack_limited(defender));
-        assert!(g.legal_actions().contains(&Action::AttackPlaneswalker { card: b, defender }));
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AttackPlaneswalker { card: b, defender })
+        );
     }
 }
 
@@ -38,8 +50,17 @@ fn copied_tomik_restricts_again_after_suppression_source_leaves() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let provider = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-        g.apply_temporary_copy(g.object_ref(provider), CopyRecipe::new(Card::from_name("Tomik, Orzhov Lawmage").unwrap()), CopyDeadline::EndOfTurn);
-        let walker = put(&mut g, p.other(), "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.apply_temporary_copy(
+            g.object_ref(provider),
+            CopyRecipe::new(Card::from_name("Tomik, Orzhov Lawmage").unwrap()),
+            CopyDeadline::EndOfTurn,
+        );
+        let walker = put(
+            &mut g,
+            p.other(),
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
         g.state.objects[walker as usize].counters.loyalty = 5;
         let aura = put(&mut g, p, "Fresh Start", Zone::Battlefield);
         g.state.objects[aura as usize].attached_to = Some(g.object_ref(provider));
@@ -60,12 +81,26 @@ fn copied_tomik_selected_attack_tax_abort_preserves_choices_and_mana() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let provider = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-        g.apply_temporary_copy(g.object_ref(provider), CopyRecipe::new(Card::from_name("Tomik, Orzhov Lawmage").unwrap()), CopyDeadline::EndOfTurn);
-        put(&mut g, p.other(), "Dáin, Lord of the Iron Hills", Zone::Battlefield);
+        g.apply_temporary_copy(
+            g.object_ref(provider),
+            CopyRecipe::new(Card::from_name("Tomik, Orzhov Lawmage").unwrap()),
+            CopyDeadline::EndOfTurn,
+        );
+        put(
+            &mut g,
+            p.other(),
+            "Dáin, Lord of the Iron Hills",
+            Zone::Battlefield,
+        );
         put(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
         put(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
         g.refresh_enduring_stories();
-        let walker = put(&mut g, p.other(), "Ajani, Caller of the Pride", Zone::Battlefield);
+        let walker = put(
+            &mut g,
+            p.other(),
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
         g.state.objects[walker as usize].counters.loyalty = 5;
         let a = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let b = put(&mut g, p, "Hill Giant", Zone::Battlefield);

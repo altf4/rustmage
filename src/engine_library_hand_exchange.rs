@@ -212,7 +212,7 @@ impl Game {
         }
     }
     pub(super) fn offer_source_counter_or_cast(&mut self, item: &SpellView) -> bool {
-        if self.on_battlefield(item.object.card) && self.object_ref(item.object.card) == item.object
+        if item.source.is_some_and(|source| self.on_battlefield(source.id) && self.object_ref(source.id) == source.object)
         {
             let skip_to = self.state.resolving.as_ref().unwrap().pc;
             self.state.pending = Pending::EffectOptional {
@@ -235,11 +235,12 @@ impl Game {
         let item = r.item.clone();
         if accept {
             self.state.resolving.as_mut().unwrap().milled.clear();
-            if self.on_battlefield(item.object.card)
-                && self.object_ref(item.object.card) == item.object
+            if let Some(source) = item.source
+                && self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object
             {
                 self.effect_counter_by(
-                    item.object.card,
+                    source.id,
                     CounterKind::PlusOne,
                     1,
                     item.controller,

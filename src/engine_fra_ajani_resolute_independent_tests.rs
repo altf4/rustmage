@@ -3,10 +3,22 @@ use super::*;
 fn ajani_independent_finish(g: &mut Game) {
     for _ in 0..128 {
         g.prepare_triggers();
-        if g.state.pending == Pending::Priority && g.state.stack.is_empty()
-            && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { return; }
-        choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }
-            | Action::ChooseReplacement { .. } | Action::ChooseZoneReplacement { .. }));
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.pending_triggers.is_empty()
+            && g.state.resolving.is_none()
+        {
+            return;
+        }
+        choose(g, |a| {
+            matches!(
+                a,
+                Action::Pass
+                    | Action::PutTrigger { .. }
+                    | Action::ChooseReplacement { .. }
+                    | Action::ChooseZoneReplacement { .. }
+            )
+        });
     }
     panic!("Ajani continuation did not finish: {:?}", g.state.pending);
 }
@@ -41,12 +53,26 @@ fn ajani_doubled_named_cats_and_life_triggers_follow_live_controller() {
         put(&mut g, player, "Doubling Season", Zone::Battlefield);
         let ajani = put(&mut g, player, "Ajani Resolute", Zone::Battlefield);
         g.state.objects[ajani as usize].counters.loyalty = 5;
-        act(&mut g, Action::AnnounceActivate { card: ajani, ability: 1, counter_payment: Counters::default() });
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: ajani,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
         pay(&mut g);
         ajani_independent_finish(&mut g);
-        let cats: Vec<CardId> = g.state.objects.iter().enumerate().filter_map(|(id, o)|
-            (o.is_token() && o.zone == Zone::Battlefield && o.card == Card::test_index(5462))
-                .then_some(id as CardId)).collect();
+        let cats: Vec<CardId> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                (o.is_token() && o.zone == Zone::Battlefield && o.card == Card::test_index(5462))
+                    .then_some(id as CardId)
+            })
+            .collect();
         assert_eq!(cats.len(), 2);
         for &cat in &cats {
             assert_eq!(g.object_view(cat).controller, player);
@@ -58,7 +84,11 @@ fn ajani_doubled_named_cats_and_life_triggers_follow_live_controller() {
             assert_eq!(g.stats(cat).toughness, 2);
             for viewer in [Player::P0, Player::P1] {
                 let view = g.observe(viewer);
-                let object = view.objects.iter().find(|o| o.reference.card == cat).unwrap();
+                let object = view
+                    .objects
+                    .iter()
+                    .find(|o| o.reference.card == cat)
+                    .unwrap();
                 assert_eq!(object.name(), "Ajani's Pridemate");
                 assert_eq!(object.colors, 1);
             }
@@ -85,7 +115,14 @@ fn ajani_stacked_emblems_apply_to_new_creatures_and_follow_live_control() {
         let mine = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         let theirs = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
         g.state.objects[ajani as usize].counters.loyalty = 11;
-        act(&mut g, Action::AnnounceActivate { card: ajani, ability: 2, counter_payment: Counters::default() });
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: ajani,
+                ability: 2,
+                counter_payment: Counters::default(),
+            },
+        );
         pay(&mut g);
         ajani_independent_finish(&mut g);
         g.create_emblem(player, Card::test_index(5463));

@@ -173,7 +173,7 @@ fn sos_hand_attack_root_freezes_recipients_stacks_triggers_and_expires() {
             g.state
                 .stack
                 .iter()
-                .filter(|s| s.source_card == Card::from_name("Root Manipulation").unwrap())
+                .filter(|s| s.source.unwrap().card == Card::from_name("Root Manipulation").unwrap())
                 .count()
                 + g.state.ordering_triggers.len(),
             2

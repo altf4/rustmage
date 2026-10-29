@@ -6,6 +6,10 @@ pub(crate) use ability_layers::{
     StaticAbilityGroup, UntapRestriction,
 };
 
+#[cfg(test)]
+#[path = "cards_test_counter_providers.rs"]
+pub(crate) mod test_counter_providers;
+
 #[path = "card_mana_symbols.rs"]
 mod mana_symbols;
 
@@ -86,7 +90,8 @@ impl CopyExceptions {
                 .sacrifice_abilities
                 .checked_add(other.sacrifice_abilities)
                 .capacity("copy sacrifice abilities"),
-            conditional_sacrifice_abilities: self.conditional_sacrifice_abilities
+            conditional_sacrifice_abilities: self
+                .conditional_sacrifice_abilities
                 .checked_add(other.conditional_sacrifice_abilities)
                 .capacity("copy conditional sacrifice abilities"),
             nightmare: self.nightmare || other.nightmare,
@@ -151,6 +156,8 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    /// Each distinct target must fit a distinct card-type slot.
+    DistinctCardTypeSlots,
     /// Pair shares at least one current card type, not a subtype or supertype.
     SharedCardType,
     /// Controlled by the player chosen in a distinct target group.
@@ -1108,9 +1115,15 @@ pub(crate) enum Instruction {
     ReturnOneLinkedExileToHand,
     /// Trigger once per declaration attacking the resolving controller's opponent,
     /// through (but not including) the beginning of that controller's next turn.
-    ScheduleOpponentAttackUntilNextTurn { ability: u16 },
+    ScheduleOpponentAttackUntilNextTurn {
+        ability: u16,
+    },
     /// Apply one temporary bonus to the exact attackers captured by that event.
-    GrowDeclaredAttackers { power: i32, toughness: i32, keywords: Keywords },
+    GrowDeclaredAttackers {
+        power: i32,
+        toughness: i32,
+        keywords: Keywords,
+    },
     WeakenDeclaredAttacker(i32),
     ExileOpponentLibrariesExceptBottom,
     ScheduleAttackTriggerThisTurn {
@@ -1154,6 +1167,10 @@ pub(crate) enum Instruction {
     /// Copy the actual triggering spell its chosen X times.
     CopyCastSpellChosenX,
     CopyPreparedCastSpell,
+    /// Exile legal graveyard targets together, then copy the exiled cards and offer free casts.
+    ExileTargetsCopyFreeWithBudget {
+        mana_value: u64,
+    },
     CopyPaidExiledCardsFree {
         maximum_casts: u16,
     },
@@ -1176,10 +1193,13 @@ pub(crate) enum Instruction {
     ExileEachLibraryTopCastFree,
     /// Until cleanup, each tap of a Mountain for mana triggers an extra red mana.
     AddMountainManaTrigger,
+    AllowJaceLoyaltyAnytime,
     /// Exile the controller’s top card, then offer one normal-cost cast.
     ExileTopMayCastPaid,
     /// Skip the following instructions if that offered cast committed.
-    IfOfferedCastCommitted { skip: usize },
+    IfOfferedCastCommitted {
+        skip: usize,
+    },
     ExileTargetLibraryTopCastFree {
         amount: u16,
         maximum_casts: u16,
@@ -1191,6 +1211,9 @@ pub(crate) enum Instruction {
         exile_instants_sorceries: bool,
     },
     CounterRelatedUnlessPayLife(u32),
+    /// Ask the triggering opponent to pay by getting poison counters.
+    MayPayWardPoison { amount: u16, skip: usize },
+    PayWardPoison(u16),
     /// One captured ward payer may discard a card or pay this mana cost.
     CounterRelatedUnlessDiscardOrPay(ManaCost),
     /// Ward payer may discard one card or decline and have the associated object countered.
@@ -1674,6 +1697,7 @@ pub(crate) enum Instruction {
     },
     CounterRelated,
     AddPoison(PlayerSet, u16),
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     MayOpponent {
         skip: usize,
     },
@@ -1699,6 +1723,11 @@ pub(crate) enum Instruction {
     DiscardHandRememberCount(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
+    /// Inherent rad-counter trigger: mill, lose life, then remove rad counters.
+    ResolveRadiation,
+    /// Event-local self-replacements belong to this resolving instruction.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
+    PutPlayerCountersWithSelf { players: PlayerSet, kind: PlayerCounterKind, amount: u64, effects: &'static [SelfPlayerCounterTemplate] },
     /// Mill the specified number, then queue a reflexive ability only if all were milled.
     MillThenReflexive {
         amount: u16,
@@ -1721,6 +1750,7 @@ pub(crate) enum Instruction {
     MayCounterSourceOtherwiseCast,
     RevealTargetHandSubsetDiscard(AmountValue),
     RevealTargetHandExileUntilSourceLeaves,
+    RevealTargetHandExileLinked,
     RevealHandDiscard {
         excluded_kinds: u16,
     },
@@ -1759,7 +1789,13 @@ pub(crate) enum Instruction {
     },
     CreateTokenIfControllerSacrificed(Card),
     OpponentsDiscardTwoDrawUnlessTwoNonland,
-    TargetStatsUntilNextTurn { power: i32, toughness: i32 },
+    RevealTwoOutsideCards,
+    /// Discard two, then create a reflexive trigger for actual nonland discards.
+    DiscardTwoNonlandReflexive(u16),
+    TargetStatsUntilNextTurn {
+        power: i32,
+        toughness: i32,
+    },
     ChooseObjects {
         kind: EffectChoiceKind,
         players: PlayerSet,
@@ -1780,7 +1816,10 @@ pub(crate) enum Instruction {
         group: u16,
     },
     /// A targeted planeswalker deals damage equal to its current loyalty.
-    LoyaltyDamage { source: u16, recipient: u16 },
+    LoyaltyDamage {
+        source: u16,
+        recipient: u16,
+    },
     PowerDamage {
         source: u16,
         recipient: u16,
@@ -1851,8 +1890,14 @@ pub(crate) enum Instruction {
     /// Single-player optional effect, including zero-card searches.
     /// Record APNAP optional wheel decisions before performing either player's action.
     BeginOptionalWheel(u16),
-    AskOptionalWheel { first: bool, skip: usize },
-    RecordOptionalWheel { first: bool, accept: bool },
+    AskOptionalWheel {
+        first: bool,
+        skip: usize,
+    },
+    RecordOptionalWheel {
+        first: bool,
+        accept: bool,
+    },
     ExecuteOptionalWheel,
     MayPlayer {
         player: PlayerSet,
@@ -2148,6 +2193,8 @@ pub(crate) enum Instruction {
     IfExiledCreature {
         skip: usize,
     },
+    /// Repeat this non-targeting counter event a frozen number of times.
+    Proliferate(AmountValue),
     RemoveAllCounters,
     RemoveAllCountersFrom(Subject),
     SnapshotDoubleCreatures(CreatureFilter),
@@ -2383,6 +2430,8 @@ pub(crate) enum AmountValue {
     SacrificedPower,
     /// Power saved on a successful sacrifice's separate reflexive packet.
     ReflexiveSacrificedPower,
+    /// Frozen count bounding a reflexive trigger’s optional targets.
+    ReflexiveTargetLimit,
     /// Current power frozen immediately before paying a sacrifice additional cost.
     SacrificeCostPower,
     /// Frozen at the beginning of resolution, before target destruction.
@@ -2426,6 +2475,8 @@ pub(crate) enum SourceCharacteristicFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    /// Number of different planeswalker types among planeswalkers controlled by the source controller.
+    DistinctControlledPlaneswalkerTypes,
     /// The source has not dealt combat damage in its current incarnation.
     SourceHasNotDealtCombatDamage,
     ControlledCreatureDiedThisTurn,
@@ -2684,12 +2735,54 @@ pub(crate) enum ReplacementSpec {
         add: u32,
         effects_only: bool,
     },
+    /// Replace a proliferate event by a number of events for the related player.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
+    Proliferate { relation: CastRelation, factor: u32, add: u32 },
+    /// Replace counters placed on a player related to the source controller.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
+    PlayerCounters {
+        kind: PlayerCounterKind,
+        relation: CastRelation,
+        /// Relation of the player placing the counter to the provider controller.
+        placed_by: Option<CastRelation>,
+        effects_only: bool,
+        factor: u32,
+        add: u32,
+    },
     DoubleTokens {
         effects_only: bool,
     },
     AddToken(Card),
     ReplaceArtifactTokens(Card),
     AddArtifactToken(Card),
+}
+
+/// One descendant event produced by a split player-counter replacement.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerCounterSplit {
+    pub to_opponent: bool,
+    pub kind: Option<PlayerCounterKind>,
+    pub factor: u32,
+    pub add: u32,
+}
+
+/// One typed same-effect counter replacement. Redirects are relative to each
+/// affected player; absence retains the original player or counter kind.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SelfPlayerCounterTemplate {
+    pub factor: u32,
+    pub add: u32,
+    pub redirect_to_opponent: bool,
+    pub redirect_kind: Option<PlayerCounterKind>,
+    pub split: &'static [PlayerCounterSplit],
+}
+
+/// Player counters currently represented by the game state.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
+pub enum PlayerCounterKind { Poison, Energy, Experience, Rad, Ticket }
+impl PlayerCounterKind {
+    pub const ALL: [Self; 5] = [Self::Poison, Self::Energy, Self::Experience, Self::Rad, Self::Ticket];
+    pub(crate) fn index(self) -> usize { self as usize }
 }
 
 /// Card-type bit reserved for battles.
@@ -3164,6 +3257,7 @@ pub(crate) enum CastFilter {
     InstantSorcery,
     Sorcery,
     Artifact,
+    Planeswalker,
     // Compiler vocabulary; no complete admitted card currently uses this filter.
     #[allow(dead_code)]
     Enchantment,
@@ -3226,6 +3320,7 @@ impl CastFilter {
             Self::InstantSorcery => card.kind_mask() & (4 | 8) != 0,
             Self::Sorcery => card.kind_mask() & 4 != 0,
             Self::Artifact => card.is_artifact(),
+            Self::Planeswalker => card.kind_mask() & 64 != 0,
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
             Self::AnyOf(filters) => filters
@@ -3427,6 +3522,9 @@ pub(crate) enum ReturnKind {
 pub(crate) enum TriggerCondition {
     /// The controller completed a positive scry or surveil instruction.
     ScryOrSurveil,
+    /// One event for each completed proliferate, even when no object was chosen.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
+    Proliferated(CastRelation),
     /// First declaration in the turn whose signed creature-power total reaches this threshold.
     FirstAttackWithTotalPowerAtLeast(u16),
     /// Pre-event observer and other permanent, with an actual owner-hand result.
@@ -3697,7 +3795,10 @@ pub(crate) enum TriggerCondition {
     OtherSubtypeEntersYou(&'static str),
     SubtypeEntersYou(&'static str),
     /// The entrant must match, and the intervening threshold excludes its exact incarnation.
-    SubtypeEntersYouWithOthers { subtype: &'static str, minimum: u16 },
+    SubtypeEntersYouWithOthers {
+        subtype: &'static str,
+        minimum: u16,
+    },
     ArtifactEntersYou,
     EnchantmentEntersYou,
     CreatureEntersYou,
@@ -3961,7 +4062,8 @@ impl ActivatedAbility {
                 assert!(
                     self.origin == ActivationOrigin::Battlefield
                         && self.cost.remove.is_none()
-                        && (self.cost.tap || (*kind == CounterKind::Loyalty && self.cost.loyalty == Some(0))),
+                        && (self.cost.tap
+                            || (*kind == CounterKind::Loyalty && self.cost.loyalty == Some(0))),
                     "variable counter cost requires a tap cost or variable loyalty cost"
                 );
                 Some(*kind)
@@ -4143,6 +4245,8 @@ mod generated {
     include!("generated/catalogue.rs");
 }
 pub use generated::{CATALOGUE_VERSION, CREATURE_TYPES};
+// The source-less sentinel must never alias a real catalogue identity.
+const _: () = assert!(generated::DEFINITIONS.len() < u16::MAX as usize);
 
 /// Creature types from the pinned Comprehensive Rules, including Time Lord.
 pub fn is_creature_type(subtype: &str) -> bool {
@@ -4188,6 +4292,8 @@ impl Card {
         generated::attached_subtype(self)
     }
     pub(crate) fn replacement_effects(self) -> &'static [ReplacementSpec] {
+        #[cfg(test)]
+        if let Some((_, replacements)) = test_counter_providers::provider(self) { return replacements; }
         generated::replacement_effects(self)
     }
     pub fn colors(self) -> u8 {
@@ -4381,6 +4487,8 @@ impl Card {
         generated::additional_cost(self)
     }
     pub(crate) fn static_ability_groups(self) -> &'static [StaticAbilityGroup] {
+        #[cfg(test)]
+        if let Some((groups, _)) = test_counter_providers::provider(self) { return groups; }
         authored::rules(self).map_or_else(
             || {
                 let groups = generated::static_ability_groups(self);
@@ -4447,7 +4555,8 @@ impl Card {
         generated::role(self)
     }
     pub(crate) fn aura_artifact_or_non_aura_enchantment(self) -> bool {
-        authored::rules(self).is_some_and(|rules| rules.extras.aura_artifact_or_non_aura_enchantment)
+        authored::rules(self)
+            .is_some_and(|rules| rules.extras.aura_artifact_or_non_aura_enchantment)
     }
     pub(crate) fn aura(self) -> Option<AuraSpec> {
         authored::rules(self).map_or_else(|| generated::aura(self), |rules| rules.aura)
@@ -5108,28 +5217,73 @@ pub(crate) mod composite_loyalty_fixture {
     std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
     pub(crate) struct Guard;
     impl Guard {
-        pub(crate) fn new() -> Self { Self::set(1) }
-        pub(crate) fn with_mana() -> Self { Self::set(2) }
-        pub(crate) fn with_mana_two_counters() -> Self { Self::set(3) }
-        fn set(mode: u8) -> Self { MODE.with(|value| { assert_eq!(value.replace(mode), 0); }); Self }
+        pub(crate) fn new() -> Self {
+            Self::set(1)
+        }
+        pub(crate) fn with_mana() -> Self {
+            Self::set(2)
+        }
+        pub(crate) fn with_mana_two_counters() -> Self {
+            Self::set(3)
+        }
+        fn set(mode: u8) -> Self {
+            MODE.with(|value| {
+                assert_eq!(value.replace(mode), 0);
+            });
+            Self
+        }
     }
-    impl Drop for Guard { fn drop(&mut self) { MODE.with(|value| value.set(0)); } }
-    pub(super) fn enabled() -> bool { MODE.with(|value| value.get() != 0) }
+    impl Drop for Guard {
+        fn drop(&mut self) {
+            MODE.with(|value| value.set(0));
+        }
+    }
+    pub(super) fn enabled() -> bool {
+        MODE.with(|value| value.get() != 0)
+    }
     pub(super) fn abilities() -> &'static [ActivatedAbility] {
-        match MODE.with(|value| value.get()) { 2 => MANA_ABILITIES, 3 => TWO_COUNTER_ABILITIES, _ => ABILITIES }
+        match MODE.with(|value| value.get()) {
+            2 => MANA_ABILITIES,
+            3 => TWO_COUNTER_ABILITIES,
+            _ => ABILITIES,
+        }
     }
     const fn ability(mana_component: bool, amount: u16) -> ActivatedAbility {
         ActivatedAbility {
-            exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
-            cycling: false, once_per_turn: false, sorcery: true,
-            cost: ActivationCost { colored: [0; 6], generic: if mana_component { 1 } else { 0 }, alternatives: &[],
-                additional: Some(AdditionalCost { kind: EffectChoiceKind::RemoveCreatureCounters(amount),
-                    filter: SacrificeFilter { keywords: Keywords::NONE, source_only: false, kinds: 1,
-                        nonland: false, other: false, tokens: None, artifact_enchantment_or_token: false,
-                        subtype: None } }),
-                mana_component, tap: false, sacrifice: false, exile_self: false,
-                discard: false, life: 0, remove: Some((None, 1)), loyalty: Some(-1) },
-            targets: TargetPlan::NONE, program: &[],
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            once_per_turn: false,
+            sorcery: true,
+            cost: ActivationCost {
+                colored: [0; 6],
+                generic: if mana_component { 1 } else { 0 },
+                alternatives: &[],
+                additional: Some(AdditionalCost {
+                    kind: EffectChoiceKind::RemoveCreatureCounters(amount),
+                    filter: SacrificeFilter {
+                        keywords: Keywords::NONE,
+                        source_only: false,
+                        kinds: 1,
+                        nonland: false,
+                        other: false,
+                        tokens: None,
+                        artifact_enchantment_or_token: false,
+                        subtype: None,
+                    },
+                }),
+                mana_component,
+                tap: false,
+                sacrifice: false,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: Some((None, 1)),
+                loyalty: Some(-1),
+            },
+            targets: TargetPlan::NONE,
+            program: &[],
         }
     }
     const ABILITIES: &[ActivatedAbility] = &[ability(false, 1)];

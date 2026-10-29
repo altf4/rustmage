@@ -157,7 +157,7 @@ impl Game {
     pub(super) fn evidence_intent_fundable(&self, collect: bool) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
         a.cost_options()
-            .any(|c| self.evidence_cast_fundable(a.item.controller, a.item.card, c, collect))
+            .any(|c| self.evidence_cast_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, c, collect))
     }
     fn evidence_selection(&self) -> &EvidenceSelection {
         self.state
@@ -302,7 +302,7 @@ impl Game {
         } else {
             let r = self.state.resolving.as_mut().unwrap();
             let e = r.evidence.take().unwrap();
-            let source = r.item.object;
+            let source = r.item.source.expect("evidence effect has source").object;
             self.commit_evidence(&e, source);
             self.run_program();
         }

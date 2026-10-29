@@ -45,6 +45,8 @@ pub(crate) enum AdditionalTriggerScope {
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub(crate) enum StaticAbilityFragment {
+    /// Cast the exact card exiled by this source's linked hand-reveal ability at threshold.
+    CastLinkedExileAtThreshold,
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
@@ -66,6 +68,8 @@ pub(crate) enum StaticAbilityFragment {
     ControlledAttackWithoutDefender,
     /// Controlled creatures with greater toughness assign combat damage using toughness.
     ControlledCombatDamageByGreaterToughness,
+    /// This source assigns combat damage using the magnitude of negative power.
+    SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
     /// Increase opponents' noncreature spell costs by generic mana.
@@ -114,6 +118,8 @@ pub(crate) enum StaticAbilityFragment {
     },
     /// Grant the immutable activated template to controlled planeswalkers.
     ControlledPlaneswalkerActivation(u16),
+    /// Planeswalkers this permanent's controller controls survive zero loyalty.
+    ControlledPlaneswalkersSurviveZeroLoyalty,
     /// Grant controlled planeswalkers the one-attacker restriction.
     ControlledPlaneswalkerAttackLimit,
     ControlledSubtypeKeywords {
@@ -155,6 +161,8 @@ pub(crate) enum StaticAbilityFragment {
     AttachedCounterProhibition,
     /// Prevent counters on all permanents matching these card-type bits.
     CounterProhibition(u16),
+    /// Players matching this relation cannot receive the specified counter kind.
+    PlayerCounterProhibition { kind: crate::cards::PlayerCounterKind, relation: crate::cards::CastRelation },
     SelfUntap(UntapRestriction),
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),

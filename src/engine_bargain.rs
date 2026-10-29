@@ -22,10 +22,10 @@ impl Game {
         cost: ManaCost,
         sacrifice: Option<ObjectRef>,
     ) -> bool {
-        if let Some(object) = sacrifice {
-            if !self.additional_candidate(COST, actor, self.object_ref(card), object) {
-                return false;
-            }
+        if let Some(object) = sacrifice
+            && !self.additional_candidate(COST, actor, self.object_ref(card), object)
+        {
+            return false;
         }
         let definition = self.effective_spell_card(card);
         let discount = if sacrifice.is_some() {
@@ -76,6 +76,6 @@ impl Game {
         sacrifice: Option<ObjectRef>,
     ) -> bool {
         a.cost_options()
-            .any(|cost| self.bargain_cost_fundable(a.item.controller, a.item.card, cost, sacrifice))
+            .any(|cost| self.bargain_cost_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, cost, sacrifice))
     }
 }

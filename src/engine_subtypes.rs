@@ -298,6 +298,106 @@ impl Serialize for GrantedSubtypes {
     }
 }
 
+// Complete pinned XMage SubType.PlaneswalkerType inventory, revision
+// 492369c7844b8d76479f0393ff9eb6b0b0cf30d7, SubType.java SHA256
+// be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2.
+pub(super) const PLANESWALKER_TYPES: &[&str] = &[
+    "Ajani",
+    "Aminatou",
+    "Angrath",
+    "Arlinn",
+    "Arzakon",
+    "Ashiok",
+    "Aurra",
+    "Bahamut",
+    "Basri",
+    "Bolas",
+    "Calix",
+    "Chandra",
+    "Comet",
+    "Dack",
+    "Dakkon",
+    "Daretti",
+    "Davriel",
+    "Dellian",
+    "Dihada",
+    "Domri",
+    "Dooku",
+    "Dovin",
+    "Dyfed",
+    "Ellywick",
+    "Elminster",
+    "Elspeth",
+    "Estrid",
+    "Feroz",
+    "Freyalise",
+    "Garruk",
+    "Gideon",
+    "Greensleeves",
+    "Grist",
+    "Guff",
+    "Huatli",
+    "Inzerva",
+    "Jace",
+    "Jared",
+    "Jaya",
+    "Jeska",
+    "Kaito",
+    "Karn",
+    "Kasmina",
+    "Kaya",
+    "Kiora",
+    "Koth",
+    "Liliana",
+    "Lolth",
+    "Luke",
+    "Lukka",
+    "Minsc",
+    "Mordenkainen",
+    "Nahiri",
+    "Narset",
+    "Niko",
+    "Nissa",
+    "Nixilis",
+    "Obi-Wan",
+    "Oko",
+    "Quintorius",
+    "Ral",
+    "Rey",
+    "Rowan",
+    "Saheeli",
+    "Samut",
+    "Sarkhan",
+    "Serra",
+    "Sidious",
+    "Sivitri",
+    "Snoke",
+    "Sorin",
+    "Szat",
+    "Tamiyo",
+    "Tasha",
+    "Teferi",
+    "Teyo",
+    "Tezzeret",
+    "Tibalt",
+    "Tyvar",
+    "Ugin",
+    "Urza",
+    "Venser",
+    "Vivien",
+    "Vraska",
+    "Vronos",
+    "Will",
+    "Windgrace",
+    "Worzel",
+    "Wrenn",
+    "Xenagos",
+    "Yanggu",
+    "Yanling",
+    "Yoda",
+    "Zariel",
+];
+
 // CR205.3g-k,m,q. Creature names come from the pinned complete type inventory.
 // Any remaining printed subtype in this permanent pool is a planeswalker type.
 fn subtype_card_types(subtype: &str) -> u16 {
@@ -802,6 +902,7 @@ impl Game {
         subject: Subject,
         types: &'static [&'static str],
     ) {
+        let Some(source) = item.source else { return; };
         assert!(types.iter().all(|t| crate::cards::is_creature_type(t)));
         let recipients: Vec<_> = self
             .keyword_subjects(item, subject)
@@ -820,7 +921,7 @@ impl Game {
                 .creature_types
                 .push(CreatureTypesEffectView {
                     recipient,
-                    source: item.object,
+                    source: source.object,
                     types,
                     additional: true,
                     timestamp,
@@ -833,6 +934,7 @@ impl Game {
         subject: Subject,
         kind: crate::cards::BasicLandType,
     ) {
+        let Some(source) = item.source else { return; };
         let recipients: Vec<_> = self
             .keyword_subjects(item, subject)
             .into_iter()
@@ -850,7 +952,7 @@ impl Game {
                 .basic_land_types
                 .push(BasicLandTypesEffectView {
                     recipient,
-                    source: item.object,
+                    source: source.object,
                     kind,
                     timestamp,
                 });
@@ -862,6 +964,7 @@ impl Game {
         subject: Subject,
         types: &'static [&'static str],
     ) {
+        let Some(source) = item.source else { return; };
         assert!(
             types
                 .iter()
@@ -886,7 +989,7 @@ impl Game {
                 .retain(|row| row.recipient != recipient);
             state.creature_types.push(CreatureTypesEffectView {
                 recipient,
-                source: item.object,
+                source: source.object,
                 types,
                 additional: false,
                 timestamp,

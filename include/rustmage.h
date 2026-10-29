@@ -12,6 +12,9 @@ uint32_t rm_abi_version(void);
  * Failure returns NULL and an owned error string. Free it with rm_string_free.
  * On success error_out is set to NULL. */
 RustmageSession *rm_new(const char *config_json, char **error_out);
+/* Envelope: {"config": <Config>, "outside": <OutsideGameConfig>}.
+ * Same error and ownership contract as rm_new. */
+RustmageSession *rm_new_with_outside(const char *envelope_json, char **error_out);
 /* Requests/responses are UTF-8 JSON. Result is owned, freed with rm_string_free.
  * On an "engine panic" error, discard this handle without further requests. */
 char *rm_request(RustmageSession *session, const char *request_json);

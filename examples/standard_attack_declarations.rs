@@ -189,8 +189,8 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             }
         }
         12 => {
-            if live(s.object) {
-                bump(l, s.object, a.turn, 2, 0, Keywords::NONE, 0);
+            if live(s.source().expect("example expects an object-backed packet").object) {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 2, 0, Keywords::NONE, 0);
             }
         }
         13 => {
@@ -286,7 +286,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Action::ChooseSpellCost { cost } = &action
                 && b.announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == NAMES[10])
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == NAMES[10]))
             {
                 hybrid[usize::from(*cost)] += 1;
             }
@@ -317,7 +317,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && !a.stack.iter().any(|x| x.id == s.id)
                 && a.outcome.is_none()
             {
-                let i = index(s.source_card).unwrap();
+                let i = s.source().and_then(|source| index(source.card)).unwrap();
                 verify(i, s, &b, &a, &mut ledger);
                 effects[i] += 1;
             }
@@ -328,28 +328,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert!(s.entering_object.is_none());
                 match s.kind {
                     StackKind::Spell => {
-                        if let Some(i) = index(s.source_card) {
+                        if let Some(i) = s.source().and_then(|source| index(source.card)) {
                             casts[i] += 1;
                         }
                     }
                     StackKind::TriggeredAbility { ability } => {
-                        let i = index(s.source_card).unwrap();
-                        let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
-                            panic!("unexpected {} seed{seed}", s.source_card.name())
+                        let i = s.source().and_then(|source| index(source.card)).unwrap();
+                        let n = debt.get_mut(&(s.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
+                            panic!("unexpected {} seed{seed}", s.source().expect("example expects an object-backed packet").card.name())
                         });
                         assert!(*n > 0);
                         *n -= 1;
                         triggers[i] += 1;
                     }
-                    StackKind::ActivatedAbility { .. } => assert!(s.source_card.is_token()),
+                    StackKind::ActivatedAbility { .. } => assert!(s.source().expect("example expects an object-backed packet").card.is_token()),
                     StackKind::CasualtyCopy
                     | StackKind::CopyEndStepSacrifice
+                    | StackKind::CopyEndStepConditionalSacrifice
                     | StackKind::DelayedReturn
                     | StackKind::DelayedTokenCreation { .. }
                     | StackKind::DelayedSacrifice
                     | StackKind::DelayedWarpExile
                     | StackKind::DelayedManifestDread
-                    | StackKind::SiegeDefeat => {
+                    | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => {
                         panic!("no delayed producer in this fixture")
                     }
                 }

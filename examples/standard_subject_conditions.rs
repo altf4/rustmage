@@ -197,7 +197,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let a = before.actions[j].clone();
             for packet in before.stack.iter().chain(before.announcing.iter()) {
                 if packet.kind == StackKind::Spell
-                    && packet.source_card.name() == NAMES[index]
+                    && packet.source().is_some_and(|source| source.card.name() == NAMES[index])
                     && seen.insert((seed, packet.id))
                 {
                     casts[index] += 1;
@@ -222,7 +222,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 rejects += 2;
             }
             let packet = before.stack.last().filter(|s| {
-                s.source_card.name() == NAMES[index]
+                s.source().is_some_and(|source| source.card.name() == NAMES[index])
                     && (matches!(index, 6 | 8) || s.kind != StackKind::Spell)
             });
             let subject = packet
@@ -264,7 +264,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     3 => old.card.is_token(),
                     4 => old.card.has_subtype("Cat"),
                     5 => old.card.has_subtype("Bear"),
-                    7 => old.card.has_subtype("Hero") && old.reference != packet.object,
+                    7 => old.card.has_subtype("Hero") && old.reference != packet.source().expect("example expects an object-backed packet").object,
                     8 => old.card.has_subtype("Ally"),
                     _ => unreachable!(),
                 };
@@ -333,7 +333,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     7 => {
                         assert_eq!(plus, if condition { 2 } else { 1 });
-                        if old.reference == packet.object {
+                        if old.reference == packet.source().expect("example expects an object-backed packet").object {
                             self_one += 1;
                         } else if condition {
                             other_two += 1;

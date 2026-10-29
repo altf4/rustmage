@@ -137,7 +137,7 @@ fn sos_audit_wu_repartee_all_consumers_trigger_once_on_cast_not_resolution() {
             .chain(g.state.pending_triggers.iter())
             .chain(g.state.ordering_triggers.iter())
             .filter(|s| matches!(s.kind, StackKind::TriggeredAbility { .. }))
-            .map(|s| s.card)
+            .map(|s| s.source.unwrap().id)
             .collect();
         for id in [graduation, inkwright, demonstrator, debater, hopesinger] {
             assert_eq!(sources.iter().filter(|&&s| s == id).count(), 1);

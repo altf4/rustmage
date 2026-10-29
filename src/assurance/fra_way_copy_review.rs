@@ -111,9 +111,9 @@ fn pyromancer_stack_source_is_walker_and_mana_survives_both_departures() {
             .unwrap();
         checked(&mut g, pay);
         let packet = g.state.stack.last().unwrap();
-        assert_eq!(packet.object, reference);
-        assert_eq!(packet.card, walker);
-        assert_eq!(packet.source_facts.card, g.object_view(walker).card);
+        assert_eq!(packet.source.unwrap().object, reference);
+        assert_eq!(packet.source.unwrap().id, walker);
+        assert_eq!(packet.source.unwrap().facts.card, g.object_view(walker).card);
         assert_eq!(packet.controller, p);
         let snapshot = g.snapshot();
         super::contracts::branch_contract(g.clone());

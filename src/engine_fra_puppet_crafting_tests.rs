@@ -40,7 +40,14 @@ fn puppet_rejects_plain_creatures_and_aura_enchantments_and_returns_from_graveya
         assert!(!g.aura_can_enchant(card, player, g.object_ref(aura)));
         assert!(g.aura_can_enchant(card, player, g.object_ref(artifact)));
         g.state.players[player.index()].mana = [0, 0, 0, 0, 1, 4];
-        act(&mut g, Action::AnnounceActivate { card: puppet, ability: 0, counter_payment: Counters::default() });
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: puppet,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
         pay(&mut g);
         settle(&mut g);
         assert_eq!(g.object_view(puppet).zone, Zone::Hand);

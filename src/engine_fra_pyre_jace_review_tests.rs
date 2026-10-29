@@ -10,7 +10,11 @@ fn review_pyre(g: &mut Game, player: Player) -> CardId {
 fn blank_pyre(g: &mut Game, player: Player, id: CardId) {
     let source = g.object_ref(id);
     let mut item = g.activation_item(player, id, 0);
-    item.targets = vec![BoundTarget { group: 0, target: Target::Card(id), object: Some(source) }];
+    item.targets = vec![BoundTarget {
+        group: 0,
+        target: Target::Card(id),
+        object: Some(source),
+    }];
     g.remove_target_abilities_until_end_of_turn(&item);
 }
 
@@ -21,10 +25,14 @@ fn pyre_blanking_prevents_new_prowess_but_not_an_already_queued_trigger() {
             let mut g = scenario(player);
             let pyre = review_pyre(&mut g, player);
             let shock = put(&mut g, player, "Shock", Zone::Hand);
-            if before { blank_pyre(&mut g, player, pyre); }
+            if before {
+                blank_pyre(&mut g, player, pyre);
+            }
             cast(&mut g, shock, Some(Target::Player(player.other())));
             g.prepare_triggers();
-            if !before { blank_pyre(&mut g, player, pyre); }
+            if !before {
+                blank_pyre(&mut g, player, pyre);
+            }
             let saved = g.snapshot();
             for _ in 0..2 {
                 settle(&mut g);
@@ -45,15 +53,33 @@ fn copied_pyre_token_enters_prepared_and_carries_the_prepare_face() {
         for _ in 0..2 {
             cast(&mut g, spell, Some(Target::Card(original)));
             settle(&mut g);
-            let copy = g.state.objects.iter().enumerate().find_map(|(id, object)| {
-                (object.zone == Zone::Battlefield && object.controller == player
-                    && object.is_copy_token() && object.card == Card::from_name("Pyre Rhymer // Molten Tide").unwrap())
+            let copy = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .find_map(|(id, object)| {
+                    (object.zone == Zone::Battlefield
+                        && object.controller == player
+                        && object.is_copy_token()
+                        && object.card == Card::from_name("Pyre Rhymer // Molten Tide").unwrap())
                     .then_some(id as CardId)
-            }).expect("copied Pyre token");
+                })
+                .expect("copied Pyre token");
             let reference = g.object_ref(copy);
             assert!(g.is_prepared(reference));
-            let row = g.state.preparations.as_ref().unwrap().iter().find(|r| r.permanent == reference).unwrap();
-            assert_eq!(g.state.objects[row.spell_copy.card as usize].card, Card::test_index(5461));
+            let row = g
+                .state
+                .preparations
+                .as_ref()
+                .unwrap()
+                .iter()
+                .find(|r| r.permanent == reference)
+                .unwrap();
+            assert_eq!(
+                g.state.objects[row.spell_copy.card as usize].card,
+                Card::test_index(5461)
+            );
             g.restore(&saved).unwrap();
         }
     }
@@ -68,7 +94,14 @@ fn jace_delayed_effect_tracks_attacker_after_its_controller_changes() {
         g.state.objects[source as usize].counters.loyalty = 5;
         g.register_battlefield_sources(source);
         let attacker = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
-        act(&mut g, Action::AnnounceActivate { card: source, ability: 1, counter_payment: Counters::default() });
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
         pay(&mut g);
         settle(&mut g);
         g.move_object(source, Zone::Exile);

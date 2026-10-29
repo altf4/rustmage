@@ -283,16 +283,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let before = g.observe(actor);
             let want = (round + actor.index()).is_multiple_of(2);
             for packet in packets(&before) {
-                if let Some(k) = index(packet.source_card) {
+                if let Some(k) = packet.source().and_then(|source| index(source.card)) {
                     match packet.kind {
                         StackKind::CasualtyCopy
                         | StackKind::CopyEndStepSacrifice
+                        | StackKind::CopyEndStepConditionalSacrifice
                         | StackKind::DelayedReturn
                         | StackKind::DelayedTokenCreation { .. }
                         | StackKind::DelayedSacrifice
                         | StackKind::DelayedWarpExile
                         | StackKind::DelayedManifestDread
-                        | StackKind::SiegeDefeat => {
+                        | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => {
                             panic!("no delayed producer in this fixture")
                         }
                         StackKind::Spell => {
@@ -310,7 +311,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         StackKind::TriggeredAbility { .. } => {
                             assert!(matches!(k, 2 | 6 | 7));
                             assert_eq!(packet.cast, None);
-                            assert_eq!(entries.get(&packet.object), Some(&true));
+                            assert_eq!(entries.get(&packet.source().expect("example expects an object-backed packet").object), Some(&true));
                         }
                         _ => panic!("unexpected kicker activation"),
                     }
@@ -368,10 +369,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if let Action::PayCosts { payment } = a
                 && let Some(ann) = &before.announcing
-                && let Some(k) = index(ann.source_card)
+                && let Some(k) = ann.source().and_then(|source| index(source.card))
             {
                 let pay = ann.cast.unwrap().kicker.unwrap();
-                let expected = cost(ann.source_card, pay);
+                let expected = cost(ann.source().expect("example expects an object-backed packet").card, pay);
                 let request = before.payment_request.as_ref().unwrap();
                 assert_eq!((request.required, request.generic), expected);
                 assert_eq!(
@@ -389,7 +390,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(a, Action::Pass)
                 && let Some(packet) = before.stack.last()
-                && index(packet.source_card).is_some()
+                && packet.source().and_then(|source| index(source.card)).is_some()
             {
                 active.insert(packet.id, (packet.clone(), g.observe(packet.controller)));
             }
@@ -430,7 +431,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let (packet, base) = active.remove(&id).unwrap();
                 let view = g.observe(packet.controller);
                 let p = packet.controller.index();
-                let k = index(packet.source_card).unwrap();
+                let k = packet.source().and_then(|source| index(source.card)).unwrap();
                 if g.outcome() == Some(rustmage::Outcome::Winner(packet.controller.other()))
                     && base.players[p].library_count == 0
                 {
@@ -454,12 +455,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let pay = if packet.kind == StackKind::Spell {
                     packet.cast.unwrap().kicker.unwrap()
                 } else {
-                    *entries.get(&packet.object).unwrap()
+                    *entries.get(&packet.source().expect("example expects an object-backed packet").object).unwrap()
                 };
-                if packet.kind == StackKind::Spell && packet.source_card.is_creature() {
-                    let creature = view.objects.iter().find(|v| v.id == packet.card).unwrap();
+                if packet.kind == StackKind::Spell && packet.source().is_some_and(|source| source.card.is_creature()) {
+                    let creature = view.objects.iter().find(|v| v.id == packet.source().expect("example expects an object-backed packet").id).unwrap();
                     assert_eq!(creature.zone, Zone::Battlefield);
-                    assert_eq!(creature.reference.generation, packet.object.generation + 1);
+                    assert_eq!(creature.reference.generation, packet.source().expect("example expects an object-backed packet").object.generation + 1);
                     entries.insert(creature.reference, pay);
                     if matches!(k, 2 | 6 | 7) && pay {
                         continue;

@@ -3,7 +3,10 @@
 use super::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(super) enum GrantedAbilityKind { Template(u16), PlaneswalkerAttackLimit }
+pub(super) enum GrantedAbilityKind {
+    Template(u16),
+    PlaneswalkerAttackLimit,
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct GrantedAbilityKey {
@@ -349,7 +352,7 @@ mod basic_land_type_tests {
                 mana: vec![mana(4, true)],
             }]),
         };
-        let result = apply_layer_six(vec![initial.clone()], &[change.clone()]);
+        let result = apply_layer_six(vec![initial.clone()], std::slice::from_ref(&change));
         assert_eq!(result.objects[0].mana, vec![mana(5, false), mana(4, true)]);
         let blank = LayerSixEffect {
             provider: None,

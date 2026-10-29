@@ -595,7 +595,7 @@ fn sos_final_mana_sculpt_uncast_copy_yields_zero_even_with_inherited_cast_info()
             .state
             .stack
             .iter()
-            .find(|s| s.card == victim && !s.is_copy)
+            .find(|s| s.source.is_some_and(|source| source.id == victim) && !s.is_copy)
             .unwrap();
         assert_eq!(original.cast.unwrap().mana_spent(), 6);
         let copy = g.state.stack.iter().find(|s| s.is_copy).unwrap();

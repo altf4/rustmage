@@ -217,7 +217,7 @@ fn score(o: &Observation, a: &Action, i: usize, seed: usize, casts: &[[u64; 2]; 
             let v = object(*id);
             if o.announcing
                 .as_ref()
-                .is_some_and(|a| a.source_card.name() == "Shock")
+                .is_some_and(|a| a.source().is_some_and(|source| source.card.name() == "Shock"))
                 && matches!(i, 15 | 16)
                 && v.card.name() == NAMES[i]
                 && v.owner == p
@@ -414,7 +414,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && before
                     .announcing
                     .as_ref()
-                    .is_some_and(|v| v.source_card.name() == "Glimpse the Core")
+                    .is_some_and(|v| v.source().is_some_and(|source| source.card.name() == "Glimpse the Core"))
             {
                 modes[usize::from(mode)] += 1;
             }
@@ -429,7 +429,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     req.required.iter().map(|x| u64::from(*x)).sum::<u64>()
                         + u64::from(req.generic)
                 );
-                if let Some(k) = index(ann.source_card) {
+                if let Some(k) = ann.source().and_then(|source| index(source.card)) {
                     if ann.kind == StackKind::Spell {
                         casts[k][actor.index()] += 1;
                         if ann.cast.unwrap().method == rustmage::CastMethod::Flashback {
@@ -442,7 +442,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(a, Action::Pass)
                 && let Some(packet) = before.stack.last()
-                && index(packet.source_card).is_some()
+                && packet.source().and_then(|source| index(source.card)).is_some()
                 && seen.insert(packet.id)
             {
                 active.insert(packet.id, (packet.clone(), before.clone()));
@@ -464,7 +464,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             assert_eq!(after.schema, rustmage::OBSERVATION_SCHEMA);
             max_bytes = max_bytes.max(g.state_bytes());
             if let (Some(ann), Action::PayCosts { .. }) = (&before.announcing, &a)
-                && let Some(k) = index(ann.source_card)
+                && let Some(k) = ann.source().and_then(|source| index(source.card))
                 && matches!(k, 8 | 12 | 17 | 18)
                 && ann.kind != StackKind::Spell
             {
@@ -472,7 +472,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     before
                         .objects
                         .iter()
-                        .find(|v| v.id == ann.card)
+                        .find(|v| v.id == ann.source().expect("example expects an object-backed packet").id)
                         .unwrap()
                         .zone,
                     Zone::Hand
@@ -481,7 +481,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     after
                         .objects
                         .iter()
-                        .find(|v| v.id == ann.card)
+                        .find(|v| v.id == ann.source().expect("example expects an object-backed packet").id)
                         .unwrap()
                         .zone,
                     Zone::Graveyard
@@ -508,7 +508,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if a == Action::FinishSearch {
                     let packet = before.resolving.as_ref().unwrap();
-                    if let Some(k) = index(packet.source_card) {
+                    if let Some(k) = packet.source().and_then(|source| index(source.card)) {
                         searches[k][actor.index()] += 1;
                     }
                     assert_eq!(
@@ -536,14 +536,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     zeros += u64::from(f.selected.is_empty());
-                    if packet.source_card.name() == "Spinewoods Armadillo" {
+                    if packet.source().is_some_and(|source| source.card.name() == "Spinewoods Armadillo") {
                         assert_eq!(
                             after.players[actor.index()].life,
                             before.players[actor.index()].life + 3
                         );
                         life3 += 1;
                     }
-                    if packet.source_card.name() == "Call the Mountain Chocobo" {
+                    if packet.source().is_some_and(|source| source.card.name() == "Call the Mountain Chocobo") {
                         let birds = |o: &Observation| {
                             o.objects
                                 .iter()
@@ -566,7 +566,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .collect::<Vec<_>>();
             for id in done {
                 let (packet, base) = active.remove(&id).unwrap();
-                let k = index(packet.source_card).unwrap();
+                let k = packet.source().and_then(|source| index(source.card)).unwrap();
                 let p = packet.controller.index();
                 effects[k][p] += 1;
                 if k == 6 && packet.mode == Some(1) {
@@ -585,7 +585,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && base
                         .objects
                         .iter()
-                        .any(|v| v.id == packet.card && v.zone == Zone::Graveyard)
+                        .any(|v| v.id == packet.source().expect("example expects an object-backed packet").id && v.zone == Zone::Graveyard)
                     && after.players[p].cards_drawn_this_turn
                         > base.players[p].cards_drawn_this_turn
                 {
@@ -599,7 +599,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         after
                             .objects
                             .iter()
-                            .find(|v| v.id == packet.card)
+                            .find(|v| v.id == packet.source().expect("example expects an object-backed packet").id)
                             .unwrap()
                             .zone,
                         Zone::Exile

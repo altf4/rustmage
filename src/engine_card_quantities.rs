@@ -129,14 +129,14 @@ impl Game {
             .map(|_| self.counter_count(source.card, kind))
     }
     pub(super) fn refresh_local_source_counter_quantities(&self, item: &mut SpellView) {
+        let Some(source) = item.source.map(|source| source.object) else { return; };
         if item.source_counter_lki.is_some()
             && self
                 .state
                 .objects
-                .get(item.object.card as usize)
-                .is_some_and(|object| object.generation == item.object.generation)
+                .get(source.card as usize)
+                .is_some_and(|object| object.generation == source.generation)
         {
-            let source = item.object;
             item.refresh_counter_quantities(|kind| {
                 self.source_counter_quantity_live(source, kind)
                     .expect("exact live quantity source")
@@ -153,7 +153,7 @@ impl Game {
             .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
             .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
         {
-            if item.object == before.reference {
+            if item.source.is_some_and(|source| source.object == before.reference) {
                 item.refresh_counter_quantities(|kind| before.counters.get(kind));
             }
         }

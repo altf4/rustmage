@@ -20,7 +20,7 @@ impl Game {
             .map(|id| id as CardId)
             .filter(|&id| {
                 self.on_battlefield(id)
-                    && self.object_ref(id) != item.object
+                    && item.source.is_none_or(|source| self.object_ref(id) != source.object)
                     && self.is_creature(id)
                     && parity.matches(self.object_mana_value(id))
                     && !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)

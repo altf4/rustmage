@@ -169,7 +169,11 @@ impl EntryMove {
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
-            + self.atomic_cost.as_ref().map_or(0, |a| std::mem::size_of::<AtomicCostCheckpoint>() + a.bytes + a.components.len() * std::mem::size_of::<(ObjectRef, Zone)>())
+            + self.atomic_cost.as_ref().map_or(0, |a| {
+                std::mem::size_of::<AtomicCostCheckpoint>()
+                    + a.bytes
+                    + a.components.len() * std::mem::size_of::<(ObjectRef, Zone)>()
+            })
             + self.temporary_copy.as_ref().map_or(0, |item| {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             })
@@ -179,8 +183,9 @@ impl EntryBatch {
                 .moves
                 .iter()
                 .map(|m| {
-                    m.delayed_return_exile.as_ref().map_or(0, |item| std::mem::size_of::<SpellView>() + item.owned_bytes())
-                        + m.counters.owned_bytes()
+                    m.delayed_return_exile.as_ref().map_or(0, |item| {
+                        std::mem::size_of::<SpellView>() + item.owned_bytes()
+                    }) + m.counters.owned_bytes()
                         + m.before.counters.owned_bytes()
                         + m.before.temporary_copy_bytes()
                         + m.source_before.as_ref().map_or(0, |v| {
@@ -325,7 +330,11 @@ impl Game {
     pub(super) fn stage_temporary_copy_entries(&mut self, moves: Vec<EntryMove>, item: &SpellView) {
         self.stage_entries_inner(moves, None, None, Some(Box::new(item.clone())), None);
     }
-    pub(super) fn stage_atomic_cost_entries(&mut self, moves: Vec<EntryMove>, checkpoint: AtomicCostCheckpoint) {
+    pub(super) fn stage_atomic_cost_entries(
+        &mut self,
+        moves: Vec<EntryMove>,
+        checkpoint: AtomicCostCheckpoint,
+    ) {
         self.stage_entries_inner(moves, None, None, None, Some(Box::new(checkpoint)));
     }
     fn stage_entries_inner(
@@ -727,7 +736,9 @@ impl Game {
             let before_battle = movement.before.kinds & crate::cards::BATTLE_KIND != 0;
             let manifest_face = movement.before.card;
             let mut before = movement.source_before.map_or(movement.before, |v| *v);
-            let plan = movement.zone_plan.clone()
+            let plan = movement
+                .zone_plan
+                .clone()
                 .filter(|plan| plan.destination == movement.destination)
                 .unwrap_or_else(|| {
                     let rules = self.freeze_zone_rules(&before, movement.destination, None);
@@ -1149,17 +1160,30 @@ impl Game {
             let mut batch = *self.state.entry_batch.take().unwrap();
             if let Some(checkpoint) = batch.atomic_cost.take() {
                 let invalid = checkpoint.components.iter().any(|&(reference, zone)| {
-                    self.state.objects.get(reference.card as usize).is_none_or(|object|
-                        object.generation != reference.generation || object.zone != zone)
+                    self.state
+                        .objects
+                        .get(reference.card as usize)
+                        .is_none_or(|object| {
+                            object.generation != reference.generation || object.zone != zone
+                        })
                 });
                 if invalid {
                     let mut before = *checkpoint.before;
-                    zone_replacements::transfer_live_replay(&mut self.state.zone_rules, &mut before.zone_rules);
+                    zone_replacements::transfer_live_replay(
+                        &mut self.state.zone_rules,
+                        &mut before.zone_rules,
+                    );
                     self.state = before;
                     if let Some(pc) = checkpoint.failure_pc {
-                        self.state.resolving.as_mut().expect("atomic cost failure continuation").pc = pc;
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .expect("atomic cost failure continuation")
+                            .pc = pc;
                     }
-                    if self.state.resolving.is_some() { self.run_program(); }
+                    if self.state.resolving.is_some() {
+                        self.run_program();
+                    }
                     return false;
                 }
             }

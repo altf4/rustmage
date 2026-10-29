@@ -123,19 +123,19 @@ fn score(o: &Observation, a: &Action, i: usize, seed: usize, fallback: bool) -> 
         } => {
             let v = obj(*id);
             let source = o.announcing.as_ref().unwrap();
-            if source.source_card.name() == "Fell" {
+            if source.source().is_some_and(|source| source.card.name() == "Fell") {
                 if v.owner == p && v.card.name() == "Miner's Guidewing" {
                     2000
                 } else {
                     50
                 }
-            } else if source.source_card.name() == "Get Lost" {
+            } else if source.source().is_some_and(|source| source.card.name() == "Get Lost") {
                 if v.owner != p && v.card.is_creature() {
                     1800
                 } else {
                     500
                 }
-            } else if source.source_card.name() == "Over the Edge" && source.mode == Some(0) {
+            } else if source.source().is_some_and(|source| source.card.name() == "Over the Edge") && source.mode == Some(0) {
                 if is_map(v.card) {
                     2000
                 } else if v.owner != p {
@@ -359,21 +359,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 match item.kind {
                     StackKind::CasualtyCopy
                     | StackKind::CopyEndStepSacrifice
+                    | StackKind::CopyEndStepConditionalSacrifice
                     | StackKind::DelayedReturn
                     | StackKind::DelayedTokenCreation { .. }
                     | StackKind::DelayedSacrifice
                     | StackKind::DelayedWarpExile
                     | StackKind::DelayedManifestDread
-                    | StackKind::SiegeDefeat => {
+                    | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => {
                         panic!("no delayed producer in this fixture")
                     }
                     StackKind::Spell => {
-                        if let Some(k) = index(item.source_card) {
+                        if let Some(k) = item.source().and_then(|source| index(source.card)) {
                             casts[k][p.index()] += 1;
                         }
                     }
-                    StackKind::ActivatedAbility { .. } if is_map(item.source_card) => {
-                        if let Some(k) = provenance.get(&item.object) {
+                    StackKind::ActivatedAbility { .. } if item.source().is_some_and(|source| is_map(source.card)) => {
+                        if let Some(k) = provenance.get(&item.source().expect("example expects an object-backed packet").object) {
                             activations[*k][p.index()] += 1;
                         }
                     }
@@ -382,7 +383,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(action, Action::Pass)
                 && let Some(item) = before.stack.last()
-                && (index(item.source_card).is_some() || is_map(item.source_card))
+                && (item.source().and_then(|source| index(source.card)).is_some() || item.source().is_some_and(|source| is_map(source.card)))
             {
                 active.insert(item.id, (item.clone(), g.observe(item.controller)));
             }
@@ -513,7 +514,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let (item, base) = active.remove(&id).unwrap();
                 let view = g.observe(item.controller);
                 let owner = item.controller;
-                let k = index(item.source_card);
+                let k = item.source().and_then(|source| index(source.card));
                 let invalid = !item.targets.is_empty()
                     && item.targets.iter().all(|t| {
                         t.object
@@ -522,8 +523,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if invalid {
                     continue;
                 }
-                if item.kind == StackKind::Spell && item.source_card.is_creature() {
-                    let v = view.objects.iter().find(|v| v.id == item.card).unwrap();
+                if item.kind == StackKind::Spell && item.source().is_some_and(|source| source.card.is_creature()) {
+                    let v = view.objects.iter().find(|v| v.id == item.source().expect("example expects an object-backed packet").id).unwrap();
                     assert_eq!(v.zone, Zone::Battlefield);
                     let expected = [
                         (2, 1),
@@ -629,12 +630,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                         14 => {
                             if let Some(v) =
-                                view.objects.iter().find(|v| v.reference == item.object)
+                                view.objects.iter().find(|v| v.reference == item.source().expect("example expects an object-backed packet").object)
                             {
                                 let old = base
                                     .objects
                                     .iter()
-                                    .find(|v| v.reference == item.object)
+                                    .find(|v| v.reference == item.source().expect("example expects an object-backed packet").object)
                                     .unwrap();
                                 assert_eq!(v.power, old.power + 1);
                                 assert!(v.keywords.contains(Keywords::CANT_BE_BLOCKED));

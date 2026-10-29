@@ -17,15 +17,26 @@ fn jiang_counts_discards_redirected_to_exile_and_replays() {
         act(&mut g, Action::Attack { card: attacker });
         act(&mut g, Action::FinishAttackers);
         for _ in 0..32 {
-            if g.legal_actions().contains(&Action::Discard { card: selected }) { break; }
-            choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+            if g.legal_actions()
+                .contains(&Action::Discard { card: selected })
+            {
+                break;
+            }
+            choose(&mut g, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
         }
-        assert!(g.legal_actions().contains(&Action::Discard { card: selected }));
+        assert!(
+            g.legal_actions()
+                .contains(&Action::Discard { card: selected })
+        );
         let library = g.state.players[p.index()].library.len();
         let saved = g.snapshot();
         super::super::contracts::branch_contract(g.clone());
         for replay in 0..2 {
-            if replay == 1 { g.restore(&saved).unwrap(); }
+            if replay == 1 {
+                g.restore(&saved).unwrap();
+            }
             act(&mut g, Action::Discard { card: selected });
             settle(&mut g);
             assert_eq!(g.object_view(selected).zone, Zone::Exile);

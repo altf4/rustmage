@@ -23,7 +23,9 @@ pub struct ResolutionPaymentView {
     pub victim: Option<u64>,
     pub exile: bool,
 }
-fn is_false(value: &bool) -> bool { !*value }
+fn is_false(value: &bool) -> bool {
+    !*value
+}
 impl Game {
     /// Explicit counters share one check. Abilities are independent of their source spell.
     pub(super) fn counter_stack_item(&mut self, id: u64, exile: bool) -> bool {
@@ -32,14 +34,15 @@ impl Game {
         };
         let victim = &self.state.stack[index];
         if victim.kind == StackKind::Spell {
+            let Some(source) = victim.source else { return false; };
             if self.state.uncounterable_spell_ids.as_deref().is_some_and(|ids| ids.contains(&victim.id))
-                || victim.source_card.cannot_be_countered()
-                || self.controlled_spells_uncounterable(victim.controller, victim.source_card)
+                || source.card.cannot_be_countered()
+                || self.controlled_spells_uncounterable(victim.controller, source.card)
             {
                 return false;
             }
             self.move_object(
-                victim.card,
+                source.id,
                 if exile { Zone::Exile } else { Zone::Graveyard },
             );
         } else {
@@ -53,13 +56,14 @@ impl Game {
             let Some(victim) = self.bound_stack_item(bound).cloned() else {
                 continue;
             };
-            let permanent = PermanentType::ALL
+            let Some(source) = victim.source else { continue; };
+            let permanent = victim.kind == StackKind::Spell && PermanentType::ALL
                 .into_iter()
-                .any(|kind| victim.source_card.kind_mask() & kind.mask() != 0);
+                .any(|kind| source.card.kind_mask() & kind.mask() != 0);
             if self.counter_stack_item(victim.id, permanent) && permanent && !victim.is_copy {
-                let after = self.object_ref(victim.card);
-                if after != victim.object
-                    && self.state.objects[victim.card as usize].zone == Zone::Exile
+                let after = self.object_ref(source.id);
+                if after != source.object
+                    && self.state.objects[source.id as usize].zone == Zone::Exile
                 {
                     self.grant_exile_free_permission(item.controller, after);
                 }
@@ -142,7 +146,15 @@ impl Game {
                     granted: true,
                     origin: self.copy_ability_origin(grant.grantor),
                 });
-                if self.queue_trigger_from(&source, usize::from(grant.ability.expect("conditional ward has a trigger template")), Some(event)) {
+                if self.queue_trigger_from(
+                    &source,
+                    usize::from(
+                        grant
+                            .ability
+                            .expect("conditional ward has a trigger template"),
+                    ),
+                    Some(event),
+                ) {
                     self.state
                         .pending_triggers
                         .last_mut()
@@ -203,10 +215,23 @@ impl Game {
         true
     }
     pub(super) fn start_ward_discard_only(&mut self, item: &SpellView) -> bool {
-        if !self.start_ward_discard_or_mana(item, ManaCost { colored: [0; 6], generic: 0 }) {
+        if !self.start_ward_discard_or_mana(
+            item,
+            ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            },
+        ) {
             return false;
         }
-        self.state.resolving.as_mut().unwrap().mana_payment.as_mut().unwrap().discard_only = true;
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .mana_payment
+            .as_mut()
+            .unwrap()
+            .discard_only = true;
         true
     }
     pub(super) fn finish_ward_discard(&mut self, card: CardId) {
@@ -214,7 +239,11 @@ impl Game {
         let request = resolution.mana_payment.take().unwrap();
         assert!(request.discard);
         resolution.choice = None;
-        let cause = if request.discard_only { request.payer } else { resolution.item.controller };
+        let cause = if request.discard_only {
+            request.payer
+        } else {
+            resolution.item.controller
+        };
         self.discard_batch_caused(&[card], None, Some(cause));
         self.run_program();
     }

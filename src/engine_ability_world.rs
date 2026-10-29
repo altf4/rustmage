@@ -146,7 +146,9 @@ pub(super) trait CharacteristicWorld {
         let keywords = recipe
             .overrides
             .map_or(Keywords::NONE, |value| value.keywords);
-        if recipe.exceptions.sacrifice_abilities != 0 || recipe.exceptions.conditional_sacrifice_abilities != 0 {
+        if recipe.exceptions.sacrifice_abilities != 0
+            || recipe.exceptions.conditional_sacrifice_abilities != 0
+        {
             keywords.union(Keywords::HASTE)
         } else {
             keywords
@@ -208,13 +210,12 @@ pub(super) trait CharacteristicWorld {
         if !card.is_land() && card.mana_color().is_some() {
             return card.mana_color();
         }
-        if self.kinds(id) & 2 != 0 {
-            if let Some(color) = ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+        if self.kinds(id) & 2 != 0
+            && let Some(color) = ["Plains", "Island", "Swamp", "Mountain", "Forest"]
                 .iter()
                 .position(|subtype| self.subtypes(id).has(card, subtype))
-            {
-                return Some(color);
-            }
+        {
+            return Some(color);
         }
         if card.is_land() && card.printed_intrinsic_mana_colors().next().is_some() {
             None
@@ -531,8 +532,11 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .any(|row| return_ability_modification::active(self, row))
                 || state.source_linked_effects.iter().any(|row| {
-                    matches!(row.kind, SourceLinkedEffectKind::RemoveAbilities | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn)
-                        && source_linked_effects::active(self, row)
+                    matches!(
+                        row.kind,
+                        SourceLinkedEffectKind::RemoveAbilities
+                            | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
+                    ) && source_linked_effects::active(self, row)
                 })
                 || state.ability_removal_sources.iter().any(|&source| {
                     self.object(source.card).zone == Zone::Battlefield
@@ -590,7 +594,11 @@ pub(super) trait CharacteristicWorld {
                     && return_ability_modification::active(self, row)
             }) || state.source_linked_effects.iter().any(|row| {
                 row.recipient == self.reference(id)
-                    && matches!(row.kind, SourceLinkedEffectKind::RemoveAbilities | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn)
+                    && matches!(
+                        row.kind,
+                        SourceLinkedEffectKind::RemoveAbilities
+                            | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
+                    )
                     && source_linked_effects::active(self, row)
             })
         }) {
@@ -723,17 +731,16 @@ pub(super) trait CharacteristicWorld {
                 && !(!self.definition(id).is_land()
                     && evaluation.result.objects[id as usize].printed
                     && self.definition(id).mana_color().is_some())
+                && let Some(first) = self.intrinsic_mana_color(id)
             {
-                if let Some(first) = self.intrinsic_mana_color(id) {
-                    let mut production = [0; 6];
-                    production[first] = 1;
-                    if let Some(index) = result.iter().position(|grant| {
-                        grant.subtype_derived
-                            && grant.source == self.reference(id)
-                            && grant.production == ManaProduction::Fixed(production)
-                    }) {
-                        result.remove(index);
-                    }
+                let mut production = [0; 6];
+                production[first] = 1;
+                if let Some(index) = result.iter().position(|grant| {
+                    grant.subtype_derived
+                        && grant.source == self.reference(id)
+                        && grant.production == ManaProduction::Fixed(production)
+                }) {
+                    result.remove(index);
                 }
             }
             return result;
@@ -897,8 +904,14 @@ impl CharacteristicWorld for Game {
 }
 
 /// Evaluate the printed Aura restriction in either live or projected worlds.
-pub(super) fn aura_artifact_or_non_aura_enchantment<W: CharacteristicWorld + ?Sized>(world: &W, aura: Card, id: CardId) -> bool {
-    if !aura.aura_artifact_or_non_aura_enchantment() { return true; }
+pub(super) fn aura_artifact_or_non_aura_enchantment<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    aura: Card,
+    id: CardId,
+) -> bool {
+    if !aura.aura_artifact_or_non_aura_enchantment() {
+        return true;
+    }
     let kinds = world.kinds(id);
     kinds & 16 != 0 || (kinds & 32 != 0 && !world.subtypes(id).has(world.object(id).card, "Aura"))
 }
@@ -941,13 +954,18 @@ impl ManaProduction {
                 // status can depend on that tap in either the live or projected world.
                 let mut object = world.object(source).clone();
                 object.tapped = true;
-                let tapped = SourceTappedWorld { parent: world, source, object };
+                let tapped = SourceTappedWorld {
+                    parent: world,
+                    source,
+                    object,
+                };
                 let controller = tapped.object(source).controller;
                 let mut powers = Vec::new();
                 for id in 0..tapped.game().state.objects.len() {
                     let id = id as CardId;
                     let object = tapped.object(id);
-                    if object.zone == Zone::Battlefield && object.controller == controller
+                    if object.zone == Zone::Battlefield
+                        && object.controller == controller
                         && tapped.kinds(id) & 1 != 0
                     {
                         powers.push(tapped.power(id));

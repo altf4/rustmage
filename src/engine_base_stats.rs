@@ -27,33 +27,56 @@ pub struct ResolvedStatSubjectView {
     pub departure_power: Option<i128>,
 }
 impl Game {
-    pub(super) fn target_stats_until_next_turn(&mut self, item: &SpellView, power: i32, toughness: i32) {
-        let recipients = self.keyword_subjects(item, Subject::Targets).into_iter()
-            .filter(|&id| self.on_battlefield(id)).map(|id| self.object_ref(id)).collect::<Vec<_>>();
-        if recipients.is_empty() { return; }
+    pub(super) fn target_stats_until_next_turn(
+        &mut self,
+        item: &SpellView,
+        power: i32,
+        toughness: i32,
+    ) {
+        let recipients = self
+            .keyword_subjects(item, Subject::Targets)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id))
+            .map(|id| self.object_ref(id))
+            .collect::<Vec<_>>();
+        if recipients.is_empty() {
+            return;
+        }
         let roles = self.state.roles.get_or_insert_default();
-        roles.until_next_turn_stats.extend(recipients.into_iter().map(|recipient| UntilNextTurnStatsView {
-            recipient, controller: item.controller, power, toughness,
-        }));
+        roles
+            .until_next_turn_stats
+            .extend(
+                recipients
+                    .into_iter()
+                    .map(|recipient| UntilNextTurnStatsView {
+                        recipient,
+                        controller: item.controller,
+                        power,
+                        toughness,
+                    }),
+            );
     }
     pub(super) fn expire_next_turn_stats(&mut self, player: Player) {
         if let Some(roles) = &mut self.state.roles {
-            roles.until_next_turn_stats.retain(|row| row.controller != player);
+            roles
+                .until_next_turn_stats
+                .retain(|row| row.controller != player);
         }
     }
     pub(super) fn set_base_stats_from_source(&mut self, item: &SpellView, subject: Subject) {
-        let stats = if self.on_battlefield(item.object.card)
-            && self.object_ref(item.object.card) == item.object
+        let Some(source) = item.source else { return; };
+        let stats = if self.on_battlefield(source.object.card)
+            && self.object_ref(source.object.card) == source.object
         {
-            if self.is_creature(item.object.card) {
-                self.stats(item.object.card)
+            if self.is_creature(source.object.card) {
+                self.stats(source.object.card)
             } else {
                 Stats::default()
             }
         } else {
             Stats {
-                power: if item.source_facts.is_creature() {
-                    item.source_facts.power
+                power: if source.facts.is_creature() {
+                    source.facts.power
                 } else {
                     0
                 },
@@ -115,7 +138,7 @@ impl Game {
     ) -> Option<i128> {
         match value {
             ResolvedStatValue::Stat(value) => {
-                Some(self.stat_value(value, item.object, item.controller))
+                Some(self.stat_value(value, item.source?.object, item.controller))
             }
             ResolvedStatValue::Threshold {
                 value,
@@ -123,7 +146,7 @@ impl Game {
                 yes,
                 no,
             } => Some(
-                if self.stat_value(value, item.object, item.controller) >= minimum {
+                if self.stat_value(value, item.source?.object, item.controller) >= minimum {
                     yes
                 } else {
                     no
@@ -191,10 +214,11 @@ impl Game {
         power: Option<i128>,
         toughness: Option<i128>,
     ) {
+        let Some(source) = item.source else { return; };
         let recipients: Vec<_> = match subject {
-            Subject::Source => (self.on_battlefield(item.card)
-                && self.object_ref(item.card) == item.object)
-                .then_some(item.object)
+            Subject::Source => (self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object)
+                .then_some(source.object)
                 .into_iter()
                 .collect(),
             Subject::Attached => self
@@ -229,7 +253,7 @@ impl Game {
         for recipient in recipients {
             state.base_stats.push(BaseStatsEffectView {
                 recipient,
-                source: item.object,
+                source: source.object,
                 power,
                 toughness,
                 timestamp,
@@ -241,7 +265,9 @@ impl Game {
     pub(super) fn forget_base_stats(&mut self, object: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
             state.base_stats.retain(|effect| effect.recipient != object);
-            state.until_next_turn_stats.retain(|effect| effect.recipient != object);
+            state
+                .until_next_turn_stats
+                .retain(|effect| effect.recipient != object);
         }
     }
     pub(super) fn expire_base_stats(&mut self) {

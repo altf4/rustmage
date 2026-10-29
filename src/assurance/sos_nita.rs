@@ -69,7 +69,7 @@ fn sos_nita_paid_permission_uses_any_mana_is_independent_and_cast_trigger_freeze
                 .observe(p)
                 .stack
                 .iter()
-                .find(|s| s.card == spell)
+                .find(|s| s.source.is_some_and(|source| source.id == spell))
                 .unwrap()
                 .cast
                 .unwrap();

@@ -273,20 +273,21 @@ impl Game {
             })
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Exile);
-        if self.on_battlefield(item.object.card) && self.object_ref(item.object.card) == item.object
+        if let Some(source) = item.source
+            && self.on_battlefield(source.object.card) && self.object_ref(source.object.card) == source.object
         {
             for event in &events {
                 if !event.moved || event.destination != Zone::Exile {
                     continue;
                 }
                 let width = DONOR_SLOT_WIDTH;
-                let first_slot = graveyard_borrowing::next_slot(self, item.object);
+                let first_slot = graveyard_borrowing::next_slot(self, source.object);
                 (first_slot.checked_add(width)).capacity("borrowed activation capacity exhausted");
                 self.state
                     .borrowed_links
                     .get_or_insert_default()
                     .push(Link {
-                        source: item.object,
+                        source: source.object,
                         origin: item.source_ability_origin,
                         exiled: event.after,
                         first_slot,
@@ -317,13 +318,13 @@ impl Game {
         self.refresh_graveyard_borrowing();
         let descriptor = self.borrowed_descriptor(card, exiled, index);
         let mut item = self.activation_item(actor, card, index);
-        item.source_card = descriptor.definition;
+        item.set_source_definition(descriptor.definition);
         item.source_counter_lki =
             card_quantities::counter_quantity_facts(descriptor.rules().program, |kind| {
-                self.source_counter_quantity_live(item.object, kind)
+                self.source_counter_quantity_live(item.source.expect("activated ability has source").object, kind)
                     .expect("live inherited source")
             });
-        item.source_copy_recipe = Some(Box::new(self.copiable_recipe(item.object)));
+        item.source_copy_recipe = Some(Box::new(self.copiable_recipe(item.source.expect("activated ability has source").object)));
         item.borrowed_slot = Some(descriptor.slot);
         item
     }
@@ -478,7 +479,7 @@ impl Game {
                     &readiness,
                     0,
                     actor,
-                    sorcery,
+                    self.loyalty_timing(card, ability, actor, sorcery),
                 )
             {
                 continue;

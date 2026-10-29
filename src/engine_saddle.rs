@@ -120,15 +120,15 @@ impl Game {
         };
         self.state
             .objects
-            .get(a.item.object.card as usize)
+            .get(a.item.source.expect("cost announcement has object source").object.card as usize)
             .is_some_and(|o| {
-                o.generation == a.item.object.generation
+                o.generation == a.item.source.expect("cost announcement has object source").object.generation
                     && o.zone == Zone::Battlefield
                     && o.controller == a.item.controller
             })
             && f.selected
                 .iter()
-                .all(|r| self.saddle_eligible(a.item.object, a.item.controller, *r))
+                .all(|r| self.saddle_eligible(a.item.source.expect("cost announcement has object source").object, a.item.controller, *r))
     }
     fn saddle_sums(&self, maximum: bool) -> PowerSum {
         let a = self.state.announcing.as_ref().unwrap();
@@ -136,10 +136,10 @@ impl Game {
         let mut sum = PowerSum::default();
         for id in 0..self.state.objects.len() {
             let r = self.object_ref(id as CardId);
-            if self.saddle_eligible(a.item.object, a.item.controller, r) {
+            if self.saddle_eligible(a.item.source.expect("cost announcement has object source").object, a.item.controller, r) {
                 let selected = f.selected.contains(&r);
                 if selected || maximum {
-                    let p = self.crew_saddle_power(r.card, a.item.card, "Mount");
+                    let p = self.crew_saddle_power(r.card, a.item.source.expect("cost announcement has object source").id, "Mount");
                     if selected || p > 0 {
                         sum.add(p);
                     }
@@ -156,7 +156,7 @@ impl Game {
         let f = self.state.saddle_payment.as_ref()?;
         let sum = self.saddle_sums(false);
         Some(SaddleChoiceView {
-            source: a.item.object,
+            source: a.item.source.expect("cost announcement has object source").object,
             minimum: f.minimum,
             selected: f.selected.clone(),
             selected_power: sum.represented(),
@@ -172,12 +172,12 @@ impl Game {
         let maximum = self.saddle_sums(true);
         for id in 0..self.state.objects.len() {
             let object = self.object_ref(id as CardId);
-            if !self.saddle_eligible(a.item.object, a.item.controller, object)
+            if !self.saddle_eligible(a.item.source.expect("cost announcement has object source").object, a.item.controller, object)
                 || f.selected.contains(&object)
             {
                 continue;
             }
-            let p = self.crew_saddle_power(object.card, a.item.card, "Mount");
+            let p = self.crew_saddle_power(object.card, a.item.source.expect("cost announcement has object source").id, "Mount");
             let mut possible = maximum;
             if p < 0 {
                 possible.add(p);
@@ -195,7 +195,7 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return false;
         };
-        let Some(minimum) = a.item.source_card.activation(ability).saddle_minimum() else {
+        let Some(minimum) = a.item.source.expect("cost announcement has object source").card.activation(ability).saddle_minimum() else {
             return false;
         };
         assert!(a.pay_window && a.item.targets.is_empty());
@@ -214,13 +214,13 @@ impl Game {
         let f = self.state.saddle_payment.take().unwrap();
         let mut a = self.state.announcing.take().unwrap();
         assert!(f.selected.iter().all(|r| self.saddle_eligible(
-            a.item.object,
+            a.item.source.expect("cost announcement has object source").object,
             a.item.controller,
             *r
         )));
         let mut total = PowerSum::default();
         for r in &f.selected {
-            total.add(self.crew_saddle_power(r.card, a.item.card, "Mount"));
+            total.add(self.crew_saddle_power(r.card, a.item.source.expect("cost announcement has object source").id, "Mount"));
         }
         assert!(total.enough(f.minimum));
         // All powers are checked before the simultaneous tap cost. Tap observers
@@ -233,15 +233,16 @@ impl Game {
         self.state.passes = 0;
     }
     pub(super) fn resolve_saddle(&mut self, item: &SpellView) {
-        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+        let Some(source) = item.source else { return; };
+        if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return;
         }
-        let first = !self.is_saddled(item.object);
+        let first = !self.is_saddled(source.object);
         if first {
-            self.state.saddled.push(item.object);
+            self.state.saddled.push(source.object);
         }
         if first {
-            let source = self.object_view(item.card);
+            let source = self.object_view(source.id);
             for (index, a) in source.card.triggers().iter().enumerate() {
                 if matches!(a.condition.event(), TriggerCondition::SelfSaddledFirst) {
                     self.queue_trigger(&source, index);

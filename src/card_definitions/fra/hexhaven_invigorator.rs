@@ -5,7 +5,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::VIGILANCE)],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::VIGILANCE,
+        )],
     }],
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::SelfDamaged,

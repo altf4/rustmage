@@ -25,16 +25,17 @@ impl Game {
         subject: Subject,
     ) -> Option<CopyRecipe> {
         match subject {
-            Subject::Source => Some(
-                if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
-                    self.copiable_recipe(item.object)
+            Subject::Source => {
+                let source = item.source?;
+                Some(if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
+                    self.copiable_recipe(source.object)
                 } else {
                     item.source_copy_recipe
                         .as_deref()
                         .copied()
-                        .unwrap_or_else(|| CopyRecipe::new(item.source_card))
-                },
-            ),
+                        .unwrap_or_else(|| CopyRecipe::new(source.card))
+                })
+            },
             Subject::Targets => item.targets.iter().find_map(|bound| {
                 if self.same_target_object(*bound)
                     && let Target::Card(id) = bound.target
@@ -49,26 +50,49 @@ impl Game {
     }
     pub(super) fn controls_planeswalker(&self, player: Player) -> bool {
         self.state.objects.iter().enumerate().any(|(id, object)| {
-            object.zone == Zone::Battlefield && object.controller == player
+            object.zone == Zone::Battlefield
+                && object.controller == player
                 && self.current_kinds(id as CardId) & 64 != 0
         })
     }
     pub(super) fn queue_copy_end_step_abilities(&mut self) {
-        let sources: Vec<_> = self.state.copy_recipes.as_ref().into_iter().flat_map(|r| r.iter())
-            .filter(|r| self.on_battlefield(r.object.card) && self.object_ref(r.object.card) == r.object
-                && self.printed_abilities_available(r.object.card))
-            .map(|r| (r.object.card, r.recipe.exceptions.sacrifice_abilities,
-                r.recipe.exceptions.conditional_sacrifice_abilities)).collect();
+        let sources: Vec<_> = self
+            .state
+            .copy_recipes
+            .as_ref()
+            .into_iter()
+            .flat_map(|r| r.iter())
+            .filter(|r| {
+                self.on_battlefield(r.object.card)
+                    && self.object_ref(r.object.card) == r.object
+                    && self.printed_abilities_available(r.object.card)
+            })
+            .map(|r| {
+                (
+                    r.object.card,
+                    r.recipe.exceptions.sacrifice_abilities,
+                    r.recipe.exceptions.conditional_sacrifice_abilities,
+                )
+            })
+            .collect();
         for (source, unconditional, conditional) in sources {
             let controller = self.state.objects[source as usize].controller;
-            let conditional = if self.controls_planeswalker(controller) { 0 } else { conditional };
-            for (amount, kind) in [(unconditional, StackKind::CopyEndStepSacrifice),
-                (conditional, StackKind::CopyEndStepConditionalSacrifice)] {
+            let conditional = if self.controls_planeswalker(controller) {
+                0
+            } else {
+                conditional
+            };
+            for (amount, kind) in [
+                (unconditional, StackKind::CopyEndStepSacrifice),
+                (conditional, StackKind::CopyEndStepConditionalSacrifice),
+            ] {
                 for _ in 0..amount {
                     let mut item = self.activation_item(controller, source, 0);
                     item.kind = kind;
                     item.additional_triggers = trigger_multiplicity::additional_triggers(
-                        &self.characteristic_query(), source);
+                        &self.characteristic_query(),
+                        source,
+                    );
                     self.state.pending_triggers.push(item);
                 }
             }
@@ -78,16 +102,17 @@ impl Game {
         self.try_sacrifice_exact_source(item);
     }
     pub(super) fn try_sacrifice_exact_source(&mut self, item: &SpellView) -> bool {
-        if !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
-            || self.state.objects[item.card as usize].controller != item.controller
+        let Some(source) = item.source else { return false; };
+        if !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
+            || self.state.objects[source.id as usize].controller != item.controller
         {
             return false;
         }
-        self.sacrifice_batch(&[(item.controller, item.card)]);
+        self.sacrifice_batch(&[(item.controller, source.id)]);
         // A replacement destination (for example exile) still completes the
         // sacrifice. A prevented movement must not create its reflexive payoff.
-        self.object_ref(item.card) != item.object
+        self.object_ref(source.id) != source.object
     }
 }
 

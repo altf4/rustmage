@@ -797,7 +797,11 @@ impl FundingState<'_> {
             } else {
                 CharacteristicWorld::kinds(self, target.card) & u16::from(spec.kinds) != 0
             }
-            && ability_world::aura_artifact_or_non_aura_enchantment(self, m.before.card, target.card)
+            && ability_world::aura_artifact_or_non_aura_enchantment(
+                self,
+                m.before.card,
+                target.card,
+            )
             && match spec.relation {
                 0 => o.controller == m.controller,
                 1 => o.controller != m.controller,
@@ -1542,7 +1546,7 @@ impl Game {
                 self,
                 &goal,
                 parent.announcement.item.kind == StackKind::Spell
-                    && parent.announcement.item.source_card.has_convoke(),
+                    && parent.announcement.item.source.expect("cost announcement has object source").card.has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&parent.announcement.item));
             world.set_payment_context(&parent.announcement);
@@ -1561,7 +1565,7 @@ impl Game {
             let mut world = FundingState::from_game_with_convoke(
                 self,
                 &goal,
-                a.item.kind == StackKind::Spell && a.item.source_card.has_convoke(),
+                a.item.kind == StackKind::Spell && a.item.source.expect("cost announcement has object source").card.has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(a);
@@ -1576,7 +1580,8 @@ impl Game {
                     for (pool, amount) in next.mana.iter_mut().zip(production) {
                         *pool += u128::from(amount);
                     }
-                    next.mana[3] = next.mana[3].checked_add(u128::from(a.item.mana_tap_bonus.unwrap_or(0)))
+                    next.mana[3] = next.mana[3]
+                        .checked_add(u128::from(a.item.mana_tap_bonus.unwrap_or(0)))
                         .capacity("mana representation exhausted");
                     if let Some((_, quality)) = self
                         .state
@@ -1832,7 +1837,7 @@ impl<'g> FundingState<'g> {
         let Some(resource) = self
             .resources
             .iter()
-            .position(|r| r.id == a.item.object.card)
+            .position(|r| r.id == a.item.source.expect("cost announcement has object source").object.card)
         else {
             return false;
         };
@@ -1874,7 +1879,7 @@ impl<'g> FundingState<'g> {
                     quality: current.quality.copied(),
                     allocation,
                     external,
-                    frozen: Some(Box::new((a.item.source_card, a.item.borrowed_slot))),
+                    frozen: Some(Box::new((a.item.source.expect("cost announcement has object source").card, a.item.borrowed_slot))),
                 };
                 found = self.visit_applied(&step, &mut |w| {
                     let mut next = w.clone();
@@ -1885,7 +1890,7 @@ impl<'g> FundingState<'g> {
                     );
                     next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
-                        && parent.announcement.item.source_card.has_convoke();
+                        && parent.announcement.item.source.expect("cost announcement has object source").card.has_convoke();
                     next.set_payment_context(&parent.announcement);
                     next.reachable_with_evidence(
                         &parent_goal,

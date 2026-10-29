@@ -114,7 +114,7 @@ fn recursive_recruitment_spell_copy_was_not_cast_from_graveyard() {
             .state
             .stack
             .iter()
-            .find(|item| item.card == spell)
+            .find(|item| item.source.unwrap().id == spell)
             .unwrap()
             .clone();
         let copy = g.allocate_spell_copy(&original, p);

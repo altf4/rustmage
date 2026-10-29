@@ -3,6 +3,10 @@
 import argparse, hashlib, json, re
 from collections import Counter, defaultdict
 from pathlib import Path
+try:
+    from . import link_outside_names
+except ImportError:
+    import link_outside_names
 ROOT=Path(__file__).resolve().parents[1]
 def canonical(value):return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
 def quote(value):return json.dumps(value,ensure_ascii=False)
@@ -144,7 +148,7 @@ def render(metadata,records,version):
         if c['standard_legal']:
             sets[c['set']]['total']+=1;sets[c['set']]['complete'if complete else 'gated']+=1
     report=dict(schema=1,catalogue_version=version,standard_legal_cards=sum(c['standard_legal']for c in coverage),implemented_standard_cards=sum(c['standard_legal']and c['implemented']for c in coverage),implemented_total=sum(c['implemented']for c in coverage),token_definitions=len(metadata['tokens']),emblem_definitions=len(metadata['emblems']),adventure_definitions=sum(c['category']=='adventure'for c in cards),omen_definitions=sum(c['category']=='omen'for c in cards),definition_ownership={s:dict(v)for s,v in sorted(sets.items())},cards=coverage)
-    return {ROOT/'src/generated/catalogue.rs':'\n'.join(lines)+'\n',ROOT/'src/generated/authored_cards.rs':'\n'.join(registry)+'\n',ROOT/'data/standard/coverage.json':json.dumps(report,ensure_ascii=False,indent=2)+'\n'}
+    return {ROOT/'data/outside-card-names.tsv':link_outside_names.render(),ROOT/'src/generated/catalogue.rs':'\n'.join(lines)+'\n',ROOT/'src/generated/authored_cards.rs':'\n'.join(registry)+'\n',ROOT/'data/standard/coverage.json':json.dumps(report,ensure_ascii=False,indent=2)+'\n'}
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--check',action='store_true');args=p.parse_args()
     metadata,records,version=load();outputs=render(metadata,records,version)

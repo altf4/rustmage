@@ -59,16 +59,17 @@ fn outlaw(c: Card) -> bool {
             .any(|n| line.split_whitespace().any(|s| s == *n))
 }
 fn granting(s: &SpellView) -> Option<usize> {
-    let i = family(s.source_card)?;
+    let i = s.source().and_then(|source| family(source.card))?;
     let is = match s.kind {
         StackKind::CasualtyCopy
         | StackKind::CopyEndStepSacrifice
+        | StackKind::CopyEndStepConditionalSacrifice
         | StackKind::DelayedReturn
         | StackKind::DelayedTokenCreation { .. }
         | StackKind::DelayedSacrifice
         | StackKind::DelayedWarpExile
         | StackKind::DelayedManifestDread
-        | StackKind::SiegeDefeat => {
+        | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => {
             panic!("no delayed producer in this fixture")
         }
         StackKind::Spell => matches!(i, 1 | 11) || i == 12 && s.mode == Some(0),
@@ -209,8 +210,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         } => {
                             let v = b.objects.iter().find(|v| v.id == *id).unwrap();
                             if b.announcing.as_ref().is_some_and(|s| {
-                                s.source_card.name() == "Giant Growth"
-                                    || s.source_card.name() == "Blazing Crescendo"
+                                s.source().is_some_and(|source| source.card.name() == "Giant Growth")
+                                    || s.source().is_some_and(|source| source.card.name() == "Blazing Crescendo")
                             }) {
                                 if v.owner == p && v.card.name() == "Emberheart Challenger" {
                                     750
@@ -303,7 +304,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             ExilePlayExpiry::EndOfNextTurn
                         }
                     );
-                    source_for.insert(r.object, s.object);
+                    source_for.insert(r.object, s.source().expect("example expects an object-backed packet").object);
                     if held.is_none() {
                         held = Some(r.object.card);
                     }
@@ -337,13 +338,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         );
                     }
                 }
-                if let Some(i) = family(s.source_card) {
+                if let Some(i) = s.source().and_then(|source| family(source.card)) {
                     if s.kind == StackKind::Spell
-                        && s.source_card.is_creature()
+                        && s.source().is_some_and(|source| source.card.is_creature())
                         && let Some(v) = a
                             .objects
                             .iter()
-                            .find(|v| v.id == s.card && v.zone == Zone::Battlefield)
+                            .find(|v| v.id == s.source().expect("example expects an object-backed packet").id && v.zone == Zone::Battlefield)
                     {
                         let stats = match i {
                             0 | 9 => (4, 2),
@@ -356,13 +357,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             _ => unreachable!(),
                         };
                         assert_eq!((v.power, v.toughness), stats);
-                        assert_eq!(v.keywords, s.source_card.info().keywords);
+                        assert_eq!(v.keywords, s.source().expect("example expects an object-backed packet").card.info().keywords);
                         entries[i] += 1;
                     }
                     if matches!(
                         (i, s.kind),
                         (5 | 7, StackKind::TriggeredAbility { ability: 0 })
-                    ) && let (Some(before), Some(after)) = (obj(&b, s.object), obj(&a, s.object))
+                    ) && let (Some(before), Some(after)) = (obj(&b, s.source().expect("example expects an object-backed packet").object), obj(&a, s.source().expect("example expects an object-backed packet").object))
                     {
                         assert_eq!(
                             (after.power, after.toughness),
@@ -371,7 +372,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         residuals[0] += 1;
                     }
                     if matches!((i, s.kind), (8, StackKind::TriggeredAbility { ability: 1 }))
-                        && let Some(v) = obj(&a, s.object)
+                        && let Some(v) = obj(&a, s.source().expect("example expects an object-backed packet").object)
                     {
                         assert!(v.keywords.contains(Keywords::DOUBLE_STRIKE));
                         residuals[1] += 1;
@@ -458,7 +459,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .collect();
             for id in completed {
                 let s = exiled_casts.remove(&id).unwrap();
-                let v = a.objects.iter().find(|v| v.id == s.card).unwrap();
+                let v = a.objects.iter().find(|v| v.id == s.source().expect("example expects an object-backed packet").id).unwrap();
                 assert!(matches!(v.zone, Zone::Battlefield | Zone::Graveyard));
             }
             for r in &b.exile_permissions {

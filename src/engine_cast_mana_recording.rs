@@ -180,9 +180,17 @@ impl Game {
         }
     }
     pub(super) fn record_cast_mana_bonus(&mut self, actor: Player, amount: u32) {
-        if let Some(capture) = self.state.cast_rollback.as_mut().and_then(|r| r.capture.as_mut()) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|r| r.capture.as_mut())
+        {
             assert_eq!(capture.event.actor, actor);
-            capture.event.mountain_bonus = capture.event.mountain_bonus.checked_add(amount)
+            capture.event.mountain_bonus = capture
+                .event
+                .mountain_bonus
+                .checked_add(amount)
                 .capacity("mountain mana receipt exhausted");
         }
     }

@@ -143,7 +143,7 @@ fn paradox_trigger_resolves_after_loyalty_ability_is_countered_and_permits_two_l
             .stack
             .iter()
             .find(|item| {
-                item.card == jace && matches!(item.kind, StackKind::ActivatedAbility { .. })
+                item.source.is_some_and(|source| source.id == jace) && matches!(item.kind, StackKind::ActivatedAbility { .. })
             })
             .unwrap()
             .id;

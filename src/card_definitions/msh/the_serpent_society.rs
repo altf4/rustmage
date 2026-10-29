@@ -6,8 +6,8 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             condition: TriggerCondition::Ward,
             targets: TargetPlan::Single(TargetSpec::NONE),
             program: &[
-                Instruction::MayOpponent { skip: 2 },
-                Instruction::AddPoison(PlayerSet::Opponent, 5),
+                Instruction::MayPayWardPoison { amount: 5, skip: 2 },
+                Instruction::PayWardPoison(5),
                 Instruction::Skip(1),
                 Instruction::CounterRelated,
             ],

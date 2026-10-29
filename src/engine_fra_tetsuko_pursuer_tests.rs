@@ -6,7 +6,9 @@ fn begin_blocks(g: &mut Game, attacker: CardId) {
     act(g, Action::Attack { card: attacker });
     act(g, Action::FinishAttackers);
     for _ in 0..16 {
-        if g.state.pending == Pending::Blockers { break; }
+        if g.state.pending == Pending::Blockers {
+            break;
+        }
         act(g, Action::Pass);
     }
     assert_eq!(g.state.pending, Pending::Blockers);
@@ -31,7 +33,9 @@ fn tetsuko_observes_each_opposing_small_blocker_and_preserves_departed_blocker_l
         g.state.objects[short as usize].growth.toughness = -1;
         let life = g.state.players[p.other().index()].life;
         begin_blocks(&mut g, attacker);
-        for blocker in [elf, short, normal] { act(&mut g, Action::Block { blocker, attacker }); }
+        for blocker in [elf, short, normal] {
+            act(&mut g, Action::Block { blocker, attacker });
+        }
         act(&mut g, Action::FinishBlockers);
         g.move_object(elf, Zone::Graveyard);
         g.move_object(tetsuko, Zone::Graveyard);
@@ -39,7 +43,9 @@ fn tetsuko_observes_each_opposing_small_blocker_and_preserves_departed_blocker_l
         let saved = g.snapshot();
         super::super::contracts::branch_contract(g.clone());
         for replay in 0..2 {
-            if replay == 1 { g.restore(&saved).unwrap(); }
+            if replay == 1 {
+                g.restore(&saved).unwrap();
+            }
             settle(&mut g);
             assert_eq!(g.state.players[p.other().index()].life, life - 2);
         }

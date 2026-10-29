@@ -36,7 +36,7 @@ pub(super) fn key(item: &SpellView) -> Option<Key> {
         _ => return None,
     };
     Some(Key {
-        object: item.object,
+        object: item.source?.object,
         definition,
         ability,
         origin: item.source_ability_origin,

@@ -52,6 +52,12 @@ impl Session {
     pub fn new(config: Config) -> Result<Self, crate::Error> {
         Ok(Self::from_game(Game::new(config)?))
     }
+    pub fn new_with_outside(
+        config: Config,
+        outside: crate::OutsideGameConfig,
+    ) -> Result<Self, crate::Error> {
+        Ok(Self::from_game(Game::new_with_outside(config, outside)?))
+    }
     /// Wrap an existing owned native game in the optional control interface.
     pub fn from_game(game: Game) -> Self {
         Self {

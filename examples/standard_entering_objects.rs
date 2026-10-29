@@ -135,7 +135,7 @@ fn bump(l: &mut Ledger, r: ObjectRef, turn: u32, c: u64, haste: bool) {
     }
 }
 fn verify(s: &SpellView, b: &Observation, a: &Observation, l: &mut Ledger) -> Option<usize> {
-    let name = s.source_card.name();
+    let name = s.source()?.card.name();
     let r = s.entering_object.expect("entry trigger context");
     assert!(s.targets.is_empty());
     if let Some(i) = NAMES.iter().position(|n| *n == name) {
@@ -332,24 +332,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if item.kind == StackKind::Spell {
                     assert!(item.entering_object.is_none());
-                    if let Some(i) = NAMES.iter().position(|n| *n == item.source_card.name()) {
+                    if let Some(i) = NAMES.iter().position(|n| *n == item.source().expect("example expects an object-backed packet").card.name()) {
                         casts[i] += 1;
                     }
                 } else if let StackKind::TriggeredAbility { ability } = item.kind {
                     let r = item
                         .entering_object
                         .expect("entry reference must be owned by the packet");
-                    let count = debt.get_mut(&(item.object, r, ability)).unwrap_or_else(|| {
+                    let count = debt.get_mut(&(item.source().expect("example expects an object-backed packet").object, r, ability)).unwrap_or_else(|| {
                         panic!(
                             "unexpected trigger {} context {r:?} seed{seed}",
-                            item.source_card.name()
+                            item.source().expect("example expects an object-backed packet").card.name()
                         )
                     });
                     assert!(*count > 0);
                     *count -= 1;
                     contexts += 1;
                     assert!(item.targets.is_empty());
-                    if let Some(i) = NAMES.iter().position(|n| *n == item.source_card.name()) {
+                    if let Some(i) = NAMES.iter().position(|n| *n == item.source().expect("example expects an object-backed packet").card.name()) {
                         triggers[i] += 1;
                     }
                 }

@@ -101,7 +101,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 .iter()
                 .any(|item| item.id == id && item.controller == actor),
             Target::Spell(id) => observation.stack.iter().any(|item| {
-                item.kind == StackKind::Spell && item.card == id && item.controller == actor
+                item.kind == StackKind::Spell
+                    && item.source.is_some_and(|source| source.id == id)
+                    && item.controller == actor
             }),
         };
         if own == beneficial { 70 } else { -10 }
@@ -172,6 +174,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
             Action::ChooseEntryTimestamp { .. } => 120,
             Action::ChooseReplacement { .. }
+            | Action::ChooseSelfCounterReplacement { .. }
             | Action::ChooseDamagePrevention { .. }
             | Action::ChooseDamageEvent { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
@@ -194,6 +197,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ChooseJace { .. }
             | Action::SelectLand { .. }
             | Action::SelectResolutionExile { .. } => 50,
+            Action::ProliferatePermanent { .. } | Action::ProliferatePlayer { .. } => 50,
+            Action::FinishProliferate => 0,
             Action::FinishLandSelection => -1,
             Action::DeclineHandEntry => -1,
             Action::ChooseBlight { pay } => i128::from(*pay) * 40,
@@ -208,7 +213,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 let life_cost = observation
                     .announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.life_x_cost());
+                    .is_some_and(|s| s.source.is_some_and(|source| source.card.life_x_cost()));
                 if life_cost
                     && i128::from(*value) >= observation.players[actor.index()].life
                     && *value != 0
@@ -334,6 +339,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::PayAttackCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
+            Action::ChooseOutsideCard { .. }
+            | Action::ChooseOutsideBasic { .. }
+            | Action::ChooseOutsideRevealed { .. } => 60,
+            Action::CancelOutsideCard | Action::DeclineOutsideCards => -1,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
             Action::ChooseSearchDestination { destination } => {
                 if *destination == crate::SearchDestination::Hand {
@@ -455,10 +464,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     })
                 })
                 .unwrap_or(0),
-            Action::ChooseTarget { target } => {
+            Action::ChooseTarget { target } | Action::ChooseTargetCardType { target, .. } => {
                 let item = observation.announcing.as_ref().unwrap();
-                if item.kind == StackKind::Spell && item.source_card.aura().is_some() {
-                    return aura_score(item.source_card, *target);
+                if item.kind == StackKind::Spell
+                    && let Some(source) = item.source
+                    && source.card.aura().is_some()
+                {
+                    return aura_score(source.card, *target);
                 }
                 let program = item.program().map(|(_, program)| program).unwrap_or(&[]);
                 target_score(program, *target)

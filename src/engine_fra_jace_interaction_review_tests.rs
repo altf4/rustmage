@@ -14,16 +14,32 @@ fn jace_threshold_uses_copied_current_type_and_subtype_with_restore() {
         let mut g = scenario(player);
         let source = review_jace(&mut g, player);
         g.state.objects[source as usize].counters.loyalty = 12;
-        let other = put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
+        let other = put(
+            &mut g,
+            player,
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
         g.state.objects[other as usize].counters.loyalty = 13;
-        let guard = ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype: "Jace", minimum: 25 };
+        let guard = ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast {
+            subtype: "Jace",
+            minimum: 25,
+        };
         assert!(!g.activation_guard_available(guard, source, player));
         let saved = g.snapshot();
         for _ in 0..2 {
             let reference = g.object_ref(other);
-            g.apply_temporary_copy(reference, CopyRecipe::new(Card::from_name("The Theorist, Jace Beleren").unwrap()), CopyDeadline::EndOfTurn);
+            g.apply_temporary_copy(
+                reference,
+                CopyRecipe::new(Card::from_name("The Theorist, Jace Beleren").unwrap()),
+                CopyDeadline::EndOfTurn,
+            );
             assert!(g.activation_guard_available(guard, source, player));
-            g.apply_temporary_copy(reference, CopyRecipe::new(Card::from_name("Bear Cub").unwrap()), CopyDeadline::EndOfTurn);
+            g.apply_temporary_copy(
+                reference,
+                CopyRecipe::new(Card::from_name("Bear Cub").unwrap()),
+                CopyDeadline::EndOfTurn,
+            );
             assert!(!g.activation_guard_available(guard, source, player));
             g.restore(&saved).unwrap();
         }
@@ -36,15 +52,30 @@ fn copied_jace_delayed_effect_uses_copy_controller_after_source_leaves() {
         let mut g = scenario(player);
         let jace = review_jace(&mut g, player);
         let attacker = put(&mut g, player, "Bear Cub", Zone::Battlefield);
-        act(&mut g, Action::AnnounceActivate { card: jace, ability: 1, counter_payment: Counters::default() });
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: jace,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
         pay(&mut g);
         let original = g.state.stack.last().unwrap().clone();
         let mut copier = original.clone();
         copier.controller = player.other();
-        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        copier.targets = vec![BoundTarget {
+            group: 0,
+            target: Target::Stack(original.id),
+            object: None,
+        }];
         g.copy_target_ability(&copier, 0);
         settle(&mut g);
-        let rows = g.state.delayed_opponent_attack_until_next_turn.as_ref().unwrap();
+        let rows = g
+            .state
+            .delayed_opponent_attack_until_next_turn
+            .as_ref()
+            .unwrap();
         assert!(rows.iter().any(|row| row.controller == player));
         assert!(rows.iter().any(|row| row.controller == player.other()));
         g.move_object(jace, Zone::Exile);

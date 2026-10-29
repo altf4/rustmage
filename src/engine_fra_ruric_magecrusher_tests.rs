@@ -2,7 +2,11 @@ use super::*;
 
 fn hit(g: &mut Game, source: DamageSource, target: Player, combat: bool, amount: i128) {
     g.apply_damage_batch(&[DamageEvent {
-        source, target: Target::Player(target), amount, combat, preventable: true,
+        source,
+        target: Target::Player(target),
+        amount,
+        combat,
+        preventable: true,
     }]);
 }
 
@@ -25,7 +29,14 @@ fn ruric_hexproof_tracks_actual_combat_damage_for_exact_incarnation() {
         hit(&mut g, source, player.other(), true, 2);
         assert!(!g.keywords(ruric).contains(Keywords::HEXPROOF));
         for viewer in [player, player.other()] {
-            assert!(g.observe(viewer).objects.iter().find(|o| o.id == ruric).unwrap().dealt_combat_damage_this_incarnation);
+            assert!(
+                g.observe(viewer)
+                    .objects
+                    .iter()
+                    .find(|o| o.id == ruric)
+                    .unwrap()
+                    .dealt_combat_damage_this_incarnation
+            );
         }
         g.begin_turn();
         assert!(!g.keywords(ruric).contains(Keywords::HEXPROOF));

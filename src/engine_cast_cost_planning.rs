@@ -41,8 +41,17 @@ impl CostContext {
             && a.activation_cost_route != ActivationCostRoute::FirstEquipZero
         {
             source_counter_reservation = a.counter_payment.clone();
-            if let Some(change) = a.item.source_card.activation(ability).cost.loyalty.filter(|change| *change < 0) {
-                source_counter_reservation.add(CounterKind::Loyalty, u64::from(change.unsigned_abs()));
+            if let Some(change) = a
+                .item
+                .source.expect("activated ability has a source")
+                .card
+                .activation(ability)
+                .cost
+                .loyalty
+                .filter(|change| *change < 0)
+            {
+                source_counter_reservation
+                    .add(CounterKind::Loyalty, u64::from(change.unsigned_abs()));
             }
         }
         Some(Box::new(Self {
@@ -56,7 +65,7 @@ impl CostContext {
                 .map(|c| c.remaining)
                 .or(a.total_cost)
                 .or(a.cost),
-            source: a.item.object,
+            source: a.item.source.expect("cost announcement has object source").object,
             clauses: c.clauses.clone(),
             active: c.active,
             casualty: a.casualty.as_deref().cloned().unwrap_or_default(),
@@ -1142,7 +1151,9 @@ impl FundingState<'_> {
         }
         if c.counters.len() > usize::from(amount)
             || (!c.source_counter_reservation.is_empty()
-                && !CharacteristicWorld::counter_amounts(&next, c.source.card).contains(&c.source_counter_reservation)) {
+                && !CharacteristicWorld::counter_amounts(&next, c.source.card)
+                    .contains(&c.source_counter_reservation))
+        {
             return false;
         }
         fn fill(
@@ -1169,8 +1180,21 @@ impl FundingState<'_> {
                     if !next.remove_creature_counter(w.reference(resource.id), kind) {
                         continue;
                     }
-                    if !reservation.is_empty() && !CharacteristicWorld::counter_amounts(&next, source.card).contains(reservation) { continue; }
-                    if fill(&next, left - 1, later, remaining, index, source, reservation) {
+                    if !reservation.is_empty()
+                        && !CharacteristicWorld::counter_amounts(&next, source.card)
+                            .contains(reservation)
+                    {
+                        continue;
+                    }
+                    if fill(
+                        &next,
+                        left - 1,
+                        later,
+                        remaining,
+                        index,
+                        source,
+                        reservation,
+                    ) {
                         return true;
                     }
                 }
@@ -1198,7 +1222,7 @@ impl Game {
             let mut world = FundingState::from_game_with_convoke(
                 self,
                 &goal,
-                choice.item.source_card.has_convoke(),
+                choice.item.source.expect("cost announcement has object source").card.has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
@@ -1239,7 +1263,7 @@ impl Game {
             source: None,
         };
         let mut world =
-            FundingState::from_game_with_convoke(self, &goal, a.item.source_card.has_convoke());
+            FundingState::from_game_with_convoke(self, &goal, a.item.source.expect("cost announcement has object source").card.has_convoke());
         world.set_purpose(self.purpose_for_item(&a.item));
         world.set_cost_context(Some(a));
         world
@@ -1334,10 +1358,10 @@ impl Game {
             .unwrap();
         row.pay = pay;
         row.declared = true;
-        a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+        a.initialize_cast_costs(improvise::potential(self, a.item.source.expect("cost announcement has object source").card));
         if a.cast_costs.is_none() {
             a.cast_costs = Some(Box::default());
-            a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+            a.initialize_cast_costs(improvise::potential(self, a.item.source.expect("cost announcement has object source").card));
         }
         if a.item
             .cast
@@ -1355,7 +1379,7 @@ impl Game {
             let mut world = FundingState::from_game_with_convoke(
                 self,
                 &goal,
-                choice.item.source_card.has_convoke(),
+                choice.item.source.expect("cost announcement has object source").card.has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
@@ -1429,7 +1453,7 @@ impl Game {
         let current = self.state.announcing.as_ref().filter(|a| {
             a.item.kind == StackKind::Spell
                 && a.item.controller == goal.actor
-                && a.item.source_card == spell.card
+                && a.item.source.expect("cost announcement has object source").card == spell.card
         });
         let ordered_additional = additional
             .is_some_and(|a| matches!(a.kind, EffectChoiceKind::DiscardOrLife(_)))

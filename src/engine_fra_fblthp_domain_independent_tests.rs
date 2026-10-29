@@ -54,7 +54,7 @@ fn copied_fblthp_spell_carries_x_into_its_entry_search() {
         let original = game.state.stack.last().unwrap().clone();
         let copy = game.allocate_spell_copy(&original, player);
         assert_eq!(copy.x, Some(2));
-        let copy_card = copy.card;
+        let copy_card = copy.source.unwrap().id;
         game.push_stack_item(copy);
         assert!(game.counter_stack_item(original.id, false));
         for _ in 0..64 {

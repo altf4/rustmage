@@ -760,7 +760,7 @@ fn hob_azog_rampager_actual_amassing_player_places_counters_doc_replacement_hist
                 });
                 assert_eq!(g.actor(), Some(p.other()));
                 assert_eq!(g.state.resolving.as_ref().unwrap().item.controller, p);
-                assert_eq!(g.state.resolving.as_ref().unwrap().item.card, source);
+                assert_eq!(g.state.resolving.as_ref().unwrap().item.source.unwrap().id, source);
                 contracts::branch_contract(g.clone());
                 let saved = g.snapshot();
                 let mut indexed = g.clone();

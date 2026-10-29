@@ -13,7 +13,7 @@ fn tribal_triggers(view: &Observation) -> Vec<u64> {
                     "Flying Octobot",
                     "Obyra, Dreaming Duelist",
                 ]
-                .contains(&s.source_card.name())
+                .contains(&s.source().expect("example expects an object-backed packet").card.name())
         })
         .map(|s| s.id)
         .collect()
@@ -92,7 +92,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && before
                     .resolving
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Changeling Wayfinder")
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Changeling Wayfinder"))
                 && matches!(a, Action::ChooseOptional { .. })
             {
                 optional_searches += 1;

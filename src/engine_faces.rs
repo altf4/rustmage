@@ -56,7 +56,7 @@ impl Game {
                 .program()
                 .is_some_and(|(_, program)| program.contains(&Instruction::TransformSource))
         {
-            item.source_transform = Some(self.transform_serial(item.object));
+            item.source_transform = item.source.map(|source| self.transform_serial(source.object));
         }
     }
     pub(super) fn transform_serial(&self, object: ObjectRef) -> u64 {
@@ -100,24 +100,25 @@ impl Game {
         item: &SpellView,
         counter: CounterKind,
     ) {
+        let Some(source) = item.source else { return; };
         if item.is_copy
-            || self.object_ref(item.card) != item.object
-            || self.state.objects[item.card as usize].zone != Zone::Stack
+            || self.object_ref(source.id) != source.object
+            || self.state.objects[source.id as usize].zone != Zone::Stack
         {
             return;
         }
-        let Some(back) = item.source_card.back_face() else {
+        let Some(back) = source.card.back_face() else {
             return;
         };
-        let event = self.move_object(item.card, Zone::Exile);
+        let event = self.move_object(source.id, Zone::Exile);
         if !event.moved
             || event.destination != Zone::Exile
-            || self.object_ref(item.card) != event.after
+            || self.object_ref(source.id) != event.after
         {
             return;
         }
-        let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
-        movement.controller = self.state.objects[item.card as usize].owner;
+        let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
+        movement.controller = self.state.objects[source.id as usize].owner;
         movement.source_before = Some(Box::new(movement.before.clone()));
         movement.before.card = back;
         movement.before.kinds = back.kind_mask();
@@ -132,13 +133,14 @@ impl Game {
         self.stage_entries(vec![movement], None);
     }
     pub(super) fn transform_source(&mut self, item: &SpellView) {
-        if !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
-            || item.source_transform != Some(self.transform_serial(item.object))
+        let Some(source) = item.source else { return; };
+        if !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
+            || item.source_transform != Some(self.transform_serial(source.object))
         {
             return;
         }
-        self.transform_permanent(item.object);
+        self.transform_permanent(source.object);
     }
     pub(super) fn can_transform_permanent(&self, object: ObjectRef) -> bool {
         self.on_battlefield(object.card)

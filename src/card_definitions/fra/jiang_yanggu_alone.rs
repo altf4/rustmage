@@ -3,7 +3,8 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 4),
     keywords: Keywords::MENACE,
     static_groups: &[StaticAbilityGroup {
-        line: 0, first_layer: AbilityLayer::Ability,
+        line: 0,
+        first_layer: AbilityLayer::Ability,
         fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::MENACE)],
     }],
     triggers: &[TriggeredAbility {

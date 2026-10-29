@@ -76,7 +76,7 @@ fn kiora_attack_requires_a_real_loyalty_activation_and_targets_an_attacker() {
                         .pending_triggers
                         .iter()
                         .chain(g.state.stack.iter())
-                        .any(|item| item.card == kiora)
+                        .any(|item| item.source.is_some_and(|source| source.id == kiora))
                 );
                 continue;
             }

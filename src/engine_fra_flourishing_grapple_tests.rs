@@ -2,8 +2,18 @@ use super::*;
 
 fn grapple_cast(g: &mut Game, spell: CardId, victim: CardId, dealer: CardId) {
     act(g, Action::AnnounceCast { card: spell });
-    act(g, Action::ChooseTarget { target: Target::Card(victim) });
-    act(g, Action::ChooseTarget { target: Target::Card(dealer) });
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(victim),
+        },
+    );
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(dealer),
+        },
+    );
     pay(g);
 }
 
@@ -37,8 +47,11 @@ fn grapple_resolves_each_target_independently() {
             let dealer = put(&mut g, p, "Bear Cub", Zone::Battlefield);
             let spell = put(&mut g, p, "Flourishing Grapple", Zone::Hand);
             grapple_cast(&mut g, spell, victim, dealer);
-            if lose_dealer { g.move_object(dealer, Zone::Exile); }
-            else { g.change_controller(g.object_ref(victim), p); }
+            if lose_dealer {
+                g.move_object(dealer, Zone::Exile);
+            } else {
+                g.change_controller(g.object_ref(victim), p);
+            }
             settle(&mut g);
             assert_eq!(g.state.objects[victim as usize].damage, 0);
             assert_eq!(g.keywords(victim).contains(Keywords::FLYING), !lose_dealer);
@@ -55,11 +68,36 @@ fn grapple_requires_opponents_red_or_white_creature_or_planeswalker() {
         let own = put(&mut g, p, "Serra Angel", Zone::Battlefield);
         let spell = put(&mut g, p, "Flourishing Grapple", Zone::Hand);
         act(&mut g, Action::AnnounceCast { card: spell });
-        reject(&mut g, Action::ChooseTarget { target: Target::Card(green) });
-        reject(&mut g, Action::ChooseTarget { target: Target::Card(own) });
-        act(&mut g, Action::ChooseTarget { target: Target::Card(victim) });
-        reject(&mut g, Action::ChooseTarget { target: Target::Card(green) });
-        act(&mut g, Action::ChooseTarget { target: Target::Card(own) });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(green),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(victim),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(green),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
         pay(&mut g);
     }
 }

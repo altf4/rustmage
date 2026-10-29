@@ -376,7 +376,7 @@ impl Game {
         if f.destination == LibraryPickDestination::Hideaway {
             let events = self.move_objects_raw(&ids, Zone::Exile);
             self.remember_linked_exile(&ids);
-            let source = self.state.resolving.as_ref().unwrap().item.object;
+            let source = self.state.resolving.as_ref().unwrap().item.source.expect("hideaway has source").object;
             for event in &events {
                 if event.moved && event.destination == Zone::Exile {
                     let data = self.state.linked_choices.get_or_insert_default();

@@ -11,7 +11,7 @@ impl Game {
         cast.spend_any_mana = false;
         cast.exile_on_graveyard = false;
         cast.stash_origin = false;
-        if item.source_card.x_symbols() > 0 {
+        if item.source.expect("cast spell has source").card.x_symbols() > 0 {
             item.x = Some(0);
         }
     }

@@ -89,15 +89,30 @@ fn countersculpt_witness_is_hidden_until_revealed_and_rollback_remembers_it() {
         let spell = put(&mut game, player, "Countersculpt", Zone::Hand);
         let witness = put(&mut game, player, "Jace, Reality Sculptor", Zone::Hand);
         let secret = put(&mut game, player, "Island", Zone::Hand);
-        let foreign = put(&mut game, player.other(), "Jace, Reality Sculptor", Zone::Hand);
+        let foreign = put(
+            &mut game,
+            player.other(),
+            "Jace, Reality Sculptor",
+            Zone::Hand,
+        );
         cast(&mut game, target, None);
         game.state.priority = player;
         game.state.players[player.index()].mana = [0, 2, 0, 0, 0, 1];
         act(&mut game, Action::AnnounceCast { card: spell });
         act(&mut game, Action::ChooseSpellCost { cost: 0 });
-        act(&mut game, Action::ChooseTarget { target: Target::Spell(target) });
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Spell(target),
+            },
+        );
         assert!(game.observe(player.other()).additional_cost.is_none());
-        assert!(!game.observe(player.other()).known_hand.contains(&game.object_ref(witness)));
+        assert!(
+            !game
+                .observe(player.other())
+                .known_hand
+                .contains(&game.object_ref(witness))
+        );
         let invalid = game.object_ref(foreign);
         reject(&mut game, Action::ChooseAdditionalCost { object: invalid });
         let invalid = game.object_ref(secret);
@@ -114,7 +129,13 @@ fn countersculpt_witness_is_hidden_until_revealed_and_rollback_remembers_it() {
         assert!(game.observe(player.other()).known_hand.contains(&selected));
         game.finish_cast_rollback(false);
         assert!(game.observe(player.other()).known_hand.contains(&selected));
-        assert!(!game.observe(player.other()).objects.iter().any(|o| o.id == secret));
+        assert!(
+            !game
+                .observe(player.other())
+                .objects
+                .iter()
+                .any(|o| o.id == secret)
+        );
         assert_eq!(game.object_view(witness).zone, Zone::Hand);
         super::super::contracts::branch_contract(game);
     }
@@ -126,20 +147,46 @@ fn sanctum_is_public_while_its_private_behold_choice_is_pending() {
         let mut game = scenario(player);
         let witness = put(&mut game, player, "Jace, Reality Sculptor", Zone::Hand);
         let secret = put(&mut game, player, "Island", Zone::Hand);
-        let enemy = put(&mut game, player.other(), "Jace, Reality Sculptor", Zone::Battlefield);
+        let enemy = put(
+            &mut game,
+            player.other(),
+            "Jace, Reality Sculptor",
+            Zone::Battlefield,
+        );
         game.add_counter(enemy, CounterKind::Loyalty, 2);
         let land = put(&mut game, player, "Theorist's Sanctum", Zone::Hand);
         act(&mut game, Action::PlayLand { card: land });
         assert!(matches!(game.state.pending, Pending::EntryBehold { .. }));
         let opponent_view = game.observe(player.other());
         assert!(opponent_view.objects.iter().any(|o| o.id == land));
-        assert!(!opponent_view.objects.iter().any(|o| o.id == witness || o.id == secret));
+        assert!(
+            !opponent_view
+                .objects
+                .iter()
+                .any(|o| o.id == witness || o.id == secret)
+        );
         let foreign = game.object_ref(enemy);
-        reject(&mut game, Action::ChooseEntryBehold { object: Some(foreign) });
+        reject(
+            &mut game,
+            Action::ChooseEntryBehold {
+                object: Some(foreign),
+            },
+        );
         let valid = game.object_ref(witness);
-        act(&mut game, Action::ChooseEntryBehold { object: Some(valid) });
+        act(
+            &mut game,
+            Action::ChooseEntryBehold {
+                object: Some(valid),
+            },
+        );
         assert!(game.observe(player.other()).known_hand.contains(&valid));
-        assert!(!game.observe(player.other()).objects.iter().any(|o| o.id == secret));
+        assert!(
+            !game
+                .observe(player.other())
+                .objects
+                .iter()
+                .any(|o| o.id == secret)
+        );
     }
 }
 
@@ -152,7 +199,13 @@ fn sanctum_declined_behold_followed_by_spelunking_enters_untapped() {
         let land = put(&mut game, player, "Theorist's Sanctum", Zone::Hand);
         act(&mut game, Action::PlayLand { card: land });
         let intrinsic = game.object_ref(land);
-        act(&mut game, Action::ChooseEntryReplacement { source: intrinsic, intrinsic: true });
+        act(
+            &mut game,
+            Action::ChooseEntryReplacement {
+                source: intrinsic,
+                intrinsic: true,
+            },
+        );
         act(&mut game, Action::ChooseEntryBehold { object: None });
         assert_eq!(game.object_view(land).zone, Zone::Battlefield);
         assert!(!game.object_view(land).tapped);
@@ -165,7 +218,12 @@ fn countersculpt_against(game: &mut Game, player: Player, target: CardId) -> Car
     game.state.players[player.index()].mana = [0, 2, 0, 0, 0, 1];
     act(game, Action::AnnounceCast { card: spell });
     act(game, Action::ChooseSpellCost { cost: 1 });
-    act(game, Action::ChooseTarget { target: Target::Spell(target) });
+    act(
+        game,
+        Action::ChooseTarget {
+            target: Target::Spell(target),
+        },
+    );
     pay(game);
     spell
 }
@@ -175,7 +233,16 @@ fn countersculpt_uncounterable_target_still_empowers_but_stale_target_fizzles() 
     for player in [Player::P0, Player::P1] {
         for stale in [false, true] {
             let mut game = scenario(player.other());
-            let target = put(&mut game, player.other(), if stale { "Bear Cub" } else { "Sphinx of the Final Word" }, Zone::Hand);
+            let target = put(
+                &mut game,
+                player.other(),
+                if stale {
+                    "Bear Cub"
+                } else {
+                    "Sphinx of the Final Word"
+                },
+                Zone::Hand,
+            );
             cast(&mut game, target, None);
             let target_item = game.state.stack.last().unwrap().id;
             let spell = countersculpt_against(&mut game, player, target);
@@ -184,11 +251,26 @@ fn countersculpt_uncounterable_target_still_empowers_but_stale_target_fizzles() 
             }
             settle(&mut game);
             assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
-            assert_eq!(game.object_view(target).zone, if stale { Zone::Graveyard } else { Zone::Battlefield });
-            let tokens = game.state.objects.iter().enumerate().filter(|(id, object)| {
-                object.zone == Zone::Battlefield && object.controller == player && object.is_token()
-                    && game.has_subtype(*id as CardId, "Jace")
-            }).count();
+            assert_eq!(
+                game.object_view(target).zone,
+                if stale {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            let tokens = game
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == player
+                        && object.is_token()
+                        && game.has_subtype(*id as CardId, "Jace")
+                })
+                .count();
             assert_eq!(tokens, usize::from(!stale));
         }
     }
@@ -199,23 +281,42 @@ fn countersculpt_chooses_one_of_multiple_existing_jace_tokens() {
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player.other());
         game.create_tokens(player, Card::JacePlaneswalkerToken, 2, false);
-        let tokens: Vec<_> = game.state.objects.iter().enumerate().filter_map(|(id, object)| {
-            (object.zone == Zone::Battlefield && object.controller == player && object.is_token()
-                && game.has_subtype(id as CardId, "Jace")).then_some(id as CardId)
-        }).collect();
+        let tokens: Vec<_> = game
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                (object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.is_token()
+                    && game.has_subtype(id as CardId, "Jace"))
+                .then_some(id as CardId)
+            })
+            .collect();
         assert_eq!(tokens.len(), 2);
-        for &id in &tokens { game.state.objects[id as usize].counters.loyalty = 2; }
+        for &id in &tokens {
+            game.state.objects[id as usize].counters.loyalty = 2;
+        }
         let target = put(&mut game, player.other(), "Bear Cub", Zone::Hand);
         cast(&mut game, target, None);
         countersculpt_against(&mut game, player, target);
         for _ in 0..20 {
-            if matches!(game.state.pending, Pending::EffectChoice { .. }) { break; }
+            if matches!(game.state.pending, Pending::EffectChoice { .. }) {
+                break;
+            }
             act(&mut game, Action::Pass);
         }
         let first = game.object_ref(tokens[0]);
         let second = game.object_ref(tokens[1]);
-        assert!(game.legal_actions().contains(&Action::ChooseJace { object: first }));
-        assert!(game.legal_actions().contains(&Action::ChooseJace { object: second }));
+        assert!(
+            game.legal_actions()
+                .contains(&Action::ChooseJace { object: first })
+        );
+        assert!(
+            game.legal_actions()
+                .contains(&Action::ChooseJace { object: second })
+        );
         let bad = game.object_ref(target);
         reject(&mut game, Action::ChooseJace { object: bad });
         act(&mut game, Action::ChooseJace { object: second });
