@@ -113,9 +113,11 @@ def main(argv=None):
                          *[str(p) for p in sorted((ROOT/'src/card_definitions').rglob('*.rs'))]], 45),
         ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 30),
         ('clippy', ['cargo', 'clippy', '--all-targets', '--', '-D', 'warnings'], 180),
+        # A 56-game FRA workload can approach 30 seconds on CI; the enlarged
+        # catalogue also needs more than 120 seconds of serialized execution.
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
-                              '--test-timeout', '30', '--suite-timeout', '120', '--compile-timeout', '900'], 1040),
+                              '--test-timeout', '45', '--suite-timeout', '240', '--compile-timeout', '900'], 1160),
     ]
     if args.release or args.python != 'none':
         commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 360))

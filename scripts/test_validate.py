@@ -167,9 +167,10 @@ class ValidatorTests(unittest.TestCase):
                      if 'scripts/run_native_tests.py' in command)
         command = commands[index][0]
         self.assertEqual(command[command.index('--compile-timeout') + 1], '900')
-        self.assertEqual(command[command.index('--suite-timeout') + 1], '120')
-        self.assertGreaterEqual(self.command_timeouts[index], 1025)
-        self.assertLessEqual(self.command_timeouts[index], 1040)
+        self.assertEqual(command[command.index('--test-timeout') + 1], '45')
+        self.assertEqual(command[command.index('--suite-timeout') + 1], '240')
+        self.assertGreaterEqual(self.command_timeouts[index], 1140)
+        self.assertLessEqual(self.command_timeouts[index], 1160)
         self.assertTrue(report['success'])
 
     def test_environment_target_is_reused_and_explicit_target_takes_precedence(self):
