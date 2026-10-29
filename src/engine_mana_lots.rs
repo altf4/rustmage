@@ -764,7 +764,7 @@ impl Game {
                         .is_some_and(|object| object.owner == c.caster)
             });
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
-            source.linked_mana_source = self.threshold_linked_source(item.card);
+            source.linked_mana_source = self.threshold_linked_source(item.source.expect("object-backed packet").id);
             Purpose::Spell(source)
         } else if let StackKind::ActivatedAbility { ability } = item.kind {
             let source = if self

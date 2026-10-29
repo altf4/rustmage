@@ -26,6 +26,7 @@ fn copy_ability_in_resolution(g: &mut Game, copier: &SpellView) {
         sacrificed_power: None,
         discard_after: None,
         optional_wheel: None,
+            proliferate: None,
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),

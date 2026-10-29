@@ -212,7 +212,7 @@ impl Game {
             actor: item.controller,
             controller: item.controller,
             victim: Some(victim),
-            source: item.object,
+            source: item.source.expect("object-backed packet").object,
             required: 1,
             selected: Vec::new(),
             candidates,

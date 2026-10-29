@@ -26,6 +26,7 @@ fn copy_ability_in_resolution(g: &mut Game, copier: &SpellView) {
         sacrificed_power: None,
         discard_after: None,
         optional_wheel: None,
+            proliferate: None,
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
@@ -67,7 +68,7 @@ fn veiled_opponents_creature_deaths_are_exiled_without_reflexive_trigger() {
                 !g.state
                     .pending_triggers
                     .iter()
-                    .any(|item| item.card == source)
+                    .any(|item| item.source.is_some_and(|source| source.id == source))
             );
             g.restore(&saved).unwrap();
         }

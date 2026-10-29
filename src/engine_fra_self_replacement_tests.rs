@@ -9,7 +9,7 @@ fn self_replacing_effect(g: &mut Game, player: Player, source: CardId) {
         chosen_creature_type: None, target_counter_removal: None,
         linked_copy: None, cascade: None, target_card_facts: None,
         sacrificed_power: None, immediate_blink_return: None,
-        connive: None, proliferate: None, explore: None, evidence: None,
+        connive: None, optional_wheel: None, proliferate: None, explore: None, evidence: None,
         item, mana_payment: None, forage: None, target_library: None,
         program: &[
             Instruction::If { guard: StepGuard::YourTurn, skip: 2 },

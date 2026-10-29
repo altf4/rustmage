@@ -313,21 +313,22 @@ impl Tracker {
             if !self.seen_packets.insert(s.id) {
                 continue;
             }
+            let Some(source) = s.source() else { continue; };
             if s.kind == StackKind::Spell && !s.is_copy && s.cast.is_some() {
-                self.cards.insert(s.source_card.name().into());
-                self.colors |= s.source_card.colors();
+                self.cards.insert(source.card.name().into());
+                self.colors |= source.card.colors();
                 self.hit("actual_cast", s.id.to_string());
                 if s.cast.is_some_and(|cast| cast.origin == Zone::Exile)
                     && self.prepared_copies.iter().any(|r| {
-                        r.card == s.object.card
-                            && r.generation.checked_add(1) == Some(s.object.generation)
+                        r.card == source.object.card
+                            && r.generation.checked_add(1) == Some(source.object.generation)
                     })
                 {
                     self.prepared_spell_packets.insert(s.id);
                     self.hit("prepared_spell_cast", s.id.to_string());
                 }
             }
-            if s.source_card.name() == "Diviner of Victory"
+            if source.card.name() == "Diviner of Victory"
                 && s.kind == (StackKind::TriggeredAbility { ability: 0 })
                 && s.source_ability_origin.is_none()
                 && s.attachment_trigger.is_none()
@@ -336,7 +337,7 @@ impl Tracker {
             }
             if matches!(s.kind, StackKind::ActivatedAbility { .. })
                 && matches!(
-                    s.source_card.name(),
+                    source.card.name(),
                     "Ajani Resolute" | "The Theorist, Jace Beleren"
                 )
             {
@@ -367,15 +368,15 @@ impl Tracker {
             matches!(_action, Action::Pass)
                 .then(|| _before.stack.last())
                 .flatten()
-        }) && matches!(
-            packet.source_card.name(),
+        }) && packet.source().is_some_and(|source| matches!(
+            source.card.name(),
             "Campus Crier"
                 | "Repurposed Enforcer"
                 | "Theorist's Proxy"
                 | "Avatar of Burgeoning Echoes"
                 | "Arcane Amphisbaena"
                 | "Fatehold Charm"
-        ) {
+        )) {
             for object in &after.objects {
                 if object.zone != Zone::Battlefield
                     || object.controller != packet.controller

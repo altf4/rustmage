@@ -2766,7 +2766,7 @@ impl Game {
                             toughness: i128::from(toughness),
                         };
                     }
-                    self.grant_keyword_effects(&ids, item.object, keywords);
+                    self.grant_keyword_effects(&ids, item.source.expect("object-backed packet").object, keywords);
                 }
                 Instruction::WeakenDeclaredAttacker(power) => {
                     if let Some(subject) = &item.reflexive_subject

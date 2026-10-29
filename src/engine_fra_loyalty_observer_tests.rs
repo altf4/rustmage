@@ -43,7 +43,7 @@ fn gideon_observes_only_opponents_committed_loyalty_abilities() {
                 .stack
                 .iter()
                 .filter(|item| {
-                    item.card == gideon && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.is_some_and(|source| source.id == gideon) && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 })
                 .count();
             assert_eq!(triggers, usize::from(enemy));
@@ -156,7 +156,7 @@ fn gideon_ward_offers_captured_payer_choice_after_related_spell_leaves() {
                 .state
                 .stack
                 .iter()
-                .find(|s| s.card == shock)
+                .find(|s| s.source.is_some_and(|source| source.id == shock))
                 .unwrap()
                 .id;
             assert!(game.counter_stack_item(id, false));
@@ -201,7 +201,7 @@ fn gideon_ward_captures_the_spell_controller_at_targeting() {
         game.state
             .stack
             .iter_mut()
-            .find(|s| s.card == shock)
+            .find(|s| s.source.is_some_and(|source| source.id == shock))
             .unwrap()
             .controller = payer.other();
         game.resolve_top();
@@ -272,7 +272,7 @@ fn gideon_observes_each_opponent_creature_entry_and_keeps_controller_on_source_d
             .iter()
             .chain(g.state.pending_triggers.iter())
             .chain(g.state.ordering_triggers.iter())
-            .filter(|s| s.card == gideon && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+            .filter(|s| s.source.is_some_and(|source| source.id == gideon) && matches!(s.kind, StackKind::TriggeredAbility { .. }))
             .count();
         assert_eq!(packets, 2);
         g.move_object(gideon, Zone::Graveyard);
@@ -291,7 +291,7 @@ fn gideon_does_not_observe_failed_loyalty_cost_or_own_creature_entries() {
         let mut g = scenario(actor);
         let gideon = put(&mut g, actor, "Gideon the Oathless", Zone::Battlefield);
         g.create_tokens(actor, Card::test_index(5298), 1, false);
-        assert!(!g.state.pending_triggers.iter().any(|s| s.card == gideon));
+        assert!(!g.state.pending_triggers.iter().any(|s| s.source.is_some_and(|source| source.id == gideon)));
         g.create_tokens(actor.other(), Card::JacePlaneswalkerToken, 1, false);
         let walker = g
             .state
@@ -319,7 +319,7 @@ fn gideon_does_not_observe_failed_loyalty_cost_or_own_creature_entries() {
             },
         );
         assert_eq!(g.snapshot(), saved);
-        assert!(!g.state.pending_triggers.iter().any(|s| s.card == gideon));
+        assert!(!g.state.pending_triggers.iter().any(|s| s.source.is_some_and(|source| source.id == gideon)));
     }
 }
 
@@ -373,7 +373,7 @@ fn copied_gideon_triggers_keep_the_event_player() {
                 .stack
                 .iter()
                 .find(|item| {
-                    item.card == gideon && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.is_some_and(|source| source.id == gideon) && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 })
                 .unwrap()
                 .clone();

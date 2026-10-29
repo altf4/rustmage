@@ -400,7 +400,7 @@ impl Game {
                 .state
                 .announcing
                 .as_ref()
-                .filter(|a| a.item.object == source && a.item.controller == goal.actor)
+                .filter(|a| a.item.source.is_some_and(|identity| identity.object == source) && a.item.controller == goal.actor)
                 .and_then(|a| a.creature_counter_cost.as_deref())
                 .map_or(&[][..], Vec::as_slice);
             return self.creature_counter_fundable(goal, purpose, amount, selected);

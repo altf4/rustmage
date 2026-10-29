@@ -677,7 +677,8 @@ fn redirected_self_event_stays_distinct_from_simultaneous_matching_event() {
             for _ in 0..2 {
                 assert!(matches!(game.state.pending, Pending::Replacement { player: actor } if actor == recipient));
                 assert_eq!(game.state.players[recipient.index()].player_counter(crate::cards::PlayerCounterKind::Energy), 0);
-                act(&mut game, Action::ChooseReplacement { source: game.object_ref(source), ability: 0 });
+                let reference = game.object_ref(source);
+                act(&mut game, Action::ChooseReplacement { source: reference, ability: 0 });
             }
             // Each separate 1-energy event is doubled and then incremented.
             assert_eq!(game.state.players[recipient.index()].player_counter(crate::cards::PlayerCounterKind::Energy), 6);
@@ -805,7 +806,8 @@ fn mixed_permanent_and_split_player_replacements_follow_apnap() {
         let before = game.snapshot();
         for _ in 0..2 {
             // The active player's permanent event precedes that player's split event.
-            act(&mut game, Action::ChooseReplacement { source: game.object_ref(double), ability: 0 });
+            let reference = game.object_ref(double);
+            act(&mut game, Action::ChooseReplacement { source: reference, ability: 0 });
             assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 3);
             assert!(matches!(game.state.pending, Pending::Replacement { player } if player == active));
             act(&mut game, Action::ChooseSelfCounterReplacement { effect: 1 });

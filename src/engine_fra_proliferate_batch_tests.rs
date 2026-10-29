@@ -63,7 +63,7 @@ fn proliferate_is_non_targeted_repeatable_and_snapshot_owned() {
             chosen_creature_type: None, target_counter_removal: None,
             linked_copy: None, cascade: None, target_card_facts: None,
             sacrificed_power: None, immediate_blink_return: None,
-            connive: None, proliferate: None, explore: None, evidence: None,
+            connive: None, optional_wheel: None, proliferate: None, explore: None, evidence: None,
             item, mana_payment: None, forage: None, target_library: None,
             program: &[Instruction::Proliferate(AmountValue::Fixed(2))],
             pc: 0, target_group: 0, moved_count: None, remembered_draws: None,

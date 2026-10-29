@@ -465,9 +465,10 @@ fn outside_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn outside_packet_supported(item: &SpellView) -> bool {
+    let Some(source) = item.source else { return false; };
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_outside(&json).is_ok())
-        || outside_new_card(item.source_card)
-        || !outside_facts_supported(&item.source_facts)
+        || outside_new_card(source.card)
+        || !outside_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if outside_new_card(token))
         || item
             .source_copy_recipe
@@ -758,9 +759,10 @@ fn schema188_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema188_packet_supported(item: &SpellView) -> bool {
+    let Some(source) = item.source else { return false; };
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema188(&json).is_ok())
-        || schema188_new_card(item.source_card)
-        || !schema188_facts_supported(&item.source_facts)
+        || schema188_new_card(source.card)
+        || !schema188_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema188_new_card(token))
         || item
             .source_copy_recipe
@@ -1040,9 +1042,10 @@ fn schema187_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema187_packet_supported(item: &SpellView) -> bool {
+    let Some(source) = item.source else { return false; };
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema187(&json).is_ok())
-        || schema187_new_card(item.source_card)
-        || !schema187_facts_supported(&item.source_facts)
+        || schema187_new_card(source.card)
+        || !schema187_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema187_new_card(token))
         || item
             .source_copy_recipe
@@ -1335,10 +1338,11 @@ fn schema186_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema186_packet_supported(item: &SpellView) -> bool {
+    let Some(source) = item.source else { return false; };
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema186(&json).is_ok())
         || item.loyalty_x.is_some()
-        || schema186_new_card(item.source_card)
-        || !schema186_facts_supported(&item.source_facts)
+        || schema186_new_card(source.card)
+        || !schema186_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema186_new_card(token))
         || item
             .source_copy_recipe
@@ -1729,10 +1733,11 @@ fn schema185_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema185_packet_supported(item: &SpellView) -> bool {
+    let Some(source) = item.source else { return false; };
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema185(&json).is_ok())
         || item.mana_tap_bonus.is_some()
-        || schema185_new_card(item.source_card)
-        || !schema185_facts_supported(&item.source_facts)
+        || schema185_new_card(source.card)
+        || !schema185_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema185_new_card(token))
         || item
             .source_copy_recipe
@@ -2022,9 +2027,10 @@ fn schema184_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema184_packet_supported(item: &SpellView) -> bool {
+    let Some(source) = item.source else { return false; };
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema184(&json).is_ok())
-        || schema184_new_card(item.source_card)
-        || !schema184_facts_supported(&item.source_facts)
+        || schema184_new_card(source.card)
+        || !schema184_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema184_new_card(token))
         || item
             .source_copy_recipe
@@ -2453,9 +2459,10 @@ fn schema183_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema183_packet_supported(item: &SpellView) -> bool {
+    let Some(source) = item.source else { return false; };
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema183(&json).is_ok())
-        || schema183_new_card(item.source_card)
-        || !schema183_facts_supported(&item.source_facts)
+        || schema183_new_card(source.card)
+        || !schema183_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema183_new_card(token))
         || item
             .source_copy_recipe
@@ -2736,9 +2743,10 @@ fn schema182_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema182_packet_supported(item: &SpellView) -> bool {
+    let Some(source) = item.source else { return false; };
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema182(&json).is_ok())
-        || schema182_new_card(item.source_card)
-        || !schema182_facts_supported(&item.source_facts)
+        || schema182_new_card(source.card)
+        || !schema182_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema182_new_card(token))
         || item
             .source_copy_recipe
@@ -3000,7 +3008,7 @@ fn schema182_checks_hidden_cards_retained_packets_and_rollback() {
         assert!(prior_schema182_state_supported(&g.state));
         let source = put(&mut g, player, "Gideon's Memorial", Zone::Battlefield);
         let mut packet = g.activation_item(player, source, 0);
-        packet.source_card = tomik;
+        packet.source.as_mut().expect("object-backed packet").card = tomik;
         g.state.pending_triggers.push(packet);
         assert!(!prior_schema182_state_supported(&g.state));
         g.state.pending_triggers.clear();
@@ -3061,9 +3069,10 @@ fn schema181_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema181_packet_supported(item: &SpellView) -> bool {
+    let Some(source) = item.source else { return false; };
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema181(&json).is_ok())
-        || schema181_new_card(item.source_card)
-        || !schema181_facts_supported(&item.source_facts)
+        || schema181_new_card(source.card)
+        || !schema181_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema181_new_card(token))
         || item
             .source_copy_recipe
@@ -3298,7 +3307,7 @@ fn schema181_accepts_schema180_cards_and_additive_subtypes() {
         }
         assert!(prior_schema181_state_supported(&g.state));
         let mut packet = g.activation_item(player, target, 0);
-        packet.source_facts = g.damage_source(target).facts;
+        packet.source.as_mut().expect("object-backed packet").facts = g.damage_source(target).facts;
         g.state.pending_triggers.push(packet);
         assert!(prior_schema181_state_supported(&g.state));
     }
@@ -3439,7 +3448,7 @@ fn schema181_live_discard_ward_payment_is_not_projectable() {
         let spell = put(&mut g, payer, "Shock", Zone::Hand);
         let secret = put(&mut g, payer, "Forest", Zone::Hand);
         cast(&mut g, spell, Some(Target::Card(gideon)));
-        let id = g.state.stack.iter().find(|s| s.card == spell).unwrap().id;
+        let id = g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == spell)).unwrap().id;
         assert!(g.counter_stack_item(id, false));
         g.resolve_top();
         assert!(matches!(g.state.pending, Pending::ResolutionMana { player } if player == payer));
@@ -3526,8 +3535,9 @@ fn schema180_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema180_packet_supported(item: &SpellView) -> bool {
-    if schema180_new_card(item.source_card)
-        || !schema180_facts_supported(&item.source_facts)
+    let Some(source) = item.source else { return false; };
+    if schema180_new_card(source.card)
+        || !schema180_facts_supported(&source.facts)
         || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema180_new_card(token))
         || item
             .source_copy_recipe
@@ -3842,7 +3852,7 @@ fn schema180_inspects_hidden_copy_faces_and_nested_packets() {
         assert!(prior_schema180_state_supported(&g.state));
         g.state.stack.clear();
         let mut hidden_fact = packet.clone();
-        hidden_fact.source_facts.card = puppet;
+        hidden_fact.source.as_mut().expect("object-backed packet").facts.card = puppet;
         g.state.stack.push(hidden_fact);
         assert!(!prior_schema180_state_supported(&g.state));
         g.state.stack.clear();
@@ -5464,7 +5474,7 @@ fn prior_schema179_inspects_both_hidden_retarget_packets() {
             let zero = g.activation_item(player, source, 0);
             let mut active = zero.clone();
             active.source_copy_recipe = Some(Box::new(
-                CopyRecipe::new(active.source_card).with_exceptions(CopyExceptions {
+                CopyRecipe::new(active.source.expect("object-backed packet").card).with_exceptions(CopyExceptions {
                     conditional_sacrifice_abilities: 1,
                     ..CopyExceptions::NONE
                 }),
@@ -5499,7 +5509,7 @@ fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
             let reference = g.object_ref(source);
             let mut packet = g.activation_item(player, source, 0);
             packet.source_copy_recipe = Some(Box::new(
-                CopyRecipe::new(packet.source_card).with_exceptions(CopyExceptions {
+                CopyRecipe::new(packet.source.expect("object-backed packet").card).with_exceptions(CopyExceptions {
                     conditional_sacrifice_abilities: 1,
                     ..CopyExceptions::NONE
                 }),
@@ -5525,7 +5535,7 @@ fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
                 let view = return_links::DelayedReturnView {
                     id: 1,
                     source: reference,
-                    source_card: packet.source_card,
+                    source_card: packet.source.expect("object-backed packet").card,
                     controller: player,
                     returning: link,
                 };
@@ -5823,7 +5833,7 @@ fn schema186_rejects_garruk_hidden_faces_delayed_stats_packets_and_rollback() {
         g.set_copy_recipe(object, ordinary);
         assert!(prior_schema186_state_supported(&g.state));
         let mut inner = g.activation_item(player, source, 0);
-        inner.source_card = garruk;
+        inner.source.as_mut().expect("object-backed packet").card = garruk;
         let mut outer = g.activation_item(player, source, 0);
         outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
             spell: inner,
@@ -5908,7 +5918,7 @@ fn schema187_preserves_old_bytes_and_rejects_jace_timing_and_nested_rollback() {
         g.state.cast_rollback = None;
         let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         let mut inner = g.activation_item(player, source, 0);
-        inner.source_card = Card::from_name("Jace's Machinations").unwrap();
+        inner.source.as_mut().expect("object-backed packet").card = Card::from_name("Jace's Machinations").unwrap();
         let mut outer = g.activation_item(player, source, 0);
         outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
             spell: inner,
@@ -6025,7 +6035,7 @@ fn outside_projection_rejects_hidden_pools_nested_packets_and_rollback() {
         g.state.cast_rollback = None;
         let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         let mut inner = g.activation_item(player, source, 0);
-        inner.source_card = Card::from_name("Extrapolate the Impossible").unwrap();
+        inner.source.as_mut().expect("object-backed packet").card = Card::from_name("Extrapolate the Impossible").unwrap();
         let mut outer = g.activation_item(player, source, 0);
         outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
             spell: inner,
