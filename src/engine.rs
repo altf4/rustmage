@@ -1115,6 +1115,15 @@ fn serialize_stack_source_facts<S: serde::Serializer>(facts: &DamageFacts, seria
     if facts.card == Card::SOURCELESS { serializer.serialize_none() } else { facts.serialize(serializer) }
 }
 
+/// Object-backed stack source, absent for inherent game-rule abilities.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct StackSourceView {
+    pub id: CardId,
+    pub object: ObjectRef,
+    pub card: Card,
+    pub facts: DamageFacts,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
     /// Present only for an inherent rule ability; its legacy source fields are
@@ -1383,6 +1392,16 @@ impl SpellView {
         self.source_move
             .as_ref()
             .map_or(self.object, |event| event.after)
+    }
+
+    /// Return real source data, or None for an inherent player ability.
+    pub fn source(&self) -> Option<StackSourceView> {
+        self.source_less_rule.is_none().then_some(StackSourceView {
+            id: self.card,
+            object: self.object,
+            card: self.source_card,
+            facts: self.source_facts,
+        })
     }
 
     /// Source identity for consumers that can also encounter inherent rules.

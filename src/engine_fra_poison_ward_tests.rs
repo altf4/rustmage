@@ -494,6 +494,7 @@ fn sourceless_stack_identity_survives_copy_and_snapshot() {
             assert!(serialized[field].is_null(), "{field} should have no source");
         }
         assert_eq!(packet.source_identity(), None);
+        assert_eq!(packet.source(), None);
         assert_eq!(packet.mana_value(), 0);
         let copy = packet.clone();
         assert_eq!(copy.source_identity(), None);
