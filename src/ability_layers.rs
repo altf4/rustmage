@@ -147,6 +147,8 @@ pub(crate) enum StaticAbilityFragment {
     AttachedCounterProhibition,
     /// Prevent counters on all permanents matching these card-type bits.
     CounterProhibition(u16),
+    /// Players matching this relation cannot receive the specified counter kind.
+    PlayerCounterProhibition { kind: crate::cards::PlayerCounterKind, relation: crate::cards::CastRelation },
     SelfUntap(UntapRestriction),
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),

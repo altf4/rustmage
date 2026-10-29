@@ -1168,6 +1168,9 @@ pub(crate) enum Instruction {
         exile_instants_sorceries: bool,
     },
     CounterRelatedUnlessPayLife(u32),
+    /// Ask the triggering opponent to pay by getting poison counters.
+    MayPayWardPoison { amount: u16, skip: usize },
+    PayWardPoison(u16),
     /// One captured ward payer may discard a card or pay this mana cost.
     CounterRelatedUnlessDiscardOrPay(ManaCost),
     /// One combined ward cost, paid atomically or the related item is countered.
@@ -2653,6 +2656,9 @@ pub(crate) enum ReplacementSpec {
     PlayerCounters {
         kind: PlayerCounterKind,
         relation: CastRelation,
+        /// Relation of the player placing the counter to the provider controller.
+        placed_by: Option<CastRelation>,
+        effects_only: bool,
         factor: u32,
         add: u32,
     },
