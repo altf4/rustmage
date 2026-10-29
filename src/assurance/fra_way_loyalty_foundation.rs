@@ -478,3 +478,32 @@ fn pyromancer_loyalty_production_uses_stack_and_cannot_fund_a_spell_midcast() {
         );
     }
 }
+
+#[test]
+fn loyalty_use_resets_when_token_slot_is_recycled() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.create_tokens(p, Card::JacePlaneswalkerToken, 1, false);
+        let token = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(id, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.is_token()
+                    && o.card == Card::JacePlaneswalkerToken)
+                    .then_some(id as CardId)
+            })
+            .unwrap();
+        g.state.objects[token as usize].loyalty_activated_this_turn = true;
+        g.move_object(token, Zone::Graveyard);
+        if g.object_view(token).zone != Zone::Outside {
+            g.cease_token(token);
+        }
+        assert!(!g.object_view(token).loyalty_activated_this_turn);
+        g.create_tokens(p, Card::JacePlaneswalkerToken, 1, false);
+        assert_eq!(g.object_view(token).zone, Zone::Battlefield);
+        assert!(!g.object_view(token).loyalty_activated_this_turn);
+    }
+}

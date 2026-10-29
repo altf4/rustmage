@@ -357,6 +357,7 @@ impl FundingState<'_> {
                     n.resources[i].object.deathtouch_since_sba = false;
                     n.resources[i].object.gained_keywords = Keywords::NONE;
                     n.resources[i].object.used_abilities = 0;
+                    n.resources[i].object.loyalty_activated_this_turn = false;
                     let after = n.reference(r.card);
                     n.project_copy_departure(*r, after);
                     n.resources[i].object.flashback = false;

@@ -1120,6 +1120,7 @@ impl FundingState<'_> {
             o.growth = Stats::default();
             o.counters = m.counters.hot();
             o.used_abilities = 0;
+            o.loyalty_activated_this_turn = false;
             o.class_level = 1;
             o.damage = 0;
             o.damaged_this_turn = false;
@@ -2192,6 +2193,49 @@ mod battle_projection_tests {
             });
             assert!(seen);
             assert_eq!(g.snapshot(), before);
+        }
+    }
+}
+
+#[cfg(test)]
+mod loyalty_incarnation_tests {
+    use super::*;
+    use crate::engine::assurance::big_helpers::{named, setup};
+
+    #[test]
+    fn projected_departures_and_entries_reset_loyalty_use_without_mutating_branch() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let walker = named(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
+            g.state.objects[walker as usize].loyalty_activated_this_turn = true;
+            let old = g.object_ref(walker);
+            let saved = g.snapshot();
+            let goal = FundingGoal {
+                actor: p,
+                required: [0; 6],
+                generic: 0,
+                reserve: None,
+                source: None,
+            };
+            let world = FundingState::from_game(&g, &goal);
+            let mut seen = false;
+            world.cost_departures(&[old], Zone::Graveyard, &mut |next| {
+                assert!(!next.object(walker).loyalty_activated_this_turn);
+                assert_ne!(next.reference(walker), old);
+                seen = true;
+                false
+            });
+            assert!(seen);
+            let movement =
+                entries::EntryMove::from_view(g.object_view(walker), Zone::Battlefield, false);
+            assert!(
+                !world
+                    .preview_entry_view(&movement)
+                    .unwrap()
+                    .loyalty_activated_this_turn
+            );
+            assert!(world.object(walker).loyalty_activated_this_turn);
+            assert_eq!(g.snapshot(), saved);
         }
     }
 }

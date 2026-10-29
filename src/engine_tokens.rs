@@ -281,6 +281,7 @@ impl Game {
         object.gained_keywords = Keywords::NONE;
         object.counters = InitialCounters::default();
         object.used_abilities = 0;
+        object.loyalty_activated_this_turn = false;
         object.class_level = 1;
         object.attached_to = None;
         // No zone-change event: this game object ceases to exist (CR111.7).
