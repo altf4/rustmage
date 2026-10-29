@@ -303,7 +303,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if matches!(action, Action::FinishAttackers) && !a.attackers.is_empty() {
                 declarations += 1;
                 for s in battlefield(&a).filter(|s| s.owner == actor) {
-                    if let Some(i) = index(s.source().expect("example expects an object-backed packet").id)
+                    if let Some(i) = index(s.card)
                         && qualifies(i, s, &a, &ledger)
                     {
                         *debt.entry((s.reference, u16::from(i == 5))).or_default() += 1;

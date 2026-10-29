@@ -521,7 +521,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     casts[i] += 1;
                 }
                 for s in a.objects.iter().filter(|v| v.zone == Zone::Battlefield) {
-                    if let Some(i) = index(s.source().expect("example expects an object-backed packet").id) {
+                    if let Some(i) = index(s.card) {
                         checks += 1;
                         if qualifies(i, s, spell.controller, spell.source().expect("example expects an object-backed packet").card, a.active) {
                             *debt.entry((s.reference, 0)).or_default() += 1;

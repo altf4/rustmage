@@ -328,7 +328,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .any(|x| x.zone == Zone::Battlefield && x.reference == v.reference)
             }) {
                 for s in a.objects.iter().filter(|s| s.zone == Zone::Battlefield) {
-                    if let Some(i) = index(s.source().expect("example expects an object-backed packet").id)
+                    if let Some(i) = index(s.card)
                         && matches(i, s, v, &a, &l)
                     {
                         if prohibit && v.card.is_creature() {
