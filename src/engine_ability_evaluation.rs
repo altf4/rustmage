@@ -157,6 +157,11 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::ControlledPlaneswalkerAttackLimit => {
+            if !own || world.kinds(id) & 64 == 0 { return None; }
+            return Some(LayerSixGrant { recipient: id, keywords: Keywords::NONE,
+                abilities: vec![key(u16::MAX)], mana: Vec::new() });
+        }
         StaticAbilityFragment::ControlledPlaneswalkerActivation(ability) => {
             if !own || world.kinds(id) & 64 == 0 {
                 return None;
@@ -295,7 +300,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
             source.zone == Zone::Battlefield
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| matches!(
-                        fragment, StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
+                        fragment, StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                     ))
                 })
         })
@@ -475,6 +480,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
+                        | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)
                 )

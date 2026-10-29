@@ -281,6 +281,7 @@ pub(crate) enum TargetPredicate {
     AttackingOrBlocking,
     Damaged,
     DealtDamage,
+    HasCounter(CounterKind),
     PowerAtLeast(i32),
     PowerAtMost(i32),
     ToughnessAtLeast(i32),

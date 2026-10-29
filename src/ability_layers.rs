@@ -108,6 +108,8 @@ pub(crate) enum StaticAbilityFragment {
     },
     /// Grant the immutable activated template to controlled planeswalkers.
     ControlledPlaneswalkerActivation(u16),
+    /// Grant controlled planeswalkers the one-attacker restriction.
+    ControlledPlaneswalkerAttackLimit,
     ControlledSubtypeKeywords {
         subtype: &'static str,
         keywords: Keywords,

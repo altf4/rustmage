@@ -1320,6 +1320,7 @@ impl Game {
                     }
                     TargetPredicate::Damaged => object.damaged_this_turn,
                     TargetPredicate::DealtDamage => object.dealt_damage_this_turn,
+                    TargetPredicate::HasCounter(kind) => self.counter_count(id, kind) > 0,
                     TargetPredicate::PowerAtLeast(n) => {
                         self.stats_without_hand(id, departing).power >= i128::from(n)
                     }

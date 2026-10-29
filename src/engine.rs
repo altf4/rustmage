@@ -4820,6 +4820,7 @@ impl Game {
                     }
                     for &defender in &walkers {
                         if self.can_attack_defender(card, CombatDefender::Planeswalker(defender))
+                            && self.attack_slot_free(defender, None)
                             && emit(Action::AttackPlaneswalker { card, defender })
                         {
                             return true;

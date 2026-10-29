@@ -47,6 +47,7 @@ impl Card {
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
+                            | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
