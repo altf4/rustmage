@@ -3,7 +3,7 @@
   "catalogue_id": 2525,
   "oracle_id": "81f022a7-fd19-4340-b8a0-6b11ab3e9d91",
   "facts_sha256": "dc40b3e2c6c0d608ab646f84e8a3380477f7808ee3006eb5f0f2e9429ee799d7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d28ed97ae57d45e5098ecfec822270e89a3743181417cf72942055eec0b18cdf"
@@ -23,5 +23,6 @@
       "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
       "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

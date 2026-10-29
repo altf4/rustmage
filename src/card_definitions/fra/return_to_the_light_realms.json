@@ -3,7 +3,7 @@
   "catalogue_id": 3505,
   "oracle_id": "217e76ca-ea94-417c-b5b0-82e2302eeee8",
   "facts_sha256": "60941365309c7e94efae075c7e4e2e9f8a056b1ae436974b2d5898c6c3945310",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "34fe5234d557f311bf50a46132857362266e0a8dfa7e9056b17a16dd51e9215f"
@@ -18,5 +18,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromYourGraveyardToBattlefieldAllEffect.java",
       "sha256": "444e837f098cf2687f903aea028d28b77d561a40b23b66085fbf03284becdde7"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

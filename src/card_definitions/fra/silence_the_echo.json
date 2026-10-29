@@ -3,7 +3,7 @@
   "catalogue_id": 3865,
   "oracle_id": "43654381-c55c-4d6d-abfd-12932ceb5a4a",
   "facts_sha256": "816051047baee5609912b771803aef1be050deec78d79a9b2348e18b68b18e51",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dd5efa5ad3ce0af9531d6cc8f8515c963a4850feb9c2bd2f8fd99317099f90e4"
@@ -28,5 +28,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
       "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

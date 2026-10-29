@@ -3,7 +3,7 @@
   "catalogue_id": 1558,
   "oracle_id": "162421d2-8761-437f-bed9-578b61c96f1f",
   "facts_sha256": "b9da0597e5cb29ddcc8b59f2309edcf0d28391e701fa43e823c9f11b245f06d5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fe7b05ab35ea7a64cd130123b25b557ee77447411b37d89ef3dfc643955c91ae"
@@ -23,5 +23,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
       "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

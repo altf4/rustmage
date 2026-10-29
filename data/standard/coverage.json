@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b3fd32fa95ff23d75e91e1e8813cdb92c862ef250645e2036659733a55b5aea7",
+  "catalogue_version": "4832524316e07eececea6838fb1e3d4599004652b3a7798ef11a9e79a3f8d26c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2876,
-  "implemented_total": 2882,
+  "implemented_standard_cards": 2897,
+  "implemented_total": 2903,
   "token_definitions": 144,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 229,
-      "gated": 56
+      "complete": 250,
+      "gated": 35
     },
     "frc": {
       "total": 6,
@@ -2043,8 +2043,8 @@
     {
       "name": "Arni, Renowned Champion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/arni_renowned_champion.rs",
       "set": "fra"
     },
@@ -3875,8 +3875,8 @@
     {
       "name": "Bloodline Recollector // Ancestral Craving",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/bloodline_recollector_ancestral_craving.rs",
       "set": "fra"
     },
@@ -5971,8 +5971,8 @@
     {
       "name": "Charge the Sanctum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/charge_the_sanctum.rs",
       "set": "fra"
     },
@@ -6315,8 +6315,8 @@
     {
       "name": "Clash of Elements",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/clash_of_elements.rs",
       "set": "fra"
     },
@@ -9083,8 +9083,8 @@
     {
       "name": "Diviner of Victory // Unwind History",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/diviner_of_victory_unwind_history.rs",
       "set": "fra"
     },
@@ -11867,8 +11867,8 @@
     {
       "name": "Fblthp, Knows the Way",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/fblthp_knows_the_way.rs",
       "set": "fra"
     },
@@ -12667,8 +12667,8 @@
     {
       "name": "Flickering Hound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/flickering_hound.rs",
       "set": "fra"
     },
@@ -13571,8 +13571,8 @@
     {
       "name": "Gallia, the Merrymaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/gallia_the_merrymaker.rs",
       "set": "fra"
     },
@@ -17035,8 +17035,8 @@
     {
       "name": "Hunter's Axe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/hunter_s_axe.rs",
       "set": "fra"
     },
@@ -17499,8 +17499,8 @@
     {
       "name": "Infinite Coursework",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/infinite_coursework.rs",
       "set": "fra"
     },
@@ -18427,8 +18427,8 @@
     {
       "name": "Jiang Yanggu, Never Alone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/jiang_yanggu_never_alone.rs",
       "set": "fra"
     },
@@ -18763,8 +18763,8 @@
     {
       "name": "Karn, Gilded Guardian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/karn_gilded_guardian.rs",
       "set": "fra"
     },
@@ -20403,8 +20403,8 @@
     {
       "name": "Living Library",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/living_library.rs",
       "set": "fra"
     },
@@ -28243,8 +28243,8 @@
     {
       "name": "Return to the Light Realms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/return_to_the_light_realms.rs",
       "set": "fra"
     },
@@ -31123,8 +31123,8 @@
     {
       "name": "Silence the Echo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/silence_the_echo.rs",
       "set": "fra"
     },
@@ -35427,8 +35427,8 @@
     {
       "name": "Tether Technician",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/tether_technician.rs",
       "set": "fra"
     },
@@ -35715,8 +35715,8 @@
     {
       "name": "The Echoverse Fulcrum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/the_echoverse_fulcrum.rs",
       "set": "fra"
     },
@@ -37995,8 +37995,8 @@
     {
       "name": "Twinned Vision",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/twinned_vision.rs",
       "set": "fra"
     },
@@ -40283,8 +40283,8 @@
     {
       "name": "Way of the Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_mentor.rs",
       "set": "fra"
     },
@@ -40299,16 +40299,16 @@
     {
       "name": "Way of the Necromancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_necromancer.rs",
       "set": "fra"
     },
     {
       "name": "Way of the Paradox",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_paradox.rs",
       "set": "fra"
     },

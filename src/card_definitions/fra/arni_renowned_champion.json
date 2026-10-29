@@ -3,7 +3,7 @@
   "catalogue_id": 230,
   "oracle_id": "1a929c4f-ae1f-44d9-a0a7-2ca2dc928dee",
   "facts_sha256": "a72ac931f33a02a8d1feb7aa7f7aa106058359421670d8986cc514ec089b092a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b2b11b56d67203d8122eb8b4a3b80a9be3a4a540f392fe017845d984325a37de"
@@ -28,5 +28,6 @@
       "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/TargetPermanentPowerCount.java",
       "sha256": "f0b296ef8d2fb45064bc8c791842e589a5bbd3c2622ef4fe2e78b26dde8b94fc"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

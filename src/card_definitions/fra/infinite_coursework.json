@@ -3,7 +3,7 @@
   "catalogue_id": 2162,
   "oracle_id": "666b34b5-a0c2-43e3-befd-7c3979313682",
   "facts_sha256": "c6543c14ceaba6035655425f16492947ab0ae62cfbc0d688eddd8c0b1df7af76",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b078aa6a59506713e82dce99a9056e7075317048398c08033f01b1d99d7c5333"
@@ -28,5 +28,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
       "sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

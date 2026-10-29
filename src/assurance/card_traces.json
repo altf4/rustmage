@@ -1007,6 +1007,14 @@
     "journal": "5a37305467443acc",
     "observations": "e74c8eff443c2ab4"
   },
+  "Arni, Renowned Champion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "fa023aad863dc9ad",
+    "observations": "d4bf363d48fc099e"
+  },
   "Arnim Zola, Bio-Fanatic": {
     "root": "main",
     "status": "completed",
@@ -2143,6 +2151,14 @@
     "journal": "17b1007f413b3222",
     "observations": "c5303459fc3946f7"
   },
+  "Bloodline Recollector // Ancestral Craving": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "4fa61377256e3b74"
+  },
   "Bloodthirsty Conqueror": {
     "root": "main",
     "status": "completed",
@@ -3191,6 +3207,14 @@
     "journal": "2f212df689d192b4",
     "observations": "ea8423e9e60ac064"
   },
+  "Charge the Sanctum": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "aa5a7681959367fa",
+    "observations": "b1204a01cfa91b61"
+  },
   "Charging Strifeknight": {
     "root": "main",
     "status": "completed",
@@ -3358,6 +3382,14 @@
     "zone": "Battlefield",
     "journal": "fa023aad863dc9ad",
     "observations": "21b903b5c2b0bae8"
+  },
+  "Clash of Elements": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "24ef50233d430caf",
+    "observations": "a6a2e5016e429dc5"
   },
   "Claws Out": {
     "root": "main",
@@ -4902,6 +4934,14 @@
     "zone": "Graveyard",
     "journal": "95d158e949f4f7df",
     "observations": "bfbdffbd871d42b3"
+  },
+  "Diviner of Victory // Unwind History": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "77fe8ec276f5ddde",
+    "observations": "b1100ce0d8b95c0d"
   },
   "Divining Duelist": {
     "root": "main",
@@ -6503,6 +6543,14 @@
     "journal": "b6cf3749b9ab6fcf",
     "observations": "f0458576f3ef5b6c"
   },
+  "Fblthp, Knows the Way": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "66a8ac75721739c6",
+    "observations": "bd3364e899d99bcc"
+  },
   "Fear of Failed Tests": {
     "root": "main",
     "status": "completed",
@@ -6942,6 +6990,14 @@
     "zone": "Battlefield",
     "journal": "100cb581dd613f1f",
     "observations": "dc980f59ae6af9d4"
+  },
+  "Flickering Hound": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1ee756735d2f017d",
+    "observations": "067ff507263dbc82"
   },
   "Flight-Deck Coordinator": {
     "root": "main",
@@ -7470,6 +7526,14 @@
     "zone": "Battlefield",
     "journal": "a4c714aeb662e85f",
     "observations": "1456eaf8bb346eda"
+  },
+  "Gallia, the Merrymaker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "45de3333675b2dc5"
   },
   "Galuf's Final Act": {
     "root": "main",
@@ -9551,6 +9615,14 @@
     "journal": "60609359dae9f3fd",
     "observations": "190f2072b37ec968"
   },
+  "Hunter's Axe": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "d96ad4ca883f316e",
+    "observations": "a4000f6e92004441"
+  },
   "Hunter's Talent": {
     "root": "main",
     "status": "completed",
@@ -9806,6 +9878,14 @@
     "zone": "Battlefield",
     "journal": "7def026c1597d7ae",
     "observations": "5f886b99fdd779a2"
+  },
+  "Infinite Coursework": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "2f47adf619434ece",
+    "observations": "2b7b18e4d6427493"
   },
   "Infirmary Healer": {
     "root": "main",
@@ -10295,6 +10375,14 @@
     "journal": "5475dca6307e4e7e",
     "observations": "421211f008b7cc37"
   },
+  "Jiang Yanggu, Never Alone": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "f500b3118c2282cd",
+    "observations": "9c0fede5777db006"
+  },
   "Jibbirik Omnivore": {
     "root": "main",
     "status": "completed",
@@ -10454,6 +10542,14 @@
     "zone": "Battlefield",
     "journal": "e9faa30ff25cc76d",
     "observations": "c56a2f8e19b01664"
+  },
+  "Karn, Gilded Guardian": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "f7d370e31990f2e2",
+    "observations": "b951ef080197e636"
   },
   "Kavaron Turbodrone": {
     "root": "main",
@@ -11262,6 +11358,14 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "6acc7af3ee52592f"
+  },
+  "Living Library": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e9faa30ff25cc76d",
+    "observations": "af722003db8f2acf"
   },
   "Living Phone": {
     "root": "main",
@@ -15679,6 +15783,14 @@
     "journal": "155ea815163447f2",
     "observations": "e0db027564e96fee"
   },
+  "Return to the Light Realms": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "6dfe6099cb602fd3",
+    "observations": "68676c785336b021"
+  },
   "Return to the Sewers": {
     "root": "main",
     "status": "completed",
@@ -17302,6 +17414,14 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "84916d34a7ea91de"
+  },
+  "Silence the Echo": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "b21f71887cb3a47b",
+    "observations": "f69790929998e16d"
   },
   "Silvan Reveler": {
     "root": "main",
@@ -19711,6 +19831,14 @@
     "journal": "b6cf3749b9ab6fcf",
     "observations": "b67d0e3b4d6cd40c"
   },
+  "Tether Technician": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "f9e1c9a99792ef71",
+    "observations": "2a3fbd5b9a04315e"
+  },
   "Tethermage's Advantage": {
     "root": "main",
     "status": "completed",
@@ -19846,6 +19974,14 @@
     "zone": "Graveyard",
     "journal": "6ef946a6a929e72e",
     "observations": "fc624d91b59dccb8"
+  },
+  "The Echoverse Fulcrum": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "23604f55788e7696",
+    "observations": "11c29a6d20cc6ba8"
   },
   "The Great Goblin": {
     "root": "main",
@@ -21022,6 +21158,14 @@
     "zone": "Battlefield",
     "journal": "a19704fa93226173",
     "observations": "854938253f242548"
+  },
+  "Twinned Vision": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "5430c857453b6e98",
+    "observations": "07df5c02bffea533"
   },
   "Twisted Fates": {
     "root": "main",
@@ -22246,6 +22390,30 @@
     "zone": "Battlefield",
     "journal": "780f65636d4e504d",
     "observations": "5daaa1474209dbff"
+  },
+  "Way of the Mentor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "b7e8650770c4fc3c",
+    "observations": "a80254ae56f5f5a9"
+  },
+  "Way of the Necromancer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "218ecaa634b2f12f",
+    "observations": "7eb3078b55a1e9dc"
+  },
+  "Way of the Paradox": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "34d9b2b58f992ebc",
+    "observations": "bc062076f21d3495"
   },
   "Way of the Pyromancer": {
     "root": "main",

@@ -3,7 +3,7 @@
   "catalogue_id": 4439,
   "oracle_id": "c04197ad-d2f3-499f-b863-bed0c869519c",
   "facts_sha256": "ad279db30f63a3e44f27697b93d796a61d28665f1789abf13901de083e910a10",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "57e1f7322d3a9c12bbb3f1d15c62b4b4102d6b71f17aeb90b4b0146aabadab7e"
@@ -33,5 +33,6 @@
       "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
       "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

@@ -7531,3 +7531,9 @@ mod engine_fra_clash_independent_tests;
 
 #[path = "engine_fra_karn_tether_independent_tests.rs"]
 mod engine_fra_karn_tether_independent_tests;
+
+#[path = "engine_fra_hunters_axe_independent_tests.rs"]
+mod engine_fra_hunters_axe_independent_tests;
+
+#[path = "engine_fra_candidate_control_replacement_tests.rs"]
+mod engine_fra_candidate_control_replacement_tests;
