@@ -938,6 +938,7 @@ struct PlayerState {
     cards_drawn_this_turn: u64,
     scried_or_surveilled_this_turn: bool,
     loyalty_ability_activated_this_turn: bool,
+    legend_rule_ignored_this_turn: bool,
     noncombat_damage_this_turn: bool,
     noncombat_damage_last_turn: bool,
     drew_in_own_draw_step: bool,
@@ -2328,6 +2329,7 @@ pub struct PlayerView {
     /// Whether this player completed a positive scry or surveil this turn.
     pub scried_or_surveilled_this_turn: bool,
     pub loyalty_ability_activated_this_turn: bool,
+    pub legend_rule_ignored_this_turn: bool,
     pub noncombat_damage_this_turn: bool,
     pub noncombat_damage_last_turn: bool,
     pub cards_discarded_this_turn: u64,
@@ -2838,6 +2840,7 @@ impl Game {
             cards_drawn_this_turn: 0,
             scried_or_surveilled_this_turn: false,
             loyalty_ability_activated_this_turn: false,
+            legend_rule_ignored_this_turn: false,
             noncombat_damage_this_turn: false,
             noncombat_damage_last_turn: false,
             drew_in_own_draw_step: false,
@@ -7746,6 +7749,9 @@ impl Game {
             obj.growth = Stats::default();
             obj.gained_keywords = Keywords::NONE;
         }
+        let expired_legend_rule = self.state.players.iter_mut().fold(false, |expired, player| {
+            std::mem::take(&mut player.legend_rule_ignored_this_turn) || expired
+        });
         let expired_copies = self.expire_temporary_copies(true);
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
@@ -7759,7 +7765,7 @@ impl Game {
                 )
                 .into_iter()
                 .any(|lost| lost)
-            || (expired_vehicles || expired_animations || expired_copies) && self.sba_required()
+            || (expired_vehicles || expired_animations || expired_copies || expired_legend_rule) && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
                     && self.is_creature(id as CardId)
@@ -8492,6 +8498,7 @@ impl Game {
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 scried_or_surveilled_this_turn: s.players[i].scried_or_surveilled_this_turn,
                 loyalty_ability_activated_this_turn: s.players[i].loyalty_ability_activated_this_turn,
+                legend_rule_ignored_this_turn: s.players[i].legend_rule_ignored_this_turn,
                 noncombat_damage_this_turn: s.players[i].noncombat_damage_this_turn,
                 noncombat_damage_last_turn: s.players[i].noncombat_damage_last_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,

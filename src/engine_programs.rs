@@ -3897,6 +3897,9 @@ impl Game {
                     }
                 }
                 Instruction::BecomeCopy(spec) => self.resolve_in_place_copy(&item, spec),
+                Instruction::IgnoreLegendRuleThisTurn => {
+                    self.state.players[item.controller.index()].legend_rule_ignored_this_turn = true;
+                }
                 Instruction::CreateCopyTokenForPlayer {
                     subject,
                     amount,

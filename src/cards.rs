@@ -1166,6 +1166,8 @@ pub(crate) enum Instruction {
     },
     CreateTemporaryArtifactCopy,
     BecomeCopy(InPlaceCopySpec),
+    /// The resolving controller ignores the legend rule for the rest of this turn.
+    IgnoreLegendRuleThisTurn,
     CreateCopyToken {
         subject: Subject,
         amount: u16,

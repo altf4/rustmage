@@ -223,7 +223,8 @@ impl Game {
             {
                 batch.detached.push(self.object_ref(id));
             }
-            if ability_world::CharacteristicWorld::legendary(self, id) {
+            if !self.state.players[object.controller.index()].legend_rule_ignored_this_turn
+                && ability_world::CharacteristicWorld::legendary(self, id) {
                 legends[object.controller.index()]
                     .entry(crate::card_names::comparison_key(self.object_name(id)))
                     .or_default()
