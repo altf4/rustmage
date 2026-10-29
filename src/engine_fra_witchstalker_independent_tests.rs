@@ -83,7 +83,10 @@ fn witchstalker_counts_self_shuffle_as_part_of_mill_without_faking_a_zone_change
                     act(&mut game, action);
                     if game.state.stack.is_empty()
                         && game.state.pending_triggers.is_empty()
+                        && game.state.ordering_triggers.is_empty()
                         && game.state.resolving.is_none()
+                        && game.state.announcing.is_none()
+                        && game.state.pending == Pending::Priority
                         && game.on_battlefield(wolf)
                     {
                         break;
