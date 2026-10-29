@@ -383,42 +383,161 @@ fn project_prior_schema180(input: &str) -> Result<String, String> {
     Ok(input.to_owned())
 }
 
-/// Reject opaque continuations and copies rather than inferring hidden state
-/// from either viewer's observation. Check rollback snapshots recursively.
-fn prior_schema180_state_supported(state: &State) -> bool {
-    let new_card = |card: Card| card.aura_artifact_or_non_aura_enchantment()
+/// Schema-180 rules are carried by these authored card definitions.
+fn schema180_new_card(card: Card) -> bool {
+    card.aura_artifact_or_non_aura_enchantment()
         || card.identity() == "Variable Chaser // Arc of Fortune"
-        || card.name() == "Arc of Fortune";
+        || card.name() == "Arc of Fortune"
+}
+
+fn schema180_recipe_supported(recipe: &CopyRecipe) -> bool {
+    if schema180_new_card(recipe.definition) { return false; }
+    match recipe.faces {
+        Some(copies::CopyFaces::Double { physical_front, front, back, .. }) =>
+            ![physical_front, front, back].into_iter().any(schema180_new_card),
+        _ => true,
+    }
+}
+
+fn schema180_facts_supported(facts: &DamageFacts) -> bool {
+    !schema180_new_card(facts.card)
+        && serde_json::to_string(&facts.granted_subtypes)
+            .is_ok_and(|json| project_prior_schema180(&json).is_ok())
+}
+
+/// Inspect all packet fields carrying card definitions, recipes or LKI subtype
+/// overlays. Reference-only and numeric fields cannot contain the new rules.
+fn schema180_packet_supported(item: &SpellView) -> bool {
+    if schema180_new_card(item.source_card) || !schema180_facts_supported(&item.source_facts)
+        || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema180_new_card(token))
+        || item.source_copy_recipe.as_deref().is_some_and(|r| !schema180_recipe_supported(r))
+        || item.captured_artifact_copy.as_deref().is_some_and(|r| !schema180_recipe_supported(r))
+        || item.attachment_trigger.as_ref().is_some_and(|v| schema180_new_card(v.granting_card))
+        || item.cast_event.as_ref().is_some_and(|v| schema180_new_card(v.card))
+        || item.cast.and_then(|v| v.physical_card).is_some_and(schema180_new_card)
+        || item.mana_copy_sources.as_ref().is_some_and(|sources| sources.iter().any(|(v, _)|
+            schema180_new_card(v.card) || schema180_new_card(v.definition) || !schema180_facts_supported(&v.facts)))
+        || item.copy_event.as_ref().is_some_and(|event| !schema180_packet_supported(&event.spell))
+    { return false; }
+    if let Some(event) = &item.event_object {
+        if event.subtype_lki.as_ref().is_some_and(|facts| !schema180_facts_supported(facts)) {
+            return false;
+        }
+        match &event.facts {
+            event_objects::EventObjectFacts::DamageActor(source) if !schema180_facts_supported(&source.facts) => return false,
+            event_objects::EventObjectFacts::Copiable(recipe) if !schema180_recipe_supported(recipe) => return false,
+            _ => {}
+        }
+    }
+    true
+}
+
+/// Conservatively reject opaque continuations, while checking copy layers and
+/// retained packets by type. Rollback snapshots retain independent hidden state.
+fn prior_schema180_state_supported(state: &State) -> bool {
     if state.resolving.is_some() || state.announcing.is_some()
         || state.mana_announcement_stack.is_some() || state.replacements.is_some()
         || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
         || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
-        || !state.stack.is_empty() || !state.pending_triggers.is_empty()
-        || !state.ordering_triggers.is_empty()
-        || state.copy_recipes.as_ref().is_some_and(|rows| !rows.is_empty())
-        || state.temporary_copies.as_ref().is_some_and(|rows| !rows.is_empty())
-        || state.objects.iter().any(|o| new_card(o.card))
+        || state.objects.iter().any(|o| schema180_new_card(o.card))
+        || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema180_new_card(row.granting_card)))
+        || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema180_new_card(row.granting_card)))
+        || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            schema180_new_card(row.provider) || schema180_new_card(row.definition)))
+        // Borrowed slot definitions and warp continuations contain private cards.
+        || state.borrowed_slots.as_ref().is_some_and(|rows| !rows.is_empty())
+        || state.warp.as_ref().is_some_and(|w| !w.delayed.is_empty())
+        || state.adventures.as_ref().is_some_and(|a| a.permissions.iter().any(|v| schema180_new_card(v.card)))
+        || state.plot.as_ref().and_then(|p| p.payment.as_ref()).is_some_and(|p| schema180_new_card(p.source_card))
+        || state.hits.iter().any(|hit| !schema180_facts_supported(&hit.source.facts))
+        || state.damage_choices.iter().any(|hit| !schema180_facts_supported(&hit.source.facts))
         || state.manifest.as_ref().is_some_and(|manifest| {
             manifest.permanents.iter().chain(manifest.spells.iter())
-                .any(|row| new_card(row.underlying))
+                .any(|row| schema180_new_card(row.underlying))
         })
+        || state.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row| !schema180_recipe_supported(&row.recipe)))
+        || state.temporary_copies.as_ref().is_some_and(|rows| rows.iter().any(|row| {
+            schema180_new_card(row.physical_card)
+                || row.original_recipe.as_ref().is_some_and(|r| !schema180_recipe_supported(r))
+                || row.layers.iter().any(|layer| !schema180_recipe_supported(&layer.value.recipe))
+        }))
     { return false; }
+    if let Some(mana) = &state.mana_lots {
+        let copy_safe = |source: &mana_lots::ManaCopySource| {
+            !schema180_new_card(source.card) && !schema180_new_card(source.definition)
+                && schema180_facts_supported(&source.facts)
+        };
+        let quality_safe = |quality: &mana_lots::Quality| quality.copy_source.as_ref().is_none_or(copy_safe);
+        if mana.trace.is_some() || mana.replay.is_some() || mana.choice.is_some()
+            || mana.pools.iter().flat_map(|rows| rows.iter()).any(|lot| !quality_safe(&lot.quality))
+            || mana.effect_quality.as_ref().is_some_and(|q| !quality_safe(q))
+            || mana.announcement_quality.as_ref().is_some_and(|(_, q)| !quality_safe(q))
+        { return false; }
+    }
     if let Some(rollback) = &state.cast_rollback {
         if !rollback.events.is_empty() || rollback.replay.is_some() || rollback.capture.is_some()
             || !prior_schema180_state_supported(&rollback.before) { return false; }
     }
-    // Other retained private packets may carry card copies or continuations.
-    if state.delayed_artifact_copies.as_ref().is_some_and(|rows| !rows.is_empty())
-        || state.delayed_attack_this_turn.as_ref().is_some_and(|rows| !rows.is_empty())
-        || state.delayed_main_mana.as_ref().is_some_and(|rows| !rows.is_empty())
-        || state.delayed_upkeep_tokens.as_ref().is_some_and(|rows| !rows.is_empty())
-        || state.stack_copy_data.as_ref().is_some_and(|s| s.packets().next().is_some())
-        || state.paradigm.as_ref().is_some_and(|s| s.packets().next().is_some())
-        || state.delayed_returns.as_ref().is_some_and(|rows| !rows.is_empty())
-        || state.earthbend_returns.as_ref().is_some_and(|rows| !rows.is_empty())
-        || state.manifest.as_ref().is_some_and(|s| !s.deaths.is_empty())
-    { return false; }
-    true
+    state.stack.iter().chain(&state.pending_triggers).chain(&state.ordering_triggers)
+        .chain(state.delayed_artifact_copies.as_deref().into_iter().flatten())
+        .chain(state.delayed_attack_this_turn.as_deref().into_iter().flatten())
+        .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
+        .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
+        .chain(state.stack_copy_data.as_ref().into_iter().flat_map(|s| s.packets()))
+        .chain(state.paradigm.as_ref().into_iter().flat_map(|s| s.packets()))
+        .chain(state.delayed_returns.as_deref().into_iter().flatten().map(|r| &r.item))
+        .chain(state.earthbend_returns.as_deref().into_iter().flatten().map(|r| &r.item))
+        .chain(state.manifest.as_ref().into_iter().flat_map(|s| s.deaths.iter().map(|d| &d.source)))
+        .all(schema180_packet_supported)
+}
+
+#[test]
+fn schema180_inspects_hidden_copy_faces_and_nested_packets() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Hand);
+        let object = g.object_ref(id);
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let puppet = Card::from_name("Puppet Crafting").unwrap();
+        let ordinary = CopyRecipe::new(bear);
+        g.set_copy_recipe(object, ordinary);
+        assert!(prior_schema180_state_supported(&g.state));
+        let hidden = ordinary.with_faces(copies::CopyFaces::Double {
+            physical_front: puppet, front: bear, back: bear, back_up: false,
+        });
+        g.set_copy_recipe(object, hidden);
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.begin_attack_rollback(player);
+        g.set_copy_recipe(object, ordinary);
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.state.cast_rollback = None;
+        assert!(prior_schema180_state_supported(&g.state));
+
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let packet = g.activation_item(player, source, 0);
+        g.state.stack.push(packet.clone());
+        assert!(prior_schema180_state_supported(&g.state));
+        g.state.stack.clear();
+        let mut hidden_fact = packet.clone();
+        hidden_fact.source_facts.card = puppet;
+        g.state.stack.push(hidden_fact);
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.state.stack.clear();
+        let mut hidden_packet = packet.clone();
+        hidden_packet.source_copy_recipe = Some(Box::new(hidden));
+        let mut wrapper = packet.clone();
+        wrapper.copy_event = Some(Box::new(stack_copies::CopyEvent { spell: hidden_packet.clone(), amount: 1 }));
+        g.state.pending_triggers.push(wrapper);
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.state.pending_triggers.clear();
+        g.state.stack_copy_data = Some(Box::new(stack_copies::CopyState::test_retarget(packet.clone(), packet.clone())));
+        assert!(prior_schema180_state_supported(&g.state));
+        g.state.stack_copy_data = Some(Box::new(stack_copies::CopyState::test_retarget(packet.clone(), hidden_packet.clone())));
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.state.stack_copy_data = None;
+        g.state.manifest.get_or_insert_default().deaths.push(manifest::ManifestDeath { object, source: hidden_packet });
+        assert!(!prior_schema180_state_supported(&g.state));
+    }
 }
 
 #[test]
