@@ -3,7 +3,7 @@
   "catalogue_id": 5463,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/command/emblems/AjaniResoluteEmblem.java",
   "java_sha256": "c37c87e101fc5129f43fbf390f0e9d01db92945459f5658489605eee08f980ac",

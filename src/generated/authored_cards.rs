@@ -49148,8 +49148,35 @@ pub(super) mod card_5460 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/prepare_variable_chaser_arc_of_fortune.rs");
 }
+pub(super) mod card_5461 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_pyre_rhymer_molten_tide.rs");
+}
+pub(super) mod card_5462 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_fra_ajani_pridemate.rs");
+}
+pub(super) mod card_5463 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/emblem_fra_ajani_resolute.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5461] = [
+pub(super) static RULES: [&CardRules; 5464] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54611,6 +54638,9 @@ pub(super) static RULES: [&CardRules; 5461] = [
     &card_5458::RULES,
     &card_5459::RULES,
     &card_5460::RULES,
+    &card_5461::RULES,
+    &card_5462::RULES,
+    &card_5463::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

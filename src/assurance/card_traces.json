@@ -455,6 +455,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "44c4ccadc212ac53"
   },
+  "Ajani Resolute": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "60e1d5f809c0116b"
+  },
   "Ajani Unrelenting": {
     "root": "main",
     "status": "completed",
