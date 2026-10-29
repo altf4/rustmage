@@ -467,3 +467,30 @@ fn replacement_prevented_sacrifice_mana_cost_is_paid_and_replays() {
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn emrakul_cast_history_survives_retained_retarget_copy_packet_and_restore() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        let land = put(&mut g, player, "Forest", Zone::Battlefield);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(land) });
+        pay(&mut g);
+        let exiled = g.object_ref(source);
+        let item = g.state.stack.pop().unwrap();
+        g.state.stack_copy_data = Some(Box::new(stack_copies::CopyState::test_retarget(item.clone(), item)));
+        g.state.roles.get_or_insert_default().exile_grant_cast_history.push(exiled);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.prune_exile_grant_cast_history();
+            assert!(g.state.roles.as_ref().unwrap().exile_grant_cast_history.contains(&exiled));
+            g.state.stack_copy_data = None;
+            g.prune_exile_grant_cast_history();
+            assert!(!g.state.roles.as_ref().unwrap().exile_grant_cast_history.contains(&exiled));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
