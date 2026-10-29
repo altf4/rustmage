@@ -183,6 +183,7 @@ impl Game {
             return None;
         }
         Some(replacements::ReplacementChoiceView {
+            self_counter_effects: Vec::new(),
             kind: "Connive",
             object: Some(current.object),
             effects,

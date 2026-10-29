@@ -603,3 +603,38 @@ fn countered_radiation_trigger_neither_mills_nor_changes_counters() {
         }
     }
 }
+
+#[test]
+fn own_counter_replacements_precede_general_replacements_and_prohibition() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for player in [Player::P0, Player::P1] {
+        for prohibited in [false, true] {
+            let mut game = scenario(player);
+            let top = put(&mut game, player, "Forest", Zone::Library);
+            let opt = put(&mut game, player, "Opt", Zone::Hand);
+            put(&mut game, player, "Hill Giant", Zone::Battlefield); // doubles poison normally
+            if prohibited { put(&mut game, player, "Bear Cub", Zone::Battlefield); }
+            cast(&mut game, opt, None);
+            game.resolve_top();
+            assert!(matches!(game.state.pending, Pending::EffectLibrary { .. }));
+            let origin_stack_id = game.state.resolving.as_ref().unwrap().item.id;
+            let make = |effect, factor, add| replacements::SelfPlayerCounterReplacement {
+                origin_stack_id, effect, player, kind: crate::cards::PlayerCounterKind::Poison, factor, add,
+            };
+            game.effect_player_counters_with_self(player, crate::cards::PlayerCounterKind::Poison,
+                1, origin_stack_id, vec![make(0, 2, 0), make(1, 1, 1)], replacements::ResumeMode::Program);
+            assert!(game.advance_replacements(false));
+            let before = game.snapshot();
+            assert_eq!(game.observe(player).replacement_choice.unwrap().self_counter_effects.len(), 2);
+            for (effect, expected) in [(0, 6), (1, 8)] {
+                game.restore(&before).unwrap();
+                let action = Action::ChooseSelfCounterReplacement { effect };
+                assert!(game.apply(player.other(), action.clone()).is_err());
+                assert_eq!(game.snapshot(), before);
+                act(&mut game, action);
+                assert_eq!(game.state.players[player.index()].poison_counters, if prohibited { 0 } else { expected });
+                assert_eq!(game.object_view(top).zone, Zone::Library);
+            }
+        }
+    }
+}

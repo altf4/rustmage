@@ -193,7 +193,7 @@ mod shield_harness;
 pub use replacements::{
     CreatedTokenChoiceView, DamageEventOrderView, DamagePreventionKind, DamagePreventionView,
     PlayerCounterPlacementView, ProliferateReplacementView, ReplacementChoiceView,
-    ReplacementEffectView, TokenGroupView,
+    ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -523,6 +523,7 @@ define_actions! {
     FinishEvidence,
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
+    ChooseSelfCounterReplacement { effect: u16 },
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
     ChooseDamageEvent { index: u32 },
     ChooseCreatedToken { object: ObjectRef },
@@ -5387,6 +5388,7 @@ impl Game {
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
             }
+            Action::ChooseSelfCounterReplacement { effect } => self.choose_self_counter_replacement(effect),
             Action::ChooseDamagePrevention { source, prevention } => {
                 self.choose_damage_prevention(source, prevention)
             }
