@@ -1363,6 +1363,16 @@ fn outside_replacement_public_view_identifies_selected_card_without_pool_slots()
                 let expected = if selected == 0 { shock } else { bear };
                 let owner_view = game.observe(owner);
                 let opponent_view = game.observe(owner.other());
+                assert!(opponent_view.owned_outside.is_none());
+                let outside = opponent_view.outside_choice.as_ref().unwrap();
+                assert!(outside.pool.is_none());
+                assert!(outside.first.is_none());
+                assert_eq!(outside.revealed, Some([shock, bear]));
+                let known = opponent_view.known_outside.as_ref().unwrap();
+                assert_eq!(known[owner.index()], vec![shock, bear]);
+                assert!(!known[owner.index()].contains(&Card::Island));
+                let full_wire = serde_json::to_string(&opponent_view).unwrap();
+                assert!(!full_wire.contains("Island"));
                 let choice = owner_view.outside_entry_replacement.as_ref().unwrap();
                 assert_eq!(
                     choice,
@@ -1396,6 +1406,32 @@ fn outside_replacement_public_view_identifies_selected_card_without_pool_slots()
                         .any(|a| matches!(a, Action::ChooseOutsideEntryReplacement { .. }))
                 );
                 assert!(opponent_view.actions.is_empty());
+                // Controlling the affected player grants the public decision,
+                // but never that player's unrevealed outside collection.
+                game.state.active = owner;
+                game.schedule_player_control(owner, owner.other());
+                game.begin_player_control_turn();
+                let controlled = game.observe(owner.other());
+                assert!(controlled.owned_outside.is_none());
+                let outside = controlled.outside_choice.as_ref().unwrap();
+                assert!(outside.pool.is_none());
+                assert!(outside.first.is_none());
+                assert_eq!(outside.revealed, Some([shock, bear]));
+                assert_eq!(
+                    controlled.known_outside.as_ref().unwrap()[owner.index()],
+                    vec![shock, bear]
+                );
+                assert!(
+                    controlled
+                        .actions
+                        .iter()
+                        .any(|a| matches!(a, Action::ChooseOutsideEntryReplacement { .. }))
+                );
+                assert!(
+                    !serde_json::to_string(&controlled)
+                        .unwrap()
+                        .contains("Island")
+                );
                 game.restore(&revealed).unwrap();
             }
         }
