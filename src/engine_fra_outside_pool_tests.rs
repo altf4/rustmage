@@ -1258,7 +1258,10 @@ fn self_and_provider_continuations_reject_stale_resolution_and_apply_once() {
         assert!(!game.commit_outside_hand());
         assert_eq!(game.snapshot(), stale_plan);
         game.restore(&pair).unwrap();
+        let origin = game.state.resolving.as_ref().unwrap().item.id;
+        outside_choices::start_self_trace();
         act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+        assert_eq!(outside_choices::take_self_trace(), vec![(origin, 0)]);
         let waiting = game.snapshot();
         let exile = Action::ChooseOutsideEntryReplacement { source, ability: 1 };
         assert!(game.legal_actions().contains(&exile));
@@ -1269,7 +1272,9 @@ fn self_and_provider_continuations_reject_stale_resolution_and_apply_once() {
         game.restore(&waiting).unwrap();
         for _ in 0..2 {
             outside_choices::start_provider_trace();
+            outside_choices::start_self_trace();
             act(&mut game, exile.clone());
+            assert_eq!(outside_choices::take_self_trace(), vec![(origin, 1)]);
             // First self replacement preserved hand; the ordinary exile
             // replacement enabled the second self replacement back to hand;
             // the remaining ordinary prevention then applies exactly once.

@@ -6,6 +6,15 @@ use super::*;
 #[cfg(test)]
 thread_local! {
     static TEST_PROVIDER_TRACE: std::cell::RefCell<Option<Vec<(ObjectRef, u16)>>> = const { std::cell::RefCell::new(None) };
+    static TEST_SELF_TRACE: std::cell::RefCell<Option<Vec<(u64, u16)>>> = const { std::cell::RefCell::new(None) };
+}
+#[cfg(test)]
+pub(super) fn start_self_trace() {
+    TEST_SELF_TRACE.with(|trace| *trace.borrow_mut() = Some(Vec::new()));
+}
+#[cfg(test)]
+pub(super) fn take_self_trace() -> Vec<(u64, u16)> {
+    TEST_SELF_TRACE.with(|trace| trace.borrow_mut().take().unwrap())
 }
 #[cfg(test)]
 pub(super) fn start_provider_trace() {
@@ -589,6 +598,12 @@ impl Game {
             }
         };
         event.self_applied.push(id);
+        #[cfg(test)]
+        TEST_SELF_TRACE.with(|trace| {
+            if let Some(events) = trace.borrow_mut().as_mut() {
+                events.push((event.self_origin.unwrap(), id));
+            }
+        });
         event.self_choices.clear();
         true
     }
