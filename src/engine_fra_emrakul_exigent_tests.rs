@@ -943,3 +943,38 @@ fn emrakul_granted_mana_can_pay_for_that_same_card_and_then_expires() {
         }
     }
 }
+
+#[test]
+fn emrakul_ward_counters_when_only_two_permanents_can_be_sacrificed() {
+    for owner in [Player::P0, Player::P1] {
+        let mut game = scenario(owner);
+        let emrakul = put(
+            &mut game,
+            owner,
+            "Emrakul, the Exigent Doom",
+            Zone::Battlefield,
+        );
+        let payer = owner.other();
+        let lands: Vec<_> = (0..2)
+            .map(|_| put(&mut game, payer, "Forest", Zone::Battlefield))
+            .collect();
+        let shock = put(&mut game, payer, "Shock", Zone::Hand);
+        game.state.active = payer;
+        game.state.priority = payer;
+        cast(&mut game, shock, Some(Target::Card(emrakul)));
+        let saved = game.snapshot();
+        for replay in 0..2 {
+            if replay == 1 {
+                game.restore(&saved).unwrap();
+            }
+            settle(&mut game);
+            assert!(
+                lands
+                    .iter()
+                    .all(|&id| game.object_view(id).zone == Zone::Battlefield)
+            );
+            assert_eq!(game.object_view(emrakul).damage, 0);
+            assert_eq!(game.object_view(shock).zone, Zone::Graveyard);
+        }
+    }
+}

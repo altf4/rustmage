@@ -112,3 +112,64 @@ fn deathbringer_grant_may_sacrifice_a_creature_or_be_declined() {
         }
     }
 }
+
+#[test]
+fn healer_granted_loyalty_creates_token_then_surveils_privately() {
+    for player in [Player::P0, Player::P1] {
+        for to_graveyard in [false, true] {
+            let mut game = scenario(player);
+            let way = put(&mut game, player, "Way of the Healer", Zone::Hand);
+            cast(&mut game, way, None);
+            settle(&mut game);
+            let walker = own_jace(&game, player);
+            assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 5);
+            let top = put(&mut game, player, "Forest", Zone::Library);
+            activate_grant(&mut game, walker, way);
+            assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 3);
+            for _ in 0..32 {
+                if matches!(game.state.pending, Pending::EffectLibrary { .. }) {
+                    break;
+                }
+                act(&mut game, Action::Pass);
+            }
+            assert!(matches!(game.state.pending, Pending::EffectLibrary { .. }));
+            assert!(game.observe(player).library_choice.is_some());
+            assert!(game.observe(player.other()).library_choice.is_none());
+            assert!(
+                game.state
+                    .objects
+                    .iter()
+                    .any(|object| object.zone == Zone::Battlefield
+                        && object.controller == player
+                        && object.card == Card::test_index(5298))
+            );
+            let saved = game.snapshot();
+            for replay in 0..2 {
+                if replay == 1 {
+                    game.restore(&saved).unwrap();
+                }
+                act(
+                    &mut game,
+                    Action::ArrangeLibrary {
+                        card: top,
+                        destination: if to_graveyard {
+                            LibraryDestination::Graveyard
+                        } else {
+                            LibraryDestination::Top
+                        },
+                    },
+                );
+                settle(&mut game);
+                assert_eq!(
+                    game.object_view(top).zone,
+                    if to_graveyard {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Library
+                    }
+                );
+                assert!(game.state.players[player.index()].scried_or_surveilled_this_turn);
+            }
+        }
+    }
+}
