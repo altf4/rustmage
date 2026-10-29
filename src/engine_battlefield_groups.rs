@@ -203,4 +203,17 @@ impl Game {
             .collect();
         self.apply_damage_batch(&events);
     }
+    /// Freeze the complete recipients before the simultaneous damage event.
+    pub(super) fn damage_creatures_except_controlled_tokens(&mut self, item: &SpellView, amount: i32) {
+        let source = self.program_damage_source(item);
+        let events: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(id, o)| {
+            (o.zone == Zone::Battlefield && self.is_creature(id as CardId)
+                && !(o.is_token() && o.controller == item.controller)).then_some(DamageEvent {
+                    source, target: Target::Card(id as CardId), amount: i128::from(amount),
+                    combat: false, preventable: true,
+                })
+        }).collect();
+        self.apply_damage_batch(&events);
+    }
+
 }

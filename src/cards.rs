@@ -1559,6 +1559,8 @@ pub(crate) enum Instruction {
         players: Option<PlayerSet>,
         amount: i32,
     },
+    /// One damage batch to all creatures except the controller’s tokens.
+    DamageCreaturesExceptControlledTokens(i32),
     /// One simultaneous damage batch, excluding creatures with a live subtype.
     DamageBattlefieldExceptSubtype {
         filters: &'static [BattlefieldFilter],

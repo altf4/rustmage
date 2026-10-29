@@ -3291,6 +3291,9 @@ impl Game {
                 } => {
                     self.damage_battlefield_group(&item, filters, players, amount);
                 }
+                Instruction::DamageCreaturesExceptControlledTokens(amount) => {
+                    self.damage_creatures_except_controlled_tokens(&item, amount);
+                }
                 Instruction::DamageBattlefieldExceptSubtype {
                     filters,
                     excluded_subtype,
