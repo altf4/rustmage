@@ -199,8 +199,8 @@ instruction-supplied self-replacement templates and their resolving stack-item
 identity, choices and applied indices. It re-evaluates applicability after each
 transformation and retains those choices across snapshots. This foundation is
 limited to destination changes and prevention; no printed admission instruction
-requiring it has been identified, and its synthetic tests remain unvalidated.
-Do not claim complete replacement support.
+requiring it has been identified. Its synthetic tests passed the isolated run
+described below; they do not establish complete replacement support.
 
 Rules source: [Magic Comprehensive Rules, June 19, 2026](https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf).
 
@@ -217,3 +217,37 @@ The experimental schema 192 guard conservatively rejects all states retaining
 outside-game ownership, entry batches and active zone-rule checkpoints when
 projecting to 191, including cast rollback checkpoints; passive zone rules remain
 representable. This remains broader than necessary until future behavior is proven.
+
+## Isolated scheduler evidence at 6cb2ce52
+
+The resource-guarded all-target Clippy check passed at `6cb2ce52`. The grouped
+library run at the same fixed inputs passed 2,777 tests with no failures. Its
+log is `/home/altf4/.cache/fra-outside-self-tests-6cb2.log`; the Clippy log is
+`/home/altf4/.cache/fra-outside-self-clippy-6cb2.log`. These runs test the
+scheduler draft, not the final published batch.
+
+The tests use explicitly synthetic provider and resolving-instruction fixtures,
+not printed outside-entry replacement cards. They exercise both players,
+competing choices and decision control, prevention and redirection, Ennis's
+end-step exile-history condition, self-replacement priority and applied-effect
+identity, stale resolving-item rejection, public knowledge, and snapshot replay.
+The absence of a fabricated pre-entry object or ordinary origin zone is part of
+the model. These fixtures establish the tested paths, not all possible outside
+admission effects or observer interactions.
+
+Separately, the earlier interim schema-192 prior-schema trace artifact
+`/home/altf4/.cache/fra-outside-scheduler-192.previous-schema.json` (SHA-256
+`021687166a2e78083eecf02eede1ef9425d10f10f9749fbb8c4566969b40302f`)
+contains 2,930 summaries. A direct comparison to the published schema-191
+baseline in `1709bba5:src/assurance/card_traces.json` found all 2,930 equal,
+with no missing or extra entries. This artifact predates the self-replacement
+follow-up; it is not a fresh 6cb2ce52 prior-schema audit and does not prove
+outside-game state equivalence, which the conservative projector rejects.
+
+The missing pinned XMage implementation, generic outside-entry observer
+semantics, broader replacement transformations, final validation, and independent
+final published-batch reviews remain open. In particular, CR 701.13a describes
+exile from wherever an object is, whereas CR 406.2 refers to its current zone;
+no authoritative resolution of the hypothetical outside-to-exile observer case
+has been identified. The draft does not dispatch a generic exile trigger or
+manufacture a zone change. Extrapolate remains gated.
