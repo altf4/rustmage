@@ -103,3 +103,68 @@ fn jace_delayed_trigger_is_per_attacker_and_tracks_exact_incarnation() {
         assert!(g.state.delayed_opponent_attack_until_next_turn.is_none());
     }
 }
+
+#[test]
+fn jace_copied_activation_produces_independent_delayed_effects() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let jace = jace_fixture(&mut g, player);
+        let attacker = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        activate_jace(&mut g, jace, 1);
+        let original = g.state.stack.last().unwrap().clone();
+        let mut copier = original.clone();
+        copier.controller = player;
+        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        g.copy_target_ability(&copier, 0);
+        settle(&mut g);
+        assert_eq!(g.state.delayed_opponent_attack_until_next_turn.as_ref().unwrap().len(), 2);
+        g.move_object(jace, Zone::Graveyard);
+        g.state.active = player.other();
+        g.state.priority = player.other();
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: attacker });
+        act(&mut g, Action::FinishAttackers);
+        g.prepare_triggers();
+        while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut g, |action| matches!(action, Action::PutTrigger { .. }));
+        }
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert_eq!(stats(&g, attacker), (-8, 2));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn jace_granted_activation_retains_its_trigger_definition() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let walker = put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 5;
+        let attacker = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let source = g.object_ref(walker);
+        let timestamp = g.next_role_timestamp();
+        g.grant_recipient_ability(source, Card::from_name("Jace, Reality Sculptor").unwrap(),
+            SelfGrantedAbilityKind::Activated { ability: 1 }, timestamp, None);
+        act(&mut g, Action::AnnounceSelfGrantedAbility { source, grant_timestamp: timestamp });
+        pay(&mut g);
+        settle(&mut g);
+        g.move_object(walker, Zone::Graveyard);
+        g.state.active = player.other();
+        g.state.priority = player.other();
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: attacker });
+        act(&mut g, Action::FinishAttackers);
+        g.prepare_triggers();
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert_eq!(stats(&g, attacker), (-3, 2));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
