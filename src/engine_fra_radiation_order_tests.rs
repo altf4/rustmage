@@ -66,3 +66,61 @@ fn radiation_orders_with_a_sourced_main_phase_trigger_and_replays() {
         }
     }
 }
+
+#[test]
+fn radiation_competing_mill_replacements_suspend_atomically_and_replay() {
+    for player in [Player::P0, Player::P1] {
+        for exile in [false, true] {
+            let mut game = scenario(player);
+            put(&mut game, player, "Rest in Peace", Zone::Battlefield);
+            let progenitus = put(&mut game, player, "Progenitus", Zone::Library);
+            let shock = put(&mut game, player, "Shock", Zone::Library);
+            let original = game.state.players[player.index()].library.clone();
+            game.state.players[player.index()]
+                .add_player_counter(crate::cards::PlayerCounterKind::Rad, 2);
+            game.begin_step(Step::Main1);
+            game.prepare_triggers();
+            act(&mut game, Action::Pass);
+            act(&mut game, Action::Pass);
+            assert!(
+                matches!(game.state.pending, Pending::ZoneReplacement { player: p } if p == player)
+            );
+            assert_eq!(game.state.players[player.index()].library, original);
+            assert_eq!(game.state.players[player.index()].life, 20);
+            assert_eq!(
+                game.state.players[player.index()]
+                    .player_counter(crate::cards::PlayerCounterKind::Rad),
+                2
+            );
+            assert!(game.observe(player).zone_replacement_choice.is_some());
+            assert!(
+                game.observe(player.other())
+                    .zone_replacement_choice
+                    .is_none()
+            );
+            let saved = game.snapshot();
+            for _ in 0..2 {
+                let action = Action::ChooseZoneReplacement {
+                    effect: if exile {
+                        ZoneReplacementKind::Exile
+                    } else {
+                        ZoneReplacementKind::RevealShuffle
+                    },
+                };
+                act(&mut game, action);
+                assert_eq!(game.object_view(shock).zone, Zone::Exile);
+                assert_eq!(
+                    game.object_view(progenitus).zone,
+                    if exile { Zone::Exile } else { Zone::Library }
+                );
+                assert_eq!(game.state.players[player.index()].life, 20);
+                assert_eq!(
+                    game.state.players[player.index()]
+                        .player_counter(crate::cards::PlayerCounterKind::Rad),
+                    2
+                );
+                game.restore(&saved).unwrap();
+            }
+        }
+    }
+}
