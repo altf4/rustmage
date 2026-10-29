@@ -44,6 +44,15 @@ impl PlayerCounterEvents {
         id
     }
     pub fn events(&self) -> &[PlayerCounterEvent] { &self.events }
+    pub fn event_mut(&mut self, index: usize) -> &mut PlayerCounterEvent { &mut self.events[index] }
+    pub fn totals(&self) -> [[u64; 5]; 2] {
+        let mut totals = [[0u64; 5]; 2];
+        for event in &self.events {
+            let value = &mut totals[event.player.index()][event.kind.index()];
+            *value = value.checked_add(event.amount).capacity("player counter event total exhausted");
+        }
+        totals
+    }
     /// Replace one event with zero or more distinct descendants. Applied effects
     /// are inherited by every descendant, and exact origin identity is retained.
     pub fn apply_self(&mut self, event_id: u64, effect: EffectIdentity, outcomes: &[CounterDestination]) -> bool {

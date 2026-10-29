@@ -619,7 +619,7 @@ fn own_counter_replacements_precede_general_replacements_and_prohibition() {
             assert!(matches!(game.state.pending, Pending::EffectLibrary { .. }));
             let origin_stack_id = game.state.resolving.as_ref().unwrap().item.id;
             let make = |effect, factor, add| replacements::SelfPlayerCounterReplacement {
-                origin_stack_id, effect, player, kind: crate::cards::PlayerCounterKind::Poison, factor, add,
+                origin_stack_id, effect, player, kind: crate::cards::PlayerCounterKind::Poison, factor, add, redirect_player: None, redirect_kind: None,
             };
             game.effect_player_counters_with_self(player, crate::cards::PlayerCounterKind::Poison,
                 1, origin_stack_id, vec![make(0, 2, 0), make(1, 1, 1)], replacements::ResumeMode::Program);
@@ -635,6 +635,41 @@ fn own_counter_replacements_precede_general_replacements_and_prohibition() {
                 assert_eq!(game.state.players[player.index()].poison_counters, if prohibited { 0 } else { expected });
                 assert_eq!(game.object_view(top).zone, Zone::Library);
             }
+        }
+    }
+}
+
+#[test]
+fn redirected_self_event_stays_distinct_from_simultaneous_matching_event() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let recipient = player.other();
+        let source = put(&mut game, recipient, "Goblin Piker", Zone::Battlefield);
+        put(&mut game, player, "Forest", Zone::Library);
+        let opt = put(&mut game, player, "Opt", Zone::Hand);
+        cast(&mut game, opt, None);
+        game.resolve_top();
+        let origin = game.state.resolving.as_ref().unwrap().item.id;
+        let mut counters = [[0; 5]; 2];
+        counters[player.index()][crate::cards::PlayerCounterKind::Poison.index()] = 1;
+        counters[recipient.index()][crate::cards::PlayerCounterKind::Energy.index()] = 1;
+        let own = replacements::SelfPlayerCounterReplacement { origin_stack_id: origin, effect: 0,
+            player, kind: crate::cards::PlayerCounterKind::Poison, factor: 1, add: 0,
+            redirect_player: Some(recipient), redirect_kind: Some(crate::cards::PlayerCounterKind::Energy) };
+        game.effect_mixed_player_counters_with_self(counters, recipient, origin, vec![own], replacements::ResumeMode::Program);
+        assert!(game.advance_replacements(false));
+        let before = game.snapshot();
+        for _ in 0..2 {
+            for _ in 0..2 {
+                assert!(matches!(game.state.pending, Pending::Replacement { player: actor } if actor == recipient));
+                assert_eq!(game.state.players[recipient.index()].player_counter(crate::cards::PlayerCounterKind::Energy), 0);
+                act(&mut game, Action::ChooseReplacement { source: game.object_ref(source), ability: 0 });
+            }
+            // Each separate 1-energy event is doubled and then incremented.
+            assert_eq!(game.state.players[recipient.index()].player_counter(crate::cards::PlayerCounterKind::Energy), 6);
+            assert_eq!(game.state.players[player.index()].poison_counters, 0);
+            game.restore(&before).unwrap();
         }
     }
 }
