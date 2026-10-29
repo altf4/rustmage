@@ -138,3 +138,34 @@ fn veiled_draw_depends_on_actual_nonland_discards_including_replacement() {
         }
     }
 }
+
+#[test]
+fn veiled_plain_exile_and_reflexive_exile_are_distinct_replacement_choices() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        veiled_fixture(&mut g, player);
+        let head = put(&mut g, player, "Head of the Hunt", Zone::Battlefield);
+        let enemy = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let shock = put(&mut g, player, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Card(enemy)));
+        for _ in 0..24 {
+            if matches!(g.state.pending, Pending::ZoneReplacement { .. }) { break; }
+            act(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::ZoneReplacement { player: actor } if actor == player.other()));
+        let head_ref = g.object_ref(head);
+        let saved = g.snapshot();
+        for use_head in [false, true] {
+            g.restore(&saved).unwrap();
+            let effect = if use_head {
+                ZoneReplacementKind::ExileReflexive { source: head_ref, ability: 0 }
+            } else { ZoneReplacementKind::Exile };
+            act(&mut g, Action::ChooseZoneReplacement { effect });
+            settle(&mut g);
+            assert_eq!(g.object_view(enemy).zone, Zone::Exile);
+            let tokens = g.state.objects.iter().filter(|o| o.zone == Zone::Battlefield
+                && o.controller == player && o.card == Card::test_index(5412)).count();
+            assert_eq!(tokens, usize::from(use_head));
+        }
+    }
+}
