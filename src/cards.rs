@@ -1720,6 +1720,8 @@ pub(crate) enum Instruction {
     SacrificeTarget {
         group: u16,
     },
+    /// A targeted planeswalker deals damage equal to its current loyalty.
+    LoyaltyDamage { source: u16, recipient: u16 },
     PowerDamage {
         source: u16,
         recipient: u16,

@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dd82f19ad1b2afb6c80045e0a8cf8a87150402697b3b2fe511b8aae125d567b7"
   },
-  "physical_metadata_sha256": "6d0ded4606ad59aa368064ac35b7a71c3e73b9621063f9000fbdc0dbc4a225c1"
+  "physical_metadata_sha256": "6d0ded4606ad59aa368064ac35b7a71c3e73b9621063f9000fbdc0dbc4a225c1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CompelBrutality.java",
+  "java_sha256": "7e1ddf5b7f91150ecd97a52c90ece82f74db57dd789e26483a8155d6cab7d3b1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureOrPlaneswalkerPermanent.java",
+      "sha256": "4787afd92dc502caec536204ece84bbdc7ba99acf3d243222c152bf3fa17bce2"
+    }
+  ]
 }

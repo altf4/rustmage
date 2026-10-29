@@ -2386,6 +2386,7 @@ impl Game {
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::CopyTargetAbility { .. }
                     | Instruction::DamageByGroup { .. }
+                    | Instruction::LoyaltyDamage { .. }
                     | Instruction::PowerDamage { .. }
                     | Instruction::CreaturePowerDamageAny { .. }
                     | Instruction::SacrificeTarget { .. }
@@ -4137,6 +4138,9 @@ impl Game {
                         matches!(instruction, Instruction::Fight { .. }),
                         1,
                     );
+                }
+                Instruction::LoyaltyDamage { source, recipient } => {
+                    self.planeswalker_loyalty_damage(&item, source, recipient);
                 }
                 Instruction::ScaledPowerDamage {
                     source,
