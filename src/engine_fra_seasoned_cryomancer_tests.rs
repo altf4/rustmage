@@ -292,7 +292,7 @@ fn seasoned_short_library_discards_the_only_card_actually_drawn() {
                 !g.state
                     .pending_triggers
                     .iter()
-                    .any(|item| item.source.is_some_and(|source| source.id == source))
+                    .any(|item| item.source.is_some_and(|identity| identity.id == source))
             );
             g.restore(&saved).unwrap();
         }

@@ -322,7 +322,7 @@ fn copied_mind_sculptor_observes_loyalty_only_while_ability_survives() {
                 .chain(g.state.pending_triggers.iter())
                 .chain(g.state.ordering_triggers.iter())
                 .filter(|packet| {
-                    packet.source.is_some_and(|source| source.id == source)
+                    packet.source.is_some_and(|identity| identity.id == source)
                         && matches!(packet.kind, StackKind::TriggeredAbility { .. })
                 })
                 .count();

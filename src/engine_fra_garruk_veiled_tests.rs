@@ -68,7 +68,7 @@ fn veiled_opponents_creature_deaths_are_exiled_without_reflexive_trigger() {
                 !g.state
                     .pending_triggers
                     .iter()
-                    .any(|item| item.source.is_some_and(|source| source.id == source))
+                    .any(|item| item.source.is_some_and(|identity| identity.id == source))
             );
             g.restore(&saved).unwrap();
         }
