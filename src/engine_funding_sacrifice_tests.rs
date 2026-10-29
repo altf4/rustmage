@@ -1070,3 +1070,41 @@ fn repeatable_artifact_only_mana_is_inert_for_a_fixed_nonartifact_spell_goal() {
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn eligible_restricted_mana_does_not_enable_converter_or_missing_color() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let source = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::test_index(5437);
+        let converter = named(&mut g, player, "Barrels of Blasting Jelly", Zone::Battlefield);
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Hand);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(source))));
+        let goal = FundingGoal { actor: player, required: [0, 1, 0, 0, 0, 0], generic: 0, reserve: None, source: None };
+        let purpose = mana_lots::Purpose::Spell(mana_lots::Source::in_world(&g, artifact));
+        let mut world = FundingState::from_game(&g, &goal);
+        world.set_purpose(purpose);
+        for amount in 1..=4 {
+            let old = world.key(&goal);
+            let step = world.moves(&goal).into_iter().find(|step| world.resources[step.resource].id == source).unwrap();
+            let mut next = None;
+            assert!(world.visit_applied(&step, &mut |branch| { next = Some(branch.clone()); true }));
+            world = next.unwrap();
+            assert_eq!(mana_lots::available(world.mana, &world.lots, purpose)[4], amount);
+            assert_eq!(mana_lots::available(world.mana, &world.lots, mana_lots::Purpose::Other)[4], 0);
+            assert!(!payable(mana_lots::available(world.mana, &world.lots, purpose), goal.required, goal.generic));
+            assert!(world.moves(&goal).iter().all(|step| world.resources[step.resource].id != converter));
+            assert!(world.optimistic(&goal));
+            assert!(old != world.key(&goal));
+        }
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
