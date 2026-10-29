@@ -323,3 +323,45 @@ fn tam_proliferate_replaces_only_eligible_player_counter_with_snapshot_replay() 
         }
     }
 }
+
+#[test]
+fn tam_simultaneous_player_and_permanent_replacements_wait_for_public_choice() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let tam = put(&mut game, player, "Tam, the Possibility", Zone::Battlefield);
+        let walker = put(&mut game, player, "Jace, the Perfected Mind", Zone::Battlefield);
+        game.state.objects[walker as usize].counters.loyalty = 3;
+        put(&mut game, player, "Doubling Season", Zone::Battlefield);
+        put(&mut game, player, "Doc Samson, Super Psychiatrist", Zone::Battlefield);
+        put(&mut game, player, "Hill Giant", Zone::Battlefield);
+        game.state.players[player.index()].poison_counters = 1;
+        game.state.players[player.index()].mana = [1, 1, 1, 1, 1, 0];
+        act(&mut game, Action::AnnounceActivate {
+            card: tam, ability: 0, counter_payment: Counters::default(),
+        });
+        pay(&mut game);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert!(matches!(game.state.pending, Pending::Proliferate { player: actor } if actor == player));
+        let walker_ref = game.object_ref(walker);
+        act(&mut game, Action::ProliferatePermanent { object: walker_ref });
+        act(&mut game, Action::ProliferatePlayer { player });
+        act(&mut game, Action::FinishProliferate);
+        assert!(matches!(game.state.pending, Pending::Replacement { player: actor } if actor == player));
+        assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 3);
+        assert_eq!(game.state.players[player.index()].poison_counters, 1);
+        let saved = game.snapshot();
+        let choices: Vec<_> = game.legal_actions().into_iter()
+            .filter(|action| matches!(action, Action::ChooseReplacement { .. })).collect();
+        assert_eq!(choices.len(), 2);
+        for choice in choices {
+            game.restore(&saved).unwrap();
+            assert!(game.apply(player.other(), choice.clone()).is_err());
+            assert_eq!(game.snapshot(), saved);
+            act(&mut game, choice);
+            assert!(matches!(game.counter_count(walker, CounterKind::Loyalty), 6 | 7));
+            assert_eq!(game.state.players[player.index()].poison_counters, 3);
+        }
+    }
+}
