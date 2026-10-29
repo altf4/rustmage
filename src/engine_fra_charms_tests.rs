@@ -7289,3 +7289,39 @@ mod engine_fra_tomik_followup;
 
 #[path = "engine_fra_ghalta_followup.rs"]
 mod engine_fra_ghalta_followup;
+
+#[path = "engine_fra_beast_ways_tests.rs"]
+mod engine_fra_beast_ways_tests;
+
+#[path = "engine_fra_conditional_artifacts_tests.rs"]
+mod engine_fra_conditional_artifacts_tests;
+
+#[path = "engine_fra_loyalty_grants_extra_tests.rs"]
+mod engine_fra_loyalty_grants_extra_tests;
+
+#[path = "engine_fra_cryomancer_tests.rs"]
+mod engine_fra_cryomancer_tests;
+
+#[path = "engine_fra_winter_tests.rs"]
+mod engine_fra_winter_tests;
+
+#[path = "engine_fra_craftwork_tests.rs"]
+mod engine_fra_craftwork_tests;
+
+#[path = "engine_fra_beast_followup.rs"]
+mod engine_fra_beast_followup;
+
+#[path = "engine_fra_conditional_review.rs"]
+mod engine_fra_conditional_review;
+
+#[path = "engine_fra_warlord_followup.rs"]
+mod engine_fra_warlord_followup;
+
+#[path = "engine_fra_winter_followup.rs"]
+mod engine_fra_winter_followup;
+
+#[path = "engine_fra_craftwork_followup.rs"]
+mod engine_fra_craftwork_followup;
+
+#[path = "engine_fra_edgar_followup.rs"]
+mod engine_fra_edgar_followup;

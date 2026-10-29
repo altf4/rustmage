@@ -5,14 +5,30 @@ fn arm_copy(game: &mut Game, player: Player) -> CardId {
     let way = put(game, player, "Way of the Cryomancer", Zone::Hand);
     cast(game, way, None);
     settle(game);
-    let walker = game.state.objects.iter().enumerate().find_map(|(id, object)| {
-        (object.zone == Zone::Battlefield && object.controller == player && object.is_token()
-            && game.has_subtype(id as CardId, "Jace")).then_some(id as CardId)
-    }).unwrap();
+    let walker = game
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .find_map(|(id, object)| {
+            (object.zone == Zone::Battlefield
+                && object.controller == player
+                && object.is_token()
+                && game.has_subtype(id as CardId, "Jace"))
+            .then_some(id as CardId)
+        })
+        .unwrap();
     assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 5);
     let source = game.object_ref(walker);
     let grantor = game.object_ref(way);
-    act(game, Action::AnnouncePlaneswalkerGrant { source, grantor, ability: 0 });
+    act(
+        game,
+        Action::AnnouncePlaneswalkerGrant {
+            source,
+            grantor,
+            ability: 0,
+        },
+    );
     pay(game);
     assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 2);
     settle(game);
@@ -32,11 +48,21 @@ fn cryomancer_copies_only_the_next_instant_or_sorcery_and_can_retarget() {
         let shock = put(&mut game, player, "Shock", Zone::Hand);
         cast(&mut game, shock, Some(Target::Player(player.other())));
         for _ in 0..32 {
-            if matches!(game.state.pending, Pending::Retarget { .. }) { break; }
-            choose(&mut game, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+            if matches!(game.state.pending, Pending::Retarget { .. }) {
+                break;
+            }
+            choose(&mut game, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
         }
         super::super::contracts::branch_contract(game.clone());
-        act(&mut game, Action::SetStackTarget { index: 0, target: Target::Player(player) });
+        act(
+            &mut game,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Player(player),
+            },
+        );
         act(&mut game, Action::FinishStackTargets);
         settle(&mut game);
         assert_eq!(game.state.players[player.index()].life, 18);
