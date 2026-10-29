@@ -2379,6 +2379,8 @@ pub(crate) enum AmountValue {
     SacrificedPower,
     /// Power saved on a successful sacrifice's separate reflexive packet.
     ReflexiveSacrificedPower,
+    /// Frozen count bounding a reflexive trigger’s optional targets.
+    ReflexiveTargetLimit,
     /// Current power frozen immediately before paying a sacrifice additional cost.
     SacrificeCostPower,
     /// Frozen at the beginning of resolution, before target destruction.

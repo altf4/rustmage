@@ -1133,6 +1133,9 @@ pub struct SpellView {
     /// Full-width X for loyalty costs, retained by ability copies and snapshots.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub loyalty_x: Option<u64>,
+    /// Number of objects available to a quantity-bound reflexive trigger.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reflexive_target_limit: Option<u32>,
     pub attachment_trigger: Option<Box<AttachmentTriggerView>>,
     pub cast: Option<CastInfo>,
     /// The exact event object; this is a non-targeted reference, never rebound.

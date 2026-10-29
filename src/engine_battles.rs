@@ -37,6 +37,7 @@ impl Game {
             delayed_sacrifice: None,
             x: None,
             loyalty_x: None,
+            reflexive_target_limit: None,
             attachment_trigger: None,
             cast: None,
             entering_object: None,

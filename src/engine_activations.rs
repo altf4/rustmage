@@ -613,6 +613,7 @@ impl Game {
             return_link: None,
             x: None,
             loyalty_x: None,
+            reflexive_target_limit: None,
             attachment_trigger: None,
             cast: None,
             id: self.next_stack_id(),

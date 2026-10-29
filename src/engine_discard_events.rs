@@ -259,8 +259,7 @@ impl Game {
                     self.queue_reflexive(&item, ability, None);
                     if self.state.pending_triggers.len() > before {
                         let trigger = self.state.pending_triggers.last_mut().unwrap();
-                        trigger.x = Some(u32::try_from(count).expect("discard count exceeds u32"));
-                        trigger.loyalty_x = None;
+                        trigger.reflexive_target_limit = Some(u32::try_from(count).expect("discard count exceeds u32"));
                     }
                 }
             }

@@ -214,7 +214,8 @@ fn seasoned_copied_reflexive_preserves_target_limit_and_resolves_twice() {
         act(&mut g, Action::ChooseTarget { target: Target::Card(victim) });
         if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
         let original = g.state.stack.last().unwrap().clone();
-        assert_eq!(original.x, Some(1));
+        assert_eq!(original.reflexive_target_limit, Some(1));
+        assert_eq!(original.x, None);
         let mut copier = original.clone();
         copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
         g.state.resolving = Some(Resolution {

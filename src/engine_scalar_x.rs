@@ -465,6 +465,7 @@ impl Game {
                     .checked_add(self.item_amount(*value, item))
                     .capacity("effect sum exhausted")
             }),
+            AmountValue::ReflexiveTargetLimit => u128::from(item.reflexive_target_limit.unwrap_or(0)),
             AmountValue::ChosenX => u128::from(item.loyalty_x.unwrap_or_else(|| u64::from(item.x.unwrap_or(0)))),
             AmountValue::MilledCreatures => self
                 .state

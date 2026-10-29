@@ -11,7 +11,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             condition: TriggerCondition::Reflexive,
             targets: TargetPlan::Single(TargetSpec { rule: TargetRule::Creature, min: 0, max: 2 }),
             program: &[
-                Instruction::UpToTargets(AmountValue::ChosenX),
+                Instruction::UpToTargets(AmountValue::ReflexiveTargetLimit),
                 Instruction::Tap,
                 Instruction::PutCounters { subject: Subject::Targets, kind: CounterKind::Stun, amount: 1 },
             ],
