@@ -161,3 +161,37 @@ fn player_counter_prohibition_stops_effects_but_not_opponent_counters() {
         assert_eq!(game.state.players[controller.other().index()].poison_counters, 1);
     }
 }
+
+#[test]
+fn proliferate_replacement_creates_separate_owned_choices() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let tam = put(&mut game, player, "Tam, the Possibility", Zone::Battlefield);
+        put(&mut game, player, "Ajani, Caller of the Pride", Zone::Battlefield);
+        put(&mut game, player, "Serra Angel", Zone::Battlefield);
+        let subject = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+        game.add_counter(subject, CounterKind::PlusOne, 1);
+        game.state.players[player.index()].mana = [1, 1, 1, 1, 1, 0];
+        act(&mut game, Action::AnnounceActivate {
+            card: tam, ability: 0, counter_payment: Counters::default(),
+        });
+        pay(&mut game);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert!(matches!(game.state.pending, Pending::Proliferate { player: p } if p == player));
+        let saved = game.snapshot();
+        let reference = game.object_ref(subject);
+        for replay in 0..2 {
+            if replay > 0 { game.restore(&saved).unwrap(); }
+            act(&mut game, Action::ProliferatePermanent { object: reference });
+            act(&mut game, Action::FinishProliferate);
+            assert_eq!(game.counter_count(subject, CounterKind::PlusOne), 2);
+            assert!(matches!(game.state.pending, Pending::Proliferate { player: p } if p == player));
+            // Declining the second event is independent from the first choice.
+            act(&mut game, Action::FinishProliferate);
+            assert_eq!(game.counter_count(subject, CounterKind::PlusOne), 2);
+            assert!(!matches!(game.state.pending, Pending::Proliferate { .. }));
+        }
+    }
+}
