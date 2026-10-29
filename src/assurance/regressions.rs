@@ -3531,3 +3531,6 @@ fn schema186_preserves_published_schema185_pyremana_bytes() {
         assert!(!prior_schema185_state_supported(&g.state));
     }
 }
+
+#[path = "schema186_cross_feature.rs"]
+mod schema186_cross_feature;
