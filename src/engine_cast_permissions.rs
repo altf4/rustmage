@@ -40,7 +40,7 @@ impl Game {
         let minimum = usize::from(definition.cast_graveyard_minimum());
         if minimum == 0 { return true; }
         self.state.objects.iter().enumerate().filter(|(index, object)| {
-            *index != id as usize && object.owner == actor && object.zone == Zone::Graveyard && !object.is_token()
+            *index != id as usize && object.owner == actor && object.zone == Zone::Graveyard && !object.is_token() && !object.is_spell_copy()
         }).take(minimum).count() >= minimum
     }
 

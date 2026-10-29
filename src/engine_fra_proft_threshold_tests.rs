@@ -57,3 +57,20 @@ fn proft_can_discard_itself_for_the_targeted_debuff_below_threshold() {
         }
     }
 }
+
+#[test]
+fn proft_threshold_does_not_count_transient_copies() {
+    for p in [Player::P0, Player::P1] {
+        for kind in [CopyKind::Spell, CopyKind::Card] {
+            let mut g = scenario(p);
+            let proft = put(&mut g, p, "Proft, Sinister Mastermind", Zone::Hand);
+            for _ in 0..6 { put(&mut g, p, "Forest", Zone::Graveyard); }
+            let copy = put(&mut g, p, "Forest", Zone::Graveyard);
+            g.state.objects[copy as usize].copy_kind = kind;
+            let definition = g.state.objects[proft as usize].card;
+            assert!(!g.spell_graveyard_requirement_holds(p, proft, definition));
+            g.state.objects[copy as usize].copy_kind = CopyKind::Physical;
+            assert!(g.spell_graveyard_requirement_holds(p, proft, definition));
+        }
+    }
+}
