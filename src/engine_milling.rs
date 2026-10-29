@@ -41,14 +41,26 @@ impl Game {
     pub(super) fn mill_radiation(&mut self, player: Player, count: u64) -> u64 {
         let maximum = usize::try_from(count).unwrap_or(usize::MAX);
         let events = self.mill_batch_up_to(&[player], maximum);
-        u64::try_from(events.iter().filter(|event| {
-            event.moved && self.public_milled_object(event.after)
-                && self.state.objects.get(event.after.card as usize).is_some_and(|object| {
-                    object.generation == event.after.generation
-                        && !object.is_token() && !object.is_spell_copy()
-                        && self.current_kinds(event.after.card) & 2 == 0
+        u64::try_from(
+            events
+                .iter()
+                .filter(|event| {
+                    event.moved
+                        && self.public_milled_object(event.after)
+                        && self
+                            .state
+                            .objects
+                            .get(event.after.card as usize)
+                            .is_some_and(|object| {
+                                object.generation == event.after.generation
+                                    && !object.is_token()
+                                    && !object.is_spell_copy()
+                                    && self.current_kinds(event.after.card) & 2 == 0
+                            })
                 })
-        }).count()).capacity("radiation mill count exhausted")
+                .count(),
+        )
+        .capacity("radiation mill count exhausted")
     }
 
     fn mill_batch_up_to(&mut self, players: &[Player], maximum: usize) -> Vec<ZoneChange> {

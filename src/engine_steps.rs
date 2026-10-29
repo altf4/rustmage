@@ -91,7 +91,11 @@ impl Game {
 
     fn queue_radiation_trigger(&mut self) {
         let player = self.state.active;
-        if self.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad) == 0 { return; }
+        if self.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad)
+            == 0
+        {
+            return;
+        }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
             source: None,
@@ -128,7 +132,10 @@ impl Game {
             entering_object: None,
             evidence_collected: false,
             id,
-            kind: StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player: player },
+            kind: StackKind::InherentRule {
+                rule: SourceLessRule::Radiation,
+                affected_player: player,
+            },
 
             split_second: false,
             source_keywords: Keywords::NONE,
@@ -237,11 +244,25 @@ impl Game {
         item: &SpellView,
         condition: TriggerCondition,
     ) -> bool {
-        let Some(source) = item.source else { return false; };
-        if let TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } = condition.event() {
-            let Some(entering) = item.entering_object else { return false; };
-            return self.other_controlled_subtypes_at_least(item.controller, entering, subtype, minimum)
-                && self.trigger_guards_hold(condition, item.controller, source.object, item.source_tapped);
+        let Some(source) = item.source else {
+            return false;
+        };
+        if let TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } = condition.event()
+        {
+            let Some(entering) = item.entering_object else {
+                return false;
+            };
+            return self.other_controlled_subtypes_at_least(
+                item.controller,
+                entering,
+                subtype,
+                minimum,
+            ) && self.trigger_guards_hold(
+                condition,
+                item.controller,
+                source.object,
+                item.source_tapped,
+            );
         }
         if let TriggerCondition::InterveningIf {
             guard:
@@ -270,7 +291,12 @@ impl Game {
                     item.source_tapped,
                 );
         }
-        self.trigger_guards_hold(condition, item.controller, source.object, item.source_tapped)
+        self.trigger_guards_hold(
+            condition,
+            item.controller,
+            source.object,
+            item.source_tapped,
+        )
     }
 
     pub(super) fn step_guard(

@@ -27,7 +27,11 @@ fn tam_pays_five_colors_and_repeats_for_distinct_live_planeswalker_types() {
         let kaito = put(&mut g, p, "Kaito, Cunning Infiltrator", Zone::Battlefield);
         let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         g.add_counter(creature, CounterKind::PlusOne, 1);
-        let activate = Action::AnnounceActivate { card: tam, ability: 0, counter_payment: Counters::default() };
+        let activate = Action::AnnounceActivate {
+            card: tam,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
         g.state.players[p.index()].mana = [1, 1, 1, 1, 0, 1];
         let before = g.snapshot();
         reject(&mut g, activate.clone());
@@ -39,7 +43,9 @@ fn tam_pays_five_colors_and_repeats_for_distinct_live_planeswalker_types() {
         // The number of types is measured at resolution, not activation.
         g.move_object(kaito, Zone::Graveyard);
         for _ in 0..16 {
-            if matches!(g.state.pending, Pending::Proliferate { .. }) { break; }
+            if matches!(g.state.pending, Pending::Proliferate { .. }) {
+                break;
+            }
             act(&mut g, Action::Pass);
         }
         let object = g.object_ref(creature);

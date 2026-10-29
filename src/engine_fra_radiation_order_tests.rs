@@ -108,7 +108,10 @@ fn radiation_competing_mill_replacements_suspend_atomically_and_replay() {
                     game.object_view(progenitus).zone,
                     if exile { Zone::Exile } else { Zone::Library }
                 );
-                assert_eq!(game.state.players[player.index()].life, if exile { 18 } else { 19 });
+                assert_eq!(
+                    game.state.players[player.index()].life,
+                    if exile { 18 } else { 19 }
+                );
                 assert_eq!(
                     game.state.players[player.index()]
                         .player_counter(crate::cards::PlayerCounterKind::Rad),

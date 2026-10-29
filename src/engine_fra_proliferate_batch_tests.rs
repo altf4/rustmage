@@ -6,7 +6,12 @@ fn mixed_player_and_permanent_counters_wait_for_replacements_and_restore() {
         let mut g = scenario(p);
         let walker = put(&mut g, p, "Jace, the Perfected Mind", Zone::Battlefield);
         put(&mut g, p, "Doubling Season", Zone::Battlefield);
-        put(&mut g, p, "Doc Samson, Super Psychiatrist", Zone::Battlefield);
+        put(
+            &mut g,
+            p,
+            "Doc Samson, Super Psychiatrist",
+            Zone::Battlefield,
+        );
         let reference = g.object_ref(walker);
         let before = g.counter_count(walker, CounterKind::Loyalty);
         g.state.players[p.other().index()].poison_counters = 1;
@@ -14,15 +19,20 @@ fn mixed_player_and_permanent_counters_wait_for_replacements_and_restore() {
         poison[p.other().index()] = 1;
         g.effect_counters_with_poison(
             vec![(reference, Counters::of(CounterKind::Loyalty, 1))],
-            poison, p, replacements::ResumeMode::Pending,
+            poison,
+            p,
+            replacements::ResumeMode::Pending,
         );
         assert!(g.advance_replacements(false));
         assert!(matches!(g.state.pending, Pending::Replacement { .. }));
         assert_eq!(g.state.players[p.other().index()].poison_counters, 1);
         assert_eq!(g.counter_count(walker, CounterKind::Loyalty), before);
         let saved = g.snapshot();
-        let choices: Vec<_> = g.legal_actions().into_iter()
-            .filter(|a| matches!(a, Action::ChooseReplacement { .. })).collect();
+        let choices: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter(|a| matches!(a, Action::ChooseReplacement { .. }))
+            .collect();
         assert_eq!(choices.len(), 2);
         for choice in choices {
             g.restore(&saved).unwrap();
@@ -60,17 +70,39 @@ fn proliferate_is_non_targeted_repeatable_and_snapshot_owned() {
         g.state.players[p.index()].poison_counters = 1;
         let item = g.activation_item(p, source, 0);
         g.state.resolving = Some(Resolution {
-            chosen_creature_type: None, target_counter_removal: None,
-            linked_copy: None, cascade: None, target_card_facts: None,
-            sacrificed_power: None, immediate_blink_return: None,
-            connive: None, optional_wheel: None, proliferate: None, explore: None, evidence: None,
-            item, mana_payment: None, forage: None, target_library: None,
+            chosen_creature_type: None,
+            target_counter_removal: None,
+            linked_copy: None,
+            cascade: None,
+            target_card_facts: None,
+            sacrificed_power: None,
+            immediate_blink_return: None,
+            connive: None,
+            optional_wheel: None,
+            proliferate: None,
+            explore: None,
+            evidence: None,
+            item,
+            mana_payment: None,
+            forage: None,
+            target_library: None,
             program: &[Instruction::Proliferate(AmountValue::Fixed(2))],
-            pc: 0, target_group: 0, moved_count: None, remembered_draws: None,
-            discard_after: None, discards: [0; 2], selected_discards: [vec![], vec![]],
-            milled: vec![], milled_selection: None, library: None, selection: None,
-            return_attachment: None, search: None, search_result: None,
-            optional_searches: None, choice: None,
+            pc: 0,
+            target_group: 0,
+            moved_count: None,
+            remembered_draws: None,
+            discard_after: None,
+            discards: [0; 2],
+            selected_discards: [vec![], vec![]],
+            milled: vec![],
+            milled_selection: None,
+            library: None,
+            selection: None,
+            return_attachment: None,
+            search: None,
+            search_result: None,
+            optional_searches: None,
+            choice: None,
         });
         g.run_program();
         let object = g.object_ref(victim);

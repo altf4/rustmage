@@ -26,23 +26,44 @@ pub struct ProliferateView {
 impl ProliferateSequence {
     pub(super) fn view(&self) -> ProliferateView {
         ProliferateView {
-            player: self.player, remaining: self.pending.iter().fold(
-                self.remaining.checked_add(u128::from(self.ready)).capacity("proliferate quantity exhausted"),
-                |total, group| total.checked_add(group.count).capacity("proliferate quantity exhausted")),
+            player: self.player,
+            remaining: self.pending.iter().fold(
+                self.remaining
+                    .checked_add(u128::from(self.ready))
+                    .capacity("proliferate quantity exhausted"),
+                |total, group| {
+                    total
+                        .checked_add(group.count)
+                        .capacity("proliferate quantity exhausted")
+                },
+            ),
             selected_permanents: self.permanents.clone(),
-            selected_players: [Player::P0, Player::P1].into_iter()
-                .filter(|p| self.players & (1 << p.index()) != 0).collect(),
+            selected_players: [Player::P0, Player::P1]
+                .into_iter()
+                .filter(|p| self.players & (1 << p.index()) != 0)
+                .collect(),
         }
     }
     pub(super) fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>() + self.permanents.len() * std::mem::size_of::<ObjectRef>()
-            + self.pending.iter().map(|group| std::mem::size_of::<ProliferateGroup>()
-                + group.used.len() * std::mem::size_of::<(ObjectRef, u16)>()).sum::<usize>()
+        std::mem::size_of::<Self>()
+            + self.permanents.len() * std::mem::size_of::<ObjectRef>()
+            + self
+                .pending
+                .iter()
+                .map(|group| {
+                    std::mem::size_of::<ProliferateGroup>()
+                        + group.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                })
+                .sum::<usize>()
     }
 }
 impl Game {
     pub(super) fn proliferated_event(&mut self, player: Player) {
-        let ids: Vec<_> = self.state.objects.iter().enumerate()
+        let ids: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
             .filter_map(|(id, object)| (object.zone == Zone::Battlefield).then_some(id as CardId))
             .collect();
         let sources = self.indexed_trigger_sources(&ids);
@@ -55,17 +76,24 @@ impl Game {
                         CastRelation::Opponent => source.controller != player,
                         CastRelation::Any => true,
                     };
-                    if matches { self.queue_trigger_from(&source, index, grant.clone().map(Box::new)); }
+                    if matches {
+                        self.queue_trigger_from(&source, index, grant.clone().map(Box::new));
+                    }
                 }
             }
         }
     }
     pub(super) fn start_proliferate(&mut self, player: Player, remaining: u128) {
         if remaining != 0 {
-            self.state.resolving.as_mut().unwrap().proliferate = Some(Box::new(ProliferateSequence {
-                player, remaining, pending: std::collections::VecDeque::new(), ready: false,
-                permanents: Vec::new(), players: 0,
-            }));
+            self.state.resolving.as_mut().unwrap().proliferate =
+                Some(Box::new(ProliferateSequence {
+                    player,
+                    remaining,
+                    pending: std::collections::VecDeque::new(),
+                    ready: false,
+                    permanents: Vec::new(),
+                    players: 0,
+                }));
         }
     }
     pub(super) fn advance_proliferate(&mut self) -> bool {
@@ -74,14 +102,18 @@ impl Game {
                 return false;
             };
             if sequence.ready {
-                self.state.pending = Pending::Proliferate { player: sequence.player };
+                self.state.pending = Pending::Proliferate {
+                    player: sequence.player,
+                };
                 return true;
             }
             let player = sequence.player;
             let used = if let Some(group) = sequence.pending.front_mut() {
                 let used = group.used.clone();
                 group.count -= 1;
-                if group.count == 0 { sequence.pending.pop_front(); }
+                if group.count == 0 {
+                    sequence.pending.pop_front();
+                }
                 used
             } else if sequence.remaining > 0 {
                 sequence.remaining -= 1;
@@ -93,11 +125,20 @@ impl Game {
             // Each derived event retains its own applied-effect identities. Resolve
             // this event and its choice before inspecting its next sibling.
             self.stage_proliferate_replacements(player, used);
-            if self.advance_replacements(false) { return true; }
+            if self.advance_replacements(false) {
+                return true;
+            }
         }
     }
     pub(super) fn finish_proliferate(&mut self) {
-        let mut sequence = self.state.resolving.as_mut().unwrap().proliferate.take().unwrap();
+        let mut sequence = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .proliferate
+            .take()
+            .unwrap();
         let mut counters = [[0; 5]; 2];
         for player in [Player::P0, Player::P1] {
             if sequence.players & (1 << player.index()) != 0 {
@@ -108,15 +149,23 @@ impl Game {
                 }
             }
         }
-        let changes = sequence.permanents.drain(..).filter_map(|object| {
-            if !self.on_battlefield(object.card) || self.object_ref(object.card) != object { return None; }
-            let present = self.counter_amounts(object.card);
-            let mut added = Counters::default();
-            for kind in CounterKind::ALL {
-                if present.get(kind) > 0 { added.add(kind, 1); }
-            }
-            added.has_any().then_some((object, added))
-        }).collect();
+        let changes = sequence
+            .permanents
+            .drain(..)
+            .filter_map(|object| {
+                if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
+                    return None;
+                }
+                let present = self.counter_amounts(object.card);
+                let mut added = Counters::default();
+                for kind in CounterKind::ALL {
+                    if present.get(kind) > 0 {
+                        added.add(kind, 1);
+                    }
+                }
+                added.has_any().then_some((object, added))
+            })
+            .collect();
         sequence.ready = false;
         sequence.players = 0;
         let player = sequence.player;
