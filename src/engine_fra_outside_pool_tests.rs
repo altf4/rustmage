@@ -1015,6 +1015,14 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
             game.state.outside_game.as_ref().unwrap().pools[owner.index()],
             vec![shock, bear]
         );
+        let prevented = game.snapshot();
+        for _ in 0..2 {
+            game.begin_step(Step::End);
+            game.prepare_triggers();
+            settle(&mut game);
+            assert_eq!(game.counter_count(ennis, CounterKind::PlusOne), 0);
+            game.restore(&prevented).unwrap();
+        }
         game.restore(&before).unwrap();
         game.state.cards_exiled_this_turn = true;
         act(&mut game, prevent);
