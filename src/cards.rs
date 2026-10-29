@@ -4711,6 +4711,10 @@ impl Card {
     }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
         #[cfg(test)]
+        if self == Card::test_index(5437) && sacrifice_mana_fixture::enabled() {
+            return sacrifice_mana_fixture::abilities();
+        }
+        #[cfg(test)]
         if self == Card::JacePlaneswalkerToken && composite_loyalty_fixture::enabled() {
             return composite_loyalty_fixture::abilities();
         }
@@ -5129,4 +5133,23 @@ pub(crate) mod composite_loyalty_fixture {
     const ABILITIES: &[ActivatedAbility] = &[ability(false, 1)];
     const MANA_ABILITIES: &[ActivatedAbility] = &[ability(true, 1)];
     const TWO_COUNTER_ABILITIES: &[ActivatedAbility] = &[ability(true, 2)];
+}
+
+#[cfg(test)]
+pub(crate) mod sacrifice_mana_fixture {
+    use super::*;
+    std::thread_local! { static ENABLED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) }; }
+    pub(crate) struct Guard;
+    impl Guard { pub(crate) fn new() -> Self { ENABLED.with(|v| assert!(!v.replace(true))); Self } }
+    impl Drop for Guard { fn drop(&mut self) { ENABLED.with(|v| v.set(false)); } }
+    pub(super) fn enabled() -> bool { ENABLED.with(|v| v.get()) }
+    pub(super) fn abilities() -> &'static [ActivatedAbility] {
+        &[ActivatedAbility {
+            exhaust: false, guard: ActivationGuard::Always, cycling: false, origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost { colored: [0; 6], generic: 0, alternatives: &[], additional: None,
+                mana_component: false, tap: false, sacrifice: true, exile_self: false, discard: false, life: 0, remove: None, loyalty: None },
+            targets: TargetPlan::NONE, program: &[Instruction::AddMana(ManaProduction::Fixed([0, 0, 0, 0, 1, 0]))],
+            sorcery: false, once_per_turn: false,
+        }]
+    }
 }
