@@ -1108,3 +1108,38 @@ fn eligible_restricted_mana_does_not_enable_converter_or_missing_color() {
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn ordinary_mana_can_fuel_blue_converter_alongside_artifact_only_mana() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let source = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::test_index(5437);
+        let converter = named(&mut g, player, "Barrels of Blasting Jelly", Zone::Battlefield);
+        let forest = named(&mut g, player, "Forest", Zone::Battlefield);
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Hand);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(source))));
+        let goal = FundingGoal { actor: player, required: [0, 1, 0, 0, 1, 0], generic: 0, reserve: None, source: None };
+        let purpose = mana_lots::Purpose::Spell(mana_lots::Source::in_world(&g, artifact));
+        let mut world = FundingState::from_game(&g, &goal);
+        world.set_purpose(purpose);
+        for (id, expected) in [(source, [0, 0, 0, 0, 1, 0]), (forest, [0, 0, 0, 0, 1, 0]), (converter, [0, 1, 0, 0, 0, 0])] {
+            let step = world.moves(&goal).into_iter().find(|m|
+                world.resources[m.resource].id == id && m.production == expected).unwrap();
+            let mut next = None;
+            assert!(world.visit_applied(&step, &mut |branch| { next = Some(branch.clone()); true }));
+            world = next.unwrap();
+        }
+        assert!(payable(mana_lots::available(world.mana, &world.lots, purpose), goal.required, goal.generic));
+        assert_eq!(mana_lots::available(world.mana, &world.lots, purpose)[4], 1);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
