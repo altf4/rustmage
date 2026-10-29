@@ -72,3 +72,30 @@ lots would need a proof that no later reachable goal or cost can use them.
 The fixed-purpose test is unlinked and unbuilt. Full termination still requires
 a finite-control argument and a sound coverability treatment across nested
 payment choices, conversions, and quality-changing or source-changing events.
+
+### Candidate spendability reachability (not implemented)
+
+A finite, conservative color/restriction closure can reject a subset of missing
+color goals without changing exact payment state. Begin with the colors available
+in each actual mana quality. Abstract any positive amount to an unbounded amount
+of that same quality and color. Enumerate a conservative superset of mana
+abilities and their possible production qualities/colors. Add an ability's
+outputs only when its colored and generic mana cost is satisfiable from classes
+whose restrictions permit spending on that activation; ignore all non-mana
+costs, timing, limited uses, and required amounts beyond positivity. Repeat to
+fixed point. If no class eligible for the fixed final purpose can supply a
+required color, and no color-substitution or non-mana payment applies, no exact
+payment is possible. On the bounded artifact-only example this excludes the
+converter: its activation cannot spend the only available class.
+
+This argument relies on an exhaustive transition inventory. The current
+`mana_activations` and `granted_mana` inspect one world: sacrifices can alter
+control, copy identity, layer-six abilities and graveyard borrowing; linked
+returns, entry replacement and nested payment can introduce more providers.
+An implementation must either enumerate all such providers and qualities as an
+overapproximation or guard the optimization with independently established
+invariants and fall back whenever any provider might change. In particular, an
+unavailable activation must not be omitted solely because it is unavailable in
+the starting state. Bonus/source provenance remains exact in the actual search;
+the abstraction is only a negative reachability test. This remains a proposal,
+not a complete termination proof or a production pruning rule.
