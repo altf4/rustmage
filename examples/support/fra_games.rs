@@ -88,7 +88,7 @@ impl Report {
     }
 }
 pub fn cases(seeds_per_pair: u64) -> Vec<(usize, u64, Player, bool)> {
-    (0..6)
+    (0..7)
         .flat_map(|pair| {
             (0..seeds_per_pair).flat_map(move |seed| {
                 [false, true].into_iter().map(move |swapped| {

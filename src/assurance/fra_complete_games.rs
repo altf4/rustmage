@@ -38,8 +38,8 @@ fn fra_complete_legal_games_replay_owned_and_actual_mechanics() {
 fn fra_pool_audit_and_cases_preserve_the_acceptance_gate() {
     let missing = workload::missing_pool_members().unwrap();
     let cases = workload::cases(4);
-    assert_eq!(cases.len(), 48);
-    for pair in 0..6 {
+    assert_eq!(cases.len(), 56);
+    for pair in 0..7 {
         for swapped in [false, true] {
             for starting in [Player::P0, Player::P1] {
                 assert!(
@@ -62,12 +62,7 @@ fn fra_pool_audit_and_cases_preserve_the_acceptance_gate() {
 // This bounded smoke is not set acceptance; `run` retains its full-pool gate.
 #[test]
 fn fra_admitted_decks_finish_and_replay_in_both_seats() {
-    let mut cases = workload::cases(2);
-    for (seed, start) in [(898100, Player::P0), (898101, Player::P1)] {
-        for swap in [false, true] {
-            cases.push((6, seed, start, swap));
-        }
-    }
+    let cases = workload::cases(2);
     assert_eq!(cases.len(), 28);
     let report = workload::run_admitted_smoke(&cases).unwrap();
     assert_eq!(report.workload, "FRA_ADMITTED_SMOKE_ONLY");
@@ -104,7 +99,7 @@ fn fra_admitted_decks_finish_and_replay_in_both_seats() {
             .iter()
             .all(|game| game.owned_branches > 0 && game.replayed_actions == game.decisions)
     );
-    for pair in 0..6 {
+    for pair in 0..7 {
         for swapped in [false, true] {
             for player in [Player::P0, Player::P1] {
                 assert!(cases.iter().any(|&(p, _, start, swap)| {
