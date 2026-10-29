@@ -54,7 +54,7 @@ fn completed(o: &Observation, a: &Action) -> Option<(ObjectRef, Card, u16)> {
     match a {
         Action::PayCosts { .. } => o.announcing.as_ref().and_then(|s| {
             if let StackKind::ActivatedAbility { ability } = s.kind {
-                Some((s.object, s.source().expect("example expects an object-backed packet").card, ability))
+                Some((s.source().expect("example expects an object-backed packet").object, s.source().expect("example expects an object-backed packet").card, ability))
             } else {
                 None
             }

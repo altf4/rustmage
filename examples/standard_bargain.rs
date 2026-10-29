@@ -472,7 +472,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if pay {
                         continue;
                     }
-                    assert!(!packets(&view).any(|s|s.source().expect("example expects an object-backed packet").card==packet.source().expect("example expects an object-backed packet").card&&s.object==v.reference));
+                    assert!(!packets(&view).any(|s|s.source().expect("example expects an object-backed packet").card==packet.source().expect("example expects an object-backed packet").card&&s.source().expect("example expects an object-backed packet").object==v.reference));
                     effects[k][0][p] += 1;
                     continue;
                 }

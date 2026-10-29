@@ -64,7 +64,7 @@ fn qualifies(i: usize, p: Player, t: Target, b: &Observation) -> bool {
         Target::Spell(id) => b
             .stack
             .iter()
-            .find(|s| s.kind == StackKind::Spell && s.card == id)
+            .find(|s| s.kind == StackKind::Spell && s.source().expect("example expects an object-backed packet").id == id)
             .is_some_and(|s| match i {
                 1 => {
                     s.source().expect("example expects an object-backed packet").card.is_instant()
@@ -207,7 +207,7 @@ fn witness(s: &SpellView, b: &Observation, a: &Observation) {
             let event = a.last_target_library_move.expect("public exact tuck event");
             assert_eq!(
                 (event.source, event.target_before, event.owner),
-                (s.object, targets[0].reference, targets[0].owner)
+                (s.source().expect("example expects an object-backed packet").object, targets[0].reference, targets[0].owner)
             );
             assert_eq!(
                 event.target_after.generation,
@@ -279,7 +279,7 @@ fn witness(s: &SpellView, b: &Observation, a: &Observation) {
         }
         17 => {
             let v = targets[0];
-            let aura = a.objects.iter().find(|v| v.id == s.card).unwrap();
+            let aura = a.objects.iter().find(|v| v.id == s.source().expect("example expects an object-backed packet").id).unwrap();
             if v.toughness <= 3 {
                 assert_eq!(aura.zone, Zone::Graveyard);
             } else {
@@ -355,7 +355,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                         .any(|v| qualifies(i, p, Target::Card(v.id), &b))
                                         || b.stack
                                             .iter()
-                                            .any(|s| qualifies(i, p, Target::Spell(s.card), &b));
+                                            .any(|s| qualifies(i, p, Target::Spell(s.source().expect("example expects an object-backed packet").id), &b));
                                     if possible {
                                         400
                                     } else if seed % 4 == 0 {

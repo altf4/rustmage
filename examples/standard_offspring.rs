@@ -382,7 +382,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if v.token.is_none() {
                         if b.stack.iter().any(|s| {
                             s.kind == StackKind::Spell
-                                && s.card == v.id
+                                && s.source().expect("example expects an object-backed packet").id == v.id
                                 && s.cast.as_ref().is_some_and(|c| c.offspring == Some(true))
                         }) {
                             *debt.entry((v.reference, 0)).or_default() += 1;
@@ -472,12 +472,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     StackKind::ActivatedAbility { ability: 1 }
                         if s.source().is_some_and(|source| source.card.name() == NAMES[9]) =>
                     {
-                        if let Some(v) = exact(&a, s.object) {
-                            let e = ledger.entry(s.object).or_default();
+                        if let Some(v) = exact(&a, s.source().expect("example expects an object-backed packet").object) {
+                            let e = ledger.entry(s.source().expect("example expects an object-backed packet").object).or_default();
                             e.c += 1;
                             assert_eq!(
                                 v.counters.plus_one,
-                                exact(&b, s.object).unwrap().counters.plus_one + 1
+                                exact(&b, s.source().expect("example expects an object-backed packet").object).unwrap().counters.plus_one + 1
                             );
                             tender_growth[usize::from(v.token.is_some())] += 1;
                         }
@@ -493,7 +493,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         s.entering_object.is_some(),
                         ability == 0 || matches!(s.source().and_then(|source| index(source.card)).unwrap(), 1 | 3 | 4 | 6)
                     );
-                    let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
+                    let n = debt.get_mut(&(s.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
                         panic!(
                             "unexpected {} ability{ability} seed{seed}",
                             s.source().expect("example expects an object-backed packet").card.name()

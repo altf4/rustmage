@@ -172,8 +172,8 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             b.players[s.controller.other().index()].life - 1
         ),
         2 => {
-            if live(s.object) {
-                bump(l, s.object, a.turn, 0, 0, Keywords::FLYING, 0);
+            if live(s.source().expect("example expects an object-backed packet").object) {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 0, Keywords::FLYING, 0);
             }
         }
         3 => {
@@ -195,13 +195,13 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             );
         }
         5 => {
-            if live(s.object) {
-                bump(l, s.object, a.turn, 0, 0, Keywords::NONE, 1);
+            if live(s.source().expect("example expects an object-backed packet").object) {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 0, Keywords::NONE, 1);
             }
         }
         7 => {
-            if live(s.object) {
-                bump(l, s.object, a.turn, 2, 0, Keywords::NONE, 0);
+            if live(s.source().expect("example expects an object-backed packet").object) {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 2, 0, Keywords::NONE, 0);
             }
         }
         _ => unreachable!(),
@@ -328,7 +328,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .any(|x| x.zone == Zone::Battlefield && x.reference == v.reference)
             }) {
                 for s in a.objects.iter().filter(|s| s.zone == Zone::Battlefield) {
-                    if let Some(i) = index(s.card)
+                    if let Some(i) = index(s.source().expect("example expects an object-backed packet").id)
                         && matches(i, s, v, &a, &l)
                     {
                         if prohibit && v.card.is_creature() {

@@ -93,11 +93,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         && before
                             .objects
                             .iter()
-                            .any(|o| o.id == s.card && o.zone == Zone::Hand)
+                            .any(|o| o.id == s.source().expect("example expects an object-backed packet").id && o.zone == Zone::Hand)
                         && after
                             .objects
                             .iter()
-                            .any(|o| o.id == s.card && o.zone == Zone::Graveyard)
+                            .any(|o| o.id == s.source().expect("example expects an object-backed packet").id && o.zone == Zone::Graveyard)
                 })
                 .count();
             searches +=

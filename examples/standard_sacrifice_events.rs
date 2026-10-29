@@ -172,7 +172,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if i == 6 {
                         assert_eq!(s.controller, after.active);
                         assert!(
-                            toll_events.insert((after.turn, s.object.card, s.object.generation)),
+                            toll_events.insert((after.turn, s.source().expect("example expects an object-backed packet").object.card, s.source().expect("example expects an object-backed packet").object.generation)),
                             "duplicate Tolls trigger this turn"
                         );
                     }

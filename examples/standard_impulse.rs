@@ -304,7 +304,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             ExilePlayExpiry::EndOfNextTurn
                         }
                     );
-                    source_for.insert(r.object, s.object);
+                    source_for.insert(r.object, s.source().expect("example expects an object-backed packet").object);
                     if held.is_none() {
                         held = Some(r.object.card);
                     }
@@ -344,7 +344,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         && let Some(v) = a
                             .objects
                             .iter()
-                            .find(|v| v.id == s.card && v.zone == Zone::Battlefield)
+                            .find(|v| v.id == s.source().expect("example expects an object-backed packet").id && v.zone == Zone::Battlefield)
                     {
                         let stats = match i {
                             0 | 9 => (4, 2),
@@ -363,7 +363,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if matches!(
                         (i, s.kind),
                         (5 | 7, StackKind::TriggeredAbility { ability: 0 })
-                    ) && let (Some(before), Some(after)) = (obj(&b, s.object), obj(&a, s.object))
+                    ) && let (Some(before), Some(after)) = (obj(&b, s.source().expect("example expects an object-backed packet").object), obj(&a, s.source().expect("example expects an object-backed packet").object))
                     {
                         assert_eq!(
                             (after.power, after.toughness),
@@ -372,7 +372,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         residuals[0] += 1;
                     }
                     if matches!((i, s.kind), (8, StackKind::TriggeredAbility { ability: 1 }))
-                        && let Some(v) = obj(&a, s.object)
+                        && let Some(v) = obj(&a, s.source().expect("example expects an object-backed packet").object)
                     {
                         assert!(v.keywords.contains(Keywords::DOUBLE_STRIKE));
                         residuals[1] += 1;
@@ -459,7 +459,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .collect();
             for id in completed {
                 let s = exiled_casts.remove(&id).unwrap();
-                let v = a.objects.iter().find(|v| v.id == s.card).unwrap();
+                let v = a.objects.iter().find(|v| v.id == s.source().expect("example expects an object-backed packet").id).unwrap();
                 assert!(matches!(v.zone, Zone::Battlefield | Zone::Graveyard));
             }
             for r in &b.exile_permissions {

@@ -207,8 +207,8 @@ fn count(o: &Observation, p: Player, subtype: &str) -> usize {
 }
 fn assert_effect(i: usize, s: &SpellView, b: &Observation, a: &Observation) {
     let p = s.controller;
-    let old = b.objects.iter().find(|v| v.reference == s.object).unwrap();
-    let v = a.objects.iter().find(|v| v.reference == s.object).unwrap();
+    let old = b.objects.iter().find(|v| v.reference == s.source().expect("example expects an object-backed packet").object).unwrap();
+    let v = a.objects.iter().find(|v| v.reference == s.source().expect("example expects an object-backed packet").object).unwrap();
     match i {
         0 => assert_eq!((v.power, v.toughness), (old.power + 2, old.toughness + 2)),
         1 => assert_eq!(count(a, p, "Elephant"), count(b, p, "Elephant") + 1),
@@ -220,7 +220,7 @@ fn assert_effect(i: usize, s: &SpellView, b: &Observation, a: &Observation) {
                     x.owner == p
                         && x.zone == Zone::Battlefield
                         && x.card.is_creature()
-                        && x.reference != s.object
+                        && x.reference != s.source().expect("example expects an object-backed packet").object
                 })
                 .count();
             assert_eq!(
@@ -231,7 +231,7 @@ fn assert_effect(i: usize, s: &SpellView, b: &Observation, a: &Observation) {
                 x.owner == p
                     && x.zone == Zone::Battlefield
                     && x.card.is_creature()
-                    && x.reference != s.object
+                    && x.reference != s.source().expect("example expects an object-backed packet").object
             }) {
                 assert_eq!(
                     a.objects
@@ -399,7 +399,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if action == Action::FinishSaddle {
                 let s = b.announcing.as_ref().unwrap();
-                paid.insert(s.object);
+                paid.insert(s.source().expect("example expects an object-backed packet").object);
                 costs[i][p.index()] += 1;
             }
             if let Action::Attack { card } = action {
@@ -409,7 +409,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && let Some(s) = b.stack.last()
                 && s.source().is_some_and(|source| source.card.name() == NAMES[i])
                 && matches!(s.kind, StackKind::TriggeredAbility { .. })
-                && (i == 15 || attacked.contains(&s.object))
+                && (i == 15 || attacked.contains(&s.source().expect("example expects an object-backed packet").object))
                 && !done[s.controller.index()]
             {
                 packets.entry(s.id).or_insert((s.clone(), b.clone()));

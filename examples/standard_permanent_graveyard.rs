@@ -217,7 +217,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         || after
                             .objects
                             .iter()
-                            .any(|o| o.id == s.card && o.zone == Zone::Graveyard))
+                            .any(|o| o.id == s.source().expect("example expects an object-backed packet").id && o.zone == Zone::Graveyard))
                 {
                     assert!(!tracked.contains_key(&s.id));
                     tracked.insert(s.id, i);

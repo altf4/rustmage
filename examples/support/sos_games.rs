@@ -368,8 +368,8 @@ impl Tracker {
                     }
                     if cast.origin == Zone::Exile
                         && self.prepared_copies.iter().any(|copy| {
-                            copy.card == s.object.card
-                                && copy.generation.checked_add(1) == Some(s.object.generation)
+                            copy.card == s.source().expect("example expects an object-backed packet").object.card
+                                && copy.generation.checked_add(1) == Some(s.source().expect("example expects an object-backed packet").object.generation)
                         })
                     {
                         self.hit("prepared_spell_cast", s.id.to_string());

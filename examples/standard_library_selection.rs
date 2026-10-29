@@ -665,7 +665,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && root.mode == Some(1)
             {
                 let victim = root.targets[0].object.unwrap();
-                let before = b.stack.iter().find(|s| s.object == victim).unwrap();
+                let before = b.stack.iter().find(|s| s.source().expect("example expects an object-backed packet").object == victim).unwrap();
                 let now = object(&a, victim.card).unwrap();
                 if matches!(action, Action::PayResolutionMana { .. }) {
                     assert_eq!((now.zone, now.reference), (Zone::Stack, victim));

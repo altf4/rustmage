@@ -55,7 +55,7 @@ fn count_tokens(o: &Observation, p: Player, kind: &str) -> usize {
 fn witness(s: &SpellView, b: &Observation, a: &Observation) -> u64 {
     let i = idx(s.source().expect("example expects an object-backed packet").card).unwrap();
     let p = s.controller.index();
-    let spell = a.objects.iter().find(|v| v.id == s.card).unwrap();
+    let spell = a.objects.iter().find(|v| v.id == s.source().expect("example expects an object-backed packet").id).unwrap();
     assert_eq!(
         spell.zone,
         if s.cast.unwrap().method == CastMethod::Flashback {

@@ -273,7 +273,7 @@ fn main() {
                         after
                             .objects
                             .iter()
-                            .any(|b| b.id == s.card && b.zone == Zone::Graveyard)
+                            .any(|b| b.id == s.source().expect("example expects an object-backed packet").id && b.zone == Zone::Graveyard)
                     );
                 }
                 if s.source().is_some_and(|source| source.card.name() == RESCUE) {
@@ -281,7 +281,7 @@ fn main() {
                         after
                             .objects
                             .iter()
-                            .any(|b| b.reference == s.object && b.tapped)
+                            .any(|b| b.reference == s.source().expect("example expects an object-backed packet").object && b.tapped)
                     );
                 }
             }
@@ -301,7 +301,7 @@ fn main() {
                                 assert!(matches!(old.card.info().type_line, "Instant" | "Sorcery"));
                                 recovered_types.insert(old.card.info().type_line);
                             } else {
-                                assert_ne!(old.reference, s.object);
+                                assert_ne!(old.reference, s.source().expect("example expects an object-backed packet").object);
                             }
                             if old.card.is_token() {
                                 assert!(!after.objects.iter().any(|b| b.id == target.card));
@@ -338,12 +338,12 @@ fn main() {
                     && let Some(b) = after
                         .objects
                         .iter()
-                        .find(|b| b.reference == s.object && b.zone == Zone::Battlefield)
+                        .find(|b| b.reference == s.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
                 {
                     let old = before
                         .objects
                         .iter()
-                        .find(|b| b.reference == s.object)
+                        .find(|b| b.reference == s.source().expect("example expects an object-backed packet").object)
                         .unwrap();
                     assert_eq!(b.power, old.power + 1);
                     assert_eq!(b.toughness, old.toughness + 1);

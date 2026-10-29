@@ -45,7 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 actions.retain(|a| !matches!(a, Action::Attack { .. }));
             }
             let mut action = actions[rustmage::policy::smoke_index(&g, &actions)].clone();
-            if let Some(a)=actions.iter().find(|a|matches!(a,Action::Cast{target:Some(Target::Spell(id)),..}if before.stack.iter().any(|s|s.kind==StackKind::Spell&&s.card==*id&&s.controller!=p&&s.source().expect("example expects an object-backed packet").card.cannot_be_countered()))) {action=a.clone();}
+            if let Some(a)=actions.iter().find(|a|matches!(a,Action::Cast{target:Some(Target::Spell(id)),..}if before.stack.iter().any(|s|s.kind==StackKind::Spell&&s.source().expect("example expects an object-backed packet").id==*id&&s.controller!=p&&s.source().expect("example expects an object-backed packet").card.cannot_be_countered()))) {action=a.clone();}
             if seed % 2 == 0
                 && let Some(a) = actions.iter().find(|a| {
                     matches!(

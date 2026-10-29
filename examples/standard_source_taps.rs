@@ -117,8 +117,8 @@ fn verify(
     };
     assert!(s.entering_object.is_none() || i == 4);
     if i == 4 && matches!(s.kind, StackKind::TriggeredAbility { ability: 1 }) {
-        if let Some(v) = battlefield(a).find(|v| v.reference == s.object) {
-            let old = battlefield(b).find(|v| v.reference == s.object).unwrap();
+        if let Some(v) = battlefield(a).find(|v| v.reference == s.source().expect("example expects an object-backed packet").object) {
+            let old = battlefield(b).find(|v| v.reference == s.source().expect("example expects an object-backed packet").object).unwrap();
             assert_eq!(v.counters.plus_one, old.counters.plus_one + 1);
         }
         return false;
@@ -165,7 +165,7 @@ fn verify(
                     })
                     .collect();
                 assert_eq!(removed.len(), 1);
-                assert_ne!(removed[0].reference, s.object);
+                assert_ne!(removed[0].reference, s.source().expect("example expects an object-backed packet").object);
                 assert!(removed[0].card.is_artifact() || removed[0].card.is_creature());
             }
             return draw == 1;
@@ -437,7 +437,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     StackKind::TriggeredAbility { ability } => {
-                        let key = (s.object, ability, s.entering_object);
+                        let key = (s.source().expect("example expects an object-backed packet").object, ability, s.entering_object);
                         let n = debt.get_mut(&key).unwrap_or_else(|| {
                             panic!("unexpected {} {key:?} seed{seed}", s.source().expect("example expects an object-backed packet").card.name())
                         });

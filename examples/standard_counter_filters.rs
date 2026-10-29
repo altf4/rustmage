@@ -121,7 +121,7 @@ fn score(obs: &Observation, action: &Action, paid: bool) -> i32 {
             if obs
                 .stack
                 .iter()
-                .any(|s| s.card == *id && s.controller != obs.actor.unwrap())
+                .any(|s| s.source().expect("example expects an object-backed packet").id == *id && s.controller != obs.actor.unwrap())
             {
                 160
             } else {
@@ -255,7 +255,7 @@ fn main() {
                 && item.source().is_some_and(|source| COUNTERS.contains(&source.card.name()))
             {
                 if let Some(Target::Spell(id)) = item.targets.first().map(|b| b.target) {
-                    let Some(victim) = before.stack.iter().find(|s| s.card == id) else {
+                    let Some(victim) = before.stack.iter().find(|s| s.source().expect("example expects an object-backed packet").id == id) else {
                         // Multiple responses may share a victim. Later responses
                         // fizzle after the first one has already countered it.
                         assert_eq!(

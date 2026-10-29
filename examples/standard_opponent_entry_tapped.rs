@@ -306,7 +306,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     StackKind::TriggeredAbility { ability } => {
-                        let key = (s.object, s.entering_object, ability);
+                        let key = (s.source().expect("example expects an object-backed packet").object, s.entering_object, ability);
                         let n = debt.get_mut(&key).unwrap_or_else(|| {
                             panic!("unexpected {} {key:?} seed{seed}", s.source().expect("example expects an object-backed packet").card.name())
                         });

@@ -187,8 +187,8 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             b.players[s.controller.index()].library_count
         ),
         1 | 10 | 13 => {
-            if exact(a, s.object).is_some() {
-                bump(l, s.object, a.turn, 1, 0, 0, Keywords::NONE);
+            if exact(a, s.source().expect("example expects an object-backed packet").object).is_some() {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 1, 0, 0, Keywords::NONE);
             }
         }
         2 | 5 => assert_eq!(
@@ -226,8 +226,8 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
         }
         8 => {}
         9 => {
-            if exact(a, s.object).is_some() {
-                bump(l, s.object, a.turn, 0, 1, 0, Keywords::LIFELINK);
+            if exact(a, s.source().expect("example expects an object-backed packet").object).is_some() {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 1, 0, Keywords::LIFELINK);
             }
         }
         12 => {
@@ -241,8 +241,8 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             );
         }
         14 => {
-            if exact(a, s.object).is_some() {
-                bump(l, s.object, a.turn, 0, 1, 1, Keywords::NONE);
+            if exact(a, s.source().expect("example expects an object-backed packet").object).is_some() {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 1, 1, Keywords::NONE);
             }
         }
         15 => assert_eq!(
@@ -396,12 +396,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && let Some(i) = s.source().and_then(|source| index(source.card))
                     && !(matches!(i, 4 | 9) && ability == 0)
                 {
-                    if exact(&a, s.object).is_some() {
+                    if exact(&a, s.source().expect("example expects an object-backed packet").object).is_some() {
                         if i == 0 {
-                            bump(&mut ledger, s.object, a.turn, 1, 0, 0, Keywords::NONE);
+                            bump(&mut ledger, s.source().expect("example expects an object-backed packet").object, a.turn, 1, 0, 0, Keywords::NONE);
                         }
                         if i == 8 {
-                            bump(&mut ledger, s.object, a.turn, 0, 0, 0, Keywords::FLYING);
+                            bump(&mut ledger, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 0, 0, Keywords::FLYING);
                         }
                     }
                     pending.insert(s.id, (i, s.clone(), b.clone()));
@@ -434,7 +434,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         wards += 1;
                         continue;
                     }
-                    let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
+                    let n = debt.get_mut(&(s.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
                         panic!("unexpected {} seed{seed}", s.source().expect("example expects an object-backed packet").card.name())
                     });
                     assert!(*n > 0);

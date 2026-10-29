@@ -189,8 +189,8 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             }
         }
         12 => {
-            if live(s.object) {
-                bump(l, s.object, a.turn, 2, 0, Keywords::NONE, 0);
+            if live(s.source().expect("example expects an object-backed packet").object) {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 2, 0, Keywords::NONE, 0);
             }
         }
         13 => {
@@ -303,7 +303,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if matches!(action, Action::FinishAttackers) && !a.attackers.is_empty() {
                 declarations += 1;
                 for s in battlefield(&a).filter(|s| s.owner == actor) {
-                    if let Some(i) = index(s.card)
+                    if let Some(i) = index(s.source().expect("example expects an object-backed packet").id)
                         && qualifies(i, s, &a, &ledger)
                     {
                         *debt.entry((s.reference, u16::from(i == 5))).or_default() += 1;
@@ -334,7 +334,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     StackKind::TriggeredAbility { ability } => {
                         let i = s.source().and_then(|source| index(source.card)).unwrap();
-                        let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
+                        let n = debt.get_mut(&(s.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
                             panic!("unexpected {} seed{seed}", s.source().expect("example expects an object-backed packet").card.name())
                         });
                         assert!(*n > 0);

@@ -340,8 +340,8 @@ fn verify_choice(
         let expected = if b.resolving.as_ref().unwrap().kind == StackKind::Spell {
             let s = b.resolving.as_ref().unwrap();
             BTreeSet::from([ObjectRef {
-                card: s.card,
-                generation: s.object.generation + 1,
+                card: s.source().expect("example expects an object-backed packet").id,
+                generation: s.source().expect("example expects an object-backed packet").object.generation + 1,
             }])
         } else {
             BTreeSet::new()
@@ -394,8 +394,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let attack_source = b.stack.iter().rev().find(|s| {
                 s.controller == actor
                     && selection(s).is_some_and(|i| i == 0 || i == 9)
-                    && object(&b, s.card)
-                        .is_some_and(|v| v.reference == s.object && v.zone == Zone::Battlefield)
+                    && object(&b, s.source().expect("example expects an object-backed packet").id)
+                        .is_some_and(|v| v.reference == s.source().expect("example expects an object-backed packet").object && v.zone == Zone::Battlefield)
             });
             let preferred = (seed as usize / NAMES.len() + actor.index() + costs[actor.index()])
                 % alternatives(family);
@@ -442,7 +442,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     Action::ChooseAdditionalCost { object: r } => {
-                        if attack_source.is_some_and(|s| s.object == *r) {
+                        if attack_source.is_some_and(|s| s.source().expect("example expects an object-backed packet").object == *r) {
                             600
                         } else {
                             -100

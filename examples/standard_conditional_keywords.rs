@@ -351,7 +351,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 } else if matches!(s.kind, StackKind::ActivatedAbility { .. }) {
                     activations[i] += 1;
                     if i == 0 {
-                        pump_roots.insert(s.id, (s.object, after.turn));
+                        pump_roots.insert(s.id, (s.source().expect("example expects an object-backed packet").object, after.turn));
                     }
                 } else if matches!(s.kind, StackKind::TriggeredAbility { .. }) {
                     assert!(!tracked.contains_key(&s.id));

@@ -208,17 +208,17 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             b.players[s.controller.other().index()].life - if i == 0 { 1 } else { 2 }
         ),
         1 | 4 | 5 | 10 => {
-            if let Some(v) = exact(b, s.object) {
+            if let Some(v) = exact(b, s.source().expect("example expects an object-backed packet").object) {
                 let n = if i == 10 { 2 } else { 1 };
-                if let Some(after) = exact(a, s.object) {
+                if let Some(after) = exact(a, s.source().expect("example expects an object-backed packet").object) {
                     assert_eq!(after.counters.plus_one, v.counters.plus_one + n);
                 }
-                bump(l, s.object, a.turn, i128::from(n), 0, Keywords::NONE);
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, i128::from(n), 0, Keywords::NONE);
             }
         }
         3 => {
-            if exact(a, s.object).is_some() {
-                bump(l, s.object, a.turn, 0, 2, Keywords::VIGILANCE);
+            if exact(a, s.source().expect("example expects an object-backed packet").object).is_some() {
+                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 2, Keywords::VIGILANCE);
             }
         }
         6 => {
@@ -237,7 +237,7 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             b.players[s.controller.index()].life + 2
         ),
         9 => {
-            if let Some(v) = exact(a, s.object) {
+            if let Some(v) = exact(a, s.source().expect("example expects an object-backed packet").object) {
                 assert!(!v.tapped);
             }
         }
@@ -521,7 +521,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     casts[i] += 1;
                 }
                 for s in a.objects.iter().filter(|v| v.zone == Zone::Battlefield) {
-                    if let Some(i) = index(s.card) {
+                    if let Some(i) = index(s.source().expect("example expects an object-backed packet").id) {
                         checks += 1;
                         if qualifies(i, s, spell.controller, spell.source().expect("example expects an object-backed packet").card, a.active) {
                             *debt.entry((s.reference, 0)).or_default() += 1;
