@@ -569,6 +569,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(2)
             .map(|&id| self.object_ref(id))
             .collect();

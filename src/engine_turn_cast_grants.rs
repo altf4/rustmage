@@ -147,13 +147,13 @@ impl Game {
                 continue;
             }
             let ordinary_origin = match object.zone {
-                Zone::Hand => object.owner == player,
+                Zone::Hand => object.owner == player && object.is_card(),
                 Zone::Exile => self.can_play_exiled(player, card),
                 Zone::Library => self.can_cast_library_face(player, card, definition),
                 Zone::Graveyard => self.has_graveyard_cast(player, card, GraveyardCastKind::Cast),
                 _ => false,
             };
-            let counter_cost = (object.zone == Zone::Graveyard && object.owner == player)
+            let counter_cost = (object.zone == Zone::Graveyard && object.owner == player && object.is_card())
                 .then(|| definition.graveyard_counter_cost())
                 .flatten();
             for flash_surcharge in [false, true] {

@@ -159,7 +159,7 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
-                    .filter(|(_, o)| o.zone == Zone::Hand && o.owner == movement.controller.other())
+                    .filter(|(_, o)| o.zone == Zone::Hand && o.is_card() && o.owner == movement.controller.other())
                     .map(|(id, _)| self.object_view(id as CardId))
                     .collect()
             }),

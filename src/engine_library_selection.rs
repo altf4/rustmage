@@ -121,6 +121,7 @@ impl Game {
                 .library
                 .iter()
                 .rev()
+                .filter(|&&id| self.state.objects[id as usize].is_card())
                 .position(|&id| self.state.objects[id as usize].card.kind_mask() & kinds != 0)
                 .map_or(usize::MAX, |at| at + 1),
         };
@@ -129,6 +130,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(limit)
             .map(|&id| self.object_ref(id))
             .collect();
@@ -166,7 +168,7 @@ impl Game {
             self.state
                 .objects
                 .iter()
-                .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && !o.is_token())
+                .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && o.is_card())
         };
         let requested = match spec.count {
             LibrarySelectionCount::Fixed(n) => usize::from(n),
@@ -469,9 +471,7 @@ impl Game {
                 if self.state.players[owner.index()].library.len() > 1 {
                     self.forget_library_top(owner);
                 }
-                self.state
-                    .rng
-                    .shuffle(&mut self.state.players[owner.index()].library);
+                self.shuffle_library_cards(owner);
             }
             LibraryRemainder::Graveyard => {
                 let ids: Vec<_> = f.remaining.iter().map(|r| r.card).collect();

@@ -76,7 +76,7 @@ impl Game {
         amount: u128,
     ) {
         let ids =
-            exile::top_library_cards(&self.state.players[library_owner.index()].library, amount);
+            exile::top_library_cards(self, library_owner, amount);
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if event.moved && event.destination == Zone::Exile {

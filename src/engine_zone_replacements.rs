@@ -87,9 +87,6 @@ impl ZoneState {
     pub(super) fn has_checkpoint(&self) -> bool {
         self.choice.is_some() || self.replay.is_some()
     }
-    // A staged atomic-cost checkpoint may outlive the action replay that
-    // created it. Never restore that consumed replay from the checkpoint.
-    pub(super) fn clear_replay(&mut self) { self.replay = None; }
     pub fn bytes(&self) -> usize {
         let base_bytes = |base: &Base| {
             base.bytes
@@ -147,6 +144,7 @@ impl ZoneState {
 }
 #[cfg(test)]
 thread_local! {
+    pub(super) static TEST_INVALIDATE_STAGED_COST: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_FAKE_ENTRY_LIFE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_REDIRECT_EXILE_TO_BATTLEFIELD: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_PREVENT_ZONE_MOVE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
@@ -446,9 +444,7 @@ impl Game {
                 from: before.zone,
             });
         self.forget_library_top(before.owner);
-        self.state
-            .rng
-            .shuffle(&mut self.state.players[before.owner.index()].library);
+        self.shuffle_library_cards(before.owner);
     }
     pub(super) fn suspend_zone_replacement(
         &mut self,
@@ -560,5 +556,15 @@ pub(super) fn preserve_irreversible_reveals(
         }
     } else if let Some(target) = target {
         target.reveals.clear();
+    }
+}
+
+/// Preserve only the currently live replay when restoring a staged cost.
+/// A checkpoint can outlive the replay that created it, or can fail while
+/// that replay is still on the caller's stack.
+pub(super) fn transfer_live_replay(from: &mut Option<Box<ZoneState>>, to: &mut Option<Box<ZoneState>>) {
+    let live = from.as_mut().and_then(|rules| rules.replay.take());
+    if live.is_some() || to.is_some() {
+        to.get_or_insert_default().replay = live;
     }
 }

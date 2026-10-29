@@ -51,7 +51,7 @@ impl Game {
         let Some((hand, library)) = s.zones else {
             return false;
         };
-        !o.is_token()
+        o.is_card()
             && o.owner == s.player
             && ((hand && o.zone == Zone::Hand) || (library && o.zone == Zone::Library))
     }

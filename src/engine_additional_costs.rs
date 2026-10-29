@@ -125,6 +125,9 @@ impl Game {
         name: &str,
     ) -> bool {
         let spec = spec.in_zone(o.zone);
+        if matches!(o.zone, Zone::Hand | Zone::Graveyard) && !o.is_card() {
+            return false;
+        }
         let zone = match spec.kind {
             EffectChoiceKind::Behold if matches!(o.zone, Zone::Battlefield | Zone::Hand) => o.zone,
             EffectChoiceKind::ExileGraveyard
@@ -151,7 +154,7 @@ impl Game {
         {
             return false;
         }
-        if spec.kind == EffectChoiceKind::Behold && zone == Zone::Hand && o.is_token() {
+        if spec.kind == EffectChoiceKind::Behold && zone == Zone::Hand && !o.is_card() {
             return false;
         }
         let f = spec.filter;
@@ -160,7 +163,7 @@ impl Game {
             EffectChoiceKind::ExileGraveyard
                 | EffectChoiceKind::ExileGraveyardCards(_)
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
-        ) && (o.is_token() || o.copy_kind == CopyKind::Card)
+        ) && !o.is_card()
         {
             return false;
         }

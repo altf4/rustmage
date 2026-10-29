@@ -257,6 +257,7 @@ struct FundingMove {
 struct ResourceKey {
     definition: usize,
     token: bool,
+    card: bool,
     kinds: u16,
     protected: bool,
     reserved: bool,
@@ -664,7 +665,7 @@ impl<'g> FundingState<'g> {
             .iter()
             .enumerate()
             .filter(|(id, object)| {
-                (graveyard_mana_cost && object.zone == Zone::Graveyard && object.owner == goal.actor && !object.is_token() && object.copy_kind != CopyKind::Card)
+                (graveyard_mana_cost && object.zone == Zone::Graveyard && object.owner == goal.actor && object.is_card())
                     || (object.zone == Zone::Command && object.card.is_emblem()) || goal.reserve
                     .is_some_and(|(reference, _)| reference.card == *id as CardId)
                     || goal
@@ -1119,7 +1120,7 @@ impl<'g> FundingState<'g> {
                     .filter(|(id, _)| {
                         let object =
                             ability_world::CharacteristicWorld::object(self, *id as CardId);
-                        object.zone == Zone::Hand && object.owner == actor
+                        object.zone == Zone::Hand && object.owner == actor && object.is_card()
                     })
                     .count()
                     >= usize::from(minimum)
@@ -1663,6 +1664,7 @@ impl<'g> FundingState<'g> {
             .map(|r| ResourceKey {
                 definition: r.object.card.index(),
                 token: r.object.is_token(),
+                card: r.object.is_card(),
                 kinds: self.kinds(r),
                 protected: goal
                     .source
@@ -1750,7 +1752,7 @@ impl<'g> FundingState<'g> {
             .collect();
         resources.sort_by_key(|r| {
             (
-                (r.definition, r.token),
+                (r.definition, r.token, r.card),
                 r.kinds,
                 (r.protected, r.reserved),
                 r.zone,
@@ -2287,7 +2289,7 @@ impl<'g> FundingState<'g> {
             .iter()
             .enumerate()
             .map(|(id, _)| self.object(id as CardId))
-            .filter(|o| o.owner == self.actor && o.zone == Zone::Graveyard && !o.is_token())
+            .filter(|o| o.owner == self.actor && o.zone == Zone::Graveyard && o.is_card())
             .map(|o| u128::from(o.card.fixed_mana_value()))
             .sum()
     }

@@ -207,6 +207,11 @@ fn sphinx_stale_staged_entry_discards_consumed_replacement_replay() {
         assert!(matches!(g.state.pending, Pending::ZoneReplacement { player: p } if p == player));
         act(&mut g, Action::ChooseZoneReplacement { effect: ZoneReplacementKind::Battlefield });
         assert!(matches!(g.state.pending, Pending::EntryLife { player: p } if p == player));
+        let batch = g.state.entry_batch.as_ref().unwrap();
+        let mut without = (**batch).clone();
+        let checkpoint = without.atomic_cost.take().unwrap();
+        assert_eq!(batch.bytes(), without.bytes() + std::mem::size_of::<entries::AtomicCostCheckpoint>()
+            + checkpoint.bytes + checkpoint.components.len() * std::mem::size_of::<(ObjectRef, Zone)>());
         // No supported nested move exists in this suspension; inject the stale
         // incarnation to exercise the exact rollback/replay boundary.
         g.move_object(cards[1], Zone::Hand);
@@ -220,6 +225,39 @@ fn sphinx_stale_staged_entry_discards_consumed_replacement_replay() {
             assert!(cards.iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
             assert_ne!(g.object_view(source).zone, Zone::Exile);
             g.restore(&suspended).unwrap();
+        }
+    }
+}
+
+#[test]
+fn sphinx_synchronous_staged_failure_keeps_live_replay_until_caller_consumes_it() {
+    use zone_replacements::{TEST_PREVENT_ZONE_MOVE, TEST_REDIRECT_EXILE_TO_BATTLEFIELD, TEST_INVALIDATE_STAGED_COST};
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) {
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|p| p.set(None));
+        TEST_INVALIDATE_STAGED_COST.with(|p| p.set(None));
+    }}
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let cards: Vec<_> = (0..4).map(|_| sphinx_card(&mut g, player, Zone::Graveyard)).collect();
+        let source = sphinx_card(&mut g, player, Zone::Hand);
+        cast(&mut g, source, None);
+        wait_for_sphinx_choice(&mut g);
+        let redirect = g.object_ref(cards[0]);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(redirect)));
+        TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|p| p.set(Some(redirect)));
+        TEST_INVALIDATE_STAGED_COST.with(|p| p.set(Some(g.object_ref(cards[1]))));
+        for &id in &cards { let object = g.object_ref(id); act(&mut g, Action::SelectResolutionExile { object }); }
+        assert!(matches!(g.state.pending, Pending::ZoneReplacement { player: p } if p == player));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::ChooseZoneReplacement { effect: ZoneReplacementKind::Battlefield });
+            assert!(g.state.zone_rules.as_ref().is_none_or(|r| !r.has_checkpoint()));
+            assert!(cards.iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
+            assert_ne!(g.object_view(source).zone, Zone::Exile);
+            g.restore(&saved).unwrap();
         }
     }
 }

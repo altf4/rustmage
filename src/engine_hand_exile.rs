@@ -10,7 +10,7 @@ impl Game {
             .iter()
             .enumerate()
             .filter(|(_, object)| {
-                object.zone == Zone::Hand && object.owner == player && !object.is_token()
+                object.zone == Zone::Hand && object.owner == player && object.is_card()
             })
             .map(|(index, _)| index as CardId)
             .collect();
@@ -38,7 +38,7 @@ impl Game {
         (self.object_ref(reference.card) == reference
             && object.zone == Zone::Graveyard
             && object.owner == item.controller
-            && !object.is_token())
+            && object.is_card())
         .then_some(reference)
     }
 

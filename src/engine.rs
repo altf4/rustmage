@@ -909,6 +909,11 @@ impl Object {
     fn is_token(&self) -> bool {
         self.copy_kind != CopyKind::Physical && (self.is_copy_token() || self.card.is_token())
     }
+    /// True only for physical cards; spell/card copies and tokens are objects
+    /// but are not cards, including during the interval before state-based cleanup.
+    fn is_card(&self) -> bool {
+        !self.is_token() && !self.is_spell_copy() && !self.card.is_emblem()
+    }
     fn untap(&mut self) {
         if self.tapped {
             if self.counters.stun > 0 {
@@ -2309,6 +2314,8 @@ struct ZoneObservers {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    /// Whether the departing object was represented by a physical card.
+    pub(super) was_card: bool,
     pub(super) cast_event: Option<Box<CastPaymentEvent>>,
     /// CR122.6a: intrinsic entry counters are put on by the incoming controller.
     pub(super) entry_counter_player: Option<Player>,
@@ -3997,7 +4004,7 @@ impl Game {
             }
             Pending::Bottom { .. } | Pending::Discard | Pending::EffectDiscard { .. } => {
                 for (i, obj) in s.objects.iter().enumerate() {
-                    if obj.owner == actor && obj.zone == Zone::Hand && !obj.is_token() {
+                    if obj.owner == actor && obj.zone == Zone::Hand && obj.is_card() {
                         if matches!(s.pending, Pending::EffectDiscard { .. })
                             && s.resolving.as_ref().unwrap().selected_discards[actor.index()]
                                 .contains(&(i as CardId))
@@ -4280,7 +4287,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if !casting_prohibited && !obj.is_token() && obj.zone == Zone::Hand && (!free_hand_cast || obj.card.is_land()) {
+                    if !casting_prohibited && obj.is_card() && obj.zone == Zone::Hand && (!free_hand_cast || obj.card.is_land()) {
                         for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen, CastFace::Back] {
                             let definition = match face {
                                 CastFace::Normal => Some(obj.card),
@@ -4300,7 +4307,7 @@ impl Game {
                         }
                     }
                     if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
-                        if free_hand_cast && obj.zone == Zone::Hand {
+                        if free_hand_cast && obj.zone == Zone::Hand && obj.is_card() {
                             for face in [
                                 CastFace::Normal,
                                 CastFace::Adventure,
@@ -4325,7 +4332,7 @@ impl Game {
                                 }
                             }
                         }
-                        if obj.zone == Zone::Hand && !limited_hand_casts.is_empty() {
+                        if obj.zone == Zone::Hand && obj.is_card() && !limited_hand_casts.is_empty() {
                             for face in [
                                 CastFace::Normal,
                                 CastFace::Adventure,
@@ -5167,6 +5174,7 @@ impl Game {
                 for (id, object) in s.objects.iter().enumerate() {
                     if object.zone == Zone::Hand
                         && object.owner == victim
+                        && object.is_card()
                         && object.card.kind_mask() & excluded_kinds == 0
                         && emit(Action::ChooseRevealedDiscard {
                             object: self.object_ref(id as CardId),
@@ -5220,7 +5228,8 @@ impl Game {
                         < choice.spec.maximum
                     {
                         for &card in &s.players[player.index()].library {
-                            if choice.spec.filter.matches(s.objects[card as usize].card)
+                            if s.objects[card as usize].is_card()
+                                && choice.spec.filter.matches(s.objects[card as usize].card)
                                 && !choice.selected.contains(&card)
                                 && (!choice.different_names
                                     || !choice.selected.iter().any(|&id| {
@@ -6427,9 +6436,7 @@ impl Game {
                     self.move_object(id, Zone::Library);
                 }
                 self.forget_library_top(p);
-                self.state
-                    .rng
-                    .shuffle(&mut self.state.players[p.index()].library);
+                self.shuffle_library_cards(p);
                 for _ in 0..7 {
                     self.draw(p);
                 }
@@ -6489,11 +6496,37 @@ impl Game {
         };
     }
 
+    /// CR 701.24a randomizes cards; a transient noncard keeps its object
+    /// position until the next state-based action removes it.
+    fn shuffle_library_cards(&mut self, p: Player) {
+        let library = &self.state.players[p.index()].library;
+        if library.iter().all(|&id| self.state.objects[id as usize].is_card()) {
+            self.state.rng.shuffle(&mut self.state.players[p.index()].library);
+            return;
+        }
+        let positions: Vec<_> = library.iter().enumerate()
+            .filter_map(|(i, &id)| self.state.objects[id as usize].is_card().then_some(i))
+            .collect();
+        let mut cards: Vec<_> = positions.iter().map(|&i| library[i]).collect();
+        self.state.rng.shuffle(&mut cards);
+        let library = &mut self.state.players[p.index()].library;
+        for (position, card) in positions.into_iter().zip(cards) {
+            library[position] = card;
+        }
+    }
+    fn library_card_count(&self, p: Player) -> usize {
+        self.state.players[p.index()].library.iter()
+            .filter(|&&id| self.state.objects[id as usize].is_card()).count()
+    }
+    fn top_library_card(&self, p: Player) -> Option<CardId> {
+        self.state.players[p.index()].library.iter().rev().copied()
+            .find(|&id| self.state.objects[id as usize].is_card())
+    }
     fn hand_count(&self, p: Player) -> usize {
         self.state
             .objects
             .iter()
-            .filter(|o| o.owner == p && o.zone == Zone::Hand && !o.is_token())
+            .filter(|o| o.owner == p && o.zone == Zone::Hand && o.is_card())
             .count()
     }
 
@@ -6501,7 +6534,7 @@ impl Game {
         self.draw_many_interruptible(p, 1);
     }
     pub(super) fn draw_one_unreplaced(&mut self, p: Player) -> bool {
-        match self.state.players[p.index()].library.last().copied() {
+        match self.top_library_card(p) {
             Some(id) => {
                 let event = self.move_object(id, Zone::Hand);
                 if event.moved && event.destination == Zone::Hand {
@@ -6622,12 +6655,8 @@ impl Game {
     fn atomic_zone_cost_checkpoint(&self, failure_pc: Option<usize>) -> entries::AtomicCostCheckpoint {
         assert!(self.state.entry_batch.is_none());
         assert!(self.state.resolving.is_none() || failure_pc.is_some(), "resolving atomic cost requires an unpaid continuation");
-        let mut before = self.state.clone();
-        let old_zone_bytes = before.zone_rules.as_ref().map_or(0, |rules| rules.bytes());
-        if let Some(rules) = before.zone_rules.as_mut() { rules.clear_replay(); }
-        let new_zone_bytes = before.zone_rules.as_ref().map_or(0, |rules| rules.bytes());
-        let bytes = self.state_bytes() - old_zone_bytes + new_zone_bytes;
-        entries::AtomicCostCheckpoint { before: Box::new(before), bytes, failure_pc, components: Vec::new() }
+        entries::AtomicCostCheckpoint { before: Box::new(self.state.clone()), bytes: self.state_bytes(),
+            failure_pc, components: Vec::new() }
     }
 
     /// Stage all nonprevented events as one owned transaction; prevention is
@@ -6646,6 +6675,12 @@ impl Game {
             movement.zone_plan = Some(plan);
             Some(movement)
         }).collect();
+        #[cfg(test)]
+        if let Some(reference) = zone_replacements::TEST_INVALIDATE_STAGED_COST.with(|target| target.get()) {
+            if self.object_ref(reference.card) == reference {
+                self.state.objects[reference.card as usize].generation += 1;
+            }
+        }
         if !moves.is_empty() { self.stage_atomic_cost_entries(moves, checkpoint); }
     }
 
@@ -7000,8 +7035,9 @@ impl Game {
             returned_hand: returned_hand_observers,
         } = observers;
         let id = before.id;
+        let was_card = self.state.objects[id as usize].is_card();
         if plan.prevented {
-            return ZoneChange { cast_event: None, entry_counter_player: None, graveyard_observers: None,
+            return ZoneChange { was_card, cast_event: None, entry_counter_player: None, graveyard_observers: None,
                 returned_hand_observers: None, was_cast: false, gift: None, after: before.reference,
                 destination: before.zone, before, moved: false, sacrificed_by: None,
                 offspring_paid: false, kicked: false, bargained: false, x: 0, evidence_collected: false };
@@ -7032,6 +7068,7 @@ impl Game {
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
+                was_card,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -7053,6 +7090,7 @@ impl Game {
         if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
+                was_card,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -7183,7 +7221,7 @@ impl Game {
             self.forget_graveyard_cast_permission(before.reference);
         }
         if (before.zone == Zone::Library
-            && self.state.players[before.owner.index()].library.last() == Some(&id))
+            && self.top_library_card(before.owner) == Some(id))
             || destination == Zone::Library
         {
             self.library_top_changed(before.owner);
@@ -7517,6 +7555,7 @@ impl Game {
             self.queue_trigger(&source, usize::from(ability));
         }
         ZoneChange {
+            was_card,
             cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
             graveyard_observers,
@@ -8637,7 +8676,7 @@ impl Game {
                 poison_counters: s.players[i].poison_counters,
                 mana: s.players[i].mana,
                 combat_red_mana: s.players[i].combat_red_mana,
-                library_count: s.players[i].library.len(),
+                library_count: s.players[i].library.iter().filter(|&&id| s.objects[id as usize].is_card()).count(),
                 hand_count: self.hand_count(if i == 0 { Player::P0 } else { Player::P1 }),
             }),
             milled_choice: self.milled_selection_view(viewer),
@@ -8946,6 +8985,7 @@ impl Game {
                         cards: s.players[choice_player.index()]
                             .library
                             .iter()
+                            .filter(|&&id| s.objects[id as usize].is_card())
                             .map(|&id| query.object_view(id))
                             .collect(),
                         selected: choice.selected.clone(),

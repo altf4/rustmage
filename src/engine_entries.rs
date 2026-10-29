@@ -169,7 +169,7 @@ impl EntryMove {
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
-            + self.atomic_cost.as_ref().map_or(0, |a| a.bytes + a.components.len() * std::mem::size_of::<(ObjectRef, Zone)>())
+            + self.atomic_cost.as_ref().map_or(0, |a| std::mem::size_of::<AtomicCostCheckpoint>() + a.bytes + a.components.len() * std::mem::size_of::<(ObjectRef, Zone)>())
             + self.temporary_copy.as_ref().map_or(0, |item| {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             })
@@ -1021,9 +1021,7 @@ impl Game {
             if self.state.players[player.index()].library.len() > 1 {
                 self.forget_library_top(player);
             }
-            self.state
-                .rng
-                .shuffle(&mut self.state.players[player.index()].library);
+            self.shuffle_library_cards(player);
         }
     }
     /// Settle transactions until an actual player choice blocks. Call at the outer
@@ -1155,7 +1153,9 @@ impl Game {
                         object.generation != reference.generation || object.zone != zone)
                 });
                 if invalid {
-                    self.state = *checkpoint.before;
+                    let mut before = *checkpoint.before;
+                    zone_replacements::transfer_live_replay(&mut self.state.zone_rules, &mut before.zone_rules);
+                    self.state = before;
                     if let Some(pc) = checkpoint.failure_pc {
                         self.state.resolving.as_mut().expect("atomic cost failure continuation").pc = pc;
                     }

@@ -89,7 +89,7 @@ impl Game {
         self.state.objects.get(r.card as usize).is_some_and(|o| {
             o.owner == p
                 && o.zone == Zone::Graveyard
-                && !o.is_token()
+                && o.is_card()
                 && self.object_ref(r.card) == r
         })
     }
@@ -100,7 +100,7 @@ impl Game {
             .state
             .objects
             .iter()
-            .filter(|o| o.owner == p && o.zone == Zone::Graveyard && !o.is_token())
+            .filter(|o| o.owner == p && o.zone == Zone::Graveyard && o.is_card())
         {
             total += u128::from(o.card.fixed_mana_value());
             if total >= u128::from(n) {
@@ -268,7 +268,7 @@ impl Game {
     }
     pub(super) fn reopen_evidence_after_mana_sacrifice(&mut self, source: CardId) {
         let o = &self.state.objects[source as usize];
-        if o.zone != Zone::Graveyard || o.is_token() {
+        if o.zone != Zone::Graveyard || !o.is_card() {
             return;
         }
         if let Some(a) = &mut self.state.announcing

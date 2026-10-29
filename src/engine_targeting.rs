@@ -1203,7 +1203,7 @@ impl Game {
             }
             TargetRule::GraveCreatureEnteredThisTurn => {
                 return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o|
-                    o.zone == Zone::Graveyard && !o.is_token() && o.card.is_creature()
+                    o.zone == Zone::Graveyard && o.is_card() && o.card.is_creature()
                     && self.graveyard_entry_this_turn(self.object_ref(id))));
             }
             TargetRule::GraveCreatureSourcePower { maximum } => {
@@ -1212,6 +1212,7 @@ impl Game {
                 };
                 return self.state.objects.get(id as usize).is_some_and(|o| {
                     o.zone == Zone::Graveyard
+                        && o.is_card()
                         && o.owner == controller
                         && o.card.is_creature()
                         && maximum.is_some_and(|max| i128::from(o.card.fixed_mana_value()) <= max)
@@ -1226,6 +1227,7 @@ impl Game {
                 };
                 return self.state.objects.get(id as usize).is_some_and(|object| {
                     object.zone == Zone::Graveyard
+                        && object.is_card()
                         && object.owner == controller
                         && object.card.is_creature()
                         && !object.card.has_subtype(excluded_subtype)
@@ -1286,7 +1288,7 @@ impl Game {
                     TargetPredicate::OwnedByController => object.owner == controller,
                     TargetPredicate::EnteredGraveyardThisTurn => {
                         object.zone == Zone::Graveyard
-                            && !object.is_token()
+                            && object.is_card()
                             && self.graveyard_entry_this_turn(self.object_ref(id))
                     }
                     TargetPredicate::EnteredBattlefieldThisTurn => {
@@ -1460,7 +1462,7 @@ impl Game {
                             TargetZone::Graveyard => Zone::Graveyard,
                         };
                         obj.zone == expected
-                            && (expected != Zone::Graveyard || !obj.is_token())
+                            && (expected != Zone::Graveyard || obj.is_card())
                             && (kinds == 0 || self.current_kinds(id) & u16::from(kinds) != 0)
                             && (relation == -1
                                 || (if expected == Zone::Battlefield {

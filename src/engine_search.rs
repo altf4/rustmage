@@ -141,8 +141,8 @@ impl Game {
             if self.state.players[player.index()].library.len() > 1 {
                 self.forget_library_top(player);
             }
+            self.shuffle_library_cards(player);
             let library = &mut self.state.players[player.index()].library;
-            self.state.rng.shuffle(library);
             for &id in &choice.selected {
                 let position = library.iter().position(|&card| card == id).unwrap();
                 library.remove(position);

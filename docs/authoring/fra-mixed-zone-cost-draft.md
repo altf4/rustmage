@@ -41,3 +41,12 @@ an instant/sorcery card into the battlefield, so it does not establish a
 rules-reachable entry event. The separate Watery Grave staged-entry fixture
 exercises a real entry-life choice with a constructed replacement plan, not a
 real supported replacement provider.
+
+The copy lifecycle card-only consumer changes through 239f8bb5 have now been
+reconciled, excluding the separately unresolved battlefield-copy classification.
+They are unbuilt and require independent integration review. Replay rollback
+now transfers the currently live zone replay into the restored checkpoint: this
+retains it for a synchronous failure inside the replaying action and discards it
+when a later suspended choice fails after the original replay has been consumed.
+Both timing paths have synthetic regression fixtures; their reachability through
+supported replacement providers has not been established.

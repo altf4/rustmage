@@ -143,7 +143,7 @@ impl Game {
                 && choice.selected[player.index()].len() < usize::from(maximum);
         }
         if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
-            return o.owner == player
+            return o.owner == player && o.is_card()
                 && self.object_ref(object.card) == object
                 && matches!(o.zone, Zone::Hand | Zone::Graveyard)
                 && o.card.is_land()
@@ -153,7 +153,7 @@ impl Game {
         if let EffectChoiceKind::SacrificeOrDiscard { nonland } = choice.kind
             && o.zone == Zone::Hand
         {
-            return o.owner == player
+            return o.owner == player && o.is_card()
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object)
                 && (!nonland || !o.card.is_land());
@@ -183,7 +183,7 @@ impl Game {
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) {
-            return o.zone == Zone::Hand
+            return o.zone == Zone::Hand && o.is_card()
                 && match choice.kind {
                     // Hand costs use the same typed characteristics and filters as
                     // announced discard costs, including artifact lands in hand.
@@ -269,7 +269,7 @@ impl Game {
                 .iter()
                 .filter(|o| {
                     if kind == EffectChoiceKind::Discard {
-                        o.zone == Zone::Hand && o.owner == player
+                        o.zone == Zone::Hand && o.owner == player && o.is_card()
                     } else {
                         o.zone == Zone::Battlefield && o.controller == player
                     }
@@ -298,7 +298,7 @@ impl Game {
                 .objects
                 .iter()
                 .enumerate()
-                .filter(|(_, o)| o.zone == Zone::Hand && participants[o.owner.index()])
+                .filter(|(_, o)| o.zone == Zone::Hand && o.is_card() && participants[o.owner.index()])
                 .map(|(id, _)| id as CardId)
                 .collect();
             self.discard_batch_with_after(
@@ -389,7 +389,7 @@ impl Game {
         o.zone == Zone::Hand
             && o.owner == player
             && self.object_ref(object.card) == object
-            && !o.is_token()
+            && o.is_card()
             && (o.card.aura().is_none()
                 || self.state.objects.iter().enumerate().any(|(id, _)| {
                     self.aura_can_enchant(o.card, player, self.object_ref(id as CardId))

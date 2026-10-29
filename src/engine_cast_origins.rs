@@ -112,10 +112,10 @@ impl Game {
         let object = &self.state.objects[card as usize];
         object.owner == player
             && object.card.is_land()
-            && !object.is_token()
+            && object.is_card()
             && land_origin_available(self, player, object.zone)
             && (object.zone != Zone::Library
-                || self.state.players[player.index()].library.last() == Some(&card))
+                || self.top_library_card(player) == Some(card))
     }
     pub(super) fn can_cast_library_top(&self, player: Player, card: CardId) -> bool {
         self.can_cast_library_face(player, card, self.state.objects[card as usize].card)
@@ -130,7 +130,7 @@ impl Game {
         object.owner == player
             && object.zone == Zone::Library
             && definition.is_creature()
-            && self.state.players[player.index()].library.last() == Some(&card)
+            && self.top_library_card(player) == Some(card)
             && has_fragment(self, player, |f| {
                 matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
             })
@@ -145,10 +145,7 @@ impl Game {
             return None;
         }
         if self.shares_information(viewer, owner) && self.can_look_library_top(owner) {
-            self.state.players[owner.index()]
-                .library
-                .last()
-                .map(|&id| self.object_ref(id))
+            self.top_library_card(owner).map(|id| self.object_ref(id))
         } else {
             self.public_library_top(owner)
         }
@@ -187,7 +184,7 @@ impl Game {
             }
             let permission = self.object_ref(id);
             for (i, object) in self.state.objects.iter().enumerate() {
-                if object.zone != Zone::Graveyard || object.owner != actor || object.is_token() {
+                if object.zone != Zone::Graveyard || object.owner != actor || !object.is_card() {
                     continue;
                 }
                 let card = i as CardId;
@@ -398,7 +395,7 @@ impl Game {
             .iter()
             .enumerate()
             .filter(|(_, o)| {
-                o.owner == item.controller && o.zone == Zone::Graveyard && !o.is_token()
+                o.owner == item.controller && o.zone == Zone::Graveyard && o.is_card()
             })
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
@@ -457,7 +454,7 @@ impl Game {
     pub(super) fn exile_each_top_cast_free(&mut self, player: Player) {
         let cards: Vec<_> = [self.state.active, self.state.active.other()]
             .into_iter()
-            .filter_map(|p| self.state.players[p.index()].library.last().copied())
+            .filter_map(|p| self.top_library_card(p))
             .collect();
         let events = self.move_objects_raw(&cards, Zone::Exile);
         let remaining = events
@@ -684,7 +681,7 @@ impl Game {
             return false;
         };
         let ids = exile::top_library_cards(
-            &self.state.players[owner.index()].library,
+            self, owner,
             u128::from(amount),
         );
         let events = self.move_objects_raw(&ids, Zone::Exile);

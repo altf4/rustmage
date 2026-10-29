@@ -65,7 +65,7 @@ impl Game {
         let Some((library, graveyard)) = s.zones else {
             return false;
         };
-        !o.is_token()
+        o.is_card()
             && o.owner == s.player
             && ((library && o.zone == Zone::Library) || (graveyard && o.zone == Zone::Graveyard))
             && s.filter.matches(o.card)
@@ -178,7 +178,7 @@ impl Game {
                     .iter()
                     .enumerate()
                     .filter(|(_, o)| {
-                        !o.is_token()
+                        o.is_card()
                             && o.owner == s.player
                             && ((library && o.zone == Zone::Library)
                                 || (graveyard && o.zone == Zone::Graveyard))

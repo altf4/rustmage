@@ -149,7 +149,7 @@ impl Game {
         {
             rows.remove(at);
         }
-        if destination == Zone::Graveyard && !before.is_token() && !before.card.is_emblem() {
+        if destination == Zone::Graveyard && self.state.objects[before.id as usize].is_card() {
             let rows = self
                 .state
                 .graveyard_entries

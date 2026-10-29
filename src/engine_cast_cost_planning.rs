@@ -286,7 +286,9 @@ impl FundingState<'_> {
                     p.zone == Zone::Battlefield
                         && self.printed_abilities_available(id)
                         && match p.card.zone_replacement() {
-                            Some(crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens) => true,
+                            Some(crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens) => {
+                                o.is_card() || o.is_token()
+                            },
                             Some(
                                 crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath {
                                     ..
@@ -297,7 +299,7 @@ impl FundingState<'_> {
                                     && p.controller != o.controller
                             }
                             Some(crate::cards::ZoneReplacementRule::ExileInstantSorceryCards) => {
-                                CharacteristicWorld::kinds(self, r.card) & 12 != 0 && !o.is_token()
+                                CharacteristicWorld::kinds(self, r.card) & 12 != 0 && o.is_card()
                             }
                             _ => false,
                         }

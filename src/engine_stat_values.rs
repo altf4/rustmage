@@ -32,7 +32,7 @@ impl Game {
                     card: id,
                     generation: o.generation,
                 } != source)
-            && (!filter.cards_only || !o.is_token())
+            && (!filter.cards_only || o.is_card())
             && (filter.kind == 0 || kinds(id, o) & filter.kind != 0)
             && kinds(id, o) & filter.exclude == 0
             && filter.subtype.is_none_or(|s| subtypes(id).has(o.card, s))
@@ -175,7 +175,7 @@ impl Game {
                 i128::from(mask.count_ones())
             }
             StatValue::ControllerHandSize => objects()
-                .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand)
+                .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand && o.is_card())
                 .count() as i128,
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
@@ -393,7 +393,7 @@ impl Game {
                     .unwrap_or(0),
             ),
             StatValue::GraveyardCardTypes => objects()
-                .filter(|(_, o)| o.zone == Zone::Graveyard && !o.is_token())
+                .filter(|(_, o)| o.zone == Zone::Graveyard && o.is_card())
                 .fold(0u16, |mask, (_, o)| mask | o.card.kind_mask())
                 .count_ones() as i128,
             StatValue::GroupsOf { value, size } => {

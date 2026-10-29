@@ -101,7 +101,7 @@ fn current_rows<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> Vec<R
         let card = world.object(id);
         if card.zone != Zone::Graveyard
             || card.owner != controller
-            || card.is_token()
+            || !card.is_card()
             || !world.subtypes(id).has(card.card, subtype)
         {
             continue;

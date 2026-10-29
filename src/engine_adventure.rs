@@ -124,9 +124,7 @@ impl Game {
         let event = self.move_adventure_spell(item, Zone::Library);
         if event.moved && event.destination == Zone::Library {
             self.forget_library_top(owner);
-            self.state
-                .rng
-                .shuffle(&mut self.state.players[owner.index()].library);
+            self.shuffle_library_cards(owner);
         }
     }
     /// Real stack and announcement packets carry the chosen immutable definition.

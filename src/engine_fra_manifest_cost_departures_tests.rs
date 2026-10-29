@@ -66,3 +66,36 @@ fn projected_cost_departure_restores_manifest_physical_face_even_when_copied() {
         }
     }
 }
+
+#[test]
+fn projected_graveyard_replacement_distinguishes_transient_copies_from_cards() {
+    for player in [Player::P0, Player::P1] {
+        for copied in [false, true] {
+            let mut game = setup(player);
+            named(&mut game, player, "Rest in Peace", Zone::Battlefield);
+            let id = named(&mut game, player, "Shock", Zone::Exile);
+            if copied {
+                game.state.objects[id as usize].copy_kind = CopyKind::Spell;
+            }
+            let reference = game.object_ref(id);
+            let goal = FundingGoal {
+                actor: player,
+                required: [0; 6],
+                generic: 0,
+                reserve: None,
+                source: None,
+            };
+            let mut projected = FundingState::from_game(&game, &goal);
+            projected.prepare_entry_projection();
+            let mut destination = None;
+            projected.cost_departures(&[reference], Zone::Graveyard, &mut |next| {
+                destination = Some(next.object(id).zone);
+                true
+            });
+            drop(projected);
+            let actual = game.move_object(id, Zone::Graveyard);
+            assert_eq!(destination, Some(actual.destination));
+            assert_eq!(actual.destination, if copied { Zone::Graveyard } else { Zone::Exile });
+        }
+    }
+}

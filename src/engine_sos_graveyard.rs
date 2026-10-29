@@ -32,8 +32,7 @@ impl Game {
                     && e.before.zone == Zone::Graveyard
                     && e.destination != Zone::Graveyard
                     && e.before.owner.index() == seat
-                    && !e.before.is_token()
-                    && !e.before.card.is_emblem()
+                    && e.was_card
             })
         });
         if !departed.iter().any(|left| *left) {
@@ -57,8 +56,7 @@ impl Game {
                                 && event.before.zone == Zone::Graveyard
                                 && event.destination != Zone::Graveyard
                                 && event.before.owner == source.controller
-                                && !event.before.is_token()
-                                && !event.before.card.is_emblem()
+                                && event.was_card
                                 && event.before.is_creature()
                         }) {
                             // Preserve the original pre-event source and its multiplier
@@ -83,8 +81,7 @@ impl Game {
                     && e.destination == Zone::Graveyard
                     && e.before.zone != Zone::Graveyard
                     && e.before.owner.index() == seat
-                    && !e.before.is_token()
-                    && !e.before.card.is_emblem()
+                    && e.was_card
                     && self.object_ref(e.after.card) == e.after
                     && self.state.objects[e.after.card as usize].zone == Zone::Graveyard
                     && self.current_kinds(e.after.card) & 1 != 0

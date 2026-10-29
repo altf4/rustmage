@@ -38,8 +38,7 @@ impl Game {
                             | Zone::Stack
                             | Zone::Command
                     )
-                    && !card.is_token()
-                    && !card.card.is_emblem()
+                    && card.is_card()
             })
     }
     fn milled_matches(&self, player: Player, filter: MilledFilter, object: ObjectRef) -> bool {

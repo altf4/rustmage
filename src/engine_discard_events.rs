@@ -65,6 +65,10 @@ impl Game {
         cause: Option<Player>,
         after: Option<DiscardAfter>,
     ) {
+        // Discard moves cards from hand; transient copies in the hand are not
+        // eligible even when an effect supplies a broad object list.
+        let cards: Vec<_> = cards.iter().copied()
+            .filter(|&id| self.state.objects[id as usize].is_card()).collect();
         if cards.is_empty() {
             self.finish_discard_after(after, [0; 2], &[]);
             return;
@@ -118,7 +122,7 @@ impl Game {
             self.stage_discard_entries(moves, context);
             return;
         }
-        let events = self.move_objects_raw(cards, Zone::Graveyard);
+        let events = self.move_objects_raw(&cards, Zone::Graveyard);
         self.finish_discard_events(&events, context);
     }
     pub(super) fn finish_discard_events(&mut self, events: &[ZoneChange], context: DiscardContext) {
@@ -278,7 +282,7 @@ impl Game {
                             && event.destination == Zone::Graveyard
                             && self.object_ref(event.after.card) == event.after
                             && self.state.objects[event.after.card as usize].zone == Zone::Graveyard
-                            && !event.before.is_token()
+                            && event.was_card
                     })
                     .map(|event| {
                         let mut movement =
