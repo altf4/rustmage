@@ -1991,6 +1991,21 @@ impl<'g> FundingState<'g> {
             if object.zone != Zone::Battlefield || object.controller != self.actor {
                 continue;
             }
+            // Source-linked grants are independent of the exiled source's
+            // current abilities. Count every retained row, even if presently
+            // blanked, so this bound cannot prune a later restored grant.
+            if !object.tapped {
+                let grants = self
+                    .roles()
+                    .into_iter()
+                    .flat_map(|roles| &roles.source_linked_effects)
+                    .filter(|row| {
+                        row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+                            && row.recipient == self.reference(resource.id)
+                    })
+                    .count();
+                total = total.saturating_add((grants as u128).saturating_mul(2));
+            }
             if !object.tapped {
                 // Overcount all possible tap sources; subtype may change during funding.
                 total = total.saturating_add(u128::from(
@@ -2084,6 +2099,18 @@ impl<'g> FundingState<'g> {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != self.actor {
                 continue;
+            }
+            if !object.tapped {
+                let grants = self
+                    .roles()
+                    .into_iter()
+                    .flat_map(|roles| &roles.source_linked_effects)
+                    .filter(|row| {
+                        row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+                            && row.recipient == self.reference(resource.id)
+                    })
+                    .count();
+                upper[5] = upper[5].saturating_add((grants as u128).saturating_mul(2));
             }
             if !object.tapped {
                 upper[3] = upper[3].saturating_add(u128::from(

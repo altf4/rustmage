@@ -1,5 +1,45 @@
 use super::*;
 
+fn emrakul_copy_ability_in_resolution(g: &mut Game, copier: &SpellView) {
+    assert!(g.state.resolving.is_none());
+    g.state.resolving = Some(Resolution {
+        chosen_creature_type: None,
+        target_counter_removal: None,
+        linked_copy: None,
+        cascade: None,
+        target_card_facts: None,
+        immediate_blink_return: None,
+        connive: None,
+        explore: None,
+        evidence: None,
+        item: copier.clone(),
+        mana_payment: None,
+        forage: None,
+        target_library: None,
+        program: &[],
+        pc: 0,
+        target_group: 0,
+        moved_count: None,
+        remembered_draws: None,
+        sacrificed_power: None,
+        discard_after: None,
+        optional_wheel: None,
+        proliferate: None,
+        discards: [0; 2],
+        selected_discards: [Vec::new(), Vec::new()],
+        milled: Vec::new(),
+        milled_selection: None,
+        library: None,
+        selection: None,
+        return_attachment: None,
+        search: None,
+        search_result: None,
+        optional_searches: None,
+        choice: None,
+    });
+    assert!(g.copy_target_ability(copier, 0));
+}
+
 #[test]
 fn emrakul_cast_trigger_untaps_controlled_lands_even_after_spell_is_countered() {
     for player in [Player::P0, Player::P1] {
@@ -327,7 +367,7 @@ fn copied_emrakul_hand_ability_grants_each_controller_independent_permission() {
             target: Target::Stack(original.id),
             object: None,
         }];
-        g.copy_target_ability(&copier, 0);
+        emrakul_copy_ability_in_resolution(&mut g, &copier);
         if g.legal_actions().contains(&Action::FinishStackTargets) {
             act(&mut g, Action::FinishStackTargets);
         }
@@ -521,6 +561,7 @@ fn sacrifice_prohibition_blocks_real_mana_actions_and_funding() {
     let _reset = Reset;
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
+        g.state.players[player.index()].mana = [0; 6];
         let treasure = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         g.state.objects[treasure as usize].card = Card::test_index(5437);
         g.state.objects[treasure as usize].summoning_sick = false;
@@ -689,6 +730,7 @@ fn replacement_prevented_sacrifice_mana_cost_is_paid_and_replays() {
     let _reset = Reset;
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
+        g.state.players[player.index()].mana = [0; 6];
         let treasure = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         g.state.objects[treasure as usize].card = Card::test_index(5437);
         g.state.objects[treasure as usize].summoning_sick = false;
