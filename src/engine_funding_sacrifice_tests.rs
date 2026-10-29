@@ -1612,3 +1612,62 @@ fn stable_control_records_keep_large_impossible_funding_search_bounded() {
         assert!(!world.reachable(&goal, &mut HashSet::new()));
     }
 }
+
+#[test]
+fn lute_spell_mana_does_not_fund_emrakul_hand_activation() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let lute = named(&mut g, player, "Resonating Lute", Zone::Battlefield);
+        let source = named(&mut g, player, "Bear Cub", Zone::Hand);
+        let emrakul = Card::test_index(1324);
+        g.state.objects[source as usize].card = emrakul;
+        let names = [
+            "Escape Tunnel",
+            "Hobbit Hole",
+            "Elven Passage",
+            "Vibrant Cityscape",
+            "Evolving Wilds",
+            "Terramorphic Expanse",
+            "Fabled Passage",
+        ];
+        let mut fetchlands = Vec::new();
+        for name in names {
+            for _ in 0..4 {
+                fetchlands.push(named(&mut g, player, name, Zone::Battlefield));
+            }
+        }
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+        let goal = FundingGoal {
+            actor: player,
+            required: [0; 6],
+            generic: 3,
+            reserve: None,
+            source: Some((g.object_ref(source), 0, Counters::default(), emrakul, None)),
+        };
+        let world = FundingState::from_game(&g, &goal);
+        assert!(world.fixed_spell_only_activation_cannot_pay(&goal));
+        let before = g.snapshot();
+        assert!(!g.can_fund(goal.clone()));
+        assert_eq!(g.snapshot(), before);
+        let land = fetchlands[0];
+        let grantor = g.object_ref(lute);
+        checked(
+            &mut g,
+            Action::TapGrantedMana {
+                card: land,
+                grantor,
+                production: [0, 2, 0, 0, 0, 0],
+            },
+        );
+        let with_restricted = g.snapshot();
+        assert!(!g.can_fund(goal.clone()));
+        assert_eq!(g.snapshot(), with_restricted);
+        g.restore(&before).unwrap();
+        assert!(!g.can_fund(goal.clone()));
+        let forest = named(&mut g, player, "Forest", Zone::Battlefield);
+        let world = FundingState::from_game(&g, &goal);
+        assert!(!world.fixed_spell_only_activation_cannot_pay(&goal));
+        assert!(g.can_fund(goal));
+        assert!(!g.object_view(forest).tapped);
+    }
+}

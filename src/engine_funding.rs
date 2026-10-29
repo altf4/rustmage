@@ -2268,7 +2268,96 @@ impl<'g> FundingState<'g> {
         }
         upper
     }
+    /// A fixed battlefield whose only potential mana grants are spell-only
+    /// cannot improve an activated ability payment by tapping those sources.
+    /// This deliberately conservative shortcut falls back to the normal search
+    /// whenever an ability, type, controller, copy, or tap-triggered mana may
+    /// change the available sources during payment.
+    fn fixed_spell_only_activation_cannot_pay(&self, goal: &FundingGoal) -> bool {
+        use crate::cards::{ManaRestriction, StaticAbilityFragment};
+        if !matches!(self.purpose, mana_lots::Purpose::Activation(_))
+            || goal.source.is_none()
+            || goal.reserve.is_some()
+            || self.continuation.is_some()
+            || self.cast_costs.is_some()
+            || self.entry_projection.is_some()
+            || self.cost_group.is_some()
+            || !self.sacrifice_group.is_empty()
+            || self.required_face_up.is_some()
+            || self.has_contributions()
+            || !self.game.state.exile_links.is_empty()
+            || self.game.state.borrowed_links.is_some()
+            || self.game.state.graveyard_borrowing.is_some()
+            || self.game.state.borrowed_slots.is_some()
+            || self.game.state.activation_observers.is_some()
+            || self.game.state.temporary_abilities.is_some()
+            || self.game.state.self_granted_abilities.is_some()
+            || self.game.state.temporary_controls.is_some()
+            || self.game.state.controls.is_some()
+            || self.game.state.temporary_copies.is_some()
+            || self.copy_recipes.is_some()
+            || self.game.state.crew.is_some()
+            || !self.game.state.attachment_sources.is_empty()
+            || !self.game.state.tap_sources.is_empty()
+            || self.game.state.players[self.actor.index()].mountain_mana_bonus != 0
+            || self.roles().is_some_and(|r| {
+                !r.source_linked_effects.is_empty()
+                    || !r.resolved_ability_modifications.is_empty()
+                    || !r.ability_removal_sources.is_empty()
+                    || !r.characteristic_sources.is_empty()
+                    || !r.basic_land_types.is_empty()
+                    || !r.animations.is_empty()
+                    || !r.live_static.is_empty()
+            })
+        {
+            return false;
+        }
+        for (id, object) in self.game.state.objects.iter().enumerate() {
+            if object.zone != Zone::Battlefield {
+                continue;
+            }
+            let object = self.object(id as CardId);
+            if object.card.borrows_activations()
+                || object
+                    .card
+                    .activations()
+                    .iter()
+                    .any(|a| a.mana_production().is_some())
+            {
+                return false;
+            }
+            if object.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    !matches!(fragment, StaticAbilityFragment::LandMana {
+                        production: ManaProduction::Tagged { quality, .. }, ..
+                    } if matches!(quality.restriction,
+                        ManaRestriction::ArtifactSpell | ManaRestriction::InstantSorcery
+                        | ManaRestriction::NoncreatureSpell | ManaRestriction::PlaneswalkerSpell
+                        | ManaRestriction::SpellSubtype(_)))
+                })
+            }) {
+                return false;
+            }
+            if object.controller == goal.actor
+                && !object.tapped
+                && ability_world::CharacteristicWorld::intrinsic_mana_color(self, id as CardId)
+                    .is_some()
+            {
+                return false;
+            }
+        }
+        let purpose = self.payment_purpose(goal);
+        let adjusted = cast_origins::payment_goal(self, goal, purpose);
+        !payable(
+            mana_lots::available(self.mana, &self.lots, purpose),
+            adjusted.required,
+            adjusted.generic,
+        )
+    }
     fn optimistic(&self, goal: &FundingGoal) -> bool {
+        if self.fixed_spell_only_activation_cannot_pay(goal) {
+            return false;
+        }
         // Immediate linked returns may introduce new sources, untap them, or
         // restore an ability provider. Current-resource bounds are inapplicable.
         if !self.game.state.exile_links.is_empty() {
