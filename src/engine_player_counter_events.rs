@@ -44,6 +44,10 @@ impl PlayerCounterEvents {
         id
     }
     pub fn events(&self) -> &[PlayerCounterEvent] { &self.events }
+    /// Recompute APNAP among unprocessed descendants after a redirection.
+    pub fn prioritize_active_from(&mut self, first: usize, active: Player) {
+        self.events[first..].sort_by_key(|event| event.player != active);
+    }
     pub fn event_mut(&mut self, index: usize) -> &mut PlayerCounterEvent { &mut self.events[index] }
     pub fn totals(&self) -> [[u64; 5]; 2] {
         let mut totals = [[0u64; 5]; 2];

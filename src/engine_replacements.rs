@@ -107,6 +107,7 @@ pub struct SelfPlayerCounterReplacement {
     pub add: u32,
     pub redirect_player: Option<Player>,
     pub redirect_kind: Option<crate::cards::PlayerCounterKind>,
+    pub split: &'static [crate::cards::PlayerCounterSplit],
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct CounterBatch {
@@ -122,6 +123,24 @@ struct CounterBatch {
     placements: Vec<CounterPlacement>,
     next: usize,
     used: Vec<(ObjectRef, u16)>,
+}
+fn apply_own_player_counter_replacement(batch: &mut CounterBatch, effect: SelfPlayerCounterReplacement, active: Player) {
+    let event = &batch.player_events.events()[batch.next_player];
+    let event_id = event.id;
+    let player = event.player;
+    let kind = event.kind;
+    let amount = event.amount;
+    let scale = |factor: u32, add: u32| amount.checked_mul(u64::from(factor)).and_then(|n| n.checked_add(u64::from(add))).capacity("self counter replacement exhausted");
+    let outcomes: Vec<_> = if effect.split.is_empty() {
+        vec![player_counter_events::CounterDestination { player: effect.redirect_player.unwrap_or(player), kind: effect.redirect_kind.unwrap_or(kind), amount: scale(effect.factor, effect.add) }]
+    } else {
+        effect.split.iter().map(|out| player_counter_events::CounterDestination {
+            player: if out.to_opponent { player.other() } else { player },
+            kind: out.kind.unwrap_or(kind), amount: scale(out.factor, out.add),
+        }).collect()
+    };
+    assert!(batch.player_events.apply_self(event_id, player_counter_events::EffectIdentity { origin_stack_id: effect.origin_stack_id, index: effect.effect }, &outcomes));
+    batch.player_events.prioritize_active_from(batch.next_player, active);
 }
 fn current_player_counter(batch: &CounterBatch, active: Player) -> Option<(Player, crate::cards::PlayerCounterKind)> {
     let event = batch.player_events.events().get(batch.next_player)?;
@@ -1938,10 +1957,7 @@ impl Game {
                             let own: Vec<_> = batch.self_effects.iter().filter(|effect| amount != 0 && effect.player == player && effect.kind == kind && !batch.player_events.events()[batch.next_player].applied_self.contains(&player_counter_events::EffectIdentity { origin_stack_id: effect.origin_stack_id, index: effect.effect })).copied().collect();
                             match own.as_slice() {
                                 [only] => {
-                                    let event_id = batch.player_events.events()[batch.next_player].id;
-                                    let changed = amount.checked_mul(u64::from(only.factor)).and_then(|n| n.checked_add(u64::from(only.add))).capacity("self counter replacement exhausted");
-                                    let outcome = player_counter_events::CounterDestination { player: only.redirect_player.unwrap_or(player), kind: only.redirect_kind.unwrap_or(kind), amount: changed };
-                                    assert!(batch.player_events.apply_self(event_id, player_counter_events::EffectIdentity { origin_stack_id: only.origin_stack_id, index: only.effect }, &[outcome]));
+                                    apply_own_player_counter_replacement(batch, *only, self.state.active);
                                     continue;
                                 }
                                 [] => (),
@@ -2307,11 +2323,7 @@ impl Game {
         let Event::Counters(batch) = state.active.as_mut().unwrap() else { unreachable!() };
         let (player, kind) = current_player_counter(batch, self.state.active).unwrap();
         let selected = batch.self_effects.iter().find(|e| e.effect == effect && e.player == player && e.kind == kind && !batch.player_events.events()[batch.next_player].applied_self.contains(&player_counter_events::EffectIdentity { origin_stack_id: e.origin_stack_id, index: effect })).copied().unwrap();
-        let amount = batch.player_events.events()[batch.next_player].amount;
-        let event_id = batch.player_events.events()[batch.next_player].id;
-        let changed = amount.checked_mul(u64::from(selected.factor)).and_then(|n| n.checked_add(u64::from(selected.add))).capacity("self counter replacement exhausted");
-        let outcome = player_counter_events::CounterDestination { player: selected.redirect_player.unwrap_or(player), kind: selected.redirect_kind.unwrap_or(kind), amount: changed };
-        assert!(batch.player_events.apply_self(event_id, player_counter_events::EffectIdentity { origin_stack_id: selected.origin_stack_id, index: effect }, &[outcome]));
+        apply_own_player_counter_replacement(batch, selected, self.state.active);
         self.state.replacements = Some(state);
         self.advance_replacements(true);
     }

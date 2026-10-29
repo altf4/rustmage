@@ -2678,6 +2678,15 @@ pub(crate) enum ReplacementSpec {
     AddArtifactToken(Card),
 }
 
+/// One descendant event produced by a split player-counter replacement.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerCounterSplit {
+    pub to_opponent: bool,
+    pub kind: Option<PlayerCounterKind>,
+    pub factor: u32,
+    pub add: u32,
+}
+
 /// One typed same-effect counter replacement. Redirects are relative to each
 /// affected player; absence retains the original player or counter kind.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2686,6 +2695,7 @@ pub(crate) struct SelfPlayerCounterTemplate {
     pub add: u32,
     pub redirect_to_opponent: bool,
     pub redirect_kind: Option<PlayerCounterKind>,
+    pub split: &'static [PlayerCounterSplit],
 }
 
 /// Player counters currently represented by the game state.

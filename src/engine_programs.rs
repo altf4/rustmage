@@ -3571,7 +3571,7 @@ impl Game {
                                 origin_stack_id: item.id, effect: u16::try_from(index).expect("self replacement index"),
                                 player, kind, factor: effect.factor, add: effect.add,
                                 redirect_player: effect.redirect_to_opponent.then(|| player.other()),
-                                redirect_kind: effect.redirect_kind,
+                                redirect_kind: effect.redirect_kind, split: effect.split,
                             });
                         }
                     }
