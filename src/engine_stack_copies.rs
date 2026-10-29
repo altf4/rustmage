@@ -237,12 +237,12 @@ impl Game {
     pub(super) fn capture_copy_cast(&mut self, stack: Option<usize>, first_trigger: usize) {
         let Some(index) = stack else { return };
         let spell = self.state.stack[index].clone();
-        let instant_or_sorcery = crate::cards::CastFilter::InstantSorcery.matches(spell.source_card);
+        let instant_or_sorcery = crate::cards::CastFilter::InstantSorcery.matches(spell.source.expect("object-backed spell or trigger").card);
         self.capture_copy_cast_classified(spell, first_trigger, instant_or_sorcery);
     }
 
     fn capture_copy_cast_classified(&mut self, spell: SpellView, first_trigger: usize, instant_or_sorcery: bool) {
-        if !instant_or_sorcery && !spell.source_card.is_prepared_face() {
+        if !instant_or_sorcery && !spell.source.expect("object-backed spell or trigger").card.is_prepared_face() {
             return;
         }
         let prior = self.state.players[spell.controller.index()].instant_sorcery_cast_this_turn.saturating_sub(1);
@@ -276,12 +276,12 @@ impl Game {
         for mut trigger in delayed.drain(..) {
             if trigger.controller == spell.controller
                 && (!delayed_copy_reads_source_power(&trigger) || {
-                    let power = if self.on_battlefield(trigger.object.card)
-                        && self.object_ref(trigger.object.card) == trigger.object
+                    let power = if self.on_battlefield(trigger.source.expect("object-backed spell or trigger").object.card)
+                        && self.object_ref(trigger.source.expect("object-backed spell or trigger").object.card) == trigger.source.expect("object-backed spell or trigger").object
                     {
-                        self.stats(trigger.object.card).power
+                        self.stats(trigger.source.expect("object-backed spell or trigger").object.card).power
                     } else {
-                        trigger.source_facts.power
+                        trigger.source.expect("object-backed spell or trigger").facts.power
                     };
                     i128::from(spell.mana_value()) <= power
                 })
@@ -325,7 +325,7 @@ impl Game {
         };
         self.record_cast_mana_allocation(card, generation);
         let object = Object {
-            card: template.source_card,
+            card: template.source.expect("object-backed spell or trigger").card,
             copy_kind: CopyKind::Spell,
             owner: controller,
             controller,
@@ -370,13 +370,13 @@ impl Game {
         copy.copy_event = None;
         copy.mana_copy_sources = None;
         copy.cast_event = None;
-        if template.source_card.kind_mask() & (1 | 16 | 32 | 64) != 0 {
+        if template.source.expect("object-backed spell or trigger").card.kind_mask() & (1 | 16 | 32 | 64) != 0 {
             let recipe = template
                 .source_copy_recipe
                 .as_deref()
                 .copied()
-                .unwrap_or_else(|| CopyRecipe::new(template.source_card));
-            self.set_copy_recipe(copy.object, recipe);
+                .unwrap_or_else(|| CopyRecipe::new(template.source.expect("object-backed spell or trigger").card));
+            self.set_copy_recipe(copy.source.expect("object-backed spell or trigger").object, recipe);
             copy.source_copy_recipe = Some(Box::new(recipe));
         }
         // Source keywords are an LKI snapshot, not copied characteristics.
@@ -401,7 +401,7 @@ impl Game {
         else {
             return false;
         };
-        if template.source_card.spell_cannot_be_copied() {
+        if template.source.expect("object-backed spell or trigger").card.spell_cannot_be_copied() {
             return false;
         }
         let mut copy = self.allocate_spell_copy(&template, item.controller);
@@ -410,9 +410,9 @@ impl Game {
                 .source_copy_recipe
                 .as_deref()
                 .copied()
-                .unwrap_or_else(|| CopyRecipe::new(copy.source_card));
+                .unwrap_or_else(|| CopyRecipe::new(copy.source.expect("object-backed spell or trigger").card));
             recipe = recipe.with_exceptions(exceptions);
-            self.set_copy_recipe(copy.object, recipe);
+            self.set_copy_recipe(copy.source.expect("object-backed spell or trigger").object, recipe);
             copy.source_copy_recipe = Some(Box::new(recipe));
             if exceptions.sacrifice_abilities != 0 || exceptions.conditional_sacrifice_abilities != 0 {
                 copy.source_keywords = copy.source_keywords.union(Keywords::HASTE);
@@ -491,7 +491,7 @@ impl Game {
             .find(|s| s.id == event.spell.id)
             .cloned()
             .unwrap_or_else(|| event.spell.clone());
-        if template.source_card.spell_cannot_be_copied() {
+        if template.source.expect("object-backed spell or trigger").card.spell_cannot_be_copied() {
             return false;
         }
         let copy = self.allocate_spell_copy(&template, item.controller);

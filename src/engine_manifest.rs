@@ -1573,7 +1573,7 @@ mod tests {
                 .iter()
                 .any(|row| row.id == id && row.card == physical)
         );
-        assert_ne!(item.object, game.object_ref(id));
+        assert_ne!(item.source.unwrap().object, game.object_ref(id));
     }
 
     #[test]

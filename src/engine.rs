@@ -1240,7 +1240,7 @@ impl SpellView {
             }
             StackKind::ActivatedAbility { ability }
                 if self
-                    .source_card
+                    .source.expect("activated ability has source").card
                     .activations()
                     .get(ability as usize)
                     .is_none() =>
