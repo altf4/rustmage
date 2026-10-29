@@ -730,7 +730,7 @@ fn planned_outside_entry_validates_exact_slot_and_replays() {
     for owner in [Player::P0, Player::P1] {
         let shock = Card::from_name("Shock").unwrap();
         let bear = Card::from_name("Bear Cub").unwrap();
-        let mut g = outside_scenario(owner, vec![shock, bear, shock]);
+        let mut g = outside_scenario(owner, vec![shock, bear, shock, Card::Forest]);
         cast_extrapolate(&mut g, owner);
         act(&mut g, Action::ChooseOutsideCard { index: 2 });
         act(&mut g, Action::ChooseOutsideCard { index: 1 });
@@ -747,7 +747,10 @@ fn planned_outside_entry_validates_exact_slot_and_replays() {
         for _ in 0..2 {
             assert!(g.commit_outside_hand());
             let outside = g.state.outside_game.as_ref().unwrap();
-            assert_eq!(outside.pools[owner.index()], vec![shock, bear]);
+            assert_eq!(
+                outside.pools[owner.index()],
+                vec![shock, bear, Card::Forest]
+            );
             assert_eq!(outside.pool_versions[owner.index()], 1);
             assert!(outside.pending_entry.is_none());
             assert_eq!(
@@ -764,6 +767,20 @@ fn planned_outside_entry_validates_exact_slot_and_replays() {
             );
             g.restore(&planned).unwrap();
         }
+        // Replacing the revealed pair cannot reuse an overlapping selected slot.
+        assert!(g.start_outside_choice(owner));
+        g.choose_outside_card(outside_choices::Selection::Pool(2));
+        g.choose_outside_card(outside_choices::Selection::Pool(3));
+        let overlapping = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), overlapping);
+        g.restore(&planned).unwrap();
+        // Even if the pair IDs match, changed unselected revealed facts reject.
+        g.state.outside_game.as_mut().unwrap().pools[owner.index()][1] = Card::Forest;
+        let changed_other = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), changed_other);
+        g.restore(&planned).unwrap();
         // A changed pool generation invalidates the original slot even if an
         // equal-named duplicate occupies the same numeric index.
         g.state.outside_game.as_mut().unwrap().pool_versions[owner.index()] += 1;

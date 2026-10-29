@@ -18,6 +18,8 @@ pub(super) struct Choice {
 pub(super) struct OutsideHandEvent {
     owner: Player,
     selected: Selection,
+    pair: [Selection; 2],
+    revealed: [Card; 2],
     card: Card,
     pool_version: u64,
 }
@@ -84,6 +86,13 @@ impl OutsideGameState {
         match selection {
             Selection::Pool(index) => self.pools[owner.index()][usize::from(index)],
             Selection::Basic(card) => card,
+        }
+    }
+    fn checked_card(&self, owner: Player, selection: Selection) -> Option<Card> {
+        match selection {
+            Selection::Pool(index) => self.pools[owner.index()].get(usize::from(index)).copied(),
+            Selection::Basic(card) if self.mode == OutsideGameMode::LimitedSideboard => Some(card),
+            Selection::Basic(_) => None,
         }
     }
     fn candidates(&self, owner: Player) -> Vec<Selection> {
@@ -251,27 +260,27 @@ impl Game {
         let Some(choice) = state.choice.as_ref() else {
             return false;
         };
-        let Some(selected) = choice
-            .pair
-            .and_then(|pair| pair.get(usize::from(index)).copied())
-        else {
+        let Some(pair) = choice.pair else {
+            return false;
+        };
+        let Some(selected) = pair.get(usize::from(index)).copied() else {
             return false;
         };
         if state.pending_entry.is_some() {
             return false;
         }
-        let card = match selected {
-            Selection::Pool(slot) => match state.pools[choice.owner.index()].get(usize::from(slot))
-            {
-                Some(&card) => card,
-                None => return false,
-            },
-            Selection::Basic(card) if state.mode == OutsideGameMode::LimitedSideboard => card,
-            Selection::Basic(_) => return false,
+        let Some(first) = state.checked_card(choice.owner, pair[0]) else {
+            return false;
         };
+        let Some(second) = state.checked_card(choice.owner, pair[1]) else {
+            return false;
+        };
+        let card = if index == 0 { first } else { second };
         state.pending_entry = Some(OutsideHandEvent {
             owner: choice.owner,
             selected,
+            pair,
+            revealed: [first, second],
             card,
             pool_version: state.pool_versions[choice.owner.index()],
         });
@@ -299,25 +308,12 @@ impl Game {
             return false;
         };
         if choice.owner != event.owner
-            || !choice
-                .pair
-                .is_some_and(|pair| pair.contains(&event.selected))
+            || choice.pair != Some(event.pair)
             || state.pool_versions[event.owner.index()] != event.pool_version
+            || state.checked_card(event.owner, event.pair[0]) != Some(event.revealed[0])
+            || state.checked_card(event.owner, event.pair[1]) != Some(event.revealed[1])
         {
             return false;
-        }
-        match event.selected {
-            Selection::Pool(slot)
-                if state.pools[event.owner.index()].get(usize::from(slot)) != Some(&event.card) =>
-            {
-                return false;
-            }
-            Selection::Basic(card)
-                if state.mode != OutsideGameMode::LimitedSideboard || card != event.card =>
-            {
-                return false;
-            }
-            _ => {}
         }
         let next_version = match event.selected {
             Selection::Pool(_) => Some(
