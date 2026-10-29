@@ -7803,3 +7803,6 @@ mod engine_fra_essence_burn_tests;
 
 #[path = "engine_fra_fate_review_tests.rs"]
 mod engine_fra_fate_review_tests;
+
+#[path = "engine_fra_karn_entry_review_tests.rs"]
+mod engine_fra_karn_entry_review_tests;
