@@ -8,6 +8,8 @@ pub(super) struct EntryMove {
     pub choice: Option<EntryChoiceValue>,
     pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
+    /// Previously chosen zone replacement for an atomic cost transaction.
+    pub zone_plan: Option<zone_replacements::Plan>,
     /// Original source-zone view when this entry is projected using another face.
     pub source_before: Option<Box<ObjectView>>,
     /// Physical card hidden behind face-down entry characteristics.
@@ -119,6 +121,7 @@ impl EntryMove {
             battle_protector: None,
             before,
             source_before: None,
+            zone_plan: None,
             destination,
             tapped,
             attachment: None,
@@ -707,8 +710,10 @@ impl Game {
             let before_battle = movement.before.kinds & crate::cards::BATTLE_KIND != 0;
             let manifest_face = movement.before.card;
             let mut before = movement.source_before.map_or(movement.before, |v| *v);
-            let rules = self.freeze_zone_rules(&before, movement.destination, None);
-            let plan = self.plan_zone_move(&before, movement.destination, rules);
+            let plan = movement.zone_plan.clone().unwrap_or_else(|| {
+                let rules = self.freeze_zone_rules(&before, movement.destination, None);
+                self.plan_zone_move(&before, movement.destination, rules)
+            });
             if movement.manifest_original.is_some() {
                 if plan.destination == Zone::Battlefield {
                     self.state.objects[before.id as usize].card = manifest_face;

@@ -75,7 +75,7 @@ pub(super) struct FrozenRules {
     pub discard_to_battlefield: bool,
     pub reflexive_exiles: Vec<(u16, ObjectView)>,
 }
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Plan {
     pub destination: Zone,
     pub prevented: bool,

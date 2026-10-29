@@ -6575,6 +6575,7 @@ impl Game {
         if moves.iter().enumerate().any(|(i, &(reference, _))| {
             self.state.objects.get(reference.card as usize).is_none_or(|o| o.generation != reference.generation)
                 || moves[..i].iter().any(|&(other, _)| other == reference)
+                || (moves[i].1 == Zone::Exile && ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, reference.card))
         }) { return None; }
         let views: Vec<_> = moves.iter().map(|&(reference, destination)| {
             let view = self.object_view(reference.card);
@@ -6607,6 +6608,19 @@ impl Game {
         ).collect();
         self.refresh_controllers();
         Some(events)
+    }
+
+    /// Commit a mixed-zone atomic cost through the owned entry transaction.
+    /// Frozen plans are retained through entry decisions and used exactly once;
+    /// prevented components are paid but do not produce a movement event.
+    fn stage_atomic_zone_cost(&mut self, plans: Vec<(ObjectView, zone_replacements::Plan)>) {
+        let moves: Vec<_> = plans.into_iter().filter_map(|(view, plan)| {
+            if plan.prevented { return None; }
+            let mut movement = entries::EntryMove::from_view(view, plan.destination, false);
+            movement.zone_plan = Some(plan);
+            Some(movement)
+        }).collect();
+        if !moves.is_empty() { self.stage_entries(moves, None); }
     }
 
     /// Pay simultaneous sacrifice costs only after every replacement outcome

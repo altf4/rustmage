@@ -49,6 +49,8 @@ pub(crate) enum StaticAbilityFragment {
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
     ControlledPermanentsCannotBeSacrificed,
+    /// Cards in graveyards cannot be exiled by any player.
+    GraveyardCardsCannotBeExiled,
     /// Replace a controlled permanent's move to a graveyard with no move.
     PreventControlledPermanentGraveyardMove,
     /// During combat no spells or nonmana activated abilities may be started.

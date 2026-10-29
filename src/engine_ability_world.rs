@@ -8,6 +8,7 @@ use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 thread_local! {
     /// Test-only provider identity; the query still uses live control and ability layers.
     pub(super) static TEST_SACRIFICE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_EXILE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
 }
 
 pub(super) trait CharacteristicWorld {
@@ -348,6 +349,25 @@ pub(super) trait CharacteristicWorld {
                 && query.continuous_fragment_available(source, fragment);
             #[cfg(test)]
             let synthetic = TEST_SACRIFICE_PROHIBITOR.with(|p| p.get() == Some(self.reference(source)))
+                && self.printed_abilities_available(source);
+            #[cfg(not(test))]
+            let synthetic = false;
+            printed || synthetic
+        })
+    }
+    /// A true prohibition is distinct from a replacement or prevention.
+    fn graveyard_exile_prohibited(&self, id: CardId) -> bool {
+        if self.object(id).zone != Zone::Graveyard || !self.object(id).is_card() { return false; }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        (0..self.game().state.objects.len()).any(|index| {
+            let source = index as CardId;
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield { return false; }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| matches!(f, crate::cards::StaticAbilityFragment::GraveyardCardsCannotBeExiled);
+            let printed = provider.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(fragment))
+                && query.continuous_fragment_available(source, fragment);
+            #[cfg(test)]
+            let synthetic = TEST_EXILE_PROHIBITOR.with(|p| p.get() == Some(self.reference(source)))
                 && self.printed_abilities_available(source);
             #[cfg(not(test))]
             let synthetic = false;
