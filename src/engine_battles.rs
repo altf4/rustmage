@@ -14,6 +14,7 @@ impl Game {
         let source = self.object_view(reference.card);
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            source_less_rule: None,
             additional_triggers: source.additional_triggers,
             source_move: None,
             borrowed_slot: None,

@@ -1633,6 +1633,7 @@ impl Game {
         payment: Mana,
     ) -> SpellView {
         SpellView {
+            source_less_rule: None,
             additional_triggers: 0,
             gift: None,
             source_move: None,

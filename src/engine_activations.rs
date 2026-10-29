@@ -559,6 +559,7 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
+            source_less_rule: None,
             additional_triggers: 0,
             source_move: None,
             borrowed_slot: None,

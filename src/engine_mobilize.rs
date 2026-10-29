@@ -230,6 +230,7 @@ impl Game {
             let card = b.view.source_card;
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
+                source_less_rule: None,
                 additional_triggers: 0,
                 source_move: None,
                 borrowed_slot: None,

@@ -1126,6 +1126,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            source_less_rule: None,
             // Explicit limits and state-trigger latching also cap extra instances.
             additional_triggers: if condition.once_per_turn()
                 || matches!(

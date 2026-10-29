@@ -1091,8 +1091,18 @@ fn is_false(value: &bool) -> bool {
     !*value
 }
 
+/// An inherent game-rule ability has no object or card as its source.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum SourceLessRule {
+    Radiation,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    /// Present only for an inherent rule ability; its legacy source fields are
+    /// not authoritative. This field is owned by stack copies and snapshots.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_less_rule: Option<SourceLessRule>,
     // Number of additional instances, zero for ordinary/published packets.
     // Frozen mana-event packets and typed snapshots retain this owned witness;
     // the JSON control plane restores opaque snapshot handles, never packets.
@@ -1353,8 +1363,14 @@ impl SpellView {
             .map_or(self.object, |event| event.after)
     }
 
+    /// Source identity for consumers that can also encounter inherent rules.
+    pub fn source_identity(&self) -> Option<(ObjectRef, Card)> {
+        self.source_less_rule.is_none().then_some((self.object, self.source_card))
+    }
+
     /// Characteristics of this stack spell, independent of actual mana paid.
     pub fn mana_value(&self) -> u64 {
+        if self.source_less_rule.is_some() { return 0; }
         self.source_card.fixed_mana_value()
             + if self.kind == StackKind::Spell {
                 u64::from(self.source_card.x_symbols()) * u64::from(self.x.unwrap_or(0))

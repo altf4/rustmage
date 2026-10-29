@@ -476,3 +476,25 @@ fn radiation_mill_counts_only_nonland_cards_actually_milled() {
         }
     }
 }
+
+#[test]
+fn sourceless_stack_identity_survives_copy_and_snapshot() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let mut packet = game.activation_item(player, source, 0);
+        assert_eq!(packet.source_identity(), Some((game.object_ref(source), Card::from_name("Bear Cub").unwrap())));
+        packet.source_less_rule = Some(SourceLessRule::Radiation);
+        assert_eq!(packet.source_identity(), None);
+        assert_eq!(packet.mana_value(), 0);
+        let copy = packet.clone();
+        assert_eq!(copy.source_identity(), None);
+        assert_eq!(copy.source_less_rule, Some(SourceLessRule::Radiation));
+        game.state.pending_triggers.push(packet);
+        let snapshot = game.snapshot();
+        game.state.pending_triggers.clear();
+        game.restore(&snapshot).unwrap();
+        assert_eq!(game.state.pending_triggers.last().unwrap().source_identity(), None);
+        assert_eq!(game.state.pending_triggers.last().unwrap().source_less_rule, Some(SourceLessRule::Radiation));
+    }
+}
