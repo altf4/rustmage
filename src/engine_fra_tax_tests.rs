@@ -298,7 +298,12 @@ fn thalia_tax_can_be_offset_by_bargain_on_a_free_cast() {
             },
         );
         let sacrifice = game.object_ref(fodder);
-        act(&mut game, Action::ChooseBargain { sacrifice: Some(sacrifice) });
+        act(
+            &mut game,
+            Action::ChooseBargain {
+                sacrifice: Some(sacrifice),
+            },
+        );
         act(
             &mut game,
             Action::ChooseTarget {
@@ -312,6 +317,27 @@ fn thalia_tax_can_be_offset_by_bargain_on_a_free_cast() {
         settle(&mut game);
         assert_eq!(game.object_view(enemy).zone, Zone::Graveyard);
         assert_eq!(game.object_view(fodder).zone, Zone::Graveyard);
+        assert_eq!(game.state.players[actor.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn thalia_tax_applies_to_flashback() {
+    for actor in [Player::P0, Player::P1] {
+        let mut game = scenario(actor);
+        put(
+            &mut game,
+            actor.other(),
+            "Thalia, the Survivor",
+            Zone::Battlefield,
+        );
+        let spell = put(&mut game, actor, "Inspiration from Beyond", Zone::Graveyard);
+        game.state.players[actor.index()].mana = [0, 2, 0, 0, 0, 5];
+        reject(&mut game, Action::AnnounceFlashback { card: spell });
+        game.state.players[actor.index()].mana[5] = 6;
+        act(&mut game, Action::AnnounceFlashback { card: spell });
+        pay(&mut game);
+        assert_eq!(game.object_view(spell).zone, Zone::Stack);
         assert_eq!(game.state.players[actor.index()].mana, [0; 6]);
     }
 }
