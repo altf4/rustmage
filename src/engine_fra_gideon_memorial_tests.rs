@@ -3,10 +3,16 @@ use super::*;
 fn cadet(g: &mut Game, p: Player) -> CardId {
     let before = g.state.objects.len();
     g.create_tokens(p, Card::test_index(5298), 1, false);
-    (before..g.state.objects.len()).find_map(|id| {
-        let o = &g.state.objects[id];
-        (o.zone == Zone::Battlefield && o.is_token() && o.controller == p && o.card == Card::test_index(5298)).then_some(id as CardId)
-    }).unwrap()
+    (before..g.state.objects.len())
+        .find_map(|id| {
+            let o = &g.state.objects[id];
+            (o.zone == Zone::Battlefield
+                && o.is_token()
+                && o.controller == p
+                && o.card == Card::test_index(5298))
+            .then_some(id as CardId)
+        })
+        .unwrap()
 }
 
 #[test]
@@ -44,13 +50,33 @@ fn memorial_mana_is_only_spendable_on_planeswalker_spells() {
         for walker in [false, true] {
             let mut g = scenario(p);
             let memorial = put(&mut g, p, "Gideon's Memorial", Zone::Battlefield);
-            g.state.players[p.index()].mana = if walker { [1, 0, 0, 0, 0, 1] } else { [0, 0, 0, 0, 0, 1] };
+            g.state.players[p.index()].mana = if walker {
+                [1, 0, 0, 0, 0, 1]
+            } else {
+                [0, 0, 0, 0, 0, 1]
+            };
             let mana = g.legal_actions().into_iter().find(|a| matches!(a,
                 Action::ActivateMana { card, ability: 0, production: [1, 0, 0, 0, 0, 0], .. } if *card == memorial)).unwrap();
             let before = g.snapshot();
             act(&mut g, mana.clone());
-            assert_eq!(g.mana_lots(p).iter().find(|lot| lot.quality.restriction == ManaRestrictionView::PlaneswalkerSpell).unwrap().amounts[0], 1);
-            let card = put(&mut g, p, if walker { "Ajani, Caller of the Pride" } else { "Ajani's Pridemate" }, Zone::Hand);
+            assert_eq!(
+                g.mana_lots(p)
+                    .iter()
+                    .find(|lot| lot.quality.restriction == ManaRestrictionView::PlaneswalkerSpell)
+                    .unwrap()
+                    .amounts[0],
+                1
+            );
+            let card = put(
+                &mut g,
+                p,
+                if walker {
+                    "Ajani, Caller of the Pride"
+                } else {
+                    "Ajani's Pridemate"
+                },
+                Zone::Hand,
+            );
             if walker {
                 cast(&mut g, card, None);
                 settle(&mut g);
@@ -61,7 +87,11 @@ fn memorial_mana_is_only_spendable_on_planeswalker_spells() {
             }
             g.restore(&before).unwrap();
             act(&mut g, mana);
-            assert!(g.mana_lots(p).iter().any(|lot| lot.quality.restriction == ManaRestrictionView::PlaneswalkerSpell));
+            assert!(
+                g.mana_lots(p)
+                    .iter()
+                    .any(|lot| lot.quality.restriction == ManaRestrictionView::PlaneswalkerSpell)
+            );
         }
     }
 }
@@ -78,9 +108,26 @@ fn memorial_discard_ability_targets_only_attacking_or_blocking_creatures() {
         act(&mut g, Action::Attack { card: attacker });
         act(&mut g, Action::FinishAttackers);
         g.state.priority = p;
-        act(&mut g, Action::AnnounceActivate { card: memorial, ability: 1, counter_payment: Counters::default() });
-        reject(&mut g, Action::ChooseTarget { target: Target::Card(idle) });
-        act(&mut g, Action::ChooseTarget { target: Target::Card(attacker) });
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: memorial,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(idle),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(attacker),
+            },
+        );
         pay(&mut g);
         assert_eq!(g.object_view(memorial).zone, Zone::Graveyard);
         settle(&mut g);
@@ -100,7 +147,11 @@ fn copied_memorial_produces_restricted_mana_that_survives_provider_departure() {
             Action::ActivateMana { card, ability: 0, production: [1, 0, 0, 0, 0, 0], .. } if *card == source)).unwrap();
         act(&mut g, action);
         g.move_object(source, Zone::Graveyard);
-        assert!(g.mana_lots(p).iter().any(|lot| lot.quality.restriction == ManaRestrictionView::PlaneswalkerSpell));
+        assert!(
+            g.mana_lots(p)
+                .iter()
+                .any(|lot| lot.quality.restriction == ManaRestrictionView::PlaneswalkerSpell)
+        );
         let creature = put(&mut g, p, "Ajani's Pridemate", Zone::Hand);
         reject(&mut g, Action::AnnounceCast { card: creature });
     }

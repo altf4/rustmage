@@ -1,12 +1,29 @@
 use super::*;
 
 fn cadets(g: &Game, p: Player) -> Vec<CardId> {
-    g.state.objects.iter().enumerate().filter_map(|(id, o)|
-        (o.zone == Zone::Battlefield && o.controller == p && o.is_token() && o.card == Card::test_index(5298)).then_some(id as CardId)).collect()
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, o)| {
+            (o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.is_token()
+                && o.card == Card::test_index(5298))
+            .then_some(id as CardId)
+        })
+        .collect()
 }
 
 fn activate(g: &mut Game, card: CardId, ability: u16) {
-    act(g, Action::AnnounceActivate { card, ability, counter_payment: Counters::default() });
+    act(
+        g,
+        Action::AnnounceActivate {
+            card,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
     pay(g);
 }
 
@@ -23,7 +40,9 @@ fn ajani_loyalty_activations_create_cadets_and_plus_one_grants_haste() {
         let saved = g.snapshot();
         super::super::contracts::branch_contract(g.clone());
         for replay in 0..2 {
-            if replay == 1 { g.restore(&saved).unwrap(); }
+            if replay == 1 {
+                g.restore(&saved).unwrap();
+            }
             settle(&mut g);
             let made = cadets(&g, p);
             assert_eq!(made.len(), 1);
@@ -47,6 +66,20 @@ fn ajani_minus_two_discards_hand_then_counts_creatures_at_resolution() {
         let second = put(&mut g, p, "Hill Giant", Zone::Hand);
         let before = g.state.players[p.index()].cards_drawn_this_turn;
         activate(&mut g, ajani, 1);
+        for _ in 0..48 {
+            if g.state.stack.is_empty()
+                && g.state.resolving.is_none()
+                && g.state.pending == Pending::Priority
+            {
+                break;
+            }
+            choose(&mut g, |action| {
+                matches!(
+                    action,
+                    Action::Pass | Action::PutTrigger { .. } | Action::Discard { .. }
+                )
+            });
+        }
         settle(&mut g);
         assert_eq!(g.object_view(first).zone, Zone::Graveyard);
         assert_eq!(g.object_view(second).zone, Zone::Graveyard);
@@ -85,8 +118,16 @@ fn ajani_observes_another_controlled_planeswalkers_loyalty_activation() {
         let ajani = put(&mut g, p, "Ajani Unrelenting", Zone::Battlefield);
         g.state.objects[ajani as usize].counters.loyalty = 5;
         g.create_tokens(p, Card::JacePlaneswalkerToken, 1, false);
-        let jace = g.state.objects.iter().enumerate().find_map(|(id, o)|
-            (o.zone == Zone::Battlefield && o.card == Card::JacePlaneswalkerToken).then_some(id as CardId)).unwrap();
+        let jace = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(id, o)| {
+                (o.zone == Zone::Battlefield && o.card == Card::JacePlaneswalkerToken)
+                    .then_some(id as CardId)
+            })
+            .unwrap();
         g.state.objects[jace as usize].counters.loyalty = 4;
         activate(&mut g, jace, 1);
         settle(&mut g);

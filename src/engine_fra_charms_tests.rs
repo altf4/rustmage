@@ -7346,3 +7346,27 @@ mod engine_fra_solitary_cell_tests;
 
 #[path = "engine_fra_ingris_tests.rs"]
 mod engine_fra_ingris_tests;
+
+#[path = "engine_fra_compel_brutality_independent_tests.rs"]
+mod engine_fra_compel_brutality_independent_tests;
+
+#[path = "engine_fra_ajani_unrelenting_independent_tests.rs"]
+mod engine_fra_ajani_unrelenting_independent_tests;
+
+#[path = "engine_fra_gideon_memorial_independent_tests.rs"]
+mod engine_fra_gideon_memorial_independent_tests;
+
+#[path = "engine_fra_witchstalker_independent_tests.rs"]
+mod engine_fra_witchstalker_independent_tests;
+
+#[path = "engine_fra_inspired_tethermage_independent_tests.rs"]
+mod engine_fra_inspired_tethermage_independent_tests;
+
+#[path = "engine_fra_compel_brutality_tests.rs"]
+mod engine_fra_compel_brutality_tests;
+
+#[path = "engine_fra_ajani_unrelenting_tests.rs"]
+mod engine_fra_ajani_unrelenting_tests;
+
+#[path = "engine_fra_gideon_memorial_tests.rs"]
+mod engine_fra_gideon_memorial_tests;
