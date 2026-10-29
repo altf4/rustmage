@@ -6072,16 +6072,29 @@ fn schema189_budget_projection_rejects_public_hidden_and_rollback_state() {
     let old = r#"[{"resolution_free_casts":{"paid":null}}]"#;
     assert_eq!(project_prior_outside(old).unwrap(), old);
     for amount in [0, 6] {
-        assert!(project_prior_outside(&serde_json::json!({"nested":{"remaining_mana_value":amount}}).to_string()).is_err());
+        assert!(
+            project_prior_outside(
+                &serde_json::json!({"nested":{"remaining_mana_value":amount}}).to_string()
+            )
+            .is_err()
+        );
     }
     for player in [Player::P0, Player::P1] {
         for origin in [Zone::Exile, Zone::Library] {
             let mut g = scenario(player);
             g.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
-                siege_transformed: false, paid: None, casts_remaining: None,
-                pending_cast: None, remaining_mana_value: Some(0), alternative_cost: None,
-                maximum_mana_value: None, origin, exile_on_graveyard: false,
-                allow_lands: false, player, remaining: Vec::new(),
+                siege_transformed: false,
+                paid: None,
+                casts_remaining: None,
+                pending_cast: None,
+                remaining_mana_value: Some(0),
+                alternative_cost: None,
+                maximum_mana_value: None,
+                origin,
+                exile_on_graveyard: false,
+                allow_lands: false,
+                player,
+                remaining: Vec::new(),
             }));
             assert!(!prior_outside_state_supported(&g.state));
             for viewer in [player, player.other()] {

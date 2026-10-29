@@ -575,7 +575,9 @@ impl Game {
                         && free
                             .maximum_mana_value
                             .is_none_or(|maximum| card.fixed_mana_value() < maximum)
-                        && free.remaining_mana_value.is_none_or(|left| card.fixed_mana_value() <= left)
+                        && free
+                            .remaining_mana_value
+                            .is_none_or(|left| card.fixed_mana_value() <= left)
                 }) && self.permitted_cast_available(
                     player,
                     object.card,
