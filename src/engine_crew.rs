@@ -123,15 +123,32 @@ impl Game {
         };
         self.state
             .objects
-            .get(a.item.source.expect("cost announcement has object source").id as usize)
+            .get(
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id as usize,
+            )
             .is_some_and(|o| {
                 o.zone == Zone::Battlefield
-                    && o.generation == a.item.source.expect("cost announcement has object source").object.generation
+                    && o.generation
+                        == a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .object
+                            .generation
                     && o.controller == a.item.controller
             })
-            && p.selected
-                .iter()
-                .all(|&r| self.crew_eligible(a.item.source.expect("cost announcement has object source").object, a.item.controller, r))
+            && p.selected.iter().all(|&r| {
+                self.crew_eligible(
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    a.item.controller,
+                    r,
+                )
+            })
     }
     fn crew_sum(&self, maximum: bool) -> PowerSum {
         let a = self.state.announcing.as_ref().unwrap();
@@ -139,9 +156,23 @@ impl Game {
         let mut sum = PowerSum::default();
         for id in 0..self.state.objects.len() {
             let r = self.object_ref(id as CardId);
-            if self.crew_eligible(a.item.source.expect("cost announcement has object source").object, a.item.controller, r) {
+            if self.crew_eligible(
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
+                a.item.controller,
+                r,
+            ) {
                 let selected = p.selected.contains(&r);
-                let power = self.crew_saddle_power(r.card, a.item.source.expect("cost announcement has object source").id, "Vehicle");
+                let power = self.crew_saddle_power(
+                    r.card,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .id,
+                    "Vehicle",
+                );
                 if selected || maximum && power > 0 {
                     sum.add(power)
                 }
@@ -158,7 +189,11 @@ impl Game {
         let p = self.state.crew.as_ref()?.payment.as_ref()?;
         let sum = self.crew_sum(false);
         Some(CrewChoiceView {
-            source: a.item.source.expect("cost announcement has object source").object,
+            source: a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .object,
             minimum: p.minimum,
             selected: p.selected.clone(),
             selected_power: sum.represented(),
@@ -174,9 +209,24 @@ impl Game {
         let maximum = self.crew_sum(true);
         for id in 0..self.state.objects.len() {
             let r = self.object_ref(id as CardId);
-            if self.crew_eligible(a.item.source.expect("cost announcement has object source").object, a.item.controller, r) && !p.selected.contains(&r) {
+            if self.crew_eligible(
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
+                a.item.controller,
+                r,
+            ) && !p.selected.contains(&r)
+            {
                 let mut possible = maximum;
-                let power = self.crew_saddle_power(r.card, a.item.source.expect("cost announcement has object source").id, "Vehicle");
+                let power = self.crew_saddle_power(
+                    r.card,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .id,
+                    "Vehicle",
+                );
                 if power < 0 {
                     possible.add(power)
                 }
@@ -194,7 +244,14 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return false;
         };
-        let Some(minimum) = a.item.source.expect("cost announcement has object source").card.activation(ability).crew_minimum() else {
+        let Some(minimum) = a
+            .item
+            .source
+            .expect("cost announcement has object source")
+            .card
+            .activation(ability)
+            .crew_minimum()
+        else {
             return false;
         };
         assert!(a.pay_window && a.item.targets.is_empty());
@@ -230,14 +287,24 @@ impl Game {
         let at = state
             .history
             .iter()
-            .position(|h| h.vehicle == a.item.source.expect("cost announcement has object source").object)
+            .position(|h| {
+                h.vehicle
+                    == a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object
+            })
             .unwrap_or_else(|| {
                 state
                     .history
                     .try_reserve(1)
                     .capacity("Crew history capacity exhausted");
                 state.history.push(CrewHistory {
-                    vehicle: a.item.source.expect("cost announcement has object source").object,
+                    vehicle: a
+                        .item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
                     contributors: Vec::new(),
                 });
                 state.history.len() - 1
@@ -289,7 +356,9 @@ impl Game {
         }
     }
     pub(super) fn resolve_crew(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return;
         }

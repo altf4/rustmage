@@ -76,7 +76,9 @@ impl Game {
         ability: u16,
         subject: Option<ObjectRef>,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
         if matches!(condition, TriggerCondition::InterveningIf { .. })
             && !self.trigger_guards_hold(
@@ -150,9 +152,11 @@ impl Game {
         self.state.pending_triggers.push(reflexive);
     }
     pub(super) fn exact_source_can_tap(&self, item: &SpellView) -> bool {
-        item.source.is_some_and(|source| self.on_battlefield(source.id)
-            && self.object_ref(source.id) == source.object
-            && !self.state.objects[source.id as usize].tapped)
+        item.source.is_some_and(|source| {
+            self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object
+                && !self.state.objects[source.id as usize].tapped
+        })
     }
     pub(super) fn complete_optional_tap_reflexive(&mut self) {
         let resolution = self.state.resolving.as_ref().unwrap();
@@ -208,7 +212,9 @@ impl Game {
         token: Card,
         filter: CreatureFilter,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         assert!(token.role().is_some(), "predefined Role factory required");
         let recipients = self
             .state
@@ -321,7 +327,9 @@ impl Game {
     }
 
     pub(super) fn resolve_role(&mut self, item: &SpellView, token: Card, subject: Subject) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         assert!(
             token.role().is_some(),
             "Role instruction requires a predefined Role factory"

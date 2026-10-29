@@ -76,7 +76,9 @@ impl Game {
         if item.kind != StackKind::Spell {
             return;
         }
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let name = source.card.name();
         if !possible_paradigm_name(name) {
             return;
@@ -95,7 +97,9 @@ impl Game {
         if item.kind != StackKind::Spell {
             return;
         }
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let name = source.card.name();
         let already_resolved = self.state.paradigm.as_ref().is_some_and(|data| {
             data.resolved.iter().any(|row| {
@@ -145,7 +149,9 @@ impl Game {
         }
     }
     pub(super) fn cast_paradigm_copy(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let object = self.allocate_card_copy(source.card, item.controller);
         self.state
             .paradigm
@@ -219,11 +225,13 @@ impl Game {
         self.state.paradigm.as_ref().map_or_else(Vec::new, |data| {
             data.delayed
                 .iter()
-                .filter_map(|item| item.source.map(|source| ParadigmView {
-                    controller: item.controller,
-                    definition: source.card,
-                    name: source.card.name(),
-                }))
+                .filter_map(|item| {
+                    item.source.map(|source| ParadigmView {
+                        controller: item.controller,
+                        definition: source.card,
+                        name: source.card.name(),
+                    })
+                })
                 .collect()
         })
     }

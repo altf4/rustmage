@@ -78,7 +78,10 @@ impl Game {
             !item.is_copy
                 && self.first_equip_zero_available(
                     item.controller,
-                    item.source.expect("activated ability has source").card.activation(ability),
+                    item.source
+                        .expect("activated ability has source")
+                        .card
+                        .activation(ability),
                 )
         } else {
             false
@@ -132,14 +135,28 @@ impl Game {
                 && let StackKind::ActivatedAbility { ability } = proposal.item.kind
                 && proposal
                     .item
-                    .source.expect("object-backed announcement").card
+                    .source
+                    .expect("object-backed announcement")
+                    .card
                     .activation(ability)
                     .cost
                     .remove
                     .is_some()
                 && !activations::counter_payments(
-                    proposal.item.source.expect("cost announcement has object source").card.activation(ability).cost,
-                    self.counter_amounts(proposal.item.source.expect("cost announcement has object source").id),
+                    proposal
+                        .item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card
+                        .activation(ability)
+                        .cost,
+                    self.counter_amounts(
+                        proposal
+                            .item
+                            .source
+                            .expect("cost announcement has object source")
+                            .id,
+                    ),
                     |payment| payment == proposal.counter_payment,
                 )
             {

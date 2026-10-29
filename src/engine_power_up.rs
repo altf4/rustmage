@@ -233,7 +233,9 @@ impl Game {
         }
     }
     pub(super) fn record_power_up_use(&mut self, item: &SpellView, ability: u16) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if !source.card.power_up_abilities().contains(&ability)
             || !self.on_battlefield(source.id)
             || self.object_ref(source.id) != source.object

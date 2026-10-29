@@ -356,7 +356,9 @@ impl Game {
         spec: AnimationSpec,
         ability: u16,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if !self.on_battlefield(source.id)
             || self.object_ref(source.id) != source.object
             || self.is_creature(source.id)
@@ -381,7 +383,9 @@ impl Game {
         spec: AnimationSpec,
         kind: SelfGrantedAbilityKind,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if !self.on_battlefield(source.id)
             || self.object_ref(source.id) != source.object
             || self.is_creature(source.id)
@@ -409,7 +413,9 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         self.change_object_form(source.object, spec, type_mode);
     }
     pub(super) fn add_artifact_to_targets(&mut self, item: &SpellView) {

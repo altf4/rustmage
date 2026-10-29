@@ -181,7 +181,13 @@ impl Game {
         }
         let a = self.state.announcing.as_ref()?;
         let f = a.convoke.as_ref()?;
-        if !a.item.source.expect("cost announcement has object source").card.has_convoke() {
+        if !a
+            .item
+            .source
+            .expect("cost announcement has object source")
+            .card
+            .has_convoke()
+        {
             return None;
         }
         let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
@@ -196,7 +202,11 @@ impl Game {
                 &[0; 32],
             );
         Some(ConvokeChoiceView {
-            spell: a.item.source.expect("cost announcement has object source").object,
+            spell: a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .object,
             selected: f.selected.clone(),
             remaining: f.remaining,
             can_pay,
@@ -272,7 +282,12 @@ impl Game {
             if f.contains(object) {
                 continue;
             }
-            if a.item.source.expect("cost announcement has object source").card.has_convoke() && self.convoke_eligible(a.item.controller, object)
+            if a.item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .has_convoke()
+                && self.convoke_eligible(a.item.controller, object)
             {
                 for contribution in contributions() {
                     if self.contributor_fundable(object, Some(contribution))
@@ -323,7 +338,11 @@ impl Game {
         let masks = improvise::masks(
             self,
             a.item.controller,
-            a.item.source.expect("cost announcement has object source").card.has_convoke(),
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .has_convoke(),
             self.item_improvise(&a.item),
             &selected,
         );

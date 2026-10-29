@@ -235,7 +235,9 @@ impl Game {
     }
 
     pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let objects = item
             .targets
             .iter()
@@ -571,7 +573,9 @@ impl Game {
         amount: u16,
         subtype: &'static str,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let ids = top_library_cards(
             &self.state.players[item.controller.index()].library,
             u128::from(amount),

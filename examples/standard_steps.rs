@@ -95,7 +95,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .chain(after.resolving.iter())
             {
                 if matches!(item.kind, StackKind::TriggeredAbility { .. })
-                    && item.source().is_some_and(|source| step_cards.contains(&source.card.name()))
+                    && item
+                        .source()
+                        .is_some_and(|source| step_cards.contains(&source.card.name()))
                     && seen.insert(item.id)
                 {
                     new_triggers += 1;

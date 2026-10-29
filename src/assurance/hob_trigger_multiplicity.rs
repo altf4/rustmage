@@ -55,7 +55,10 @@ fn items(g: &Game, id: CardId) -> Vec<&SpellView> {
         .chain(&g.state.stack)
         .chain(g.state.announcing.iter().map(|a| &a.item))
         .chain(g.state.resolving.iter().map(|r| &r.item))
-        .filter(|s| s.source.is_some_and(|source| source.id == id) && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+        .filter(|s| {
+            s.source.is_some_and(|source| source.id == id)
+                && matches!(s.kind, StackKind::TriggeredAbility { .. })
+        })
         .collect()
 }
 fn drive(g: &mut Game, targets: &[CardId]) {

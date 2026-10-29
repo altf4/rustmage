@@ -97,7 +97,8 @@ fn mind_sculptor_committed_threshold_survives_countering_and_source_departure() 
                 .chain(g.state.pending_triggers.iter())
                 .chain(g.state.ordering_triggers.iter())
                 .filter(|item| {
-                    item.source.is_some_and(|source| source.id == way) && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.is_some_and(|source| source.id == way)
+                        && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 })
                 .count();
             assert_eq!(trigger_count, expected);
@@ -106,7 +107,8 @@ fn mind_sculptor_committed_threshold_survives_countering_and_source_departure() 
                 .stack
                 .iter()
                 .find(|item| {
-                    item.source.is_some_and(|source| source.id == walker) && matches!(item.kind, StackKind::ActivatedAbility { .. })
+                    item.source.is_some_and(|source| source.id == walker)
+                        && matches!(item.kind, StackKind::ActivatedAbility { .. })
                 })
                 .unwrap()
                 .id;
@@ -142,7 +144,12 @@ fn mind_sculptor_failed_loyalty_cost_is_atomic_and_granted_ability_counts() {
         let saved = g.snapshot();
         reject(&mut g, action.clone());
         assert_eq!(g.snapshot(), saved);
-        assert!(!g.state.pending_triggers.iter().any(|item| item.source.is_some_and(|source| source.id == way)));
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .any(|item| item.source.is_some_and(|source| source.id == way))
+        );
         g.state.objects[walker as usize].counters.loyalty = 9;
         act(&mut g, action);
         pay(&mut g);
@@ -161,7 +168,8 @@ fn mind_sculptor_failed_loyalty_cost_is_atomic_and_granted_ability_counts() {
             .stack
             .iter()
             .find(|item| {
-                item.source.is_some_and(|source| source.id == walker) && matches!(item.kind, StackKind::ActivatedAbility { .. })
+                item.source.is_some_and(|source| source.id == walker)
+                    && matches!(item.kind, StackKind::ActivatedAbility { .. })
             })
             .unwrap()
             .id;
@@ -292,7 +300,11 @@ fn copied_mind_sculptor_observes_loyalty_only_while_ability_survives() {
             if blank {
                 let animation_item = g.activation_item(actor, walker, 0);
                 let mut animation_item = animation_item;
-                animation_item.source.as_mut().expect("object-backed packet").object = g.object_ref(source);
+                animation_item
+                    .source
+                    .as_mut()
+                    .expect("object-backed packet")
+                    .object = g.object_ref(source);
                 g.animate_source(
                     &animation_item,
                     AnimationSpec {
@@ -683,8 +695,10 @@ fn composite_two_counter_cost_rechecks_incarnation_control_and_nested_mana() {
                     .iter()
                     .chain(g.state.pending_triggers.iter())
                     .chain(g.state.ordering_triggers.iter())
-                    .any(|packet| packet.source.is_some_and(|source| source.id == way)
-                        && matches!(packet.kind, StackKind::TriggeredAbility { .. }))
+                    .any(
+                        |packet| packet.source.is_some_and(|source| source.id == way)
+                            && matches!(packet.kind, StackKind::TriggeredAbility { .. })
+                    )
             );
             g.restore(&funded).unwrap();
         }

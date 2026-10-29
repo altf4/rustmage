@@ -104,10 +104,14 @@ fn verify(
     }
     let expected_ability = u16::from(i == 2);
     assert_eq!(ability, expected_ability);
-    let source = before
-        .objects
-        .iter()
-        .find(|v| v.reference == root.source().expect("example expects an object-backed packet").object && v.zone == Zone::Battlefield);
+    let source = before.objects.iter().find(|v| {
+        v.reference
+            == root
+                .source()
+                .expect("example expects an object-backed packet")
+                .object
+            && v.zone == Zone::Battlefield
+    });
     if i == 0 || i == 2 {
         let target = if i == 0 {
             source
@@ -188,7 +192,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let action = actions[rustmage::policy::smoke_index(&g, &actions)].clone();
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(actor, action.clone())?;

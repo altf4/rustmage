@@ -367,7 +367,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert_eq!(cast.offspring, None);
                 let pay = cast.bargain.unwrap();
                 let request = before.payment_request.as_ref().unwrap();
-                let expected = cost(ann.source().expect("example expects an object-backed packet").card, pay);
+                let expected = cost(
+                    ann.source()
+                        .expect("example expects an object-backed packet")
+                        .card,
+                    pay,
+                );
                 assert_eq!((request.required, request.generic), expected);
                 assert_eq!(
                     payment.iter().sum::<u32>(),
@@ -384,7 +389,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(a, Action::Pass)
                 && let Some(packet) = before.stack.last()
-                && packet.source().and_then(|source| index(source.card)).is_some()
+                && packet
+                    .source()
+                    .and_then(|source| index(source.card))
+                    .is_some()
             {
                 active.insert(packet.id, (packet.clone(), g.observe(packet.controller)));
             }
@@ -431,7 +439,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .collect::<Vec<_>>();
             for id in complete {
                 let (packet, base) = active.remove(&id).unwrap();
-                let k = packet.source().and_then(|source| index(source.card)).unwrap();
+                let k = packet
+                    .source()
+                    .and_then(|source| index(source.card))
+                    .unwrap();
                 let p = packet.controller.index();
                 let view = g.observe(packet.controller);
                 let resolved = before.resolving.as_ref().is_some_and(|s| s.id == id)
@@ -455,12 +466,40 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let pay = if packet.kind == StackKind::Spell {
                     packet.cast.unwrap().bargain.unwrap()
                 } else {
-                    *entries.get(&packet.source().expect("example expects an object-backed packet").object).unwrap()
+                    *entries
+                        .get(
+                            &packet
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .object,
+                        )
+                        .unwrap()
                 };
-                if packet.kind == StackKind::Spell && packet.source().is_some_and(|source| source.card.is_creature()) {
-                    let v = view.objects.iter().find(|v| v.id == packet.source().expect("example expects an object-backed packet").id).unwrap();
+                if packet.kind == StackKind::Spell
+                    && packet
+                        .source()
+                        .is_some_and(|source| source.card.is_creature())
+                {
+                    let v = view
+                        .objects
+                        .iter()
+                        .find(|v| {
+                            v.id == packet
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                        })
+                        .unwrap();
                     assert_eq!(v.zone, Zone::Battlefield);
-                    assert_eq!(v.reference.generation, packet.source().expect("example expects an object-backed packet").object.generation + 1);
+                    assert_eq!(
+                        v.reference.generation,
+                        packet
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .object
+                            .generation
+                            + 1
+                    );
                     entries.insert(v.reference, pay);
                     if k == 3 {
                         assert!(v.keywords.contains(Keywords::TRAMPLE));
@@ -472,7 +511,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if pay {
                         continue;
                     }
-                    assert!(!packets(&view).any(|s|s.source().expect("example expects an object-backed packet").card==packet.source().expect("example expects an object-backed packet").card&&s.source().expect("example expects an object-backed packet").object==v.reference));
+                    assert!(!packets(&view).any(|s| {
+                        s.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            == packet
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .card
+                            && s.source()
+                                .expect("example expects an object-backed packet")
+                                .object
+                                == v.reference
+                    }));
                     effects[k][0][p] += 1;
                     continue;
                 }

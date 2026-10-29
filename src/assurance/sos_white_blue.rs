@@ -1261,10 +1261,21 @@ fn sos_matterbending_optional_other_bounce_and_frozen_triggering_x() {
             act(&mut g, Action::AnnounceCast { card: spell });
             act(&mut g, Action::ChooseX { value: x });
             pay(&mut g);
-            let packet = g.state.stack.iter().find(|t| t.source.is_some_and(|identity| identity.id == source)).unwrap();
+            let packet = g
+                .state
+                .stack
+                .iter()
+                .find(|t| t.source.is_some_and(|identity| identity.id == source))
+                .unwrap();
             assert_eq!(packet.x, Some(x));
             assert_eq!(g.item_amount(AmountValue::ChosenX, packet), u128::from(x));
-            let id = g.state.stack.iter().find(|t| t.source.is_some_and(|identity| identity.id == spell)).unwrap().id;
+            let id = g
+                .state
+                .stack
+                .iter()
+                .find(|t| t.source.is_some_and(|identity| identity.id == spell))
+                .unwrap()
+                .id;
             assert!(g.counter_stack_item(id, false));
             big_helpers::settle(&mut g);
             assert!(g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
@@ -1278,7 +1289,12 @@ fn sos_matterbending_optional_other_bounce_and_frozen_triggering_x() {
         }
         let regular = put(&mut g, p, "Divination", Zone::Hand);
         cast(&mut g, regular, None);
-        assert!(!g.state.pending_triggers.iter().any(|t| t.source.is_some_and(|identity| identity.id == source)));
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .any(|t| t.source.is_some_and(|identity| identity.id == source))
+        );
         settle(&mut g);
     }
 }

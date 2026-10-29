@@ -104,8 +104,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     commits[i] += 1;
                     let owner = g.observe(s.controller);
-                    let source = owner.objects.iter().find(|o| o.id == s.source().expect("example expects an object-backed packet").id).unwrap();
-                    assert_eq!(source.reference, s.source().expect("example expects an object-backed packet").object);
+                    let source = owner
+                        .objects
+                        .iter()
+                        .find(|o| {
+                            o.id == s
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                        })
+                        .unwrap();
+                    assert_eq!(
+                        source.reference,
+                        s.source()
+                            .expect("example expects an object-backed packet")
+                            .object
+                    );
                     assert_eq!(
                         source.zone,
                         if matches!(i, 1 | 10) {
@@ -123,12 +137,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     resolved[i] += 1;
                     let owner = g.observe(s.controller);
-                    if let Some(new) = owner.objects.iter().find(|o| o.id == s.source().expect("example expects an object-backed packet").id)
-                        && before
-                            .objects
-                            .iter()
-                            .any(|old| old.id == s.source().expect("example expects an object-backed packet").id && old.reference == s.source().expect("example expects an object-backed packet").object)
-                        && new.reference != s.source().expect("example expects an object-backed packet").object
+                    if let Some(new) = owner.objects.iter().find(|o| {
+                        o.id == s
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .id
+                    }) && before.objects.iter().any(|old| {
+                        old.id
+                            == s.source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                            && old.reference
+                                == s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                    }) && new.reference
+                        != s.source()
+                            .expect("example expects an object-backed packet")
+                            .object
                         && matches!(new.zone, Zone::Hand | Zone::Battlefield)
                     {
                         moved[i] += 1;
@@ -144,7 +170,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         checks += 1;
                     }
                 }
-                if s.source().is_some_and(|source| source.card.name() == "Arcanis the Omnipotent")
+                if s.source()
+                    .is_some_and(|source| source.card.name() == "Arcanis the Omnipotent")
                     && matches!(s.kind, StackKind::ActivatedAbility { ability: 0 })
                     && !live(&after, s.id)
                 {

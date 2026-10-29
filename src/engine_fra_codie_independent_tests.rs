@@ -87,7 +87,12 @@ fn codie_retargets_prepared_copy_after_source_leaves_and_does_not_retrigger() {
                 .count(),
             2
         );
-        assert!(!g.state.pending_triggers.iter().any(|s| s.source.is_some_and(|source| source.id == codie)));
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .any(|s| s.source.is_some_and(|source| source.id == codie))
+        );
         let snapshot = g.snapshot();
         for _ in 0..2 {
             codie_test_settle(&mut g);
@@ -107,13 +112,15 @@ fn codie_ignores_opponent_prepared_casts() {
         act(&mut g, Action::AnnounceExile { card: enemy.card });
         choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
         pay(&mut g);
-        assert!(!g.state.pending_triggers.iter().any(|s| s.source.is_some_and(|source| source.id == codie)));
         assert!(
             !g.state
-                .stack
+                .pending_triggers
                 .iter()
-                .any(|s| s.source.is_some_and(|source| source.id == codie) && s.kind != StackKind::Spell)
+                .any(|s| s.source.is_some_and(|source| source.id == codie))
         );
+        assert!(!g.state.stack.iter().any(
+            |s| s.source.is_some_and(|source| source.id == codie) && s.kind != StackKind::Spell
+        ));
     }
 }
 
@@ -132,11 +139,15 @@ fn codie_copy_remains_controlled_by_trigger_controller_after_control_change() {
         choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
         pay(&mut g);
         assert!(
-            g.state.pending_triggers.iter().any(|s| s.source.is_some_and(|source| source.id == codie))
+            g.state
+                .pending_triggers
+                .iter()
+                .any(|s| s.source.is_some_and(|source| source.id == codie))
                 || g.state
                     .stack
                     .iter()
-                    .any(|s| s.source.is_some_and(|source| source.id == codie) && s.kind != StackKind::Spell)
+                    .any(|s| s.source.is_some_and(|source| source.id == codie)
+                        && s.kind != StackKind::Spell)
         );
         g.change_controller(g.object_ref(codie), p.other());
         codie_test_settle(&mut g);

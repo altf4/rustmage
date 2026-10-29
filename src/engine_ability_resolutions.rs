@@ -21,7 +21,9 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
 }
 impl Game {
     pub(super) fn record_ability_resolution(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         assert!(matches!(
             item.kind,
             StackKind::TriggeredAbility { .. } | StackKind::ActivatedAbility { .. }
@@ -51,7 +53,9 @@ impl Game {
         }
     }
     pub(super) fn ability_resolution_number(&self, item: &SpellView) -> u64 {
-        let Some(source) = item.source else { return 0; };
+        let Some(source) = item.source else {
+            return 0;
+        };
         self.state
             .ability_resolutions
             .as_ref()

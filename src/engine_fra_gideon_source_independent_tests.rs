@@ -32,12 +32,10 @@ fn copied_gideon_source_uses_trigger_time_opponent_and_obeys_prevention() {
             let other_life = g.state.players[actor.other().index()].life;
             g.create_tokens(actor, Card::test_index(5298), 1, false);
             g.prepare_triggers();
-            assert!(
-                g.state
-                    .stack
-                    .iter()
-                    .any(|item| item.source.is_some_and(|identity| identity.id == source) && item.event_player == Some(actor))
-            );
+            assert!(g.state.stack.iter().any(|item| {
+                item.source.is_some_and(|identity| identity.id == source)
+                    && item.event_player == Some(actor)
+            }));
             g.change_controller(g.object_ref(source), actor);
             let saved = g.snapshot();
             for _ in 0..2 {

@@ -123,19 +123,29 @@ fn score(o: &Observation, a: &Action, i: usize, seed: usize, fallback: bool) -> 
         } => {
             let v = obj(*id);
             let source = o.announcing.as_ref().unwrap();
-            if source.source().is_some_and(|source| source.card.name() == "Fell") {
+            if source
+                .source()
+                .is_some_and(|source| source.card.name() == "Fell")
+            {
                 if v.owner == p && v.card.name() == "Miner's Guidewing" {
                     2000
                 } else {
                     50
                 }
-            } else if source.source().is_some_and(|source| source.card.name() == "Get Lost") {
+            } else if source
+                .source()
+                .is_some_and(|source| source.card.name() == "Get Lost")
+            {
                 if v.owner != p && v.card.is_creature() {
                     1800
                 } else {
                     500
                 }
-            } else if source.source().is_some_and(|source| source.card.name() == "Over the Edge") && source.mode == Some(0) {
+            } else if source
+                .source()
+                .is_some_and(|source| source.card.name() == "Over the Edge")
+                && source.mode == Some(0)
+            {
                 if is_map(v.card) {
                     2000
                 } else if v.owner != p {
@@ -365,7 +375,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     | StackKind::DelayedSacrifice
                     | StackKind::DelayedWarpExile
                     | StackKind::DelayedManifestDread
-                    | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => {
+                    | StackKind::SiegeDefeat
+                    | StackKind::InherentRule { .. } => {
                         panic!("no delayed producer in this fixture")
                     }
                     StackKind::Spell => {
@@ -373,8 +384,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             casts[k][p.index()] += 1;
                         }
                     }
-                    StackKind::ActivatedAbility { .. } if item.source().is_some_and(|source| is_map(source.card)) => {
-                        if let Some(k) = provenance.get(&item.source().expect("example expects an object-backed packet").object) {
+                    StackKind::ActivatedAbility { .. }
+                        if item.source().is_some_and(|source| is_map(source.card)) =>
+                    {
+                        if let Some(k) = provenance.get(
+                            &item
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .object,
+                        ) {
                             activations[*k][p.index()] += 1;
                         }
                     }
@@ -383,7 +401,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(action, Action::Pass)
                 && let Some(item) = before.stack.last()
-                && (item.source().and_then(|source| index(source.card)).is_some() || item.source().is_some_and(|source| is_map(source.card)))
+                && (item
+                    .source()
+                    .and_then(|source| index(source.card))
+                    .is_some()
+                    || item.source().is_some_and(|source| is_map(source.card)))
             {
                 active.insert(item.id, (item.clone(), g.observe(item.controller)));
             }
@@ -523,8 +545,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if invalid {
                     continue;
                 }
-                if item.kind == StackKind::Spell && item.source().is_some_and(|source| source.card.is_creature()) {
-                    let v = view.objects.iter().find(|v| v.id == item.source().expect("example expects an object-backed packet").id).unwrap();
+                if item.kind == StackKind::Spell
+                    && item
+                        .source()
+                        .is_some_and(|source| source.card.is_creature())
+                {
+                    let v = view
+                        .objects
+                        .iter()
+                        .find(|v| {
+                            v.id == item
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                        })
+                        .unwrap();
                     assert_eq!(v.zone, Zone::Battlefield);
                     let expected = [
                         (2, 1),
@@ -629,13 +664,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             effects[k][owner.index()] += 1;
                         }
                         14 => {
-                            if let Some(v) =
-                                view.objects.iter().find(|v| v.reference == item.source().expect("example expects an object-backed packet").object)
-                            {
+                            if let Some(v) = view.objects.iter().find(|v| {
+                                v.reference
+                                    == item
+                                        .source()
+                                        .expect("example expects an object-backed packet")
+                                        .object
+                            }) {
                                 let old = base
                                     .objects
                                     .iter()
-                                    .find(|v| v.reference == item.source().expect("example expects an object-backed packet").object)
+                                    .find(|v| {
+                                        v.reference
+                                            == item
+                                                .source()
+                                                .expect("example expects an object-backed packet")
+                                                .object
+                                    })
                                     .unwrap();
                                 assert_eq!(v.power, old.power + 1);
                                 assert!(v.keywords.contains(Keywords::CANT_BE_BLOCKED));

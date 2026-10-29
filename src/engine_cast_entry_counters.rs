@@ -23,12 +23,12 @@ impl Game {
         let Some(event) = item.cast_event.as_deref() else {
             return;
         };
-        if !self
-            .state
-            .stack
-            .iter()
-            .any(|spell| spell.kind == StackKind::Spell && spell.source.is_some_and(|source| source.object == event.object))
-        {
+        if !self.state.stack.iter().any(|spell| {
+            spell.kind == StackKind::Spell
+                && spell
+                    .source
+                    .is_some_and(|source| source.object == event.object)
+        }) {
             return;
         }
         let amount =

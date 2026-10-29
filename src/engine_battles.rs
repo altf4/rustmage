@@ -14,7 +14,12 @@ impl Game {
         let source = self.object_view(reference.card);
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
-            source: Some(StackSourceView { id: source.id, object: reference, card: source.card, facts: DamageFacts::from_view(&source) }),
+            source: Some(StackSourceView {
+                id: source.id,
+                object: reference,
+                card: source.card,
+                facts: DamageFacts::from_view(&source),
+            }),
             source_less_rule: None,
             additional_triggers: source.additional_triggers,
             source_move: None,
@@ -89,7 +94,8 @@ impl Game {
         }
         let source = self.object_ref(id);
         let pending = |item: &SpellView| {
-            item.source.is_some_and(|identity| identity.object == source)
+            item.source
+                .is_some_and(|identity| identity.object == source)
                 && !matches!(
                     item.kind,
                     StackKind::Spell | StackKind::ActivatedAbility { .. }
@@ -114,7 +120,9 @@ impl Game {
                 .is_some_and(|r| pending(&r.item))
     }
     pub(super) fn resolve_siege_defeat(&mut self, item: &SpellView) -> bool {
-        let Some(source) = item.source else { return false; };
+        let Some(source) = item.source else {
+            return false;
+        };
         if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return false;
         }

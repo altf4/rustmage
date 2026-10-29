@@ -6,7 +6,9 @@ impl Game {
     /// into its copiable values or ability packet. The spell may currently be
     /// resolving; it remains on the stack until its resolution finishes.
     pub(super) fn spell_has_split_second(&self, spell: &SpellView) -> bool {
-        let Some(source) = spell.source else { return false; };
+        let Some(source) = spell.source else {
+            return false;
+        };
         spell.kind == StackKind::Spell
             && self
                 .state
@@ -60,9 +62,11 @@ impl Game {
             .stack
             .iter()
             .any(|spell| self.spell_has_split_second(spell))
-            || self.state.resolving.as_ref().is_some_and(|r| {
-                self.spell_has_split_second(&r.item)
-            })
+            || self
+                .state
+                .resolving
+                .as_ref()
+                .is_some_and(|r| self.spell_has_split_second(&r.item))
     }
     pub(super) fn static_casting_prohibited(&self, actor: Player) -> bool {
         self.nonmana_actions_prohibited()
@@ -76,7 +80,9 @@ impl Game {
             })
     }
     pub(super) fn put_power_excess_counters(&mut self, item: &SpellView, filter: CreatureFilter) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         // Capture the entire simultaneous batch before any counter replacement
         // or placement can change a later recipient's characteristics.
         let changes = self

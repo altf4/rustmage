@@ -137,7 +137,9 @@ impl Game {
         }
     }
     fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let view = DelayedReturnView {
             id: self.next_stack_id(),
             source: source.object,
@@ -332,7 +334,9 @@ impl Game {
         let Some(link) = &item.return_link else {
             return;
         };
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let mut link = (**link).clone();
         match kind {
             ReturnKind::Revival => {

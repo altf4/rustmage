@@ -902,7 +902,9 @@ impl Game {
         subject: Subject,
         types: &'static [&'static str],
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         assert!(types.iter().all(|t| crate::cards::is_creature_type(t)));
         let recipients: Vec<_> = self
             .keyword_subjects(item, subject)
@@ -934,7 +936,9 @@ impl Game {
         subject: Subject,
         kind: crate::cards::BasicLandType,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let recipients: Vec<_> = self
             .keyword_subjects(item, subject)
             .into_iter()
@@ -964,7 +968,9 @@ impl Game {
         subject: Subject,
         types: &'static [&'static str],
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         assert!(
             types
                 .iter()

@@ -64,11 +64,25 @@ fn qualifies(i: usize, p: Player, t: Target, b: &Observation) -> bool {
         Target::Spell(id) => b
             .stack
             .iter()
-            .find(|s| s.kind == StackKind::Spell && s.source().expect("example expects an object-backed packet").id == id)
+            .find(|s| {
+                s.kind == StackKind::Spell
+                    && s.source()
+                        .expect("example expects an object-backed packet")
+                        .id
+                        == id
+            })
             .is_some_and(|s| match i {
                 1 => {
-                    s.source().expect("example expects an object-backed packet").card.is_instant()
-                        || s.source().expect("example expects an object-backed packet").card.info().type_line.starts_with("Sorcery")
+                    s.source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        .is_instant()
+                        || s.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .info()
+                            .type_line
+                            .starts_with("Sorcery")
                 }
                 10 => s.source().is_some_and(|source| source.card.is_creature()),
                 _ => false,
@@ -100,24 +114,42 @@ fn object(o: &Observation, r: ObjectRef) -> Option<&rustmage::ObjectView> {
     o.objects.iter().find(|v| v.reference == r)
 }
 fn expected(s: &SpellView, b: &Observation) -> (Mana, u32, bool) {
-    let i = idx(s.source().expect("example expects an object-backed packet").card).unwrap();
-    let (mut colors, generic) = printed(s.source().expect("example expects an object-backed packet").card);
+    let i = idx(s
+        .source()
+        .expect("example expects an object-backed packet")
+        .card)
+    .unwrap();
+    let (mut colors, generic) = printed(
+        s.source()
+            .expect("example expects an object-backed packet")
+            .card,
+    );
     let discounted = s.targets.iter().any(|t| {
         t.object.is_some_and(|r| object(b, r).is_some()) && qualifies(i, s.controller, t.target, b)
     });
-    let mentors =
-        if s.source().expect("example expects an object-backed packet").card.is_instant() || s.source().expect("example expects an object-backed packet").card.info().type_line.starts_with("Sorcery") {
-            b.objects
-                .iter()
-                .filter(|v| {
-                    v.owner == s.controller
-                        && v.zone == Zone::Battlefield
-                        && v.card.name() == "Stormcatch Mentor"
-                })
-                .count() as u32
-        } else {
-            0
-        };
+    let mentors = if s
+        .source()
+        .expect("example expects an object-backed packet")
+        .card
+        .is_instant()
+        || s.source()
+            .expect("example expects an object-backed packet")
+            .card
+            .info()
+            .type_line
+            .starts_with("Sorcery")
+    {
+        b.objects
+            .iter()
+            .filter(|v| {
+                v.owner == s.controller
+                    && v.zone == Zone::Battlefield
+                    && v.card.name() == "Stormcatch Mentor"
+            })
+            .count() as u32
+    } else {
+        0
+    };
     if discounted && i == 1 {
         colors[1] = colors[1].saturating_sub(1);
     }
@@ -150,7 +182,11 @@ fn deck(f: usize) -> Vec<Card> {
     d
 }
 fn witness(s: &SpellView, b: &Observation, a: &Observation) {
-    let i = idx(s.source().expect("example expects an object-backed packet").card).unwrap();
+    let i = idx(s
+        .source()
+        .expect("example expects an object-backed packet")
+        .card)
+    .unwrap();
     let targets: Vec<_> = s
         .targets
         .iter()
@@ -207,7 +243,13 @@ fn witness(s: &SpellView, b: &Observation, a: &Observation) {
             let event = a.last_target_library_move.expect("public exact tuck event");
             assert_eq!(
                 (event.source, event.target_before, event.owner),
-                (s.source().expect("example expects an object-backed packet").object, targets[0].reference, targets[0].owner)
+                (
+                    s.source()
+                        .expect("example expects an object-backed packet")
+                        .object,
+                    targets[0].reference,
+                    targets[0].owner
+                )
             );
             assert_eq!(
                 event.target_after.generation,
@@ -279,7 +321,16 @@ fn witness(s: &SpellView, b: &Observation, a: &Observation) {
         }
         17 => {
             let v = targets[0];
-            let aura = a.objects.iter().find(|v| v.id == s.source().expect("example expects an object-backed packet").id).unwrap();
+            let aura = a
+                .objects
+                .iter()
+                .find(|v| {
+                    v.id == s
+                        .source()
+                        .expect("example expects an object-backed packet")
+                        .id
+                })
+                .unwrap();
             if v.toughness <= 3 {
                 assert_eq!(aura.zone, Zone::Graveyard);
             } else {
@@ -453,7 +504,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 owners[p.index()] += 1;
             }
             for s in &a.stack {
-                if s.kind == StackKind::Spell && s.source().and_then(|source| idx(source.card)).is_some() {
+                if s.kind == StackKind::Spell
+                    && s.source().and_then(|source| idx(source.card)).is_some()
+                {
                     seen.insert(s.id);
                 }
             }
@@ -481,7 +534,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .any(|t| t.object.is_none_or(|r| object(&before, r).is_some()));
                 if valid && a.outcome.is_none() {
                     witness(&s, &before, &a);
-                    effects[idx(s.source().expect("example expects an object-backed packet").card).unwrap()] += 1;
+                    effects[idx(s
+                        .source()
+                        .expect("example expects an object-backed packet")
+                        .card)
+                    .unwrap()] += 1;
                 }
             }
             max_bytes = max_bytes.max(g.state_bytes());

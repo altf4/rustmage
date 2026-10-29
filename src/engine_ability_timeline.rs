@@ -216,8 +216,11 @@ impl Game {
         match subject {
             Subject::Entering => self.entering_subject(item).into_iter().collect(),
             Subject::Attached => self.attached_subject(item).into_iter().collect(),
-            Subject::Source => item.source.filter(|source| self.on_battlefield(source.id)
-                && self.object_ref(source.id) == source.object)
+            Subject::Source => item
+                .source
+                .filter(|source| {
+                    self.on_battlefield(source.id) && self.object_ref(source.id) == source.object
+                })
                 .map(|source| source.id)
                 .into_iter()
                 .collect(),

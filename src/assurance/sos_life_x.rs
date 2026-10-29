@@ -17,7 +17,12 @@ fn pay_life(g: &mut Game, spell: CardId, x: u32) {
         .unwrap();
     checked(g, pay);
     assert_eq!(g.state.players[p.index()].life, life);
-    assert!(!g.state.stack.iter().any(|s| s.source.is_some_and(|source| source.id == spell)));
+    assert!(
+        !g.state
+            .stack
+            .iter()
+            .any(|s| s.source.is_some_and(|source| source.id == spell))
+    );
     assert!(g.observe(p.other()).cast_costs.is_none());
     let index = g
         .observe(p)
@@ -30,7 +35,12 @@ fn pay_life(g: &mut Game, spell: CardId, x: u32) {
     checked(g, Action::ChooseCastCost { clause: index });
     assert_eq!(g.state.players[p.index()].life, life - i128::from(x));
     if g.outcome().is_none() {
-        let item = g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == spell)).unwrap();
+        let item = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.source.is_some_and(|source| source.id == spell))
+            .unwrap();
         assert_eq!(item.x, Some(x));
         assert_eq!(item.mana_value(), 4);
         assert_eq!(item.source.unwrap().card.x_symbols(), 0);

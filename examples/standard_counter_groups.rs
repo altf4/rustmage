@@ -17,7 +17,9 @@ fn deck(lands: &[(&str, usize)], spells: &[&str]) -> Vec<Card> {
     cards
 }
 fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
-    let Some(source) = item.source() else { return 0; };
+    let Some(source) = item.source() else {
+        return 0;
+    };
     let name = source.card.name();
     let known = match item.kind {
         StackKind::CasualtyCopy
@@ -28,7 +30,8 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         | StackKind::DelayedSacrifice
         | StackKind::DelayedWarpExile
         | StackKind::DelayedManifestDread
-        | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => false,
+        | StackKind::SiegeDefeat
+        | StackKind::InherentRule { .. } => false,
         StackKind::Spell => matches!(
             name,
             "Darkness Descends" | "The Crystal's Chosen" | "Duty Beyond Death"
@@ -64,7 +67,11 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         };
         let own = old.owner == item.controller;
         let targeted = item.targets.iter().any(|t| t.object == Some(old.reference));
-        let other = old.reference != item.source().expect("example expects an object-backed packet").object;
+        let other = old.reference
+            != item
+                .source()
+                .expect("example expects an object-backed packet")
+                .object;
         let mode = match name {
             "Darkness Descends" if old.card.is_creature() => Some(1),
             "The Crystal's Chosen" | "Duty Beyond Death" if own && old.card.is_creature() => {
@@ -228,7 +235,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let n = check(&before, &after, item);
                 checks += n;
                 if n > 0 {
-                    resolved.insert((item.source().expect("example expects an object-backed packet").card.name(), format!("{:?}", item.kind)));
+                    resolved.insert((
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                        format!("{:?}", item.kind),
+                    ));
                 }
             }
             if before.announcing.is_some()

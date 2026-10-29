@@ -180,7 +180,9 @@ fn surrak_retarget_event_counts_each_new_object_once() {
             .state
             .stack
             .iter()
-            .find(|s| s.source.is_some_and(|source| source.id == shock) && s.kind == StackKind::Spell)
+            .find(|s| {
+                s.source.is_some_and(|source| source.id == shock) && s.kind == StackKind::Spell
+            })
             .unwrap()
             .clone();
         let before = g.state.pending_triggers.len();

@@ -107,10 +107,15 @@ fn choose(
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let root = o.announcing.as_ref().unwrap();
                 let benefit = matches!(
-                    root.source().expect("example expects an object-backed packet").card.name(),
+                    root.source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        .name(),
                     "Moment of Triumph" | "Giant Growth" | "Efflorescence"
                 );
-                if root.source().is_some_and(|source| source.card.name() == "Giant Growth")
+                if root
+                    .source()
+                    .is_some_and(|source| source.card.name() == "Giant Growth")
                     && b.card.name() == "Tenured Concocter"
                     && b.owner != root.controller
                 {
@@ -201,11 +206,10 @@ fn main() {
             if matches!(a, Action::ArrangeLibrary { .. }) {
                 assert!(g.observe(actor.other()).library_choice.is_none());
                 private_choices += 1;
-                if before
-                    .resolving
-                    .as_ref()
-                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Grim Bauble"))
-                {
+                if before.resolving.as_ref().is_some_and(|s| {
+                    s.source()
+                        .is_some_and(|source| source.card.name() == "Grim Bauble")
+                }) {
                     surveils += 1;
                 }
             }
@@ -251,7 +255,8 @@ fn main() {
             // when their recipient is an opponent's creature.
             if let Some(s) = root.as_ref()
                 && s.kind == StackKind::Spell
-                && s.source().is_some_and(|source| source.card.name() == "Efflorescence")
+                && s.source()
+                    .is_some_and(|source| source.card.name() == "Efflorescence")
                 && before.players[s.controller.index()].life_gained_this_turn > 0
                 && after.stack.iter().all(|t| t.id != s.id)
                 && after.resolving.is_none()
@@ -292,7 +297,11 @@ fn main() {
                 && after.resolving.is_none()
                 && before.turn == after.turn
             {
-                let name = root.source().expect("example expects an object-backed packet").card.name();
+                let name = root
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .card
+                    .name();
                 let gain = before.players[root.controller.index()].life_gained_this_turn > 0;
                 let old_target = root.targets.first().and_then(|t| t.object).and_then(|r| {
                     before
@@ -379,14 +388,22 @@ fn main() {
                 }
                 if matches!(root.kind, StackKind::TriggeredAbility { .. }) {
                     if name == "Old-Growth Educator"
-                        && let Some(old) = before
-                            .objects
-                            .iter()
-                            .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
-                        && let Some(b) = after
-                            .objects
-                            .iter()
-                            .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
+                        && let Some(old) = before.objects.iter().find(|b| {
+                            b.reference
+                                == root
+                                    .source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                                && b.zone == Zone::Battlefield
+                        })
+                        && let Some(b) = after.objects.iter().find(|b| {
+                            b.reference
+                                == root
+                                    .source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                                && b.zone == Zone::Battlefield
+                        })
                     {
                         assert_eq!(
                             b.counters.plus_one,

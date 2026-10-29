@@ -92,9 +92,9 @@ impl Game {
     }
     pub(super) fn item_activation_discount(&self, item: &SpellView) -> u32 {
         match item.kind {
-            StackKind::ActivatedAbility { ability } => {
-                item.source.map_or(0, |source| self.activation_generic_discount(source.id, source.card, ability))
-            }
+            StackKind::ActivatedAbility { ability } => item.source.map_or(0, |source| {
+                self.activation_generic_discount(source.id, source.card, ability)
+            }),
             _ => 0,
         }
     }
@@ -611,7 +611,12 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
-            source: Some(StackSourceView { id: card, object: self.object_ref(card), card: self.state.objects[card as usize].card, facts: self.damage_facts(card) }),
+            source: Some(StackSourceView {
+                id: card,
+                object: self.object_ref(card),
+                card: self.state.objects[card as usize].card,
+                facts: self.damage_facts(card),
+            }),
             source_less_rule: None,
             additional_triggers: 0,
             source_move: None,
@@ -740,7 +745,8 @@ impl Game {
         self.spend_mana_for(item.controller, payment, self.purpose_for_item(item));
         self.lose_life(item.controller, i128::from(cost.life));
         let object = &mut self.state.objects[source.id as usize];
-        if object.generation != source.object.generation || object.zone != definition.source_zone() {
+        if object.generation != source.object.generation || object.zone != definition.source_zone()
+        {
             assert!(
                 !cost.tap
                     && !cost.sacrifice
@@ -755,7 +761,9 @@ impl Game {
         let external_planeswalker_grant = item.attachment_trigger.as_ref().is_some_and(|event| {
             event.granted
                 && item
-                    .source.expect("object-backed announcement").card
+                    .source
+                    .expect("object-backed announcement")
+                    .card
                     .static_ability_groups()
                     .iter()
                     .any(|group| {
@@ -842,7 +850,10 @@ impl Game {
             // The local announcement is temporarily outside State while costs
             // commit. Freeze its post-payment source facts before departure too.
             let source = self.object_view(source.id);
-            item.source.as_mut().expect("activated ability source exists").facts = DamageFacts::from_view(&source);
+            item.source
+                .as_mut()
+                .expect("activated ability source exists")
+                .facts = DamageFacts::from_view(&source);
             item.source_keywords = source.keywords;
             item.source_tapped = source.tapped;
             item.source_attachment = source.attached_to;

@@ -270,7 +270,9 @@ impl Game {
         }
     }
     pub(super) fn offer_miracle_cast(&mut self, item: &SpellView, cost: ManaCost) -> bool {
-        let Some(source) = item.source else { return false; };
+        let Some(source) = item.source else {
+            return false;
+        };
         if self.object_ref(source.id) != source.object
             || self.state.objects[source.id as usize].zone != Zone::Hand
         {

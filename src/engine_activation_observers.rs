@@ -59,11 +59,17 @@ impl Game {
         }
     }
     pub(super) fn committed_activation_observers(&mut self, item: &SpellView) {
-        let Some(identity) = item.source else { return; };
+        let Some(identity) = item.source else {
+            return;
+        };
         if let StackKind::ActivatedAbility { ability } = item.kind
             && !item.is_copy
             && identity.card.activation(ability).cost.loyalty.is_some()
-            && !self.state.cast_rollback.as_ref().is_some_and(|r| r.replay.is_some())
+            && !self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.replay.is_some())
         {
             self.state.players[item.controller.index()].loyalty_ability_activated_this_turn = true;
         }
@@ -142,7 +148,9 @@ impl Game {
         let StackKind::TriggeredAbility { ability } = item.kind else {
             return;
         };
-        let Some(identity) = item.source else { return; };
+        let Some(identity) = item.source else {
+            return;
+        };
         let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
         if matches!(
             condition.event(),

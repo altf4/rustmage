@@ -64,7 +64,9 @@ fn sos_milled_spell_normal_cost_timing_source_departure_and_incarnation() {
             .state
             .stack
             .iter()
-            .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == shock))
+            .find(|s| {
+                s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == shock)
+            })
             .unwrap()
             .cast
             .unwrap();

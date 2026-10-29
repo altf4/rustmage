@@ -222,22 +222,41 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 if item.kind == StackKind::Spell {
-                    if let Some(i) = NAMES.iter().position(|n| *n == item.source().expect("example expects an object-backed packet").card.name()) {
+                    if let Some(i) = NAMES.iter().position(|n| {
+                        *n == item
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name()
+                    }) {
                         casts[i] += 1;
                     }
                     continue;
                 }
                 if let StackKind::TriggeredAbility { ability } = item.kind {
-                    let count = debt.get_mut(&(item.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
-                        panic!(
-                            "unexpected trigger {} ability {ability} game {seed}",
-                            item.source().expect("example expects an object-backed packet").card.name()
-                        )
-                    });
+                    let count = debt
+                        .get_mut(&(
+                            item.source()
+                                .expect("example expects an object-backed packet")
+                                .object,
+                            ability,
+                        ))
+                        .unwrap_or_else(|| {
+                            panic!(
+                                "unexpected trigger {} ability {ability} game {seed}",
+                                item.source()
+                                    .expect("example expects an object-backed packet")
+                                    .card
+                                    .name()
+                            )
+                        });
                     assert!(
                         *count > 0,
                         "extra trigger {} game {seed}",
-                        item.source().expect("example expects an object-backed packet").card.name()
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name()
                     );
                     *count -= 1;
                 }

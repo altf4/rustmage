@@ -274,7 +274,10 @@ fn copied_molten_tide_creates_a_separate_trigger_for_its_controller() {
             .stack
             .iter()
             .find(|item| {
-                item.kind == StackKind::Spell && item.source.is_some_and(|source| source.card == Card::test_index(5461))
+                item.kind == StackKind::Spell
+                    && item
+                        .source
+                        .is_some_and(|source| source.card == Card::test_index(5461))
             })
             .unwrap()
             .clone();

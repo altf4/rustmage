@@ -75,7 +75,16 @@ impl Game {
         a: &Announcement,
         sacrifice: Option<ObjectRef>,
     ) -> bool {
-        a.cost_options()
-            .any(|cost| self.bargain_cost_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, cost, sacrifice))
+        a.cost_options().any(|cost| {
+            self.bargain_cost_fundable(
+                a.item.controller,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id,
+                cost,
+                sacrifice,
+            )
+        })
     }
 }

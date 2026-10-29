@@ -101,11 +101,19 @@ impl Game {
         let evidence = a.item.cast.is_some_and(|c| c.evidence == Some(true));
         let bargain = a.item.cast.is_some_and(|c| c.bargain == Some(true));
         u64::from(if evidence {
-            a.item.source.expect("cost announcement has object source").card.evidence_reduction()
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .evidence_reduction()
         } else {
             0
         }) + u64::from(if bargain {
-            a.item.source.expect("cost announcement has object source").card.bargain_reduction()
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .bargain_reduction()
         } else {
             0
         })
@@ -116,13 +124,25 @@ impl Game {
                 return a.miracle_cost.expect("miracle cost");
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
-                return a.item.source.expect("cost announcement has object source").card.sneak_cost().expect("Sneak cost");
+                return a
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .sneak_cost()
+                    .expect("Sneak cost");
             }
             if a.item
                 .cast
                 .is_some_and(|c| c.method == CastMethod::Harmonize)
             {
-                return a.item.source.expect("cost announcement has object source").card.harmonize_cost().expect("Harmonize cost");
+                return a
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .harmonize_cost()
+                    .expect("Harmonize cost");
             }
             if a.item
                 .cast
@@ -134,7 +154,13 @@ impl Game {
                 };
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
-                return a.item.source.expect("cost announcement has object source").card.warp_cost().expect("fixed Warp cost");
+                return a
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .warp_cost()
+                    .expect("fixed Warp cost");
             }
             if a.item.cast.is_some_and(|c| {
                 matches!(
@@ -151,20 +177,38 @@ impl Game {
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::Flashback)
             {
-                return a.item.source.expect("cost announcement has object source").card.flashback_cost().unwrap();
+                return a
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .flashback_cost()
+                    .unwrap();
             }
             assert!(
-                !a.item.source.expect("cost announcement has object source").card.has_hybrid_cost(),
+                !a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .has_hybrid_cost(),
                 "hybrid cost not chosen"
             );
-            let (colored, generic) = a.item.source.expect("cost announcement has object source").card.cost();
+            let (colored, generic) = a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .cost();
             ManaCost { colored, generic }
         });
         // A selected hybrid equivalent already includes the declared surcharge.
         if a.cost.is_none() {
             base = Self::with_flash_surcharge(
                 base,
-                a.item.source.expect("cost announcement has object source").card,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
                 a.item.cast.is_some_and(|c| c.flash_surcharge),
             );
         }
@@ -182,10 +226,16 @@ impl Game {
         Self::with_kicker_cost(
             Self::with_offspring_cost(
                 base,
-                a.item.source.expect("cost announcement has object source").card,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
                 a.item.cast.is_some_and(|c| c.offspring == Some(true)),
             ),
-            a.item.source.expect("cost announcement has object source").card,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card,
             a.item.cast.is_some_and(|c| c.kicker == Some(true)),
         )
     }
@@ -260,7 +310,13 @@ impl Game {
     pub(super) fn kicker_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
         let mut proposal = a.clone();
         proposal.item.cast.as_mut().unwrap().kicker = Some(pay);
-        if proposal.item.source.expect("cost announcement has object source").card.kicked_targets().is_some()
+        if proposal
+            .item
+            .source
+            .expect("cost announcement has object source")
+            .card
+            .kicked_targets()
+            .is_some()
             && !self.targets_available(
                 self.target_spec(&proposal.item),
                 proposal.item.controller,
@@ -289,14 +345,30 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
-        if a.item.source.expect("cost announcement has object source").card.target_cost_reduction().is_some() {
+        if a.item
+            .source
+            .expect("cost announcement has object source")
+            .card
+            .target_cost_reduction()
+            .is_some()
+        {
             return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
         }
         a.cost_options().any(|cost| {
             self.spell_can_fund(
                 a.item.controller,
-                a.item.source.expect("cost announcement has object source").id,
-                Self::with_offspring_cost(cost, a.item.source.expect("cost announcement has object source").card, pay),
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id,
+                Self::with_offspring_cost(
+                    cost,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card,
+                    pay,
+                ),
             )
         })
     }

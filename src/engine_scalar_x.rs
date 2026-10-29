@@ -14,7 +14,14 @@ impl Game {
             .state
             .announcing
             .as_ref()
-            .filter(|a| a.item.source.expect("cost announcement has object source").id == id && a.item.controller == actor)
+            .filter(|a| {
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id
+                    == id
+                    && a.item.controller == actor
+            })
             .map_or(0, Self::announcement_optional_reduction);
         self.scalar_x_total_with_extra(actor, id, base, x, self.effective_spell_card(id), extra)
     }
@@ -162,7 +169,12 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return Vec::new();
         };
-        let definition = a.item.source.expect("cost announcement has object source").card.activation(ability);
+        let definition = a
+            .item
+            .source
+            .expect("cost announcement has object source")
+            .card
+            .activation(ability);
         if a.power_up_costs.is_some() {
             let fundable = |value: u32| {
                 let mut probe = a.clone();
@@ -207,10 +219,16 @@ impl Game {
                             required: base.colored,
                             generic,
                             source: Some((
-                                a.item.source.expect("cost announcement has object source").object,
+                                a.item
+                                    .source
+                                    .expect("cost announcement has object source")
+                                    .object,
                                 ability,
                                 a.counter_payment.clone(),
-                                a.item.source.expect("cost announcement has object source").card,
+                                a.item
+                                    .source
+                                    .expect("cost announcement has object source")
+                                    .card,
                                 a.item.borrowed_slot,
                             )),
                         },
@@ -290,10 +308,22 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
-        let mut intervals = if a.item.kind == StackKind::Spell && a.item.source.expect("cost announcement has object source").card.life_x_cost() {
+        let mut intervals = if a.item.kind == StackKind::Spell
+            && a.item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .life_x_cost()
+        {
             self.life_x_intervals(a)
         } else if a.item.kind == StackKind::Spell {
-            self.scalar_x_intervals(a.item.controller, a.item.source.expect("cost announcement has object source").id)
+            self.scalar_x_intervals(
+                a.item.controller,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id,
+            )
         } else {
             self.activation_x_intervals(a)
         };
@@ -309,7 +339,11 @@ impl Game {
             }
         }
         Some(XChoiceView {
-            card: a.item.source.expect("cost announcement has object source").object,
+            card: a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .object,
             intervals,
         })
     }
@@ -415,10 +449,10 @@ impl Game {
                     .and_then(|facts| facts.iter().find(|f| f.group == r.target_group))
                     .map_or(0, |f| f.power.max(0) as u128)
             }
-            AmountValue::SourceLastKnownPower => {
-                item.source.filter(|source| source.facts.is_creature())
-                    .map_or(0, |source| source.facts.power.max(0) as u128)
-            }
+            AmountValue::SourceLastKnownPower => item
+                .source
+                .filter(|source| source.facts.is_creature())
+                .map_or(0, |source| source.facts.power.max(0) as u128),
             AmountValue::SacrificedToughness => item
                 .sacrificed_toughness
                 .as_deref()
@@ -436,7 +470,9 @@ impl Game {
                 .source_counter_payment
                 .filter(|payment| payment.paid && payment.kind == kind)
                 .map_or(0, |payment| u128::from(payment.amount)),
-            AmountValue::SourceCounterQuantity(kind) => item.source.and_then(|source| self.source_counter_quantity_live(source.object, kind))
+            AmountValue::SourceCounterQuantity(kind) => item
+                .source
+                .and_then(|source| self.source_counter_quantity_live(source.object, kind))
                 .map(u128::from)
                 .unwrap_or_else(|| {
                     item.source_counter_lki
@@ -446,15 +482,13 @@ impl Game {
                 }),
             AmountValue::SourceToughness => self.source_toughness(item),
             AmountValue::SourceEquipmentCount => self.source_equipment_quantity(item),
-            AmountValue::SourcePower => {
-                item.source.map_or(0, |source| {
-                    if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
-                        self.stats(source.id).power.max(0) as u128
-                    } else {
-                        source.facts.power.max(0) as u128
-                    }
-                })
-            }
+            AmountValue::SourcePower => item.source.map_or(0, |source| {
+                if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
+                    self.stats(source.id).power.max(0) as u128
+                } else {
+                    source.facts.power.max(0) as u128
+                }
+            }),
             AmountValue::LifeEventAmount => {
                 item.life_event.expect("saved life event").amount.max(0) as u128
             }
@@ -488,7 +522,9 @@ impl Game {
                 .item_amount(*value, item)
                 .checked_mul(u128::from(factor))
                 .capacity("effect amount representation exhausted"),
-            other => item.source.map_or(0, |source| self.amount_value(other, source.object, item.controller)),
+            other => item.source.map_or(0, |source| {
+                self.amount_value(other, source.object, item.controller)
+            }),
         }
     }
 }

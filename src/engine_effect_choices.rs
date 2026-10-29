@@ -43,7 +43,10 @@ impl Game {
             kind: EffectChoiceKind::Discard,
             filter: evidence::cost(0).filter,
             amount: 1,
-            source: item.source.expect("effect choice requires object source").object,
+            source: item
+                .source
+                .expect("effect choice requires object source")
+                .object,
             required,
             selected: std::array::from_fn(|_| Vec::new()),
             skip_to: None,
@@ -67,7 +70,10 @@ impl Game {
             kind: EffectChoiceKind::RemoveCreatureCounters(1),
             filter: Self::creature_counter_spec(1).filter,
             amount: 1,
-            source: item.source.expect("effect choice requires object source").object,
+            source: item
+                .source
+                .expect("effect choice requires object source")
+                .object,
             required,
             selected: std::array::from_fn(|_| Vec::new()),
             skip_to: None,
@@ -239,7 +245,10 @@ impl Game {
             kind,
             filter: evidence::cost(0).filter,
             amount: 0,
-            source: item.source.expect("effect choice requires object source").object,
+            source: item
+                .source
+                .expect("effect choice requires object source")
+                .object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
             skip_to: None,
@@ -314,7 +323,10 @@ impl Game {
             kind: EffectChoiceKind::Discard,
             filter: evidence::cost(0).filter,
             amount: 0,
-            source: item.source.expect("effect choice requires object source").object,
+            source: item
+                .source
+                .expect("effect choice requires object source")
+                .object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
             skip_to: Some(pc),
@@ -485,7 +497,15 @@ impl Game {
         if objects.is_empty() {
             return;
         }
-        let source = self.state.resolving.as_ref().unwrap().item.source.expect("effect choice requires object source").object;
+        let source = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .item
+            .source
+            .expect("effect choice requires object source")
+            .object;
         let pc = self.state.resolving.as_ref().unwrap().pc;
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
             discard_draw: None,
@@ -596,7 +616,10 @@ impl Game {
             kind: EffectChoiceKind::TargetAttackingReturn { counter },
             filter: evidence::cost(0).filter,
             amount: 1,
-            source: item.source.expect("effect choice requires object source").object,
+            source: item
+                .source
+                .expect("effect choice requires object source")
+                .object,
             required: [0; 2],
             selected: std::array::from_fn(|i| {
                 if i == player.index() {
@@ -743,7 +766,10 @@ impl Game {
             entry_life_bonus: None,
             hand_entry_filter: None,
             equipment_recipient: None,
-            source: item.source.expect("effect choice requires object source").object,
+            source: item
+                .source
+                .expect("effect choice requires object source")
+                .object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
             greatest_value: [None; 2],

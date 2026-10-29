@@ -43,7 +43,8 @@ fn gideon_observes_only_opponents_committed_loyalty_abilities() {
                 .stack
                 .iter()
                 .filter(|item| {
-                    item.source.is_some_and(|source| source.id == gideon) && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.is_some_and(|source| source.id == gideon)
+                        && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 })
                 .count();
             assert_eq!(triggers, usize::from(enemy));
@@ -272,7 +273,10 @@ fn gideon_observes_each_opponent_creature_entry_and_keeps_controller_on_source_d
             .iter()
             .chain(g.state.pending_triggers.iter())
             .chain(g.state.ordering_triggers.iter())
-            .filter(|s| s.source.is_some_and(|source| source.id == gideon) && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+            .filter(|s| {
+                s.source.is_some_and(|source| source.id == gideon)
+                    && matches!(s.kind, StackKind::TriggeredAbility { .. })
+            })
             .count();
         assert_eq!(packets, 2);
         g.move_object(gideon, Zone::Graveyard);
@@ -291,7 +295,12 @@ fn gideon_does_not_observe_failed_loyalty_cost_or_own_creature_entries() {
         let mut g = scenario(actor);
         let gideon = put(&mut g, actor, "Gideon the Oathless", Zone::Battlefield);
         g.create_tokens(actor, Card::test_index(5298), 1, false);
-        assert!(!g.state.pending_triggers.iter().any(|s| s.source.is_some_and(|source| source.id == gideon)));
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .any(|s| s.source.is_some_and(|source| source.id == gideon))
+        );
         g.create_tokens(actor.other(), Card::JacePlaneswalkerToken, 1, false);
         let walker = g
             .state
@@ -319,7 +328,12 @@ fn gideon_does_not_observe_failed_loyalty_cost_or_own_creature_entries() {
             },
         );
         assert_eq!(g.snapshot(), saved);
-        assert!(!g.state.pending_triggers.iter().any(|s| s.source.is_some_and(|source| source.id == gideon)));
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .any(|s| s.source.is_some_and(|source| source.id == gideon))
+        );
     }
 }
 
@@ -373,7 +387,8 @@ fn copied_gideon_triggers_keep_the_event_player() {
                 .stack
                 .iter()
                 .find(|item| {
-                    item.source.is_some_and(|source| source.id == gideon) && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.is_some_and(|source| source.id == gideon)
+                        && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 })
                 .unwrap()
                 .clone();

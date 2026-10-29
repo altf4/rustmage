@@ -170,7 +170,13 @@ fn main() {
             }
             let paid = if let Some(root) = before.announcing.as_ref()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && is_new(root.source().expect("example expects an object-backed packet").card.name(), ability)
+                && is_new(
+                    root.source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        .name(),
+                    ability,
+                )
                 && let Action::PayCosts { payment } = a
             {
                 let v = before.additional_cost.as_ref().unwrap();
@@ -232,24 +238,33 @@ fn main() {
                         .iter()
                         .any(|b| b.id == selected.card && b.zone == Zone::Graveyard)
                 );
-                if root.source().is_some_and(|source| source.card.name() == "Masked Meower") {
-                    assert!(
-                        after
-                            .objects
-                            .iter()
-                            .any(|b| b.id == root.source().expect("example expects an object-backed packet").id && b.zone == Zone::Graveyard)
-                    );
+                if root
+                    .source()
+                    .is_some_and(|source| source.card.name() == "Masked Meower")
+                {
+                    assert!(after.objects.iter().any(|b| {
+                        b.id == root
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .id
+                            && b.zone == Zone::Graveyard
+                    }));
                 }
                 if matches!(
-                    root.source().expect("example expects an object-backed packet").card.name(),
+                    root.source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        .name(),
                     "Charging Strifeknight" | "Murmuring Volume"
                 ) {
-                    assert!(
-                        after
-                            .objects
-                            .iter()
-                            .any(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.tapped)
-                    );
+                    assert!(after.objects.iter().any(|b| {
+                        b.reference
+                            == root
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .object
+                            && b.tapped
+                    }));
                 }
             }
             for b in after
@@ -272,22 +287,41 @@ fn main() {
             }
             if let Some(root) = before.stack.last()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && is_new(root.source().expect("example expects an object-backed packet").card.name(), ability)
+                && is_new(
+                    root.source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        .name(),
+                    ability,
+                )
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()
             {
-                let name = root.source().expect("example expects an object-backed packet").card.name();
+                let name = root
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .card
+                    .name();
                 let p = root.controller.index();
                 if matches!(name, "Inner Demons Gangsters" | "Iron-Shield Elf") {
-                    if let Some(b) = after
-                        .objects
-                        .iter()
-                        .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
-                    {
+                    if let Some(b) = after.objects.iter().find(|b| {
+                        b.reference
+                            == root
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .object
+                            && b.zone == Zone::Battlefield
+                    }) {
                         let old = before
                             .objects
                             .iter()
-                            .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object)
+                            .find(|b| {
+                                b.reference
+                                    == root
+                                        .source()
+                                        .expect("example expects an object-backed packet")
+                                        .object
+                            })
                             .unwrap();
                         if name == "Inner Demons Gangsters" {
                             assert_eq!(b.power, old.power + 1);
@@ -312,7 +346,9 @@ fn main() {
             }
             // Gecko's entry-trigger mana resolves on the stack, independently of its draw activation.
             if let Some(root) = before.stack.last()
-                && root.source().is_some_and(|source| source.card.name() == "Flamecache Gecko")
+                && root
+                    .source()
+                    .is_some_and(|source| source.card.name() == "Flamecache Gecko")
                 && matches!(root.kind, StackKind::TriggeredAbility { .. })
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()

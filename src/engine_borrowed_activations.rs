@@ -274,7 +274,8 @@ impl Game {
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Exile);
         if let Some(source) = item.source
-            && self.on_battlefield(source.object.card) && self.object_ref(source.object.card) == source.object
+            && self.on_battlefield(source.object.card)
+            && self.object_ref(source.object.card) == source.object
         {
             for event in &events {
                 if !event.moved || event.destination != Zone::Exile {
@@ -321,10 +322,15 @@ impl Game {
         item.set_source_definition(descriptor.definition);
         item.source_counter_lki =
             card_quantities::counter_quantity_facts(descriptor.rules().program, |kind| {
-                self.source_counter_quantity_live(item.source.expect("activated ability has source").object, kind)
-                    .expect("live inherited source")
+                self.source_counter_quantity_live(
+                    item.source.expect("activated ability has source").object,
+                    kind,
+                )
+                .expect("live inherited source")
             });
-        item.source_copy_recipe = Some(Box::new(self.copiable_recipe(item.source.expect("activated ability has source").object)));
+        item.source_copy_recipe = Some(Box::new(
+            self.copiable_recipe(item.source.expect("activated ability has source").object),
+        ));
         item.borrowed_slot = Some(descriptor.slot);
         item
     }

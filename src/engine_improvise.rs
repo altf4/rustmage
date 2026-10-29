@@ -93,7 +93,10 @@ pub struct ImproviseChoiceView {
 }
 impl Game {
     pub(super) fn item_improvise(&self, item: &SpellView) -> bool {
-        item.kind == StackKind::Spell && item.source.is_some_and(|source| available(self, item.controller, source.card))
+        item.kind == StackKind::Spell
+            && item
+                .source
+                .is_some_and(|source| available(self, item.controller, source.card))
     }
     pub fn improvise_choice(&self) -> Option<ImproviseChoiceView> {
         if !matches!(
@@ -108,7 +111,11 @@ impl Game {
             return None;
         }
         Some(ImproviseChoiceView {
-            spell: a.item.source.expect("cost announcement has object source").object,
+            spell: a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .object,
             selected: f.improvised.clone(),
             remaining: f.remaining,
             can_pay: self.mana_payment_domain().is_some(),

@@ -90,7 +90,8 @@ fn codie_and_delayed_trigger_each_copy_a_prepared_sorcery() {
                 .iter()
                 .chain(g.state.ordering_triggers.iter())
                 .chain(g.state.stack.iter())
-                .any(|item| item.source.is_some_and(|source| source.id == codie) && item.kind != StackKind::Spell)
+                .any(|item| item.source.is_some_and(|source| source.id == codie)
+                    && item.kind != StackKind::Spell)
         );
         let snapshot = g.snapshot();
         for _ in 0..2 {
@@ -123,7 +124,9 @@ fn synthetic_noninstant_prepared_capture_keeps_delayed_instant_copy_armed() {
             .state
             .stack
             .iter()
-            .position(|s| s.source.is_some_and(|source| source.id == bear) && s.kind == StackKind::Spell)
+            .position(|s| {
+                s.source.is_some_and(|source| source.id == bear) && s.kind == StackKind::Spell
+            })
             .unwrap();
         let first = g.state.pending_triggers.len();
         let source = g.object_view(codie);

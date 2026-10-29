@@ -192,9 +192,12 @@ impl Game {
                     .card
                     .has_subtype(subtype)
                     && self.on_battlefield(item.source.expect("library effect requires source").id)
-                    && self.object_ref(item.source.expect("library effect requires source").id) == item.source.expect("library effect requires source").object
+                    && self.object_ref(item.source.expect("library effect requires source").id)
+                        == item.source.expect("library effect requires source").object
                 {
-                    self.state.objects[item.source.expect("library effect requires source").id as usize].growth += Stats {
+                    self.state.objects
+                        [item.source.expect("library effect requires source").id as usize]
+                        .growth += Stats {
                         power: i128::from(power),
                         toughness: i128::from(toughness),
                     };

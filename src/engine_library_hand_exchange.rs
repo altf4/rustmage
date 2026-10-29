@@ -211,8 +211,9 @@ impl Game {
         }
     }
     pub(super) fn offer_source_counter_or_cast(&mut self, item: &SpellView) -> bool {
-        if item.source.is_some_and(|source| self.on_battlefield(source.id) && self.object_ref(source.id) == source.object)
-        {
+        if item.source.is_some_and(|source| {
+            self.on_battlefield(source.id) && self.object_ref(source.id) == source.object
+        }) {
             let skip_to = self.state.resolving.as_ref().unwrap().pc;
             self.state.pending = Pending::EffectOptional {
                 player: item.controller,

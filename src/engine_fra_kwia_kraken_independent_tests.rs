@@ -21,7 +21,11 @@ fn kwia_countered_trigger_is_used_but_new_incarnation_can_trigger() {
         g.gain_life(player, 1);
         g.prepare_triggers();
         for _ in 0..32 {
-            if g.state.stack.iter().any(|item| item.source.is_some_and(|source| source.id == kwia)) {
+            if g.state
+                .stack
+                .iter()
+                .any(|item| item.source.is_some_and(|source| source.id == kwia))
+            {
                 break;
             }
             choose(&mut g, |a| {

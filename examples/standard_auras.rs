@@ -72,12 +72,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 actions.iter().position(|a| match a {
                     Action::ChooseTarget {
                         target: Target::Card(id),
-                    } if source.source().is_some_and(|source| source.card.name() == "Banishing Light") => {
+                    } if source
+                        .source()
+                        .is_some_and(|source| source.card.name() == "Banishing Light") =>
+                    {
                         before.objects.iter().any(|o| o.id == *id && aura(o.card))
                     }
                     Action::ChooseTarget {
                         target: Target::Card(id),
-                    } if source.source().is_some_and(|source| source.card.name() == "Disenchant") => {
+                    } if source
+                        .source()
+                        .is_some_and(|source| source.card.name() == "Disenchant") =>
+                    {
                         before.exile_links.iter().any(|l| {
                             l.source.card == *id
                                 && before

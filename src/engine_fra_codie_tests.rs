@@ -108,11 +108,33 @@ fn codie_copies_prepared_cast_only_if_original_spell_still_exists() {
             let mut g = scenario(player);
             let codie = put(&mut g, player, "Codie, Ravenous Codex", Zone::Battlefield);
             let prepared = prepared_peer(&mut g, player);
-            codie_announce(&mut g, Action::AnnounceExile { card: prepared.card });
-            let spell = g.state.stack.iter().find(|s| s.source.unwrap().object == g.object_ref(prepared.card)).unwrap().id;
-            assert!(g.state.pending_triggers.iter().any(|item| item.source.is_some_and(|source| source.id == codie))
-                || g.state.stack.iter().any(|item| item.source.is_some_and(|source| source.id == codie) && item.kind != StackKind::Spell));
-            if countered { assert!(g.counter_stack_item(spell, false)); }
+            codie_announce(
+                &mut g,
+                Action::AnnounceExile {
+                    card: prepared.card,
+                },
+            );
+            let spell = g
+                .state
+                .stack
+                .iter()
+                .find(|s| s.source.unwrap().object == g.object_ref(prepared.card))
+                .unwrap()
+                .id;
+            assert!(
+                g.state
+                    .pending_triggers
+                    .iter()
+                    .any(|item| item.source.is_some_and(|source| source.id == codie))
+                    || g.state
+                        .stack
+                        .iter()
+                        .any(|item| item.source.is_some_and(|source| source.id == codie)
+                            && item.kind != StackKind::Spell)
+            );
+            if countered {
+                assert!(g.counter_stack_item(spell, false));
+            }
             let saved = g.snapshot();
             codie_settle(&mut g);
             let cadets = g

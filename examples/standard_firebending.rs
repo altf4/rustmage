@@ -183,12 +183,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             if matches!(action, Action::PayCosts { .. })
-                && before
-                    .announcing
-                    .as_ref()
-                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Shared Roots"))
+                && before.announcing.as_ref().is_some_and(|s| {
+                    s.source()
+                        .is_some_and(|source| source.card.name() == "Shared Roots")
+                })
                 && before.objects.iter().any(|o| {
                     o.zone == Zone::Battlefield && o.owner == p && o.card.name() == "Uncle Iroh"
                 })

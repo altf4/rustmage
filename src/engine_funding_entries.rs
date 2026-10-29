@@ -1546,7 +1546,13 @@ impl Game {
                 self,
                 &goal,
                 parent.announcement.item.kind == StackKind::Spell
-                    && parent.announcement.item.source.expect("cost announcement has object source").card.has_convoke(),
+                    && parent
+                        .announcement
+                        .item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card
+                        .has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&parent.announcement.item));
             world.set_payment_context(&parent.announcement);
@@ -1565,7 +1571,12 @@ impl Game {
             let mut world = FundingState::from_game_with_convoke(
                 self,
                 &goal,
-                a.item.kind == StackKind::Spell && a.item.source.expect("cost announcement has object source").card.has_convoke(),
+                a.item.kind == StackKind::Spell
+                    && a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card
+                        .has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(a);
@@ -1824,11 +1835,14 @@ impl<'g> FundingState<'g> {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return false;
         };
-        let Some(resource) = self
-            .resources
-            .iter()
-            .position(|r| r.id == a.item.source.expect("cost announcement has object source").object.card)
-        else {
+        let Some(resource) = self.resources.iter().position(|r| {
+            r.id == a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .object
+                .card
+        }) else {
             return false;
         };
         let parent_goal = self.game.funding_goal(&parent.announcement);
@@ -1869,7 +1883,13 @@ impl<'g> FundingState<'g> {
                     quality: current.quality.copied(),
                     allocation,
                     external,
-                    frozen: Some(Box::new((a.item.source.expect("cost announcement has object source").card, a.item.borrowed_slot))),
+                    frozen: Some(Box::new((
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
+                        a.item.borrowed_slot,
+                    ))),
                 };
                 found = self.visit_applied(&step, &mut |w| {
                     let mut next = w.clone();
@@ -1880,7 +1900,13 @@ impl<'g> FundingState<'g> {
                     );
                     next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
-                        && parent.announcement.item.source.expect("cost announcement has object source").card.has_convoke();
+                        && parent
+                            .announcement
+                            .item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card
+                            .has_convoke();
                     next.set_payment_context(&parent.announcement);
                     next.reachable_with_evidence(
                         &parent_goal,

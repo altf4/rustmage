@@ -117,7 +117,9 @@ impl Game {
     pub(super) fn start_explore(&mut self, item: &SpellView, subject: Subject) -> bool {
         let explorer = match subject {
             Subject::Source => {
-                let Some(source) = item.source else { return false; };
+                let Some(source) = item.source else {
+                    return false;
+                };
                 ExplorerView {
                     kinds: if self.on_battlefield(source.id)
                         && self.object_ref(source.id) == source.object
@@ -136,7 +138,7 @@ impl Game {
                         source.facts.controller
                     },
                 }
-            },
+            }
             Subject::Targets => {
                 let Some(bound) = item.targets.first().copied() else {
                     return false;

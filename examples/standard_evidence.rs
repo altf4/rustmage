@@ -279,13 +279,19 @@ fn score(o: &Observation, a: &Action, i: usize, p: Player, pay: bool, s: &Pilot)
         } => {
             let v = object(*id);
             let ann = o.announcing.as_ref().unwrap();
-            if ann.source().is_some_and(|source| source.card.name() == "Shock") {
+            if ann
+                .source()
+                .is_some_and(|source| source.card.name() == "Shock")
+            {
                 if v.owner == p && v.card.name() == NAMES[i] {
                     1800
                 } else {
                     -1000
                 }
-            } else if ann.source().is_some_and(|source| source.card.name() == "Forensic Researcher") {
+            } else if ann
+                .source()
+                .is_some_and(|source| source.card.name() == "Forensic Researcher")
+            {
                 if ann.kind == (StackKind::ActivatedAbility { ability: 0 })
                     && v.owner == p
                     && v.card.is_land()
@@ -355,10 +361,10 @@ fn score(o: &Observation, a: &Action, i: usize, p: Player, pay: bool, s: &Pilot)
                 .iter()
                 .find(|v| v.id == *id)
                 .unwrap();
-            if o.resolving
-                .as_ref()
-                .is_some_and(|r| r.source().is_some_and(|source| source.card.name() == NAMES[0]))
-                && pay
+            if o.resolving.as_ref().is_some_and(|r| {
+                r.source()
+                    .is_some_and(|source| source.card.name() == NAMES[0])
+            }) && pay
                 && v.card.is_creature()
             {
                 1700
@@ -494,9 +500,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(v.zone, Zone::Graveyard);
                 }
                 if i == 1
-                    && o.resolving
-                        .as_ref()
-                        .is_some_and(|r| r.source().is_some_and(|source| source.card.name() == NAMES[i]))
+                    && o.resolving.as_ref().is_some_and(|r| {
+                        r.source()
+                            .is_some_and(|source| source.card.name() == NAMES[i])
+                    })
                 {
                     s.ward_seen = true;
                     assert_eq!(actor, p.other());
@@ -533,11 +540,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let action = aa[j].clone();
             if let Action::PayCosts { .. } = action
                 && let Some(ann) = &o.announcing
-                && ann.source().is_some_and(|source| source.card.name() == NAMES[i])
+                && ann
+                    .source()
+                    .is_some_and(|source| source.card.name() == NAMES[i])
             {
                 if ann.kind == StackKind::Spell {
                     s.paid = true;
-                    s.source = Some(ann.source().expect("example expects an object-backed packet").object);
+                    s.source = Some(
+                        ann.source()
+                            .expect("example expects an object-backed packet")
+                            .object,
+                    );
                     casts[i][usize::from(pay)][p.index()] += 1;
                     assert_eq!(
                         ann.cast.unwrap().evidence,
@@ -557,9 +570,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
             if matches!(action, Action::FinishEvidence | Action::DeclineEvidence)
-                && o.resolving
-                    .as_ref()
-                    .is_some_and(|r| r.source().is_some_and(|source| source.card.name() == NAMES[i]))
+                && o.resolving.as_ref().is_some_and(|r| {
+                    r.source()
+                        .is_some_and(|source| source.card.name() == NAMES[i])
+                })
             {
                 s.choice_done = true;
                 if action == Action::DeclineEvidence {
@@ -567,17 +581,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
             if let Action::Sacrifice { object: r } = action
-                && o.resolving
-                    .as_ref()
-                    .is_some_and(|v| v.source().is_some_and(|source| source.card.name() == NAMES[i]))
+                && o.resolving.as_ref().is_some_and(|v| {
+                    v.source()
+                        .is_some_and(|source| source.card.name() == NAMES[i])
+                })
             {
                 s.sacrificed = Some((r, object(r.card).card));
             }
             let search = if action == Action::FinishSearch
-                && o.resolving
-                    .as_ref()
-                    .is_some_and(|r| r.source().is_some_and(|source| source.card.name() == NAMES[0]))
-            {
+                && o.resolving.as_ref().is_some_and(|r| {
+                    r.source()
+                        .is_some_and(|source| source.card.name() == NAMES[0])
+                }) {
                 o.search_choice
                     .as_ref()
                     .and_then(|f| {

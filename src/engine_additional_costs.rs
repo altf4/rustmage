@@ -400,7 +400,12 @@ impl Game {
                 .state
                 .announcing
                 .as_ref()
-                .filter(|a| a.item.source.is_some_and(|identity| identity.object == source) && a.item.controller == goal.actor)
+                .filter(|a| {
+                    a.item
+                        .source
+                        .is_some_and(|identity| identity.object == source)
+                        && a.item.controller == goal.actor
+                })
                 .and_then(|a| a.creature_counter_cost.as_deref())
                 .map_or(&[][..], Vec::as_slice);
             return self.creature_counter_fundable(goal, purpose, amount, selected);
@@ -441,7 +446,15 @@ impl Game {
             return false;
         };
         if self.cast_costs_mana_paid() {
-            if !self.additional_candidate(spec, a.item.controller, a.item.source.expect("cost announcement has object source").object, object) {
+            if !self.additional_candidate(
+                spec,
+                a.item.controller,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
+                object,
+            ) {
                 return false;
             }
             if matches!(
@@ -482,7 +495,15 @@ impl Game {
                         self.object_view(object.card).name(),
                     )
                 })
-                || !self.additional_candidate(spec, a.item.controller, a.item.source.expect("cost announcement has object source").object, object)
+                || !self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    object,
+                )
             {
                 return false;
             }
@@ -505,7 +526,15 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |g| g.to_vec());
             if selected.contains(&object)
-                || !self.additional_candidate(spec, a.item.controller, a.item.source.expect("cost announcement has object source").object, object)
+                || !self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    object,
+                )
                 || (matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
                     && tap_cost_reserves_source(&self.funding_goal(a), object))
             {
@@ -516,11 +545,22 @@ impl Game {
                 self.funding_goal(a),
                 self.purpose_for_item(&a.item),
                 spec,
-                a.item.source.expect("cost announcement has object source").object,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
                 &selected,
             );
         }
-        if !self.additional_candidate(spec, a.item.controller, a.item.source.expect("cost announcement has object source").object, object) {
+        if !self.additional_candidate(
+            spec,
+            a.item.controller,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .object,
+            object,
+        ) {
             return false;
         }
         let mut goal = self.funding_goal(a);
@@ -606,20 +646,53 @@ impl Game {
         // The local announcement is outside State while an external cost commits.
         // Preserve its actual pre-departure source, not a borrowed definition.
         if matches!(a.item.kind, StackKind::ActivatedAbility { .. })
-            && self.on_battlefield(a.item.source.expect("cost announcement has object source").object.card)
-            && self.object_ref(a.item.source.expect("cost announcement has object source").object.card) == a.item.source.expect("cost announcement has object source").object
+            && self.on_battlefield(
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object
+                    .card,
+            )
+            && self.object_ref(
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object
+                    .card,
+            ) == a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .object
         {
-            a.item.source.as_mut().expect("activated ability source exists").facts = DamageFacts::from_view(&self.object_view(a.item.source.expect("cost announcement has object source").object.card));
+            a.item
+                .source
+                .as_mut()
+                .expect("activated ability source exists")
+                .facts = DamageFacts::from_view(
+                &self.object_view(
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object
+                        .card,
+                ),
+            );
         }
         if let EffectChoiceKind::ExileGraveyardSymbols { color, minimum } = spec.kind {
             let group = a.additional_group.as_deref().unwrap();
             assert!(self.graveyard_symbol_total(group, color) >= u128::from(minimum));
-            assert!(group.iter().all(|&r| self.additional_candidate(
-                spec,
-                a.item.controller,
-                a.item.source.expect("cost announcement has object source").object,
-                r
-            )));
+            assert!(group.iter().all(|&r| {
+                self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    r,
+                )
+            }));
             let events = self.move_objects_raw(
                 &group.iter().map(|r| r.card).collect::<Vec<_>>(),
                 Zone::Exile,
@@ -648,12 +721,17 @@ impl Game {
                 .as_ref()
                 .expect("selected sacrifice group");
             assert_eq!(group.len(), usize::from(amount));
-            assert!(group.iter().all(|&r| self.additional_candidate(
-                spec,
-                a.item.controller,
-                a.item.source.expect("cost announcement has object source").object,
-                r
-            )));
+            assert!(group.iter().all(|&r| {
+                self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    r,
+                )
+            }));
             self.sacrifice_batch(
                 &group
                     .iter()
@@ -669,12 +747,17 @@ impl Game {
                 .as_ref()
                 .expect("selected graveyard group");
             assert_eq!(group.len(), usize::from(amount));
-            assert!(group.iter().all(|&r| self.additional_candidate(
-                spec,
-                a.item.controller,
-                a.item.source.expect("cost announcement has object source").object,
-                r
-            )));
+            assert!(group.iter().all(|&r| {
+                self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    r,
+                )
+            }));
             let events = self.move_objects_raw(
                 &group.iter().map(|r| r.card).collect::<Vec<_>>(),
                 Zone::Exile,
@@ -686,12 +769,18 @@ impl Game {
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
             let group = a.additional_group.as_ref().expect("selected tap group");
             assert_eq!(group.len(), usize::from(amount));
-            assert!(
-                group
-                    .iter()
-                    .all(|&r| !tap_cost_reserves_source(&self.funding_goal(a), r)
-                        && self.additional_candidate(spec, a.item.controller, a.item.source.expect("cost announcement has object source").object, r))
-            );
+            assert!(group.iter().all(|&r| {
+                !tap_cost_reserves_source(&self.funding_goal(a), r)
+                    && self.additional_candidate(
+                        spec,
+                        a.item.controller,
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .object,
+                        r,
+                    )
+            }));
             self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
             a.additional_paid = true;
             return;
@@ -699,7 +788,10 @@ impl Game {
         if evidence::threshold(spec).is_some() {
             self.commit_evidence(
                 a.evidence.as_ref().expect("selected evidence"),
-                a.item.source.expect("cost announcement has object source").object,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
             );
             a.additional_paid = true;
             return;
@@ -721,11 +813,24 @@ impl Game {
         }
         let object = a.additional.expect("additional cost selected");
         assert!(
-            self.additional_candidate(spec, a.item.controller, a.item.source.expect("cost announcement has object source").object, object),
+            self.additional_candidate(
+                spec,
+                a.item.controller,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
+                object
+            ),
             "unpaid additional cost"
         );
         a.additional_paid = true;
-        if object == a.item.source.expect("cost announcement has object source").object {
+        if object
+            == a.item
+                .source
+                .expect("cost announcement has object source")
+                .object
+        {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);

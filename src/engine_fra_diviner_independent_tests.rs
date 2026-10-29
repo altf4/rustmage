@@ -141,8 +141,10 @@ fn diviner_queued_growth_does_not_affect_new_incarnation() {
                 .pending_triggers
                 .iter()
                 .chain(g.state.stack.iter())
-                .any(|item| item.source.is_some_and(|source| source.object == original)
-                    && matches!(item.kind, StackKind::TriggeredAbility { .. }))
+                .any(
+                    |item| item.source.is_some_and(|source| source.object == original)
+                        && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                )
         );
         g.move_object(source, Zone::Exile);
         g.move_object(source, Zone::Battlefield);

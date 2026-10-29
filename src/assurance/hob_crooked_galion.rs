@@ -389,8 +389,18 @@ fn hob_crooked_galion_galion_paid_attack_optional_other_targets_and_decline() {
         g.state.pending = Pending::Attackers;
         act(&mut g, Action::Attack { card: other });
         act(&mut g, Action::FinishAttackers);
-        assert!(g.state.pending_triggers.iter().all(|s| s.source.is_none_or(|identity| identity.id != source)));
-        assert!(g.state.stack.iter().all(|s| s.source.is_none_or(|identity| identity.id != source)));
+        assert!(
+            g.state
+                .pending_triggers
+                .iter()
+                .all(|s| s.source.is_none_or(|identity| identity.id != source))
+        );
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .all(|s| s.source.is_none_or(|identity| identity.id != source))
+        );
     }
 }
 #[test]

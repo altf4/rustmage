@@ -174,7 +174,8 @@ fn sos_review_mica_copy_of_flashed_back_antiquities_has_no_cast_origin_bonus() {
             .iter()
             .find(|item| {
                 item.is_copy
-                    && item.source.unwrap().card == Card::from_name("Antiquities on the Loose").unwrap()
+                    && item.source.unwrap().card
+                        == Card::from_name("Antiquities on the Loose").unwrap()
             })
             .unwrap();
         let copy_id = copied.id;
@@ -256,8 +257,14 @@ fn sos_review_rendezvous_draw_trigger_ids_record_active_player_draws_first() {
             .chain(g.state.stack.iter())
             .filter(|item| [own_crawler, their_crawler].contains(&item.source.unwrap().id))
             .filter_map(|item| {
-                item.draw_event
-                    .map(|event| (item.id, event.player, event.ordinal, item.source.unwrap().id))
+                item.draw_event.map(|event| {
+                    (
+                        item.id,
+                        event.player,
+                        event.ordinal,
+                        item.source.unwrap().id,
+                    )
+                })
             })
             .collect();
         packets.sort_unstable_by_key(|packet| packet.0);

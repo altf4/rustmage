@@ -122,7 +122,10 @@ fn choose(g: &Game, o: &Observation, actions: &[Action]) -> usize {
             } => {
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let root = o.announcing.as_ref().unwrap();
-                if root.source().is_some_and(|source| source.card.name() == "Disenchant") {
+                if root
+                    .source()
+                    .is_some_and(|source| source.card.name() == "Disenchant")
+                {
                     if b.owner == o.actor.unwrap()
                         && matches!(
                             b.card.name(),
@@ -193,7 +196,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(p, action.clone())?;
@@ -214,10 +220,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     casts[i] += 1;
                 } else if matches!(s.kind, StackKind::TriggeredAbility { .. })
                     && (!matches!(i, 1 | 4 | 5 | 6)
-                        || after
-                            .objects
-                            .iter()
-                            .any(|o| o.id == s.source().expect("example expects an object-backed packet").id && o.zone == Zone::Graveyard))
+                        || after.objects.iter().any(|o| {
+                            o.id == s
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                                && o.zone == Zone::Graveyard
+                        }))
                 {
                     assert!(!tracked.contains_key(&s.id));
                     tracked.insert(s.id, i);

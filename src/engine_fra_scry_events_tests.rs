@@ -117,10 +117,11 @@ fn fra_zero_scry_and_surveil_do_not_emit_an_event() {
         g.run_program();
         assert!(g.state.pending_triggers.is_empty());
         assert!(
-            g.state
-                .stack
-                .iter()
-                .all(|item| item.source.is_none_or(|source| source.card != Card::from_name("Denzilore Fatehold").unwrap()))
+            g.state.stack.iter().all(|item| {
+                item.source.is_none_or(|source| {
+                    source.card != Card::from_name("Denzilore Fatehold").unwrap()
+                })
+            })
         );
     }
 }

@@ -56,7 +56,12 @@ fn sos_zaffai_paid_body_own_turn_hand_types_and_exact_once_permission() {
             },
         );
         zero_pay(&mut g);
-        let spell = g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == shock)).unwrap();
+        let spell = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.source.is_some_and(|source| source.id == shock))
+            .unwrap();
         assert_eq!(spell.cast.unwrap().payment, [0; 6]);
         assert_eq!(spell.mana_value(), 1);
         assert_eq!(
@@ -173,7 +178,12 @@ fn sos_zaffai_alternate_spell_face_and_mana_x_zero_preserve_normal_timing() {
         checked(&mut g, action(spell, permission, CastFace::Normal));
         reject(&mut g, Action::ChooseX { value: 1 });
         zero_pay(&mut g);
-        let stack = g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == spell)).unwrap();
+        let stack = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.source.is_some_and(|source| source.id == spell))
+            .unwrap();
         assert_eq!(stack.x, Some(0));
         assert_eq!(stack.mana_value(), 2);
         finish(&mut g);

@@ -13,7 +13,8 @@ impl Game {
             return None;
         }
         item.mode.and_then(|mode| {
-            item.source?.card
+            item.source?
+                .card
                 .tiered_costs()?
                 .get(usize::from(mode))
                 .copied()
@@ -52,7 +53,13 @@ impl Game {
         {
             return false;
         }
-        if a.item.source.expect("cost announcement has object source").card.tiered_costs().is_none() {
+        if a.item
+            .source
+            .expect("cost announcement has object source")
+            .card
+            .tiered_costs()
+            .is_none()
+        {
             return self.announcement_target_fundable(
                 a,
                 Some(mode.targets),
@@ -77,7 +84,9 @@ impl Game {
 
 impl Game {
     pub(super) fn shuffle_source_into_owner_library(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         // Ownership of a physical card cannot change. Its stable slot retains
         // that fact after departure, while the exact ref forbids a later incarnation.
         let owner = self.state.objects[source.id as usize].owner;
@@ -91,7 +100,9 @@ impl Game {
             .shuffle(&mut self.state.players[owner.index()].library);
     }
     pub(super) fn shuffle_target_into_library(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         for bound in &item.targets {
             if !self.valid_library_target(item, *bound) {
                 continue;

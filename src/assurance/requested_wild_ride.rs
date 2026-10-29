@@ -334,7 +334,9 @@ fn harmonize_proposal_includes_burst_lightnings_printed_kicker() {
         let mut proposal = g.state.announcing.as_ref().unwrap().clone();
         // Compose the existing printed {4} kicker with the Harmonize cost in
         // an owned proposal; no currently supported printed card has both.
-        proposal.item.set_source_definition(Card::from_name("Burst Lightning").unwrap());
+        proposal
+            .item
+            .set_source_definition(Card::from_name("Burst Lightning").unwrap());
         proposal.item.cast.as_mut().unwrap().kicker = Some(true);
         proposal.cost = Some(ManaCost {
             colored: [0, 0, 0, 1, 0, 0],

@@ -62,7 +62,12 @@ impl Game {
         match context.kind {
             GiftKind::Card => self.draw_many(context.beneficiary, 1),
             GiftKind::Food | GiftKind::Treasure | GiftKind::TappedFish => {
-                let spec = item.source.expect("gift spell has source").card.gift().expect("complete Gift recipe");
+                let spec = item
+                    .source
+                    .expect("gift spell has source")
+                    .card
+                    .gift()
+                    .expect("complete Gift recipe");
                 self.create_tokens(
                     context.beneficiary,
                     spec.token.expect("Gift token factory"),

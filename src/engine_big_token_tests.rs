@@ -10,12 +10,9 @@ fn enter(g: &mut Game, p: Player, name: &str) -> CardId {
 }
 fn cast_creature(g: &mut Game, id: CardId) {
     checked(g, Action::AnnounceCast { card: id });
-    while g
-        .state
-        .announcing
-        .as_ref()
-        .is_some_and(|a| a.item.source.is_some_and(|source| source.id == id) && a.item.kind == StackKind::Spell)
-    {
+    while g.state.announcing.as_ref().is_some_and(|a| {
+        a.item.source.is_some_and(|source| source.id == id) && a.item.kind == StackKind::Spell
+    }) {
         let a = g
             .legal_actions()
             .into_iter()

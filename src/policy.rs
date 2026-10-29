@@ -101,7 +101,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 .iter()
                 .any(|item| item.id == id && item.controller == actor),
             Target::Spell(id) => observation.stack.iter().any(|item| {
-                item.kind == StackKind::Spell && item.source.is_some_and(|source| source.id == id) && item.controller == actor
+                item.kind == StackKind::Spell
+                    && item.source.is_some_and(|source| source.id == id)
+                    && item.controller == actor
             }),
         };
         if own == beneficial { 70 } else { -10 }

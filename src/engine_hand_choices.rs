@@ -73,7 +73,9 @@ impl Game {
         item: &SpellView,
         subtype: &'static str,
     ) -> bool {
-        let Some(source) = item.source else { return false; };
+        let Some(source) = item.source else {
+            return false;
+        };
         let candidates = behold_candidates(self, item.controller, subtype, &[]);
         if candidates.is_empty() {
             self.state.resolving.as_mut().unwrap().search_result = None;
@@ -121,7 +123,9 @@ impl Game {
         item: &SpellView,
         amount: AmountValue,
     ) -> bool {
-        let Some(source) = item.source else { return false; };
+        let Some(source) = item.source else {
+            return false;
+        };
         let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
         };
@@ -150,7 +154,9 @@ impl Game {
         true
     }
     pub(super) fn start_revealed_hand_exile(&mut self, item: &SpellView) -> bool {
-        let Some(source) = item.source else { return false; };
+        let Some(source) = item.source else {
+            return false;
+        };
         let victim = item.targets.iter().find_map(|b| {
             if b.group == 0 {
                 if let Target::Player(p) = b.target {

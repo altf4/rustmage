@@ -506,28 +506,48 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert_eq!(g.snapshot(), before);
             }
             if let (Some(ann), Action::PayCosts { .. }) = (&o.announcing, &action) {
-                if ann.source().is_some_and(|source| source.card.name() == NAMES[i]) {
+                if ann
+                    .source()
+                    .is_some_and(|source| source.card.name() == NAMES[i])
+                {
                     if ann.kind == StackKind::Spell {
-                        assert!(!ann.source().expect("example expects an object-backed packet").card.is_creature());
-                        s[p.index()].source = Some(ann.source().expect("example expects an object-backed packet").id);
+                        assert!(
+                            !ann.source()
+                                .expect("example expects an object-backed packet")
+                                .card
+                                .is_creature()
+                        );
+                        s[p.index()].source = Some(
+                            ann.source()
+                                .expect("example expects an object-backed packet")
+                                .id,
+                        );
                         s[p.index()].entry = Some(o.clone());
                         casts[i][p.index()] += 1;
-                    } else if o
-                        .objects
-                        .iter()
-                        .any(|v| v.id == ann.source().expect("example expects an object-backed packet").id && v.zone == Zone::Hand)
-                    {
+                    } else if o.objects.iter().any(|v| {
+                        v.id == ann
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .id
+                            && v.zone == Zone::Hand
+                    }) {
                         s[p.index()].cycle = Some((
                             o.players[p.index()].cards_drawn_this_turn,
                             o.players[p.index()].cards_discarded_this_turn,
                         ));
                     }
-                } else if ann.source().is_some_and(|source| source.card.name() == "Thrill of Possibility") {
+                } else if ann
+                    .source()
+                    .is_some_and(|source| source.card.name() == "Thrill of Possibility")
+                {
                     s[p.index()].draw = Some((
                         o.players[p.index()].cards_drawn_this_turn,
                         tokens(&o, p, "Thopter"),
                     ));
-                } else if ann.source().is_some_and(|source| source.card.name() == "Disenchant") {
+                } else if ann
+                    .source()
+                    .is_some_and(|source| source.card.name() == "Disenchant")
+                {
                     s[p.index()].death = true;
                 }
             }

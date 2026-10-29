@@ -39,7 +39,9 @@ impl Game {
         item: &SpellView,
         kind: SourceLinkedEffectKind,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         // CR611.2b: an already-ended duration never starts. The preceding tap
         // remains independent and has already happened even when this fails.
         if !self.on_battlefield(source.object.card)
@@ -81,16 +83,28 @@ impl Game {
         }
     }
     pub(super) fn remove_target_abilities_until_end_of_turn(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
-        let recipients: Vec<_> = self.keyword_subjects(item, Subject::Targets).into_iter()
-            .filter(|&id| self.on_battlefield(id)).map(|id| self.object_ref(id)).collect();
-        if recipients.is_empty() { return; }
+        let Some(source) = item.source else {
+            return;
+        };
+        let recipients: Vec<_> = self
+            .keyword_subjects(item, Subject::Targets)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id))
+            .map(|id| self.object_ref(id))
+            .collect();
+        if recipients.is_empty() {
+            return;
+        }
         let timestamp = self.next_role_timestamp();
         let rows = &mut self.state.roles.as_mut().unwrap().source_linked_effects;
         for recipient in recipients {
-            rows.push(SourceLinkedEffectView { source: source.object, recipient,
-                controller: item.controller, kind: SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn,
-                timestamp });
+            rows.push(SourceLinkedEffectView {
+                source: source.object,
+                recipient,
+                controller: item.controller,
+                kind: SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn,
+                timestamp,
+            });
         }
         self.refresh_copy_grant_availability();
     }
