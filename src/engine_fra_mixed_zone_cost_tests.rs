@@ -35,12 +35,13 @@ fn frozen_mixed_replacement_redirects_stage_together_and_prevented_cost_is_paid(
         let inputs = [(g.object_ref(redirect), Zone::Exile), (g.object_ref(exile), Zone::Exile), (g.object_ref(prevented), Zone::Exile)];
         let before = g.snapshot();
         for _ in 0..2 {
+            let checkpoint = g.atomic_zone_cost_checkpoint(None);
             let mut plans = g.plan_atomic_zone_cost(&inputs).unwrap();
             // A synthetic frozen outcome exercises the staged mixed-destination
             // commit independent of any currently supported redirect provider.
             plans[0].1.destination = Zone::Battlefield;
             plans[2].1.prevented = true;
-            g.stage_atomic_zone_cost(plans);
+            g.stage_atomic_zone_cost(plans, checkpoint);
             settle(&mut g);
             assert_eq!(g.object_view(redirect).zone, Zone::Battlefield);
             assert_eq!(g.object_view(exile).zone, Zone::Exile);
@@ -59,10 +60,11 @@ fn mixed_cost_waits_for_real_entry_life_choice_and_replays_owned_state() {
             let land = put(&mut g, player, "Watery Grave", Zone::Graveyard);
             let other = put(&mut g, player, "Bear Cub", Zone::Graveyard);
             let moves = [(g.object_ref(land), Zone::Exile), (g.object_ref(other), Zone::Exile)];
+            let checkpoint = g.atomic_zone_cost_checkpoint(None);
             let mut plans = g.plan_atomic_zone_cost(&moves).unwrap();
             plans[0].1.destination = Zone::Battlefield;
             let before = g.snapshot();
-            g.stage_atomic_zone_cost(plans);
+            g.stage_atomic_zone_cost(plans, checkpoint);
             assert!(g.advance_entries());
             assert!(matches!(g.state.pending, Pending::EntryLife { player: actor } if actor == player));
             assert_eq!(g.object_view(land).zone, Zone::Graveyard);
@@ -137,6 +139,51 @@ fn nonentry_cost_commit_revalidates_all_incarnations_before_any_movement() {
             assert!(g.commit_atomic_zone_cost(plans).is_none());
             assert_eq!(g.snapshot(), after_departure);
             assert_eq!(g.object_view(ids[1 - stale]).zone, Zone::Graveyard);
+        }
+    }
+}
+
+#[test]
+fn suspended_mixed_cost_restores_entire_checkpoint_if_any_component_changes() {
+    for player in [Player::P0, Player::P1] {
+        for stale_index in [0, 1, 2] {
+            let mut g = scenario(player);
+            let land = put(&mut g, player, "Watery Grave", Zone::Graveyard);
+            let other = put(&mut g, player, "Bear Cub", Zone::Graveyard);
+            let prevented = put(&mut g, player, "Shock", Zone::Hand);
+            let ids = [land, other, prevented];
+            let refs = ids.map(|id| (g.object_ref(id), g.object_view(id).zone));
+            let before = g.snapshot();
+            let checkpoint = g.atomic_zone_cost_checkpoint(None);
+            let moves = ids.map(|id| (g.object_ref(id), Zone::Exile));
+            let mut plans = g.plan_atomic_zone_cost(&moves).unwrap();
+            plans[0].1.destination = Zone::Battlefield;
+            plans[2].1.prevented = true;
+            g.stage_atomic_zone_cost(plans, checkpoint);
+            assert!(g.advance_entries());
+            assert!(matches!(g.state.pending, Pending::EntryLife { player: actor } if actor == player));
+            // Model a future nested replacement which changes an incarnation
+            // during the suspended entry transaction, including a prevented
+            // component. Both the movement and life choice must roll back.
+            g.move_object(ids[stale_index], Zone::Exile);
+            let suspended = g.snapshot();
+            let action = Action::ChooseEntryLife { pay: true };
+            let index = g.legal_actions().iter().position(|a| a == &action).unwrap();
+            let mut raw = g.clone();
+            let mut indexed = g.clone();
+            assert!(raw.apply(player.other(), action.clone()).is_err());
+            assert_eq!(raw.snapshot(), suspended);
+            raw.apply(player, action.clone()).unwrap();
+            indexed.apply_index(player, g.revision(), index).unwrap();
+            assert_eq!(raw.snapshot(), indexed.snapshot());
+            assert_eq!(raw.snapshot(), before);
+            for &(reference, zone) in &refs {
+                assert_eq!(raw.object_ref(reference.card), reference);
+                assert_eq!(raw.object_view(reference.card).zone, zone);
+            }
+            raw.restore(&suspended).unwrap();
+            act(&mut raw, action);
+            assert_eq!(raw.snapshot(), before);
         }
     }
 }

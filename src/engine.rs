@@ -6614,17 +6614,25 @@ impl Game {
         Some(events)
     }
 
-    /// Commit a mixed-zone atomic cost through the owned entry transaction.
-    /// Frozen plans are retained through entry decisions and used exactly once;
-    /// prevented components are paid but do not produce a movement event.
-    fn stage_atomic_zone_cost(&mut self, plans: Vec<(ObjectView, zone_replacements::Plan)>) {
+    /// Capture before replacement planning so failed entry decisions restore
+    /// replacement choices and every other effect of this proposed payment.
+    fn atomic_zone_cost_checkpoint(&self, failure_pc: Option<usize>) -> entries::AtomicCostCheckpoint {
+        assert!(self.state.entry_batch.is_none());
+        entries::AtomicCostCheckpoint { before: Box::new(self.state.clone()), bytes: self.state_bytes(),
+            failure_pc, components: Vec::new() }
+    }
+
+    /// Stage all nonprevented events as one owned transaction; prevention is
+    /// paid but its component remains part of the exact-incarnation audit.
+    fn stage_atomic_zone_cost(&mut self, plans: Vec<(ObjectView, zone_replacements::Plan)>, mut checkpoint: entries::AtomicCostCheckpoint) {
+        checkpoint.components = plans.iter().map(|(view, _)| (view.reference, view.zone)).collect();
         let moves: Vec<_> = plans.into_iter().filter_map(|(view, plan)| {
             if plan.prevented { return None; }
             let mut movement = entries::EntryMove::from_view(view, plan.destination, false);
             movement.zone_plan = Some(plan);
             Some(movement)
         }).collect();
-        if !moves.is_empty() { self.stage_entries(moves, None); }
+        if !moves.is_empty() { self.stage_atomic_cost_entries(moves, checkpoint); }
     }
 
     /// Pay simultaneous sacrifice costs only after every replacement outcome
