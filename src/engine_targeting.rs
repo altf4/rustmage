@@ -57,7 +57,7 @@ impl Announcement {
             self.item
                 .cast
                 .filter(|c| c.method == CastMethod::GraveyardCounterCost)
-                .and_then(|_| self.item.source_card.graveyard_counter_cost())
+                .and_then(|_| self.item.source.expect("announcement has object source").card.graveyard_counter_cost())
         })
     }
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
@@ -82,7 +82,7 @@ impl Announcement {
             .item
             .cast
             .is_some_and(|c| c.method == CastMethod::Flashback)
-            && let Some(spec) = self.item.source_card.flashback_additional()
+            && let Some(spec) = self.item.source.expect("announcement has object source").card.flashback_additional()
         {
             return Some(spec);
         }
@@ -98,7 +98,7 @@ impl Announcement {
                 Game::creature_counter_spec(self.graveyard_origin_counter_cost().unwrap()),
             ),
             StackKind::Spell if self.item.cast.is_some_and(|c| c.evidence == Some(true)) => Some(
-                evidence::cost(self.item.source_card.collect_evidence_cost().unwrap()),
+                evidence::cost(self.item.source.expect("announcement has object source").card.collect_evidence_cost().unwrap()),
             ),
             StackKind::Spell if self.item.cast.is_some_and(|c| c.bargain == Some(true)) => {
                 Some(bargain::COST)
@@ -127,9 +127,9 @@ impl Announcement {
             {
                 None
             }
-            StackKind::Spell => self.item.source_card.additional_cost(),
+            StackKind::Spell => self.item.source.expect("announcement has object source").card.additional_cost(),
             StackKind::ActivatedAbility { ability } => {
-                self.item.source_card.activation(ability).cost.additional
+                self.item.source.expect("announcement has object source").card.activation(ability).cost.additional
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
@@ -161,7 +161,7 @@ impl Announcement {
                     .cast
                     .is_some_and(|c| c.method == CastMethod::Sneak) =>
             {
-                std::iter::once(self.item.source_card.sneak_cost().expect("Sneak cost"))
+                std::iter::once(self.item.source.expect("announcement has object source").card.sneak_cost().expect("Sneak cost"))
                     .chain([].iter().copied())
             }
             StackKind::Spell
@@ -177,7 +177,7 @@ impl Announcement {
                 .chain([].iter().copied())
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
-                std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
+                std::iter::once(self.item.source.expect("announcement has object source").card.warp_cost().expect("fixed Warp cost"))
                     .chain([].iter().copied())
             }
             StackKind::Spell
@@ -200,7 +200,7 @@ impl Announcement {
                     .cast
                     .is_some_and(|cast| cast.method == CastMethod::Flashback) =>
             {
-                self.item.source_card.flashback_cost_options()
+                self.item.source.expect("announcement has object source").card.flashback_cost_options()
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| {
@@ -216,7 +216,7 @@ impl Announcement {
                 })
                 .chain([].iter().copied())
             }
-            StackKind::Spell => self.item.source_card.cost_options(),
+            StackKind::Spell => self.item.source.expect("announcement has object source").card.cost_options(),
             StackKind::ActivatedAbility { ability } => self
                 .item
                 .source_card
@@ -267,7 +267,7 @@ impl Announcement {
             .flat_map(move |(cost, route)| {
                 std::iter::once((cost, route)).chain(
                     (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
-                        .then(|| self.item.source_card.explicit_additional_mana())
+                        .then(|| self.item.source.expect("announcement has object source").card.explicit_additional_mana())
                         .flatten()
                         .map(move |extra| (Card::add_mana_cost(cost, extra), route)),
                 )
@@ -292,7 +292,7 @@ impl Announcement {
                                 u64::from(self.item.x.unwrap_or(0))
                                     * u64::from(match self.item.kind {
                                         StackKind::ActivatedAbility { ability } => {
-                                            self.item.source_card.activation(ability).x_symbols()
+                                            self.item.source.expect("announcement has object source").card.activation(ability).x_symbols()
                                         }
                                         _ => 0,
                                     })
@@ -307,22 +307,22 @@ impl Announcement {
                 self.item
                     .cast
                     .is_none_or(|cast| cast.method != CastMethod::GrantedFlashback)
-                    || (self.item.source_card.cost_alternative_guard().is_none()
+                    || (self.item.source.expect("announcement has object source").card.cost_alternative_guard().is_none()
                         && !self
                             .item
                             .source_card
                             .mana_alternative_replaces_additional(*cost))
                     || *cost
                         == ManaCost {
-                            colored: self.item.source_card.cost().0,
-                            generic: self.item.source_card.cost().1,
+                            colored: self.item.source.expect("announcement has object source").card.cost().0,
+                            generic: self.item.source.expect("announcement has object source").card.cost().1,
                         }
             })
             .filter_map(|(cost, route)| {
                 Game::with_tiered_mana(
                     Game::with_flash_surcharge(
                         cost,
-                        self.item.source_card,
+                        self.item.source.expect("announcement has object source").card,
                         self.item.cast.is_some_and(|c| c.flash_surcharge),
                     ),
                     &self.item,
@@ -335,7 +335,7 @@ impl Announcement {
                         Game::with_tiered_mana(
                             Game::with_flash_surcharge(
                                 cost,
-                                self.item.source_card,
+                                self.item.source.expect("announcement has object source").card,
                                 self.item.cast.is_some_and(|c| c.flash_surcharge),
                             ),
                             &self.item,
@@ -353,43 +353,43 @@ impl Announcement {
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
-            && self.item.source_card.collect_evidence_cost().is_some()
+            && self.item.source.expect("announcement has object source").card.collect_evidence_cost().is_some()
             && self.item.cast.is_some_and(|c| c.evidence.is_none())
     }
     pub(super) fn needs_bargain(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
-            && self.item.source_card.has_bargain()
+            && self.item.source.expect("announcement has object source").card.has_bargain()
             && self.item.cast.is_some_and(|c| c.bargain.is_none())
     }
     pub(super) fn needs_blight(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
-            && self.item.source_card.blight().is_some()
+            && self.item.source.expect("announcement has object source").card.blight().is_some()
             && self.item.cast.is_some_and(|c| c.blight.is_none())
     }
     pub(super) fn needs_teamwork(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
-            && self.item.source_card.teamwork().is_some()
+            && self.item.source.expect("announcement has object source").card.teamwork().is_some()
             && self.item.cast.is_some_and(|c| c.teamwork.is_none())
     }
     pub(super) fn needs_kicker(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
-            && self.item.source_card.kicker_cost().is_some()
+            && self.item.source.expect("announcement has object source").card.kicker_cost().is_some()
             && self.item.cast.is_some_and(|c| c.kicker.is_none())
     }
     pub(super) fn needs_gift(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
-            && self.item.source_card.gift().is_some()
+            && self.item.source.expect("announcement has object source").card.gift().is_some()
             && self.item.cast.is_some_and(|c| c.gift.is_none())
     }
     pub(super) fn needs_offspring(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
-            && self.item.source_card.offspring_cost().is_some()
+            && self.item.source.expect("announcement has object source").card.offspring_cost().is_some()
             && self.item.cast.is_some_and(|c| c.offspring.is_none())
     }
     pub(super) fn needs_mana_cost(&self) -> bool {
@@ -474,11 +474,12 @@ impl Game {
         if let TargetPlan::Single(mut spec) = plan
             && matches!(spec.rule, TargetRule::GraveCreatureSourcePower { .. })
         {
+            let Some(source) = item.source else { return plan; };
             let power =
-                if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
-                    self.stats(item.card).power
+                if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
+                    self.stats(source.id).power
                 } else {
-                    item.source_facts.power
+                    source.facts.power
                 };
             spec.rule = TargetRule::GraveCreatureSourcePower {
                 maximum: Some(power),
@@ -999,7 +1000,7 @@ impl Game {
         } else {
             let improvise = improvise::potential(
                 self,
-                self.state.announcing.as_ref().unwrap().item.source_card,
+                self.state.announcing.as_ref().unwrap().item.source.expect("announcement has object source").card,
             );
             self.state
                 .announcing
@@ -1086,7 +1087,7 @@ impl Game {
         };
         let qualification = qualification.or_else(|| {
             packets()
-                .find(|item| item.object == source)
+                .find(|item| item.source.is_some_and(|identity| identity.object == source))
                 .map(TargetSourceCharacteristics::from_item)
         });
         let source = qualification.map_or(source, |q| q.reference);
@@ -1171,7 +1172,7 @@ impl Game {
                 .chain(self.state.ordering_triggers.iter())
                 .chain(self.state.announcing.iter().map(|a| &a.item))
                 .chain(self.state.resolving.iter().map(|r| &r.item))
-                .find(|item| item.object == source)
+                .find(|item| item.source.is_some_and(|identity| identity.object == source))
                 .map(TargetSourceCharacteristics::from_item)
         });
         let kinds = if let Some(card) = qualification.and_then(|q| q.spell) {
@@ -1388,32 +1389,8 @@ impl Game {
             }),
             Target::Spell(id) => self.state.stack.iter().any(|item| {
                 item.kind == StackKind::Spell
-                    && item.card == id
-                    && item.object != source
-                    && match rule {
-                        TargetRule::SingleTargetStackObject => item.targets.len() == 1,
-                        TargetRule::Spell => true,
-                        TargetRule::YourSpellKinds { kinds } => {
-                            item.controller == controller
-                                && item.source_card.kind_mask() & u16::from(kinds) != 0
-                        }
-                        TargetRule::CreatureOrLegendarySpell => {
-                            item.source_card.kind_mask() & 1 != 0 || item.source_card.is_legendary()
-                        }
-                        TargetRule::SpellKinds { kinds, excluded } => {
-                            (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
-                                && item.source_card.kind_mask() & u16::from(excluded) == 0
-                        }
-                        TargetRule::SpellCharacteristics {
-                            colors,
-                            min_mana,
-                            max_mana,
-                        } => {
-                            (colors == 0 || item.source_card.colors() & colors != 0)
-                                && (min_mana..=max_mana).contains(&item.mana_value())
-                        }
-                        _ => false,
-                    }
+                    && item.source.is_some_and(|identity| identity.id == id && identity.object != source)
+                    && self.stack_target_rule_matches(rule, item, controller)
             }),
             Target::Card(id) => {
                 let Some(obj) = self.state.objects.get(id as usize) else {
@@ -1579,7 +1556,8 @@ impl Game {
         for item in &self.state.stack {
             {
                 let target = if item.kind == StackKind::Spell && !item.is_copy {
-                    Target::Spell(item.card)
+                    let Some(source) = item.source else { continue; };
+                    Target::Spell(source.id)
                 } else {
                     Target::Stack(item.id)
                 };
@@ -1817,16 +1795,17 @@ impl Game {
         production: Option<Mana>,
         origin_counter_cost: Option<u16>,
     ) {
+        let source = item.source.expect("payment announcement has object source");
         if item.cast.is_some_and(|cast| cast.face == CastFace::Back) {
-            self.state.objects[item.card as usize].card = item.source_card;
+            self.state.objects[source.id as usize].card = source.card;
         }
         // A copied card becomes a genuine token when its permanent spell resolves.
         // Freeze the selected face now, after face choice and before any zone move.
-        if self.state.objects[item.card as usize].copy_kind == CopyKind::Card
-            && item.source_card.kind_mask() & (1 | 16 | 32 | 64 | 256) != 0
+        if self.state.objects[source.id as usize].copy_kind == CopyKind::Card
+            && source.card.kind_mask() & (1 | 16 | 32 | 64 | 256) != 0
         {
-            let recipe = CopyRecipe::new(item.source_card);
-            self.set_copy_recipe(item.object, recipe);
+            let recipe = CopyRecipe::new(source.card);
+            self.set_copy_recipe(source.object, recipe);
             item.source_copy_recipe = Some(Box::new(recipe));
         }
         if production.is_some() {
@@ -1836,16 +1815,14 @@ impl Game {
         let plan = self.target_spec(&item);
         assert!(
             self.item_targets_available(&item, plan)
-                || item.source_card.gift().is_some_and(|gift| {
+                || source.card.gift().is_some_and(|gift| {
                     self.item_targets_available(&item, gift.promised_targets)
                 })
-                || item
-                    .source_card
+                || source.card
                     .teamwork()
                     .and_then(|s| s.paid_targets)
                     .is_some_and(|plan| self.item_targets_available(&item, plan))
-                || item
-                    .source_card
+                || source.card
                     .kicked_targets()
                     .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
@@ -1907,7 +1884,7 @@ impl Game {
             && matches!(self.state.pending, Pending::Targets { .. })
         {
             if let StackKind::ActivatedAbility { ability } = announcement.item.kind
-                && Self::activation_target_sensitive(announcement.item.source_card, ability)
+                && Self::activation_target_sensitive(announcement.item.source.expect("announcement has object source").card, ability)
                 && announcement.total_cost.is_none()
             {
                 let base = announcement.cost.unwrap_or_else(|| {
@@ -1925,20 +1902,20 @@ impl Game {
                 });
                 let extra =
                     Self::announcement_optional_reduction(announcement) + u64::from(discount);
-                let total = if announcement.item.source_card.x_symbols() > 0 {
+                let total = if announcement.item.source.expect("announcement has object source").card.x_symbols() > 0 {
                     self.scalar_x_total_with_extra(
                         announcement.item.controller,
-                        announcement.item.card,
+                        announcement.item.source.expect("announcement has object source").id,
                         base,
                         announcement.item.x.expect("X chosen"),
-                        announcement.item.source_card,
+                        announcement.item.source.expect("announcement has object source").card,
                         extra,
                     )
                     .expect("validated scalar cost")
                 } else {
                     self.target_spell_cost_with_extra(
                         announcement.item.controller,
-                        announcement.item.card,
+                        announcement.item.source.expect("announcement has object source").id,
                         base,
                         &announcement.item.targets,
                         extra,
@@ -2046,7 +2023,7 @@ impl Game {
                     self.purpose_for_item(&announcement.item),
                 );
                 if outcome.haste {
-                    self.grant_stack_keywords(announcement.item.object, Keywords::HASTE);
+                    self.grant_stack_keywords(announcement.item.source.expect("announcement has object source").object, Keywords::HASTE);
                 }
                 announcement.item.cast.as_mut().unwrap().treasure_mana_spent =
                     outcome.treasure_spent;
