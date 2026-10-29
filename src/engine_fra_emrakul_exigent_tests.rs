@@ -59,3 +59,46 @@ fn emrakul_cast_untap_uses_live_control_types_and_stun() {
         }
     }
 }
+
+#[test]
+fn emrakul_ward_sacrifice_three_is_selected_before_atomic_payment() {
+    for player in [Player::P0, Player::P1] {
+        for pay_ward in [false, true] {
+            let mut g = scenario(player);
+            let emrakul = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+            g.state.objects[emrakul as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+            g.register_battlefield_sources(emrakul);
+            let payer = player.other();
+            let permanents: Vec<_> = (0..3).map(|_| put(&mut g, payer, "Forest", Zone::Battlefield)).collect();
+            let shock = put(&mut g, payer, "Shock", Zone::Hand);
+            g.state.active = payer;
+            g.state.priority = payer;
+            cast(&mut g, shock, Some(Target::Card(emrakul)));
+            for _ in 0..48 {
+                if matches!(g.state.pending, Pending::EffectChoice { player: p } if p == payer) { break; }
+                choose(&mut g, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
+            }
+            assert!(matches!(g.state.pending, Pending::EffectChoice { player: p } if p == payer));
+            let saved = g.snapshot();
+            for _ in 0..2 {
+                if pay_ward {
+                    for (i, id) in permanents.iter().copied().enumerate() {
+                        let reference = g.object_ref(id);
+                        act(&mut g, Action::Sacrifice { object: reference });
+                        if i < 2 { assert!(permanents.iter().all(|&id| g.object_view(id).zone == Zone::Battlefield)); }
+                    }
+                } else {
+                    let reference = g.object_ref(permanents[0]);
+                    act(&mut g, Action::Sacrifice { object: reference });
+                    act(&mut g, Action::DeclineEffectPayment);
+                }
+                settle(&mut g);
+                for &id in &permanents {
+                    assert_eq!(g.object_view(id).zone, if pay_ward { Zone::Graveyard } else { Zone::Battlefield });
+                }
+                assert_eq!(g.object_view(emrakul).damage, if pay_ward { 2 } else { 0 });
+                g.restore(&saved).unwrap();
+            }
+        }
+    }
+}

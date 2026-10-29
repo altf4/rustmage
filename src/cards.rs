@@ -1193,6 +1193,8 @@ pub(crate) enum Instruction {
     CounterRelatedUnlessDiscardOrPay(ManaCost),
     /// Ward payer may discard one card or decline and have the associated object countered.
     CounterRelatedUnlessDiscard,
+    /// Captured ward payer may sacrifice exactly this many permanents.
+    CounterRelatedUnlessSacrifice(u16),
     /// One combined ward cost, paid atomically or the related item is countered.
     CounterRelatedUnlessPayManaLife {
         cost: ManaCost,

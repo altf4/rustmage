@@ -4785,6 +4785,17 @@ impl Game {
                     }
                     self.scry_or_surveil_event(item.controller);
                 }
+                Instruction::CounterRelatedUnlessSacrifice(amount) => {
+                    let related = item.related_stack.expect("ward payer and related object");
+                    let mut payer_item = item.clone();
+                    payer_item.controller = related.controller;
+                    let pending = self.start_effect_choice(
+                        &payer_item, EffectChoiceKind::Sacrifice, PlayerSet::Controller,
+                        evidence::cost(0).filter, amount, Some(0),
+                    );
+                    if pending { return; }
+                    self.counter_stack_item(related.id, false);
+                }
                 Instruction::CounterRelatedUnlessDiscard => {
                     if self.start_ward_discard_only(&item) {
                         return;

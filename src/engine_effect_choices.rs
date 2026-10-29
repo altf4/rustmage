@@ -1243,7 +1243,12 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let ward_victim = resolution.program.get(resolution.pc.saturating_sub(1))
+            .is_some_and(|instruction| matches!(instruction, Instruction::CounterRelatedUnlessSacrifice(_)))
+            .then_some(resolution.item.related_stack).flatten();
         self.state.resolving.as_mut().unwrap().pc = choice.skip_to.expect("optional payment");
+        if let Some(victim) = ward_victim { self.counter_stack_item(victim.id, false); }
         self.run_program();
     }
 
