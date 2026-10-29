@@ -512,7 +512,7 @@ impl Tracker {
             }
             if object.name == "Rancorous Archaic" && object.zone == Zone::Battlefield {
                 for spell in &before.stack {
-                    if spell.card == object.id
+                    if spell.source().is_some_and(|source| source.id == object.id)
                         && let Some(cast) = spell.cast
                         && cast.colors_spent() >= 2
                         && object.counters.plus_one >= u64::from(cast.colors_spent())
