@@ -387,7 +387,7 @@ fn project_prior_schema180(input: &str) -> Result<String, String> {
 /// from either viewer's observation. Check rollback snapshots recursively.
 fn prior_schema180_state_supported(state: &State) -> bool {
     let new_card = |card: Card| card.aura_artifact_or_non_aura_enchantment()
-        || card.name() == "Variable Chaser // Arc of Fortune"
+        || card.identity() == "Variable Chaser // Arc of Fortune"
         || card.name() == "Arc of Fortune";
     if state.resolving.is_some() || state.announcing.is_some()
         || state.mana_announcement_stack.is_some() || state.replacements.is_some()
@@ -471,7 +471,8 @@ fn schema180_projection_rejects_new_semantics_and_preserves_bytes() {
             assert_eq!(project_prior_schema180(&view).unwrap(), view);
         }
         assert!(prior_schema180_state_supported(&g.state));
-        put(&mut g, player, "Puppet Crafting", Zone::Hand);
+        let hidden = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[hidden as usize].card = Card::from_name("Puppet Crafting").unwrap();
         assert!(!prior_schema180_state_supported(&g.state));
         for viewer in [Player::P0, Player::P1] {
             let view = serde_json::to_string(&g.observe(viewer)).unwrap();
@@ -486,7 +487,8 @@ fn schema180_rejects_live_wheel_and_construct_for_both_viewers_and_restore() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let target = put(&mut g, player, "Gideon's Memorial", Zone::Battlefield);
-        let aura = put(&mut g, player, "Puppet Crafting", Zone::Battlefield);
+        let aura = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[aura as usize].card = Card::from_name("Puppet Crafting").unwrap();
         g.state.objects[aura as usize].attached_to = Some(g.object_ref(target));
         for viewer in [Player::P0, Player::P1] {
             let view = serde_json::to_string(&g.observe(viewer)).unwrap();
@@ -499,7 +501,8 @@ fn schema180_rejects_live_wheel_and_construct_for_both_viewers_and_restore() {
         assert!(!prior_schema180_state_supported(&g.state));
 
         let mut g = scenario(player);
-        let source = put(&mut g, player, "Variable Chaser // Arc of Fortune", Zone::Hand);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Variable Chaser // Arc of Fortune").unwrap();
         g.state.players[player.index()].mana = [0, 1, 0, 0, 0, 2];
         act(&mut g, Action::AnnounceCast { card: source });
         pay(&mut g);
