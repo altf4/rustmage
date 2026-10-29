@@ -89,3 +89,35 @@ fn mixed_cost_waits_for_real_entry_life_choice_and_replays_owned_state() {
         }
     }
 }
+
+#[test]
+fn cannot_exile_prohibition_precedes_ordinary_prevention_for_cost() {
+    use ability_world::TEST_EXILE_PROHIBITOR;
+    use zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let provider = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let card = put(&mut g, player, "Shock", Zone::Graveyard);
+        let reference = g.object_ref(card);
+        TEST_EXILE_PROHIBITOR.with(|p| p.set(Some(g.object_ref(provider))));
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(reference)));
+        let before = g.snapshot();
+        assert!(g.plan_atomic_zone_cost(&[(reference, Zone::Exile)]).is_none());
+        assert_eq!(g.snapshot(), before);
+        TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
+        let plans = g.plan_atomic_zone_cost(&[(reference, Zone::Exile)]).unwrap();
+        assert!(plans[0].1.prevented);
+        let events = g.commit_atomic_zone_cost(plans).unwrap();
+        assert!(!events[0].moved);
+        assert_eq!(g.object_view(card).zone, Zone::Graveyard);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
