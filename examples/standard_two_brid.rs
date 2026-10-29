@@ -139,7 +139,7 @@ fn score(obs: &Observation, a: &Action, generic: u32) -> i64 {
     }
 }
 fn check(origin: &Observation, after: &Observation, item: &rustmage::SpellView) -> usize {
-    let n = item.source_card.name();
+    let n = item.source().expect("example expects an object-backed packet").card.name();
     let target = item.targets.first().and_then(|b| {
         if let Target::Card(id) = b.target {
             origin.objects.iter().find(|o| {
@@ -238,7 +238,7 @@ fn main() {
                     .cost;
                 assert!(matches!(spec.generic, 0 | 2 | 4 | 6));
                 assert_eq!(spec.colored.iter().sum::<u32>(), 3 - spec.generic / 2);
-                let name = before.announcing.as_ref().unwrap().source_card.name();
+                let name = before.announcing.as_ref().unwrap().source().expect("example expects an object-backed packet").card.name();
                 let colors = if name == "Temur Tawnyback" {
                     [1, 3, 4]
                 } else {
@@ -317,7 +317,7 @@ fn main() {
                 let n = check(&origin, &after, item);
                 checks += n;
                 if n > 0 {
-                    seen.insert(item.source_card.name());
+                    seen.insert(item.source().expect("example expects an object-backed packet").card.name());
                 }
             }
             max_bytes = max_bytes.max(game.state_bytes());

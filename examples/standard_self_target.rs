@@ -238,7 +238,7 @@ fn main() {
             if matches!(a, Action::ArrangeLibrary { .. } | Action::Discard { .. })
                 && before.resolving.as_ref().is_some_and(|s| {
                     matches!(
-                        s.source_card.name(),
+                        s.source().expect("example expects an object-backed packet").card.name(),
                         "Veteran Guardmouse" | "Whiskerquill Scribe"
                     )
                 })
@@ -284,7 +284,7 @@ fn main() {
                 }
             }
             for item in items(&after) {
-                let name = item.source_card.name();
+                let name = item.source().expect("example expects an object-backed packet").card.name();
                 let index = if name == "Ruric Thar, Biomagus" { 2 } else { 0 };
                 if NEW.contains(&name)
                     && item.kind == (StackKind::TriggeredAbility { ability: index })

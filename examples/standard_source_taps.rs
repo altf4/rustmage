@@ -438,7 +438,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     StackKind::TriggeredAbility { ability } => {
                         let key = (s.object, ability, s.entering_object);
                         let n = debt.get_mut(&key).unwrap_or_else(|| {
-                            panic!("unexpected {} {key:?} seed{seed}", s.source_card.name())
+                            panic!("unexpected {} {key:?} seed{seed}", s.source().expect("example expects an object-backed packet").card.name())
                         });
                         assert!(*n > 0);
                         *n -= 1;
@@ -452,7 +452,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     StackKind::ActivatedAbility { .. } => {
                         assert!(s.entering_object.is_none());
                         assert!(matches!(
-                            s.source_card.name(),
+                            s.source().expect("example expects an object-backed packet").card.name(),
                             "Frostbridge Guard" | "Three Tree Mascot"
                         ));
                     }

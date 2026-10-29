@@ -366,7 +366,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         None => panic!("uncommitted offspring"),
                     }
                 }
-                if !s.source_card.is_creature() {
+                if !s.source().expect("example expects an object-backed packet").card.is_creature() {
                     for source in battlefield(&a)
                         .filter(|v| v.owner == s.controller && v.card.name() == NAMES[0])
                     {
@@ -495,7 +495,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
                         panic!(
                             "unexpected {} ability{ability} seed{seed}",
-                            s.source_card.name()
+                            s.source().expect("example expects an object-backed packet").card.name()
                         )
                     });
                     assert!(*n > 0);

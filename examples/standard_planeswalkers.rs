@@ -151,7 +151,7 @@ fn main() {
                     }
                     checks += 1;
                 }
-                if item.source_card.is_emblem() {
+                if item.source().expect("example expects an object-backed packet").card.is_emblem() {
                     emblem_triggers += 1;
                     let amount = item.life_event.unwrap().amount;
                     let opponent = item.controller.other().index();

@@ -367,7 +367,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert_eq!(cast.offspring, None);
                 let pay = cast.bargain.unwrap();
                 let request = before.payment_request.as_ref().unwrap();
-                let expected = cost(ann.source_card, pay);
+                let expected = cost(ann.source().expect("example expects an object-backed packet").card, pay);
                 assert_eq!((request.required, request.generic), expected);
                 assert_eq!(
                     payment.iter().sum::<u32>(),
@@ -472,7 +472,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if pay {
                         continue;
                     }
-                    assert!(!packets(&view).any(|s|s.source_card==packet.source_card&&s.object==v.reference));
+                    assert!(!packets(&view).any(|s|s.source().expect("example expects an object-backed packet").card==packet.source().expect("example expects an object-backed packet").card&&s.object==v.reference));
                     effects[k][0][p] += 1;
                     continue;
                 }

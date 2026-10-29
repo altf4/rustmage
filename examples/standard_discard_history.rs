@@ -216,11 +216,11 @@ fn main() {
             }
             let completed = root
                 .filter(|s| after.stack.iter().all(|n| n.id != s.id) && after.resolving.is_none())
-                .map(|s| (s.source_card.name(), s.controller))
+                .map(|s| (s.source().expect("example expects an object-backed packet").card.name(), s.controller))
                 .or_else(|| {
                     resolving
                         .filter(|_| after.resolving.is_none())
-                        .map(|s| (s.source_card.name(), s.controller))
+                        .map(|s| (s.source().expect("example expects an object-backed packet").card.name(), s.controller))
                 });
             if let Some((name, p)) = completed {
                 let amount = after.players[p.index()].cards_discarded_this_turn;

@@ -172,11 +172,11 @@ fn qualifies(i: usize, source: &ObjectView, s: &SpellView, o: &Observation) -> b
                 || targeted(1, false)
         }
         2 => s.source().is_some_and(|source| source.card.has_subtype("Equipment")) || targeted(0, false),
-        3 => !s.source_card.is_creature() || s.source().is_some_and(|source| source.card.has_subtype("Dragon")),
+        3 => !s.source().expect("example expects an object-backed packet").card.is_creature() || s.source().is_some_and(|source| source.card.has_subtype("Dragon")),
         5 => targeted(-1, true),
         11 => s.source().is_some_and(|source| source.card.has_subtype("Villain")),
         15 => o.players[s.controller.index()].spells_cast_this_turn == 1,
-        _ => matches!(s.source_card.info().type_line, "Instant" | "Sorcery") && targeted(-1, false),
+        _ => matches!(s.source().expect("example expects an object-backed packet").card.info().type_line, "Instant" | "Sorcery") && targeted(-1, false),
     }
 }
 fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Ledger) {
@@ -435,7 +435,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         continue;
                     }
                     let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
-                        panic!("unexpected {} seed{seed}", s.source_card.name())
+                        panic!("unexpected {} seed{seed}", s.source().expect("example expects an object-backed packet").card.name())
                     });
                     assert!(*n > 0);
                     *n -= 1;

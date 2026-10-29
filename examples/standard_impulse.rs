@@ -356,7 +356,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             _ => unreachable!(),
                         };
                         assert_eq!((v.power, v.toughness), stats);
-                        assert_eq!(v.keywords, s.source_card.info().keywords);
+                        assert_eq!(v.keywords, s.source().expect("example expects an object-backed packet").card.info().keywords);
                         entries[i] += 1;
                     }
                     if matches!(

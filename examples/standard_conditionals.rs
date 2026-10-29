@@ -149,7 +149,7 @@ fn delirium(obs: &Observation, p: Player) -> bool {
 fn check(before: &Observation, after: &Observation, item: &SpellView) -> (usize, bool) {
     let p = item.controller;
     let i = p.index();
-    let n = item.source_card.name();
+    let n = item.source().expect("example expects an object-backed packet").card.name();
     let trigger = matches!(item.kind, StackKind::TriggeredAbility { .. });
     let own_source = before
         .objects
@@ -475,7 +475,7 @@ fn main() {
                     batches += 1;
                     checked.insert(item.id);
                     seen.insert((
-                        item.source_card.name(),
+                        item.source().expect("example expects an object-backed packet").card.name(),
                         format!("{:?}/{:?}/{active}", item.kind, item.mode),
                     ));
                 }

@@ -53,7 +53,7 @@ fn count_tokens(o: &Observation, p: Player, kind: &str) -> usize {
         .count()
 }
 fn witness(s: &SpellView, b: &Observation, a: &Observation) -> u64 {
-    let i = idx(s.source_card).unwrap();
+    let i = idx(s.source().expect("example expects an object-backed packet").card).unwrap();
     let p = s.controller.index();
     let spell = a.objects.iter().find(|v| v.id == s.card).unwrap();
     assert_eq!(
@@ -358,7 +358,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let (s, before) = pending.remove(&id).unwrap();
                     let n = witness(&s, &before, &a);
                     if n > 0 {
-                        effects[idx(s.source_card).unwrap()]
+                        effects[idx(s.source().expect("example expects an object-backed packet").card).unwrap()]
                             [usize::from(s.cast.unwrap().method == CastMethod::Flashback)] += 1;
                     }
                     units += n;

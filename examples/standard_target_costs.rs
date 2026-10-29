@@ -67,8 +67,8 @@ fn qualifies(i: usize, p: Player, t: Target, b: &Observation) -> bool {
             .find(|s| s.kind == StackKind::Spell && s.card == id)
             .is_some_and(|s| match i {
                 1 => {
-                    s.source_card.is_instant()
-                        || s.source_card.info().type_line.starts_with("Sorcery")
+                    s.source().expect("example expects an object-backed packet").card.is_instant()
+                        || s.source().expect("example expects an object-backed packet").card.info().type_line.starts_with("Sorcery")
                 }
                 10 => s.source().is_some_and(|source| source.card.is_creature()),
                 _ => false,
@@ -100,13 +100,13 @@ fn object(o: &Observation, r: ObjectRef) -> Option<&rustmage::ObjectView> {
     o.objects.iter().find(|v| v.reference == r)
 }
 fn expected(s: &SpellView, b: &Observation) -> (Mana, u32, bool) {
-    let i = idx(s.source_card).unwrap();
-    let (mut colors, generic) = printed(s.source_card);
+    let i = idx(s.source().expect("example expects an object-backed packet").card).unwrap();
+    let (mut colors, generic) = printed(s.source().expect("example expects an object-backed packet").card);
     let discounted = s.targets.iter().any(|t| {
         t.object.is_some_and(|r| object(b, r).is_some()) && qualifies(i, s.controller, t.target, b)
     });
     let mentors =
-        if s.source_card.is_instant() || s.source_card.info().type_line.starts_with("Sorcery") {
+        if s.source().expect("example expects an object-backed packet").card.is_instant() || s.source().expect("example expects an object-backed packet").card.info().type_line.starts_with("Sorcery") {
             b.objects
                 .iter()
                 .filter(|v| {
@@ -150,7 +150,7 @@ fn deck(f: usize) -> Vec<Card> {
     d
 }
 fn witness(s: &SpellView, b: &Observation, a: &Observation) {
-    let i = idx(s.source_card).unwrap();
+    let i = idx(s.source().expect("example expects an object-backed packet").card).unwrap();
     let targets: Vec<_> = s
         .targets
         .iter()
@@ -481,7 +481,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .any(|t| t.object.is_none_or(|r| object(&before, r).is_some()));
                 if valid && a.outcome.is_none() {
                     witness(&s, &before, &a);
-                    effects[idx(s.source_card).unwrap()] += 1;
+                    effects[idx(s.source().expect("example expects an object-backed packet").card).unwrap()] += 1;
                 }
             }
             max_bytes = max_bytes.max(g.state_bytes());

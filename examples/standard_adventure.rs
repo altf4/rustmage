@@ -885,7 +885,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if i == 16
                     && item.kind == StackKind::Spell
-                    && item.source_card == Card::from_name("Bygone Colossus").unwrap()
+                    && item.source().expect("example expects an object-backed packet").card == Card::from_name("Bygone Colossus").unwrap()
                     && progress[actor.index()].main_verified
                 {
                     assert!(item.mana_value() >= 5);
@@ -904,7 +904,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Action::PayCosts { .. } = action
                 && let Some(item) = &o.announcing
                 && item.kind == StackKind::Spell
-                && item.source_card == focal.adventure_spell().unwrap()
+                && item.source().expect("example expects an object-backed packet").card == focal.adventure_spell().unwrap()
             {
                 let cast = item.cast.unwrap();
                 assert_eq!(cast.face, rustmage::CastFace::Adventure);

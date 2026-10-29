@@ -213,7 +213,7 @@ fn main() {
                         .zip(cost.colored)
                         .all(|(paid, required)| paid >= required)
                 );
-                routes.insert((root.source_card.name(), ability, cost.colored, cost.generic));
+                routes.insert((root.source().expect("example expects an object-backed packet").card.name(), ability, cost.colored, cost.generic));
                 payments += 1;
             }
             let saved = g.snapshot();
@@ -271,7 +271,7 @@ fn main() {
                         .iter()
                         .find(|b| b.reference == reference && b.zone == Zone::Battlefield)
                 {
-                    let keyword = match (root.source_card.name(), ability) {
+                    let keyword = match (root.source().expect("example expects an object-backed packet").card.name(), ability) {
                         ("Cindering Cutthroat", 0) => Keywords::MENACE,
                         ("Hovel Hurler", 0) => Keywords::FLYING,
                         ("Trostani, Three Whispers", 0) => Keywords::DEATHTOUCH,
@@ -289,7 +289,7 @@ fn main() {
                         assert_eq!(object.power, old.power + 1);
                         assert_eq!(object.toughness, old.toughness);
                     }
-                    abilities.insert((root.source_card.name(), ability));
+                    abilities.insert((root.source().expect("example expects an object-backed packet").card.name(), ability));
                     body_checks += 1;
                 }
             }

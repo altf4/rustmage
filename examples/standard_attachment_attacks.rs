@@ -378,13 +378,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(packet.card, packet.object.card);
                     assert!(packet.cast.is_none());
                     if !event.granted {
-                        assert_eq!(packet.source_card, event.granting_card);
+                        assert_eq!(packet.source().expect("example expects an object-backed packet").card, event.granting_card);
                     } else if let Some(v) = before
                         .objects
                         .iter()
                         .find(|v| v.reference == event.recipient)
                     {
-                        assert_eq!(packet.source_card, v.card);
+                        assert_eq!(packet.source().expect("example expects an object-backed packet").card, v.card);
                     }
                     seen_grantors.insert(event.grantor);
                     if seen_packets.insert(packet.id) {
@@ -496,7 +496,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             {
                 let requested = before.payment_request.as_ref().unwrap();
                 let expected = if ann.kind == StackKind::Spell {
-                    cost(ann.source_card)
+                    cost(ann.source().expect("example expects an object-backed packet").card)
                 } else if let StackKind::ActivatedAbility { ability } = ann.kind {
                     (
                         [0; 6],

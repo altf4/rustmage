@@ -79,7 +79,7 @@ fn check(o: &Observation) -> u64 {
 }
 fn verify(s: &SpellView, b: &Observation, a: &Observation) -> usize {
     assert!(s.targets.is_empty());
-    match s.source_card.name() {
+    match s.source().expect("example expects an object-backed packet").card.name() {
         "Authority of the Consuls" | "Tranquil Cove" => {
             assert_eq!(
                 a.players[s.controller.index()].life,
@@ -300,14 +300,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     StackKind::Spell => {
                         assert!(s.entering_object.is_none());
-                        if let Some(i) = NAMES.iter().position(|n| *n == s.source_card.name()) {
+                        if let Some(i) = NAMES.iter().position(|n| *n == s.source().expect("example expects an object-backed packet").card.name()) {
                             casts[i] += 1;
                         }
                     }
                     StackKind::TriggeredAbility { ability } => {
                         let key = (s.object, s.entering_object, ability);
                         let n = debt.get_mut(&key).unwrap_or_else(|| {
-                            panic!("unexpected {} {key:?} seed{seed}", s.source_card.name())
+                            panic!("unexpected {} {key:?} seed{seed}", s.source().expect("example expects an object-backed packet").card.name())
                         });
                         assert!(*n > 0);
                         *n -= 1;
@@ -315,7 +315,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     StackKind::ActivatedAbility { .. } => {
                         assert!(matches!(
-                            s.source_card.name(),
+                            s.source().expect("example expects an object-backed packet").card.name(),
                             "Tranquil Cove" | "Three Tree Mascot"
                         ));
                         assert!(s.entering_object.is_none());

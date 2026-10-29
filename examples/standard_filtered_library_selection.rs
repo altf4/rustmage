@@ -524,7 +524,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if frames.insert(root.id) {
                     verify_frame(i, &b, f, &mut m);
                     if i == 11 {
-                        let copy = root.source_card.is_token();
+                        let copy = root.source().expect("example expects an object-backed packet").card.is_token();
                         m.trainer_frames[usize::from(copy)] += 1;
                         assert_eq!(root.entering_object, Some(root.object));
                     }
@@ -653,7 +653,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 debt.get_mut(&(root.object, ability)).unwrap_or_else(|| {
                                     panic!(
                                         "unexpected trigger {} {ability}",
-                                        root.source_card.name()
+                                        root.source().expect("example expects an object-backed packet").card.name()
                                     )
                                 });
                             assert!(*remaining > 0);

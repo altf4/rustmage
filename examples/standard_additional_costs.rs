@@ -48,7 +48,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let action = actions[rustmage::policy::smoke_index(&g, &actions)].clone();
             if let Action::ChooseAdditionalCost { object } = action {
                 selections += 1;
-                kinds.insert(before.announcing.as_ref().unwrap().source_card.name());
+                kinds.insert(before.announcing.as_ref().unwrap().source().expect("example expects an object-backed packet").card.name());
                 assert!(
                     before
                         .additional_cost

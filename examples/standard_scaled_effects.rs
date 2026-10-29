@@ -74,7 +74,7 @@ fn count(obs: &Observation, p: Player, filter: impl Fn(&rustmage::ObjectView) ->
 }
 fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     let p = item.controller;
-    let amount = match (item.source_card.name(), item.kind) {
+    let amount = match (item.source().expect("example expects an object-backed packet").card.name(), item.kind) {
         ("Archway Angel", StackKind::TriggeredAbility { ability: 0 }) => {
             let amount = 2 * count(before, p, |o| o.card.has_subtype("Gate"));
             assert_eq!(
@@ -255,7 +255,7 @@ fn main() {
                 if n > 0 {
                     checks += n;
                     batches += 1;
-                    seen.insert((item.source_card.name(), format!("{:?}", item.kind)));
+                    seen.insert((item.source().expect("example expects an object-backed packet").card.name(), format!("{:?}", item.kind)));
                 }
             }
             decisions += 1;

@@ -481,10 +481,10 @@ fn main() {
                     let (cost, rules) = costs(
                         &before,
                         root.controller,
-                        root.source_card,
+                        root.source().expect("example expects an object-backed packet").card,
                         before
                             .announcing_cost
-                            .unwrap_or_else(|| base(root.source_card)),
+                            .unwrap_or_else(|| base(root.source().expect("example expects an object-backed packet").card)),
                     );
                     locked_rules.insert(root.id, rules);
                     cost
@@ -556,7 +556,7 @@ fn main() {
             let after = game.observe(actor);
             for item in &after.stack {
                 if item.kind == StackKind::Spell && item.source().is_some_and(|source| NEW.contains(&source.card.name())) {
-                    casted.insert(item.source_card.name());
+                    casted.insert(item.source().expect("example expects an object-backed packet").card.name());
                 }
             }
             if let Some(item) = before.stack.last()
@@ -582,7 +582,7 @@ fn main() {
                 let n = body(&origin, &after, item);
                 checks += n;
                 if n > 0 {
-                    resolved.insert((item.source_card.name(), format!("{:?}", item.kind)));
+                    resolved.insert((item.source().expect("example expects an object-backed packet").card.name(), format!("{:?}", item.kind)));
                 }
             }
             decisions += 1;

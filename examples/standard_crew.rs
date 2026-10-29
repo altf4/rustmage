@@ -508,7 +508,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let (Some(ann), Action::PayCosts { .. }) = (&o.announcing, &action) {
                 if ann.source().is_some_and(|source| source.card.name() == NAMES[i]) {
                     if ann.kind == StackKind::Spell {
-                        assert!(!ann.source_card.is_creature());
+                        assert!(!ann.source().expect("example expects an object-backed packet").card.is_creature());
                         s[p.index()].source = Some(ann.card);
                         s[p.index()].entry = Some(o.clone());
                         casts[i][p.index()] += 1;

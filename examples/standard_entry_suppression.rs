@@ -222,7 +222,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 if item.kind == StackKind::Spell {
-                    if let Some(i) = NAMES.iter().position(|n| *n == item.source_card.name()) {
+                    if let Some(i) = NAMES.iter().position(|n| *n == item.source().expect("example expects an object-backed packet").card.name()) {
                         casts[i] += 1;
                     }
                     continue;
@@ -231,13 +231,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let count = debt.get_mut(&(item.object, ability)).unwrap_or_else(|| {
                         panic!(
                             "unexpected trigger {} ability {ability} game {seed}",
-                            item.source_card.name()
+                            item.source().expect("example expects an object-backed packet").card.name()
                         )
                     });
                     assert!(
                         *count > 0,
                         "extra trigger {} game {seed}",
-                        item.source_card.name()
+                        item.source().expect("example expects an object-backed packet").card.name()
                     );
                     *count -= 1;
                 }

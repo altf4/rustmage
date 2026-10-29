@@ -269,7 +269,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let n = check(&before, &after, item);
                 checks += n;
                 if n > 0 {
-                    resolved.insert((item.source_card.name(), item.mode));
+                    resolved.insert((item.source().expect("example expects an object-backed packet").card.name(), item.mode));
                 }
             }
             if before.announcing.is_some()

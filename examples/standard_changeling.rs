@@ -13,7 +13,7 @@ fn tribal_triggers(view: &Observation) -> Vec<u64> {
                     "Flying Octobot",
                     "Obyra, Dreaming Duelist",
                 ]
-                .contains(&s.source_card.name())
+                .contains(&s.source().expect("example expects an object-backed packet").card.name())
         })
         .map(|s| s.id)
         .collect()

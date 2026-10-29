@@ -335,13 +335,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     StackKind::TriggeredAbility { ability } => {
                         let i = s.source().and_then(|source| index(source.card)).unwrap();
                         let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
-                            panic!("unexpected {} seed{seed}", s.source_card.name())
+                            panic!("unexpected {} seed{seed}", s.source().expect("example expects an object-backed packet").card.name())
                         });
                         assert!(*n > 0);
                         *n -= 1;
                         triggers[i] += 1;
                     }
-                    StackKind::ActivatedAbility { .. } => assert!(s.source_card.is_token()),
+                    StackKind::ActivatedAbility { .. } => assert!(s.source().expect("example expects an object-backed packet").card.is_token()),
                     StackKind::CasualtyCopy
                     | StackKind::CopyEndStepSacrifice
                     | StackKind::DelayedReturn

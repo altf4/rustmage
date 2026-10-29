@@ -147,7 +147,7 @@ fn score(obs: &Observation, action: &Action, paid: bool) -> i32 {
             let source = obs.objects.iter().find(|o| o.id == *card).unwrap().card;
             if COUNTERS.contains(&source.name()) && source.name() != "Voracious Greatshark" {
                 return if obs.stack.iter().any(|s| {
-                    s.controller != obs.actor.unwrap() && matches(source.name(), s.source_card)
+                    s.controller != obs.actor.unwrap() && matches(source.name(), s.source().expect("example expects an object-backed packet").card)
                 }) {
                     80
                 } else {
@@ -156,7 +156,7 @@ fn score(obs: &Observation, action: &Action, paid: bool) -> i32 {
             }
             if source.name() == "Voracious Greatshark"
                 && !obs.stack.iter().any(|s| {
-                    s.controller != obs.actor.unwrap() && matches(source.name(), s.source_card)
+                    s.controller != obs.actor.unwrap() && matches(source.name(), s.source().expect("example expects an object-backed packet").card)
                 })
                 && obs.turn < 20
             {
@@ -215,7 +215,7 @@ fn main() {
                     let source = before.objects.iter().find(|o| o.id == *card).unwrap().card;
                     if COUNTERS.contains(&source.name()) {
                         let victim = before.stack.iter().find(|o| o.card == *id).unwrap();
-                        assert!(matches(source.name(), victim.source_card));
+                        assert!(matches(source.name(), victim.source().expect("example expects an object-backed packet").card));
                         assert_eq!(victim.kind, StackKind::Spell);
                         assert_ne!(*card, *id);
                         checks += 1;
@@ -268,16 +268,16 @@ fn main() {
                         max_bytes = max_bytes.max(game.state_bytes());
                         continue;
                     };
-                    assert!(matches(item.source_card.name(), victim.source_card));
+                    assert!(matches(item.source().expect("example expects an object-backed packet").card.name(), victim.source().expect("example expects an object-backed packet").card));
                     if after.resolving.as_ref().is_some_and(|s| s.id == item.id) {
-                        assert_eq!(item.source_card.name(), "Spectral Interference");
+                        assert_eq!(item.source().expect("example expects an object-backed packet").card.name(), "Spectral Interference");
                         assert_eq!(after.resolution_payment.as_ref().unwrap().cost.generic, 4);
                     } else {
                         assert_eq!(
                             after.objects.iter().find(|o| o.id == id).unwrap().zone,
                             Zone::Graveyard
                         );
-                        seen.insert(item.source_card.name());
+                        seen.insert(item.source().expect("example expects an object-backed packet").card.name());
                     }
                     checks += 1;
                 } else if item.source().is_some_and(|source| source.card.name() == "Voracious Greatshark")

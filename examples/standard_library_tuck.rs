@@ -70,7 +70,7 @@ fn score(
                 == u16::from(o.stack.iter().any(|s| {
                     s.kind == StackKind::Spell
                         && s.controller != o.actor.unwrap()
-                        && !s.source_card.is_creature()
+                        && !s.source().expect("example expects an object-backed packet").card.is_creature()
                 }))
             {
                 850
@@ -345,9 +345,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let resolved = resolving.map(|s| {
                 (
                     s.id,
-                    s.source_card
+                    s.source().expect("example expects an object-backed packet").card
                         .token_info()
-                        .map_or(s.source_card.name(), |t| t.name),
+                        .map_or(s.source().expect("example expects an object-backed packet").card.name(), |t| t.name),
                     s.targets.clone(),
                     s.kind,
                     s.controller,

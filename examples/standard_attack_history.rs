@@ -229,7 +229,7 @@ fn score(obs: &Observation, a: &Action, prefer_raid: bool) -> i32 {
                 Target::Card(id) => {
                     let o = obs.objects.iter().find(|o| o.id == *id).unwrap();
                     let harm = matches!(
-                        root.source_card.name(),
+                        root.source().expect("example expects an object-backed packet").card.name(),
                         "Witchstalker Frenzy" | "Gorehorn Raider" | "Shock"
                     );
                     if harm {
@@ -396,10 +396,10 @@ fn main() {
                     let (cost, rules) = costs(
                         &before,
                         root.controller,
-                        root.source_card,
+                        root.source().expect("example expects an object-backed packet").card,
                         before
                             .announcing_cost
-                            .unwrap_or_else(|| base(root.source_card)),
+                            .unwrap_or_else(|| base(root.source().expect("example expects an object-backed packet").card)),
                     );
                     locked_rules.insert(root.id, rules);
                     cost
@@ -490,17 +490,17 @@ fn main() {
 
             for item in &after.stack {
                 if item.kind == StackKind::Spell && item.source().is_some_and(|source| NEW.contains(&source.card.name())) {
-                    casted.insert(item.source_card.name());
+                    casted.insert(item.source().expect("example expects an object-backed packet").card.name());
                     if [
                         "Fire Nation Raider",
                         "Gorehorn Raider",
                         "Skyship Buccaneer",
                         "Storm Fleet Spy",
                     ]
-                    .contains(&item.source_card.name())
+                    .contains(&item.source().expect("example expects an object-backed packet").card.name())
                     {
                         raid_casts.insert((
-                            item.source_card.name(),
+                            item.source().expect("example expects an object-backed packet").card.name(),
                             after.players[item.controller.index()].attacked_this_turn,
                         ));
                     }
@@ -533,7 +533,7 @@ fn main() {
                 }
                 checks += n;
                 if n > 0 {
-                    resolved.insert((item.source_card.name(), format!("{:?}", item.kind)));
+                    resolved.insert((item.source().expect("example expects an object-backed packet").card.name(), format!("{:?}", item.kind)));
                 }
             }
             decisions += 1;

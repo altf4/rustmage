@@ -212,7 +212,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         objects: Vec::new(),
                         cost: b.announcing.is_some(),
                         player: actor,
-                        name: s.source_card.name(),
+                        name: s.source().expect("example expects an object-backed packet").card.name(),
                     },
                 );
             }
@@ -374,7 +374,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for s in &a.stack {
                 if s.kind == StackKind::Spell
                     && seen_cast.insert(s.id)
-                    && let Some(i) = NAMES.iter().position(|&n| n == s.source_card.name())
+                    && let Some(i) = NAMES.iter().position(|&n| n == s.source().expect("example expects an object-backed packet").card.name())
                 {
                     casts[i] += 1;
                 }
@@ -383,7 +383,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && a.resolving.as_ref().is_none_or(|r| r.id != s.id)
                 && !a.stack.iter().any(|r| r.id == s.id)
             {
-                match (s.source_card.name(), s.kind) {
+                match (s.source().expect("example expects an object-backed packet").card.name(), s.kind) {
                     ("Bushy Bodyguard", StackKind::TriggeredAbility { ability: 1 })
                         if paid.contains(&s.id) =>
                     {
@@ -501,7 +501,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
                         panic!(
                             "unpredicted {} {:?} seed{seed}",
-                            s.source_card.name(),
+                            s.source().expect("example expects an object-backed packet").card.name(),
                             s.kind
                         )
                     });

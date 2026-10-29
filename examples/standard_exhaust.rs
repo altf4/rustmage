@@ -54,7 +54,7 @@ fn completed(o: &Observation, a: &Action) -> Option<(ObjectRef, Card, u16)> {
     match a {
         Action::PayCosts { .. } => o.announcing.as_ref().and_then(|s| {
             if let StackKind::ActivatedAbility { ability } = s.kind {
-                Some((s.object, s.source_card, ability))
+                Some((s.object, s.source().expect("example expects an object-backed packet").card, ability))
             } else {
                 None
             }
@@ -154,7 +154,7 @@ fn choose(
             } => {
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let root = o.announcing.as_ref().unwrap();
-                match root.source_card.name() {
+                match root.source().expect("example expects an object-backed packet").card.name() {
                     "Unsummon" => {
                         if b.owner == root.controller
                             && mask(b.card.name()) != 0
@@ -376,8 +376,8 @@ fn main() {
             {
                 if let StackKind::ActivatedAbility { ability } = root.kind {
                     if root.source().is_some_and(|source| NEW.contains(&source.card.name())) {
-                        resolved.insert((root.source_card.name(), ability));
-                        let amount = match (root.source_card.name(), ability) {
+                        resolved.insert((root.source().expect("example expects an object-backed packet").card.name(), ability));
+                        let amount = match (root.source().expect("example expects an object-backed packet").card.name(), ability) {
                             ("Camera Launcher", 0)
                             | ("Draconautics Engineer", 0)
                             | ("Keen Buccaneer", 0)

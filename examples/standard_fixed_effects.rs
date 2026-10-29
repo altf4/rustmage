@@ -194,7 +194,7 @@ fn verify(i: usize, root: &SpellView, b: &Observation, a: &Observation) {
         [a.players[0].life, a.players[1].life],
         life,
         "{} effect {i}",
-        root.source_card.name()
+        root.source().expect("example expects an object-backed packet").card.name()
     );
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -377,7 +377,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if let Action::ChooseMode { mode } = action {
                 assert_eq!(
-                    before.announcing.as_ref().unwrap().source_card.name(),
+                    before.announcing.as_ref().unwrap().source().expect("example expects an object-backed packet").card.name(),
                     NAMES[6]
                 );
                 assert!(g.observe(actor.other()).mode_choices.is_empty());

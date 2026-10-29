@@ -227,7 +227,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let n = check(&before, &after, item);
                 checks += n;
                 if n > 0 {
-                    resolved.insert((item.source_card.name(), format!("{:?}", item.kind)));
+                    resolved.insert((item.source().expect("example expects an object-backed packet").card.name(), format!("{:?}", item.kind)));
                 }
             }
             if before.announcing.is_some()

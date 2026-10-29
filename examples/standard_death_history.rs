@@ -210,7 +210,7 @@ fn main() {
                 assert!(deaths > 0, "morbid trigger requires death history");
                 if after.stack.iter().all(|s| s.id != item.id) {
                     assert_eq!(before.step, Step::End);
-                    guarded_triggers.insert(item.source_card.name());
+                    guarded_triggers.insert(item.source().expect("example expects an object-backed packet").card.name());
                 }
             }
             max_bytes = max_bytes.max(g.state_bytes());

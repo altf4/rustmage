@@ -406,7 +406,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if let Action::ChooseMode { mode } = action {
                 let root = before.announcing.as_ref().unwrap();
-                assert_eq!(root.source_card.name(), NAMES[2]);
+                assert_eq!(root.source().expect("example expects an object-backed packet").card.name(), NAMES[2]);
                 assert!(g.observe(actor.other()).mode_choices.is_empty());
                 modes[mode as usize] += 1;
             }

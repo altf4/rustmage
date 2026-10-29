@@ -276,7 +276,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     assert_eq!(
                         ann.mana_value(),
-                        printed_mana_value(ann.source_card) + u64::from(ann.x.unwrap())
+                        printed_mana_value(ann.source().expect("example expects an object-backed packet").card) + u64::from(ann.x.unwrap())
                     );
                 }
             }
@@ -433,7 +433,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             .filter(|t| t.object.card == s.card)
                         {
                             assert_eq!(t.x, Some(x));
-                            assert_eq!(t.mana_value(), printed_mana_value(s.source_card));
+                            assert_eq!(t.mana_value(), printed_mana_value(s.source().expect("example expects an object-backed packet").card));
                         }
                     }
                     _ => unreachable!(),

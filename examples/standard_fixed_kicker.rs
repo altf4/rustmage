@@ -371,7 +371,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && let Some(k) = ann.source().and_then(|source| index(source.card))
             {
                 let pay = ann.cast.unwrap().kicker.unwrap();
-                let expected = cost(ann.source_card, pay);
+                let expected = cost(ann.source().expect("example expects an object-backed packet").card, pay);
                 let request = before.payment_request.as_ref().unwrap();
                 assert_eq!((request.required, request.generic), expected);
                 assert_eq!(

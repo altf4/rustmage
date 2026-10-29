@@ -566,7 +566,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(Some(ctx.recipient), s.bear);
                     assert_eq!(packet.object, ctx.recipient);
                     assert_eq!(packet.controller, p);
-                    assert_eq!(packet.source_card.name(), "Bear Cub");
+                    assert_eq!(packet.source().expect("example expects an object-backed packet").card.name(), "Bear Cub");
                     if !s.seen.contains(&packet.id) {
                         s.seen.push(packet.id);
                         if i == 9 {

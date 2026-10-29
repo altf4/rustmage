@@ -107,7 +107,7 @@ fn choose(
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let root = o.announcing.as_ref().unwrap();
                 let benefit = matches!(
-                    root.source_card.name(),
+                    root.source().expect("example expects an object-backed packet").card.name(),
                     "Moment of Triumph" | "Giant Growth" | "Efflorescence"
                 );
                 if root.source().is_some_and(|source| source.card.name() == "Giant Growth")
@@ -292,7 +292,7 @@ fn main() {
                 && after.resolving.is_none()
                 && before.turn == after.turn
             {
-                let name = root.source_card.name();
+                let name = root.source().expect("example expects an object-backed packet").card.name();
                 let gain = before.players[root.controller.index()].life_gained_this_turn > 0;
                 let old_target = root.targets.first().and_then(|t| t.object).and_then(|r| {
                     before

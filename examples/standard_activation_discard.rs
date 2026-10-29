@@ -170,7 +170,7 @@ fn main() {
             }
             let paid = if let Some(root) = before.announcing.as_ref()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && is_new(root.source_card.name(), ability)
+                && is_new(root.source().expect("example expects an object-backed packet").card.name(), ability)
                 && let Action::PayCosts { payment } = a
             {
                 let v = before.additional_cost.as_ref().unwrap();
@@ -241,7 +241,7 @@ fn main() {
                     );
                 }
                 if matches!(
-                    root.source_card.name(),
+                    root.source().expect("example expects an object-backed packet").card.name(),
                     "Charging Strifeknight" | "Murmuring Volume"
                 ) {
                     assert!(
@@ -272,11 +272,11 @@ fn main() {
             }
             if let Some(root) = before.stack.last()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && is_new(root.source_card.name(), ability)
+                && is_new(root.source().expect("example expects an object-backed packet").card.name(), ability)
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()
             {
-                let name = root.source_card.name();
+                let name = root.source().expect("example expects an object-backed packet").card.name();
                 let p = root.controller.index();
                 if matches!(name, "Inner Demons Gangsters" | "Iron-Shield Elf") {
                     if let Some(b) = after

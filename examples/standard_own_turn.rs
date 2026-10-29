@@ -323,7 +323,7 @@ fn main() {
                                 }
                             }
                             recovery_checks += 1;
-                            recovered.insert(s.source_card.name());
+                            recovered.insert(s.source().expect("example expects an object-backed packet").card.name());
                         }
                     }
                 } else if s.source().is_some_and(|source| source.card.name() == ZEI) {

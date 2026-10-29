@@ -80,7 +80,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     let p = item.controller;
     let i = p.index();
     let amount = colors(before, p);
-    match (item.source_card.name(), item.kind) {
+    match (item.source().expect("example expects an object-backed packet").card.name(), item.kind) {
         ("Squawkroaster", StackKind::Spell) => {
             let o = after
                 .objects
@@ -322,7 +322,7 @@ fn main() {
                     checks += n;
                     batches += 1;
                     checked.insert(item.id);
-                    seen.insert((item.source_card.name(), format!("{:?}", item.kind)));
+                    seen.insert((item.source().expect("example expects an object-backed packet").card.name(), format!("{:?}", item.kind)));
                 }
             }
             decisions += 1;

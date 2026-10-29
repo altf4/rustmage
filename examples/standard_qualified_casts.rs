@@ -271,7 +271,7 @@ impl SurveilWitness {
         assert!(choice.surveil);
         assert!(choice.top.is_empty() && choice.bottom.is_empty() && choice.graveyard.is_empty());
         assert_eq!(
-            before.resolving.as_ref().unwrap().source_card.name(),
+            before.resolving.as_ref().unwrap().source().expect("example expects an object-backed packet").card.name(),
             NAMES[12]
         );
         Self {
@@ -523,7 +523,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for s in a.objects.iter().filter(|v| v.zone == Zone::Battlefield) {
                     if let Some(i) = index(s.card) {
                         checks += 1;
-                        if qualifies(i, s, spell.controller, spell.source_card, a.active) {
+                        if qualifies(i, s, spell.controller, spell.source().expect("example expects an object-backed packet").card, a.active) {
                             *debt.entry((s.reference, 0)).or_default() += 1;
                         }
                     }
@@ -547,7 +547,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let i =
                     item.source().and_then(|source| index(source.card)).expect("only qualified cast triggers in these decks");
                 let n = debt.get_mut(&(item.object, ability)).unwrap_or_else(|| {
-                    panic!("unexpected {} trigger seed{seed}", item.source_card.name())
+                    panic!("unexpected {} trigger seed{seed}", item.source().expect("example expects an object-backed packet").card.name())
                 });
                 assert!(*n > 0);
                 *n -= 1;
