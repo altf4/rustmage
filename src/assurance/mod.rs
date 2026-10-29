@@ -407,5 +407,7 @@ mod fra_uldaros_effect_tests;
 
 #[path = "../engine_fra_emrakul_exigent_tests.rs"]
 mod fra_emrakul_exigent_tests;
+#[path = "../engine_fra_emrakul_ward_independent_tests.rs"]
+mod fra_emrakul_ward_independent_tests;
 #[path = "../engine_fra_mixed_zone_cost_tests.rs"]
 mod fra_mixed_zone_cost_tests;
