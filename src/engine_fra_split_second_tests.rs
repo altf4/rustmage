@@ -15,7 +15,7 @@ fn samut_grant_is_visible_and_tracks_spell_copy_controller_and_source() {
         // The other player's copy is a new source and does not inherit that grant.
         assert!(!copy.source_keywords.contains(Keywords::SPLIT_SECOND));
         let copy_id = copy.id;
-        let copy_card = copy.card;
+        let copy_card = copy.source.unwrap().id;
         g.state.stack.push(copy);
         let visible = |g: &Game, viewer: Player, id: u64| {
             g.observe(viewer)
