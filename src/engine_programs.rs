@@ -63,6 +63,7 @@ pub(super) struct Resolution {
 pub(super) struct LibraryChoice {
     pub surveil: bool,
     pub return_within_life_gained: bool,
+    pub return_noncreature_nonland: bool,
     pub remaining: Vec<CardId>,
     pub top: Vec<CardId>,
     pub bottom: Vec<CardId>,
@@ -150,13 +151,14 @@ impl Game {
         let mut return_cards = Vec::new();
         for event in &events {
             let card = event.before.reference.card;
-            if choice.return_within_life_gained
-                && event.moved
+            if event.moved
                 && event.destination == Zone::Graveyard
                 && self.object_ref(card) == event.after
                 && self.state.objects[card as usize].zone == Zone::Graveyard
-                && u128::from(self.state.objects[card as usize].card.fixed_mana_value())
-                    <= self.state.players[player.index()].life_gained_this_turn
+                && ((choice.return_within_life_gained
+                    && u128::from(self.state.objects[card as usize].card.fixed_mana_value())
+                        <= self.state.players[player.index()].life_gained_this_turn)
+                    || (choice.return_noncreature_nonland && self.current_kinds(card) & (1 | 2) == 0))
             {
                 return_cards.push(event.after);
             }
@@ -4742,6 +4744,7 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().library = Some(LibraryChoice {
                             surveil: matches!(instruction, Instruction::Surveil(_)),
                             return_within_life_gained: false,
+                            return_noncreature_nonland: false,
                             remaining,
                             top: Vec::new(),
                             bottom: Vec::new(),
@@ -4756,7 +4759,7 @@ impl Game {
                         self.scry_or_surveil_event(item.controller);
                     }
                 }
-                Instruction::SurveilOneReturnByLifeGained => {
+                Instruction::SurveilOneReturnByLifeGained | Instruction::SurveilOneReturnNoncreatureNonland => {
                     let remaining: Vec<_> = self.state.players[item.controller.index()]
                         .library
                         .iter()
@@ -4767,7 +4770,8 @@ impl Game {
                     if !remaining.is_empty() {
                         self.state.resolving.as_mut().unwrap().library = Some(LibraryChoice {
                             surveil: true,
-                            return_within_life_gained: true,
+                            return_within_life_gained: matches!(instruction, Instruction::SurveilOneReturnByLifeGained),
+                            return_noncreature_nonland: matches!(instruction, Instruction::SurveilOneReturnNoncreatureNonland),
                             remaining,
                             top: Vec::new(),
                             bottom: Vec::new(),

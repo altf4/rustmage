@@ -1,0 +1,11 @@
+{
+  "name": "@emblem/fra-chandra-chill",
+  "catalogue_id": 5466,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/command/emblems/ChandraChillOfComplianceEmblem.java",
+  "java_sha256": "5a7e715146a3ce2c47e911cbc84f6cb470b698b7b77133d3db180c12bc337b0c",
+  "physical_metadata_sha256": "ea07bc2c9094fbb5395a7acf6ce874f4e96e35d173f2b12712e804ce2061d9dd"
+}

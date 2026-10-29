@@ -29,13 +29,18 @@ impl Game {
         Some(SourceCounterChoiceView {
             source: a.item.object,
             kind,
-            maximum: self.counter_count(a.item.card, kind),
+            maximum: if kind == CounterKind::Loyalty {
+                self.counter_count(a.item.card, kind).min(u64::from(u32::MAX))
+            } else { self.counter_count(a.item.card, kind) },
         })
     }
     pub(super) fn choose_source_counter_amount(&mut self, amount: u64) {
         let kind = self.source_counter_choice().unwrap().kind;
         let a = self.state.announcing.as_mut().unwrap();
         a.counter_payment = Counters::of(kind, amount);
+        if kind == CounterKind::Loyalty {
+            a.item.x = Some(u32::try_from(amount).expect("validated loyalty X"));
+        }
         a.item.source_counter_payment = Some(SourceCounterPaymentView {
             kind,
             amount,

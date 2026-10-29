@@ -5471,6 +5471,7 @@
     1,
     0,
     2,
+    0,
     0
   ],
   "aliases": [
@@ -5649,6 +5650,10 @@
     [
       "@emblem/fra-ajani-resolute",
       5463
+    ],
+    [
+      "@emblem/fra-chandra-chill",
+      5466
     ],
     [
       "@emblem/fra-chandra-torch",
@@ -28996,6 +29001,9 @@
     },
     {
       "oracle_text": "Whenever you cast a spell, this emblem deals 5 damage to any target."
+    },
+    {
+      "oracle_text": "Whenever you cast a spell, draw a card."
     }
   ],
   "creature_types": [
@@ -185263,6 +185271,33 @@
       "path": "synthetic/emblem_fra_chandra_torch.rs",
       "category": "emblem",
       "name": "@emblem/fra-chandra-torch",
+      "type_line": "",
+      "kind": 0,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5466,
+      "module": "card_5466",
+      "path": "synthetic/emblem_fra_chandra_chill.rs",
+      "category": "emblem",
+      "name": "@emblem/fra-chandra-chill",
       "type_line": "",
       "kind": 0,
       "set": "synthetic",

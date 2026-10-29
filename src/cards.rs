@@ -500,6 +500,8 @@ pub(crate) enum ManaRestriction {
     /// Spells or activated abilities of any source with this subtype.
     SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
+    /// Only the cost of casting a noncreature spell.
+    NoncreatureSpell,
     /// Only the cost of casting a planeswalker spell.
     PlaneswalkerSpell,
     Unrestricted,
@@ -1796,6 +1798,8 @@ pub(crate) enum Instruction {
     Surveil(u16),
     /// Return a surveilled card that meets the life gained threshold after movement.
     SurveilOneReturnByLifeGained,
+    /// Surveil one, returning noncreature nonland cards actually moved to the graveyard.
+    SurveilOneReturnNoncreatureNonland,
     AnimateSource(AnimationSpec),
     AnimateSourceWithAbilityIfNoncreature {
         spec: AnimationSpec,
@@ -3948,9 +3952,9 @@ impl ActivatedAbility {
                 // cannot also consume some chosen counters as a mana producer.
                 assert!(
                     self.origin == ActivationOrigin::Battlefield
-                        && self.cost.tap
-                        && self.cost.remove.is_none(),
-                    "variable counter cost requires its own tap cost and no fixed removal"
+                        && self.cost.remove.is_none()
+                        && (self.cost.tap || (*kind == CounterKind::Loyalty && self.cost.loyalty == Some(0))),
+                    "variable counter cost requires a tap cost or variable loyalty cost"
                 );
                 Some(*kind)
             }
