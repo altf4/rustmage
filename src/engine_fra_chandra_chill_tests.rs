@@ -284,6 +284,78 @@ fn chill_stun_counters_honor_doubling_season() {
 }
 
 #[test]
+fn chill_surveil_does_not_return_artifact_creature() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = chill(&mut g, player, 3);
+        let card = put(&mut g, player, "Adaptive Automaton", Zone::Library);
+        activate(&mut g, source, 0);
+        g.resolve_top();
+        let snapshot = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::ArrangeLibrary { card, destination: LibraryDestination::Graveyard });
+            assert_eq!(g.object_view(card).zone, Zone::Graveyard);
+            g.restore(&snapshot).unwrap();
+        }
+    }
+}
+
+#[test]
+fn chill_restricted_blue_pays_selected_adventure_face() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = chill(&mut g, player, 3);
+        g.state.players[player.index()].mana = [0; 6];
+        activate(&mut g, source, 1);
+        g.resolve_top();
+        g.state.players[player.index()].mana[5] = 3;
+        let card = put(&mut g, player, "Lake-town Mariners // Gone Fishing", Zone::Hand);
+        let first = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let second = put(&mut g, player, "Forest", Zone::Battlefield);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::AnnounceAdventure { card });
+            act(&mut g, Action::ChooseTarget { target: Target::Card(first) });
+            act(&mut g, Action::ChooseTarget { target: Target::Card(second) });
+            if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+            pay(&mut g);
+            assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+            assert_eq!(g.state.stack.last().unwrap().cast.unwrap().face, CastFace::Adventure);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn chill_restricted_blue_pays_prepared_noncreature_face() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let prepared = put(&mut g, player, "Theorix Metamage // Omit Variables", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: prepared });
+        pay(&mut g);
+        settle(&mut g);
+        let permanent = g.object_ref(prepared);
+        let copy = g.state.preparations.as_ref().unwrap().iter()
+            .find(|row| row.permanent == permanent).unwrap().spell_copy;
+        let source = chill(&mut g, player, 3);
+        g.state.players[player.index()].mana = [0; 6];
+        activate(&mut g, source, 1);
+        g.resolve_top();
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::AnnounceExile { card: copy.card });
+            for _ in 0..20 {
+                if g.state.announcing.is_none() { break; }
+                choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. } | Action::FinishTargets | Action::PayCosts { .. }));
+            }
+            assert!(g.state.announcing.is_none());
+            assert_eq!(g.state.players[player.index()].mana[1], 0);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
 fn chill_loyalty_x_choice_rejects_wrong_actor_and_restores_before_choice() {
     for player in [Player::P0, Player::P1] {
         for amount in [0, u64::from(u32::MAX) + 17] {
