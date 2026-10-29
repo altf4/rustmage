@@ -4,7 +4,8 @@ use super::*;
 fn mixed_player_and_permanent_counters_wait_for_replacements_and_restore() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        let walker = put(&mut g, p, "Jace, the Perfected Mind", Zone::Battlefield);
+        let walker = put(&mut g, p, "Kaito, Cunning Infiltrator", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 3;
         put(&mut g, p, "Doubling Season", Zone::Battlefield);
         put(
             &mut g,

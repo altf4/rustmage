@@ -7773,3 +7773,6 @@ mod engine_fra_self_replacement_tests;
 
 #[path = "engine_fra_tam_proliferate_tests.rs"]
 mod engine_fra_tam_proliferate_tests;
+
+#[path = "engine_fra_tam_independent_tests.rs"]
+mod engine_fra_tam_independent_tests;

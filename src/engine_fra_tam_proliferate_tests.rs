@@ -25,6 +25,8 @@ fn tam_pays_five_colors_and_repeats_for_distinct_live_planeswalker_types() {
         let tam = put(&mut g, p, "Tam, the Possibility", Zone::Battlefield);
         let ajani = put(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
         let kaito = put(&mut g, p, "Kaito, Cunning Infiltrator", Zone::Battlefield);
+        g.state.objects[ajani as usize].counters.loyalty = 3;
+        g.state.objects[kaito as usize].counters.loyalty = 3;
         let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         g.add_counter(creature, CounterKind::PlusOne, 1);
         let activate = Action::AnnounceActivate {

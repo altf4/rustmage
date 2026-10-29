@@ -250,12 +250,13 @@ fn proliferate_replacement_creates_separate_owned_choices() {
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
         let tam = put(&mut game, player, "Tam, the Possibility", Zone::Battlefield);
-        put(
+        let walker = put(
             &mut game,
             player,
             "Ajani, Caller of the Pride",
             Zone::Battlefield,
         );
+        game.state.objects[walker as usize].counters.loyalty = 3;
         put(&mut game, player, "Serra Angel", Zone::Battlefield);
         let subject = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
         game.add_counter(subject, CounterKind::PlusOne, 1);
@@ -344,12 +345,13 @@ fn proliferate_replacement_sibling_survives_provider_departure_and_restore() {
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
         let tam = put(&mut game, player, "Tam, the Possibility", Zone::Battlefield);
-        put(
+        let walker = put(
             &mut game,
             player,
             "Ajani, Caller of the Pride",
             Zone::Battlefield,
         );
+        game.state.objects[walker as usize].counters.loyalty = 3;
         let provider = put(&mut game, player, "Serra Angel", Zone::Battlefield);
         let subject = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
         game.add_counter(subject, CounterKind::PlusOne, 1);
@@ -497,7 +499,7 @@ fn tam_simultaneous_player_and_permanent_replacements_wait_for_public_choice() {
         let walker = put(
             &mut game,
             player,
-            "Jace, the Perfected Mind",
+            "Kaito, Cunning Infiltrator",
             Zone::Battlefield,
         );
         game.state.objects[walker as usize].counters.loyalty = 3;
@@ -1015,7 +1017,7 @@ fn own_counter_replacements_precede_general_replacements_and_prohibition() {
                     game.state.players[player.index()].poison_counters,
                     if prohibited { 0 } else { expected }
                 );
-                assert_eq!(game.object_view(top).zone, Zone::Library);
+                assert_eq!(game.object_view(top).zone, Zone::Hand);
             }
         }
     }
@@ -1271,7 +1273,7 @@ fn mixed_permanent_and_split_player_replacements_follow_apnap() {
         let walker = put(
             &mut game,
             active,
-            "Jace, the Perfected Mind",
+            "Kaito, Cunning Infiltrator",
             Zone::Battlefield,
         );
         game.state.objects[walker as usize].counters.loyalty = 3;
