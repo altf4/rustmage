@@ -121,7 +121,8 @@ impl FundingState<'_> {
         let possible = match spec.kind {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
-            | EffectChoiceKind::DiscardMatchingLegendary => hand > 0,
+            | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary => hand > 0,
             EffectChoiceKind::DiscardOrLife(life) => hand > 0 || self.life >= i128::from(life),
             EffectChoiceKind::SacrificeOrDiscard { .. } => battlefield > 0 || hand > 0,
             EffectChoiceKind::Sacrifice
@@ -221,8 +222,10 @@ impl FundingState<'_> {
                     EffectChoiceKind::Discard
                         | EffectChoiceKind::DiscardNamed(_)
                         | EffectChoiceKind::DiscardMatchingLegendary
+                        | EffectChoiceKind::DiscardLegendary
                 ) && !spec.filter.other)
             && (!spec.filter.source_only || r == source)
+            && (spec.kind != EffectChoiceKind::DiscardLegendary || self.legendary(r.card))
             && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
                 || additional_costs::legendary_name_match(self, self.actor, r.card))
             && Game::additional_object_matches(
@@ -949,7 +952,8 @@ impl FundingState<'_> {
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
-            | EffectChoiceKind::DiscardMatchingLegendary => {}
+            | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary => {}
             _ => return false,
         }
         if let Some(n) = counters {

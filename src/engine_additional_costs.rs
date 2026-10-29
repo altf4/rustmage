@@ -58,6 +58,7 @@ impl Game {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary
             | EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => o.owner == actor,
@@ -76,8 +77,14 @@ impl Game {
                     EffectChoiceKind::Discard
                         | EffectChoiceKind::DiscardNamed(_)
                         | EffectChoiceKind::DiscardMatchingLegendary
+                        | EffectChoiceKind::DiscardLegendary
                 ) || spec.filter.other)
             || spec.filter.source_only && object != source
+        {
+            return false;
+        }
+        if spec.kind == EffectChoiceKind::DiscardLegendary
+            && !ability_world::CharacteristicWorld::legendary(self, object.card)
         {
             return false;
         }
@@ -117,7 +124,8 @@ impl Game {
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => Zone::Graveyard,
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
-            | EffectChoiceKind::DiscardMatchingLegendary => Zone::Hand,
+            | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary => Zone::Hand,
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
@@ -716,7 +724,8 @@ impl Game {
             }
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
-            | EffectChoiceKind::DiscardMatchingLegendary => {
+            | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary => {
                 self.discard_batch(&[object.card], None)
             }
             EffectChoiceKind::ReturnUnblockedAttacker => {

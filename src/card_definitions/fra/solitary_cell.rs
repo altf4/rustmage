@@ -1,16 +1,20 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct rules from pinned Oracle and XMage; gated pending integration.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: one(TargetRule::Object { zone: TargetZone::Battlefield, kinds: 0, relation: 1, other: false, nonland: true, tapped: false, min_mana: 0, max_mana: 3 }),
+        program: &[Instruction::ExileUntilSourceLeaves],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield, cycling: false,
+        cost: ActivationCost {
+            colored: [0; 6], generic: 1, alternatives: &[], mana_component: true, tap: true, sacrifice: false, exile_self: false, discard: false, life: 0, remove: None, loyalty: None,
+            additional: Some(AdditionalCost { kind: EffectChoiceKind::DiscardLegendary, filter: SacrificeFilter { keywords: Keywords::NONE, source_only: false, kinds: 0, nonland: false, other: false, tokens: None, artifact_enchantment_or_token: false, subtype: None } }),
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        sorcery: false, once_per_turn: false,
+    }],
     ..CardRules::EMPTY
 };
