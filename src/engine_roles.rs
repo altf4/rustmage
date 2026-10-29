@@ -23,6 +23,7 @@ pub(super) struct RoleState {
     pub toughness_combat_damage: [bool; 2],
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
+    pub until_next_turn_stats: Vec<UntilNextTurnStatsView>,
     pub live_static: Vec<LiveStaticSourceView>,
     pub stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_timestamps: Vec<AbilitySourceTimestampView>,
@@ -51,6 +52,7 @@ impl RoleState {
         std::mem::size_of::<Self>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
+            + self.until_next_turn_stats.len() * std::mem::size_of::<UntilNextTurnStatsView>()
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()
             + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()
             + self.ability_timestamps.len() * std::mem::size_of::<AbilitySourceTimestampView>()

@@ -4045,6 +4045,9 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::TargetStatsUntilNextTurn { power, toughness } => {
+                    self.target_stats_until_next_turn(&item, power, toughness);
+                }
                 Instruction::CreateTokenIfControllerSacrificed(token) => {
                     if self.state.resolving.as_ref().unwrap().moved_count == Some(1) {
                         self.create_tokens(item.controller, token, 1, false);

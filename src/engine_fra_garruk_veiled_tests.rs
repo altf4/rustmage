@@ -56,7 +56,7 @@ fn veiled_sacrifice_choices_are_simultaneous_and_token_requires_own_sacrifice() 
             let source = veiled_fixture(&mut g, player);
             let ally = own_creature.then(|| put(&mut g, player, "Bear Cub", Zone::Battlefield));
             let enemy = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
-            act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+            act(&mut g, Action::AnnounceActivate { card: source, ability: 1, counter_payment: Counters::default() });
             pay(&mut g);
             act(&mut g, Action::Pass);
             act(&mut g, Action::Pass);
@@ -77,5 +77,37 @@ fn veiled_sacrifice_choices_are_simultaneous_and_token_requires_own_sacrifice() 
                 g.restore(&saved).unwrap();
             }
         }
+    }
+}
+
+#[test]
+fn veiled_stat_modifier_survives_source_and_cleanup_until_controllers_next_turn() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = veiled_fixture(&mut g, player);
+        let target = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(target) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(stats(&g, target), (-1, 2));
+        for viewer in [player, player.other()] { assert_eq!(g.observe(viewer).until_next_turn_stats.len(), 1); }
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.finish_cleanup();
+            assert_eq!(stats(&g, target), (-1, 2));
+            g.state.active = player.other();
+            g.begin_turn();
+            assert_eq!(stats(&g, target), (-1, 2));
+            g.state.active = player;
+            g.begin_turn();
+            assert_eq!(stats(&g, target), (3, 3));
+            g.restore(&saved).unwrap();
+        }
+        g.move_object(target, Zone::Exile);
+        g.move_object(target, Zone::Battlefield);
+        assert_eq!(stats(&g, target), (3, 3));
     }
 }

@@ -350,7 +350,7 @@ pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, Keyw
 mod base_power;
 #[path = "engine_base_stats.rs"]
 mod base_stats;
-pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView};
+pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView, UntilNextTurnStatsView};
 #[path = "engine_live_static_stats.rs"]
 mod live_static_stats;
 pub use live_static_stats::LiveStaticSourceView;
@@ -2710,6 +2710,8 @@ pub struct Observation {
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
     pub base_stat_effects: Vec<BaseStatsEffectView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub until_next_turn_stats: Vec<UntilNextTurnStatsView>,
     pub live_static_sources: Vec<LiveStaticSourceView>,
     pub resolved_stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_source_timestamps: Vec<AbilitySourceTimestampView>,
@@ -7555,6 +7557,7 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.expire_next_turn_stats(self.state.active);
         let active = self.state.active.index();
         self.state.players[active].turns_started = self.state.players[active]
             .turns_started
@@ -8680,6 +8683,7 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.base_stats.clone()),
+            until_next_turn_stats: s.roles.as_ref().map_or_else(Vec::new, |r| r.until_next_turn_stats.clone()),
             live_static_sources: self
                 .state
                 .roles

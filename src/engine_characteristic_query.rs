@@ -267,6 +267,11 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             return (base, stats);
         }
         stats += self.self_granted_artifact_bonus(id);
+        if let Some(roles) = self.roles() {
+            for effect in roles.until_next_turn_stats.iter().filter(|effect| effect.recipient == self.reference(id)) {
+                stats += Stats { power: i128::from(effect.power), toughness: i128::from(effect.toughness) };
+            }
+        }
         stats += self.chosen_bonus(id);
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
