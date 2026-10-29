@@ -76,3 +76,23 @@ fn lyra_does_not_grant_ability_to_a_new_incarnation() {
         assert!(g.state.pending_triggers.is_empty());
     }
 }
+
+#[test]
+fn lyra_each_activation_grants_exactly_one_independent_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let lyra = put(&mut g, p, "Lyra, Tolarian Archangel", Zone::Battlefield);
+        lyra_activate(&mut g, lyra);
+        lyra_activate(&mut g, lyra);
+        let before = g.hand_count(p);
+        lyra_hit(&mut g, lyra, p.other(), true);
+        assert_eq!(g.state.pending_triggers.len(), 2);
+        g.prepare_triggers();
+        while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut g, |action| matches!(action, Action::PutTrigger { .. }));
+        }
+        super::contracts::branch_contract(g.clone());
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), before + 4);
+    }
+}
