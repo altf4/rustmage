@@ -34,6 +34,7 @@ pub(super) struct Resolution {
     pub pc: usize,
     pub target_group: u16,
     pub moved_count: Option<u64>,
+    pub draw_count_before: Option<u64>,
     pub sacrificed_power: Option<Box<i128>>,
     pub discard_after: Option<discard_events::DiscardAfter>,
     pub discards: [usize; 2],
@@ -2152,6 +2153,7 @@ impl Game {
             pc: 0,
             target_group: 0,
             moved_count: None,
+            draw_count_before: None,
             discard_after: None,
             discards: [0; 2],
             mana_payment: None,
@@ -4866,6 +4868,24 @@ impl Game {
                     for player in self.program_players(set, &item) {
                         self.draw_many(player, amount);
                     }
+                }
+                Instruction::DrawGreatestCreaturePowerRemember => {
+                    let player = item.controller;
+                    let before = self.state.players[player.index()].cards_drawn_this_turn;
+                    self.state.resolving.as_mut().unwrap().draw_count_before = Some(before);
+                    let greatest = self.state.objects.iter().enumerate().filter_map(|(id, o)| {
+                        (o.zone == Zone::Battlefield && o.controller == player && self.is_creature(id as CardId))
+                            .then(|| self.stats(id as CardId).power)
+                    }).max().unwrap_or(0).max(0);
+                    self.draw_many(player, u128::try_from(greatest).expect("nonnegative power"));
+                }
+                Instruction::LoseLifeRememberedDraws => {
+                    let player = item.controller;
+                    let before = self.state.resolving.as_mut().unwrap().draw_count_before.take()
+                        .expect("remembered draw must precede its continuation");
+                    let count = self.state.players[player.index()].cards_drawn_this_turn
+                        .checked_sub(before).expect("turn cannot end while resolving a spell");
+                    self.lose_life(player, i128::from(count));
                 }
                 Instruction::LoseOpponentGainSame(value) => {
                     let amount = i128::try_from(self.item_amount(value, &item))

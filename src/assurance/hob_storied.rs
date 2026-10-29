@@ -371,6 +371,7 @@ fn hob_storied_transient_threshold_inside_one_typed_resolution() {
         pc: 0,
         target_group: 0,
         moved_count: None,
+        draw_count_before: None,
         discard_after: None,
         discards: [0; 2],
         selected_discards: [vec![], vec![]],

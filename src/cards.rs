@@ -2154,6 +2154,10 @@ pub(crate) enum Instruction {
     DrawPowerOfTwoChosenX(PlayerSet),
     Draw(PlayerSet, u16),
     DrawScaled(PlayerSet, AmountValue),
+    /// Draw greatest controlled creature power and remember successful draws.
+    DrawGreatestCreaturePowerRemember,
+    /// Lose life for the successful draws in the preceding remembered draw.
+    LoseLifeRememberedDraws,
     AddCastEntryCounters {
         kind: CounterKind,
         amount: AmountValue,
