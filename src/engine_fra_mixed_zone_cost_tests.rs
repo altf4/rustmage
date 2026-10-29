@@ -53,6 +53,11 @@ fn frozen_mixed_replacement_redirects_stage_together_and_prevented_cost_is_paid(
             plans[0].1.destination = Zone::Battlefield;
             plans[2].1.prevented = true;
             g.stage_atomic_zone_cost(plans, checkpoint);
+            // This isolated helper test has no outer action driver; explicitly
+            // advance the staged batch before the priority-based settle helper.
+            assert!(g.state.entry_batch.is_some());
+            assert!(!g.advance_entries());
+            assert!(g.state.entry_batch.is_none());
             settle(&mut g);
             assert_eq!(g.object_view(redirect).zone, Zone::Battlefield);
             assert_eq!(g.object_view(exile).zone, Zone::Exile);
