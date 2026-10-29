@@ -49,3 +49,43 @@ fn command_emblem_modifiers_apply_in_projected_characteristic_world() {
         assert_eq!(game.snapshot(), before);
     }
 }
+
+#[test]
+fn ajani_emblem_enables_power_dependent_mana_to_cast_and_survives_suppression() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Doc Samson, Super Psychiatrist", Zone::Battlefield);
+        let spell = put(&mut game, player, "Tajuru Pathwarden", Zone::Hand);
+        game.state.players[player.index()].mana = [0; 6];
+        let announce = Action::AnnounceCast { card: spell };
+        assert!(!game.legal_actions().contains(&announce));
+        game.create_emblem(player, Card::test_index(5463));
+        assert_eq!(stats(&game, source), (5, 8));
+        assert!(game.legal_actions().contains(&announce));
+        let saved = game.snapshot();
+        for _ in 0..2 {
+            act(&mut game, announce.clone());
+            let mana = game.legal_actions().into_iter().find(|action| matches!(action,
+                Action::ActivateMana { card, ability: 0, production: [0, 0, 0, 0, 5, 0], .. } if *card == source
+            )).expect("five green mana from the emblem-boosted source");
+            act(&mut game, mana);
+            pay(&mut game);
+            settle(&mut game);
+            assert_eq!(game.object_view(spell).zone, Zone::Battlefield);
+            game.restore(&saved).unwrap();
+        }
+        let aura = put(&mut game, player.other(), "Fresh Start", Zone::Battlefield);
+        game.state.objects[aura as usize].attached_to = Some(game.object_ref(source));
+        assert_eq!(stats(&game, source), (0, 8));
+        assert!(!game.legal_actions().contains(&announce));
+        assert!(!game.legal_actions().iter().any(|action| matches!(action,
+            Action::ActivateMana { card, .. } if *card == source)));
+        let suppressed = game.snapshot();
+        game.move_object(aura, Zone::Graveyard);
+        assert_eq!(stats(&game, source), (5, 8));
+        assert!(game.legal_actions().contains(&announce));
+        game.restore(&suppressed).unwrap();
+        assert_eq!(stats(&game, source), (0, 8));
+        assert!(!game.legal_actions().contains(&announce));
+    }
+}
