@@ -87,6 +87,9 @@ impl ZoneState {
     pub(super) fn has_checkpoint(&self) -> bool {
         self.choice.is_some() || self.replay.is_some()
     }
+    // A staged atomic-cost checkpoint may outlive the action replay that
+    // created it. Never restore that consumed replay from the checkpoint.
+    pub(super) fn clear_replay(&mut self) { self.replay = None; }
     pub fn bytes(&self) -> usize {
         let base_bytes = |base: &Base| {
             base.bytes
@@ -144,6 +147,7 @@ impl ZoneState {
 }
 #[cfg(test)]
 thread_local! {
+    pub(super) static TEST_FAKE_ENTRY_LIFE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_REDIRECT_EXILE_TO_BATTLEFIELD: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_PREVENT_ZONE_MOVE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_PREVENT_PROVIDER: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };

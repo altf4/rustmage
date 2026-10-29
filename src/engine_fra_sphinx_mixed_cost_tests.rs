@@ -179,3 +179,47 @@ fn sphinx_prohibition_revalidates_the_whole_payment_before_any_exile() {
         TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn sphinx_stale_staged_entry_discards_consumed_replacement_replay() {
+    use zone_replacements::{TEST_PREVENT_ZONE_MOVE, TEST_REDIRECT_EXILE_TO_BATTLEFIELD, TEST_FAKE_ENTRY_LIFE};
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) {
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|p| p.set(None));
+        TEST_FAKE_ENTRY_LIFE.with(|p| p.set(None));
+    }}
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let cards: Vec<_> = (0..4).map(|_| sphinx_card(&mut g, player, Zone::Graveyard)).collect();
+        let source = sphinx_card(&mut g, player, Zone::Hand);
+        cast(&mut g, source, None);
+        wait_for_sphinx_choice(&mut g);
+        let reference = g.object_ref(cards[0]);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(reference)));
+        TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|p| p.set(Some(reference)));
+        TEST_FAKE_ENTRY_LIFE.with(|p| p.set(Some(reference)));
+        for &id in &cards {
+            let object = g.object_ref(id);
+            act(&mut g, Action::SelectResolutionExile { object });
+        }
+        assert!(matches!(g.state.pending, Pending::ZoneReplacement { player: p } if p == player));
+        act(&mut g, Action::ChooseZoneReplacement { effect: ZoneReplacementKind::Battlefield });
+        assert!(matches!(g.state.pending, Pending::EntryLife { player: p } if p == player));
+        // No supported nested move exists in this suspension; inject the stale
+        // incarnation to exercise the exact rollback/replay boundary.
+        g.move_object(cards[1], Zone::Hand);
+        let suspended = g.snapshot();
+        for _ in 0..2 {
+            let action = Action::ChooseEntryLife { pay: true };
+            assert!(g.apply(player.other(), action.clone()).is_err());
+            assert_eq!(g.snapshot(), suspended);
+            act(&mut g, action);
+            assert!(g.state.zone_rules.as_ref().is_none_or(|rules| !rules.has_checkpoint()));
+            assert!(cards.iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
+            assert_ne!(g.object_view(source).zone, Zone::Exile);
+            g.restore(&suspended).unwrap();
+        }
+    }
+}

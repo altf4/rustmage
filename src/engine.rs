@@ -6622,8 +6622,12 @@ impl Game {
     fn atomic_zone_cost_checkpoint(&self, failure_pc: Option<usize>) -> entries::AtomicCostCheckpoint {
         assert!(self.state.entry_batch.is_none());
         assert!(self.state.resolving.is_none() || failure_pc.is_some(), "resolving atomic cost requires an unpaid continuation");
-        entries::AtomicCostCheckpoint { before: Box::new(self.state.clone()), bytes: self.state_bytes(),
-            failure_pc, components: Vec::new() }
+        let mut before = self.state.clone();
+        let old_zone_bytes = before.zone_rules.as_ref().map_or(0, |rules| rules.bytes());
+        if let Some(rules) = before.zone_rules.as_mut() { rules.clear_replay(); }
+        let new_zone_bytes = before.zone_rules.as_ref().map_or(0, |rules| rules.bytes());
+        let bytes = self.state_bytes() - old_zone_bytes + new_zone_bytes;
+        entries::AtomicCostCheckpoint { before: Box::new(before), bytes, failure_pc, components: Vec::new() }
     }
 
     /// Stage all nonprevented events as one owned transaction; prevention is
@@ -6633,6 +6637,12 @@ impl Game {
         let moves: Vec<_> = plans.into_iter().filter_map(|(view, plan)| {
             if plan.prevented { return None; }
             let mut movement = entries::EntryMove::from_view(view, plan.destination, false);
+            // Synthetic entry identity only for suspension/replay testing: no
+            // supported effect redirects an Approach card to the battlefield.
+            #[cfg(test)]
+            if zone_replacements::TEST_FAKE_ENTRY_LIFE.with(|target| target.get() == Some(movement.before.reference)) {
+                movement.before.card = Card::from_name("Watery Grave").unwrap();
+            }
             movement.zone_plan = Some(plan);
             Some(movement)
         }).collect();

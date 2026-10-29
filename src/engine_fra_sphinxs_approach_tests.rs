@@ -1,5 +1,11 @@
 use super::*;
 
+fn put_approach(g: &mut Game, player: Player, zone: Zone) -> CardId {
+    let id = put(g, player, "Shock", zone);
+    g.state.objects[id as usize].card = Card::test_index(4016);
+    id
+}
+
 fn approach_until_choice(g: &mut Game) {
     for _ in 0..96 {
         if matches!(g.state.pending, Pending::EffectChoice { .. }) { return; }
@@ -13,14 +19,14 @@ fn approach_selects_four_atomically_and_searches_with_snapshot_replay() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let mut graves = Vec::new();
-        for _ in 0..5 { graves.push(put(&mut g, p, "Sphinx's Approach", Zone::Graveyard)); }
-        let foreign = put(&mut g, p.other(), "Sphinx's Approach", Zone::Graveyard);
+        for _ in 0..5 { graves.push(put_approach(&mut g, p, Zone::Graveyard)); }
+        let foreign = put_approach(&mut g, p.other(), Zone::Graveyard);
         let wrong = put(&mut g, p, "Bear Cub", Zone::Graveyard);
         let sphinx = put(&mut g, p, "Curator of Destinies", Zone::Library);
         // The two cards drawn are above the Sphinx.
         put(&mut g, p, "Island", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
-        let spell = put(&mut g, p, "Sphinx's Approach", Zone::Hand);
+        let spell = put_approach(&mut g, p, Zone::Hand);
         cast(&mut g, spell, None);
         approach_until_choice(&mut g);
         assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
@@ -65,8 +71,8 @@ fn approach_decline_or_insufficient_graveyard_leaves_no_partial_payment() {
     for p in [Player::P0, Player::P1] {
         for count in [3, 4] {
             let mut g = scenario(p);
-            let cards: Vec<_> = (0..count).map(|_| put(&mut g, p, "Sphinx's Approach", Zone::Graveyard)).collect();
-            let spell = put(&mut g, p, "Sphinx's Approach", Zone::Hand);
+            let cards: Vec<_> = (0..count).map(|_| put_approach(&mut g, p, Zone::Graveyard)).collect();
+            let spell = put_approach(&mut g, p, Zone::Hand);
             cast(&mut g, spell, None);
             for _ in 0..96 {
                 if matches!(g.state.pending, Pending::EffectChoice { .. }) ||
@@ -90,11 +96,11 @@ fn approach_decline_or_insufficient_graveyard_leaves_no_partial_payment() {
 fn approach_spell_copy_can_choose_the_resolution_payment_independently() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        let cards: Vec<_> = (0..4).map(|_| put(&mut g, p, "Sphinx's Approach", Zone::Graveyard)).collect();
+        let cards: Vec<_> = (0..4).map(|_| put_approach(&mut g, p, Zone::Graveyard)).collect();
         let sphinx = put(&mut g, p, "Curator of Destinies", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
-        let spell = put(&mut g, p, "Sphinx's Approach", Zone::Hand);
+        let spell = put_approach(&mut g, p, Zone::Hand);
         cast(&mut g, spell, None);
         let original = g.state.stack.last().unwrap().clone();
         let copy = g.allocate_spell_copy(&original, p);
@@ -105,7 +111,7 @@ fn approach_spell_copy_can_choose_the_resolution_payment_independently() {
             let object = g.object_ref(card);
             act(&mut g, Action::SelectResolutionExile { object });
         }
-        assert_ne!(g.object_ref(copy_object.card), copy_object);
+        assert_eq!(g.object_view(copy_object.card).zone, Zone::Exile);
         assert!(g.state.stack.iter().any(|item| item.id == original.id));
         act(&mut g, Action::ChooseSearch { card: sphinx });
         act(&mut g, Action::FinishSearch);
@@ -120,8 +126,8 @@ fn approach_revalidates_every_component_before_any_exile() {
     for p in [Player::P0, Player::P1] {
         for lost in 0..5 {
             let mut g = scenario(p);
-            let cards: Vec<_> = (0..4).map(|_| put(&mut g, p, "Sphinx's Approach", Zone::Graveyard)).collect();
-            let spell = put(&mut g, p, "Sphinx's Approach", Zone::Hand);
+            let cards: Vec<_> = (0..4).map(|_| put_approach(&mut g, p, Zone::Graveyard)).collect();
+            let spell = put_approach(&mut g, p, Zone::Hand);
             cast(&mut g, spell, None);
             approach_until_choice(&mut g);
             for &id in &cards[..3] {
