@@ -1,0 +1,5 @@
+# Optional FRA uncast survey
+
+Run with `python3 scripts/resource_guard.py -- cargo run --release --example fra_optional_survey`. This is separate from routine validation and does not modify the acceptance workload. It selects ten deterministic Standard decks and five fixed pairings, each with two seeds and swapped deck seats, for 20 complete games. It uses the existing verified runner: sampled owned/index/raw/restore and both-viewer checks, followed by full replay.
+
+The fixed deck list prioritizes physical card fronts absent from the CI 40949901439 cast ledger. It contains 112 such nonland identities and all 20 land identities absent from that CI's decks. Deck membership is not a cast or land-play witness. Reports include `physical_cards_cast`, `other_spell_faces_cast` (including prepared faces), and `lands_played` per game; land plays are recorded only once the selected card reaches the battlefield. These sets do not prove resolution, branch-level coverage, or both-seat coverage for every card. The workload has not yet been built or run, and actual terminal games, legality, reached identities, and runtime remain to be verified.

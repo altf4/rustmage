@@ -5,6 +5,8 @@ use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 use std::time::Instant;
+#[path = "fra_survey_specs.rs"]
+mod survey_specs;
 #[derive(Clone, Copy)]
 #[allow(
     dead_code,
@@ -46,6 +48,12 @@ pub struct GameReport {
     pub trace_digest: Option<String>,
     pub trace_file: Option<String>,
     pub cards_cast: BTreeSet<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub physical_cards_cast: Option<BTreeSet<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub other_spell_faces_cast: Option<BTreeSet<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lands_played: Option<BTreeSet<String>>,
     pub witnesses: BTreeMap<String, u64>,
     pub max_sampled_state_bytes: usize,
 }
@@ -462,6 +470,8 @@ struct Tracker {
     cards: BTreeSet<String>,
     witnesses: BTreeMap<String, u64>,
     colors: u8,
+    pending_land: Option<(CardId, String)>,
+    lands_played: BTreeSet<String>,
 }
 impl Tracker {
     fn hit(&mut self, key: &str, event: String) {
@@ -469,7 +479,31 @@ impl Tracker {
             *self.witnesses.entry(key.to_string()).or_default() += 1;
         }
     }
-    fn inspect(&mut self, _before: &Observation, after: &Observation, _action: &Action) {
+    fn inspect(
+        &mut self,
+        _before: &Observation,
+        after: &Observation,
+        _action: &Action,
+        survey: bool,
+    ) {
+        if survey {
+            if let Action::PlayLand { card } = _action
+                && let Some(object) = _before.objects.iter().find(|object| object.id == *card)
+            {
+                self.pending_land = Some((*card, object.card.name().to_owned()));
+            }
+            if let Some((id, name)) = &self.pending_land
+                && after
+                    .objects
+                    .iter()
+                    .any(|o| o.id == *id && o.zone == Zone::Battlefield)
+            {
+                self.lands_played.insert(name.clone());
+                self.pending_land = None;
+            } else if after.decision == "priority" {
+                self.pending_land = None;
+            }
+        }
         for row in &_before.preparations {
             self.prepared_copies.insert(row.spell_copy);
         }
@@ -592,22 +626,103 @@ pub fn run(
     mode: Mode,
     trace_dir: Option<&Path>,
 ) -> Result<Report, String> {
-    run_inner(cases, mode, trace_dir, true)
+    run_inner(cases, mode, trace_dir, true, false)
 }
 
 // Bounded in-tree assurance only; it is never full-set acceptance.
 #[cfg(test)]
 pub fn run_admitted_smoke(cases: &[(usize, u64, Player, bool)]) -> Result<Report, String> {
-    run_inner(cases, Mode::Verify, None, false)
+    run_inner(cases, Mode::Verify, None, false, false)
 }
 
+/// Optional 20-game survey; never invoked by the routine acceptance tests.
+#[allow(dead_code, reason = "The optional survey is a separate example")]
+pub fn run_survey(trace_dir: Option<&Path>) -> Result<Report, String> {
+    let cases: Vec<_> = (0..5)
+        .flat_map(|pair| {
+            (0..2).flat_map(move |seed| {
+                [false, true].into_iter().map(move |swap| {
+                    (
+                        pair,
+                        946000 + pair as u64 * 100 + seed,
+                        if seed == 0 { Player::P0 } else { Player::P1 },
+                        swap,
+                    )
+                })
+            })
+        })
+        .collect();
+    run_inner(&cases, Mode::Verify, trace_dir, true, true)
+}
+
+fn survey_decks() -> Result<(Vec<Deck>, usize), String> {
+    let (_, pool_members) = decks(true)?;
+    let members: BTreeSet<_> =
+        serde_json::from_str::<serde_json::Value>(include_str!("../../data/sets/fra.json"))
+            .map_err(|e| e.to_string())?["cards"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter_map(|r| r["oracle_id"].as_str().map(str::to_owned))
+            .collect();
+    let mut result = Vec::new();
+    for &(name, basics, spells, lands) in survey_specs::SPECS {
+        let mut cards = Vec::new();
+        for basic in basics {
+            cards.extend(std::iter::repeat_n(
+                Card::from_name(basic).ok_or(basic)?,
+                10,
+            ));
+        }
+        for card in spells.iter().chain(lands) {
+            cards.push(Card::from_name(card).ok_or(*card)?);
+        }
+        let mut counts = BTreeMap::new();
+        for &card in &cards {
+            if !card.is_supported()
+                || !card.is_standard_legal()
+                || !card.info().oracle_id.is_some_and(|id| members.contains(id))
+            {
+                return Err(format!("invalid survey card {}", card.name()));
+            }
+            *counts.entry(card.name().to_string()).or_insert(0usize) += 1;
+        }
+        if cards.len() != 60
+            || cards.iter().any(|card| {
+                counts[card.name()] > 4
+                    && !matches!(
+                        card,
+                        Card::Plains | Card::Island | Card::Swamp | Card::Mountain | Card::Forest
+                    )
+            })
+        {
+            return Err(format!("invalid survey deck {name}"));
+        }
+        result.push(Deck {
+            cards,
+            report: DeckReport {
+                name,
+                cards: counts,
+                size: 60,
+                standard_validation: true,
+                fra_membership: true,
+            },
+        });
+    }
+    Ok((result, pool_members))
+}
 fn run_inner(
     cases: &[(usize, u64, Player, bool)],
     mode: Mode,
     trace_dir: Option<&Path>,
     require_complete: bool,
+    survey: bool,
 ) -> Result<Report, String> {
-    let (decks, pool_members) = decks(require_complete)?;
+    let (decks, pool_members) = if survey {
+        survey_decks()?
+    } else {
+        decks(require_complete)?
+    };
     let pairings = [
         (0, 1),
         (2, 3),
@@ -618,6 +733,35 @@ fn run_inner(
         (6, 7),
         (8, 9),
     ];
+    let pairings = if survey {
+        [
+            (0, 1),
+            (2, 3),
+            (4, 5),
+            (6, 7),
+            (8, 9),
+            (0, 1),
+            (0, 1),
+            (0, 1),
+        ]
+    } else {
+        pairings
+    };
+    let physical_names: BTreeSet<String> = if survey {
+        serde_json::from_str::<serde_json::Value>(include_str!("../../data/sets/fra.json"))
+            .map_err(|e| e.to_string())?["cards"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter_map(|r| {
+                r["name"]
+                    .as_str()
+                    .map(|n| n.split(" // ").next().unwrap().to_owned())
+            })
+            .collect()
+    } else {
+        BTreeSet::new()
+    };
     let started = Instant::now();
     let mut games = Vec::new();
     let mut total_witnesses = BTreeMap::new();
@@ -743,7 +887,7 @@ fn run_inner(
                 })?;
             }
             let after = game.observe(actor);
-            tracker.inspect(&before, &after, &action);
+            tracker.inspect(&before, &after, &action, survey);
             if decisions.is_multiple_of(64) {
                 max_bytes = max_bytes.max(game.state_bytes());
             }
@@ -796,6 +940,16 @@ fn run_inner(
             rejected_attack_attempts,
             trace_digest: mode.verifies().then(|| format!("{hash:016x}")),
             trace_file,
+            physical_cards_cast: survey.then(|| {
+                tracker
+                    .cards
+                    .intersection(&physical_names)
+                    .cloned()
+                    .collect()
+            }),
+            other_spell_faces_cast: survey
+                .then(|| tracker.cards.difference(&physical_names).cloned().collect()),
+            lands_played: survey.then_some(tracker.lands_played),
             cards_cast: tracker.cards,
             witnesses: tracker.witnesses,
             max_sampled_state_bytes: max_bytes,
@@ -817,7 +971,9 @@ fn run_inner(
         .collect::<BTreeSet<_>>()
         .len();
     Ok(Report {
-        workload: if require_complete {
+        workload: if survey {
+            "FRA_OPTIONAL_UNCAST_SURVEY"
+        } else if require_complete {
             "FRA_ARCHETYPES_V1"
         } else {
             "FRA_ADMITTED_SMOKE_ONLY"
@@ -828,7 +984,11 @@ fn run_inner(
         } else {
             "benchmark"
         },
-        scope: "Selected cases from ten exactly 60-card Standard decks; physical FRA members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory; not exhaustive gameplay coverage",
+        scope: if survey {
+            "Optional 20 games across ten FRA-only Standard decks, 20 basics and eight additional lands per deck; physical cast, other face and actual land play ledgers; natural terminals; not exhaustive gameplay coverage"
+        } else {
+            "Selected cases from ten exactly 60-card Standard decks; physical FRA members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory; not exhaustive gameplay coverage"
+        },
         pool_members,
         played_deck_identities,
         observed_spell_faces,
