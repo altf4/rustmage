@@ -5196,6 +5196,11 @@ impl Game {
                     }
                     self.discard_batch_caused(&selected, None, Some(item.controller));
                 }
+                Instruction::OpponentsDiscardTwoDrawUnlessTwoNonland => {
+                    self.state.resolving.as_mut().unwrap().discards[item.controller.other().index()] = 2;
+                    self.state.resolving.as_mut().unwrap().discard_after =
+                        Some(discard_events::DiscardAfter::DrawUnlessOpponentDiscardedTwoNonland(item.controller));
+                }
                 Instruction::Discard(set, _) | Instruction::DiscardScaled(set, _) => {
                     let amount = match instruction {
                         Instruction::Discard(_, n) => usize::from(n),

@@ -1752,6 +1752,7 @@ pub(crate) enum Instruction {
         skip: usize,
     },
     CreateTokenIfControllerSacrificed(Card),
+    OpponentsDiscardTwoDrawUnlessTwoNonland,
     TargetStatsUntilNextTurn { power: i32, toughness: i32 },
     ChooseObjects {
         kind: EffectChoiceKind,

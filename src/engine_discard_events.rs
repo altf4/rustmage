@@ -14,6 +14,7 @@ pub(super) enum DiscardAfter {
     LoseLife(Player, i128),
     DrawActual { players: [bool; 2], bonus: u16 },
     RememberActual,
+    DrawUnlessOpponentDiscardedTwoNonland(Player),
     ConniveCounters(ObjectRef, u64, Player),
     ChooseLand { player: Player, tapped: bool },
     ReturnLandFromGraveyard { player: Player, tapped: bool },
@@ -248,6 +249,11 @@ impl Game {
         events: &[ZoneChange],
     ) {
         match after {
+            Some(DiscardAfter::DrawUnlessOpponentDiscardedTwoNonland(controller)) => {
+                let nonland = events.iter().filter(|event| event.moved
+                    && event.before.owner == controller.other() && event.before.kinds & 2 == 0).count();
+                if nonland < 2 { self.draw_many(controller, 1); }
+            }
             Some(DiscardAfter::RememberActual) => {
                 self.state.resolving.as_mut().unwrap().moved_count =
                     Some(counts.into_iter().map(u64::from).sum());

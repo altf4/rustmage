@@ -1,4 +1,4 @@
-// Incomplete gated draft: the static replacement, +2 and -2 are implemented; the -3 is pending.
+// Pinned Oracle and XMage draft; remains gated pending complete review and validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
     extras: &CardExtras {
@@ -31,6 +31,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 amount: 1, optional_skip: None },
             Instruction::CreateTokenIfControllerSacrificed(Card(5239)),
         ],
+    }, ActivatedAbility {
+        exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
+        cycling: false, once_per_turn: false, sorcery: true,
+        cost: ActivationCost { colored: [0; 6], generic: 0, alternatives: &[], additional: None,
+            mana_component: false, tap: false, sacrifice: false, exile_self: false,
+            discard: false, life: 0, remove: None, loyalty: Some(-3) },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::OpponentsDiscardTwoDrawUnlessTwoNonland],
     }],
     ..CardRules::EMPTY
 };

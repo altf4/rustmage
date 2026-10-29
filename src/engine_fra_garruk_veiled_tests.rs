@@ -111,3 +111,30 @@ fn veiled_stat_modifier_survives_source_and_cleanup_until_controllers_next_turn(
         assert_eq!(stats(&g, target), (3, 3));
     }
 }
+
+#[test]
+fn veiled_draw_depends_on_actual_nonland_discards_including_replacement() {
+    for player in [Player::P0, Player::P1] {
+        for hand in [vec![], vec!["Shock"], vec!["Shock", "Forest"],
+                     vec!["Shock", "Shock"], vec!["Wilt-Leaf Liege", "Shock"]] {
+            let mut g = scenario(player);
+            let source = veiled_fixture(&mut g, player);
+            let cards = hand.iter().map(|name| put(&mut g, player.other(), name, Zone::Hand)).collect::<Vec<_>>();
+            act(&mut g, Action::AnnounceActivate { card: source, ability: 2, counter_payment: Counters::default() });
+            pay(&mut g);
+            act(&mut g, Action::Pass);
+            act(&mut g, Action::Pass);
+            let saved = g.snapshot();
+            for _ in 0..2 {
+                for &card in &cards { act(&mut g, Action::Discard { card }); }
+                settle(&mut g);
+                let nonlands = hand.iter().filter(|name| **name != "Forest").count();
+                assert_eq!(g.state.players[player.index()].cards_drawn_this_turn, u64::from(nonlands < 2));
+                if hand.first() == Some(&"Wilt-Leaf Liege") {
+                    assert_eq!(g.object_view(cards[0]).zone, Zone::Battlefield);
+                }
+                g.restore(&saved).unwrap();
+            }
+        }
+    }
+}
