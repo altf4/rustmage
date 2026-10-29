@@ -207,7 +207,7 @@ impl Game {
             exclude_selected_from_remainder: matches!(
                 effect.destination,
                 LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(_)
-            ),
+            ) || matches!(effect.look, LibraryLook::UntilKinds(_)),
             public: effect.public,
             entering: false,
             remaining,

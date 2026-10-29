@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "71e144a2346890baf98f7f18bede774e748853be0ef8e7af9e32ba3291cb14ad"
   },
-  "physical_metadata_sha256": "4b0694aa715bd4102fe37075c841fadc581ef5721d63d8f646331f35759dbe5a"
+  "physical_metadata_sha256": "4b0694aa715bd4102fe37075c841fadc581ef5721d63d8f646331f35759dbe5a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IdentityEcho.java",
+  "java_sha256": "037633dc6862e84c738275ee3abd9ee16782866c927894526fec4685dfcb93ea",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    }
+  ],
+  "rules_tests": "src/engine_fra_identity_echo_tests.rs"
 }
