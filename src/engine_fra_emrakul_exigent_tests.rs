@@ -265,3 +265,24 @@ fn emrakul_granted_mana_funding_respects_ability_layer_order_and_restore() {
         }
     }
 }
+
+#[test]
+fn exile_cast_history_waits_for_retained_stack_packets_and_restores() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Forest", Zone::Battlefield);
+        let reference = g.object_ref(id);
+        g.state.roles.get_or_insert_default().exile_grant_cast_history.push(reference);
+        let packet = g.activation_item(player, id, 0);
+        g.state.stack.push(packet);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.prune_exile_grant_cast_history();
+            assert!(g.state.roles.as_ref().unwrap().exile_grant_cast_history.contains(&reference));
+            g.state.stack.clear();
+            g.prune_exile_grant_cast_history();
+            assert!(!g.state.roles.as_ref().unwrap().exile_grant_cast_history.contains(&reference));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
