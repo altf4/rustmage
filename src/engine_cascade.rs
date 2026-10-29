@@ -56,7 +56,7 @@ impl Game {
                             AttachmentTriggerView {
                                 grantor: source.reference,
                                 granting_card: source.card,
-                                recipient: spell.object,
+                                recipient: spell.source.expect("cast spell has source").object,
                                 defender: None,
                                 granted: true,
                                 origin: source.copied_grant_origin(),

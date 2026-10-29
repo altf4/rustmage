@@ -314,7 +314,7 @@ impl Game {
                     .flat_map(|frames| frames.iter().map(|f| &f.announcement.item)),
             )
             .chain(self.state.stack.iter())
-            .find(|s| s.kind == StackKind::Spell && s.card == id);
+            .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == id));
         let origin = packet
             .and_then(|s| s.cast.map(|c| c.origin))
             .unwrap_or(self.state.objects[id as usize].zone);

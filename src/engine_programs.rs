@@ -1446,7 +1446,7 @@ impl Game {
                             stack.is_some_and(|i| {
                                 let spell = &self.state.stack[i];
                                 spell.source.is_some_and(|source| source.card.is_prepared_face())
-                                    && self.state.objects[spell.card as usize].is_spell_copy()
+                                    && spell.source.is_some_and(|source| self.state.objects[source.id as usize].is_spell_copy())
                             })
                         } else { self.cast_filter_matches_value(
                             spell_owner,
