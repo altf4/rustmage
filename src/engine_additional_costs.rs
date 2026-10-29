@@ -54,8 +54,15 @@ impl Game {
             return false;
         }
         let spec = spec.in_zone(o.zone);
-        if matches!(spec.kind, EffectChoiceKind::Sacrifice | EffectChoiceKind::SacrificeDifferentNames(_) | EffectChoiceKind::SacrificeAttachedEquipment)
-            && ability_world::CharacteristicWorld::sacrifice_prohibited(self, object.card) { return false; }
+        if matches!(
+            spec.kind,
+            EffectChoiceKind::Sacrifice
+                | EffectChoiceKind::SacrificeDifferentNames(_)
+                | EffectChoiceKind::SacrificeAttachedEquipment
+        ) && ability_world::CharacteristicWorld::sacrifice_prohibited(self, object.card)
+        {
+            return false;
+        }
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Behold => match o.zone {
                 Zone::Battlefield => o.controller == actor,

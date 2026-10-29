@@ -87,10 +87,7 @@ impl Game {
     }
     fn evidence_card(&self, p: Player, r: ObjectRef) -> bool {
         self.state.objects.get(r.card as usize).is_some_and(|o| {
-            o.owner == p
-                && o.zone == Zone::Graveyard
-                && o.is_card()
-                && self.object_ref(r.card) == r
+            o.owner == p && o.zone == Zone::Graveyard && o.is_card() && self.object_ref(r.card) == r
         })
     }
     pub(super) fn can_collect_evidence(&self, p: Player, n: u16) -> bool {

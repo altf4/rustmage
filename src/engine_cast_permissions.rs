@@ -192,9 +192,7 @@ impl Game {
         kind: GraveyardCastKind,
     ) {
         let card = &self.state.objects[object.card as usize];
-        if self.object_ref(object.card) != object
-            || card.zone != Zone::Graveyard
-            || !card.is_card()
+        if self.object_ref(object.card) != object || card.zone != Zone::Graveyard || !card.is_card()
         {
             return;
         }

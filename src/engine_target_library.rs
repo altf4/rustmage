@@ -66,7 +66,9 @@ impl Game {
         let card = self.state.objects[object.card as usize].card;
         let token = self.state.objects[object.card as usize].is_token();
         let prior_top = self.public_library_top(owner);
-        let old_top_position = self.state.players[owner.index()].library.iter()
+        let old_top_position = self.state.players[owner.index()]
+            .library
+            .iter()
             .rposition(|&id| self.state.objects[id as usize].is_card());
         let event = self.move_object(object.card, Zone::Library);
         let placed = event.moved && event.destination == Zone::Library;
@@ -88,7 +90,8 @@ impl Game {
             }
             if event.was_card
                 && (destination == LibraryDestination::Top
-                    || (destination == LibraryDestination::SecondFromTop && old_top_position.is_none()))
+                    || (destination == LibraryDestination::SecondFromTop
+                        && old_top_position.is_none()))
             {
                 self.remember_library_top(owner, event.after);
             } else if let Some(prior) = prior_top

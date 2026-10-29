@@ -251,9 +251,7 @@ impl Game {
         if self.cast_costs_mana_paid() {
             let valid = match f.route {
                 Some(ForageRoute::ExileThree) => {
-                    o.zone == Zone::Graveyard
-                        && o.owner == p
-                        && o.is_card()
+                    o.zone == Zone::Graveyard && o.owner == p && o.is_card()
                 }
                 Some(ForageRoute::Food) => self.additional_candidate(food_cost(), p, r, r),
                 _ => false,

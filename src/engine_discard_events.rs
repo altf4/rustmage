@@ -68,8 +68,11 @@ impl Game {
     ) {
         // Discard moves cards from hand; transient copies in the hand are not
         // eligible even when an effect supplies a broad object list.
-        let cards: Vec<_> = cards.iter().copied()
-            .filter(|&id| self.state.objects[id as usize].is_card()).collect();
+        let cards: Vec<_> = cards
+            .iter()
+            .copied()
+            .filter(|&id| self.state.objects[id as usize].is_card())
+            .collect();
         if cards.is_empty() {
             self.finish_discard_after(after, [0; 2], &[]);
             return;

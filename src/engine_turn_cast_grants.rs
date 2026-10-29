@@ -177,9 +177,10 @@ impl Game {
                 Zone::Graveyard => self.has_graveyard_cast(player, card, GraveyardCastKind::Cast),
                 _ => false,
             };
-            let counter_cost = (object.zone == Zone::Graveyard && object.owner == player && object.is_card())
-                .then(|| definition.graveyard_counter_cost())
-                .flatten();
+            let counter_cost =
+                (object.zone == Zone::Graveyard && object.owner == player && object.is_card())
+                    .then(|| definition.graveyard_counter_cost())
+                    .flatten();
             for flash_surcharge in [false, true] {
                 let ordinary_available = self.permitted_cast_available(
                     player,

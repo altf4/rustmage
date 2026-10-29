@@ -645,7 +645,10 @@ fn approach_unlimited_deck_limit_survives_constructed_combined_count() {
     let approach = Card::test_index(4016);
     let shock = Card::from_name("Shock").unwrap();
     assert_eq!(approach.info().deck_limit, None);
-    assert!(approach.is_supported(), "conditional admission requires regenerated catalogue");
+    assert!(
+        approach.is_supported(),
+        "conditional admission requires regenerated catalogue"
+    );
     for player in [Player::P0, Player::P1] {
         let mut decks = [vec![Card::Forest; 60], vec![Card::Forest; 60]];
         decks[player.index()][..8].fill(approach);
@@ -674,7 +677,9 @@ fn approach_unlimited_deck_limit_survives_constructed_combined_count() {
         limited_outside.pools[player.index()].push(shock);
         assert_eq!(
             Game::new_with_outside(limited, limited_outside).err(),
-            Some(Error::InvalidDeck("more than 4 Shock across deck and sideboard".into()))
+            Some(Error::InvalidDeck(
+                "more than 4 Shock across deck and sideboard".into()
+            ))
         );
     }
 }

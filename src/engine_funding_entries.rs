@@ -1730,9 +1730,13 @@ impl<'g> FundingState<'g> {
             && self.game.state.zone_rules.is_none()
             && {
                 #[cfg(test)]
-                { zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get().is_none()) }
+                {
+                    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get().is_none())
+                }
                 #[cfg(not(test))]
-                { true }
+                {
+                    true
+                }
             }
             && self.game.state.death_exile_replacements.is_none()
             && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0

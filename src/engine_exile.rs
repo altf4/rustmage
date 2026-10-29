@@ -43,7 +43,13 @@ impl ExilePlayExpiry {
 pub(super) fn top_library_cards(game: &Game, player: Player, amount: u128) -> Vec<CardId> {
     let library = &game.state.players[player.index()].library;
     let count = usize::try_from(amount.min(library.len() as u128)).unwrap();
-    library.iter().rev().copied().filter(|&id| game.state.objects[id as usize].is_card()).take(count).collect()
+    library
+        .iter()
+        .rev()
+        .copied()
+        .filter(|&id| game.state.objects[id as usize].is_card())
+        .take(count)
+        .collect()
 }
 impl Game {
     /// The linked permission is controlled by the source's current controller
@@ -577,10 +583,7 @@ impl Game {
         let Some(source) = item.source else {
             return;
         };
-        let ids = top_library_cards(
-            self, item.controller,
-            u128::from(amount),
-        );
+        let ids = top_library_cards(self, item.controller, u128::from(amount));
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if !event.moved || event.destination != Zone::Exile {

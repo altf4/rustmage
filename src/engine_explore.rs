@@ -60,10 +60,7 @@ impl Game {
         }
     }
     pub(super) fn remember_library_top(&mut self, p: Player, object: ObjectRef) {
-        assert_eq!(
-            self.top_library_card(p),
-            Some(object.card)
-        );
+        assert_eq!(self.top_library_card(p), Some(object.card));
         assert_eq!(self.object_ref(object.card), object);
         self.explore_data().known_top[p.index()] = Some(object);
     }
@@ -159,11 +156,10 @@ impl Game {
             _ => unreachable!("unsupported explore subject"),
         };
         let player = explorer.controller;
-        let revealed = self.top_library_card(player)
-            .map(|id| RevealedLibraryCard {
-                object: self.object_ref(id),
-                card: self.state.objects[id as usize].card,
-            });
+        let revealed = self.top_library_card(player).map(|id| RevealedLibraryCard {
+            object: self.object_ref(id),
+            card: self.state.objects[id as usize].card,
+        });
         if let Some(card) = revealed {
             self.remember_library_top(player, card.object);
             if card.card.is_land() {

@@ -95,7 +95,10 @@ fn projected_graveyard_replacement_distinguishes_transient_copies_from_cards() {
             drop(projected);
             let actual = game.move_object(id, Zone::Graveyard);
             assert_eq!(destination, Some(actual.destination));
-            assert_eq!(actual.destination, if copied { Zone::Graveyard } else { Zone::Exile });
+            assert_eq!(
+                actual.destination,
+                if copied { Zone::Graveyard } else { Zone::Exile }
+            );
         }
     }
 }

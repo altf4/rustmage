@@ -1,6 +1,6 @@
 //! Direct typed persistent evolution and non-targeting growth-card costs.
-use super::*;
 use super::ability_world::CharacteristicWorld;
+use super::*;
 use crate::cards::StaticAbilityFragment;
 impl TriggerCondition {
     pub(super) fn is_growth_damage_event(self) -> bool {
@@ -216,7 +216,8 @@ impl Game {
                 || (ability.mana_production().is_none()
                     && (self.nonmana_actions_prohibited()
                         || self.named_activation_prohibited(recipient.card)))
-                || (ability.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, recipient.card))
+                || (ability.cost.sacrifice
+                    && CharacteristicWorld::sacrifice_prohibited(self, recipient.card))
                 || !Self::object_activation_available_with_kinds(
                     &self.state.objects[recipient.card as usize],
                     self.counter_amounts(recipient.card),

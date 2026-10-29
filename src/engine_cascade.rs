@@ -82,8 +82,7 @@ impl Game {
             .map_or_else(|| item.mana_value(), |event| event.mana_value);
         let mut exiled = Vec::new();
         let mut eligible = None;
-        while let Some(card) = self.top_library_card(item.controller)
-        {
+        while let Some(card) = self.top_library_card(item.controller) {
             let definition = self.state.objects[card as usize].card;
             let events = self.move_objects_raw(&[card], Zone::Exile);
             let moved = events

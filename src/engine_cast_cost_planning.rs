@@ -240,9 +240,14 @@ impl FundingState<'_> {
             return false;
         }
         let spec = spec.in_zone(o.zone);
-        (!matches!(spec.kind, EffectChoiceKind::Sacrifice | EffectChoiceKind::SacrificeDifferentNames(_) | EffectChoiceKind::SacrificeAttachedEquipment) || !self.sacrifice_prohibited(r.card))
+        (!matches!(
+            spec.kind,
+            EffectChoiceKind::Sacrifice
+                | EffectChoiceKind::SacrificeDifferentNames(_)
+                | EffectChoiceKind::SacrificeAttachedEquipment
+        ) || !self.sacrifice_prohibited(r.card))
             && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
-            || (self.game.sneak_attacker(self.actor, r) && self.attacking(r.card)))
+                || (self.game.sneak_attacker(self.actor, r) && self.attacking(r.card)))
             && self.reference(r.card) == r
             && (r != source
                 || !matches!(
@@ -280,10 +285,18 @@ impl FundingState<'_> {
     ) -> bool {
         // Simultaneous departures all use characteristics from the same
         // pre-event world, even when one leaving object is a type provider.
-        let before_facts: Vec<_> = objects.iter().map(|r| {
-            let object = self.object(r.card);
-            (object.zone, object.controller, object.owner, CharacteristicWorld::kinds(self, r.card))
-        }).collect();
+        let before_facts: Vec<_> = objects
+            .iter()
+            .map(|r| {
+                let object = self.object(r.card);
+                (
+                    object.zone,
+                    object.controller,
+                    object.owner,
+                    CharacteristicWorld::kinds(self, r.card),
+                )
+            })
+            .collect();
         let destinations = objects
             .iter()
             .map(|r| {
@@ -347,7 +360,9 @@ impl FundingState<'_> {
             initial.remember_payment_departure(object.card);
         }
         let mut worlds = vec![initial];
-        for ((r, choices), &(before_zone, controller, owner, kinds)) in objects.iter().zip(destinations).zip(&before_facts) {
+        for ((r, choices), &(before_zone, controller, owner, kinds)) in
+            objects.iter().zip(destinations).zip(&before_facts)
+        {
             let mut next = Vec::new();
             for w in worlds {
                 for &zone in &choices {
@@ -355,7 +370,11 @@ impl FundingState<'_> {
                     let Some(zone) = zone else {
                         // No departure happened; do not retain a newly captured
                         // departure witness for this prevented event.
-                        if !self.payment_departures.iter().any(|(reference, _)| reference == r) {
+                        if !self
+                            .payment_departures
+                            .iter()
+                            .any(|(reference, _)| reference == r)
+                        {
                             n.payment_departures.retain(|(reference, _)| reference != r);
                         }
                         next.push(n);
@@ -366,9 +385,7 @@ impl FundingState<'_> {
                         .iter()
                         .position(|v| v.id == r.card)
                         .expect("cost resource retained");
-                    if before_zone == Zone::Battlefield
-                        && zone == Zone::Graveyard
-                        && kinds & 1 != 0
+                    if before_zone == Zone::Battlefield && zone == Zone::Graveyard && kinds & 1 != 0
                     {
                         n.controlled_creatures_died[controller.index()] = n
                             .controlled_creatures_died[controller.index()]
