@@ -736,6 +736,11 @@ fn planned_outside_entry_validates_exact_slot_and_replays() {
         act(&mut g, Action::ChooseOutsideCard { index: 2 });
         act(&mut g, Action::ChooseOutsideCard { index: 1 });
         assert!(g.plan_outside_hand(0));
+        // The real provider discovery path leaves an unaffected admission
+        // unchanged and its owned continuation survives snapshot replay.
+        let before_discovery = g.snapshot();
+        assert!(g.prepare_outside_entry_providers());
+        assert_eq!(g.snapshot(), before_discovery);
         let planned = g.snapshot();
         assert!(
             g.observe(owner.other())

@@ -2746,6 +2746,14 @@ pub(crate) enum ReplacementSpec {
         add: u32,
         effects_only: bool,
     },
+    /// Replace an outside-card admission. The outside card has no game object
+    /// until the resulting event is committed.
+    #[allow(dead_code, reason = "Outside admission scheduler is not yet exposed")]
+    OutsideEntry {
+        relation: CastRelation,
+        from: OutsideEntryEffectDestination,
+        to: OutsideEntryEffectDestination,
+    },
     /// Replace a proliferate event by a number of events for the related player.
     #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     Proliferate {
@@ -2770,6 +2778,15 @@ pub(crate) enum ReplacementSpec {
     AddToken(Card),
     ReplaceArtifactTokens(Card),
     AddArtifactToken(Card),
+}
+
+/// Destinations used by an outside-card admission replacement. Prevention is
+/// terminal, so it cannot be the input of a subsequent replacement.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum OutsideEntryEffectDestination {
+    Hand,
+    Exile,
+    Prevent,
 }
 
 /// One descendant event produced by a split player-counter replacement.

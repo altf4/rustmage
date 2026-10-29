@@ -46,6 +46,8 @@ pub(super) struct OutsideHandEvent {
     destination: OutsideEntryDestination,
     choices: Vec<OutsideEntryReplacement>,
     applied: Vec<u64>,
+    provider_applied: Vec<(ObjectRef, u16)>,
+    provider_choices: Vec<(ObjectRef, u16, OutsideEntryDestination)>,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -323,6 +325,8 @@ impl Game {
             destination: OutsideEntryDestination::Hand,
             choices: Vec::new(),
             applied: Vec::new(),
+            provider_applied: Vec::new(),
+            provider_choices: Vec::new(),
         });
         true
     }
@@ -336,7 +340,150 @@ impl Game {
             .map_or(0, |event| {
                 event.choices.capacity() * std::mem::size_of::<OutsideEntryReplacement>()
                     + event.applied.capacity() * std::mem::size_of::<u64>()
+                    + event.provider_applied.capacity() * std::mem::size_of::<(ObjectRef, u16)>()
+                    + event.provider_choices.capacity()
+                        * std::mem::size_of::<(ObjectRef, u16, OutsideEntryDestination)>()
             })
+    }
+
+    /// Discover live replacement providers for the owned outside admission.
+    /// Provider identities refer to battlefield objects, never to the card
+    /// outside the game. The caller must retain applied identities with the
+    /// event and re-discover after every transformation.
+    #[allow(
+        dead_code,
+        reason = "Decision and observer continuation is not yet wired"
+    )]
+    fn outside_entry_providers(
+        &self,
+        event: &OutsideHandEvent,
+        used: &[(ObjectRef, u16)],
+    ) -> Vec<(ObjectRef, u16, OutsideEntryDestination)> {
+        use crate::cards::{
+            CastRelation, OutsideEntryEffectDestination as Destination, ReplacementSpec,
+            StaticAbilityFragment,
+        };
+        let current = match event.destination {
+            OutsideEntryDestination::Hand => Destination::Hand,
+            OutsideEntryDestination::Exile => Destination::Exile,
+            OutsideEntryDestination::Prevent => return Vec::new(),
+        };
+        let world = self.characteristic_query();
+        let mut providers = Vec::new();
+        for &id in &self.state.static_sources {
+            let object = &self.state.objects[id as usize];
+            if object.zone != Zone::Battlefield {
+                continue;
+            }
+            let source = self.object_ref(id);
+            for (index, spec) in object.card.replacement_effects().iter().enumerate() {
+                let ability = u16::try_from(index).expect("replacement index");
+                let ReplacementSpec::OutsideEntry { relation, from, to } = *spec else {
+                    continue;
+                };
+                let related = match relation {
+                    CastRelation::You => event.owner == object.controller,
+                    CastRelation::Opponent => event.owner != object.controller,
+                    CastRelation::Any => true,
+                };
+                if !related || from != current || used.contains(&(source, ability)) {
+                    continue;
+                }
+                if !ability_world::CharacteristicWorld::fragment_available(
+                    &world,
+                    id,
+                    |fragment| matches!(fragment, StaticAbilityFragment::Replacement(slot, _) if *slot == ability),
+                ) {
+                    continue;
+                }
+                let destination = match to {
+                    Destination::Hand => OutsideEntryDestination::Hand,
+                    Destination::Exile => OutsideEntryDestination::Exile,
+                    Destination::Prevent => OutsideEntryDestination::Prevent,
+                };
+                providers.push((source, ability, destination));
+            }
+        }
+        providers
+    }
+
+    /// Prepare the next live provider decision. No card is consumed here; a
+    /// suspended continuation owns both candidate and already-applied keys.
+    /// This deliberately remains internal until its public decision, observer
+    /// dispatch and schema migration are implemented together.
+    #[allow(dead_code, reason = "Outside admission continuation remains gated")]
+    pub(super) fn prepare_outside_entry_providers(&mut self) -> bool {
+        let Some(event) = self
+            .state
+            .outside_game
+            .as_ref()
+            .and_then(|s| s.pending_entry.as_ref())
+        else {
+            return false;
+        };
+        if !event.provider_choices.is_empty() || !event.choices.is_empty() {
+            return false;
+        }
+        let providers = self.outside_entry_providers(event, &event.provider_applied);
+        self.state
+            .outside_game
+            .as_mut()
+            .unwrap()
+            .pending_entry
+            .as_mut()
+            .unwrap()
+            .provider_choices = providers;
+        true
+    }
+
+    /// Apply a selected frozen provider only if it is still live and the
+    /// entire outside selection still matches the pending event.
+    #[allow(dead_code, reason = "Outside admission continuation remains gated")]
+    pub(super) fn apply_outside_entry_provider(&mut self, source: ObjectRef, ability: u16) -> bool {
+        let Some(state) = self.state.outside_game.as_ref() else {
+            return false;
+        };
+        let Some(event) = state.pending_entry.as_ref() else {
+            return false;
+        };
+        let Some(choice) = state.choice.as_ref() else {
+            return false;
+        };
+        if choice.owner != event.owner
+            || choice.id != event.choice_id
+            || choice.pair != Some(event.pair)
+            || state.pool_versions[event.owner.index()] != event.pool_version
+            || state.checked_card(event.owner, event.pair[0]) != Some(event.revealed[0])
+            || state.checked_card(event.owner, event.pair[1]) != Some(event.revealed[1])
+        {
+            return false;
+        }
+        let Some(candidate) = event
+            .provider_choices
+            .iter()
+            .find(|(s, a, _)| *s == source && *a == ability)
+            .copied()
+        else {
+            return false;
+        };
+        if !self
+            .outside_entry_providers(event, &event.provider_applied)
+            .contains(&candidate)
+        {
+            return false;
+        }
+        let event = self
+            .state
+            .outside_game
+            .as_mut()
+            .unwrap()
+            .pending_entry
+            .as_mut()
+            .unwrap();
+        event.destination = candidate.2;
+        event.provider_applied.push((source, ability));
+        event.provider_choices.clear();
+        true
     }
 
     /// Synthetic providers exercise the owned plan without exposing an
@@ -410,6 +557,7 @@ impl Game {
             return false;
         };
         if !event.choices.is_empty()
+            || !event.provider_choices.is_empty()
             || choice.owner != event.owner
             || choice.id != event.choice_id
             || choice.pair != Some(event.pair)
