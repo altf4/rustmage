@@ -51,11 +51,10 @@ fn loot_borrowed_by_forge_uses_bearers_controller_and_funds_real_cast() {
         assert!(g.legal_actions().contains(&Action::AnnounceCast { card: spell }));
         for _ in 0..2 {
             act(&mut g, Action::AnnounceCast { card: spell });
-            let borrowed = Action::AnnounceBorrowedMana { card: forge, exiled: donor, ability: 0,
-                counter_payment: Counters::default(), production: [0, 0, 0, 0, 2, 0] };
+            let borrowed = Action::ActivateBorrowedMana { card: forge, exiled: donor, ability: 0,
+                payment: [0; 6], counter_payment: Counters::default(), production: [0, 0, 0, 0, 2, 0] };
             act(&mut g, borrowed);
             pay(&mut g);
-            if g.state.announcing.is_some() { pay(&mut g); }
             settle(&mut g);
             assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
             assert!(g.object_view(forge).tapped);

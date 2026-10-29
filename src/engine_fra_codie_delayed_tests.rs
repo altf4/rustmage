@@ -88,6 +88,7 @@ fn codie_and_delayed_trigger_each_copy_a_prepared_sorcery() {
             g.state
                 .pending_triggers
                 .iter()
+                .chain(g.state.ordering_triggers.iter())
                 .chain(g.state.stack.iter())
                 .any(|item| item.card == codie && item.kind != StackKind::Spell)
         );

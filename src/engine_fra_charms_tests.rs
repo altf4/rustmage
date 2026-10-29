@@ -7610,3 +7610,9 @@ mod engine_fra_loot_funding_interactions;
 
 #[path = "engine_fra_jiang_discard_replacement_tests.rs"]
 mod engine_fra_jiang_discard_replacement_tests;
+
+#[path = "engine_fra_face_yourself_tests.rs"]
+mod engine_fra_face_yourself_tests;
+
+#[path = "engine_fra_face_yourself_independent_tests.rs"]
+mod engine_fra_face_yourself_independent_tests;
