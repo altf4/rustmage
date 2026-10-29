@@ -109,6 +109,9 @@ impl Game {
                 || self.state.static_sources.iter().copied().any(|source| {
                     self.on_battlefield(source)
                         && self.state.objects[source as usize].controller == actor
+                        && self.state.objects[source as usize].card.static_ability_groups().iter()
+                            .any(|group| group.fragments.iter().any(|fragment| matches!(fragment,
+                                crate::cards::StaticAbilityFragment::ControlledAttackWithoutDefender)))
                         && self.continuous_fragment_available(source, |fragment| matches!(fragment,
                             crate::cards::StaticAbilityFragment::ControlledAttackWithoutDefender))
                 })

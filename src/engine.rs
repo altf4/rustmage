@@ -7944,6 +7944,9 @@ impl Game {
             self.on_battlefield(source)
                 && self.state.objects[source as usize].controller == self.state.objects[id as usize].controller
                 && self.is_creature(id)
+                && self.state.objects[source as usize].card.static_ability_groups().iter()
+                    .any(|group| group.fragments.iter().any(|fragment| matches!(fragment,
+                        crate::cards::StaticAbilityFragment::ControlledCombatDamageByGreaterToughness)))
                 && self.continuous_fragment_available(source, |fragment| matches!(fragment,
                     crate::cards::StaticAbilityFragment::ControlledCombatDamageByGreaterToughness))
         })) && stats.toughness > stats.power

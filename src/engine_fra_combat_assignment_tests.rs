@@ -73,3 +73,40 @@ fn ghalta_enables_defender_to_attack_and_deal_actual_toughness_damage() {
         assert_eq!(game.stats(wall).power, 4);
     }
 }
+
+#[test]
+fn unrelated_static_sources_do_not_grant_combat_rules() {
+    for player in [Player::P0, Player::P1] {
+        for evaluate in [false, true] {
+            let mut game = scenario(player);
+            put(&mut game, player, "Spelunking", Zone::Battlefield);
+            let wall = put(&mut game, player, "Monoist Sentry", Zone::Battlefield);
+            game.state.objects[wall as usize].growth.toughness = 7;
+            if evaluate {
+                let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+                let aura = put(&mut game, player.other(), "Fresh Start", Zone::Battlefield);
+                game.state.objects[aura as usize].attached_to = Some(game.object_ref(bear));
+            }
+            assert!(!game.can_declare_attacker(player, wall));
+            assert_eq!(game.combat_assignment_amount(wall), 4);
+        }
+    }
+}
+
+#[test]
+fn copying_and_losing_ghalta_acquires_and_removes_combat_rules() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let bearer = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let wall = put(&mut game, player, "Monoist Sentry", Zone::Battlefield);
+        game.state.objects[wall as usize].growth.toughness = 7;
+        let reference = game.object_ref(bearer);
+        assert!(!game.can_declare_attacker(player, wall));
+        game.apply_temporary_copy(reference, CopyRecipe::new(Card::from_name("Ghalta the Immovable").unwrap()), CopyDeadline::EndOfTurn);
+        assert!(game.can_declare_attacker(player, wall));
+        assert_eq!(game.combat_assignment_amount(wall), 8);
+        game.apply_temporary_copy(reference, CopyRecipe::new(Card::from_name("Bear Cub").unwrap()), CopyDeadline::EndOfTurn);
+        assert!(!game.can_declare_attacker(player, wall));
+        assert_eq!(game.combat_assignment_amount(wall), 4);
+    }
+}
