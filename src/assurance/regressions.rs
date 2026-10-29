@@ -442,6 +442,10 @@ fn prior_schema180_state_supported(state: &State) -> bool {
         || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
         || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
         || state.objects.iter().any(|o| schema180_new_card(o.card))
+        || state.explore_data.as_ref().and_then(|data| data.last.as_ref()).is_some_and(|event|
+            schema180_new_card(event.explorer.card)
+                || event.revealed.is_some_and(|card| schema180_new_card(card.card)))
+        || state.last_target_library_move.as_ref().is_some_and(|event| schema180_new_card(event.card))
         || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema180_new_card(row.granting_card)))
         || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema180_new_card(row.granting_card)))
         || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
@@ -493,6 +497,42 @@ fn prior_schema180_state_supported(state: &State) -> bool {
         .chain(state.earthbend_returns.as_deref().into_iter().flatten().map(|r| &r.item))
         .chain(state.manifest.as_ref().into_iter().flat_map(|s| s.deaths.iter().map(|d| &d.source)))
         .all(schema180_packet_supported)
+}
+
+#[test]
+fn schema180_checks_retained_historical_card_identities_and_checkpoints() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let object = g.object_ref(id);
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let puppet = Card::from_name("Puppet Crafting").unwrap();
+        let data = g.state.explore_data.get_or_insert_default();
+        data.last = Some(explore::ExploreEventView {
+            sequence: 1,
+            explorer: explore::ExplorerView { kinds: 1, object, card: bear, controller: player },
+            revealed: Some(explore::RevealedLibraryCard { object, card: bear }),
+            destination: None, result: None, counter_added: false,
+        });
+        assert!(prior_schema180_state_supported(&g.state));
+        g.state.explore_data.as_mut().unwrap().last.as_mut().unwrap().explorer.card = puppet;
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.begin_attack_rollback(player);
+        g.state.explore_data.as_mut().unwrap().last.as_mut().unwrap().explorer.card = bear;
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.state.cast_rollback = None;
+        assert!(prior_schema180_state_supported(&g.state));
+        g.state.explore_data.as_mut().unwrap().last.as_mut().unwrap().revealed.as_mut().unwrap().card = puppet;
+        assert!(!prior_schema180_state_supported(&g.state));
+        g.state.explore_data.as_mut().unwrap().last = None;
+        g.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
+            source: object, card: bear, target_before: object, target_after: object,
+            owner: player, destination: LibraryDestination::Top,
+        }));
+        assert!(prior_schema180_state_supported(&g.state));
+        g.state.last_target_library_move.as_mut().unwrap().card = puppet;
+        assert!(!prior_schema180_state_supported(&g.state));
+    }
 }
 
 #[test]
