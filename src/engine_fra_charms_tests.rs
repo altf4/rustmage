@@ -7740,3 +7740,9 @@ mod engine_fra_sanctum_lurker_tests;
 
 #[path = "engine_fra_machinations_way_independent_tests.rs"]
 mod engine_fra_machinations_way_independent_tests;
+
+#[path = "engine_fra_seasoned_cryomancer_tests.rs"]
+mod engine_fra_seasoned_cryomancer_tests;
+
+#[path = "engine_fra_sanctum_lurker_independent_tests.rs"]
+mod engine_fra_sanctum_lurker_independent_tests;
