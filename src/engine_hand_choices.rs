@@ -72,6 +72,7 @@ impl Game {
         item: &SpellView,
         subtype: &'static str,
     ) -> bool {
+        let Some(source) = item.source else { return false; };
         let candidates = behold_candidates(self, item.controller, subtype, &[]);
         if candidates.is_empty() {
             self.state.resolving.as_mut().unwrap().search_result = None;
@@ -82,7 +83,7 @@ impl Game {
             actor: item.controller,
             controller: item.controller,
             victim: Some(item.controller),
-            source: item.object,
+            source: source.object,
             required: 0,
             selected: Vec::new(),
             candidates,
@@ -119,6 +120,7 @@ impl Game {
         item: &SpellView,
         amount: AmountValue,
     ) -> bool {
+        let Some(source) = item.source else { return false; };
         let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
         };
@@ -132,7 +134,7 @@ impl Game {
             actor: victim,
             controller: item.controller,
             victim: Some(victim),
-            source: item.object,
+            source: source.object,
             required,
             selected: Vec::new(),
             candidates: hand,
@@ -147,6 +149,7 @@ impl Game {
         true
     }
     pub(super) fn start_revealed_hand_exile(&mut self, item: &SpellView) -> bool {
+        let Some(source) = item.source else { return false; };
         let victim = item.targets.iter().find_map(|b| {
             if b.group == 0 {
                 if let Target::Player(p) = b.target {
@@ -160,8 +163,8 @@ impl Game {
         });
         let hand = victim.map_or_else(Vec::new, |p| self.exact_hand(p));
         self.reveal_hand_refs(&hand);
-        if !self.on_battlefield(item.object.card)
-            || self.object_ref(item.object.card) != item.object
+        if !self.on_battlefield(source.object.card)
+            || self.object_ref(source.object.card) != source.object
         {
             return false;
         }
@@ -183,7 +186,7 @@ impl Game {
             actor: item.controller,
             controller: item.controller,
             victim,
-            source: item.object,
+            source: source.object,
             required: 0,
             selected: Vec::new(),
             candidates,
