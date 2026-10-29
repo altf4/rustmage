@@ -26,7 +26,7 @@ fn approach_selects_four_atomically_and_searches_with_snapshot_replay() {
         }
         let foreign = put_approach(&mut g, p.other(), Zone::Graveyard);
         let wrong = put(&mut g, p, "Bear Cub", Zone::Graveyard);
-        let sphinx = put(&mut g, p, "Curator of Destinies", Zone::Library);
+        let sphinx = put(&mut g, p, "Sphinx of the Final Word", Zone::Library);
         // The two cards drawn are above the Sphinx.
         put(&mut g, p, "Island", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
@@ -130,7 +130,7 @@ fn approach_spell_copy_can_choose_the_resolution_payment_independently() {
         let cards: Vec<_> = (0..4)
             .map(|_| put_approach(&mut g, p, Zone::Graveyard))
             .collect();
-        let sphinx = put(&mut g, p, "Curator of Destinies", Zone::Library);
+        let sphinx = put(&mut g, p, "Sphinx of the Final Word", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
         put(&mut g, p, "Island", Zone::Library);
         let spell = put_approach(&mut g, p, Zone::Hand);

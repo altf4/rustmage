@@ -35,6 +35,8 @@ fn sphinx_competing_exile_replacements_replay_atomically() {
         let reference = g.object_ref(cards[0]);
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(reference)));
         TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|p| p.set(Some(reference)));
+        // Synthetic providers bypass normal card registration.
+        g.state.zone_rules.get_or_insert_default();
         for &id in &cards[..3] {
             let object = g.object_ref(id);
             act(&mut g, Action::SelectResolutionExile { object });
@@ -163,7 +165,7 @@ fn sphinx_copy_created_through_legal_cast_exiles_then_ceases_after_resolution() 
         let cards: Vec<_> = (0..4)
             .map(|_| sphinx_card(&mut g, player, Zone::Graveyard))
             .collect();
-        let sphinx = put(&mut g, player, "Curator of Destinies", Zone::Library);
+        let sphinx = put(&mut g, player, "Sphinx of the Final Word", Zone::Library);
         put(&mut g, player, "Island", Zone::Library);
         put(&mut g, player, "Island", Zone::Library);
         let source = sphinx_card(&mut g, player, Zone::Hand);
@@ -283,6 +285,8 @@ fn sphinx_stale_staged_entry_discards_consumed_replacement_replay() {
         let reference = g.object_ref(cards[0]);
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(reference)));
         TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|p| p.set(Some(reference)));
+        // Synthetic providers bypass normal card registration.
+        g.state.zone_rules.get_or_insert_default();
         TEST_FAKE_ENTRY_LIFE.with(|p| p.set(Some(reference)));
         for &id in &cards {
             let object = g.object_ref(id);
@@ -357,6 +361,8 @@ fn sphinx_synchronous_staged_failure_keeps_live_replay_until_caller_consumes_it(
         let redirect = g.object_ref(cards[0]);
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(redirect)));
         TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|p| p.set(Some(redirect)));
+        // Synthetic providers bypass normal card registration.
+        g.state.zone_rules.get_or_insert_default();
         TEST_INVALIDATE_STAGED_COST.with(|p| p.set(Some(g.object_ref(cards[1]))));
         for &id in &cards {
             let object = g.object_ref(id);
