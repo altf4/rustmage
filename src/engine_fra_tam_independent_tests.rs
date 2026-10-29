@@ -1,7 +1,8 @@
 use super::*;
 
 fn activate_tam(g: &mut Game, source: CardId) {
-    g.state.players[g.state.objects[source as usize].controller.index()].mana = [1, 1, 1, 1, 1, 0];
+    let controller = g.state.objects[source as usize].controller;
+    g.state.players[controller.index()].mana = [1, 1, 1, 1, 1, 0];
     act(g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
     pay(g);
 }
@@ -60,13 +61,17 @@ fn tam_zero_and_two_types_use_resolution_controller_after_source_changes() {
                 g.add_counter(creature, CounterKind::PlusOne, 1);
                 activate_tam(&mut g, tam);
                 if leave { g.move_object(tam, Zone::Graveyard); }
-                else { g.change_controller(g.object_ref(tam), player.other()); }
+                else {
+                    let source = g.object_ref(tam);
+                    g.change_controller(source, player.other());
+                }
                 let saved = g.snapshot();
                 for _ in 0..2 {
                     advance_to_proliferate_or_done(&mut g);
                     for _ in 0..count {
                         assert!(matches!(g.state.pending, Pending::Proliferate { player: p } if p == player));
-                        act(&mut g, Action::ProliferatePermanent { object: g.object_ref(creature) });
+                        let object = g.object_ref(creature);
+                        act(&mut g, Action::ProliferatePermanent { object });
                         act(&mut g, Action::FinishProliferate);
                     }
                     settle(&mut g);
@@ -99,7 +104,8 @@ fn copied_tam_activation_uses_copy_controllers_planeswalker_types() {
             advance_to_proliferate_or_done(&mut g);
             for _ in 0..2 {
                 assert!(matches!(g.state.pending, Pending::Proliferate { player: p } if p == player.other()));
-                act(&mut g, Action::ProliferatePermanent { object: g.object_ref(creature) });
+                let object = g.object_ref(creature);
+                act(&mut g, Action::ProliferatePermanent { object });
                 act(&mut g, Action::FinishProliferate);
             }
             settle(&mut g);
