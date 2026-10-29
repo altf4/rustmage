@@ -163,6 +163,8 @@ pub(super) struct CardExtras {
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
+    /// Minimum cards in the caster's graveyard after this spell leaves its origin.
+    pub cast_graveyard_minimum: u8,
     pub prepared_spell: Option<Card>,
     pub enters_prepared: bool,
     pub prepared_identity: Option<&'static str>,
@@ -272,6 +274,7 @@ impl CardExtras {
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,
+        cast_graveyard_minimum: 0,
         prepared_spell: None,
         enters_prepared: false,
         prepared_identity: None,

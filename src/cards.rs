@@ -4795,6 +4795,9 @@ impl Card {
     pub(crate) fn self_cast_timing(self) -> Option<SelfCastTiming> {
         authored::rules(self).and_then(|r| r.extras.self_cast_timing)
     }
+    pub(crate) fn cast_graveyard_minimum(self) -> u8 {
+        authored::rules(self).map_or(0, |r| r.extras.cast_graveyard_minimum)
+    }
     pub(crate) fn cast_timing_guard(self) -> StepGuard {
         authored::rules(self).map_or(StepGuard::Always, |r| r.extras.cast_timing_guard)
     }

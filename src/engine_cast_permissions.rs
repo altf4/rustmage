@@ -35,6 +35,15 @@ impl Card {
     }
 }
 impl Game {
+    /// The source is already on the stack when casting restrictions are checked.
+    pub(super) fn spell_graveyard_requirement_holds(&self, actor: Player, id: CardId, definition: Card) -> bool {
+        let minimum = usize::from(definition.cast_graveyard_minimum());
+        if minimum == 0 { return true; }
+        self.state.objects.iter().enumerate().filter(|(index, object)| {
+            *index != id as usize && object.owner == actor && object.zone == Zone::Graveyard && !object.is_token()
+        }).take(minimum).count() >= minimum
+    }
+
     pub(super) fn limited_free_hand_permissions(&self, player: Player) -> Vec<ObjectRef> {
         if player != self.state.active {
             return Vec::new();
@@ -295,6 +304,9 @@ impl Game {
         }) else {
             return false;
         };
+        if !self.spell_graveyard_requirement_holds(actor, card, definition) {
+            return false;
+        }
         if flash_surcharge && definition.flash_surcharge().is_none() {
             return false;
         }

@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "26f97a25ce2b0dc457204edfd8bd65162a579e798f0ec0d256b07122692b9331"
   },
-  "physical_metadata_sha256": "d2ae108eb4c44303306acb53e475f9fc07cdb2c00f1dc55b1cba67fe6c40a770"
+  "physical_metadata_sha256": "d2ae108eb4c44303306acb53e475f9fc07cdb2c00f1dc55b1cba67fe6c40a770",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ProftSinisterMastermind.java",
+  "java_sha256": "1ab56c5475ab70111121d4c3eb69d81cf50bdf0f5e0d7e232b9d89d27b3abb52",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
+      "sha256": "f7d6ad71cd5857b9d0c127469d9b39afd84148a38001a42a309c5c218694382a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardSourceCost.java",
+      "sha256": "0045494e33e80e96962af6a6c95ec025700ed91cbfae230d624c749e91793ecf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ],
+  "rules_tests": "src/engine_fra_proft_threshold_tests.rs"
 }

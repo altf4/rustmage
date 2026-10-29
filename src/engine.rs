@@ -4150,12 +4150,14 @@ impl Game {
                     }
                     if sorcery
                         && obj.zone == Zone::Exile
+                        && self.spell_graveyard_requirement_holds(actor, card, obj.card)
                         && self.plotted_cast_available(actor, card)
                         && emit(Action::AnnouncePlotted { card })
                     {
                         return true;
                     }
                     if obj.zone == Zone::Hand
+                        && self.spell_graveyard_requirement_holds(actor, card, obj.card)
                         && (sorcery
                             || obj.card.is_instant()
                             || self.keywords(card).contains(Keywords::FLASH)
@@ -4180,6 +4182,11 @@ impl Game {
                         && emit(Action::AnnounceDisguise { card })
                     {
                         return true;
+                    }
+                    // This check follows face-down disguise: the face-down spell
+                    // has no printed restriction from its underlying card.
+                    if !self.spell_graveyard_requirement_holds(actor, card, obj.card) {
+                        continue;
                     }
                     if !casting_prohibited
                         && self.visit_exile_free_casts(actor, card, sorcery, &mut emit)
