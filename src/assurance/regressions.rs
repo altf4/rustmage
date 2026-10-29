@@ -1282,9 +1282,10 @@ fn schema191_packet_supported(item: &SpellView) -> bool {
 /// Conservatively reject opaque continuations, while checking copy layers and
 /// retained packets by type. Rollback snapshots retain independent hidden state.
 fn prior_schema191_state_supported(state: &State) -> bool {
-    if state.objects.iter().any(|object| object.is_spell_copy())
+    if state.objects.iter().enumerate().any(|(id, object)| object.is_spell_copy()
+        && !(object.zone == Zone::Outside && state.free_tokens.contains(&(id as CardId))))
         || state.roles.as_ref().is_some_and(|roles| !roles.exile_grant_cast_history.is_empty() || roles.source_linked_effects.iter().any(|row| row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast))
-        || state.zone_rules.is_some()
+        || state.zone_rules.as_ref().is_some_and(|rules| !rules.schema191_passive_safe(schema191_new_card))
         || state.outside_game.as_ref().is_some_and(|outside| outside.pools.iter().flatten().copied().any(schema191_new_card) || outside.choice.is_some())
         || state.resolving.is_some() || state.announcing.is_some()
         || state.mana_announcement_stack.is_some() || state.replacements.is_some()
@@ -7060,6 +7061,31 @@ fn schema191_preserves_published_radiation_packets_in_nested_state_and_rollback(
         for _ in 0..2 {
             assert!(prior_schema191_state_supported(&game.state));
             game.restore(&checkpoint).unwrap();
+        }
+    }
+}
+
+#[test]
+fn schema191_accepts_ceased_copy_slots_and_passive_zone_registry() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        game.state.zone_rules = Some(Box::default());
+        assert!(prior_schema191_state_supported(&game.state));
+        let spell = put(&mut game, player, "Shock", Zone::Hand);
+        let target = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        cast(&mut game, spell, Some(Target::Card(target)));
+        let original = game.state.stack.last().unwrap().clone();
+        let copy = game.allocate_spell_copy(&original, player);
+        let reference = copy.source.unwrap().object;
+        game.state.stack.push(copy);
+        game.move_object(reference.card, Zone::Exile);
+        assert!(!prior_schema191_state_supported(&game.state));
+        game.state_based_actions();
+        assert!(game.state.free_tokens.contains(&reference.card));
+        assert!(prior_schema191_state_supported(&game.state));
+        for viewer in [player, player.other()] {
+            let wire = serde_json::to_string(&game.observe(viewer)).unwrap();
+            assert_eq!(project_prior_schema191(&wire).unwrap(), wire);
         }
     }
 }

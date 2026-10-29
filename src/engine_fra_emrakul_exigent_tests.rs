@@ -11,8 +11,7 @@ fn emrakul_cast_trigger_untaps_controlled_lands_even_after_spell_is_countered() 
         g.state.objects[enemy as usize].tapped = true;
         g.state.objects[creature as usize].tapped = true;
         let spell = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[spell as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[spell as usize].card = Card::test_index(1324);
         g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 10];
         act(&mut g, Action::AnnounceCast { card: spell });
         pay(&mut g);
@@ -52,8 +51,7 @@ fn emrakul_cast_untap_uses_live_control_types_and_stun() {
         g.state.objects[blocked as usize].tapped = true;
         g.state.objects[blocked as usize].counters.stun = 1;
         let spell = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[spell as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[spell as usize].card = Card::test_index(1324);
         g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 10];
         act(&mut g, Action::AnnounceCast { card: spell });
         pay(&mut g);
@@ -83,8 +81,7 @@ fn emrakul_ward_sacrifice_three_is_selected_before_atomic_payment() {
                 put(&mut g, player, "Rest in Peace", Zone::Battlefield);
             }
             let emrakul = put(&mut g, player, "Bear Cub", Zone::Battlefield);
-            g.state.objects[emrakul as usize].card =
-                Card::from_name("Emrakul, the Exigent Doom").unwrap();
+            g.state.objects[emrakul as usize].card = Card::test_index(1324);
             g.register_battlefield_sources(emrakul);
             let payer = player.other();
             let permanents: Vec<_> = (0..3)
@@ -149,8 +146,7 @@ fn emrakul_hand_exile_grants_land_mana_until_that_exile_incarnation_is_cast() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[source as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(1324);
         let land = put(&mut g, player.other(), "Forest", Zone::Battlefield);
         g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
         act(
@@ -201,8 +197,7 @@ fn emrakul_cast_before_hand_ability_resolves_does_not_start_ended_grant() {
         let mut g = scenario(player);
         put(&mut g, player, "High Fae Trickster", Zone::Battlefield);
         let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[source as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(1324);
         let land = put(&mut g, player, "Forest", Zone::Battlefield);
         g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 13];
         act(
@@ -257,8 +252,7 @@ fn emrakul_exile_departure_and_reentry_does_not_rebind_old_grant() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[source as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(1324);
         let land = put(&mut g, player, "Forest", Zone::Battlefield);
         g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
         act(
@@ -306,8 +300,7 @@ fn copied_emrakul_hand_ability_grants_each_controller_independent_permission() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[source as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(1324);
         let land = put(&mut g, player, "Forest", Zone::Battlefield);
         g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
         act(
@@ -362,8 +355,7 @@ fn emrakul_granted_mana_funding_respects_ability_layer_order_and_restore() {
         for blank_before in [false, true] {
             let mut g = scenario(player);
             let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-            g.state.objects[source as usize].card =
-                Card::from_name("Emrakul, the Exigent Doom").unwrap();
+            g.state.objects[source as usize].card = Card::test_index(1324);
             let land = put(&mut g, player, "Forest", Zone::Battlefield);
             let mut blank = g.activation_item(player, land, 0);
             blank.targets = vec![BoundTarget {
@@ -472,8 +464,7 @@ fn ward_sacrifice_prohibition_and_partial_decline_preserve_all_permanents() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let emrakul = put(&mut g, player, "Bear Cub", Zone::Battlefield);
-        g.state.objects[emrakul as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[emrakul as usize].card = Card::test_index(1324);
         g.register_battlefield_sources(emrakul);
         let payer = player.other();
         let permanents: Vec<_> = (0..3)
@@ -576,8 +567,7 @@ fn ward_atomic_replacement_prevention_and_redirect_choice_restore() {
             let mut g = scenario(player);
             put(&mut g, player, "Rest in Peace", Zone::Battlefield);
             let emrakul = put(&mut g, player, "Bear Cub", Zone::Battlefield);
-            g.state.objects[emrakul as usize].card =
-                Card::from_name("Emrakul, the Exigent Doom").unwrap();
+            g.state.objects[emrakul as usize].card = Card::test_index(1324);
             g.register_battlefield_sources(emrakul);
             let payer = player.other();
             let permanents: Vec<_> = (0..3)
@@ -724,8 +714,7 @@ fn emrakul_cast_history_survives_retained_retarget_copy_packet_and_restore() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[source as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(1324);
         let land = put(&mut g, player, "Forest", Zone::Battlefield);
         g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
         act(
@@ -793,8 +782,7 @@ fn emrakul_prevented_exile_cost_still_grants_land_mana_without_exile_permission(
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[source as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(1324);
         let land = put(&mut g, player, "Forest", Zone::Battlefield);
         let original = g.object_ref(source);
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(original)));
@@ -836,8 +824,7 @@ fn emrakul_hand_ability_fizzles_when_its_land_target_leaves() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[source as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(1324);
         let land = put(&mut g, player, "Forest", Zone::Battlefield);
         g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
         act(
@@ -870,8 +857,7 @@ fn emrakul_granted_mana_can_pay_for_that_same_card_and_then_expires() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let source = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[source as usize].card =
-            Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        g.state.objects[source as usize].card = Card::test_index(1324);
         let land = put(&mut g, player, "Forest", Zone::Battlefield);
         g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
         act(

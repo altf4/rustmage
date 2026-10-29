@@ -88,6 +88,10 @@ impl ZoneState {
     pub(super) fn has_checkpoint(&self) -> bool {
         self.choice.is_some() || self.replay.is_some()
     }
+    #[cfg(test)]
+    pub(super) fn schema191_passive_safe(&self, new_card: impl Fn(Card) -> bool) -> bool {
+        !self.has_checkpoint() && self.reveals.iter().all(|view| !new_card(view.card))
+    }
     pub fn bytes(&self) -> usize {
         let base_bytes = |base: &Base| {
             base.bytes
