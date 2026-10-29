@@ -292,7 +292,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in self.static_sources() {
             let object = self.object(source);
-            if object.zone != Zone::Battlefield {
+            if object.zone != Zone::Battlefield
+                && !(object.zone == Zone::Command && object.card.is_emblem()) {
                 continue;
             }
             if object.card.static_ability_groups().iter().any(|group| {
