@@ -4,6 +4,17 @@
 use super::*;
 use std::cell::Cell;
 thread_local! { static ACTIVE: Cell<bool> = const { Cell::new(false) }; }
+thread_local! { static OUTSIDE_ACTIVE: Cell<bool> = const { Cell::new(false) }; }
+pub(crate) struct OutsideGuard;
+impl Drop for OutsideGuard {
+    fn drop(&mut self) {
+        OUTSIDE_ACTIVE.with(|v| v.set(false));
+    }
+}
+pub(crate) fn activate_outside() -> OutsideGuard {
+    OUTSIDE_ACTIVE.with(|v| assert!(!v.replace(true)));
+    OutsideGuard
+}
 pub(crate) struct Guard;
 impl Drop for Guard {
     fn drop(&mut self) {
@@ -119,12 +130,13 @@ const OUTSIDE_GROUP: &[StaticAbilityGroup] = &[StaticAbilityGroup {
 pub(super) fn provider(
     card: Card,
 ) -> Option<(&'static [StaticAbilityGroup], &'static [ReplacementSpec])> {
+    if OUTSIDE_ACTIVE.with(Cell::get) && Some(card) == Card::from_name("Healer's Hawk") {
+        return Some((OUTSIDE_GROUP, &[OUTSIDE_PREVENT, OUTSIDE_EXILE]));
+    }
     if !ACTIVE.with(Cell::get) {
         return None;
     }
-    if Some(card) == Card::from_name("Silvercoat Lion") {
-        Some((OUTSIDE_GROUP, &[OUTSIDE_PREVENT, OUTSIDE_EXILE]))
-    } else if Some(card) == Card::from_name("Bear Cub") {
+    if Some(card) == Card::from_name("Bear Cub") {
         Some((BLOCK_GROUP, &[]))
     } else if Some(card) == Card::from_name("Hill Giant") {
         Some((DOUBLE_GROUP, &[DOUBLE]))

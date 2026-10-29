@@ -953,12 +953,12 @@ fn synthetic_outside_entry_replacement_choices_are_owned_and_transactional() {
 
 #[test]
 fn outside_admission_uses_real_provider_choice_and_replays() {
-    let _fixture = crate::cards::test_counter_providers::activate();
+    let _fixture = crate::cards::test_counter_providers::activate_outside();
     for owner in [Player::P0, Player::P1] {
         let shock = Card::from_name("Shock").unwrap();
         let bear = Card::from_name("Bear Cub").unwrap();
         let mut game = outside_scenario(owner, vec![shock, bear]);
-        let provider = put(&mut game, owner, "Silvercoat Lion", Zone::Battlefield);
+        let provider = put(&mut game, owner, "Healer's Hawk", Zone::Battlefield);
         let source = game.object_ref(provider);
         cast_extrapolate(&mut game, owner);
         act(&mut game, Action::ChooseOutsideCard { index: 0 });
