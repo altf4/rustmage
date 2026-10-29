@@ -296,3 +296,80 @@ fn emrakul_hand_ability_fizzles_when_target_loses_land_type() {
         }
     }
 }
+
+#[test]
+fn echo_legally_copies_emrakul_hand_ability_and_retargets_another_land() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Bear Cub", Zone::Hand);
+        game.state.objects[source as usize].card = Card::test_index(1324);
+        let first = put(&mut game, player, "Forest", Zone::Battlefield);
+        let second = put(&mut game, player.other(), "Island", Zone::Battlefield);
+        let echo = put(
+            &mut game,
+            player,
+            "Echo, Perceptive Prodigy",
+            Zone::Battlefield,
+        );
+        game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 4];
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(first),
+            },
+        );
+        pay(&mut game);
+        let exile_ref = game.object_ref(source);
+        let original = game.state.stack.last().unwrap().id;
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: echo,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Stack(original),
+            },
+        );
+        if game.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut game, Action::FinishTargets);
+        }
+        pay(&mut game);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert!(matches!(game.state.pending, Pending::Retarget { player: p } if p == player));
+        let checkpoint = game.snapshot();
+        for _ in 0..2 {
+            act(
+                &mut game,
+                Action::SetStackTarget {
+                    index: 0,
+                    target: Target::Card(second),
+                },
+            );
+            act(&mut game, Action::FinishStackTargets);
+            settle(&mut game);
+            assert!(game.can_play_exiled(player, source));
+            let rows = &game.state.roles.as_ref().unwrap().source_linked_effects;
+            for id in [first, second] {
+                assert!(rows.iter().any(|row| row.source == exile_ref
+                    && row.recipient == game.object_ref(id)
+                    && row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast));
+            }
+            assert!(!game.can_play_exiled(player.other(), source));
+            game.restore(&checkpoint).unwrap();
+        }
+    }
+}
