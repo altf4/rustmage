@@ -1501,3 +1501,74 @@ fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
         }
     }
 }
+
+/// Conservative draft guard for integrating player counters and source-less
+/// radiation into the current schema. Run this before any older projector.
+fn project_prior_player_counter_schema(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::Array(rows) => for row in rows { check(row)?; },
+            serde_json::Value::Object(map) => {
+                if map.contains_key("other_counters") || map.contains_key("source_less_rule") || map.contains_key("InherentRule") {
+                    return Err("player counters or source-less rule have no prior-schema representation".into());
+                }
+                for value in map.values() { check(value)?; }
+            }
+            _ => ()
+        }
+        Ok(())
+    }
+    let value: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&value)?;
+    Ok(input.to_owned())
+}
+fn prior_player_counter_state_supported(state: &State) -> bool {
+    if state.players.iter().any(|p| p.other_player_counters.as_ref().is_some_and(|counts| counts.iter().any(|&n| n != 0)))
+        || state.replacements.is_some() || state.entry_batch.is_some() || state.resolving.is_some()
+        || state.announcing.is_some() || state.mana_announcement_stack.is_some()
+        || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
+        || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction()) { return false; }
+    if let Some(rollback) = &state.cast_rollback {
+        if !rollback.events.is_empty() || rollback.replay.is_some() || rollback.capture.is_some()
+            || !prior_player_counter_state_supported(&rollback.before) { return false; }
+    }
+    let safe = |item: &SpellView| serde_json::to_string(item)
+        .is_ok_and(|json| project_prior_player_counter_schema(&json).is_ok());
+    state.stack.iter().chain(&state.pending_triggers).chain(&state.ordering_triggers)
+        .chain(state.delayed_artifact_copies.as_deref().into_iter().flatten())
+        .chain(state.delayed_attack_this_turn.as_deref().into_iter().flatten())
+        .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
+        .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
+        .chain(state.stack_copy_data.as_ref().into_iter().flat_map(|s| s.packets()))
+        .chain(state.paradigm.as_ref().into_iter().flat_map(|s| s.packets()))
+        .chain(state.delayed_returns.as_deref().into_iter().flatten().map(|r| &r.item))
+        .chain(state.earthbend_returns.as_deref().into_iter().flatten().map(|r| &r.item))
+        .chain(state.manifest.as_ref().into_iter().flat_map(|s| s.deaths.iter().map(|d| &d.source)))
+        .all(safe)
+}
+
+#[test]
+fn player_counter_prior_schema_guard_covers_views_hidden_packets_and_rollback() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        assert!(prior_player_counter_state_supported(&g.state));
+        let old = serde_json::to_string(&g.observe(player)).unwrap();
+        assert_eq!(project_prior_player_counter_schema(&old).unwrap(), old);
+        g.state.players[player.index()].add_player_counter(crate::cards::PlayerCounterKind::Rad, 1);
+        for viewer in [player, player.other()] {
+            assert!(project_prior_player_counter_schema(&serde_json::to_string(&g.observe(viewer)).unwrap()).is_err());
+        }
+        assert!(!prior_player_counter_state_supported(&g.state));
+        g.begin_attack_rollback(player);
+        g.state.players[player.index()].other_player_counters = None;
+        assert!(!prior_player_counter_state_supported(&g.state));
+        g.state.cast_rollback = None;
+        assert!(prior_player_counter_state_supported(&g.state));
+        g.state.players[player.index()].add_player_counter(crate::cards::PlayerCounterKind::Rad, 1);
+        g.begin_step(Step::Main1);
+        g.state.players[player.index()].other_player_counters = None;
+        assert!(!prior_player_counter_state_supported(&g.state));
+        g.state.pending_triggers.clear();
+        assert!(prior_player_counter_state_supported(&g.state));
+    }
+}
