@@ -227,6 +227,30 @@ fn project_prior_behold_json(input: &str) -> Result<String, String> {
     Ok(output)
 }
 
+/// Hidden retained acquisitions affect future identities even when current
+/// public views and action sets happen to be empty.
+fn prior_behold_owned_state_supported(game: &Game) -> bool {
+    game.state
+        .borrowed_links
+        .as_ref()
+        .is_none_or(|rows| rows.is_empty())
+        && game
+            .state
+            .borrowed_slots
+            .as_ref()
+            .is_none_or(|rows| rows.is_empty())
+        && game
+            .state
+            .graveyard_borrowing
+            .as_ref()
+            .is_none_or(|rows| rows.is_empty())
+        && game
+            .state
+            .borrowed_uses
+            .as_ref()
+            .is_none_or(|rows| rows.is_empty())
+}
+
 fn prior_behold_journal_supported(journal: &[Action]) -> bool {
     !journal.iter().any(|action| {
         matches!(
@@ -366,6 +390,30 @@ fn prior_projection_rejects_offered_actions_even_when_journal_is_empty() {
         assert!(view.actions.contains(&Action::TapMana { card: land }));
         let observation = serde_json::to_string(&[view]).unwrap();
         assert!(project_prior_behold_json(&observation).is_err());
+    }
+}
+
+#[test]
+fn prior_projection_rejects_hidden_retained_borrowing_state() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let donor = put(&mut game, player, "Forest", Zone::Exile);
+        assert!(prior_behold_owned_state_supported(&game));
+        let source_ref = game.object_ref(source);
+        let donor_ref = game.object_ref(donor);
+        game.state
+            .borrowed_links
+            .get_or_insert_default()
+            .push(borrowed_activations::Link {
+                source: source_ref,
+                origin: None,
+                exiled: donor_ref,
+                first_slot: 0,
+                width: 1,
+            });
+        assert!(game.observe(player).borrowed_abilities.is_empty());
+        assert!(!prior_behold_owned_state_supported(&game));
     }
 }
 
@@ -520,7 +568,12 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
     if schema_projection.is_some_and(|schema| schema < 177) {
-        if !prior_behold_journal_supported(&journal) {
+        if !prior_behold_owned_state_supported(&g) {
+            projection_error = Some(
+                "owned borrowing acquisition state cannot be reconstructed in the prior schema"
+                    .to_owned(),
+            );
+        } else if !prior_behold_journal_supported(&journal) {
             projection_error =
                 Some("journal contains behold or mana-ability actions whose old identities cannot be proved".to_owned());
         } else {

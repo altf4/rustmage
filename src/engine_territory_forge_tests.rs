@@ -733,3 +733,80 @@ fn graveyard_donor_reacquisition_replays_without_aliasing_old_slot() {
         assert_eq!(g.snapshot(), replay.snapshot());
     }
 }
+
+#[test]
+fn dual_land_mana_actions_pay_actual_blue_and_green_spells() {
+    for player in [Player::P0, Player::P1] {
+        for color in [1usize, 4] {
+            let mut game = setup(player);
+            let land = fixture(&mut game, player, "Hedge Maze", Zone::Battlefield);
+            let creature = fixture(&mut game, player, "Bear Cub", Zone::Battlefield);
+            let name = if color == 1 { "Opt" } else { "Giant Growth" };
+            let spell = fixture(&mut game, player, name, Zone::Hand);
+            game.state.players[player.index()].mana = [0; 6];
+            let mut production = [0; 6];
+            production[color] = 1;
+            let action = if color == 1 {
+                Action::TapMana { card: land }
+            } else {
+                Action::TapGrantedMana {
+                    card: land,
+                    grantor: game.object_ref(land),
+                    production,
+                }
+            };
+            checked(&mut game, action);
+            assert_eq!(game.state.players[player.index()].mana, production);
+            let targets = if color == 1 {
+                vec![]
+            } else {
+                vec![Target::Card(creature)]
+            };
+            cast(&mut game, spell, None, &targets);
+            assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+            assert_eq!(game.object_view(spell).zone, Zone::Stack);
+        }
+    }
+}
+
+#[test]
+fn copied_dual_donor_removes_and_restores_borrowed_mana_for_actual_spending() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = setup(player);
+        let donor = fixture(&mut game, player.other(), "Hedge Maze", Zone::Battlefield);
+        let source = forge(&mut game, player, donor);
+        let creature = fixture(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let spell = fixture(&mut game, player, "Giant Growth", Zone::Hand);
+        let green = borrowed(&game, source, u16::MAX - 5);
+        let action = Action::AnnounceBorrowedMana {
+            card: source,
+            exiled: green.exiled,
+            ability: green.ability,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 1, 0],
+        };
+        let reference = game.object_ref(donor);
+        let mut recipe = CopyRecipe::new(Card::from_name("Hedge Maze").unwrap());
+        recipe.overrides = Some(CopyOverrides {
+            name: None,
+            legendary: None,
+            kinds: None,
+            types: Some(CopyTypes {
+                replace: true,
+                ..CopyTypes::default()
+            }),
+            keywords: Keywords::NONE,
+        });
+        game.set_copy_recipe(reference, recipe);
+        reject(&mut game, action.clone());
+        game.clear_copy_recipe(reference);
+        assert_eq!(borrowed(&game, source, u16::MAX - 5).slot, green.slot);
+        game.state.players[player.index()].mana = [0; 6];
+        checked(&mut game, action);
+        finish(&mut game);
+        assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 1, 0]);
+        cast(&mut game, spell, None, &[Target::Card(creature)]);
+        assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+        assert_eq!(game.object_view(spell).zone, Zone::Stack);
+    }
+}
