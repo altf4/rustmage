@@ -978,7 +978,7 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
         assert!(
             game.observe(owner.other())
                 .outside_entry_replacement
-                .is_none()
+                .is_some()
         );
         let prevent = Action::ChooseOutsideEntryReplacement { source, ability: 0 };
         let exile = Action::ChooseOutsideEntryReplacement { source, ability: 1 };
@@ -1080,6 +1080,18 @@ fn outside_replacement_chain_uses_public_choices_under_player_control() {
         assert_eq!(game.actor(), Some(owner.other()));
         assert!(game.observe(owner).actions.is_empty());
         assert!(game.observe(owner.other()).actions.contains(&first));
+        for viewer in [Player::P0, Player::P1] {
+            let view = game.observe(viewer).outside_entry_replacement.unwrap();
+            assert_eq!(view.card, shock);
+            assert_eq!(view.destination, OutsideEntryDestination::Hand);
+            assert_eq!(
+                view.providers
+                    .iter()
+                    .map(|p| p.destination)
+                    .collect::<Vec<_>>(),
+                vec![OutsideEntryDestination::Exile; 2]
+            );
+        }
         assert!(game.apply(owner, first.clone()).is_err());
         let before = game.snapshot();
         outside_choices::start_provider_trace();
@@ -1098,6 +1110,18 @@ fn outside_replacement_chain_uses_public_choices_under_player_control() {
             ability: 0,
         };
         assert!(game.observe(owner.other()).actions.contains(&second));
+        for viewer in [Player::P0, Player::P1] {
+            let view = game.observe(viewer).outside_entry_replacement.unwrap();
+            assert_eq!(view.card, shock);
+            assert_eq!(view.destination, OutsideEntryDestination::Exile);
+            assert_eq!(
+                view.providers
+                    .iter()
+                    .map(|p| p.destination)
+                    .collect::<Vec<_>>(),
+                vec![OutsideEntryDestination::Hand; 2]
+            );
+        }
         let after_first = game.snapshot();
         for _ in 0..2 {
             outside_choices::start_provider_trace();
@@ -1195,12 +1219,36 @@ fn resolving_instruction_self_replacements_precede_battlefield_providers() {
         let waiting = game.snapshot();
         assert_eq!(game.state.resolving.as_ref().unwrap().item.id, origin);
         let view = game.observe(owner).outside_entry_replacement.unwrap();
-        assert_eq!(view.self_effects, vec![0, 1]);
+        assert_eq!(
+            view.self_effects
+                .iter()
+                .map(|effect| effect.effect)
+                .collect::<Vec<_>>(),
+            vec![0, 1]
+        );
         assert!(view.providers.is_empty());
+        assert_eq!(view.card, shock);
+        assert_eq!(view.destination, OutsideEntryDestination::Hand);
+        assert_eq!(
+            view.self_effects
+                .iter()
+                .map(|e| e.destination)
+                .collect::<Vec<_>>(),
+            vec![
+                OutsideEntryDestination::Exile,
+                OutsideEntryDestination::Prevent
+            ]
+        );
+        assert_eq!(
+            game.observe(owner.other())
+                .outside_entry_replacement
+                .as_ref(),
+            Some(&view)
+        );
         assert!(
             game.observe(owner.other())
                 .outside_entry_replacement
-                .is_none()
+                .is_some()
         );
         let ordinary = Action::ChooseOutsideEntryReplacement {
             source: provider,
@@ -1292,6 +1340,64 @@ fn self_and_provider_continuations_reject_stale_resolution_and_apply_once() {
                 Pending::OutsideEntryReplacement { .. }
             ));
             game.restore(&waiting).unwrap();
+        }
+    }
+}
+
+#[test]
+fn outside_replacement_public_view_identifies_selected_card_without_pool_slots() {
+    let _fixture = crate::cards::test_counter_providers::activate_outside();
+    for owner in [Player::P0, Player::P1] {
+        for selected in [0, 1] {
+            let shock = Card::from_name("Shock").unwrap();
+            let bear = Card::from_name("Bear Cub").unwrap();
+            let mut game = outside_scenario(owner, vec![shock, bear, Card::Island]);
+            let provider = put(&mut game, owner, "Healer's Hawk", Zone::Battlefield);
+            let source = game.object_ref(provider);
+            cast_extrapolate(&mut game, owner);
+            act(&mut game, Action::ChooseOutsideCard { index: 0 });
+            act(&mut game, Action::ChooseOutsideCard { index: 1 });
+            let revealed = game.snapshot();
+            for _ in 0..2 {
+                act(&mut game, Action::ChooseOutsideRevealed { index: selected });
+                let expected = if selected == 0 { shock } else { bear };
+                let owner_view = game.observe(owner);
+                let opponent_view = game.observe(owner.other());
+                let choice = owner_view.outside_entry_replacement.as_ref().unwrap();
+                assert_eq!(
+                    choice,
+                    opponent_view.outside_entry_replacement.as_ref().unwrap()
+                );
+                assert_eq!(choice.player, owner);
+                assert_eq!(choice.card, expected);
+                assert_eq!(choice.destination, OutsideEntryDestination::Hand);
+                assert_eq!(
+                    choice.providers,
+                    vec![
+                        OutsideEntryProviderView {
+                            source,
+                            ability: 0,
+                            destination: OutsideEntryDestination::Prevent
+                        },
+                        OutsideEntryProviderView {
+                            source,
+                            ability: 1,
+                            destination: OutsideEntryDestination::Exile
+                        },
+                    ]
+                );
+                let wire = serde_json::to_string(choice).unwrap();
+                assert!(!wire.contains("Pool"));
+                assert!(!wire.contains("Island"));
+                assert!(
+                    owner_view
+                        .actions
+                        .iter()
+                        .any(|a| matches!(a, Action::ChooseOutsideEntryReplacement { .. }))
+                );
+                assert!(opponent_view.actions.is_empty());
+                game.restore(&revealed).unwrap();
+            }
         }
     }
 }

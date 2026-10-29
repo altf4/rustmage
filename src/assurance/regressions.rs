@@ -7556,5 +7556,18 @@ fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
         let wire = serde_json::to_string(&action).unwrap();
         assert!(wire.contains("\"kind\":\"ChooseOutsideEntryReplacement\""));
         assert!(project_prior_schema192(&wire).is_err());
+        let view = OutsideEntryReplacementView {
+            player: owner,
+            card: Card::Forest,
+            destination: OutsideEntryDestination::Hand,
+            providers: vec![OutsideEntryProviderView {
+                source,
+                ability: 0,
+                destination: OutsideEntryDestination::Exile,
+            }],
+            self_effects: Vec::new(),
+        };
+        let public = serde_json::json!({"outside_entry_replacement": view}).to_string();
+        assert!(project_prior_schema192(&public).is_err());
     }
 }

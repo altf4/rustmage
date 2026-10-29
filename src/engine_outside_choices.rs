@@ -40,8 +40,8 @@ pub(super) struct Choice {
 }
 /// Frozen pre-event card facts. This has no `ObjectRef` or in-game origin:
 /// the physical outside entry acquires an object identity only on admission.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(super) enum OutsideEntryDestination {
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum OutsideEntryDestination {
     Hand,
     #[allow(
         dead_code,
@@ -110,14 +110,28 @@ pub struct OutsideChoiceView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub revealed: Option<[Card; 2]>,
 }
-/// Public provider identities are shown only to the player making the
-/// replacement decision (or the player controlling that decision).
-#[derive(Clone, Debug, Serialize)]
+/// A public competing replacement offered for the currently selected card.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct OutsideEntryProviderView {
+    pub source: ObjectRef,
+    pub ability: u16,
+    pub destination: OutsideEntryDestination,
+}
+/// A replacement belonging to the resolving instruction.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct OutsideEntrySelfEffectView {
+    pub effect: u16,
+    pub destination: OutsideEntryDestination,
+}
+/// Public admission and replacement facts; private outside-pool indices are omitted.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct OutsideEntryReplacementView {
     pub player: Player,
-    pub providers: Vec<(ObjectRef, u16)>,
+    pub card: Card,
+    pub destination: OutsideEntryDestination,
+    pub providers: Vec<OutsideEntryProviderView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub self_effects: Vec<u16>,
+    pub self_effects: Vec<OutsideEntrySelfEffectView>,
 }
 // Count names rather than testing every pair. Large casual collections may
 // contain many duplicates, and action enumeration must not become quadratic.
@@ -786,22 +800,45 @@ impl Game {
     }
     pub(super) fn outside_entry_replacement_view(
         &self,
-        viewer: Player,
+        _viewer: Player,
     ) -> Option<OutsideEntryReplacementView> {
         let Pending::OutsideEntryReplacement { player } = self.state.pending else {
             return None;
         };
-        if !self.shares_information(viewer, player) {
-            return None;
-        }
         let event = self.state.outside_game.as_ref()?.pending_entry.as_ref()?;
         Some(OutsideEntryReplacementView {
             player,
-            self_effects: event.self_choices.clone(),
+            card: event.card,
+            destination: event.destination,
+            self_effects: event
+                .self_choices
+                .iter()
+                .map(|effect| {
+                    let destination = match event.self_effects[usize::from(*effect)].to {
+                        crate::cards::OutsideEntryEffectDestination::Hand => {
+                            OutsideEntryDestination::Hand
+                        }
+                        crate::cards::OutsideEntryEffectDestination::Exile => {
+                            OutsideEntryDestination::Exile
+                        }
+                        crate::cards::OutsideEntryEffectDestination::Prevent => {
+                            OutsideEntryDestination::Prevent
+                        }
+                    };
+                    OutsideEntrySelfEffectView {
+                        effect: *effect,
+                        destination,
+                    }
+                })
+                .collect(),
             providers: event
                 .provider_choices
                 .iter()
-                .map(|(source, ability, _)| (*source, *ability))
+                .map(|(source, ability, destination)| OutsideEntryProviderView {
+                    source: *source,
+                    ability: *ability,
+                    destination: *destination,
+                })
                 .collect(),
         })
     }

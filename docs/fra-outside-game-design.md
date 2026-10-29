@@ -174,7 +174,9 @@ current normal path commits it immediately. This is not a replacement-event
 scheduler or evidence that outside-to-hand replacements and observers work.
 Extrapolate remains gated pending those rules, validation and source provenance.
 
-The isolated scheduler exposes a public competing-provider choice and rechecks
+The isolated scheduler exposes the selected, already revealed card, the current
+destination and each candidate's destination to both viewers; only the decision
+controller receives actions, and no outside pool slot is published. It rechecks
 live battlefield providers after each replacement. Synthetic providers exercise
 prevention, redirect, repeat selection and snapshot restoration; no printed
 outside-entry providers have been identified. The scheduler now stages typed

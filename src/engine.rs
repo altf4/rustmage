@@ -417,7 +417,10 @@ mod big_core;
 mod borrowed_activations;
 #[path = "engine_outside_choices.rs"]
 mod outside_choices;
-pub use outside_choices::OutsideEntryReplacementView;
+pub use outside_choices::{
+    OutsideEntryDestination, OutsideEntryProviderView, OutsideEntryReplacementView,
+    OutsideEntrySelfEffectView,
+};
 #[path = "engine_outside_names.rs"]
 mod outside_names;
 use borrowed_activations::Descriptor as BorrowedDescriptor;
