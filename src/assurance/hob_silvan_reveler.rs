@@ -243,7 +243,7 @@ fn silvan_graveyard_landfall_paid_decline_unpayable_and_battlefield_exile_hand_e
             landfall(&mut g, p, "Forest");
             payment(&mut g);
             assert_eq!(
-                g.state.resolving.as_ref().unwrap().item.object,
+                g.state.resolving.as_ref().unwrap().item.source.unwrap().object,
                 g.object_ref(source)
             );
             assert_eq!(g.state.resolving.as_ref().unwrap().item.controller, p);
@@ -380,7 +380,7 @@ fn silvan_landfall_stale_graveyard_incarnation_can_pay_without_moving_reentry() 
                 g.move_object(source, Zone::Graveyard);
             }
             payment(&mut g);
-            assert_eq!(g.state.resolving.as_ref().unwrap().item.object, old);
+            assert_eq!(g.state.resolving.as_ref().unwrap().item.source.unwrap().object, old);
             contracts::branch_contract(g.clone());
             pay_return(&mut g, p);
             finish(&mut g);
