@@ -129,7 +129,10 @@ impl Game {
             .unwrap();
         self.forget_library_top(player);
         // No zone changes or observable partial rearrangement occur while choosing.
-        // Remove the looked-at suffix once, then preserve the untouched middle.
+        // Detach retained cards by identity before replacements can shuffle.
+        // Their specified positions are preserved through a simultaneous shuffle.
+        let library = &mut self.state.players[player.index()].library;
+        library.retain(|card| !choice.top.contains(card) && !choice.bottom.contains(card));
         // Surveilled cards enter the graveyard as one simultaneous event.
         // Freeze replacement plans before committing any member of the batch,
         // then dispatch batch observers exactly once using actual destinations.
@@ -150,10 +153,6 @@ impl Game {
             }
         }
         let library = &mut self.state.players[player.index()].library;
-        let count = choice.top.len() + choice.bottom.len();
-        let retained = library.len() - count;
-        library.truncate(retained);
-        // Reuse library capacity; only bottom insertion shifts the untouched middle.
         library.splice(0..0, choice.bottom.iter().rev().copied());
         library.extend(choice.top.iter().rev().copied());
         self.scry_or_surveil_event(player);

@@ -283,3 +283,55 @@ fn fra_confidant_surveil_returns_only_a_card_that_reached_graveyard() {
         }
     }
 }
+
+#[test]
+fn fra_surveil_shuffle_replacement_preserves_selected_position_and_all_cards() {
+    for p in [Player::P0, Player::P1] {
+        for competing in [false, true] {
+            let mut g = scenario(p);
+            if competing {
+                put(&mut g, p, "Rest in Peace", Zone::Battlefield);
+            }
+            let progenitus = put(&mut g, p, "Progenitus", Zone::Library);
+            let retained = put(&mut g, p, "Bear Cub", Zone::Library);
+            let original = g.state.players[p.index()].library.clone();
+            surveil(&mut g, p);
+            wait_for_choice(&mut g);
+            super::super::contracts::branch_contract(g.clone());
+            act(
+                &mut g,
+                Action::ArrangeLibrary {
+                    card: retained,
+                    destination: LibraryDestination::Top,
+                },
+            );
+            act(
+                &mut g,
+                Action::ArrangeLibrary {
+                    card: progenitus,
+                    destination: LibraryDestination::Graveyard,
+                },
+            );
+            if competing {
+                super::super::contracts::branch_contract(g.clone());
+                choose(&mut g, |action| {
+                    matches!(
+                        action,
+                        Action::ChooseZoneReplacement {
+                            effect: ZoneReplacementKind::RevealShuffle
+                        }
+                    )
+                });
+            }
+            settle(&mut g);
+            // The retained top card is drawn after surveil, even though the rest shuffled.
+            assert_eq!(g.state.objects[retained as usize].zone, Zone::Hand);
+            assert_eq!(g.state.objects[progenitus as usize].zone, Zone::Library);
+            let library = &g.state.players[p.index()].library;
+            assert_eq!(library.len() + 1, original.len());
+            for card in original.iter().copied().filter(|card| *card != retained) {
+                assert_eq!(library.iter().filter(|id| **id == card).count(), 1);
+            }
+        }
+    }
+}
