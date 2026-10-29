@@ -315,3 +315,20 @@ fn hob_storied_funding_actual_six_mana_matches_raw_index_children_and_restore() 
         assert_eq!(indexed.snapshot(), raw.snapshot());
     }
 }
+
+#[test]
+fn command_emblem_modifiers_apply_to_funding_world_power() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let creature = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.create_emblem(p, Card::test_index(5463));
+        g.create_emblem(p, Card::test_index(5463));
+        let saved = g.snapshot();
+        let goal = goal(p, 1);
+        let world = FundingState::from_game(&g, &goal);
+        let query = characteristic_query::CharacteristicQuery::in_world(&world);
+        assert_eq!(query.stats(creature).power, 6);
+        assert_eq!(query.stats(creature).toughness, 6);
+        assert_eq!(g.snapshot(), saved);
+    }
+}
