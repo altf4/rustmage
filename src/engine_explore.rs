@@ -116,22 +116,25 @@ impl Game {
     }
     pub(super) fn start_explore(&mut self, item: &SpellView, subject: Subject) -> bool {
         let explorer = match subject {
-            Subject::Source => ExplorerView {
-                kinds: if self.on_battlefield(item.card)
-                    && self.object_ref(item.card) == item.object
+            Subject::Source => {
+                let Some(source) = item.source else { return false; };
+                ExplorerView {
+                kinds: if self.on_battlefield(source.id)
+                    && self.object_ref(source.id) == source.object
                 {
-                    self.current_kinds(item.card)
+                    self.current_kinds(source.id)
                 } else {
-                    item.source_facts.kinds
-                },
-                object: item.object,
-                card: item.source_card,
-                controller: if self.on_battlefield(item.card)
-                    && self.object_ref(item.card) == item.object
+                    source.facts.kinds
+                    }
+            },
+                object: source.object,
+                card: source.card,
+                controller: if self.on_battlefield(source.id)
+                    && self.object_ref(source.id) == source.object
                 {
-                    self.state.objects[item.card as usize].controller
+                    self.state.objects[source.id as usize].controller
                 } else {
-                    item.source_facts.controller
+                    source.facts.controller
                 },
             },
             Subject::Targets => {
