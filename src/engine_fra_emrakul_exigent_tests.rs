@@ -524,3 +524,51 @@ fn emrakul_prevented_exile_cost_still_grants_land_mana_without_exile_permission(
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn emrakul_hand_ability_fizzles_when_its_land_target_leaves() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        let land = put(&mut g, player, "Forest", Zone::Battlefield);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(land) });
+        pay(&mut g);
+        g.move_object(land, Zone::Graveyard);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert!(!g.can_play_exiled(player, source));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn emrakul_granted_mana_can_pay_for_that_same_card_and_then_expires() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        let land = put(&mut g, player, "Forest", Zone::Battlefield);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(land) });
+        pay(&mut g);
+        let original = g.object_ref(source);
+        settle(&mut g);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 8];
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::TapGrantedMana { card: land, grantor: original, production: [0, 0, 0, 0, 0, 2] });
+            assert_eq!(g.state.players[player.index()].mana[5], 10);
+            act(&mut g, Action::AnnounceExile { card: source });
+            pay(&mut g);
+            assert!(!g.state.roles.as_ref().is_some_and(|r| r.source_linked_effects.iter().any(|row|
+                row.source == original && row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast)));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
