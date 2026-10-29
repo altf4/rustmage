@@ -596,24 +596,17 @@ impl Game {
     /// Apply a selected frozen provider only if it is still live and the
     /// entire outside selection still matches the pending event.
     pub(super) fn apply_outside_entry_provider(&mut self, source: ObjectRef, ability: u16) -> bool {
-        let Some(state) = self.state.outside_game.as_ref() else {
-            return false;
-        };
-        let Some(event) = state.pending_entry.as_ref() else {
-            return false;
-        };
-        let Some(choice) = state.choice.as_ref() else {
-            return false;
-        };
-        if choice.owner != event.owner
-            || choice.id != event.choice_id
-            || choice.pair != Some(event.pair)
-            || state.pool_versions[event.owner.index()] != event.pool_version
-            || state.checked_card(event.owner, event.pair[0]) != Some(event.revealed[0])
-            || state.checked_card(event.owner, event.pair[1]) != Some(event.revealed[1])
-        {
+        if !self.outside_event_is_current() {
             return false;
         }
+        let event = self
+            .state
+            .outside_game
+            .as_ref()
+            .unwrap()
+            .pending_entry
+            .as_ref()
+            .unwrap();
         let Some(candidate) = event
             .provider_choices
             .iter()
@@ -845,26 +838,18 @@ impl Game {
     /// Commit only if the selected slot and owned choice have not changed.
     /// False leaves the plan, pool, public knowledge and objects unchanged.
     pub(super) fn commit_outside_hand(&mut self) -> bool {
+        if !self.outside_event_is_current() {
+            return false;
+        }
         let Some(state) = self.state.outside_game.as_mut() else {
             return false;
         };
         let Some(event) = state.pending_entry.clone() else {
             return false;
         };
-        let Some(choice) = state.choice.as_ref() else {
-            return false;
-        };
         if !event.choices.is_empty()
             || !event.provider_choices.is_empty()
             || !event.self_choices.is_empty()
-            || choice.self_origin != event.self_origin
-            || choice.self_effects != event.self_effects
-            || choice.owner != event.owner
-            || choice.id != event.choice_id
-            || choice.pair != Some(event.pair)
-            || state.pool_versions[event.owner.index()] != event.pool_version
-            || state.checked_card(event.owner, event.pair[0]) != Some(event.revealed[0])
-            || state.checked_card(event.owner, event.pair[1]) != Some(event.revealed[1])
         {
             return false;
         }

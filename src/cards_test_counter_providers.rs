@@ -5,17 +5,31 @@ use super::*;
 use std::cell::Cell;
 thread_local! { static ACTIVE: Cell<bool> = const { Cell::new(false) }; }
 thread_local! { static OUTSIDE_ACTIVE: Cell<bool> = const { Cell::new(false) }; }
-thread_local! { static OUTSIDE_SELF_ACTIVE: Cell<bool> = const { Cell::new(false) }; }
+thread_local! { static OUTSIDE_SELF_ACTIVE: Cell<u8> = const { Cell::new(0) }; }
 pub(crate) struct OutsideSelfGuard;
 impl Drop for OutsideSelfGuard {
     fn drop(&mut self) {
-        OUTSIDE_SELF_ACTIVE.with(|v| v.set(false));
+        OUTSIDE_SELF_ACTIVE.with(|v| v.set(0));
     }
 }
 pub(crate) fn activate_outside_self() -> OutsideSelfGuard {
-    OUTSIDE_SELF_ACTIVE.with(|v| assert!(!v.replace(true)));
+    OUTSIDE_SELF_ACTIVE.with(|v| assert_eq!(v.replace(1), 0));
     OutsideSelfGuard
 }
+pub(crate) fn activate_outside_self_chain() -> OutsideSelfGuard {
+    OUTSIDE_SELF_ACTIVE.with(|v| assert_eq!(v.replace(2), 0));
+    OutsideSelfGuard
+}
+const OUTSIDE_SELF_CHAIN: &[SelfOutsideEntryTemplate] = &[
+    SelfOutsideEntryTemplate {
+        from: OutsideEntryEffectDestination::Hand,
+        to: OutsideEntryEffectDestination::Hand,
+    },
+    SelfOutsideEntryTemplate {
+        from: OutsideEntryEffectDestination::Exile,
+        to: OutsideEntryEffectDestination::Hand,
+    },
+];
 const OUTSIDE_SELF_EFFECTS: &[SelfOutsideEntryTemplate] = &[
     SelfOutsideEntryTemplate {
         from: OutsideEntryEffectDestination::Hand,
@@ -27,14 +41,24 @@ const OUTSIDE_SELF_EFFECTS: &[SelfOutsideEntryTemplate] = &[
     },
 ];
 pub(super) fn outside_self_spell(card: Card) -> Option<Effect> {
-    (OUTSIDE_SELF_ACTIVE.with(Cell::get)
-        && Some(card) == Card::from_name("Extrapolate the Impossible"))
-    .then_some(Effect::Spell(
-        TargetPlan::NONE,
-        &[Instruction::RevealTwoOutsideCardsWithSelf(
-            OUTSIDE_SELF_EFFECTS,
-        )],
-    ))
+    if Some(card) != Card::from_name("Extrapolate the Impossible") {
+        return None;
+    }
+    match OUTSIDE_SELF_ACTIVE.with(Cell::get) {
+        1 => Some(Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::RevealTwoOutsideCardsWithSelf(
+                OUTSIDE_SELF_EFFECTS,
+            )],
+        )),
+        2 => Some(Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::RevealTwoOutsideCardsWithSelf(
+                OUTSIDE_SELF_CHAIN,
+            )],
+        )),
+        _ => None,
+    }
 }
 pub(crate) struct OutsideGuard;
 impl Drop for OutsideGuard {

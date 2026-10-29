@@ -1237,3 +1237,56 @@ fn resolving_instruction_self_replacements_precede_battlefield_providers() {
         }
     }
 }
+
+#[test]
+fn self_and_provider_continuations_reject_stale_resolution_and_apply_once() {
+    let _providers = crate::cards::test_counter_providers::activate_outside();
+    let _spell = crate::cards::test_counter_providers::activate_outside_self_chain();
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut game = outside_scenario(owner, vec![shock, bear]);
+        let provider = put(&mut game, owner, "Healer's Hawk", Zone::Battlefield);
+        let source = game.object_ref(provider);
+        cast_extrapolate(&mut game, owner);
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        let pair = game.snapshot();
+        assert!(game.plan_outside_hand(0));
+        game.state.resolving.as_mut().unwrap().item.id += 1;
+        let stale_plan = game.snapshot();
+        assert!(!game.commit_outside_hand());
+        assert_eq!(game.snapshot(), stale_plan);
+        game.restore(&pair).unwrap();
+        act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+        let waiting = game.snapshot();
+        let exile = Action::ChooseOutsideEntryReplacement { source, ability: 1 };
+        assert!(game.legal_actions().contains(&exile));
+        game.state.resolving.as_mut().unwrap().item.id += 1;
+        let stale_provider = game.snapshot();
+        assert!(!game.apply_outside_entry_provider(source, 1));
+        assert_eq!(game.snapshot(), stale_provider);
+        game.restore(&waiting).unwrap();
+        for _ in 0..2 {
+            outside_choices::start_provider_trace();
+            act(&mut game, exile.clone());
+            // First self replacement preserved hand; the ordinary exile
+            // replacement enabled the second self replacement back to hand;
+            // the remaining ordinary prevention then applies exactly once.
+            assert_eq!(
+                outside_choices::take_provider_trace(),
+                vec![(source, 1), (source, 0)]
+            );
+            assert!(!game.state.cards_exiled_this_turn);
+            assert_eq!(
+                game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+                vec![shock, bear]
+            );
+            assert!(!matches!(
+                game.state.pending,
+                Pending::OutsideEntryReplacement { .. }
+            ));
+            game.restore(&waiting).unwrap();
+        }
+    }
+}
