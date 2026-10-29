@@ -26,3 +26,14 @@ the upper bound rejects immediately instead of traversing tap subsets.
 This fixes a specific bound unsoundness and avoids an unnecessarily broad
 bypass. It does not prove general funding-search termination or cover all
 future replacement, projected-entry and dynamically changing provider paths.
+
+Two additional both-seat regressions use public actions after explicitly seeded
+starting permanents and mana. The Super Hero Civil War gains control of a Forest
+Tentacle; Confiscate and Puppet Crafting make the Saga a controllable creature,
+and Lotus Ring sacrifices it during payment, returning the land. One test pays
+for Titanbones with the land's ordinary green mana. The other activates
+Emrakul's hand ability and pays for Gilded Lotus using the returned land's
+specific granted {C}{C} ability. Both repeat raw-action payment after restore,
+check stale indexed actions, and accept a fresh indexed cast announcement.
+The 2,768-test library suite passed on `5df0dddc`; these scenarios do not certify
+Emrakul's general funding termination gate or full indexed payment replay.
