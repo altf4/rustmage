@@ -440,37 +440,43 @@ fn outside_real_player_control_keeps_pool_private_even_with_known_cards() {
             "Construct a Cosmic Cube",
             Zone::Battlefield,
         );
-        g.add_counter(plan, CounterKind::Plan, 7);
-        for _ in 0..64 {
-            g.prepare_triggers();
-            if g.legal_actions().contains(&Action::ChooseTarget {
-                target: Target::Player(owner),
-            }) {
-                break;
+        // Seed six counters; the seventh must be put by an actual effect so
+        // that the threshold event is emitted. add_counter alone is a raw
+        // state helper and deliberately does not dispatch that event.
+        g.add_counter(plan, CounterKind::Plan, 6);
+        let divination = put(&mut g, controller, "Divination", Zone::Hand);
+        let before_control = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::AnnounceCast { card: divination });
+            pay(&mut g);
+            for _ in 0..64 {
+                g.prepare_triggers();
+                if g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Player(owner),
+                }) {
+                    break;
+                }
+                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
             }
-            choose(&mut g, |a| {
-                matches!(a, Action::Pass | Action::PutTrigger { .. })
-            });
-        }
-        act(
-            &mut g,
-            Action::ChooseTarget {
-                target: Target::Player(owner),
-            },
-        );
-        if g.legal_actions().contains(&Action::FinishTargets) {
-            act(&mut g, Action::FinishTargets);
-        }
-        settle(&mut g);
-        assert_eq!(g.object_view(plan).zone, Zone::Graveyard);
-        g.finish_cleanup();
-        assert_eq!(g.state.active, owner);
-        assert_eq!(g.decision_controller(owner), controller);
-        // Advance to the controlled main phase without introducing unrelated
-        // combat or draw actions into this focused choice test.
-        g.state.step = Step::Main1;
-        g.state.priority = owner;
-        g.state.pending = Pending::Priority;
+            act(&mut g, Action::ChooseTarget { target: Target::Player(owner) });
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(plan).zone, Zone::Graveyard);
+            // Progress the actual game through combat, cleanup and the next
+            // turn instead of editing the active step or calling cleanup.
+            for _ in 0..160 {
+                if g.state.active == owner && g.state.step == Step::Main1
+                    && g.state.pending == Pending::Priority {
+                    break;
+                }
+                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }
+                    | Action::FinishAttackers | Action::FinishBlockers));
+            }
+            assert_eq!(g.state.active, owner);
+            assert_eq!(g.state.step, Step::Main1);
+            assert_eq!(g.decision_controller(owner), controller);
         cast_extrapolate(&mut g, owner);
         assert_eq!(g.actor(), Some(controller));
         let visible = g.observe(controller);
@@ -491,6 +497,9 @@ fn outside_real_player_control_keeps_pool_private_even_with_known_cards() {
             );
             g.restore(&saved).unwrap();
             assert_eq!(g.snapshot(), saved);
+        }
+            g.restore(&before_control).unwrap();
+            assert_eq!(g.snapshot(), before_control);
         }
     }
 }
