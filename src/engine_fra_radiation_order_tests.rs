@@ -6,12 +6,7 @@ fn radiation_orders_with_a_sourced_main_phase_trigger_and_replays() {
     for player in [Player::P0, Player::P1] {
         for rad_first in [false, true] {
             let mut game = scenario(player);
-            let source = put(
-                &mut game,
-                player,
-                "Scathing Shadelock, Venomous Words",
-                Zone::Battlefield,
-            );
+            let source = put(&mut game, player, "Scathing Shadelock", Zone::Battlefield);
             let top = put(&mut game, player, "Shock", Zone::Library);
             game.state.players[player.index()]
                 .add_player_counter(crate::cards::PlayerCounterKind::Rad, 1);
