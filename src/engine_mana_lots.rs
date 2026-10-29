@@ -247,7 +247,7 @@ pub(super) struct Source {
     /// Frozen cast origin; irrelevant for abilities and non-cast payments.
     pub cast_from_hand: bool,
     pub spend_any_mana: bool,
-    pub linked_mana_source: Option<ObjectRef>,
+    pub linked_mana_source: Option<(ObjectRef, Option<u64>)>,
     pub equip: bool,
 }
 impl Source {

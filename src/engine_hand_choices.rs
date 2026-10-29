@@ -302,8 +302,9 @@ impl Game {
                 HandChoiceKind::ExileRevealedLinked => {
                     let event = self.move_object(object.card, Zone::Exile);
                     if event.moved && event.destination == Zone::Exile {
+                        let ability_origin = self.state.resolving.as_ref().unwrap().item.source_ability_origin;
                         self.state.linked_choices.get_or_insert_default().null_cast_links.push(
-                            linked_choices::LinkedExileView { source: interaction.source, exiled: event.after });
+                            linked_choices::NullCastLink { source: interaction.source, exiled: event.after, ability_origin });
                     }
                 }
                 HandChoiceKind::Behold => {

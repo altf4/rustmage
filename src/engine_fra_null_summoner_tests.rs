@@ -218,3 +218,34 @@ fn null_sacrifice_mana_action_rechecks_permission_and_restores_payment() {
         }
     }
 }
+
+#[test]
+fn null_link_belongs_to_the_original_ability_pair_not_a_later_copy() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let card = put(&mut g, player.other(), "Spectral Sailor", Zone::Hand);
+        let source = cast_null(&mut g, player);
+        until_hand_choice(&mut g, player);
+        let chosen = g.object_ref(card);
+        act(&mut g, Action::ChooseHandCard { object: Some(chosen) });
+        for _ in 0..7 { put(&mut g, player, "Forest", Zone::Graveyard); }
+        g.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
+        let source_ref = g.object_ref(source);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            assert!(g.can_play_exiled(player, card));
+            let purpose = g.spell_mana_purpose_for_card(player, card, g.state.objects[card as usize].card);
+            let goal = FundingGoal { actor: player, required: [0, 1, 0, 0, 0, 0], generic: 0, reserve: None, source: None };
+            assert!(g.can_fund_for(goal.clone(), purpose));
+            g.apply_temporary_copy(source_ref, CopyRecipe::new(Card::from_name("Bear Cub").unwrap()), CopyDeadline::EndOfTurn);
+            assert!(!g.can_play_exiled(player, card));
+            g.apply_temporary_copy(source_ref, CopyRecipe::new(Card::from_name("Null Summoner").unwrap()), CopyDeadline::EndOfTurn);
+            assert!(!g.can_play_exiled(player, card));
+            assert!(!cast_origins::spends_any_type(&g, player, purpose));
+            assert!(!g.can_fund_for(goal, purpose));
+            g.restore(&saved).unwrap();
+            assert_eq!(g.snapshot(), saved);
+            assert!(g.can_play_exiled(player, card));
+        }
+    }
+}

@@ -42,6 +42,12 @@ pub struct LinkedExileView {
     pub source: ObjectRef,
     pub exiled: ObjectRef,
 }
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct NullCastLink {
+    pub source: ObjectRef,
+    pub exiled: ObjectRef,
+    pub ability_origin: Option<u64>,
+}
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ChoiceState {
     pub hand: Option<Box<super::hand_choices::HandInteraction>>,
@@ -54,7 +60,7 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
-    pub null_cast_links: Vec<LinkedExileView>,
+    pub null_cast_links: Vec<NullCastLink>,
     pub hidden: Vec<(ObjectRef, ObjectRef, u8)>,
     pub hideaway_controllers: Vec<(ObjectRef, u8)>,
 }
@@ -78,7 +84,8 @@ impl ChoiceState {
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hideaway_controllers.len() * std::mem::size_of::<(ObjectRef, u8)>()
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, ObjectRef, u8)>()
-            + (self.links.len() + self.null_cast_links.len()) * std::mem::size_of::<LinkedExileView>()
+            + self.links.len() * std::mem::size_of::<LinkedExileView>()
+            + self.null_cast_links.len() * std::mem::size_of::<NullCastLink>()
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()
             })
