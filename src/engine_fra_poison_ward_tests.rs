@@ -529,6 +529,8 @@ fn radiation_trigger_is_sourceless_and_uses_current_counters_on_resolution() {
             let packet = game.state.stack.last().unwrap();
             assert_eq!(packet.source_identity(), None);
             assert_eq!(packet.kind, StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player: player });
+            assert!(game.item_targets_available(packet, TargetPlan::NONE));
+            assert!(!game.item_targets_available(packet, TargetPlan::Single(TargetSpec::one(TargetRule::None))));
             for viewer in [player, player.other()] {
                 let native_view = game.observe(viewer);
                 let native_packet = native_view.stack.last().unwrap();
