@@ -7667,3 +7667,6 @@ mod engine_fra_ajani_resolute_independent_tests;
 
 #[path = "engine_fra_emblem_stats_independent_tests.rs"]
 mod engine_fra_emblem_stats_independent_tests;
+
+#[path = "engine_fra_way_mind_sculptor_tests.rs"]
+mod engine_fra_way_mind_sculptor_tests;

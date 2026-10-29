@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e09afcadcbee27268378deca83479e3771ac5f1f90b65922939addffe57c7be0",
+  "catalogue_version": "ce2989789d06ee687851892f9c33944b4b74b62bb34014d1e45a003a698ecadb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2914,
-  "implemented_total": 2920,
+  "implemented_standard_cards": 2915,
+  "implemented_total": 2921,
   "token_definitions": 145,
   "emblem_definitions": 4,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 267,
-      "gated": 18
+      "complete": 268,
+      "gated": 17
     },
     "frc": {
       "total": 6,
@@ -40291,8 +40291,8 @@
     {
       "name": "Way of the Mind Sculptor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_mind_sculptor.rs",
       "set": "fra"
     },
