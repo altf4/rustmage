@@ -7782,3 +7782,9 @@ mod engine_fra_uldaros_echo_independent_tests;
 
 #[path = "engine_fra_tam_owned_branch_tests.rs"]
 mod engine_fra_tam_owned_branch_tests;
+
+#[path = "engine_fra_null_independent_tests.rs"]
+mod engine_fra_null_independent_tests;
+
+#[path = "engine_fra_sanctum_additional_review_tests.rs"]
+mod engine_fra_sanctum_additional_review_tests;
