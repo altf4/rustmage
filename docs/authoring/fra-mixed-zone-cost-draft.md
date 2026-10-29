@@ -1,52 +1,50 @@
-# Mixed-zone cost draft limitations
+# Mixed-zone cost draft
 
-CR 614.17b prevents choosing an impossible cost; 614.17c allows only a true
-self-replacement effect to change an impossible event, before other replacement
-or prevention effects. CR 118.11 treats a cost modified by a replacement as
-paid. The current preflight handles ordinary prohibition before the existing
-ordinary replacement provider, but does not model a resolving spell's or
-ability's self-replacement; do not use it for an event with one. A static
-replacement printed on a departing object is not automatically a self-replacement
-under CR 614.15.
+This isolated candidate keeps Sphinx's Approach and Emrakul, the Exigent Doom
+gated. It has been formatted and its catalogue regenerated, but has not been
+compiled or tested. The Sphinx, Emrakul and mixed-zone test modules are linked
+under assurance for a later coordinated, guarded validation run.
 
-Non-entry commits revalidate every source's exact incarnation and zone before
-any movement. Staged entry now carries an owned State checkpoint captured
-before replacement planning, the selected component incarnations including
-prevented ones, and an explicit unpaid-program counter. If a component changes
-while entry choices are suspended, the batch restores that complete checkpoint
-and resumes the unpaid continuation. Synthetic tests inject stale incarnations
-while a real life-payment entry choice is pending, including a prevented
-component; they are unbuilt and do not yet demonstrate a real nested move.
-The prepayment checkpoint must be captured at the correct caller boundary and
-replacement-choice replay, mana replay, trigger ordering, and failure semantics
-must be reviewed and tested end to end before connecting this mechanism.
+Sphinx's optional resolution payment calls the shared atomic zone-cost planner
+for the spell and four named graveyard cards. The planner checks exact object
+incarnations, duplicate components and the typed graveyard-exile prohibition
+before planning replacement outcomes. Non-entry outcomes are revalidated before
+commit; outcomes redirected to the battlefield use staged entry and an owned
+prepayment checkpoint with an explicit unpaid-program continuation. Emrakul's
+ward sacrifice payment uses the shared planner through its atomic sacrifice
+helper; that helper does not use Sphinx's staged-entry continuation.
 
-The staged helper is not connected to Sphinx or Emrakul. Tests are synthetic,
-unlinked, and unbuilt. This draft must stay gated until end-to-end entry rollback, true
-self-replacement, provider layering, full caller integration, and independently
-reviewed guarded tests are complete.
+Under CR 118.11 a replacement-modified cost, including a prevented event,
+remains paid. CR 614.17b prevents choosing an impossible cost and 614.17c
+permits a true self-replacement to modify it before other replacements. This
+preflight handles its ordinary prohibition and replacement cases but does not
+model the self-replacement exception. A static replacement printed on a
+departing object is not automatically a self-replacement under CR 614.15.
+Do not treat the planner as complete for costs involving that exception.
 
-Sphinx now calls the staged planner with an owned failure continuation. The
-copy movement change reconciles the existing copy and SBA machinery: a spell
-copy can enter exile during a resolving payment and ceases at the next SBA,
-while card-only graveyard replacement effects exclude copies. The public-action
-copy test is unbuilt. The wider copy-card audit remains incomplete on this
-branch: historical copy-aware card-only consumers and zone-event identity from
-commits through 239f8bb5 have not been ported. Do not admit Sphinx or treat this
-as a generally reviewed lifecycle implementation before that audit, supported
-replacement/entry interaction coverage, and guarded validation complete.
+The staged checkpoint records all components, including prevented ones, and
+restores the unpaid continuation if an incarnation changes. Rollback transfers
+the currently live zone replay into the restored state: an active replay is
+retained for synchronous failure and an already-consumed replay is discarded.
+The corresponding competing-replacement and stale-incarnation tests use
+synthetic providers and injected stale state; no supported public path has
+established those nested failures. The synthetic Sphinx redirect forces an
+instant card onto the battlefield solely to test plumbing. The separate Watery
+Grave fixture tests a real entry-life choice with a constructed replacement plan,
+not a supported redirect provider. Replacement ordering, source and controller
+changes, triggers, mana replay and transaction boundaries still require
+independent review and guarded end-to-end validation.
 
-The synthetic competing exile redirect fixture is a plumbing test: it redirects
-an instant/sorcery card into the battlefield, so it does not establish a
-rules-reachable entry event. The separate Watery Grave staged-entry fixture
-exercises a real entry-life choice with a constructed replacement plan, not a
-real supported replacement provider.
+The candidate reconciles copy-aware card-only consumers through the earlier
+239f8bb5 draft and preserves a spell copy in exile until the next state-based
+check. A public-action copied-Sphinx test and synthetic transient-zone tests are
+linked but unbuilt. The battlefield-copy classification remains unresolved;
+copy privacy, replacement interaction and the broad consumer migration still
+need independent review and validation.
 
-The copy lifecycle card-only consumer changes through 239f8bb5 have now been
-reconciled, excluding the separately unresolved battlefield-copy classification.
-They are unbuilt and require independent integration review. Replay rollback
-now transfers the currently live zone replay into the restored checkpoint: this
-retains it for a synchronous failure inside the replaying action and discards it
-when a later suspended choice fails after the original replay has been consumed.
-Both timing paths have synthetic regression fixtures; their reachability through
-supported replacement providers has not been established.
+Projected funding is not complete for every prevention or replacement path.
+In particular, repeatable non-tapping mana abilities whose sacrifice is
+prevented can create an unbounded search; restricted mana requires a sound
+purpose-aware termination argument. The experimental funding work and its
+remaining limits are recorded in `fra-emrakul-exigent-draft.md`. Neither card
+should be admitted on the strength of this draft alone.
