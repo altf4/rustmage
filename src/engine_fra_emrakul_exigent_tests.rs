@@ -394,9 +394,9 @@ fn ward_atomic_replacement_prevention_and_redirect_choice_restore() {
                 act(&mut g, Action::ChooseZoneReplacement { effect: selected });
                 settle(&mut g);
                 for &id in &permanents {
-                    assert_eq!(g.object_view(id).zone, if prevent { Zone::Battlefield } else { Zone::Exile });
+                    assert_eq!(g.object_view(id).zone, if prevent && id == permanents[1] { Zone::Battlefield } else { Zone::Exile });
                 }
-                assert_eq!(g.object_view(emrakul).damage, if prevent { 0 } else { 2 });
+                assert_eq!(g.object_view(emrakul).damage, 2);
                 g.restore(&saved).unwrap();
             }
             TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
@@ -405,7 +405,7 @@ fn ward_atomic_replacement_prevention_and_redirect_choice_restore() {
 }
 
 #[test]
-fn atomic_zone_cost_preflight_rejects_each_prevented_component_without_movement() {
+fn atomic_zone_cost_preflight_preserves_each_prevented_replacement_without_movement() {
     use zone_replacements::TEST_PREVENT_ZONE_MOVE;
     struct Reset;
     impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
@@ -419,12 +419,22 @@ fn atomic_zone_cost_preflight_rejects_each_prevented_component_without_movement(
         let saved = g.snapshot();
         for &id in &ids {
             TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(id))));
-            assert!(g.plan_atomic_zone_cost(&moves).is_none());
+            let plans = g.plan_atomic_zone_cost(&moves).unwrap();
+            assert_eq!(plans.iter().filter(|(_, plan)| plan.prevented).count(), 1);
             assert!(moves.iter().all(|&(reference, _)| g.object_ref(reference.card) == reference));
             assert_eq!(g.object_view(source).zone, Zone::Hand);
             assert!(ids[1..].iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
             g.restore(&saved).unwrap();
         }
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(ids[2]))));
+        let plans = g.plan_atomic_zone_cost(&moves).unwrap();
+        let events = g.commit_atomic_zone_cost(plans).unwrap();
+        assert_eq!(events.iter().filter(|event| !event.moved).count(), 1);
+        assert_eq!(g.object_view(ids[2]).zone, Zone::Graveyard);
+        for &id in ids.iter().filter(|&&id| id != ids[2]) {
+            assert_eq!(g.object_view(id).zone, Zone::Exile);
+        }
+        g.restore(&saved).unwrap();
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
         assert!(g.plan_atomic_zone_cost(&moves).is_some());
     }

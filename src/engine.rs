@@ -832,6 +832,7 @@ impl std::fmt::Display for Error {
 }
 impl std::error::Error for Error {}
 
+
 /// Freeform is deliberately explicit: useful for training, not tournament deck legality.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum DeckRules {
@@ -6588,7 +6589,7 @@ impl Game {
     }
 
     /// Freeze and choose every replacement before committing a zone-change
-    /// cost. Redirected outcomes remain payable; only prevented events fail.
+    /// cost. Replacement-modified outcomes, including prevention, remain paid.
     /// The action checkpoint owns any replacement-choice continuation.
     fn plan_atomic_zone_cost(
         &mut self, moves: &[(ObjectRef, Zone)],
@@ -6606,12 +6607,33 @@ impl Game {
             let plan = self.plan_zone_move(&view, destination, rules);
             (view, plan)
         }).collect();
-        plans.iter().all(|(_, plan)| !plan.prevented).then_some(plans)
+        Some(plans)
+    }
+
+    /// Commit a previously planned nonbattlefield cost batch and return its
+    /// actual events for the caller to dispatch. Entry replacements require
+    /// the staged entry machinery and are deliberately excluded here.
+    fn commit_atomic_zone_cost(
+        &mut self, plans: Vec<(ObjectView, zone_replacements::Plan)>,
+    ) -> Option<Vec<ZoneChange>> {
+        if plans.iter().any(|(_, plan)| !plan.prevented && plan.destination == Zone::Battlefield) { return None; }
+        let graveyard_observers = plans.iter().any(|(view, _)| view.zone == Zone::Graveyard)
+            .then(|| self.freeze_graveyard_observers()).flatten();
+        let returned_hand_observers = plans.iter().any(|(view, plan)| view.zone == Zone::Battlefield && plan.destination == Zone::Hand)
+            .then(|| self.freeze_returned_hand_observers()).flatten();
+        self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
+        self.capture_source_quantities(plans.iter().map(|(view, _)| view));
+        let events = plans.into_iter().map(|(view, plan)|
+            self.commit_planned_zone_move(view, plan, false, Counters::default(),
+                EntryIdentity::default(), ZoneObservers { graveyard: graveyard_observers.clone(), returned_hand: returned_hand_observers.clone() })
+        ).collect();
+        self.refresh_controllers();
+        Some(events)
     }
 
     /// Pay simultaneous sacrifice costs only after every replacement outcome
     /// has been chosen and all proposed events remain possible. Redirected
-    /// events are valid costs; a prevented event rejects the whole batch.
+    /// and prevented events are valid cost payments (CR 118.11).
     fn sacrifice_cost_batch_atomic(&mut self, sacrifices: &[(Player, CardId)]) -> bool {
         self.refresh_enduring_stories();
         if sacrifices.iter().enumerate().any(|(i, &(actor, id))| {
@@ -6625,11 +6647,13 @@ impl Game {
         let Some(plans) = self.plan_atomic_zone_cost(&moves) else { return false; };
         self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
-        self.food_sacrifice_triggers(sacrifices, &sources);
+        let actual: Vec<_> = sacrifices.iter().zip(&plans).filter_map(|(&sacrifice, (_, plan))|
+            (!plan.prevented).then_some(sacrifice)).collect();
+        self.food_sacrifice_triggers(&actual, &sources);
         let mut events: Vec<_> = plans.into_iter().map(|(before, plan)|
             self.commit_planned_zone_move(before, plan, false, Counters::default(),
                 EntryIdentity::default(), ZoneObservers::default())).collect();
-        for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) { event.sacrificed_by = Some(actor); }
+        for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) { if event.moved { event.sacrificed_by = Some(actor); } }
         self.refresh_controllers();
         self.record_own_sacrifices(&events);
         self.finish_zone_events(&events, &sources);
