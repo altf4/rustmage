@@ -120,10 +120,10 @@ impl Game {
                 reserve: None,
                 source: (!free).then(|| {
                     (
-                        a.item.object,
+                        a.item.source.expect("cost announcement has object source").object,
                         ability,
                         a.counter_payment.clone(),
-                        a.item.source_card,
+                        a.item.source.expect("cost announcement has object source").card,
                         a.item.borrowed_slot,
                     )
                 }),
@@ -152,7 +152,7 @@ impl Game {
                 test(self.activation_target_total(
                     a.item.controller,
                     a.item.target_source(),
-                    a.item.source_card,
+                    a.item.source.expect("cost announcement has object source").card,
                     ability,
                     target,
                     base,

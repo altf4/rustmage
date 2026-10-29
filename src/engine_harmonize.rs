@@ -45,7 +45,7 @@ impl Game {
         let extra = Self::announcement_optional_reduction(a) + u64::from(discount);
         let Some(total) = self.target_spell_cost_with_extra(
             a.item.controller,
-            a.item.card,
+            a.item.source.expect("cost announcement has object source").id,
             base,
             &a.item.targets,
             extra,

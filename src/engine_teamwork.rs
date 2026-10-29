@@ -66,7 +66,7 @@ impl Game {
     pub(super) fn teamwork_intent_fundable(&self, pay: bool) -> bool {
         let mut a = self.state.announcing.as_ref().unwrap().clone();
         a.item.cast.as_mut().unwrap().teamwork = Some(pay);
-        a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+        a.initialize_cast_costs(improvise::potential(self, a.item.source.expect("cost announcement has object source").card));
         let available = if let Some(modes) = a.item.modes() {
             modes.iter().enumerate().any(|(i, m)| {
                 self.teamwork_mode_allowed(&a.item, i)
@@ -165,7 +165,7 @@ impl Game {
             sum.add(self.stats(r.card).power);
         }
         Some(TeamworkChoiceView {
-            minimum: a.item.source_card.teamwork()?.minimum,
+            minimum: a.item.source.expect("cost announcement has object source").card.teamwork()?.minimum,
             selected: selected.clone(),
             selected_power: sum.represented(),
             can_finish: self.teamwork_prefix_fundable(selected, true),

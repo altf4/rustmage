@@ -108,7 +108,7 @@ impl Game {
             return None;
         }
         Some(ImproviseChoiceView {
-            spell: a.item.object,
+            spell: a.item.source.expect("cost announcement has object source").object,
             selected: f.improvised.clone(),
             remaining: f.remaining,
             can_pay: self.mana_payment_domain().is_some(),

@@ -138,8 +138,8 @@ impl Game {
                     .remove
                     .is_some()
                 && !activations::counter_payments(
-                    proposal.item.source_card.activation(ability).cost,
-                    self.counter_amounts(proposal.item.card),
+                    proposal.item.source.expect("cost announcement has object source").card.activation(ability).cost,
+                    self.counter_amounts(proposal.item.source.expect("cost announcement has object source").id),
                     |payment| payment == proposal.counter_payment,
                 )
             {

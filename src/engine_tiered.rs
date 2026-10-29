@@ -52,7 +52,7 @@ impl Game {
         {
             return false;
         }
-        if a.item.source_card.tiered_costs().is_none() {
+        if a.item.source.expect("cost announcement has object source").card.tiered_costs().is_none() {
             return self.announcement_target_fundable(
                 a,
                 Some(mode.targets),

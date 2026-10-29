@@ -767,17 +767,17 @@ impl Game {
                 .state
                 .announcing
                 .as_ref()
-                .filter(|a| a.item.card == card)
+                .filter(|a| a.item.source.expect("cost announcement has object source").id == card)
                 .and_then(|a| a.item.cast.map(|cast| cast.origin))
                 .unwrap_or(self.state.objects[card as usize].zone)
                 == Zone::Hand;
         source.spend_any_mana = self.exile_cast_modifiers(actor, card).0
             || self.state.announcing.as_ref().is_some_and(|a| {
-                a.item.card == card && a.item.cast.is_some_and(|c| c.spend_any_mana)
+                a.item.source.expect("cost announcement has object source").id == card && a.item.cast.is_some_and(|c| c.spend_any_mana)
             });
         source.foreign_stash = self.foreign_stash(actor, card)
             || self.state.announcing.as_ref().is_some_and(|a| {
-                a.item.card == card && a.item.cast.is_some_and(|c| c.stash_origin)
+                a.item.source.expect("cost announcement has object source").id == card && a.item.cast.is_some_and(|c| c.stash_origin)
             });
         Purpose::Spell(source)
     }

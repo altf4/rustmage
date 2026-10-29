@@ -14,7 +14,7 @@ impl Game {
             .state
             .announcing
             .as_ref()
-            .filter(|a| a.item.card == id && a.item.controller == actor)
+            .filter(|a| a.item.source.expect("cost announcement has object source").id == id && a.item.controller == actor)
             .map_or(0, Self::announcement_optional_reduction);
         self.scalar_x_total_with_extra(actor, id, base, x, self.effective_spell_card(id), extra)
     }
@@ -162,7 +162,7 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return Vec::new();
         };
-        let definition = a.item.source_card.activation(ability);
+        let definition = a.item.source.expect("cost announcement has object source").card.activation(ability);
         if a.power_up_costs.is_some() {
             let fundable = |value: u32| {
                 let mut probe = a.clone();
@@ -207,10 +207,10 @@ impl Game {
                             required: base.colored,
                             generic,
                             source: Some((
-                                a.item.object,
+                                a.item.source.expect("cost announcement has object source").object,
                                 ability,
                                 a.counter_payment.clone(),
-                                a.item.source_card,
+                                a.item.source.expect("cost announcement has object source").card,
                                 a.item.borrowed_slot,
                             )),
                         },
@@ -290,10 +290,10 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
-        let mut intervals = if a.item.kind == StackKind::Spell && a.item.source_card.life_x_cost() {
+        let mut intervals = if a.item.kind == StackKind::Spell && a.item.source.expect("cost announcement has object source").card.life_x_cost() {
             self.life_x_intervals(a)
         } else if a.item.kind == StackKind::Spell {
-            self.scalar_x_intervals(a.item.controller, a.item.card)
+            self.scalar_x_intervals(a.item.controller, a.item.source.expect("cost announcement has object source").id)
         } else {
             self.activation_x_intervals(a)
         };
@@ -309,7 +309,7 @@ impl Game {
             }
         }
         Some(XChoiceView {
-            card: a.item.object,
+            card: a.item.source.expect("cost announcement has object source").object,
             intervals,
         })
     }
