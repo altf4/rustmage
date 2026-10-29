@@ -178,19 +178,29 @@ The isolated scheduler exposes a public competing-provider choice and rechecks
 live battlefield providers after each replacement. Synthetic providers exercise
 prevention, redirect, repeat selection and snapshot restoration; no printed
 outside-entry providers have been identified. The scheduler does not yet handle
-incoming-card self-replacements or generic outside-entry observers, so it is not
+resolving-effect self-replacements or generic outside-entry observers, so it is not
 complete general replacement support.
 
 ## Isolated scheduler limitations
 
 The experimental outside-entry scheduler carries a physical choice identity,
 not an in-game origin. Its provider lookup currently visits battlefield static
-sources only. An incoming card's own applicable replacement effect cannot be
-found there; it requires a separately owned, typed self-replacement attached to
-the incoming event, applied before other applicable replacements and tracked
-across suspension and replay. No such printed provider has been identified in
-the current catalogue. Do not mark the general rule complete or enable a card
-whose admission depends on this path.
+sources only. An incoming card's ordinary battlefield ability must not be
+assumed active merely because it is selected from outside the game: CR 113.6
+and 400.11c govern when abilities function there. Specially worded effects
+that function outside the game need explicit source-backed modeling; none have
+been identified for this event. Do not blanket-scan all abilities printed on
+the incoming card or manufacture an ObjectRef for it.
+
+Separately, CR 614.15 and 616.1a define a self-replacement as an effect of the
+resolving spell or ability that replaces its own effect, and require it to be
+applied before ordinary competing replacements. The current scheduler has no
+owned instruction-supplied self-replacement list or corresponding choice and
+replay support. No printed admission instruction requiring this has been
+identified in the current catalogue. Do not mark the general rule complete or
+enable a card whose admission depends on this path.
+
+Rules source: [Magic Comprehensive Rules, June 19, 2026](https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf).
 
 The draft records a typed completed outside admission without an invented
 source zone or object. Only successful admission has a new object identity;

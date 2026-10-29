@@ -1142,3 +1142,37 @@ fn outside_replacement_chain_uses_public_choices_under_player_control() {
         game.restore(&before).unwrap();
     }
 }
+
+#[test]
+fn outside_card_does_not_supply_ordinary_battlefield_replacement() {
+    let _fixture = crate::cards::test_counter_providers::activate_outside();
+    for owner in [Player::P0, Player::P1] {
+        let hawk = Card::from_name("Healer's Hawk").unwrap();
+        let shock = Card::from_name("Shock").unwrap();
+        let mut game = outside_scenario(owner, vec![hawk, shock]);
+        cast_extrapolate(&mut game, owner);
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        let before = game.snapshot();
+        for _ in 0..2 {
+            act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+            assert!(!matches!(
+                game.state.pending,
+                Pending::OutsideEntryReplacement { .. }
+            ));
+            assert_eq!(
+                game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+                vec![shock]
+            );
+            for viewer in [Player::P0, Player::P1] {
+                assert!(
+                    game.observe(viewer)
+                        .objects
+                        .iter()
+                        .any(|o| o.owner == owner && o.card == hawk && o.zone == Zone::Hand)
+                );
+            }
+            game.restore(&before).unwrap();
+        }
+    }
+}

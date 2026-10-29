@@ -447,7 +447,7 @@ impl Game {
 
     /// Prepare the next live provider decision. No card is consumed here; a
     /// suspended continuation owns both candidate and already-applied keys.
-    /// The public decision is exposed; incoming-card self replacements and
+    /// The public decision is exposed; resolving-effect self replacements and
     /// generic outside-entry observers remain unimplemented.
     pub(super) fn prepare_outside_entry_providers(&mut self) -> bool {
         let Some(event) = self
