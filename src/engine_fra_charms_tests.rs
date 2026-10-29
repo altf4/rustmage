@@ -7710,3 +7710,9 @@ mod engine_fra_jace_interaction_review_tests;
 
 #[path = "engine_fra_pyre_rhymer_tests.rs"]
 mod engine_fra_pyre_rhymer_tests;
+
+#[path = "engine_fra_garruk_veiled_tests.rs"]
+mod engine_fra_garruk_veiled_tests;
+
+#[path = "engine_fra_chandra_chill_tests.rs"]
+mod engine_fra_chandra_chill_tests;

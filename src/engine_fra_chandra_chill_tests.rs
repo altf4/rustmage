@@ -189,6 +189,10 @@ fn chill_surveil_keeps_top_and_handles_empty_library() {
         for empty in [false, true] {
             let mut g = scenario(player);
             let source = chill(&mut g, player, 3);
+            if empty {
+                let library = g.state.players[player.index()].library.clone();
+                for id in library { g.move_object(id, Zone::Exile); }
+            }
             let top = (!empty).then(|| put(&mut g, player, "Shock", Zone::Library));
             activate(&mut g, source, 0);
             g.resolve_top();
