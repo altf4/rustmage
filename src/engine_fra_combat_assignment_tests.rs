@@ -47,3 +47,29 @@ fn ghalta_cost_reduction_uses_current_controlled_creature_toughness() {
         assert_eq!(game.spell_reduction(player, spell), 0);
     }
 }
+
+#[test]
+fn ghalta_enables_defender_to_attack_and_deal_actual_toughness_damage() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        put(&mut game, player, "Ghalta the Immovable", Zone::Battlefield);
+        let wall = put(&mut game, player, "Monoist Sentry", Zone::Battlefield);
+        game.state.objects[wall as usize].growth.toughness = 7;
+        game.state.step = Step::Attackers;
+        game.state.pending = Pending::Attackers;
+        act(&mut game, Action::Attack { card: wall });
+        act(&mut game, Action::FinishAttackers);
+        for _ in 0..32 {
+            if game.state.pending == Pending::Blockers { break; }
+            act(&mut game, Action::Pass);
+        }
+        assert_eq!(game.state.pending, Pending::Blockers);
+        act(&mut game, Action::FinishBlockers);
+        for _ in 0..32 {
+            if game.state.players[player.other().index()].life == 12 { break; }
+            act(&mut game, Action::Pass);
+        }
+        assert_eq!(game.state.players[player.other().index()].life, 12);
+        assert_eq!(game.stats(wall).power, 4);
+    }
+}
