@@ -763,6 +763,7 @@ impl Game {
                     TriggerCondition::SelfEvidence => same && event.evidence_collected,
                     TriggerCondition::EvidenceCollected
                     | TriggerCondition::ScryOrSurveil
+                    | TriggerCondition::Proliferated(_)
                     | TriggerCondition::Chapter { .. } => false,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks

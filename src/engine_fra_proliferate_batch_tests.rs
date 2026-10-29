@@ -57,6 +57,7 @@ fn proliferate_is_non_targeted_repeatable_and_snapshot_owned() {
         g.add_counter(victim, CounterKind::PlusOne, 1);
         g.add_counter(victim, CounterKind::Stun, 1);
         g.state.players[p.other().index()].poison_counters = 1;
+        g.state.players[p.index()].poison_counters = 1;
         let item = g.activation_item(p, source, 0);
         g.state.resolving = Some(Resolution {
             chosen_creature_type: None, target_counter_removal: None,
@@ -76,17 +77,21 @@ fn proliferate_is_non_targeted_repeatable_and_snapshot_owned() {
         let permanent = Action::ProliferatePermanent { object };
         let player = Action::ProliferatePlayer { player: p.other() };
         let before = g.snapshot();
+        assert!(g.apply(p.other(), permanent.clone()).is_err());
+        assert_eq!(g.snapshot(), before);
         act(&mut g, permanent.clone());
         reject(&mut g, permanent.clone());
         act(&mut g, player.clone());
         reject(&mut g, player.clone());
+        act(&mut g, Action::ProliferatePlayer { player: p });
         let observed = g.observe(p.other()).proliferate_choice.unwrap();
         assert_eq!(observed.selected_permanents, vec![object]);
-        assert_eq!(observed.selected_players, vec![p.other()]);
+        assert_eq!(observed.selected_players, vec![Player::P0, Player::P1]);
         act(&mut g, Action::FinishProliferate);
         assert_eq!(g.counter_count(victim, CounterKind::PlusOne), 2);
         assert_eq!(g.counter_count(victim, CounterKind::Stun), 2);
         assert_eq!(g.state.players[p.other().index()].poison_counters, 2);
+        assert_eq!(g.state.players[p.index()].poison_counters, 2);
         act(&mut g, permanent);
         act(&mut g, player);
         act(&mut g, Action::FinishProliferate);

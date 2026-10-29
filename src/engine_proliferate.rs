@@ -29,6 +29,25 @@ impl ProliferateSequence {
     }
 }
 impl Game {
+    pub(super) fn proliferated_event(&mut self, player: Player) {
+        let ids: Vec<_> = self.state.objects.iter().enumerate()
+            .filter_map(|(id, object)| (object.zone == Zone::Battlefield).then_some(id as CardId))
+            .collect();
+        let sources = self.indexed_trigger_sources(&ids);
+        for (source, grant) in sources {
+            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
+                if let TriggerCondition::Proliferated(relation) = ability.condition.event() {
+                    let matches = match relation {
+                        CastRelation::You => source.controller == player,
+                        CastRelation::Opponent => source.controller != player,
+                        CastRelation::Any => true,
+                    };
+                    if matches { self.queue_trigger_from(&source, index, grant.clone().map(Box::new)); }
+                }
+            }
+        }
+    }
     pub(super) fn start_proliferate(&mut self, player: Player, remaining: u128) {
         if remaining != 0 {
             self.state.resolving.as_mut().unwrap().proliferate = Some(Box::new(ProliferateSequence {
@@ -68,6 +87,6 @@ impl Game {
             self.state.resolving.as_mut().unwrap().proliferate = Some(sequence);
         }
         self.state.pending = Pending::Priority;
-        self.effect_counters_with_poison(changes, poison, player, replacements::ResumeMode::Program);
+        self.proliferate_counters(changes, poison, player);
     }
 }

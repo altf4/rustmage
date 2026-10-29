@@ -3392,6 +3392,8 @@ pub(crate) enum ReturnKind {
 pub(crate) enum TriggerCondition {
     /// The controller completed a positive scry or surveil instruction.
     ScryOrSurveil,
+    /// One event for each completed proliferate, even when no object was chosen.
+    Proliferated(CastRelation),
     /// First declaration in the turn whose signed creature-power total reaches this threshold.
     FirstAttackWithTotalPowerAtLeast(u16),
     /// Pre-event observer and other permanent, with an actual owner-hand result.
