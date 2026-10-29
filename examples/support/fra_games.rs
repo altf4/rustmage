@@ -345,21 +345,20 @@ impl Tracker {
         }
         // Only count a directly observed resolving packet. An instantaneous
         // resolution may go unseen; it is intentionally not inferred from exit.
-        if let Some(packet) = &after.resolving {
-            if self.prepared_spell_packets.contains(&packet.id) {
-                self.hit("prepared_spell_resolving", packet.id.to_string());
-            }
+        if let Some(packet) = &after.resolving
+            && self.prepared_spell_packets.contains(&packet.id)
+        {
+            self.hit("prepared_spell_resolving", packet.id.to_string());
         }
-        if let Some(packet) = &_before.resolving {
-            if self.prepared_spell_packets.contains(&packet.id)
-                && !after
-                    .resolving
-                    .as_ref()
-                    .is_some_and(|next| next.id == packet.id)
-                && !after.stack.iter().any(|next| next.id == packet.id)
-            {
-                self.hit("prepared_spell_resolved", packet.id.to_string());
-            }
+        if let Some(packet) = &_before.resolving
+            && self.prepared_spell_packets.contains(&packet.id)
+            && !after
+                .resolving
+                .as_ref()
+                .is_some_and(|next| next.id == packet.id)
+            && !after.stack.iter().any(|next| next.id == packet.id)
+        {
+            self.hit("prepared_spell_resolved", packet.id.to_string());
         }
         // Witness a real loyalty increase on the Jace token while a known
         // empower instruction is resolving. This excludes merely casting or
@@ -368,34 +367,32 @@ impl Tracker {
             matches!(_action, Action::Pass)
                 .then(|| _before.stack.last())
                 .flatten()
-        }) {
-            if matches!(
-                packet.source_card.name(),
-                "Campus Crier"
-                    | "Repurposed Enforcer"
-                    | "Theorist's Proxy"
-                    | "Avatar of Burgeoning Echoes"
-                    | "Arcane Amphisbaena"
-                    | "Fatehold Charm"
-            ) {
-                for object in &after.objects {
-                    if object.zone != Zone::Battlefield
-                        || object.controller != packet.controller
-                        || object.card.name() != "@token/jace-planeswalker"
-                    {
-                        continue;
-                    }
-                    let prior = _before
-                        .objects
-                        .iter()
-                        .find(|o| o.reference == object.reference)
-                        .map_or(0, |o| o.counters.get(CounterKind::Loyalty));
-                    if object.counters.get(CounterKind::Loyalty) > prior {
-                        self.hit(
-                            "empower_counters",
-                            format!("{}/{:?}", packet.id, object.reference),
-                        );
-                    }
+        }) && matches!(
+            packet.source_card.name(),
+            "Campus Crier"
+                | "Repurposed Enforcer"
+                | "Theorist's Proxy"
+                | "Avatar of Burgeoning Echoes"
+                | "Arcane Amphisbaena"
+                | "Fatehold Charm"
+        ) {
+            for object in &after.objects {
+                if object.zone != Zone::Battlefield
+                    || object.controller != packet.controller
+                    || object.card.name() != "@token/jace-planeswalker"
+                {
+                    continue;
+                }
+                let prior = _before
+                    .objects
+                    .iter()
+                    .find(|o| o.reference == object.reference)
+                    .map_or(0, |o| o.counters.get(CounterKind::Loyalty));
+                if object.counters.get(CounterKind::Loyalty) > prior {
+                    self.hit(
+                        "empower_counters",
+                        format!("{}/{:?}", packet.id, object.reference),
+                    );
                 }
             }
         }
