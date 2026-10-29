@@ -125,6 +125,10 @@ impl Game {
                 && self.object_ref(object.card) == object
                 && !o.is_token()
                 && !o.is_spell_copy()
+                && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                    self,
+                    object.card,
+                )
                 && crate::card_names::same_name(o.card.name(), name)
                 && !choice.selected[player.index()].contains(&object);
         }

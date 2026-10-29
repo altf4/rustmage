@@ -239,7 +239,12 @@ fn sphinx_prohibition_revalidates_the_whole_payment_before_any_exile() {
         let saved = g.snapshot();
         for _ in 0..2 {
             let last = g.object_ref(cards[3]);
-            act(&mut g, Action::SelectResolutionExile { object: last });
+            let prohibited = Action::SelectResolutionExile { object: last };
+            assert!(!g.legal_actions().contains(&prohibited));
+            assert!(g.apply(player, prohibited).is_err());
+            assert_eq!(g.snapshot(), saved);
+            assert!(g.legal_actions().contains(&Action::DeclineEffectPayment));
+            act(&mut g, Action::DeclineEffectPayment);
             assert!(
                 cards
                     .iter()

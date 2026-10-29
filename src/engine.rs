@@ -7342,10 +7342,9 @@ impl Game {
         #[cfg(test)]
         if let Some(reference) =
             zone_replacements::TEST_INVALIDATE_STAGED_COST.with(|target| target.get())
+            && self.object_ref(reference.card) == reference
         {
-            if self.object_ref(reference.card) == reference {
-                self.state.objects[reference.card as usize].generation += 1;
-            }
+            self.state.objects[reference.card as usize].generation += 1;
         }
         if !moves.is_empty() {
             self.stage_atomic_cost_entries(moves, checkpoint);
