@@ -485,6 +485,14 @@ fn sourceless_stack_identity_survives_copy_and_snapshot() {
         let mut packet = game.activation_item(player, source, 0);
         assert_eq!(packet.source_identity(), Some((game.object_ref(source), Card::from_name("Bear Cub").unwrap())));
         packet.source_less_rule = Some(SourceLessRule::Radiation);
+        packet.source_card = Card::SOURCELESS;
+        packet.card = CardId::MAX;
+        packet.object = ObjectRef { card: CardId::MAX, generation: 0 };
+        packet.source_facts.card = Card::SOURCELESS;
+        let serialized = serde_json::to_value(&packet).unwrap();
+        for field in ["card", "object", "source_card", "source_facts"] {
+            assert!(serialized[field].is_null(), "{field} should have no source");
+        }
         assert_eq!(packet.source_identity(), None);
         assert_eq!(packet.mana_value(), 0);
         let copy = packet.clone();

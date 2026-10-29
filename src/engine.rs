@@ -1097,6 +1097,21 @@ pub enum SourceLessRule {
     Radiation,
 }
 
+// Legacy packet layout uses compact sentinels internally for inherent rules.
+// Wire consumers receive null, never a fabricated source object or card.
+fn serialize_stack_source_card<S: serde::Serializer>(card: &Card, serializer: S) -> Result<S::Ok, S::Error> {
+    if *card == Card::SOURCELESS { serializer.serialize_none() } else { card.serialize(serializer) }
+}
+fn serialize_stack_source_id<S: serde::Serializer>(id: &CardId, serializer: S) -> Result<S::Ok, S::Error> {
+    if *id == CardId::MAX { serializer.serialize_none() } else { id.serialize(serializer) }
+}
+fn serialize_stack_source_ref<S: serde::Serializer>(reference: &ObjectRef, serializer: S) -> Result<S::Ok, S::Error> {
+    if reference.card == CardId::MAX { serializer.serialize_none() } else { reference.serialize(serializer) }
+}
+fn serialize_stack_source_facts<S: serde::Serializer>(facts: &DamageFacts, serializer: S) -> Result<S::Ok, S::Error> {
+    if facts.card == Card::SOURCELESS { serializer.serialize_none() } else { facts.serialize(serializer) }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
     /// Present only for an inherent rule ability; its legacy source fields are
@@ -1169,6 +1184,7 @@ pub struct SpellView {
     pub kind: StackKind,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_transform: Option<u64>,
+    #[serde(serialize_with = "serialize_stack_source_card")]
     pub source_card: Card,
     /// Current split second on a spell, computed for public views.
     #[serde(skip_serializing_if = "is_false")]
@@ -1199,9 +1215,12 @@ pub struct SpellView {
     /// Last-known power of the successfully sacrificed permanent for a reflexive ability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_power: Option<Box<i128>>,
+    #[serde(serialize_with = "serialize_stack_source_facts")]
     pub source_facts: DamageFacts,
     pub related_stack: Option<StackLink>,
+    #[serde(serialize_with = "serialize_stack_source_id")]
     pub card: CardId,
+    #[serde(serialize_with = "serialize_stack_source_ref")]
     pub object: ObjectRef,
     pub targets: Vec<BoundTarget>,
     pub mode: Option<u16>,
