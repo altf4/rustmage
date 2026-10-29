@@ -57,3 +57,107 @@ fn serpent_ward_still_offers_payment_after_related_spell_leaves() {
         }
     }
 }
+
+#[test]
+fn poison_prohibition_tracks_live_provider_controller_before_ward_resolves() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for owner in [Player::P0, Player::P1] {
+        for transfer in [false, true] {
+            let mut game = scenario(owner);
+            let society = put(&mut game, owner, "The Serpent Society", Zone::Battlefield);
+            let provider = put(&mut game, owner, "Bear Cub", Zone::Battlefield);
+            let attacker = owner.other();
+            let spell = put(&mut game, attacker, "Unsummon", Zone::Hand);
+            game.state.priority = attacker;
+            game.state.players[attacker.index()].mana = [0, 1, 0, 0, 0, 0];
+            act(&mut game, Action::Cast { card: spell, target: Some(Target::Card(society)), payment: [0, 1, 0, 0, 0, 0] });
+            if transfer { game.change_controller(game.object_ref(provider), attacker); }
+            act(&mut game, Action::Pass);
+            act(&mut game, Action::Pass);
+            if transfer {
+                assert!(!matches!(game.state.pending, Pending::EffectOptional { .. }));
+                settle(&mut game);
+                assert_eq!(game.object_view(society).zone, Zone::Battlefield);
+                assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+                assert_eq!(game.state.players[attacker.index()].poison_counters, 0);
+            } else {
+                assert!(matches!(game.state.pending, Pending::EffectOptional { player, .. } if player == attacker));
+                act(&mut game, Action::ChooseOptional { accept: true });
+                settle(&mut game);
+                assert_eq!(game.state.players[attacker.index()].poison_counters, 5);
+                assert_eq!(game.object_view(society).zone, Zone::Hand);
+            }
+        }
+    }
+}
+
+#[test]
+fn poison_cost_replacements_offer_affected_player_order_and_restore() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for owner in [Player::P0, Player::P1] {
+        let mut game = scenario(owner);
+        let society = put(&mut game, owner, "The Serpent Society", Zone::Battlefield);
+        let payer = owner.other();
+        let double = put(&mut game, payer, "Hill Giant", Zone::Battlefield);
+        let plus = put(&mut game, payer, "Grizzly Bears", Zone::Battlefield);
+        let spell = put(&mut game, payer, "Unsummon", Zone::Hand);
+        game.state.priority = payer;
+        game.state.players[payer.index()].mana = [0, 1, 0, 0, 0, 0];
+        act(&mut game, Action::Cast { card: spell, target: Some(Target::Card(society)), payment: [0, 1, 0, 0, 0, 0] });
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::ChooseOptional { accept: true });
+        assert!(matches!(game.state.pending, Pending::Replacement { player } if player == payer));
+        let replacement = game.observe(owner).replacement_choice.unwrap().player_counters.unwrap();
+        assert_eq!(replacement.player, payer);
+        assert_eq!(replacement.placed_by, payer);
+        assert!(!replacement.effect);
+        let saved = game.snapshot();
+        for (first, expected) in [(double, 11), (plus, 12)] {
+            game.restore(&saved).unwrap();
+            let action = Action::ChooseReplacement { source: game.object_ref(first), ability: 0 };
+            assert!(game.apply(owner, action.clone()).is_err());
+            assert_eq!(game.snapshot(), saved);
+            act(&mut game, action);
+            assert_eq!(game.state.players[payer.index()].poison_counters, expected);
+        }
+    }
+}
+
+#[test]
+fn effects_only_counter_provider_excludes_cost_and_tracks_controller() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for payer in [Player::P0, Player::P1] {
+        let mut game = scenario(payer);
+        let provider = put(&mut game, payer, "Aegis Turtle", Zone::Battlefield);
+        game.pay_poison_counter_cost(payer, 1);
+        assert_eq!(game.state.players[payer.index()].poison_counters, 1);
+        let mut poison = [0; 2];
+        poison[payer.index()] = 1;
+        game.effect_counters_with_poison(Vec::new(), poison, payer, replacements::ResumeMode::Pending);
+        game.advance_replacements(false);
+        assert_eq!(game.state.players[payer.index()].poison_counters, 3);
+        game.change_controller(game.object_ref(provider), payer.other());
+        game.effect_counters_with_poison(Vec::new(), poison, payer, replacements::ResumeMode::Pending);
+        game.advance_replacements(false);
+        assert_eq!(game.state.players[payer.index()].poison_counters, 4);
+    }
+}
+
+#[test]
+fn player_counter_prohibition_stops_effects_but_not_opponent_counters() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for controller in [Player::P0, Player::P1] {
+        let mut game = scenario(controller);
+        let provider = put(&mut game, controller, "Bear Cub", Zone::Battlefield);
+        game.effect_counters_with_poison(Vec::new(), [1, 1], controller, replacements::ResumeMode::Pending);
+        game.advance_replacements(false);
+        assert_eq!(game.state.players[controller.index()].poison_counters, 0);
+        assert_eq!(game.state.players[controller.other().index()].poison_counters, 1);
+        game.change_controller(game.object_ref(provider), controller.other());
+        game.effect_counters_with_poison(Vec::new(), [1, 1], controller, replacements::ResumeMode::Pending);
+        game.advance_replacements(false);
+        assert_eq!(game.state.players[controller.index()].poison_counters, 1);
+        assert_eq!(game.state.players[controller.other().index()].poison_counters, 1);
+    }
+}

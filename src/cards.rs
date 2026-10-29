@@ -6,6 +6,10 @@ pub(crate) use ability_layers::{
     StaticAbilityGroup, UntapRestriction,
 };
 
+#[cfg(test)]
+#[path = "cards_test_counter_providers.rs"]
+pub(crate) mod test_counter_providers;
+
 #[path = "card_mana_symbols.rs"]
 mod mana_symbols;
 
@@ -4167,6 +4171,8 @@ impl Card {
         generated::attached_subtype(self)
     }
     pub(crate) fn replacement_effects(self) -> &'static [ReplacementSpec] {
+        #[cfg(test)]
+        if let Some((_, replacements)) = test_counter_providers::provider(self) { return replacements; }
         generated::replacement_effects(self)
     }
     pub fn colors(self) -> u8 {
@@ -4360,6 +4366,8 @@ impl Card {
         generated::additional_cost(self)
     }
     pub(crate) fn static_ability_groups(self) -> &'static [StaticAbilityGroup] {
+        #[cfg(test)]
+        if let Some((groups, _)) = test_counter_providers::provider(self) { return groups; }
         authored::rules(self).map_or_else(
             || {
                 let groups = generated::static_ability_groups(self);
