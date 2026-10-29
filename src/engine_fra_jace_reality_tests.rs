@@ -182,17 +182,15 @@ fn jace_copied_activation_produces_independent_delayed_effects() {
 }
 
 #[test]
-fn jace_granted_activation_retains_its_trigger_definition() {
+fn jace_copied_permanent_activation_retains_its_trigger_definition() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let walker = put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
         g.state.objects[walker as usize].counters.loyalty = 5;
         let attacker = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
         let source = g.object_ref(walker);
-        let timestamp = g.next_role_timestamp();
-        g.grant_recipient_ability(source, Card::from_name("Jace, Reality Sculptor").unwrap(),
-            SelfGrantedAbilityKind::Activated { ability: 1 }, timestamp, None);
-        act(&mut g, Action::AnnounceSelfGrantedAbility { source, grant_timestamp: timestamp });
+        g.apply_temporary_copy(source, CopyRecipe::new(Card::from_name("Jace, Reality Sculptor").unwrap()), CopyDeadline::EndOfTurn);
+        act(&mut g, Action::AnnounceActivate { card: walker, ability: 1, counter_payment: Counters::default() });
         pay(&mut g);
         settle(&mut g);
         g.move_object(walker, Zone::Graveyard);

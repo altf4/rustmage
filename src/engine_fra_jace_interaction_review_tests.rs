@@ -21,7 +21,7 @@ fn jace_threshold_uses_copied_current_type_and_subtype_with_restore() {
         let saved = g.snapshot();
         for _ in 0..2 {
             let reference = g.object_ref(other);
-            g.apply_temporary_copy(reference, CopyRecipe::new(Card::from_name("Jace, the Perfected Mind").unwrap()), CopyDeadline::EndOfTurn);
+            g.apply_temporary_copy(reference, CopyRecipe::new(Card::from_name("The Theorist, Jace Beleren").unwrap()), CopyDeadline::EndOfTurn);
             assert!(g.activation_guard_available(guard, source, player));
             g.apply_temporary_copy(reference, CopyRecipe::new(Card::from_name("Bear Cub").unwrap()), CopyDeadline::EndOfTurn);
             assert!(!g.activation_guard_available(guard, source, player));

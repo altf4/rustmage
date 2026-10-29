@@ -10,7 +10,7 @@ fn projected_jace_loyalty_uses_all_witnesses_and_virtual_changes() {
         let definition = Card::from_name("Jace, Reality Sculptor").unwrap();
         g.state.objects[source as usize].card = definition;
         g.state.objects[source as usize].counters.loyalty = 12;
-        let witness = named(&mut g, player, "Jace, the Perfected Mind", Zone::Battlefield);
+        let witness = named(&mut g, player, "The Theorist, Jace Beleren", Zone::Battlefield);
         g.state.objects[witness as usize].counters.loyalty = 13;
         let guard = ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype: "Jace", minimum: 25 };
         let goal = FundingGoal {
