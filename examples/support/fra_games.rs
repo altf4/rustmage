@@ -942,7 +942,7 @@ fn run_inner(
         }
         if survey {
             eprintln!(
-                "FRA_SURVEY done pair={pair} seed={seed} swapped={swapped} decisions={decisions} elapsed={:.3}s",
+                "FRA_SURVEY done pair={pair} seed={seed} swapped={swapped} decisions={decisions} survey_elapsed={:.3}s",
                 started.elapsed().as_secs_f64()
             );
         }
