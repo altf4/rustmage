@@ -282,7 +282,7 @@ impl FundingState<'_> {
                             Some(
                                 crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath {
                                     ..
-                                },
+                                } | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeathPlain,
                             ) => {
                                 o.zone == Zone::Battlefield
                                     && CharacteristicWorld::kinds(self, r.card) & 1 != 0

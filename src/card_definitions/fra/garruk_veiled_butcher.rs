@@ -1,19 +1,9 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Incomplete gated draft: the static replacement is implemented; loyalty abilities are pending.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
     extras: &CardExtras {
         starting_loyalty: 5,
+        zone_replacement: Some(ZoneReplacementRule::ExileOpposingCreatureDeathPlain),
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

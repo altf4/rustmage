@@ -3976,6 +3976,7 @@ pub(crate) enum ZoneReplacementRule {
     ExileInstantSorceryCards,
     ExileAllCardsAndTokens,
     ExileOpposingCreatureDeath { ability: u16 },
+    ExileOpposingCreatureDeathPlain,
     OpponentDiscardToBattlefield,
 }
 

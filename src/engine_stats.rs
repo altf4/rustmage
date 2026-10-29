@@ -255,6 +255,7 @@ impl Game {
                     crate::cards::ZoneReplacementRule::ExileInstantSorceryCards
                         | crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
+                        | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeathPlain
                 )
             )
             || !self.state.objects[id as usize]
