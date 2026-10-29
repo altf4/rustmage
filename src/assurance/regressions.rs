@@ -7305,3 +7305,78 @@ fn prepared_copy_can_produce_a_real_stack_to_graveyard_event_before_sba() {
         }
     }
 }
+
+#[test]
+fn refute_counters_prepared_copy_before_its_own_discard_choice() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let permanent = put(
+            &mut game,
+            player,
+            "Hallway Heckler // Vicious Verse",
+            Zone::Battlefield,
+        );
+        game.prepare_permanent(game.object_ref(permanent));
+        let copy = game.state.preparations.as_ref().unwrap()[0].spell_copy;
+        let counterspell = put(&mut game, player.other(), "Refute", Zone::Hand);
+        act(&mut game, Action::AnnounceExile { card: copy.card });
+        for _ in 0..20 {
+            if game.state.announcing.is_none() {
+                break;
+            }
+            let actions = game.legal_actions();
+            let next = actions.iter().find(|a| matches!(a, Action::ChooseTarget { target: Target::Player(p) } if *p == player.other()))
+                .or_else(|| actions.iter().find(|a| matches!(a, Action::ChooseSpellCost { .. } | Action::FinishTargets | Action::PayCosts { .. })))
+                .expect("prepared cast continuation").clone();
+            act(&mut game, next);
+        }
+        assert_eq!(game.state.objects[copy.card as usize].zone, Zone::Stack);
+        assert!(!game.is_prepared(game.object_ref(permanent)));
+        act(&mut game, Action::Pass);
+        cast(&mut game, counterspell, Some(Target::Spell(copy.card)));
+        for _ in 0..20 {
+            if matches!(game.state.pending, Pending::EffectDiscard { .. }) {
+                break;
+            }
+            act(&mut game, Action::Pass);
+        }
+        assert!(matches!(game.state.pending, Pending::EffectDiscard { .. }));
+        // Refute has countered the copy but has not finished resolving, so no
+        // state-based action has yet removed the new graveyard incarnation.
+        let current = game.object_ref(copy.card);
+        assert_ne!(current, copy);
+        assert_eq!(game.state.objects[copy.card as usize].zone, Zone::Graveyard);
+        assert!(game.state.objects[copy.card as usize].is_spell_copy());
+        assert!(!game.state.objects[copy.card as usize].is_card());
+        for viewer in [player, player.other()] {
+            let view = game.observe(viewer);
+            assert!(
+                view.objects
+                    .iter()
+                    .any(|object| object.reference == current && object.zone == Zone::Graveyard)
+            );
+        }
+        let checkpoint = game.snapshot();
+        let revision = game.revision();
+        let discard = game
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::Discard { .. }))
+            .unwrap();
+        for _ in 0..2 {
+            act(&mut game, discard.clone());
+            settle(&mut game);
+            assert_eq!(game.state.objects[copy.card as usize].zone, Zone::Outside);
+            assert!(game.state.free_tokens.contains(&copy.card));
+            assert!(!game.is_prepared(game.object_ref(permanent)));
+            game.restore(&checkpoint).unwrap();
+            assert!(game.revision() > revision);
+            assert_eq!(
+                game.apply_index(player.other(), revision, 0),
+                Err(Error::StaleRevision)
+            );
+            assert_eq!(game.object_ref(copy.card), current);
+            assert_eq!(game.state.objects[copy.card as usize].zone, Zone::Graveyard);
+        }
+    }
+}
