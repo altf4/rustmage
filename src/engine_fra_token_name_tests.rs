@@ -69,6 +69,18 @@ fn created_token_rules_names_are_public_and_respected_by_distinct_name_costs() {
             .unwrap();
         assert_eq!(g.object_view(lotus).name(), "Lotus");
         assert_eq!(g.object_view(leviathan).name(), "Leviathan Token");
+        // Font requires artifact tokens. Copy each creature token's own
+        // characteristics with an artifact exception, preserving its name.
+        for id in [first, second, leviathan] {
+            let object = g.object_ref(id);
+            let recipe = CopyRecipe::new(g.state.objects[id as usize].card)
+                .with_exceptions(CopyExceptions::ARTIFACT);
+            g.apply_temporary_copy(object, recipe, CopyDeadline::EndOfTurn);
+            assert_ne!(g.object_view(id).kinds & 16, 0);
+        }
+        assert_eq!(g.object_view(first).name(), "Forest Tentacle Token");
+        assert_eq!(g.object_view(second).name(), "Forest Tentacle Token");
+        assert_eq!(g.object_view(leviathan).name(), "Leviathan Token");
         g.state.step = Step::Main1;
         g.state.priority = p;
         let [first_ref, second_ref, lotus_ref, leviathan_ref] =

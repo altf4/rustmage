@@ -7462,3 +7462,9 @@ mod engine_fra_fblthp_domain_tests;
 
 #[path = "engine_fra_fblthp_domain_payment_tests.rs"]
 mod engine_fra_fblthp_domain_payment_tests;
+
+#[path = "engine_fra_proft_threshold_tests.rs"]
+mod engine_fra_proft_threshold_tests;
+
+#[path = "engine_fra_proft_independent_tests.rs"]
+mod engine_fra_proft_independent_tests;
