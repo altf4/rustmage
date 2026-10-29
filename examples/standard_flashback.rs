@@ -235,7 +235,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         } if b
                             .announcing
                             .as_ref()
-                            .is_some_and(|s| idx(s.source_card) == Some(8)) =>
+                            .is_some_and(|s| s.source().and_then(|source| idx(source.card)) == Some(8)) =>
                         {
                             if *p == actor.other() { 500 } else { -100 }
                         }
@@ -280,7 +280,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = b.announcing.is_some()
                 || b.resolving.is_some()
-                || b.stack.iter().any(|s| idx(s.source_card).is_some());
+                || b.stack.iter().any(|s| s.source().and_then(|source| idx(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(actor, action.clone())?;
@@ -291,7 +291,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if matches!(action, Action::PayCosts { .. })
                 && b.announcing
                     .as_ref()
-                    .is_some_and(|s| idx(s.source_card) == Some(4))
+                    .is_some_and(|s| s.source().and_then(|source| idx(source.card)) == Some(4))
             {
                 assert_eq!(
                     a.players[actor.index()].cards_discarded_this_turn,
@@ -303,7 +303,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if s.kind != StackKind::Spell || !seen.insert(s.id) {
                     continue;
                 }
-                if let Some(i) = idx(s.source_card) {
+                if let Some(i) = s.source().and_then(|source| idx(source.card)) {
                     let info = s.cast.unwrap();
                     assert_eq!(
                         info,
@@ -339,7 +339,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if matches!(action, Action::Pass)
                 && let Some(s) = b.stack.last()
                 && s.kind == StackKind::Spell
-                && idx(s.source_card).is_some()
+                && s.source().and_then(|source| idx(source.card)).is_some()
                 && !a.stack.iter().any(|x| x.id == s.id)
                 && a.outcome.is_none()
             {

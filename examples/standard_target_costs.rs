@@ -325,7 +325,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let fallback = rustmage::policy::smoke_index(&g, &actions);
             if b.decision == "pay_costs"
                 && let Some(s) = &b.announcing
-                && idx(s.source_card).is_some()
+                && s.source().and_then(|source| idx(source.card)).is_some()
             {
                 let want = *costs.entry(s.id).or_insert_with(|| expected(s, &b));
                 let request = b.payment_request.as_ref().unwrap();
@@ -370,7 +370,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                         Action::ChooseTarget { target } => {
                             if let Some(s) = &b.announcing
-                                && let Some(i) = idx(s.source_card)
+                                && let Some(i) = s.source().and_then(|source| idx(source.card))
                             {
                                 if qualifies(i, p, *target, &b) {
                                     700
@@ -430,7 +430,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let a = g.observe(p);
             if let Action::PayCosts { payment } = action
                 && let Some(s) = &b.announcing
-                && let Some(i) = idx(s.source_card)
+                && let Some(i) = s.source().and_then(|source| idx(source.card))
             {
                 let (colored, generic, discount) = costs[&s.id];
                 assert!(
@@ -453,14 +453,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 owners[p.index()] += 1;
             }
             for s in &a.stack {
-                if s.kind == StackKind::Spell && idx(s.source_card).is_some() {
+                if s.kind == StackKind::Spell && s.source().and_then(|source| idx(source.card)).is_some() {
                     seen.insert(s.id);
                 }
             }
             if matches!(action, Action::Pass)
                 && let Some(s) = b.stack.last()
                 && s.kind == StackKind::Spell
-                && idx(s.source_card).is_some()
+                && s.source().and_then(|source| idx(source.card)).is_some()
                 && !a.stack.iter().any(|t| t.id == s.id)
             {
                 pending.insert(s.id, (s.clone(), b.clone()));

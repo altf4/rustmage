@@ -67,7 +67,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .resolving
                 .as_ref()
                 .filter(|s| s.related_stack.is_some())
-                .and_then(|s| ward_index(s.source_card));
+                .and_then(|s| s.source().and_then(|source| ward_index(source.card)));
             if let Some(index) = ward
                 && (before.effect_choice.is_some() || before.decision == "optional_effect")
             {

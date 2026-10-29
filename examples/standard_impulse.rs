@@ -59,7 +59,7 @@ fn outlaw(c: Card) -> bool {
             .any(|n| line.split_whitespace().any(|s| s == *n))
 }
 fn granting(s: &SpellView) -> Option<usize> {
-    let i = family(s.source_card)?;
+    let i = s.source().and_then(|source| family(source.card))?;
     let is = match s.kind {
         StackKind::CasualtyCopy
         | StackKind::CopyEndStepSacrifice
@@ -337,7 +337,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         );
                     }
                 }
-                if let Some(i) = family(s.source_card) {
+                if let Some(i) = s.source().and_then(|source| family(source.card)) {
                     if s.kind == StackKind::Spell
                         && s.source_card.is_creature()
                         && let Some(v) = a
