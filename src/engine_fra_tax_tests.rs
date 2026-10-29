@@ -104,6 +104,17 @@ fn thalia_tax_changes_legal_cast_and_locks_the_paid_total() {
             1
         );
         super::super::contracts::branch_contract(game.clone());
+        game.move_object(thalia, Zone::Exile);
+        assert_eq!(
+            game.state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .total_cost
+                .unwrap()
+                .generic,
+            1
+        );
         pay(&mut game);
         settle(&mut game);
         assert_eq!(game.state.players[actor.other().index()].life, 18);
