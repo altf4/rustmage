@@ -6388,16 +6388,22 @@ impl Game {
     fn draw(&mut self, p: Player) {
         self.draw_many_interruptible(p, 1);
     }
-    pub(super) fn draw_one_unreplaced(&mut self, p: Player) {
+    pub(super) fn draw_one_unreplaced(&mut self, p: Player) -> bool {
         match self.state.players[p.index()].library.last().copied() {
             Some(id) => {
                 let event = self.move_object(id, Zone::Hand);
                 if event.moved && event.destination == Zone::Hand {
                     self.card_drawn(p);
                     self.offer_miracle_reveal(p, id);
+                    true
+                } else {
+                    false
                 }
             }
-            None => self.state.players[p.index()].attempted_empty_draw = true,
+            None => {
+                self.state.players[p.index()].attempted_empty_draw = true;
+                false
+            }
         }
     }
 
