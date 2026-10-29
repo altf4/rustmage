@@ -5991,6 +5991,14 @@
     "journal": "e625fc58634bfdee",
     "observations": "168ff674603ab13a"
   },
+  "Emrakul, the Exigent Doom": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "61d441bbabd0280d",
+    "observations": "7f69d5f8dc163a26"
+  },
   "Enchanted River's Grasp": {
     "root": "main",
     "status": "completed",
