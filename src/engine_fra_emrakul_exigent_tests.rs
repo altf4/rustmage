@@ -227,3 +227,38 @@ fn copied_emrakul_hand_ability_grants_each_controller_independent_permission() {
         }
     }
 }
+
+#[test]
+fn emrakul_granted_mana_funding_respects_ability_layer_order_and_restore() {
+    for player in [Player::P0, Player::P1] {
+        for blank_before in [false, true] {
+            let mut g = scenario(player);
+            let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+            g.state.objects[source as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+            let land = put(&mut g, player, "Forest", Zone::Battlefield);
+            let mut blank = g.activation_item(player, land, 0);
+            blank.targets = vec![BoundTarget { group: 0, target: Target::Card(land), object: Some(g.object_ref(land)) }];
+            if blank_before { g.remove_target_abilities_until_end_of_turn(&blank); }
+            g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+            act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+            act(&mut g, Action::ChooseTarget { target: Target::Card(land) });
+            pay(&mut g);
+            let exile_ref = g.object_ref(source);
+            settle(&mut g);
+            g.state.players[player.index()].mana = [0; 6];
+            let action = Action::TapGrantedMana { card: land, grantor: exile_ref, production: [0, 0, 0, 0, 0, 2] };
+            let goal = FundingGoal { actor: player, required: [0, 0, 0, 0, 0, 2], generic: 0, reserve: None, source: None };
+            assert!(g.legal_actions().contains(&action));
+            assert!(g.can_fund(goal.clone()));
+            let saved = g.snapshot();
+            for _ in 0..2 {
+                g.remove_target_abilities_until_end_of_turn(&blank);
+                assert!(!g.legal_actions().contains(&action));
+                assert!(!g.can_fund(goal.clone()));
+                g.restore(&saved).unwrap();
+                assert!(g.legal_actions().contains(&action));
+                assert!(g.can_fund(goal.clone()));
+            }
+        }
+    }
+}
