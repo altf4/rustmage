@@ -344,6 +344,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     StackKind::ActivatedAbility { .. } => assert!(s.source_card.is_token()),
                     StackKind::CasualtyCopy
                     | StackKind::CopyEndStepSacrifice
+                    | StackKind::CopyEndStepConditionalSacrifice
                     | StackKind::DelayedReturn
                     | StackKind::DelayedTokenCreation { .. }
                     | StackKind::DelayedSacrifice

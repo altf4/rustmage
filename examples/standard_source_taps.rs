@@ -420,6 +420,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 match s.kind {
                     StackKind::CopyEndStepSacrifice
+                    | StackKind::CopyEndStepConditionalSacrifice
                     | StackKind::CasualtyCopy
                     | StackKind::DelayedReturn
                     | StackKind::DelayedTokenCreation { .. }

@@ -63,6 +63,7 @@ fn granting(s: &SpellView) -> Option<usize> {
     let is = match s.kind {
         StackKind::CasualtyCopy
         | StackKind::CopyEndStepSacrifice
+        | StackKind::CopyEndStepConditionalSacrifice
         | StackKind::DelayedReturn
         | StackKind::DelayedTokenCreation { .. }
         | StackKind::DelayedSacrifice

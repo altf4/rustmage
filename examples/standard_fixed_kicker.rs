@@ -287,6 +287,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     match packet.kind {
                         StackKind::CasualtyCopy
                         | StackKind::CopyEndStepSacrifice
+                        | StackKind::CopyEndStepConditionalSacrifice
                         | StackKind::DelayedReturn
                         | StackKind::DelayedTokenCreation { .. }
                         | StackKind::DelayedSacrifice

@@ -166,6 +166,7 @@ fn classify(s: &SpellView) -> Option<usize> {
     match s.kind {
         StackKind::CasualtyCopy
         | StackKind::CopyEndStepSacrifice
+        | StackKind::CopyEndStepConditionalSacrifice
         | StackKind::DelayedReturn
         | StackKind::DelayedTokenCreation { .. }
         | StackKind::DelayedSacrifice

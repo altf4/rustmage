@@ -359,6 +359,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 match item.kind {
                     StackKind::CasualtyCopy
                     | StackKind::CopyEndStepSacrifice
+                    | StackKind::CopyEndStepConditionalSacrifice
                     | StackKind::DelayedReturn
                     | StackKind::DelayedTokenCreation { .. }
                     | StackKind::DelayedSacrifice
