@@ -67,6 +67,7 @@ fn loot_threshold_cost_excludes_self_and_accepts_creature_or_planeswalker() {
             let mut g = scenario(player);
             let source = loot(&mut g, player);
             let fodder = put(&mut g, player, if planeswalker { "Ajani, Caller of the Pride" } else { "Bear Cub" }, Zone::Battlefield);
+            if planeswalker { g.state.objects[fodder as usize].counters.loyalty = 3; }
             let enemy = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
             for _ in 0..6 { put(&mut g, player, "Forest", Zone::Graveyard); }
             g.state.active = player.other();
@@ -76,8 +77,10 @@ fn loot_threshold_cost_excludes_self_and_accepts_creature_or_planeswalker() {
             reject(&mut g, action.clone());
             put(&mut g, player, "Forest", Zone::Graveyard);
             act(&mut g, action);
-            reject(&mut g, Action::ChooseAdditionalCost { object: g.object_ref(source) });
-            reject(&mut g, Action::ChooseAdditionalCost { object: g.object_ref(enemy) });
+            let self_ref = g.object_ref(source);
+            let enemy_ref = g.object_ref(enemy);
+            reject(&mut g, Action::ChooseAdditionalCost { object: self_ref });
+            reject(&mut g, Action::ChooseAdditionalCost { object: enemy_ref });
             let saved = g.snapshot();
             for _ in 0..2 {
                 let choice = g.object_ref(fodder);
