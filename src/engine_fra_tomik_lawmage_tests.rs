@@ -8,7 +8,7 @@ fn tomik_restricts_each_planeswalker_independently_and_tracks_control() {
         let one = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let two = put(&mut g, p, "Hill Giant", Zone::Battlefield);
         let a = put(&mut g, p.other(), "Ajani, Caller of the Pride", Zone::Battlefield);
-        let b = put(&mut g, p.other(), "Kiora of Salt and Sand", Zone::Battlefield);
+        let b = put(&mut g, p.other(), "Ajani Unrelenting", Zone::Battlefield);
         g.state.objects[a as usize].counters.loyalty = 5;
         g.state.objects[b as usize].counters.loyalty = 5;
         let ar = g.object_ref(a); let br = g.object_ref(b);
@@ -105,7 +105,7 @@ fn copied_tomik_grants_to_current_controller_and_disappears_with_copy() {
         let mut g = scenario(p);
         let source = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let own = put(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
-        let enemy = put(&mut g, p.other(), "Kiora of Salt and Sand", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Ajani Unrelenting", Zone::Battlefield);
         g.state.objects[own as usize].counters.loyalty = 5;
         g.state.objects[enemy as usize].counters.loyalty = 5;
         g.apply_temporary_copy(g.object_ref(source), CopyRecipe::new(Card::from_name("Tomik, Orzhov Lawmage").unwrap()), CopyDeadline::EndOfTurn);
@@ -196,6 +196,11 @@ fn tomik_optional_attacker_cannot_displace_mandatory_attacker_from_only_free_slo
         g.state.step = Step::Attackers; g.state.pending = Pending::Attackers;
         act(&mut g, Action::AttackPlaneswalker { card: optional, defender });
         assert!(!g.legal_actions().contains(&Action::FinishAttackers));
+        let saved = g.snapshot();
+        assert!(g.legal_actions().contains(&Action::CancelAttackDeclaration));
+        act(&mut g, Action::CancelAttackDeclaration);
+        assert!(!g.object_view(optional).tapped);
+        g.restore(&saved).unwrap();
         act(&mut g, Action::CancelAttackDeclaration);
         act(&mut g, Action::AttackPlaneswalker { card: mandatory, defender });
         assert!(g.legal_actions().contains(&Action::FinishAttackers));

@@ -172,6 +172,15 @@ impl Game {
             })
     }
 
+    /// A partial declaration may need to be revised after consuming a limited slot.
+    pub(super) fn has_planeswalker_attack_limit_provider(&self) -> bool {
+        self.state.static_sources.iter().any(|&id| {
+            self.on_battlefield(id) && self.state.objects[id as usize].card
+                .static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment|
+                    matches!(fragment, crate::cards::StaticAbilityFragment::ControlledPlaneswalkerAttackLimit)))
+        })
+    }
+
     /// A layer-six grant on this exact planeswalker limits its declared attackers.
     pub(super) fn planeswalker_attack_limited(&self, walker: ObjectRef) -> bool {
         let Some(object) = self.state.objects.get(walker.card as usize) else { return false; };
@@ -256,9 +265,7 @@ impl Game {
                 return false;
             }
         }
-        if !self.state.static_sources.iter().any(|&id| self.state.objects[id as usize].card
-            .static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment|
-                matches!(fragment, crate::cards::StaticAbilityFragment::ControlledPlaneswalkerAttackLimit)))) {
+        if !self.has_planeswalker_attack_limit_provider() {
             return self.state.static_sources.iter().all(|&id| {
             !self.attacks_each_combat(id)
                 || !self.can_declare_attacker(actor, id)

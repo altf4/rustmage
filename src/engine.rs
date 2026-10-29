@@ -4779,7 +4779,7 @@ impl Game {
                     return true;
                 }
                 if !s.selected_attackers.is_empty()
-                    && self.has_attack_tax_provider()
+                    && (self.has_attack_tax_provider() || self.has_planeswalker_attack_limit_provider())
                     && emit(Action::CancelAttackDeclaration)
                 {
                     return true;
