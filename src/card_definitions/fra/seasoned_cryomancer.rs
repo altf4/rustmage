@@ -1,4 +1,4 @@
-// Complete frozen Oracle draft. Pinned XMage implementation is absent; gated.
+// Authored from frozen Oracle; pinned XMage has no card-specific class.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     triggers: &[

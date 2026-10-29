@@ -1,4 +1,4 @@
-//! Gated Seasoned Cryomancer, actual discard count and graveyard activation.
+//! Seasoned Cryomancer discard count and graveyard activation.
 use super::*;
 
 fn cryomancer(g: &mut Game, p: Player, zone: Zone) -> CardId {
