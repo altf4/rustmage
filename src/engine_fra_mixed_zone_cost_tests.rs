@@ -50,3 +50,42 @@ fn frozen_mixed_replacement_redirects_stage_together_and_prevented_cost_is_paid(
         }
     }
 }
+
+#[test]
+fn mixed_cost_waits_for_real_entry_life_choice_and_replays_owned_state() {
+    for player in [Player::P0, Player::P1] {
+        for pay_life in [false, true] {
+            let mut g = scenario(player);
+            let land = put(&mut g, player, "Watery Grave", Zone::Graveyard);
+            let other = put(&mut g, player, "Bear Cub", Zone::Graveyard);
+            let moves = [(g.object_ref(land), Zone::Exile), (g.object_ref(other), Zone::Exile)];
+            let mut plans = g.plan_atomic_zone_cost(&moves).unwrap();
+            plans[0].1.destination = Zone::Battlefield;
+            let before = g.snapshot();
+            g.stage_atomic_zone_cost(plans);
+            assert!(g.advance_entries());
+            assert!(matches!(g.state.pending, Pending::EntryLife { player: actor } if actor == player));
+            assert_eq!(g.object_view(land).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(other).zone, Zone::Graveyard);
+            let pending = g.snapshot();
+            let action = Action::ChooseEntryLife { pay: pay_life };
+            let index = g.legal_actions().iter().position(|a| a == &action).unwrap();
+            let mut raw = g.clone();
+            let mut indexed = g.clone();
+            assert!(raw.apply(player.other(), action.clone()).is_err());
+            assert_eq!(raw.snapshot(), pending);
+            raw.apply(player, action.clone()).unwrap();
+            indexed.apply_index(player, g.revision(), index).unwrap();
+            assert_eq!(raw.snapshot(), indexed.snapshot());
+            assert_eq!(raw.object_view(land).zone, Zone::Battlefield);
+            assert_eq!(raw.object_view(other).zone, Zone::Exile);
+            assert_eq!(raw.object_view(land).tapped, !pay_life);
+            let after = raw.snapshot();
+            raw.restore(&pending).unwrap();
+            act(&mut raw, action);
+            assert_eq!(raw.snapshot(), after);
+            g.restore(&before).unwrap();
+            assert_eq!(g.snapshot(), before);
+        }
+    }
+}

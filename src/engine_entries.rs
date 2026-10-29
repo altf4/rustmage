@@ -710,10 +710,12 @@ impl Game {
             let before_battle = movement.before.kinds & crate::cards::BATTLE_KIND != 0;
             let manifest_face = movement.before.card;
             let mut before = movement.source_before.map_or(movement.before, |v| *v);
-            let plan = movement.zone_plan.clone().unwrap_or_else(|| {
-                let rules = self.freeze_zone_rules(&before, movement.destination, None);
-                self.plan_zone_move(&before, movement.destination, rules)
-            });
+            let plan = movement.zone_plan.clone()
+                .filter(|plan| plan.destination == movement.destination)
+                .unwrap_or_else(|| {
+                    let rules = self.freeze_zone_rules(&before, movement.destination, None);
+                    self.plan_zone_move(&before, movement.destination, rules)
+                });
             if movement.manifest_original.is_some() {
                 if plan.destination == Zone::Battlefield {
                     self.state.objects[before.id as usize].card = manifest_face;
