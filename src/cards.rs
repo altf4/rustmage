@@ -4403,6 +4403,9 @@ impl Card {
     pub(crate) fn role(self) -> Option<RoleKind> {
         generated::role(self)
     }
+    pub(crate) fn aura_artifact_or_non_aura_enchantment(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.aura_artifact_or_non_aura_enchantment)
+    }
     pub(crate) fn aura(self) -> Option<AuraSpec> {
         authored::rules(self).map_or_else(|| generated::aura(self), |rules| rules.aura)
     }

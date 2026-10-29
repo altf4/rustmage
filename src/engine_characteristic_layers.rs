@@ -153,8 +153,9 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
                 match spec.form {
                     PermanentForm::Creature => 1,
                     PermanentForm::Land => 2,
+                    PermanentForm::AddCreature => 1,
                 },
-                false,
+                matches!(spec.form, PermanentForm::AddCreature),
             )
         })
         .collect();
@@ -242,13 +243,14 @@ pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> 
 fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     aura_effects(world, id)
         .into_iter()
-        .map(|(timestamp, spec)| {
-            (
+        .filter_map(|(timestamp, spec)| {
+            if matches!(spec.form, PermanentForm::AddCreature) { return None; }
+            Some((
                 timestamp,
                 spec.colors
                     .iter()
                     .fold(0, |mask, c| mask | (1 << c.index())),
-            )
+            ))
         })
         .chain(
             animations(world, id)
@@ -318,6 +320,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
                 match s.form {
                     PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
                     PermanentForm::Land => SubtypeChange::LandOnly,
+                    PermanentForm::AddCreature => SubtypeChange::Add(s.creature_types),
                 },
             )
         })

@@ -284,6 +284,7 @@ impl Game {
             } else {
                 self.current_kinds(target.card) & u16::from(spec.kinds) != 0
             })
+            && ability_world::aura_artifact_or_non_aura_enchantment(self, aura, target.card)
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,
                 1 => self.state.objects[target.card as usize].controller != controller,

@@ -265,6 +265,8 @@ pub(super) struct CardExtras {
     pub has_improvise: bool,
     pub static_cast_restriction: u8,
     pub uncounterable: bool,
+    /// This Aura may enchant an artifact or a non-Aura enchantment.
+    pub aura_artifact_or_non_aura_enchantment: bool,
     pub enchanted_modifiers: &'static [EnchantedModifier],
     pub flash_surcharge: Option<ManaCost>,
 }
@@ -365,6 +367,7 @@ impl CardExtras {
         has_improvise: false,
         static_cast_restriction: 0,
         uncounterable: false,
+        aura_artifact_or_non_aura_enchantment: false,
         enchanted_modifiers: &[],
         flash_surcharge: None,
     };

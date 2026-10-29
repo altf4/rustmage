@@ -797,6 +797,7 @@ impl FundingState<'_> {
             } else {
                 CharacteristicWorld::kinds(self, target.card) & u16::from(spec.kinds) != 0
             }
+            && ability_world::aura_artifact_or_non_aura_enchantment(self, m.before.card, target.card)
             && match spec.relation {
                 0 => o.controller == m.controller,
                 1 => o.controller != m.controller,

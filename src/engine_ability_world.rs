@@ -815,6 +815,13 @@ impl CharacteristicWorld for Game {
     }
 }
 
+/// Evaluate the printed Aura restriction in either live or projected worlds.
+pub(super) fn aura_artifact_or_non_aura_enchantment<W: CharacteristicWorld + ?Sized>(world: &W, aura: Card, id: CardId) -> bool {
+    if !aura.aura_artifact_or_non_aura_enchantment() { return true; }
+    let kinds = world.kinds(id);
+    kinds & 16 != 0 || (kinds & 32 != 0 && !world.subtypes(id).has(world.object(id).card, "Aura"))
+}
+
 impl ManaProduction {
     /// Evaluate against the actual game or a speculative funding overlay.
     pub(super) fn in_world<W: CharacteristicWorld + ?Sized>(

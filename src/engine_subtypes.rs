@@ -59,6 +59,7 @@ const ADDED_GOBLIN: u32 = ADDED_SOLDIER << 1;
 const ADDED_BEAR: u32 = ADDED_GOBLIN << 1;
 const ADDED_FOOD: u32 = ADDED_BEAR << 1;
 const ADDED_SPIRIT: u32 = ADDED_FOOD << 1;
+const ADDED_CONSTRUCT: u32 = ADDED_SPIRIT << 1;
 const ADDED_MASK: u32 = JOB_MASK
     | COPY_HUMAN
     | COPY_VILLAIN
@@ -67,8 +68,9 @@ const ADDED_MASK: u32 = JOB_MASK
     | ADDED_GOBLIN
     | ADDED_BEAR
     | ADDED_FOOD
-    | ADDED_SPIRIT;
-const _: () = assert!(JOB_TYPES.len() + 11 <= u32::BITS as usize);
+    | ADDED_SPIRIT
+    | ADDED_CONSTRUCT;
+const _: () = assert!(JOB_TYPES.len() + 12 <= u32::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
     added: u32,
@@ -209,6 +211,7 @@ impl GrantedSubtypes {
             "Bear" => ADDED_BEAR,
             "Food" => ADDED_FOOD,
             "Spirit" => ADDED_SPIRIT,
+            "Construct" => ADDED_CONSTRUCT,
             _ => 0,
         }
     }
@@ -245,6 +248,7 @@ impl Serialize for GrantedSubtypes {
                     (ADDED_BEAR, "Bear"),
                     (ADDED_FOOD, "Food"),
                     (ADDED_SPIRIT, "Spirit"),
+                    (ADDED_CONSTRUCT, "Construct"),
                 ] {
                     if self.0 & bit != 0 {
                         out.serialize_element(subtype)?;

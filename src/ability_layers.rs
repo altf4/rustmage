@@ -273,6 +273,8 @@ pub(crate) enum UntapRestriction {
 pub(crate) enum PermanentForm {
     Creature,
     Land,
+    /// Add creature type without removing other card or creature types.
+    AddCreature,
 }
 #[derive(Clone, Copy, Debug)]
 pub(crate) struct AttachedCharacteristics {
