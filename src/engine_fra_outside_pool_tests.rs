@@ -752,6 +752,9 @@ fn planned_outside_entry_validates_exact_slot_and_replays() {
         );
         for _ in 0..2 {
             assert!(g.commit_outside_hand());
+            // The internal commit only installs the card; the real action
+            // resumes the resolving program before exposing an observation.
+            g.run_program();
             let outside = g.state.outside_game.as_ref().unwrap();
             assert_eq!(
                 outside.pools[owner.index()],
