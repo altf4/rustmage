@@ -105,3 +105,102 @@ fn pia_optional_discard_controls_enchantment_search() {
         }
     }
 }
+
+#[test]
+fn mabel_self_entry_triggers_after_supper_makes_her_noncreature_food() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let creature = put(&mut g, player, "Bear Cub", Zone::Hand);
+        cast(&mut g, creature, None);
+        finish(&mut g);
+        let mabel = put(
+            &mut g,
+            player.other(),
+            "Mabel, Valley Hero",
+            Zone::Battlefield,
+        );
+        let shock = put(&mut g, player, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Card(mabel)));
+        finish(&mut g);
+        assert_eq!(g.object_view(mabel).zone, Zone::Graveyard);
+        let supper = put(&mut g, player, "Supper for Spiders", Zone::Hand);
+        cast(&mut g, supper, None);
+        advance_until(&mut g, |g| {
+            g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(creature),
+            })
+        });
+        let view = g.object_view(mabel);
+        assert_eq!(view.zone, Zone::Battlefield);
+        assert_eq!(view.controller, player);
+        assert_eq!(
+            view.kinds & 1,
+            0,
+            "Supper returns Mabel as noncreature Food"
+        );
+        assert!(view.has_subtype("Food"));
+        let saved = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(creature),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        finish(&mut g);
+        assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 1);
+        g.restore(&saved).unwrap();
+        assert!(g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(creature),
+        }));
+    }
+}
+
+#[test]
+fn proctor_self_entry_triggers_after_supper_makes_it_noncreature_food() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let proctor = put(
+            &mut g,
+            player.other(),
+            "Proctor of Potential",
+            Zone::Battlefield,
+        );
+        let shock = put(&mut g, player, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Card(proctor)));
+        finish(&mut g);
+        assert_eq!(g.object_view(proctor).zone, Zone::Graveyard);
+        let supper = put(&mut g, player, "Supper for Spiders", Zone::Hand);
+        cast(&mut g, supper, None);
+        advance_until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectLibrary { .. })
+        });
+        let view = g.object_view(proctor);
+        assert_eq!(view.zone, Zone::Battlefield);
+        assert_eq!(view.controller, player);
+        assert_eq!(
+            view.kinds & 1,
+            0,
+            "Supper returns Proctor as noncreature Food"
+        );
+        assert!(view.has_subtype("Food"));
+        let saved = g.snapshot();
+        super::contracts::branch_contract(g.clone());
+        choose(&mut g, |action| {
+            matches!(
+                action,
+                Action::ArrangeLibrary {
+                    destination: LibraryDestination::Top,
+                    ..
+                }
+            )
+        });
+        finish(&mut g);
+        assert!(g.observe(player.other()).players[player.index()].scried_or_surveilled_this_turn);
+        g.restore(&saved).unwrap();
+        assert!(matches!(g.state.pending, Pending::EffectLibrary { .. }));
+    }
+}

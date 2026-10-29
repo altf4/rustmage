@@ -49,5 +49,8 @@
       "sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
     }
   ],
-  "rules_tests": "src/engine_fra_scry_events_tests.rs"
+  "rules_tests": "src/engine_fra_scry_events_tests.rs",
+  "additional_rules_tests": [
+    "src/assurance/fra_coverage_gaps.rs"
+  ]
 }

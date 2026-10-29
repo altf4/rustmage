@@ -2,7 +2,12 @@
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(3, 1),
     triggers: &[TriggeredAbility {
-        condition: TriggerCondition::CreatureEntersYou,
+        condition: TriggerCondition::PermanentEntersYou {
+            kinds: 1,
+            nontoken: false,
+            subtype: None,
+            include_source: true,
+        },
         targets: TargetPlan::NONE,
         program: &[Instruction::Surveil(1)],
     }],

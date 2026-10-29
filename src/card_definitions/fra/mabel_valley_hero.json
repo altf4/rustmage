@@ -12,5 +12,8 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/m/MabelValleyHero.java",
   "java_sha256": "bf52ca3c855a6c856371b291b2f0ee65271bd0116ff37465605715bf166e3416",
-  "rules_tests": "src/engine_fra_charms_tests.rs"
+  "rules_tests": "src/engine_fra_charms_tests.rs",
+  "additional_rules_tests": [
+    "src/assurance/fra_coverage_gaps.rs"
+  ]
 }
