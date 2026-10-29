@@ -687,6 +687,345 @@ fn prior_outside_state_supported(state: &State) -> bool {
         .all(outside_packet_supported)
 }
 
+/// Project schema 190's owned optional stack source to schema 189 without
+/// changing JSON member order: regression hashes cover the raw bytes.
+fn project_prior_schema190(input: &str) -> Result<String, String> {
+    fn string_end(b: &[u8], mut i: usize) -> Result<usize, String> {
+        i += 1;
+        while i < b.len() {
+            match b[i] { b'\\' => i += 2, b'"' => return Ok(i + 1), _ => i += 1 }
+        }
+        Err("unterminated JSON string".into())
+    }
+    fn value(b: &[u8], i: &mut usize) -> Result<String, String> {
+        let start = *i;
+        match b.get(*i).copied() {
+            Some(b'"') => {
+                *i = string_end(b, *i)?;
+                let raw = std::str::from_utf8(&b[start..*i]).map_err(|e| e.to_string())?;
+                let s: String = serde_json::from_str(raw).map_err(|e| e.to_string())?;
+                if matches!(s.as_str(), "Tam, the Possibility" | "Radiation" | "InherentRule" | "ProliferatePermanent" | "ProliferatePlayer" | "FinishProliferate" | "ChooseSelfCounterReplacement") {
+                    return Err("schema 190 rules lack a schema 189 representation".into());
+                }
+                Ok(raw.to_owned())
+            }
+            Some(b'[') => {
+                *i += 1; let mut parts = Vec::new();
+                while b.get(*i) != Some(&b']') {
+                    if !parts.is_empty() { if b.get(*i) != Some(&b',') { return Err("invalid array".into()); } *i += 1; }
+                    parts.push(value(b, i)?);
+                }
+                *i += 1; Ok(format!("[{}]", parts.join(",")))
+            }
+            Some(b'{') => {
+                *i += 1; let mut fields: Vec<(String, String)> = Vec::new();
+                while b.get(*i) != Some(&b'}') {
+                    if !fields.is_empty() { if b.get(*i) != Some(&b',') { return Err("invalid object".into()); } *i += 1; }
+                    let end = string_end(b, *i)?;
+                    let key: String = serde_json::from_slice(&b[*i..end]).map_err(|e| e.to_string())?;
+                    *i = end; if b.get(*i) != Some(&b':') { return Err("invalid member".into()); } *i += 1;
+                    let v = value(b, i)?; fields.push((key, v));
+                }
+                *i += 1;
+                if fields.iter().any(|(k, _)| matches!(k.as_str(), "source_less_rule" | "other_counters" | "proliferate_choice")) {
+                    return Err("schema 190 public state lacks an earlier representation".into());
+                }
+                let packet = ["source", "kind", "targets", "controller", "related_stack", "source_keywords"]
+                    .iter().all(|k| fields.iter().any(|(name, _)| name == k));
+                if packet {
+                    let at = fields.iter().position(|(k, _)| k == "source").unwrap();
+                    let source = fields.remove(at).1;
+                    let source_value: serde_json::Value = serde_json::from_str(&source).map_err(|e| e.to_string())?;
+                    let source_map = source_value.as_object().ok_or("source-less packet has no schema 189 representation")?;
+                    if source_map.len() != 4 { return Err("unknown stack source shape".into()); }
+                    // Extract raw members without reserializing facts (whose member order matters).
+                    let mut p = 1; let bytes = source.as_bytes(); let mut parts = Vec::new();
+                    while bytes.get(p) != Some(&b'}') {
+                        if !parts.is_empty() { if bytes.get(p) != Some(&b',') { return Err("invalid source".into()); } p += 1; }
+                        let end = string_end(bytes, p)?;
+                        let key: String = serde_json::from_slice(&bytes[p..end]).map_err(|e| e.to_string())?;
+                        p = end + 1; let v = value(bytes, &mut p)?; parts.push((key, v));
+                    }
+                    let get = |key: &str| parts.iter().find(|(k, _)| k == key).map(|(_, v)| v.clone()).ok_or_else(|| format!("missing source {key}"));
+                    let insert_before = |fields: &mut Vec<(String, String)>, anchor: &str, key: &str, v: String| -> Result<(), String> {
+                        let at = fields.iter().position(|(k, _)| k == anchor).ok_or_else(|| format!("missing stack {anchor}"))?;
+                        fields.insert(at, (key.to_owned(), v)); Ok(())
+                    };
+                    let anchor = if fields.iter().any(|(k, _)| k == "split_second") { "split_second" } else { "source_keywords" };
+                    insert_before(&mut fields, anchor, "source_card", get("card")?)?;
+                    insert_before(&mut fields, "related_stack", "source_facts", get("facts")?)?;
+                    insert_before(&mut fields, "targets", "card", get("id")?)?;
+                    insert_before(&mut fields, "targets", "object", get("object")?)?;
+                }
+                Ok(format!("{{{}}}", fields.into_iter().map(|(k,v)| format!("{}:{}", serde_json::to_string(&k).unwrap(), v)).collect::<Vec<_>>().join(",")))
+            }
+            Some(_) => {
+                while *i < b.len() && !matches!(b[*i], b',' | b']' | b'}') { *i += 1; }
+                Ok(std::str::from_utf8(&b[start..*i]).map_err(|e| e.to_string())?.to_owned())
+            }
+            None => Err("unexpected end of JSON".into()),
+        }
+    }
+    // Validate before raw traversal, and reject unexpected whitespace rather than
+    // silently changing its byte representation.
+    let _: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    let mut pos = 0; let result = value(input.as_bytes(), &mut pos)?;
+    if pos != input.len() { return Err("unexpected trailing JSON".into()); }
+    Ok(result)
+}
+
+fn schema190_new_card(card: Card) -> bool {
+    matches!(card.identity(), "Tam, the Possibility")
+}
+
+fn schema190_recipe_supported(recipe: &CopyRecipe) -> bool {
+    if schema190_new_card(recipe.definition) {
+        return false;
+    }
+    match recipe.faces {
+        Some(copies::CopyFaces::Double {
+            physical_front,
+            front,
+            back,
+            ..
+        }) => ![physical_front, front, back]
+            .into_iter()
+            .any(schema190_new_card),
+        _ => true,
+    }
+}
+
+fn schema190_facts_supported(facts: &DamageFacts) -> bool {
+    // Schema 180 already represents additive Construct and other subtype facts.
+    !schema190_new_card(facts.card)
+}
+
+/// Inspect all packet fields carrying card definitions, recipes or LKI subtype
+/// overlays. Reference-only and numeric fields cannot contain the new rules.
+fn schema190_packet_supported(item: &SpellView) -> bool {
+    if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema190(&json).is_ok())
+        || item.source_less_rule.is_some()
+        || item.source.is_none_or(|source| schema190_new_card(source.card) || !schema190_facts_supported(&source.facts))
+        || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema190_new_card(token))
+        || item
+            .source_copy_recipe
+            .as_deref()
+            .is_some_and(|r| !schema190_recipe_supported(r))
+        || item
+            .captured_artifact_copy
+            .as_deref()
+            .is_some_and(|r| !schema190_recipe_supported(r))
+        || item
+            .attachment_trigger
+            .as_ref()
+            .is_some_and(|v| schema190_new_card(v.granting_card))
+        || item
+            .delayed_sacrifice
+            .as_ref()
+            .is_some_and(|v| schema190_new_card(v.source_card))
+        || item
+            .delayed_warp_exile
+            .as_ref()
+            .is_some_and(|v| schema190_new_card(v.source_card))
+        || item
+            .cast_event
+            .as_ref()
+            .is_some_and(|v| schema190_new_card(v.card))
+        || item
+            .cast
+            .and_then(|v| v.physical_card)
+            .is_some_and(schema190_new_card)
+        || item.mana_copy_sources.as_ref().is_some_and(|sources| {
+            sources.iter().any(|(v, _)| {
+                schema190_new_card(v.card)
+                    || schema190_new_card(v.definition)
+                    || !schema190_facts_supported(&v.facts)
+            })
+        })
+        || item
+            .copy_event
+            .as_ref()
+            .is_some_and(|event| !schema190_packet_supported(&event.spell))
+    {
+        return false;
+    }
+    if let Some(event) = &item.event_object {
+        if event
+            .subtype_lki
+            .as_ref()
+            .is_some_and(|facts| !schema190_facts_supported(facts))
+        {
+            return false;
+        }
+        match &event.facts {
+            event_objects::EventObjectFacts::DamageActor(source)
+                if !schema190_facts_supported(&source.facts) =>
+            {
+                return false;
+            }
+            event_objects::EventObjectFacts::Copiable(recipe)
+                if !schema190_recipe_supported(recipe) =>
+            {
+                return false;
+            }
+            _ => {}
+        }
+    }
+    true
+}
+
+/// Conservatively reject opaque continuations, while checking copy layers and
+/// retained packets by type. Rollback snapshots retain independent hidden state.
+fn prior_schema190_state_supported(state: &State) -> bool {
+    if state.players.iter().any(|player| player.other_player_counters.is_some())
+        || state.outside_game.as_ref().is_some_and(|outside| outside.pools.iter().flatten().copied().any(schema190_new_card) || outside.choice.is_some())
+        || state.resolving.is_some() || state.announcing.is_some()
+        || state.mana_announcement_stack.is_some() || state.replacements.is_some()
+        || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
+        || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
+        || state.objects.iter().any(|o| schema190_new_card(o.card))
+        || state.explore_data.as_ref().and_then(|data| data.last.as_ref()).is_some_and(|event|
+            schema190_new_card(event.explorer.card)
+                || event.revealed.is_some_and(|card| schema190_new_card(card.card)))
+        || state.last_target_library_move.as_ref().is_some_and(|event| schema190_new_card(event.card))
+        || state.library_top.as_ref().and_then(|data| data.reveal.as_ref())
+            .is_some_and(|event| schema190_new_card(event.revealed.card))
+        || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema190_new_card(row.granting_card)))
+        || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema190_new_card(row.granting_card)))
+        || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            schema190_new_card(row.provider) || schema190_new_card(row.definition)))
+        // Slots retain an optional immutable donor definition; all other slot
+        // fields are object references or numeric acquisition/use identities.
+        || state.borrowed_slots.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            row.definition.is_some_and(schema190_new_card)))
+        || state.warp.as_ref().is_some_and(|w| !w.delayed.is_empty())
+        // Delayed sacrifice packets retain public source-card identity and
+        // frozen damage facts, including hidden/copied subtype overlays.
+        || state.delayed_sacrifices.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            schema190_new_card(row.view.source_card) || !schema190_facts_supported(&row.facts)))
+        || state.mobilize.is_some() || state.miracle.is_some()
+        || state.adventures.as_ref().is_some_and(|a| a.permissions.iter().any(|v| schema190_new_card(v.card)))
+        || state.plot.as_ref().and_then(|p| p.payment.as_ref()).is_some_and(|p| schema190_new_card(p.source_card))
+        || state.hits.iter().any(|hit| !schema190_facts_supported(&hit.source.facts))
+        || state.damage_choices.iter().any(|hit| !schema190_facts_supported(&hit.source.facts))
+        || state.manifest.as_ref().is_some_and(|manifest| {
+            manifest.permanents.iter().chain(manifest.spells.iter())
+                .any(|row| schema190_new_card(row.underlying))
+        })
+        || state.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row| !schema190_recipe_supported(&row.recipe)))
+        || state.temporary_copies.as_ref().is_some_and(|rows| rows.iter().any(|row| {
+            schema190_new_card(row.physical_card)
+                || row.original_recipe.as_ref().is_some_and(|r| !schema190_recipe_supported(r))
+                || row.layers.iter().any(|layer| !schema190_recipe_supported(&layer.value.recipe))
+        }))
+    {
+        return false;
+    }
+    if let Some(mana) = &state.mana_lots {
+        let copy_safe = |source: &mana_lots::ManaCopySource| {
+            !schema190_new_card(source.card)
+                && !schema190_new_card(source.definition)
+                && schema190_facts_supported(&source.facts)
+        };
+        let quality_safe =
+            |quality: &mana_lots::Quality| quality.copy_source.as_ref().is_none_or(copy_safe);
+        if mana.trace.is_some()
+            || mana.replay.is_some()
+            || mana.choice.is_some()
+            || mana
+                .pools
+                .iter()
+                .flat_map(|rows| rows.iter())
+                .any(|lot| !quality_safe(&lot.quality))
+            || mana
+                .effect_quality
+                .as_ref()
+                .is_some_and(|q| !quality_safe(q))
+            || mana
+                .announcement_quality
+                .as_ref()
+                .is_some_and(|(_, q)| !quality_safe(q))
+        {
+            return false;
+        }
+    }
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
+            || rollback.replay.is_some()
+            || rollback.capture.is_some()
+            || !prior_schema190_state_supported(&rollback.before))
+    {
+        return false;
+    }
+    state
+        .stack
+        .iter()
+        .chain(&state.pending_triggers)
+        .chain(&state.ordering_triggers)
+        .chain(
+            state
+                .delayed_artifact_copies
+                .as_deref()
+                .into_iter()
+                .flatten(),
+        )
+        .chain(
+            state
+                .delayed_attack_this_turn
+                .as_deref()
+                .into_iter()
+                .flatten(),
+        )
+        .chain(
+            state
+                .delayed_opponent_attack_until_next_turn
+                .as_deref()
+                .into_iter()
+                .flatten(),
+        )
+        .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
+        .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
+        .chain(
+            state
+                .stack_copy_data
+                .as_ref()
+                .into_iter()
+                .flat_map(|s| s.packets()),
+        )
+        .chain(
+            state
+                .paradigm
+                .as_ref()
+                .into_iter()
+                .flat_map(|s| s.packets()),
+        )
+        .chain(
+            state
+                .delayed_returns
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .map(|r| &r.item),
+        )
+        .chain(
+            state
+                .earthbend_returns
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .map(|r| &r.item),
+        )
+        .chain(
+            state
+                .manifest
+                .as_ref()
+                .into_iter()
+                .flat_map(|s| s.deaths.iter().map(|d| &d.source)),
+        )
+        .all(schema190_packet_supported)
+}
+
+
 /// Schema 188 adds Cryomancer's public target limit and new Null/Sanctum rules.
 /// Reject new retained behavior rather than fabricating a schema-187 baseline.
 fn project_prior_schema188(input: &str) -> Result<String, String> {
@@ -4987,7 +5326,17 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 189) {
+    if schema_projection.is_some_and(|schema| schema < 190) {
+        if !prior_schema190_state_supported(&g.state) {
+            projection_error = Some("owned schema 190 rules cannot be projected to schema 189".to_owned());
+        } else {
+            match project_prior_schema190(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 189) {
         if !prior_outside_state_supported(&g.state) {
             projection_error =
                 Some("owned outside-game rules cannot be projected to schema 188".to_owned());
@@ -6122,5 +6471,57 @@ fn schema189_budget_projection_rejects_public_hidden_and_rollback_state() {
             g.restore(&saved).unwrap();
             assert!(!prior_outside_state_supported(&g.state));
         }
+    }
+}
+
+#[test]
+fn schema190_restores_ordered_stack_fields_recursively() {
+    let item = r#"{"source":{"id":7,"object":{"id":7,"generation":2},"card":"Bear Cub","facts":{"power":2,"card":"Bear Cub"}},"copy_event":null,"id":12,"kind":"Spell","source_transform":4,"source_keywords":0,"related_stack":null,"targets":[],"mode":null,"controller":"P0"}"#;
+    let old = r#"{"copy_event":null,"id":12,"kind":"Spell","source_transform":4,"source_card":"Bear Cub","source_keywords":0,"source_facts":{"power":2,"card":"Bear Cub"},"related_stack":null,"card":7,"object":{"id":7,"generation":2},"targets":[],"mode":null,"controller":"P0"}"#;
+    assert_eq!(project_prior_schema190(item).unwrap(), old);
+    let nested = format!(r#"{{"copy_event":{{"spell":{item}}}}}"#);
+    assert_eq!(project_prior_schema190(&nested).unwrap(), format!(r#"{{"copy_event":{{"spell":{old}}}}}"#));
+    let no_source = item.replace(r#"{"id":7,"object":{"id":7,"generation":2},"card":"Bear Cub","facts":{"power":2,"card":"Bear Cub"}}"#, "null");
+    assert!(project_prior_schema190(&no_source).is_err());
+    assert!(project_prior_schema190(r#"{"other_counters":[{"kind":"Radiation","count":1}]}"#).is_err());
+    assert!(project_prior_schema190(r#"{"proliferate_choice":{}}"#).is_err());
+}
+
+#[test]
+fn schema190_preserves_older_revisions_and_audits_owned_state() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let packet = g.activation_item(player, source, 0);
+        g.state.stack.push(packet.clone());
+        assert!(prior_schema190_state_supported(&g.state));
+        for viewer in [player, player.other()] {
+            let wire = serde_json::to_string(&g.observe(viewer)).unwrap();
+            let old = project_prior_schema190(&wire).unwrap();
+            assert!(old.contains("\"source_card\":"));
+            assert!(!old.contains("\"source\":{\"id\":"));
+            // A standard packet is accepted by older revision projectors too.
+            assert!(project_prior_outside(&old).is_ok());
+            assert!(project_prior_schema188(&old).is_ok());
+        }
+        let mut nested = packet.clone();
+        let mut hidden = packet.clone();
+        hidden.source.as_mut().unwrap().card = Card::test_index(4330);
+        nested.copy_event = Some(Box::new(stack_copies::CopyEvent { spell: hidden, amount: 1 }));
+        g.state.pending_triggers.push(nested);
+        assert!(!prior_schema190_state_supported(&g.state));
+        let snapshot = g.snapshot();
+        g.state.pending_triggers.clear();
+        assert!(prior_schema190_state_supported(&g.state));
+        g.restore(&snapshot).unwrap();
+        assert!(!prior_schema190_state_supported(&g.state));
+        g.state.pending_triggers.clear();
+        g.state.players[player.index()].other_player_counters = Some(Box::new([0, 0, 0, 1]));
+        assert!(!prior_schema190_state_supported(&g.state));
+    }
+    for card in ["Jace, the Mind Sculptor", "Null Summoner", "Uldaros, the Architect", "Extrapolate the Impossible"] {
+        // Schema 190 itself does not erase fields or identities from earlier revisions.
+        let json = serde_json::to_string(&card).unwrap();
+        assert_eq!(project_prior_schema190(&json).unwrap(), json);
     }
 }
