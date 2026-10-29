@@ -672,7 +672,10 @@ fn approach_unlimited_deck_limit_survives_constructed_combined_count() {
         limited.decks[player.index()][8..12].fill(shock);
         let mut limited_outside = outside;
         limited_outside.pools[player.index()].push(shock);
-        assert!(Game::new_with_outside(limited, limited_outside).is_err());
+        assert_eq!(
+            Game::new_with_outside(limited, limited_outside).err(),
+            Some(Error::InvalidDeck("more than 4 Shock across deck and sideboard".into()))
+        );
     }
 }
 

@@ -14,9 +14,9 @@ optional exile of the resolving spell and four named graveyard cards, Sphinx
 search, battlefield entry, shuffle, and the unlimited deck-copy rule. Existing
 tests include ordinary payment, decline and short graveyards, both players,
 copy lifecycle, invalid selections, search and restore; the independent payment
-tests include synthetic prohibition and replacement cases. Deck and sideboard
-counting reaches the current unsupported-card gate, so a positive scenario
-with the card physically in a sideboard still requires post-admission testing.
+tests include synthetic prohibition and replacement cases. A conditional positive test covers eight copies in a constructed deck and
+seven more in its sideboard, together with the ordinary combined Shock limit.
+It is written but unrun and requires the regenerated admission catalogue.
 
 The mixed-zone and copied-card foundation is shared experimental work. Its
 synthetic battlefield redirect and injected stale-incarnation fixtures do not
