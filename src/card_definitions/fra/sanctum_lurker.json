@@ -10,5 +10,10 @@
   },
   "physical_metadata_sha256": "3e8bccfc70bd6733293a9b42099a1c98556b3c74e563ba7ee1d6aad8721548c9",
   "source_note": "Complete pinned Oracle and official release notes reviewed; pinned XMage class unavailable. Remains gated.",
-  "oracle_rulings": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes"
+  "oracle_rulings": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes",
+  "rules_tests": "src/engine_fra_sanctum_lurker_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_fra_sanctum_lurker_independent_tests.rs",
+    "src/engine_fra_sanctum_additional_review_tests.rs"
+  ]
 }

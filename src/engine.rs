@@ -417,6 +417,10 @@ mod big_core;
 mod borrowed_activations;
 #[path = "engine_outside_choices.rs"]
 mod outside_choices;
+pub use outside_choices::{
+    OutsideEntryDestination, OutsideEntryProviderView, OutsideEntryReplacementView,
+    OutsideEntrySelfEffectView,
+};
 #[path = "engine_outside_names.rs"]
 mod outside_names;
 use borrowed_activations::Descriptor as BorrowedDescriptor;
@@ -789,6 +793,8 @@ define_actions! {
     CancelOutsideCard,
     DeclineOutsideCards,
     ChooseOutsideRevealed { index: u8 },
+    ChooseOutsideEntryReplacement { source: ObjectRef, ability: u16 },
+    ChooseOutsideSelfReplacement { effect: u16 },
     ChooseSearch {
         card: CardId,
     },
@@ -891,6 +897,9 @@ struct OutsideGameState {
     mode: OutsideGameMode,
     pools: [Vec<Card>; 2],
     choice: Option<outside_choices::Choice>,
+    pending_entry: Option<outside_choices::OutsideHandEvent>,
+    pool_versions: [u64; 2],
+    next_choice_id: u64,
     known: [Vec<u16>; 2],
 }
 fn first_player() -> Player {
@@ -2161,6 +2170,9 @@ enum Pending {
     OutsideGameChoice {
         player: Player,
     },
+    OutsideEntryReplacement {
+        player: Player,
+    },
     Attackers,
     Blockers,
     Damage,
@@ -2779,6 +2791,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_choice: Option<outside_choices::OutsideChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub outside_entry_replacement: Option<OutsideEntryReplacementView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub owned_outside: Option<[Option<Vec<Card>>; 2]>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub known_outside: Option<[Vec<Card>; 2]>,
@@ -3232,6 +3246,9 @@ impl Game {
                         mode: value.mode,
                         pools: value.pools,
                         choice: None,
+                        pending_entry: None,
+                        pool_versions: [0; 2],
+                        next_choice_id: 0,
                         known: [Vec::new(), Vec::new()],
                     })
                 }),
@@ -3496,7 +3513,8 @@ impl Game {
             | Pending::Forage { player }
             | Pending::EffectOptional { player, .. }
             | Pending::EffectDiscard { player, .. }
-            | Pending::OutsideGameChoice { player } => Some(player),
+            | Pending::OutsideGameChoice { player }
+            | Pending::OutsideEntryReplacement { player } => Some(player),
             Pending::Attackers | Pending::Damage | Pending::Discard => Some(self.state.active),
             Pending::Blockers => Some(self.state.active.other()),
             Pending::Terminal => None,
@@ -3853,6 +3871,11 @@ impl Game {
         type SpellFundingCacheEntry = (Mana, u32, Card, bool, bool);
         let mut spell_funding_cache: [Option<SpellFundingCacheEntry>; 8] = [None; 8];
         match s.pending {
+            Pending::OutsideEntryReplacement { .. } => {
+                if self.visit_outside_entry_replacements(&mut emit) {
+                    return true;
+                }
+            }
             Pending::OutsideGameChoice { .. } => {
                 if self.visit_outside_choices(&mut emit) {
                     return true;
@@ -5750,6 +5773,10 @@ impl Game {
             Action::CancelOutsideCard => self.cancel_outside_card(),
             Action::DeclineOutsideCards => self.decline_outside_cards(),
             Action::ChooseOutsideRevealed { index } => self.choose_outside_revealed(index),
+            Action::ChooseOutsideEntryReplacement { source, ability } => {
+                self.choose_outside_provider(source, ability)
+            }
+            Action::ChooseOutsideSelfReplacement { effect } => self.choose_outside_self(effect),
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
@@ -9036,6 +9063,7 @@ impl Game {
             .collect();
         Observation {
             outside_choice: self.outside_choice_view(viewer),
+            outside_entry_replacement: self.outside_entry_replacement_view(viewer),
             owned_outside: self.owned_outside_view(viewer),
             known_outside: self.known_outside_view(),
             sideboard_counts: self.sideboard_counts_view(),
@@ -9368,6 +9396,7 @@ impl Game {
                 }
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::OutsideGameChoice { .. } => "outside_game_choice",
+                Pending::OutsideEntryReplacement { .. } => "outside_entry_replacement",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
@@ -9899,6 +9928,7 @@ impl Game {
         std::mem::size_of::<State>()
             + s.outside_game.as_ref().map_or(0, |v| {
                 std::mem::size_of::<OutsideGameState>()
+                    + self.outside_entry_bytes()
                     + v.pools
                         .iter()
                         .map(|p| p.capacity() * std::mem::size_of::<Card>())

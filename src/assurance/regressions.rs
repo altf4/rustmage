@@ -974,7 +974,7 @@ fn schema190_packet_supported(item: &SpellView) -> bool {
 /// retained packets by type. Rollback snapshots retain independent hidden state.
 fn prior_schema190_state_supported(state: &State) -> bool {
     if state.players.iter().any(|player| player.other_player_counters.is_some())
-        || state.outside_game.as_ref().is_some_and(|outside| outside.pools.iter().flatten().copied().any(schema190_new_card) || outside.choice.is_some())
+        || state.outside_game.as_ref().is_some_and(|outside| outside.pools.iter().flatten().copied().any(schema190_new_card) || outside.choice.is_some() || outside.pending_entry.is_some() || outside.next_choice_id != 0 || outside.pool_versions != [0; 2])
         || state.resolving.is_some() || state.announcing.is_some()
         || state.mana_announcement_stack.is_some() || state.replacements.is_some()
         || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
@@ -1119,6 +1119,60 @@ fn prior_schema190_state_supported(state: &State) -> bool {
                 .flat_map(|s| s.deaths.iter().map(|d| &d.source)),
         )
         .all(schema190_packet_supported)
+}
+
+/// Outside-entry replacement choices and continuations have no schema-191
+/// representation. Keep all outside-owned states conservative until their
+/// complete future behavior has an equivalent old-contract proof.
+fn prior_schema192_state_supported(state: &State) -> bool {
+    state.outside_game.is_none()
+        // Entry batches and active zone replacement decisions can retain an
+        // older complete State. Passive zone rules have no checkpoint.
+        && state.entry_batch.is_none()
+        && state.zone_rules.as_ref().is_none_or(|rules| !rules.has_checkpoint())
+        && !matches!(state.pending, Pending::OutsideEntryReplacement { .. })
+        && !state
+            .cast_rollback
+            .as_ref()
+            .is_some_and(|rollback| !prior_schema192_state_supported(&rollback.before))
+}
+
+fn project_prior_schema192(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::String(text)
+                if text == "outside_entry_replacement"
+                    || text == "ChooseOutsideEntryReplacement"
+                    || text == "ChooseOutsideSelfReplacement" =>
+            {
+                Err("outside-entry replacement has no schema 191 representation".into())
+            }
+            serde_json::Value::Array(rows) => {
+                for row in rows {
+                    check(row)?;
+                }
+                Ok(())
+            }
+            serde_json::Value::Object(fields) => {
+                for (key, value) in fields {
+                    if key == "outside_entry_replacement"
+                        || key == "ChooseOutsideEntryReplacement"
+                        || key == "ChooseOutsideSelfReplacement"
+                    {
+                        return Err(
+                            "outside-entry replacement has no schema 191 representation".into()
+                        );
+                    }
+                    check(value)?;
+                }
+                Ok(())
+            }
+            _ => Ok(()),
+        }
+    }
+    let value: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&value)?;
+    Ok(input.to_owned())
 }
 
 /// Reject wire data introduced after published schema 190 without altering old bytes.
@@ -1286,7 +1340,7 @@ fn prior_schema191_state_supported(state: &State) -> bool {
         && !(object.zone == Zone::Outside && state.free_tokens.contains(&(id as CardId))))
         || state.roles.as_ref().is_some_and(|roles| !roles.exile_grant_cast_history.is_empty() || roles.source_linked_effects.iter().any(|row| row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast))
         || state.zone_rules.as_ref().is_some_and(|rules| !rules.schema191_passive_safe(schema191_new_card))
-        || state.outside_game.as_ref().is_some_and(|outside| outside.pools.iter().flatten().copied().any(schema191_new_card) || outside.choice.is_some())
+        || state.outside_game.as_ref().is_some_and(|outside| outside.pools.iter().flatten().copied().any(schema191_new_card) || outside.choice.is_some() || outside.pending_entry.is_some() || outside.next_choice_id != 0 || outside.pool_versions != [0; 2])
         || state.resolving.is_some() || state.announcing.is_some()
         || state.mana_announcement_stack.is_some() || state.replacements.is_some()
         || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
@@ -3007,7 +3061,7 @@ fn prior_schema184_state_supported(state: &State) -> bool {
 
 #[test]
 fn schema184_preserves_old_bytes_and_rejects_changed_card_and_paid_offer() {
-    assert_eq!(OBSERVATION_SCHEMA, 191);
+    assert_eq!(OBSERVATION_SCHEMA, 192);
     let old = r#"[{"resolution_free_casts":{"paid":null},"other":true}]"#;
     assert_eq!(project_prior_schema184(old).unwrap(), old);
     for card in ["Chandra, Torch of Defiance", "@emblem/fra-chandra-torch"] {
@@ -5806,7 +5860,18 @@ fn trace_candidate_with_prepared_observation_audit(
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 191) {
+    if schema_projection.is_some_and(|schema| schema < 192) {
+        if !prior_schema192_state_supported(&g.state) {
+            projection_error =
+                Some("owned outside-entry rules cannot be projected to schema 191".to_owned());
+        } else {
+            match project_prior_schema192(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 191) {
         if !prior_schema191_state_supported(&g.state)
             && !(observation_only
                 && schema_projection == Some(190)
@@ -6908,6 +6973,9 @@ fn outside_projection_rejects_hidden_pools_nested_packets_and_rollback() {
             mode: OutsideGameMode::LimitedSideboard,
             pools: [Vec::new(), Vec::new()],
             choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
+            next_choice_id: 0,
             known: [Vec::new(), Vec::new()],
         }));
         assert!(!prior_outside_state_supported(&g.state));
@@ -6946,6 +7014,9 @@ fn outside_projection_checks_actual_private_and_public_views_for_both_players() 
             mode: OutsideGameMode::ConstructedSideboard,
             pools,
             choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
+            next_choice_id: 0,
             known: [Vec::new(), Vec::new()],
         }));
         assert!(!prior_outside_state_supported(&g.state));
@@ -7378,5 +7449,125 @@ fn refute_counters_prepared_copy_before_its_own_discard_choice() {
             assert_eq!(game.object_ref(copy.card), current);
             assert_eq!(game.state.objects[copy.card as usize].zone, Zone::Graveyard);
         }
+    }
+}
+
+#[test]
+fn prior_schema191_rejects_retained_outside_identity_counters() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        g.state.outside_game = Some(Box::new(OutsideGameState {
+            mode: OutsideGameMode::CasualCollection,
+            pools: [Vec::new(), Vec::new()],
+            choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
+            next_choice_id: 0,
+            known: [Vec::new(), Vec::new()],
+        }));
+        assert!(prior_schema191_state_supported(&g.state));
+        let before = g.snapshot();
+        g.state.outside_game.as_mut().unwrap().pool_versions[player.index()] = 1;
+        assert!(!prior_schema191_state_supported(&g.state));
+        g.restore(&before).unwrap();
+        g.state.outside_game.as_mut().unwrap().next_choice_id = 1;
+        assert!(!prior_schema191_state_supported(&g.state));
+        g.restore(&before).unwrap();
+        assert!(prior_schema191_state_supported(&g.state));
+    }
+}
+
+#[test]
+fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
+    assert_eq!(
+        project_prior_schema192(r#"[{"decision":"priority"}]"#).unwrap(),
+        r#"[{"decision":"priority"}]"#
+    );
+    for json in [
+        r#"{"decision":"outside_entry_replacement"}"#,
+        r#"{"actions":[{"kind":"ChooseOutsideEntryReplacement","ability":0}]}"#,
+        r#"{"actions":[{"kind":"ChooseOutsideSelfReplacement","effect":0}]}"#,
+        r#"{"outside_entry_replacement":{}}"#,
+    ] {
+        assert!(project_prior_schema192(json).is_err());
+    }
+    for owner in [Player::P0, Player::P1] {
+        let mut game = scenario(owner);
+        assert!(prior_schema192_state_supported(&game.state));
+        game.state.outside_game = Some(Box::new(OutsideGameState {
+            mode: OutsideGameMode::CasualCollection,
+            pools: [Vec::new(), Vec::new()],
+            choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
+            next_choice_id: 0,
+            known: [Vec::new(), Vec::new()],
+        }));
+        assert!(!prior_schema192_state_supported(&game.state));
+        // The saved checkpoint may contain an outside state even when the
+        // current outer state no longer does.
+        let saved = Box::new(game.state.clone());
+        game.state.outside_game = None;
+        game.state.entry_batch = Some(Box::new(entries::EntryBatch {
+            atomic_cost: Some(Box::new(entries::AtomicCostCheckpoint {
+                before: saved,
+                bytes: 0,
+                failure_pc: None,
+                components: Vec::new(),
+            })),
+            temporary_copy: None,
+            discard_context: None,
+            moves: Vec::new(),
+            choices: Vec::new(),
+            next: 0,
+            counter_next: 0,
+            entry_bonuses_ready: false,
+            counter_order: Vec::new(),
+            timestamp_order: Vec::new(),
+            timestamps_ready: false,
+            resume: None,
+            shuffle_after: None,
+            replacement_resume: None,
+            tap_events: Vec::new(),
+            tap_next: 0,
+        }));
+        assert!(!prior_schema192_state_supported(&game.state));
+        game.state.entry_batch = None;
+        game.state.zone_rules = Some(Box::default());
+        assert!(prior_schema192_state_supported(&game.state));
+        let mut checkpoint = game.state.clone();
+        checkpoint.outside_game = Some(Box::new(OutsideGameState {
+            mode: OutsideGameMode::CasualCollection,
+            pools: [Vec::new(), Vec::new()],
+            choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
+            next_choice_id: 0,
+            known: [Vec::new(), Vec::new()],
+        }));
+        let reference = game.object_ref(0);
+        game.state.zone_rules = Some(Box::new(zone_replacements::test_checkpoint(
+            checkpoint, reference, owner,
+        )));
+        assert!(!prior_schema192_state_supported(&game.state));
+        game.state.zone_rules = None;
+        let source = game.object_ref(0);
+        let action = Action::ChooseOutsideEntryReplacement { source, ability: 0 };
+        let wire = serde_json::to_string(&action).unwrap();
+        assert!(wire.contains("\"kind\":\"ChooseOutsideEntryReplacement\""));
+        assert!(project_prior_schema192(&wire).is_err());
+        let view = OutsideEntryReplacementView {
+            player: owner,
+            card: Card::Forest,
+            destination: OutsideEntryDestination::Hand,
+            providers: vec![OutsideEntryProviderView {
+                source,
+                ability: 0,
+                destination: OutsideEntryDestination::Exile,
+            }],
+            self_effects: Vec::new(),
+        };
+        let public = serde_json::json!({"outside_entry_replacement": view}).to_string();
+        assert!(project_prior_schema192(&public).is_err());
     }
 }

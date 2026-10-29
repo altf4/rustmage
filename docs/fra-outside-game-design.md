@@ -162,3 +162,94 @@ conservative exception, not a claimed trace audit: the linked tests and complete
 historical trace comparison have not run. General outside-to-hand replacement
 semantics and the missing pinned XMage class remain blockers; Extrapolate remains
 gated.
+
+## Owned outside-entry plan draft
+
+The isolated plan/commit foundation retains the selected pool slot (or virtual
+basic), owner, card, choice-instance ID and pool mutation version in owned state before committing.
+A stale slot, changed choice or version rejects without removing a card or
+changing public knowledge. Pool removal increments its owner's version; future
+pool mutations must do the same. The plan has no in-game ObjectRef and the
+current normal path commits it immediately. This is not a replacement-event
+scheduler or evidence that outside-to-hand replacements and observers work.
+Extrapolate remains gated pending those rules, validation and source provenance.
+
+The isolated scheduler exposes the selected, already revealed card, the current
+destination and each candidate's destination to both viewers; only the decision
+controller receives actions, and no outside pool slot is published. It rechecks
+live battlefield providers after each replacement. Synthetic providers exercise
+prevention, redirect, repeat selection and snapshot restoration; no printed
+outside-entry providers have been identified. The scheduler now stages typed
+resolving-effect self-replacements before battlefield providers, but generic
+outside-entry observers remain incomplete.
+
+## Isolated scheduler limitations
+
+The experimental outside-entry scheduler carries a physical choice identity,
+not an in-game origin. Its provider lookup currently visits battlefield static
+sources only. An incoming card's ordinary battlefield ability must not be
+assumed active merely because it is selected from outside the game: CR 113.6
+and 400.11c govern when abilities function there. Specially worded effects
+that function outside the game need explicit source-backed modeling; none have
+been identified for this event. Do not blanket-scan all abilities printed on
+the incoming card or manufacture an ObjectRef for it.
+
+Separately, CR 614.15 and 616.1a define a self-replacement as an effect of the
+resolving spell or ability that replaces its own effect, and require it to be
+applied before ordinary competing replacements. The isolated scheduler owns
+instruction-supplied self-replacement templates and their resolving stack-item
+identity, choices and applied indices. It re-evaluates applicability after each
+transformation and retains those choices across snapshots. This foundation is
+limited to destination changes and prevention; no printed admission instruction
+requiring it has been identified. Its synthetic tests passed the isolated run
+described below; they do not establish complete replacement support.
+
+Rules source: [Magic Comprehensive Rules, June 19, 2026](https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf).
+
+The draft records a typed completed outside admission without an invented
+source zone or object. Only successful admission has a new object identity;
+prevention leaves the card outside and does not set exile history. A card
+actually put into exile sets the existing turn history, matching the condition
+that a card was put into exile. CR 400.11 and 603.6 do not justify fabricating
+a zone-change event from `Zone::Outside`. Whether a generic “whenever a card
+is exiled” observer sees this hypothetical replacement remains unresolved; no
+such observer is dispatched by the draft. Existing return-to-hand and
+zone-change observers do not constitute that event model.
+The experimental schema 192 guard conservatively rejects all states retaining
+outside-game ownership, entry batches and active zone-rule checkpoints when
+projecting to 191, including cast rollback checkpoints; passive zone rules remain
+representable. This remains broader than necessary until future behavior is proven.
+
+## Isolated scheduler evidence at 6cb2ce52
+
+The resource-guarded all-target Clippy check passed at `6cb2ce52`. The grouped
+library run at the same fixed inputs passed 2,777 tests with no failures. Its
+log is `/home/altf4/.cache/fra-outside-self-tests-6cb2.log`; the Clippy log is
+`/home/altf4/.cache/fra-outside-self-clippy-6cb2.log`. These runs test the
+scheduler draft, not the final published batch.
+
+The tests use explicitly synthetic provider and resolving-instruction fixtures,
+not printed outside-entry replacement cards. They exercise both players,
+competing choices and decision control, prevention and redirection, Ennis's
+end-step exile-history condition, self-replacement priority and applied-effect
+identity, stale resolving-item rejection, public knowledge, and snapshot replay.
+The absence of a fabricated pre-entry object or ordinary origin zone is part of
+the model. These fixtures establish the tested paths, not all possible outside
+admission effects or observer interactions.
+
+Separately, the earlier interim schema-192 prior-schema trace artifact
+`/home/altf4/.cache/fra-outside-scheduler-192.previous-schema.json` (SHA-256
+`021687166a2e78083eecf02eede1ef9425d10f10f9749fbb8c4566969b40302f`)
+contains 2,930 summaries. A direct comparison to the published schema-191
+baseline in `1709bba5:src/assurance/card_traces.json` found all 2,930 equal,
+with no missing or extra entries. This artifact predates the self-replacement
+follow-up; it is not a fresh 6cb2ce52 prior-schema audit and does not prove
+outside-game state equivalence, which the conservative projector rejects.
+
+The missing pinned XMage implementation, generic outside-entry observer
+semantics, broader replacement transformations, final validation, and independent
+final published-batch reviews remain open. In particular, CR 701.13a describes
+exile from wherever an object is, whereas CR 406.2 refers to its current zone;
+no authoritative resolution of the hypothetical outside-to-exile observer case
+has been identified. The draft does not dispatch a generic exile trigger or
+manufacture a zone change. Extrapolate remains gated.

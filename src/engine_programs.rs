@@ -5991,6 +5991,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::RevealTwoOutsideCardsWithSelf(effects) => {
+                    if self.start_outside_choice_with_self(item.controller, item.id, effects) {
+                        return;
+                    }
+                }
                 Instruction::OpponentsDiscardTwoDrawUnlessTwoNonland => {
                     self.state.resolving.as_mut().unwrap().discards
                         [item.controller.other().index()] = 2;

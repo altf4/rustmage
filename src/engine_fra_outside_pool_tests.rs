@@ -99,6 +99,9 @@ fn outside_scenario(player: Player, cards: Vec<Card>) -> Game {
         mode: OutsideGameMode::CasualCollection,
         pools,
         choice: None,
+        pending_entry: None,
+        pool_versions: [0; 2],
+        next_choice_id: 0,
         known: [Vec::new(), Vec::new()],
     }));
     g
@@ -719,6 +722,718 @@ fn outside_hand_admission_replays_each_opponent_choice_and_preserves_public_know
             }
             act(&mut raw, action);
             assert_eq!(raw.snapshot(), after);
+        }
+    }
+}
+
+#[test]
+fn planned_outside_entry_validates_exact_slot_and_replays() {
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut g = outside_scenario(owner, vec![shock, bear, shock, Card::Forest]);
+        cast_extrapolate(&mut g, owner);
+        act(&mut g, Action::ChooseOutsideCard { index: 2 });
+        act(&mut g, Action::ChooseOutsideCard { index: 1 });
+        assert!(g.plan_outside_hand(0));
+        // The real provider discovery path leaves an unaffected admission
+        // unchanged and its owned continuation survives snapshot replay.
+        let before_discovery = g.snapshot();
+        assert!(g.prepare_outside_entry_providers());
+        assert_eq!(g.snapshot(), before_discovery);
+        let planned = g.snapshot();
+        assert!(
+            g.observe(owner.other())
+                .outside_choice
+                .as_ref()
+                .unwrap()
+                .revealed
+                .is_some()
+        );
+        for _ in 0..2 {
+            assert!(g.commit_outside_hand());
+            // The internal commit only installs the card; the real action
+            // resumes the resolving program before exposing an observation.
+            g.run_program();
+            let outside = g.state.outside_game.as_ref().unwrap();
+            assert_eq!(
+                outside.pools[owner.index()],
+                vec![shock, bear, Card::Forest]
+            );
+            assert_eq!(outside.pool_versions[owner.index()], 1);
+            assert!(outside.pending_entry.is_none());
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.zone == Zone::Hand && o.owner == owner && o.card == shock)
+                    .count(),
+                1
+            );
+            assert_eq!(
+                g.observe(owner.other()).known_outside.unwrap()[owner.index()],
+                vec![bear]
+            );
+            g.restore(&planned).unwrap();
+        }
+        // An identical pair in a new choice has a distinct owned identity.
+        assert!(g.start_outside_choice(owner));
+        g.choose_outside_card(outside_choices::Selection::Pool(2));
+        g.choose_outside_card(outside_choices::Selection::Pool(1));
+        let identical = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), identical);
+        assert!(g.plan_outside_hand(0));
+        assert!(g.commit_outside_hand());
+        assert_eq!(
+            g.state.outside_game.as_ref().unwrap().pools[owner.index()],
+            vec![shock, bear, Card::Forest]
+        );
+        g.restore(&planned).unwrap();
+        // Declining clears the staged plan; a restarted choice cannot reuse it.
+        g.decline_outside_cards();
+        assert!(
+            g.state
+                .outside_game
+                .as_ref()
+                .unwrap()
+                .pending_entry
+                .is_none()
+        );
+        assert!(g.start_outside_choice(owner));
+        g.choose_outside_card(outside_choices::Selection::Pool(2));
+        g.choose_outside_card(outside_choices::Selection::Pool(1));
+        let restarted = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), restarted);
+        g.restore(&planned).unwrap();
+        // Overflow is signalled before replacing an existing choice or plan.
+        g.state.outside_game.as_mut().unwrap().next_choice_id = u64::MAX;
+        let full = g.snapshot();
+        assert!(
+            std::panic::catch_unwind(std::panic::AssertUnwindSafe(
+                || g.start_outside_choice(owner)
+            ))
+            .is_err()
+        );
+        assert_eq!(g.snapshot(), full);
+        g.restore(&planned).unwrap();
+        // Replacing the revealed pair cannot reuse an overlapping selected slot.
+        assert!(g.start_outside_choice(owner));
+        g.choose_outside_card(outside_choices::Selection::Pool(2));
+        g.choose_outside_card(outside_choices::Selection::Pool(3));
+        let overlapping = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), overlapping);
+        assert!(g.plan_outside_hand(0));
+        assert!(g.commit_outside_hand());
+        g.restore(&planned).unwrap();
+        // Even if the pair IDs match, changed unselected revealed facts reject.
+        g.state.outside_game.as_mut().unwrap().pools[owner.index()][1] = Card::Forest;
+        let changed_other = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), changed_other);
+        g.restore(&planned).unwrap();
+        // A changed pool generation invalidates the original slot even if an
+        // equal-named duplicate occupies the same numeric index.
+        g.state.outside_game.as_mut().unwrap().pool_versions[owner.index()] += 1;
+        let stale = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), stale);
+        g.restore(&planned).unwrap();
+        // Changing the slot contents is rejected before removing anything.
+        g.state.outside_game.as_mut().unwrap().pools[owner.index()][2] = Card::Forest;
+        let changed = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), changed);
+    }
+}
+
+#[test]
+fn planned_virtual_basic_entry_does_not_consume_outside_pool() {
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let mut g = outside_scenario(owner, vec![shock]);
+        g.state.outside_game.as_mut().unwrap().mode = OutsideGameMode::LimitedSideboard;
+        cast_extrapolate(&mut g, owner);
+        act(&mut g, Action::ChooseOutsideCard { index: 0 });
+        act(&mut g, Action::ChooseOutsideBasic { card: Card::Forest });
+        assert!(g.plan_outside_hand(1));
+        let planned = g.snapshot();
+        for _ in 0..2 {
+            assert!(g.commit_outside_hand());
+            let state = g.state.outside_game.as_ref().unwrap();
+            assert_eq!(state.pools[owner.index()], vec![shock]);
+            assert_eq!(state.pool_versions[owner.index()], 0);
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.owner == owner && o.zone == Zone::Hand && o.card == Card::Forest)
+                    .count(),
+                1
+            );
+            g.restore(&planned).unwrap();
+        }
+    }
+}
+
+#[test]
+fn synthetic_outside_entry_replacement_choices_are_owned_and_transactional() {
+    use outside_choices::{OutsideEntryDestination, OutsideEntryReplacement};
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut g = outside_scenario(owner, vec![shock, bear]);
+        cast_extrapolate(&mut g, owner);
+        act(&mut g, Action::ChooseOutsideCard { index: 0 });
+        act(&mut g, Action::ChooseOutsideCard { index: 1 });
+        assert!(g.plan_outside_hand(0));
+        let choices = vec![
+            OutsideEntryReplacement {
+                id: 11,
+                destination: OutsideEntryDestination::Prevent,
+            },
+            OutsideEntryReplacement {
+                id: 12,
+                destination: OutsideEntryDestination::Exile,
+            },
+        ];
+        let duplicate = vec![choices[0], choices[0]];
+        let before_offer = g.snapshot();
+        assert!(!g.offer_outside_entry_replacements(duplicate));
+        assert_eq!(g.snapshot(), before_offer);
+        assert!(g.offer_outside_entry_replacements(choices));
+        let waiting = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert!(!g.choose_outside_entry_replacement(99));
+        assert_eq!(g.snapshot(), waiting);
+        for (effect, prevented) in [(11, true), (12, false)] {
+            for _ in 0..2 {
+                assert!(g.choose_outside_entry_replacement(effect));
+                let after_choice = g.snapshot();
+                assert!(
+                    !g.offer_outside_entry_replacements(vec![OutsideEntryReplacement {
+                        id: effect,
+                        destination: OutsideEntryDestination::Hand,
+                    }])
+                );
+                assert_eq!(g.snapshot(), after_choice);
+                assert!(g.commit_outside_hand());
+                let state = g.state.outside_game.as_ref().unwrap();
+                assert!(state.pending_entry.is_none());
+                assert_eq!(
+                    state.pools[owner.index()],
+                    if prevented {
+                        vec![shock, bear]
+                    } else {
+                        vec![bear]
+                    }
+                );
+                assert_eq!(
+                    g.state
+                        .objects
+                        .iter()
+                        .filter(|o| o.owner == owner && o.card == shock && o.zone == Zone::Exile)
+                        .count(),
+                    usize::from(!prevented)
+                );
+                assert!(
+                    !g.state
+                        .objects
+                        .iter()
+                        .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Hand)
+                );
+                g.restore(&waiting).unwrap();
+                assert_eq!(g.snapshot(), waiting);
+            }
+        }
+    }
+}
+
+#[test]
+fn outside_admission_uses_real_provider_choice_and_replays() {
+    let _fixture = crate::cards::test_counter_providers::activate_outside();
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut game = outside_scenario(owner, vec![shock, bear]);
+        let provider = put(&mut game, owner, "Healer's Hawk", Zone::Battlefield);
+        let ennis = put(
+            &mut game,
+            owner,
+            "Ennis, Debate Moderator",
+            Zone::Battlefield,
+        );
+        let source = game.object_ref(provider);
+        cast_extrapolate(&mut game, owner);
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+        assert!(
+            matches!(game.state.pending, Pending::OutsideEntryReplacement { player } if player == owner)
+        );
+        let before = game.snapshot();
+        assert!(game.observe(owner).outside_entry_replacement.is_some());
+        assert!(
+            game.observe(owner.other())
+                .outside_entry_replacement
+                .is_some()
+        );
+        let prevent = Action::ChooseOutsideEntryReplacement { source, ability: 0 };
+        let exile = Action::ChooseOutsideEntryReplacement { source, ability: 1 };
+        assert!(game.legal_actions().contains(&prevent));
+        assert!(game.legal_actions().contains(&exile));
+        // A player controlling the affected player makes the replacement
+        // decision; provider information remains visible to both of them.
+        game.state.active = owner;
+        game.schedule_player_control(owner, owner.other());
+        game.begin_player_control_turn();
+        assert!(game.observe(owner).outside_entry_replacement.is_some());
+        assert!(game.observe(owner).actions.is_empty());
+        assert!(
+            game.observe(owner.other())
+                .outside_entry_replacement
+                .is_some()
+        );
+        assert!(game.observe(owner.other()).actions.contains(&prevent));
+        game.restore(&before).unwrap();
+        assert!(game.apply(owner.other(), prevent.clone()).is_err());
+        assert!(
+            game.apply(
+                owner,
+                Action::ChooseOutsideEntryReplacement { source, ability: 2 }
+            )
+            .is_err()
+        );
+        assert_eq!(game.snapshot(), before);
+        let before_objects = game.state.objects.len();
+        act(&mut game, prevent.clone());
+        assert_eq!(game.state.objects.len(), before_objects);
+        assert!(!game.state.cards_exiled_this_turn);
+        assert_eq!(
+            game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+            vec![shock, bear]
+        );
+        let prevented = game.snapshot();
+        for _ in 0..2 {
+            game.begin_step(Step::End);
+            game.prepare_triggers();
+            settle(&mut game);
+            assert_eq!(game.counter_count(ennis, CounterKind::PlusOne), 0);
+            game.restore(&prevented).unwrap();
+        }
+        game.restore(&before).unwrap();
+        game.state.cards_exiled_this_turn = true;
+        act(&mut game, prevent);
+        assert!(game.state.cards_exiled_this_turn);
+        game.restore(&before).unwrap();
+        act(&mut game, exile.clone());
+        assert_eq!(
+            game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+            vec![bear]
+        );
+        assert!(
+            game.state
+                .objects
+                .iter()
+                .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Exile)
+        );
+        assert!(game.state.cards_exiled_this_turn);
+        let after = game.snapshot();
+        game.restore(&before).unwrap();
+        act(&mut game, exile);
+        assert_eq!(game.snapshot(), after);
+        // Ennis observes the actual admission at its controller's end step.
+        for _ in 0..2 {
+            game.begin_step(Step::End);
+            game.prepare_triggers();
+            settle(&mut game);
+            assert_eq!(game.counter_count(ennis, CounterKind::PlusOne), 1);
+            game.restore(&after).unwrap();
+        }
+    }
+}
+
+#[test]
+fn outside_replacement_chain_uses_public_choices_under_player_control() {
+    let _fixture = crate::cards::test_counter_providers::activate_outside();
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut game = outside_scenario(owner, vec![shock, bear]);
+        let out = put(&mut game, owner, "Aegis Turtle", Zone::Battlefield);
+        let back = put(&mut game, owner, "Hill Giant", Zone::Battlefield);
+        let out = game.object_ref(out);
+        let back = game.object_ref(back);
+        cast_extrapolate(&mut game, owner);
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+        game.state.active = owner;
+        game.schedule_player_control(owner, owner.other());
+        game.begin_player_control_turn();
+        let first = Action::ChooseOutsideEntryReplacement {
+            source: out,
+            ability: 0,
+        };
+        assert_eq!(game.actor(), Some(owner.other()));
+        assert!(game.observe(owner).actions.is_empty());
+        assert!(game.observe(owner.other()).actions.contains(&first));
+        for viewer in [Player::P0, Player::P1] {
+            let view = game.observe(viewer).outside_entry_replacement.unwrap();
+            assert_eq!(view.card, shock);
+            assert_eq!(view.destination, OutsideEntryDestination::Hand);
+            assert_eq!(
+                view.providers
+                    .iter()
+                    .map(|p| p.destination)
+                    .collect::<Vec<_>>(),
+                vec![OutsideEntryDestination::Exile; 2]
+            );
+        }
+        assert!(game.apply(owner, first.clone()).is_err());
+        let before = game.snapshot();
+        outside_choices::start_provider_trace();
+        game.apply(owner.other(), first).unwrap();
+        assert_eq!(outside_choices::take_provider_trace(), vec![(out, 0)]);
+        assert!(
+            matches!(game.state.pending, Pending::OutsideEntryReplacement { player } if player == owner)
+        );
+        assert_eq!(
+            game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+            vec![shock, bear]
+        );
+        assert!(!game.state.cards_exiled_this_turn);
+        let second = Action::ChooseOutsideEntryReplacement {
+            source: back,
+            ability: 0,
+        };
+        assert!(game.observe(owner.other()).actions.contains(&second));
+        for viewer in [Player::P0, Player::P1] {
+            let view = game.observe(viewer).outside_entry_replacement.unwrap();
+            assert_eq!(view.card, shock);
+            assert_eq!(view.destination, OutsideEntryDestination::Exile);
+            assert_eq!(
+                view.providers
+                    .iter()
+                    .map(|p| p.destination)
+                    .collect::<Vec<_>>(),
+                vec![OutsideEntryDestination::Hand; 2]
+            );
+        }
+        let after_first = game.snapshot();
+        for _ in 0..2 {
+            outside_choices::start_provider_trace();
+            game.apply(owner.other(), second.clone()).unwrap();
+            assert_eq!(
+                outside_choices::take_provider_trace(),
+                vec![(back, 0), (out, 1), (back, 1)]
+            );
+            assert!(!matches!(
+                game.state.pending,
+                Pending::OutsideEntryReplacement { .. }
+            ));
+            assert!(
+                game.state
+                    .outside_game
+                    .as_ref()
+                    .unwrap()
+                    .pending_entry
+                    .is_none()
+            );
+            assert_eq!(
+                game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+                vec![bear]
+            );
+            assert!(
+                game.state
+                    .objects
+                    .iter()
+                    .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Hand)
+            );
+            assert!(!game.state.cards_exiled_this_turn);
+            for viewer in [Player::P0, Player::P1] {
+                assert!(
+                    game.observe(viewer)
+                        .objects
+                        .iter()
+                        .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Hand)
+                );
+            }
+            game.restore(&after_first).unwrap();
+        }
+        game.restore(&before).unwrap();
+    }
+}
+
+#[test]
+fn outside_card_does_not_supply_ordinary_battlefield_replacement() {
+    let _fixture = crate::cards::test_counter_providers::activate_outside();
+    for owner in [Player::P0, Player::P1] {
+        let hawk = Card::from_name("Healer's Hawk").unwrap();
+        let shock = Card::from_name("Shock").unwrap();
+        let mut game = outside_scenario(owner, vec![hawk, shock]);
+        cast_extrapolate(&mut game, owner);
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        let before = game.snapshot();
+        for _ in 0..2 {
+            act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+            assert!(!matches!(
+                game.state.pending,
+                Pending::OutsideEntryReplacement { .. }
+            ));
+            assert_eq!(
+                game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+                vec![shock]
+            );
+            for viewer in [Player::P0, Player::P1] {
+                assert!(
+                    game.observe(viewer)
+                        .objects
+                        .iter()
+                        .any(|o| o.owner == owner && o.card == hawk && o.zone == Zone::Hand)
+                );
+            }
+            game.restore(&before).unwrap();
+        }
+    }
+}
+
+#[test]
+fn resolving_instruction_self_replacements_precede_battlefield_providers() {
+    let _providers = crate::cards::test_counter_providers::activate_outside();
+    let _spell = crate::cards::test_counter_providers::activate_outside_self();
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut game = outside_scenario(owner, vec![shock, bear]);
+        let provider = put(&mut game, owner, "Healer's Hawk", Zone::Battlefield);
+        let provider = game.object_ref(provider);
+        cast_extrapolate(&mut game, owner);
+        let origin = game.state.resolving.as_ref().unwrap().item.id;
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+        let waiting = game.snapshot();
+        assert_eq!(game.state.resolving.as_ref().unwrap().item.id, origin);
+        let view = game.observe(owner).outside_entry_replacement.unwrap();
+        assert_eq!(
+            view.self_effects
+                .iter()
+                .map(|effect| effect.effect)
+                .collect::<Vec<_>>(),
+            vec![0, 1]
+        );
+        assert!(view.providers.is_empty());
+        assert_eq!(view.card, shock);
+        assert_eq!(view.destination, OutsideEntryDestination::Hand);
+        assert_eq!(
+            view.self_effects
+                .iter()
+                .map(|e| e.destination)
+                .collect::<Vec<_>>(),
+            vec![
+                OutsideEntryDestination::Exile,
+                OutsideEntryDestination::Prevent
+            ]
+        );
+        assert_eq!(
+            game.observe(owner.other())
+                .outside_entry_replacement
+                .as_ref(),
+            Some(&view)
+        );
+        assert!(
+            game.observe(owner.other())
+                .outside_entry_replacement
+                .is_some()
+        );
+        let ordinary = Action::ChooseOutsideEntryReplacement {
+            source: provider,
+            ability: 0,
+        };
+        assert!(!game.legal_actions().contains(&ordinary));
+        assert!(game.apply(owner, ordinary).is_err());
+        assert_eq!(game.snapshot(), waiting);
+        for effect in [0, 1] {
+            let choice = Action::ChooseOutsideSelfReplacement { effect };
+            assert!(game.legal_actions().contains(&choice));
+            assert!(game.apply(owner.other(), choice.clone()).is_err());
+            act(&mut game, choice);
+            if effect == 0 {
+                assert!(
+                    game.state
+                        .objects
+                        .iter()
+                        .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Exile)
+                );
+                assert!(game.state.cards_exiled_this_turn);
+            } else {
+                assert_eq!(
+                    game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+                    vec![shock, bear]
+                );
+                assert!(!game.state.cards_exiled_this_turn);
+            }
+            let after = game.snapshot();
+            game.restore(&waiting).unwrap();
+            act(&mut game, Action::ChooseOutsideSelfReplacement { effect });
+            assert_eq!(game.snapshot(), after);
+            game.restore(&waiting).unwrap();
+        }
+    }
+}
+
+#[test]
+fn self_and_provider_continuations_reject_stale_resolution_and_apply_once() {
+    let _providers = crate::cards::test_counter_providers::activate_outside();
+    let _spell = crate::cards::test_counter_providers::activate_outside_self_chain();
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut game = outside_scenario(owner, vec![shock, bear]);
+        let provider = put(&mut game, owner, "Healer's Hawk", Zone::Battlefield);
+        let source = game.object_ref(provider);
+        cast_extrapolate(&mut game, owner);
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        let pair = game.snapshot();
+        assert!(game.plan_outside_hand(0));
+        game.state.resolving.as_mut().unwrap().item.id += 1;
+        let stale_plan = game.snapshot();
+        assert!(!game.commit_outside_hand());
+        assert_eq!(game.snapshot(), stale_plan);
+        game.restore(&pair).unwrap();
+        let origin = game.state.resolving.as_ref().unwrap().item.id;
+        outside_choices::start_self_trace();
+        act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+        assert_eq!(outside_choices::take_self_trace(), vec![(origin, 0)]);
+        let waiting = game.snapshot();
+        let exile = Action::ChooseOutsideEntryReplacement { source, ability: 1 };
+        assert!(game.legal_actions().contains(&exile));
+        game.state.resolving.as_mut().unwrap().item.id += 1;
+        let stale_provider = game.snapshot();
+        assert!(!game.apply_outside_entry_provider(source, 1));
+        assert_eq!(game.snapshot(), stale_provider);
+        game.restore(&waiting).unwrap();
+        for _ in 0..2 {
+            outside_choices::start_provider_trace();
+            outside_choices::start_self_trace();
+            act(&mut game, exile.clone());
+            assert_eq!(outside_choices::take_self_trace(), vec![(origin, 1)]);
+            // First self replacement preserved hand; the ordinary exile
+            // replacement enabled the second self replacement back to hand;
+            // the remaining ordinary prevention then applies exactly once.
+            assert_eq!(
+                outside_choices::take_provider_trace(),
+                vec![(source, 1), (source, 0)]
+            );
+            assert!(!game.state.cards_exiled_this_turn);
+            assert_eq!(
+                game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+                vec![shock, bear]
+            );
+            assert!(!matches!(
+                game.state.pending,
+                Pending::OutsideEntryReplacement { .. }
+            ));
+            game.restore(&waiting).unwrap();
+        }
+    }
+}
+
+#[test]
+fn outside_replacement_public_view_identifies_selected_card_without_pool_slots() {
+    let _fixture = crate::cards::test_counter_providers::activate_outside();
+    for owner in [Player::P0, Player::P1] {
+        for selected in [0, 1] {
+            let shock = Card::from_name("Shock").unwrap();
+            let bear = Card::from_name("Bear Cub").unwrap();
+            let mut game = outside_scenario(owner, vec![shock, bear, Card::Island]);
+            let provider = put(&mut game, owner, "Healer's Hawk", Zone::Battlefield);
+            let source = game.object_ref(provider);
+            cast_extrapolate(&mut game, owner);
+            act(&mut game, Action::ChooseOutsideCard { index: 0 });
+            act(&mut game, Action::ChooseOutsideCard { index: 1 });
+            let revealed = game.snapshot();
+            for _ in 0..2 {
+                act(&mut game, Action::ChooseOutsideRevealed { index: selected });
+                let expected = if selected == 0 { shock } else { bear };
+                let owner_view = game.observe(owner);
+                let opponent_view = game.observe(owner.other());
+                assert!(opponent_view.owned_outside.is_none());
+                let outside = opponent_view.outside_choice.as_ref().unwrap();
+                assert!(outside.pool.is_none());
+                assert!(outside.first.is_none());
+                assert_eq!(outside.revealed, Some([shock, bear]));
+                let known = opponent_view.known_outside.as_ref().unwrap();
+                assert_eq!(known[owner.index()], vec![shock, bear]);
+                assert!(!known[owner.index()].contains(&Card::Island));
+                let full_wire = serde_json::to_string(&opponent_view).unwrap();
+                assert!(!full_wire.contains("Island"));
+                let choice = owner_view.outside_entry_replacement.as_ref().unwrap();
+                assert_eq!(
+                    choice,
+                    opponent_view.outside_entry_replacement.as_ref().unwrap()
+                );
+                assert_eq!(choice.player, owner);
+                assert_eq!(choice.card, expected);
+                assert_eq!(choice.destination, OutsideEntryDestination::Hand);
+                assert_eq!(
+                    choice.providers,
+                    vec![
+                        OutsideEntryProviderView {
+                            source,
+                            ability: 0,
+                            destination: OutsideEntryDestination::Prevent
+                        },
+                        OutsideEntryProviderView {
+                            source,
+                            ability: 1,
+                            destination: OutsideEntryDestination::Exile
+                        },
+                    ]
+                );
+                let wire = serde_json::to_string(choice).unwrap();
+                assert!(!wire.contains("Pool"));
+                assert!(!wire.contains("Island"));
+                assert!(
+                    owner_view
+                        .actions
+                        .iter()
+                        .any(|a| matches!(a, Action::ChooseOutsideEntryReplacement { .. }))
+                );
+                assert!(opponent_view.actions.is_empty());
+                // Controlling the affected player grants the public decision,
+                // but never that player's unrevealed outside collection.
+                game.state.active = owner;
+                game.schedule_player_control(owner, owner.other());
+                game.begin_player_control_turn();
+                let controlled = game.observe(owner.other());
+                assert!(controlled.owned_outside.is_none());
+                let outside = controlled.outside_choice.as_ref().unwrap();
+                assert!(outside.pool.is_none());
+                assert!(outside.first.is_none());
+                assert_eq!(outside.revealed, Some([shock, bear]));
+                assert_eq!(
+                    controlled.known_outside.as_ref().unwrap()[owner.index()],
+                    vec![shock, bear]
+                );
+                assert!(
+                    controlled
+                        .actions
+                        .iter()
+                        .any(|a| matches!(a, Action::ChooseOutsideEntryReplacement { .. }))
+                );
+                assert!(
+                    !serde_json::to_string(&controlled)
+                        .unwrap()
+                        .contains("Island")
+                );
+                game.restore(&revealed).unwrap();
+            }
         }
     }
 }
