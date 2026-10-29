@@ -3954,3 +3954,7 @@ mod engine_fra_manifest_cost_departures_tests;
 #[cfg(test)]
 #[path = "engine_fra_ruric_fast_projection_tests.rs"]
 mod engine_fra_ruric_fast_projection_tests;
+
+#[cfg(test)]
+#[path = "engine_fra_jace_funding_tests.rs"]
+mod engine_fra_jace_funding_tests;

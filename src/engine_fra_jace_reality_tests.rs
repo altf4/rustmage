@@ -52,7 +52,7 @@ fn jace_exiles_everything_above_bottom_even_if_threshold_changes_after_activatio
             let saved = g.snapshot();
             for _ in 0..2 {
                 settle(&mut g);
-                assert_eq!(g.state.players[opponent.index()].library, library.iter().take(1).copied().collect::<Vec<_>>());
+                assert_eq!(g.state.players[opponent.index()].library, library.iter().take(1).copied().collect::<Vec<_>>().into());
                 for &id in library.iter().skip(1) { assert_eq!(g.object_view(id).zone, Zone::Exile); }
                 g.restore(&saved).unwrap();
             }

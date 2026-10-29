@@ -7697,3 +7697,10 @@ mod engine_fra_chandra_torch_independent_tests;
 
 #[path = "engine_fra_chandra_ward_independent_tests.rs"]
 mod engine_fra_chandra_ward_independent_tests;
+
+#[path = "engine_fra_jace_threshold_tests.rs"]
+mod engine_fra_jace_threshold_tests;
+
+#[path = "engine_fra_jace_reality_tests.rs"]
+mod engine_fra_jace_reality_tests;
+
