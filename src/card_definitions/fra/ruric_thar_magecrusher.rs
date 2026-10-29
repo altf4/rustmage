@@ -1,13 +1,17 @@
 // Direct Oracle and pinned XMage rules; gated pending validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(7, 7),
-    keywords: Keywords::REACH.union(Keywords::VIGILANCE).union(Keywords::TRAMPLE),
+    keywords: Keywords::REACH
+        .union(Keywords::VIGILANCE)
+        .union(Keywords::TRAMPLE),
     static_groups: &[
         StaticAbilityGroup {
             line: 0,
             first_layer: AbilityLayer::Ability,
             fragments: &[StaticAbilityFragment::IntrinsicKeywords(
-                Keywords::REACH.union(Keywords::VIGILANCE).union(Keywords::TRAMPLE),
+                Keywords::REACH
+                    .union(Keywords::VIGILANCE)
+                    .union(Keywords::TRAMPLE),
             )],
         },
         StaticAbilityGroup {
@@ -19,6 +23,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             }],
         },
     ],
-    extras: &CardExtras { uncounterable: true, ..CardExtras::EMPTY },
+    extras: &CardExtras {
+        uncounterable: true,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

@@ -3,7 +3,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::AtStep {
-            step: TriggerStep::Upkeep, relation: CastRelation::You, guard: StepGuard::Always,
+            step: TriggerStep::Upkeep,
+            relation: CastRelation::You,
+            guard: StepGuard::Always,
         },
         targets: TargetPlan::NONE,
         program: &[
@@ -11,10 +13,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             Instruction::If {
                 guard: StepGuard::Expression {
                     value: StatValue::Count(CountFilter {
-                        zone: CountZone::Graveyard, relation: 0, kind: 0, exclude: 0,
-                        subtype: None, basic: false, other: false, cards_only: true,
+                        zone: CountZone::Graveyard,
+                        relation: 0,
+                        kind: 0,
+                        exclude: 0,
+                        subtype: None,
+                        basic: false,
+                        other: false,
+                        cards_only: true,
                     }),
-                    minimum: Some(7), maximum: None,
+                    minimum: Some(7),
+                    maximum: None,
                 },
                 skip: 3,
             },

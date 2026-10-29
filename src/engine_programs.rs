@@ -158,7 +158,8 @@ impl Game {
                 && ((choice.return_within_life_gained
                     && u128::from(self.state.objects[card as usize].card.fixed_mana_value())
                         <= self.state.players[player.index()].life_gained_this_turn)
-                    || (choice.return_noncreature_nonland && self.current_kinds(card) & (1 | 2) == 0))
+                    || (choice.return_noncreature_nonland
+                        && self.current_kinds(card) & (1 | 2) == 0))
             {
                 return_cards.push(event.after);
             }
@@ -939,8 +940,14 @@ impl Game {
                         yours && entered.has_subtype(subtype)
                     }
                     TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } => {
-                        yours && entered.has_subtype(subtype)
-                            && self.other_controlled_subtypes_at_least(source.controller, event.after, subtype, minimum)
+                        yours
+                            && entered.has_subtype(subtype)
+                            && self.other_controlled_subtypes_at_least(
+                                source.controller,
+                                event.after,
+                                subtype,
+                                minimum,
+                            )
                     }
                     TriggerCondition::ArtifactEntersYou => yours && entered.kinds & 16 != 0,
                     TriggerCondition::EnchantmentEntersYou => yours && entered.kinds & 32 != 0,
@@ -951,9 +958,14 @@ impl Game {
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
-                    if ability.program.iter().any(|instruction| matches!(instruction,
-                        Instruction::DamagePlayers(PlayerSet::EventPlayer, _))) {
-                        self.state.pending_triggers.last_mut().unwrap().event_player = Some(entered.controller);
+                    if ability.program.iter().any(|instruction| {
+                        matches!(
+                            instruction,
+                            Instruction::DamagePlayers(PlayerSet::EventPlayer, _)
+                        )
+                    }) {
+                        self.state.pending_triggers.last_mut().unwrap().event_player =
+                            Some(entered.controller);
                     }
                     if ability.condition.event()
                         == TriggerCondition::OtherCreatureEntersYouIfGreaterStats
@@ -1466,19 +1478,21 @@ impl Game {
                                 spell.source_card.is_prepared_face()
                                     && self.state.objects[spell.card as usize].is_spell_copy()
                             })
-                        } else { self.cast_filter_matches_value(
-                            spell_owner,
-                            filter,
-                            card,
-                            stack
-                                .map(|i| self.state.stack[i].mana_value())
-                                .unwrap_or_else(|| card.fixed_mana_value()),
-                            caster,
-                            &source,
-                            stack
-                                .map(|i| self.state.stack[i].targets.as_slice())
-                                .unwrap_or(&[]),
-                        ) })
+                        } else {
+                            self.cast_filter_matches_value(
+                                spell_owner,
+                                filter,
+                                card,
+                                stack
+                                    .map(|i| self.state.stack[i].mana_value())
+                                    .unwrap_or_else(|| card.fixed_mana_value()),
+                                caster,
+                                &source,
+                                stack
+                                    .map(|i| self.state.stack[i].targets.as_slice())
+                                    .unwrap_or(&[]),
+                            )
+                        })
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                         && self.queue_trigger_from(&source, index, grant.map(Box::new))
                     {
@@ -1657,40 +1671,65 @@ impl Game {
     ) {
         self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
-        let delayed = self.state.delayed_opponent_attack_until_next_turn.as_deref()
-            .into_iter().flatten().cloned().collect::<Vec<_>>();
+        let delayed = self
+            .state
+            .delayed_opponent_attack_until_next_turn
+            .as_deref()
+            .into_iter()
+            .flatten()
+            .cloned()
+            .collect::<Vec<_>>();
         for mut packet in delayed {
-            let StackKind::TriggeredAbility { ability } = packet.kind else { continue; };
-            let Some(trigger) = packet.trigger_definition().triggers().get(usize::from(ability)) else {
+            let StackKind::TriggeredAbility { ability } = packet.kind else {
                 continue;
             };
-            let each_defender = matches!(trigger.program.first(), Some(Instruction::WeakenDeclaredAttacker(_)));
+            let Some(trigger) = packet
+                .trigger_definition()
+                .triggers()
+                .get(usize::from(ability))
+            else {
+                continue;
+            };
+            let each_defender = matches!(
+                trigger.program.first(),
+                Some(Instruction::WeakenDeclaredAttacker(_))
+            );
             if each_defender {
-                if actor == packet.controller { continue; }
+                if actor == packet.controller {
+                    continue;
+                }
                 for attack in declared {
                     let defended = match attack.defender {
                         Some(CombatDefender::Player(player)) => player == packet.controller,
-                        Some(CombatDefender::Planeswalker(object)) => self.on_battlefield(object.card)
-                            && self.object_ref(object.card) == object
-                            && self.state.objects[object.card as usize].controller == packet.controller,
+                        Some(CombatDefender::Planeswalker(object)) => {
+                            self.on_battlefield(object.card)
+                                && self.object_ref(object.card) == object
+                                && self.state.objects[object.card as usize].controller
+                                    == packet.controller
+                        }
                         _ => false,
                     };
                     if defended {
                         let mut trigger = packet.clone();
                         trigger.id = self.next_stack_id();
                         trigger.reflexive_subject = Some(Box::new(ReflexiveSubjectView {
-                            object: self.object_ref(attack.card), additional_objects: Vec::new(),
+                            object: self.object_ref(attack.card),
+                            additional_objects: Vec::new(),
                         }));
                         self.state.pending_triggers.push(trigger);
                     }
                 }
             } else if packet.controller == actor {
-                let attackers = declared.iter().filter(|attack| attack.defender == Some(CombatDefender::Player(actor.other())))
-                    .map(|attack| self.object_ref(attack.card)).collect::<Vec<_>>();
+                let attackers = declared
+                    .iter()
+                    .filter(|attack| attack.defender == Some(CombatDefender::Player(actor.other())))
+                    .map(|attack| self.object_ref(attack.card))
+                    .collect::<Vec<_>>();
                 if let Some((&first, rest)) = attackers.split_first() {
                     packet.id = self.next_stack_id();
                     packet.reflexive_subject = Some(Box::new(ReflexiveSubjectView {
-                        object: first, additional_objects: rest.to_vec(),
+                        object: first,
+                        additional_objects: rest.to_vec(),
                     }));
                     self.state.pending_triggers.push(packet);
                 }
@@ -1747,11 +1786,16 @@ impl Game {
                 if ability.condition.event() == TriggerCondition::ControlledCreatureAttacks {
                     for attacker in declared {
                         let object = self.object_ref(attacker.card);
-                        let facts = EventObjectFacts::DamageActor(self.damage_source(attacker.card));
+                        let facts =
+                            EventObjectFacts::DamageActor(self.damage_source(attacker.card));
                         if self.queue_trigger(&source, index) {
-                            self.state.pending_triggers.last_mut().unwrap().event_object = Some(Box::new(EventObjectView {
-                                object, facts, conniver_creature: None, subtype_lki: None,
-                            }));
+                            self.state.pending_triggers.last_mut().unwrap().event_object =
+                                Some(Box::new(EventObjectView {
+                                    object,
+                                    facts,
+                                    conniver_creature: None,
+                                    subtype_lki: None,
+                                }));
                         }
                     }
                 }
@@ -1848,26 +1892,45 @@ impl Game {
 
     /// Completed declaration; one historical event per distinct blocking creature.
     pub(super) fn opponent_blocker_triggers(&mut self, actor: Player, declared: &[CardId]) {
-        let sources: Vec<_> = self.state.attack_sources.iter().copied().filter(|&id| {
-            self.on_battlefield(id) && self.state.objects[id as usize].controller != actor
-        }).map(|id| self.object_view(id)).collect();
+        let sources: Vec<_> = self
+            .state
+            .attack_sources
+            .iter()
+            .copied()
+            .filter(|&id| {
+                self.on_battlefield(id) && self.state.objects[id as usize].controller != actor
+            })
+            .map(|id| self.object_view(id))
+            .collect();
         let mut seen = Vec::new();
         for &blocker in declared {
-            if seen.contains(&blocker) { continue; }
+            if seen.contains(&blocker) {
+                continue;
+            }
             seen.push(blocker);
-            if !self.on_battlefield(blocker) || !self.is_creature(blocker)
-                || self.state.objects[blocker as usize].controller != actor { continue; }
+            if !self.on_battlefield(blocker)
+                || !self.is_creature(blocker)
+                || self.state.objects[blocker as usize].controller != actor
+            {
+                continue;
+            }
             let stats = self.stats(blocker);
-            if stats.power > 1 && stats.toughness > 1 { continue; }
+            if stats.power > 1 && stats.toughness > 1 {
+                continue;
+            }
             let object = self.object_ref(blocker);
             for source in &sources {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
                     if ability.condition.event() == TriggerCondition::OpponentCreatureBlocksSmall
                         && self.queue_trigger(source, index)
                     {
-                        self.state.pending_triggers.last_mut().unwrap().event_object = Some(Box::new(EventObjectView {
-                            object, facts: EventObjectFacts::Controller(actor), conniver_creature: None, subtype_lki: None,
-                        }));
+                        self.state.pending_triggers.last_mut().unwrap().event_object =
+                            Some(Box::new(EventObjectView {
+                                object,
+                                facts: EventObjectFacts::Controller(actor),
+                                conniver_creature: None,
+                                subtype_lki: None,
+                            }));
                     }
                 }
             }
@@ -2309,7 +2372,10 @@ impl Game {
                 }),
                 None,
             ],
-            PlayerSet::EventPlayer => [Some(item.event_player.expect("event player must be captured")), None],
+            PlayerSet::EventPlayer => [
+                Some(item.event_player.expect("event player must be captured")),
+                None,
+            ],
             PlayerSet::CastingPlayer => [
                 Some(
                     item.cast_event
@@ -2378,22 +2444,43 @@ impl Game {
     /// Discard all chosen hands together, then draw in APNAP order.
     /// Entry replacements and interrupted draws suspend between stages.
     fn advance_optional_wheel(&mut self) -> bool {
-        let Some(wheel) = self.state.resolving.as_ref().and_then(|r| r.optional_wheel) else { return false; };
-        if !wheel.running { return false; }
+        let Some(wheel) = self.state.resolving.as_ref().and_then(|r| r.optional_wheel) else {
+            return false;
+        };
+        if !wheel.running {
+            return false;
+        }
         if wheel.next >= 3 {
             self.state.resolving.as_mut().unwrap().optional_wheel = None;
             return false;
         }
-        self.state.resolving.as_mut().unwrap().optional_wheel.as_mut().unwrap().next += 1;
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .optional_wheel
+            .as_mut()
+            .unwrap()
+            .next += 1;
         if wheel.next == 0 {
             let cause = self.state.resolving.as_ref().unwrap().item.controller;
-            let cards: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(id, object)|
-                (object.zone == Zone::Hand && wheel.choices[object.owner.index()] == Some(true))
-                    .then_some(id as CardId)
-            ).collect();
+            let cards: Vec<_> = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(id, object)| {
+                    (object.zone == Zone::Hand && wheel.choices[object.owner.index()] == Some(true))
+                        .then_some(id as CardId)
+                })
+                .collect();
             self.discard_batch_with_after(&cards, None, Some(cause), None);
         } else {
-            let player = if wheel.next == 1 { wheel.first } else { wheel.first.other() };
+            let player = if wheel.next == 1 {
+                wheel.first
+            } else {
+                wheel.first.other()
+            };
             if wheel.choices[player.index()] == Some(true) {
                 self.draw_many(player, u128::from(wheel.amount));
             }
@@ -2451,7 +2538,9 @@ impl Game {
             {
                 return;
             }
-            if self.advance_optional_wheel() { continue; }
+            if self.advance_optional_wheel() {
+                continue;
+            }
             if self.resume_immediate_blink() {
                 continue;
             }
@@ -2562,11 +2651,21 @@ impl Game {
                 }
                 Instruction::PrepareSource => self.prepare_permanent(item.object),
                 Instruction::PrepareControlledCreatures => {
-                    let creatures: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(id, object)| {
-                        (object.zone == Zone::Battlefield && object.controller == item.controller
-                            && self.is_creature(id as CardId)).then_some(self.object_ref(id as CardId))
-                    }).collect();
-                    for creature in creatures { self.prepare_permanent(creature); }
+                    let creatures: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, object)| {
+                            (object.zone == Zone::Battlefield
+                                && object.controller == item.controller
+                                && self.is_creature(id as CardId))
+                            .then_some(self.object_ref(id as CardId))
+                        })
+                        .collect();
+                    for creature in creatures {
+                        self.prepare_permanent(creature);
+                    }
                 }
                 Instruction::ChooseLandCardName => {
                     self.state.pending = Pending::LandCardName {
@@ -2618,14 +2717,36 @@ impl Game {
                     delayed.is_copy = false;
                     delayed.related_stack = None;
                     delayed.additional_triggers = 0;
-                    self.state.delayed_opponent_attack_until_next_turn.get_or_insert_default().push(delayed);
+                    self.state
+                        .delayed_opponent_attack_until_next_turn
+                        .get_or_insert_default()
+                        .push(delayed);
                 }
-                Instruction::GrowDeclaredAttackers { power, toughness, keywords } => {
-                    let ids: Vec<_> = item.reflexive_subject.as_ref().into_iter().flat_map(|subject|
-                        std::iter::once(subject.object).chain(subject.additional_objects.iter().copied()))
-                        .filter(|reference| self.on_battlefield(reference.card) && self.object_ref(reference.card) == *reference)
-                        .map(|reference| reference.card).collect();
-                    for &id in &ids { self.state.objects[id as usize].growth += Stats { power: i128::from(power), toughness: i128::from(toughness) }; }
+                Instruction::GrowDeclaredAttackers {
+                    power,
+                    toughness,
+                    keywords,
+                } => {
+                    let ids: Vec<_> = item
+                        .reflexive_subject
+                        .as_ref()
+                        .into_iter()
+                        .flat_map(|subject| {
+                            std::iter::once(subject.object)
+                                .chain(subject.additional_objects.iter().copied())
+                        })
+                        .filter(|reference| {
+                            self.on_battlefield(reference.card)
+                                && self.object_ref(reference.card) == *reference
+                        })
+                        .map(|reference| reference.card)
+                        .collect();
+                    for &id in &ids {
+                        self.state.objects[id as usize].growth += Stats {
+                            power: i128::from(power),
+                            toughness: i128::from(toughness),
+                        };
+                    }
                     self.grant_keyword_effects(&ids, item.object, keywords);
                 }
                 Instruction::WeakenDeclaredAttacker(power) => {
@@ -2634,7 +2755,8 @@ impl Game {
                         && self.object_ref(subject.object.card) == subject.object
                     {
                         self.state.objects[subject.object.card as usize].growth += Stats {
-                            power: i128::from(power), toughness: 0,
+                            power: i128::from(power),
+                            toughness: 0,
                         };
                     }
                 }
@@ -2687,7 +2809,9 @@ impl Game {
                     }
                 }
                 Instruction::CopyPreparedCastSpell => {
-                    if self.copy_captured_prepared_spell(&item) { return; }
+                    if self.copy_captured_prepared_spell(&item) {
+                        return;
+                    }
                 }
                 Instruction::CopyCastSpell { .. }
                 | Instruction::CopyCastSpellChosenX
@@ -2987,7 +3111,9 @@ impl Game {
                     }
                 }
                 Instruction::OwnerLibraryTopOrBottomDamage(amount) => {
-                    if self.start_target_library_damage(&item, amount) { return; }
+                    if self.start_target_library_damage(&item, amount) {
+                        return;
+                    }
                 }
                 Instruction::OwnerLibrarySecondFromTop => {
                     if self.start_target_library(&item, true) {
@@ -3231,24 +3357,50 @@ impl Game {
                 }
                 Instruction::BeginOptionalWheel(amount) => {
                     self.state.resolving.as_mut().unwrap().optional_wheel = Some(OptionalWheel {
-                        first: self.state.active, choices: [None; 2], amount, next: 0, running: false,
+                        first: self.state.active,
+                        choices: [None; 2],
+                        amount,
+                        next: 0,
+                        running: false,
                     });
                 }
                 Instruction::AskOptionalWheel { first, skip } => {
                     let wheel = resolution.optional_wheel.unwrap();
-                    let player = if first { wheel.first } else { wheel.first.other() };
+                    let player = if first {
+                        wheel.first
+                    } else {
+                        wheel.first.other()
+                    };
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
                     self.state.pending = Pending::EffectOptional { player, skip_to };
                     return;
                 }
                 Instruction::RecordOptionalWheel { first, accept } => {
-                    let wheel = self.state.resolving.as_mut().unwrap().optional_wheel.as_mut().unwrap();
-                    let player = if first { wheel.first } else { wheel.first.other() };
+                    let wheel = self
+                        .state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .optional_wheel
+                        .as_mut()
+                        .unwrap();
+                    let player = if first {
+                        wheel.first
+                    } else {
+                        wheel.first.other()
+                    };
                     wheel.choices[player.index()] = Some(accept);
                 }
                 Instruction::ExecuteOptionalWheel => {
-                    self.state.resolving.as_mut().unwrap().optional_wheel.as_mut().unwrap().running = true;
+                    self.state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .optional_wheel
+                        .as_mut()
+                        .unwrap()
+                        .running = true;
                 }
                 Instruction::MayPlayer { player, skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
@@ -3609,8 +3761,11 @@ impl Game {
                     self.state.players[item.controller.index()].jace_loyalty_anytime = true;
                 }
                 Instruction::AddMountainManaTrigger => {
-                    let bonus = &mut self.state.players[item.controller.index()].mountain_mana_bonus;
-                    *bonus = bonus.checked_add(1).capacity("mountain mana trigger count exhausted");
+                    let bonus =
+                        &mut self.state.players[item.controller.index()].mountain_mana_bonus;
+                    *bonus = bonus
+                        .checked_add(1)
+                        .capacity("mountain mana trigger count exhausted");
                 }
                 Instruction::ExileEachLibraryTopCastFree => {
                     self.exile_each_top_cast_free(item.controller);
@@ -3811,7 +3966,9 @@ impl Game {
                     }
                 }
                 Instruction::RevealTargetHandExileLinked => {
-                    if self.start_revealed_hand_exile_linked(&item) { return; }
+                    if self.start_revealed_hand_exile_linked(&item) {
+                        return;
+                    }
                 }
                 Instruction::RevealTargetHandExileUntilSourceLeaves => {
                     if self.start_revealed_hand_exile(&item) {
@@ -4101,7 +4258,8 @@ impl Game {
                 }
                 Instruction::BecomeCopy(spec) => self.resolve_in_place_copy(&item, spec),
                 Instruction::IgnoreLegendRuleThisTurn => {
-                    self.state.players[item.controller.index()].legend_rule_ignored_this_turn = true;
+                    self.state.players[item.controller.index()].legend_rule_ignored_this_turn =
+                        true;
                 }
                 Instruction::CreateCopyTokenForPlayer {
                     subject,
@@ -4520,8 +4678,9 @@ impl Game {
                     let mut spec = spec;
                     if matches!(instruction, Instruction::SearchDamageReceived(_)) {
                         spec.maximum = u64::try_from(
-                            item.damage_received.as_ref().expect("damage event").amount
-                        ).unwrap_or(u64::MAX);
+                            item.damage_received.as_ref().expect("damage event").amount,
+                        )
+                        .unwrap_or(u64::MAX);
                     }
                     if matches!(instruction, Instruction::SearchDifferentNamesChosenX(_)) {
                         spec.maximum = u64::from(item.x.unwrap_or(0));
@@ -4566,7 +4725,8 @@ impl Game {
                             minimum,
                             different_names: matches!(
                                 instruction,
-                                Instruction::SearchDifferentNames(_) | Instruction::SearchDifferentNamesChosenX(_)
+                                Instruction::SearchDifferentNames(_)
+                                    | Instruction::SearchDifferentNamesChosenX(_)
                             ),
                             selected: Vec::new(),
                             battlefield: None,
@@ -4767,7 +4927,8 @@ impl Game {
                         self.scry_or_surveil_event(item.controller);
                     }
                 }
-                Instruction::SurveilOneReturnByLifeGained | Instruction::SurveilOneReturnNoncreatureNonland => {
+                Instruction::SurveilOneReturnByLifeGained
+                | Instruction::SurveilOneReturnNoncreatureNonland => {
                     let remaining: Vec<_> = self.state.players[item.controller.index()]
                         .library
                         .iter()
@@ -4778,8 +4939,14 @@ impl Game {
                     if !remaining.is_empty() {
                         self.state.resolving.as_mut().unwrap().library = Some(LibraryChoice {
                             surveil: true,
-                            return_within_life_gained: matches!(instruction, Instruction::SurveilOneReturnByLifeGained),
-                            return_noncreature_nonland: matches!(instruction, Instruction::SurveilOneReturnNoncreatureNonland),
+                            return_within_life_gained: matches!(
+                                instruction,
+                                Instruction::SurveilOneReturnByLifeGained
+                            ),
+                            return_noncreature_nonland: matches!(
+                                instruction,
+                                Instruction::SurveilOneReturnNoncreatureNonland
+                            ),
                             remaining,
                             top: Vec::new(),
                             bottom: Vec::new(),
@@ -5155,15 +5322,35 @@ impl Game {
                 Instruction::DrawGreatestCreaturePowerRemember => {
                     let player = item.controller;
                     self.state.resolving.as_mut().unwrap().remembered_draws = Some(0);
-                    let greatest = self.state.objects.iter().enumerate().filter_map(|(id, o)| {
-                        (o.zone == Zone::Battlefield && o.controller == player && self.is_creature(id as CardId))
+                    let greatest = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, o)| {
+                            (o.zone == Zone::Battlefield
+                                && o.controller == player
+                                && self.is_creature(id as CardId))
                             .then(|| self.stats(id as CardId).power)
-                    }).max().unwrap_or(0).max(0);
-                    self.draw_many_recording(player, u128::try_from(greatest).expect("nonnegative power"), item.id);
+                        })
+                        .max()
+                        .unwrap_or(0)
+                        .max(0);
+                    self.draw_many_recording(
+                        player,
+                        u128::try_from(greatest).expect("nonnegative power"),
+                        item.id,
+                    );
                 }
                 Instruction::LoseLifeRememberedDraws => {
                     let player = item.controller;
-                    let count = self.state.resolving.as_mut().unwrap().remembered_draws.take()
+                    let count = self
+                        .state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .remembered_draws
+                        .take()
                         .expect("remembered draw must precede its continuation");
                     self.lose_life(player, i128::from(count));
                 }
@@ -5212,12 +5399,19 @@ impl Game {
                 Instruction::DiscardTwoNonlandReflexive(ability) => {
                     self.state.resolving.as_mut().unwrap().discards[item.controller.index()] = 2;
                     self.state.resolving.as_mut().unwrap().discard_after =
-                        Some(discard_events::DiscardAfter::NonlandReflexive { controller: item.controller, ability });
+                        Some(discard_events::DiscardAfter::NonlandReflexive {
+                            controller: item.controller,
+                            ability,
+                        });
                 }
                 Instruction::OpponentsDiscardTwoDrawUnlessTwoNonland => {
-                    self.state.resolving.as_mut().unwrap().discards[item.controller.other().index()] = 2;
-                    self.state.resolving.as_mut().unwrap().discard_after =
-                        Some(discard_events::DiscardAfter::DrawUnlessOpponentDiscardedTwoNonland(item.controller));
+                    self.state.resolving.as_mut().unwrap().discards
+                        [item.controller.other().index()] = 2;
+                    self.state.resolving.as_mut().unwrap().discard_after = Some(
+                        discard_events::DiscardAfter::DrawUnlessOpponentDiscardedTwoNonland(
+                            item.controller,
+                        ),
+                    );
                 }
                 Instruction::Discard(set, _) | Instruction::DiscardScaled(set, _) => {
                     let amount = match instruction {
@@ -5233,13 +5427,18 @@ impl Game {
                     }
                 }
                 Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),
-                Instruction::GrantNextSpellUncounterable => self.grant_next_spell_uncounterable(item.controller),
+                Instruction::GrantNextSpellUncounterable => {
+                    self.grant_next_spell_uncounterable(item.controller)
+                }
                 Instruction::EndTurn => {
                     self.end_turn_effect();
                     return;
                 }
                 Instruction::WinIfLibraryEmpty => {
-                    if self.state.players[item.controller.index()].library.is_empty() {
+                    if self.state.players[item.controller.index()]
+                        .library
+                        .is_empty()
+                    {
                         self.try_win_game(item.controller);
                         if self.state.outcome.is_some() {
                             self.state.resolving = None;
@@ -5670,7 +5869,9 @@ impl Game {
                 }
                 Instruction::GrantSelfAbility(kind) => self.grant_self_ability(&item, kind),
                 Instruction::GrantSourceTriggerUntilEndOfTurn(ability) => {
-                    if self.on_battlefield(item.object.card) && self.object_ref(item.object.card) == item.object {
+                    if self.on_battlefield(item.object.card)
+                        && self.object_ref(item.object.card) == item.object
+                    {
                         self.grant_temporary_ability_to(&item, ability, &[item.object.card]);
                     }
                 }

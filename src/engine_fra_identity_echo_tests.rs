@@ -1,13 +1,27 @@
 use super::*;
 
 fn identity_activate(g: &mut Game, source: CardId, target: CardId) {
-    act(g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
-    act(g, Action::ChooseTarget { target: Target::Card(target) });
+    act(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
     pay(g);
 }
 fn identity_reveal(g: &mut Game) {
     for _ in 0..48 {
-        if matches!(g.state.pending, Pending::EffectLibrarySelection { .. }) { return; }
+        if matches!(g.state.pending, Pending::EffectLibrarySelection { .. }) {
+            return;
+        }
         choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
     }
     panic!("reveal did not begin");
@@ -31,7 +45,10 @@ fn identity_echo_exiles_controlled_permanent_and_publicly_reveals_to_first_match
             for viewer in [p, p.other()] {
                 let frame = g.observe(viewer).library_selection.unwrap();
                 assert!(frame.public);
-                assert_eq!(frame.remaining.iter().map(|o| o.id).collect::<Vec<_>>(), vec![second, first, found]);
+                assert_eq!(
+                    frame.remaining.iter().map(|o| o.id).collect::<Vec<_>>(),
+                    vec![second, first, found]
+                );
                 assert_eq!(frame.candidates, vec![g.object_ref(found)]);
             }
             reject(&mut g, Action::SelectLibrary { card: first });
@@ -44,7 +61,8 @@ fn identity_echo_exiles_controlled_permanent_and_publicly_reveals_to_first_match
             assert_eq!(g.state.players[p.index()].library.last(), Some(&deeper));
             let mut bottom = g.state.players[p.index()].library[..2].to_vec();
             bottom.sort_unstable();
-            let mut expected = vec![first, second]; expected.sort_unstable();
+            let mut expected = vec![first, second];
+            expected.sort_unstable();
             assert_eq!(bottom, expected);
         }
     }
@@ -57,9 +75,26 @@ fn identity_echo_rejects_opponents_and_stops_when_target_is_illegal() {
         let source = put(&mut g, p, "Identity Echo", Zone::Battlefield);
         let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let opponent = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
-        reject(&mut g, Action::ChooseTarget { target: Target::Card(opponent) });
-        act(&mut g, Action::ChooseTarget { target: Target::Card(own) });
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(opponent),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
         pay(&mut g);
         g.change_controller(g.object_ref(own), p.other());
         let library = g.state.players[p.index()].library.clone();
@@ -84,8 +119,10 @@ fn identity_echo_empty_result_still_reveals_and_randomizes_the_rest() {
         assert!(view.candidates.is_empty());
         act(&mut g, Action::FinishLibrarySelection);
         settle(&mut g);
-        let mut after = g.state.players[p.index()].library.clone(); after.sort_unstable();
-        let mut expected = before; expected.sort_unstable();
+        let mut after = g.state.players[p.index()].library.clone();
+        after.sort_unstable();
+        let mut expected = before;
+        expected.sort_unstable();
         assert_eq!(after, expected);
     }
 }

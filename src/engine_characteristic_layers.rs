@@ -244,7 +244,9 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
     aura_effects(world, id)
         .into_iter()
         .filter_map(|(timestamp, spec)| {
-            if matches!(spec.form, PermanentForm::AddCreature) { return None; }
+            if matches!(spec.form, PermanentForm::AddCreature) {
+                return None;
+            }
             Some((
                 timestamp,
                 spec.colors

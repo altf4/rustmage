@@ -49,26 +49,49 @@ impl Game {
     }
     pub(super) fn controls_planeswalker(&self, player: Player) -> bool {
         self.state.objects.iter().enumerate().any(|(id, object)| {
-            object.zone == Zone::Battlefield && object.controller == player
+            object.zone == Zone::Battlefield
+                && object.controller == player
                 && self.current_kinds(id as CardId) & 64 != 0
         })
     }
     pub(super) fn queue_copy_end_step_abilities(&mut self) {
-        let sources: Vec<_> = self.state.copy_recipes.as_ref().into_iter().flat_map(|r| r.iter())
-            .filter(|r| self.on_battlefield(r.object.card) && self.object_ref(r.object.card) == r.object
-                && self.printed_abilities_available(r.object.card))
-            .map(|r| (r.object.card, r.recipe.exceptions.sacrifice_abilities,
-                r.recipe.exceptions.conditional_sacrifice_abilities)).collect();
+        let sources: Vec<_> = self
+            .state
+            .copy_recipes
+            .as_ref()
+            .into_iter()
+            .flat_map(|r| r.iter())
+            .filter(|r| {
+                self.on_battlefield(r.object.card)
+                    && self.object_ref(r.object.card) == r.object
+                    && self.printed_abilities_available(r.object.card)
+            })
+            .map(|r| {
+                (
+                    r.object.card,
+                    r.recipe.exceptions.sacrifice_abilities,
+                    r.recipe.exceptions.conditional_sacrifice_abilities,
+                )
+            })
+            .collect();
         for (source, unconditional, conditional) in sources {
             let controller = self.state.objects[source as usize].controller;
-            let conditional = if self.controls_planeswalker(controller) { 0 } else { conditional };
-            for (amount, kind) in [(unconditional, StackKind::CopyEndStepSacrifice),
-                (conditional, StackKind::CopyEndStepConditionalSacrifice)] {
+            let conditional = if self.controls_planeswalker(controller) {
+                0
+            } else {
+                conditional
+            };
+            for (amount, kind) in [
+                (unconditional, StackKind::CopyEndStepSacrifice),
+                (conditional, StackKind::CopyEndStepConditionalSacrifice),
+            ] {
                 for _ in 0..amount {
                     let mut item = self.activation_item(controller, source, 0);
                     item.kind = kind;
                     item.additional_triggers = trigger_multiplicity::additional_triggers(
-                        &self.characteristic_query(), source);
+                        &self.characteristic_query(),
+                        source,
+                    );
                     self.state.pending_triggers.push(item);
                 }
             }

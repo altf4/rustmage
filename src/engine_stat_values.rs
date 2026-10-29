@@ -106,7 +106,9 @@ impl Game {
         match value {
             StatValue::SourceHasNotDealtCombatDamage => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
-                .map_or(0, |(_, object)| i128::from(!object.dealt_combat_damage_this_incarnation)),
+                .map_or(0, |(_, object)| {
+                    i128::from(!object.dealt_combat_damage_this_incarnation)
+                }),
             StatValue::Fixed(n) => i128::from(n),
             StatValue::HasEnduringStory => i128::from(enduring_story),
             StatValue::SourceCounters(kind) => objects()
@@ -165,11 +167,20 @@ impl Game {
             StatValue::ControllerDomain => {
                 let mut mask = 0u8;
                 for (id, object) in objects() {
-                    if object.zone != Zone::Battlefield || object.controller != owner
-                        || kinds(id, object) & 2 == 0 { continue; }
+                    if object.zone != Zone::Battlefield
+                        || object.controller != owner
+                        || kinds(id, object) & 2 == 0
+                    {
+                        continue;
+                    }
                     let types = subtypes(id);
-                    for (bit, name) in ["Plains", "Island", "Swamp", "Mountain", "Forest"].iter().enumerate() {
-                        if types.has(object.card, name) { mask |= 1 << bit; }
+                    for (bit, name) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                        .iter()
+                        .enumerate()
+                    {
+                        if types.has(object.card, name) {
+                            mask |= 1 << bit;
+                        }
                     }
                 }
                 i128::from(mask.count_ones())

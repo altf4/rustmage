@@ -41,8 +41,16 @@ impl CostContext {
             && a.activation_cost_route != ActivationCostRoute::FirstEquipZero
         {
             source_counter_reservation = a.counter_payment.clone();
-            if let Some(change) = a.item.source_card.activation(ability).cost.loyalty.filter(|change| *change < 0) {
-                source_counter_reservation.add(CounterKind::Loyalty, u64::from(change.unsigned_abs()));
+            if let Some(change) = a
+                .item
+                .source_card
+                .activation(ability)
+                .cost
+                .loyalty
+                .filter(|change| *change < 0)
+            {
+                source_counter_reservation
+                    .add(CounterKind::Loyalty, u64::from(change.unsigned_abs()));
             }
         }
         Some(Box::new(Self {
@@ -1121,7 +1129,9 @@ impl FundingState<'_> {
         }
         if c.counters.len() > usize::from(amount)
             || (!c.source_counter_reservation.is_empty()
-                && !CharacteristicWorld::counter_amounts(&next, c.source.card).contains(&c.source_counter_reservation)) {
+                && !CharacteristicWorld::counter_amounts(&next, c.source.card)
+                    .contains(&c.source_counter_reservation))
+        {
             return false;
         }
         fn fill(
@@ -1148,8 +1158,21 @@ impl FundingState<'_> {
                     if !next.remove_creature_counter(w.reference(resource.id), kind) {
                         continue;
                     }
-                    if !reservation.is_empty() && !CharacteristicWorld::counter_amounts(&next, source.card).contains(reservation) { continue; }
-                    if fill(&next, left - 1, later, remaining, index, source, reservation) {
+                    if !reservation.is_empty()
+                        && !CharacteristicWorld::counter_amounts(&next, source.card)
+                            .contains(reservation)
+                    {
+                        continue;
+                    }
+                    if fill(
+                        &next,
+                        left - 1,
+                        later,
+                        remaining,
+                        index,
+                        source,
+                        reservation,
+                    ) {
                         return true;
                     }
                 }

@@ -19,18 +19,28 @@ impl AttackPayment {
 /// Cardinality of a capacity-one defender assignment. Distinct edge sets are
 /// necessary when separate restrictions affect different attackers.
 pub(super) fn maximum_attack_matching(edges: &[Vec<usize>], slots: usize) -> usize {
-    fn augment(i: usize, edges: &[Vec<usize>], seen: &mut [bool], owners: &mut [Option<usize>]) -> bool {
-            for &slot in &edges[i] {
-                if seen[slot] { continue; }
-                seen[slot] = true;
-                if owners[slot].is_none() || augment(owners[slot].unwrap(), edges, seen, owners) {
-                    owners[slot] = Some(i); return true;
-                }
+    fn augment(
+        i: usize,
+        edges: &[Vec<usize>],
+        seen: &mut [bool],
+        owners: &mut [Option<usize>],
+    ) -> bool {
+        for &slot in &edges[i] {
+            if seen[slot] {
+                continue;
             }
-            false
+            seen[slot] = true;
+            if owners[slot].is_none() || augment(owners[slot].unwrap(), edges, seen, owners) {
+                owners[slot] = Some(i);
+                return true;
+            }
         }
+        false
+    }
     let mut owners = vec![None; slots];
-    for i in 0..edges.len() { augment(i, edges, &mut vec![false; slots], &mut owners); }
+    for i in 0..edges.len() {
+        augment(i, edges, &mut vec![false; slots], &mut owners);
+    }
     owners.iter().filter(|owner| owner.is_some()).count()
 }
 impl Game {
@@ -183,51 +193,98 @@ impl Game {
 
     /// A layer-six grant on this exact planeswalker limits its declared attackers.
     pub(super) fn planeswalker_attack_limited(&self, walker: ObjectRef) -> bool {
-        let Some(object) = self.state.objects.get(walker.card as usize) else { return false; };
-        if object.zone != Zone::Battlefield || self.object_ref(walker.card) != walker
-            || self.current_kinds(walker.card) & 64 == 0 { return false; }
+        let Some(object) = self.state.objects.get(walker.card as usize) else {
+            return false;
+        };
+        if object.zone != Zone::Battlefield
+            || self.object_ref(walker.card) != walker
+            || self.current_kinds(walker.card) & 64 == 0
+        {
+            return false;
+        }
         let view = self.object_view(walker.card);
         self.state.static_sources.iter().copied().any(|provider| {
             let giver = &self.state.objects[provider as usize];
-            giver.zone == Zone::Battlefield && giver.controller == object.controller
-                && giver.card.static_ability_groups().iter().any(|g| g.fragments.iter().any(|f|
-                    matches!(f, crate::cards::StaticAbilityFragment::ControlledPlaneswalkerAttackLimit)))
-                && view.static_grant_available(self.object_ref(provider), giver.card, ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit)
+            giver.zone == Zone::Battlefield
+                && giver.controller == object.controller
+                && giver.card.static_ability_groups().iter().any(|g| {
+                    g.fragments.iter().any(|f| {
+                        matches!(
+                            f,
+                            crate::cards::StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
+                        )
+                    })
+                })
+                && view.static_grant_available(
+                    self.object_ref(provider),
+                    giver.card,
+                    ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit,
+                )
         })
     }
     pub(super) fn attack_slot_free(&self, defender: ObjectRef, except: Option<CardId>) -> bool {
-        !self.planeswalker_attack_limited(defender) || !self.state.selected_attackers.iter().any(|attack|
-            Some(attack.card) != except && attack.defender == Some(CombatDefender::Planeswalker(defender)))
+        !self.planeswalker_attack_limited(defender)
+            || !self.state.selected_attackers.iter().any(|attack| {
+                Some(attack.card) != except
+                    && attack.defender == Some(CombatDefender::Planeswalker(defender))
+            })
     }
     /// Maximum number of simultaneously satisfiable attack requirements. Unlimited
     /// defenders need no matching; limited planeswalkers are capacity-one slots.
     fn maximum_mandatory_attackers(&self, actor: Player) -> usize {
-        let walkers: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(i, o)| {
-            let id = i as CardId;
-            (o.zone == Zone::Battlefield && o.controller == actor.other() && self.current_kinds(id) & 64 != 0)
-                .then_some(self.object_ref(id))
-        }).collect();
+        let walkers: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(i, o)| {
+                let id = i as CardId;
+                (o.zone == Zone::Battlefield
+                    && o.controller == actor.other()
+                    && self.current_kinds(id) & 64 != 0)
+                    .then_some(self.object_ref(id))
+            })
+            .collect();
         let mut free = 0;
         let mut edges = Vec::new();
         for &id in &self.state.static_sources {
-            if !self.attacks_each_combat(id) || !self.can_declare_attacker(actor, id) { continue; }
+            if !self.attacks_each_combat(id) || !self.can_declare_attacker(actor, id) {
+                continue;
+            }
             // A voluntarily selected taxable attack is already paid for purposes
             // of maximizing the remaining requirements; no unchosen attacker is
             // compelled to pay the tax.
             let selected_paid = self.attack_controller_tax(actor.other()) != 0
-                && self.state.selected_attackers.iter().any(|a| a.card == id
-                    && a.defender == Some(CombatDefender::Player(actor.other())));
-            let player_free = selected_paid || self.attack_controller_tax(actor.other()) == 0
-                && self.can_attack_defender(id, CombatDefender::Player(actor.other()));
+                && self.state.selected_attackers.iter().any(|a| {
+                    a.card == id && a.defender == Some(CombatDefender::Player(actor.other()))
+                });
+            let player_free = selected_paid
+                || self.attack_controller_tax(actor.other()) == 0
+                    && self.can_attack_defender(id, CombatDefender::Player(actor.other()));
             let battle_free = self.state.objects.iter().enumerate().any(|(n, _)| {
                 let r = self.object_ref(n as CardId);
-                self.battle_can_be_attacked_by(r, actor) && self.can_attack_defender(id, CombatDefender::Battle(r))
+                self.battle_can_be_attacked_by(r, actor)
+                    && self.can_attack_defender(id, CombatDefender::Battle(r))
             });
-            let walker_free = walkers.iter().any(|&r| !self.planeswalker_attack_limited(r)
-                && self.can_attack_defender(id, CombatDefender::Planeswalker(r)));
-            if player_free || battle_free || walker_free { free += 1; continue; }
-            edges.push(walkers.iter().enumerate().filter_map(|(n, &r)|
-                (self.planeswalker_attack_limited(r) && self.can_attack_defender(id, CombatDefender::Planeswalker(r))).then_some(n)).collect::<Vec<_>>());
+            let walker_free = walkers.iter().any(|&r| {
+                !self.planeswalker_attack_limited(r)
+                    && self.can_attack_defender(id, CombatDefender::Planeswalker(r))
+            });
+            if player_free || battle_free || walker_free {
+                free += 1;
+                continue;
+            }
+            edges.push(
+                walkers
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(n, &r)| {
+                        (self.planeswalker_attack_limited(r)
+                            && self.can_attack_defender(id, CombatDefender::Planeswalker(r)))
+                        .then_some(n)
+                    })
+                    .collect::<Vec<_>>(),
+            );
         }
         free + maximum_attack_matching(&edges, walkers.len())
     }
@@ -246,16 +303,17 @@ impl Game {
                     .is_none_or(|defender| !self.can_attack_defender(attacker.card, defender))
                 || !match attacker.defender {
                     Some(CombatDefender::Player(player)) => player == actor.other(),
-                    Some(CombatDefender::Planeswalker(reference)) => self.attack_slot_free(reference, Some(attacker.card)) && self
-                        .state
-                        .objects
-                        .get(reference.card as usize)
-                        .is_some_and(|object| {
-                            object.zone == Zone::Battlefield
-                                && object.generation == reference.generation
-                                && object.controller == actor.other()
-                                && self.current_kinds(reference.card) & 64 != 0
-                        }),
+                    Some(CombatDefender::Planeswalker(reference)) => {
+                        self.attack_slot_free(reference, Some(attacker.card))
+                            && self.state.objects.get(reference.card as usize).is_some_and(
+                                |object| {
+                                    object.zone == Zone::Battlefield
+                                        && object.generation == reference.generation
+                                        && object.controller == actor.other()
+                                        && self.current_kinds(reference.card) & 64 != 0
+                                },
+                            )
+                    }
                     Some(CombatDefender::Battle(reference)) => {
                         self.battle_can_be_attacked_by(reference, actor)
                     }
@@ -267,26 +325,32 @@ impl Game {
         }
         if !self.has_planeswalker_attack_limit_provider() {
             return self.state.static_sources.iter().all(|&id| {
-            !self.attacks_each_combat(id)
-                || !self.can_declare_attacker(actor, id)
-                || !(if self.attack_controller_tax(actor.other()) == 0 {
-                    self.can_attack_any_defender(actor, id)
-                } else {
-                    self.state.objects.iter().enumerate().any(|(n, o)| {
-                        let reference = self.object_ref(n as CardId);
-                        (o.zone == Zone::Battlefield
-                            && o.controller == actor.other()
-                            && self.current_kinds(n as CardId) & 64 != 0
-                            && self
-                                .can_attack_defender(id, CombatDefender::Planeswalker(reference)))
-                            || (self.battle_can_be_attacked_by(reference, actor)
-                                && self.can_attack_defender(id, CombatDefender::Battle(reference)))
+                !self.attacks_each_combat(id)
+                    || !self.can_declare_attacker(actor, id)
+                    || !(if self.attack_controller_tax(actor.other()) == 0 {
+                        self.can_attack_any_defender(actor, id)
+                    } else {
+                        self.state.objects.iter().enumerate().any(|(n, o)| {
+                            let reference = self.object_ref(n as CardId);
+                            (o.zone == Zone::Battlefield
+                                && o.controller == actor.other()
+                                && self.current_kinds(n as CardId) & 64 != 0
+                                && self.can_attack_defender(
+                                    id,
+                                    CombatDefender::Planeswalker(reference),
+                                ))
+                                || (self.battle_can_be_attacked_by(reference, actor)
+                                    && self
+                                        .can_attack_defender(id, CombatDefender::Battle(reference)))
+                        })
                     })
-                })
-                || chosen.iter().any(|attacker| attacker.card == id)
-        });
+                    || chosen.iter().any(|attacker| attacker.card == id)
+            });
         }
-        let fulfilled = chosen.iter().filter(|attack| self.attacks_each_combat(attack.card)).count();
+        let fulfilled = chosen
+            .iter()
+            .filter(|attack| self.attacks_each_combat(attack.card))
+            .count();
         fulfilled >= self.maximum_mandatory_attackers(actor)
     }
 

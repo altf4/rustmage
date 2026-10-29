@@ -3,14 +3,35 @@ use super::*;
 #[test]
 fn jace_loyalty_threshold_counts_only_controlled_current_jace_planeswalkers() {
     let guard = ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast {
-        subtype: "Jace", minimum: 25,
+        subtype: "Jace",
+        minimum: 25,
     };
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
-        let first = put(&mut g, player, "The Theorist, Jace Beleren", Zone::Battlefield);
-        let second = put(&mut g, player, "The Theorist, Jace Beleren", Zone::Battlefield);
-        let other = put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
-        let enemy = put(&mut g, player.other(), "The Theorist, Jace Beleren", Zone::Battlefield);
+        let first = put(
+            &mut g,
+            player,
+            "The Theorist, Jace Beleren",
+            Zone::Battlefield,
+        );
+        let second = put(
+            &mut g,
+            player,
+            "The Theorist, Jace Beleren",
+            Zone::Battlefield,
+        );
+        let other = put(
+            &mut g,
+            player,
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
+        let enemy = put(
+            &mut g,
+            player.other(),
+            "The Theorist, Jace Beleren",
+            Zone::Battlefield,
+        );
         g.state.objects[first as usize].counters.loyalty = 12;
         g.state.objects[second as usize].counters.loyalty = 12;
         g.state.objects[other as usize].counters.loyalty = 100;

@@ -69,34 +69,62 @@ pub struct Report {
 }
 impl Report {
     pub fn missing_mechanics(&self) -> Vec<&'static str> {
-        ["prepared_created", "prepared_spell_cast", "prepared_spell_resolved", "empower_counters", "fatehold_scry_trigger", "scry_or_surveil_completed", "loyalty_activation"]
+        [
+            "prepared_created",
+            "prepared_spell_cast",
+            "prepared_spell_resolved",
+            "empower_counters",
+            "fatehold_scry_trigger",
+            "scry_or_surveil_completed",
+            "loyalty_activation",
+        ]
         .into_iter()
         .filter(|m| self.witnesses.get(*m).copied().unwrap_or(0) == 0)
         .collect()
     }
 }
 pub fn cases(seeds_per_pair: u64) -> Vec<(usize, u64, Player, bool)> {
-    (0..6).flat_map(|pair| (0..seeds_per_pair).flat_map(move |seed| {
-        [false, true].into_iter().map(move |swapped| (
-            pair, 897500 + pair as u64 * 100 + seed,
-            if seed % 2 == 0 { Player::P0 } else { Player::P1 }, swapped,
-        ))
-    })).collect()
+    (0..6)
+        .flat_map(|pair| {
+            (0..seeds_per_pair).flat_map(move |seed| {
+                [false, true].into_iter().map(move |swapped| {
+                    (
+                        pair,
+                        897500 + pair as u64 * 100 + seed,
+                        if seed % 2 == 0 {
+                            Player::P0
+                        } else {
+                            Player::P1
+                        },
+                        swapped,
+                    )
+                })
+            })
+        })
+        .collect()
 }
 /// Audit every physical identity; an unknown card is as incomplete as a gated one.
 pub fn missing_pool_members() -> Result<Vec<String>, String> {
     let source: serde_json::Value = serde_json::from_str(include_str!("../../data/sets/fra.json"))
         .map_err(|e| e.to_string())?;
     let rows = source["cards"].as_array().ok_or("missing FRA card list")?;
-    let identities: BTreeSet<_> = rows.iter().filter_map(|r| r["oracle_id"].as_str()).collect();
+    let identities: BTreeSet<_> = rows
+        .iter()
+        .filter_map(|r| r["oracle_id"].as_str())
+        .collect();
     if rows.len() != 285 || identities.len() != 285 {
-        return Err(format!("FRA denominator changed: {} rows, {} identities", rows.len(), identities.len()));
+        return Err(format!(
+            "FRA denominator changed: {} rows, {} identities",
+            rows.len(),
+            identities.len()
+        ));
     }
     let mut missing = Vec::new();
     for row in rows {
         let name = row["name"].as_str().ok_or("FRA identity has no name")?;
-        if !Card::from_name(name).is_some_and(|c| c.is_supported()
-            && c.info().oracle_id == row["oracle_id"].as_str()) {
+        if !Card::from_name(name)
+            .is_some_and(|c| c.is_supported() && c.info().oracle_id == row["oracle_id"].as_str())
+        {
             missing.push(name.to_string());
         }
     }
@@ -116,17 +144,99 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
     }
     let missing = missing_pool_members()?;
     if !missing.is_empty() {
-        return Err(format!("FRA full-pool gate: {} unsupported or missing identities: {}", missing.len(), missing.join(", ")));
+        return Err(format!(
+            "FRA full-pool gate: {} unsupported or missing identities: {}",
+            missing.len(),
+            missing.join(", ")
+        ));
     }
     // Each deck has 28 in-set basics and four copies of eight FRA spells.
     // Chosen to exercise prepared faces, scry/surveil, combat and loyalty.
     let specifications = [
-        ("Fatehold", ["Plains", "Island"], ["Campus Crier", "Repurposed Enforcer", "Fatehold Chronologist // Peer Review", "Diviner of Victory // Unwind History", "Surveillance Phantasm", "Proctor of Potential", "Fatehold Charm", "The Theorist, Jace Beleren"]),
-        ("Stingerquill", ["Swamp", "Mountain"], ["Dark Matter Manipulator", "Rank Rat", "Eardrum Rattler", "Stingerquill Voxmancer // Vicious Verse", "Hallway Heckler // Vicious Verse", "Grim Repriser", "Stinging Vitriol", "Stingerquill Charm"]),
-        ("Konstrari", ["Forest", "Mountain"], ["Heartwood Crafter // Soul Tether", "Konstrari Improviser // Soul Tether", "Woodwork Prodigy // Soul Tether", "Sureshot Sower", "Budding Insurgent", "Marwyn, the Clearcutter", "Konstrari Charm", "Blazing Crescendo"]),
-        ("Vigorbloom", ["Forest", "Plains"], ["Emergency Phytomedic // Seed Suture", "Vigorbloom Vanguard // Seed Suture", "Blossom-Blessed Angel // Seed Suture", "Solarium Sentry", "Unflinching Hortimancer", "Sureshot Sower", "Vigorbloom Charm", "Ajani Resolute"]),
-        ("Theorix", ["Island", "Swamp"], ["Diviner of Victory // Unwind History", "Theorist's Proxy", "Paradox Shaper // Omit Variables", "Theorix Metamage // Omit Variables", "Void Extrapolator // Omit Variables", "Dark Matter Manipulator", "Theorix Charm", "Last Gasp"]),
-        ("Echoes", ["Forest", "Island"], ["Carnivorous Cultivator // Enroot", "Sureshot Sower", "Arcane Amphisbaena", "Avatar of Burgeoning Echoes", "Theorist's Proxy", "Diviner of Victory // Unwind History", "Kiora of Salt and Sand", "Unsummon"]),
+        (
+            "Fatehold",
+            ["Plains", "Island"],
+            [
+                "Campus Crier",
+                "Repurposed Enforcer",
+                "Fatehold Chronologist // Peer Review",
+                "Diviner of Victory // Unwind History",
+                "Surveillance Phantasm",
+                "Proctor of Potential",
+                "Fatehold Charm",
+                "The Theorist, Jace Beleren",
+            ],
+        ),
+        (
+            "Stingerquill",
+            ["Swamp", "Mountain"],
+            [
+                "Dark Matter Manipulator",
+                "Rank Rat",
+                "Eardrum Rattler",
+                "Stingerquill Voxmancer // Vicious Verse",
+                "Hallway Heckler // Vicious Verse",
+                "Grim Repriser",
+                "Stinging Vitriol",
+                "Stingerquill Charm",
+            ],
+        ),
+        (
+            "Konstrari",
+            ["Forest", "Mountain"],
+            [
+                "Heartwood Crafter // Soul Tether",
+                "Konstrari Improviser // Soul Tether",
+                "Woodwork Prodigy // Soul Tether",
+                "Sureshot Sower",
+                "Budding Insurgent",
+                "Marwyn, the Clearcutter",
+                "Konstrari Charm",
+                "Blazing Crescendo",
+            ],
+        ),
+        (
+            "Vigorbloom",
+            ["Forest", "Plains"],
+            [
+                "Emergency Phytomedic // Seed Suture",
+                "Vigorbloom Vanguard // Seed Suture",
+                "Blossom-Blessed Angel // Seed Suture",
+                "Solarium Sentry",
+                "Unflinching Hortimancer",
+                "Sureshot Sower",
+                "Vigorbloom Charm",
+                "Ajani Resolute",
+            ],
+        ),
+        (
+            "Theorix",
+            ["Island", "Swamp"],
+            [
+                "Diviner of Victory // Unwind History",
+                "Theorist's Proxy",
+                "Paradox Shaper // Omit Variables",
+                "Theorix Metamage // Omit Variables",
+                "Void Extrapolator // Omit Variables",
+                "Dark Matter Manipulator",
+                "Theorix Charm",
+                "Last Gasp",
+            ],
+        ),
+        (
+            "Echoes",
+            ["Forest", "Island"],
+            [
+                "Carnivorous Cultivator // Enroot",
+                "Sureshot Sower",
+                "Arcane Amphisbaena",
+                "Avatar of Burgeoning Echoes",
+                "Theorist's Proxy",
+                "Diviner of Victory // Unwind History",
+                "Kiora of Salt and Sand",
+                "Unsummon",
+            ],
+        ),
     ];
     let mut out = Vec::new();
     for (name, lands, spells) in specifications {
@@ -208,19 +318,27 @@ impl Tracker {
                 self.colors |= s.source_card.colors();
                 self.hit("actual_cast", s.id.to_string());
                 if s.cast.is_some_and(|cast| cast.origin == Zone::Exile)
-                    && self.prepared_copies.iter().any(|r| r.card == s.object.card
-                        && r.generation.checked_add(1) == Some(s.object.generation)) {
+                    && self.prepared_copies.iter().any(|r| {
+                        r.card == s.object.card
+                            && r.generation.checked_add(1) == Some(s.object.generation)
+                    })
+                {
                     self.prepared_spell_packets.insert(s.id);
                     self.hit("prepared_spell_cast", s.id.to_string());
                 }
             }
             if s.source_card.name() == "Diviner of Victory"
                 && s.kind == (StackKind::TriggeredAbility { ability: 0 })
-                && s.source_ability_origin.is_none() && s.attachment_trigger.is_none() {
+                && s.source_ability_origin.is_none()
+                && s.attachment_trigger.is_none()
+            {
                 self.hit("fatehold_scry_trigger", s.id.to_string());
             }
             if matches!(s.kind, StackKind::ActivatedAbility { .. })
-                && matches!(s.source_card.name(), "Ajani Resolute" | "The Theorist, Jace Beleren")
+                && matches!(
+                    s.source_card.name(),
+                    "Ajani Resolute" | "The Theorist, Jace Beleren"
+                )
             {
                 self.hit("loyalty_activation", s.id.to_string());
             }
@@ -234,8 +352,12 @@ impl Tracker {
         }
         if let Some(packet) = &_before.resolving {
             if self.prepared_spell_packets.contains(&packet.id)
-                && !after.resolving.as_ref().is_some_and(|next| next.id == packet.id)
-                && !after.stack.iter().any(|next| next.id == packet.id) {
+                && !after
+                    .resolving
+                    .as_ref()
+                    .is_some_and(|next| next.id == packet.id)
+                && !after.stack.iter().any(|next| next.id == packet.id)
+            {
                 self.hit("prepared_spell_resolved", packet.id.to_string());
             }
         }
@@ -243,28 +365,48 @@ impl Tracker {
         // empower instruction is resolving. This excludes merely casting or
         // putting the corresponding trigger on the stack.
         if let Some(packet) = _before.resolving.as_ref().or_else(|| {
-            matches!(_action, Action::Pass).then(|| _before.stack.last()).flatten()
+            matches!(_action, Action::Pass)
+                .then(|| _before.stack.last())
+                .flatten()
         }) {
-            if matches!(packet.source_card.name(), "Campus Crier" | "Repurposed Enforcer"
-                | "Theorist's Proxy" | "Avatar of Burgeoning Echoes"
-                | "Arcane Amphisbaena" | "Fatehold Charm") {
+            if matches!(
+                packet.source_card.name(),
+                "Campus Crier"
+                    | "Repurposed Enforcer"
+                    | "Theorist's Proxy"
+                    | "Avatar of Burgeoning Echoes"
+                    | "Arcane Amphisbaena"
+                    | "Fatehold Charm"
+            ) {
                 for object in &after.objects {
-                    if object.zone != Zone::Battlefield || object.controller != packet.controller
-                        || object.card.name() != "@token/jace-planeswalker" {
+                    if object.zone != Zone::Battlefield
+                        || object.controller != packet.controller
+                        || object.card.name() != "@token/jace-planeswalker"
+                    {
                         continue;
                     }
-                    let prior = _before.objects.iter().find(|o| o.reference == object.reference)
+                    let prior = _before
+                        .objects
+                        .iter()
+                        .find(|o| o.reference == object.reference)
                         .map_or(0, |o| o.counters.get(CounterKind::Loyalty));
                     if object.counters.get(CounterKind::Loyalty) > prior {
-                        self.hit("empower_counters", format!("{}/{:?}", packet.id, object.reference));
+                        self.hit(
+                            "empower_counters",
+                            format!("{}/{:?}", packet.id, object.reference),
+                        );
                     }
                 }
             }
         }
-        if _before.library_choice.is_some() && after.library_choice.is_none()
+        if _before.library_choice.is_some()
+            && after.library_choice.is_none()
             && matches!(_action, Action::ArrangeLibrary { .. })
         {
-            self.hit("scry_or_surveil_completed", format!("{}/{:?}/{}", _before.turn, _before.viewer, _before.decision));
+            self.hit(
+                "scry_or_surveil_completed",
+                format!("{}/{:?}/{}", _before.turn, _before.viewer, _before.decision),
+            );
         }
     }
 }
@@ -289,7 +431,11 @@ pub fn run(
     let mut total_decisions = 0;
     for &(pair, seed, starting_player, swapped) in cases {
         let (left, right) = pairings[pair];
-        let (a, b) = if swapped { (right, left) } else { (left, right) };
+        let (a, b) = if swapped {
+            (right, left)
+        } else {
+            (left, right)
+        };
         let config = Config {
             decks: [decks[a].cards.clone(), decks[b].cards.clone()],
             seed,

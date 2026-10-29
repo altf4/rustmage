@@ -797,7 +797,11 @@ impl FundingState<'_> {
             } else {
                 CharacteristicWorld::kinds(self, target.card) & u16::from(spec.kinds) != 0
             }
-            && ability_world::aura_artifact_or_non_aura_enchantment(self, m.before.card, target.card)
+            && ability_world::aura_artifact_or_non_aura_enchantment(
+                self,
+                m.before.card,
+                target.card,
+            )
             && match spec.relation {
                 0 => o.controller == m.controller,
                 1 => o.controller != m.controller,
@@ -1576,7 +1580,8 @@ impl Game {
                     for (pool, amount) in next.mana.iter_mut().zip(production) {
                         *pool += u128::from(amount);
                     }
-                    next.mana[3] = next.mana[3].checked_add(u128::from(a.item.mana_tap_bonus.unwrap_or(0)))
+                    next.mana[3] = next.mana[3]
+                        .checked_add(u128::from(a.item.mana_tap_bonus.unwrap_or(0)))
                         .capacity("mana representation exhausted");
                     if let Some((_, quality)) = self
                         .state

@@ -4,8 +4,16 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::ScryOrSurveil,
         targets: TargetPlan::NONE,
-        program: &[Instruction::Grow { subject: Subject::Source, power: 1, toughness: 1 }],
+        program: &[Instruction::Grow {
+            subject: Subject::Source,
+            power: 1,
+            toughness: 1,
+        }],
     }],
-    extras: &CardExtras { enters_prepared: true, prepared_spell: Some(Card(5458)), ..CardExtras::EMPTY },
+    extras: &CardExtras {
+        enters_prepared: true,
+        prepared_spell: Some(Card(5458)),
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

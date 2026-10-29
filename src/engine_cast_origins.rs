@@ -372,7 +372,10 @@ impl Game {
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             siege_transformed: false,
-            paid: Some(ResolutionPaidCast { kinds: u8::MAX, exile_instants_sorceries: false }),
+            paid: Some(ResolutionPaidCast {
+                kinds: u8::MAX,
+                exile_instants_sorceries: false,
+            }),
             casts_remaining: Some(1),
             pending_cast: None,
             alternative_cost: None,
@@ -525,7 +528,9 @@ impl Game {
             // A paid permission permits a card's alternative disguise cost.
             // Disguise is a creature spell with mana value zero regardless of
             // the printed face; free-cast permissions cannot pay this cost.
-            if free.paid.is_some_and(|paid| paid.kinds == u8::MAX || paid.kinds & 1 != 0)
+            if free
+                .paid
+                .is_some_and(|paid| paid.kinds == u8::MAX || paid.kinds & 1 != 0)
                 && !free.siege_transformed
                 && free.maximum_mana_value.is_none_or(|maximum| maximum > 0)
                 && self.disguise_mana_fundable(player, object.card)
@@ -551,9 +556,9 @@ impl Game {
                 };
                 if definition.is_some_and(|card| {
                     !card.is_land()
-                        && free
-                            .paid
-                            .is_none_or(|paid| paid.kinds == u8::MAX || card.kind_mask() & u16::from(paid.kinds) != 0)
+                        && free.paid.is_none_or(|paid| {
+                            paid.kinds == u8::MAX || card.kind_mask() & u16::from(paid.kinds) != 0
+                        })
                         && free
                             .maximum_mana_value
                             .is_none_or(|maximum| card.fixed_mana_value() < maximum)

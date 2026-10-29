@@ -115,7 +115,12 @@ impl Game {
     pub(super) fn start_target_library_damage(&mut self, item: &SpellView, damage: u16) -> bool {
         self.start_target_library_inner(item, false, Some(damage))
     }
-    fn start_target_library_inner(&mut self, item: &SpellView, second_from_top: bool, top_damage: Option<u16>) -> bool {
+    fn start_target_library_inner(
+        &mut self,
+        item: &SpellView,
+        second_from_top: bool,
+        top_damage: Option<u16>,
+    ) -> bool {
         let targets = item
             .targets
             .iter()
@@ -176,10 +181,16 @@ impl Game {
             let placed = self.move_target_to_library(source, object, destination);
             if let Some(amount) = top_damage.filter(|_| destination == LibraryDestination::Top) {
                 if placed {
-                    let damage = DamageEvent { source: self.program_damage_source(&item),
-                        target: Target::Player(owner), amount: i128::from(amount), combat: false, preventable: true };
+                    let damage = DamageEvent {
+                        source: self.program_damage_source(&item),
+                        target: Target::Player(owner),
+                        amount: i128::from(amount),
+                        combat: false,
+                        preventable: true,
+                    };
                     self.apply_damage_batch(&[damage]);
-                } else if self.object_ref(object.card) == object && self.on_battlefield(object.card) {
+                } else if self.object_ref(object.card) == object && self.on_battlefield(object.card)
+                {
                     self.move_target_to_library(source, object, LibraryDestination::Bottom);
                 }
             }

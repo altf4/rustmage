@@ -2,8 +2,8 @@
 //! Static candidates stay registered while blank, so leaving the removal source
 //! restores them without a zone change or mutable derived cache.
 use super::ability_order::{
-    GrantedAbilityKey, GrantedAbilityKind, GrantedManaAbility, LayerSixAction, LayerSixEffect, LayerSixGrant,
-    LayerSixObject, LayerSixResult, apply_layer_six,
+    GrantedAbilityKey, GrantedAbilityKind, GrantedManaAbility, LayerSixAction, LayerSixEffect,
+    LayerSixGrant, LayerSixObject, LayerSixResult, apply_layer_six,
 };
 use super::ability_world::CharacteristicWorld;
 use super::*;
@@ -158,10 +158,21 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             });
         }
         StaticAbilityFragment::ControlledPlaneswalkerAttackLimit => {
-            if !own || world.kinds(id) & 64 == 0 { return None; }
-            return Some(LayerSixGrant { recipient: id, keywords: Keywords::NONE,
-                abilities: vec![GrantedAbilityKey { source, kind: GrantedAbilityKind::PlaneswalkerAttackLimit,
-                    granting_card: provider.card, grantor_controller: provider.controller, timestamp: time }], mana: Vec::new() });
+            if !own || world.kinds(id) & 64 == 0 {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![GrantedAbilityKey {
+                    source,
+                    kind: GrantedAbilityKind::PlaneswalkerAttackLimit,
+                    granting_card: provider.card,
+                    grantor_controller: provider.controller,
+                    timestamp: time,
+                }],
+                mana: Vec::new(),
+            });
         }
         StaticAbilityFragment::ControlledPlaneswalkerActivation(ability) => {
             if !own || world.kinds(id) & 64 == 0 {
@@ -384,9 +395,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         .enumerate()
                         .filter_map(|(color, subtype)| {
                             let has_subtype = native.map_or_else(
-                                || {
-                                    current.is_some_and(|types| types.has(object.card, subtype))
-                                },
+                                || current.is_some_and(|types| types.has(object.card, subtype)),
                                 |mask| mask & (1 << color) != 0,
                             );
                             if !has_subtype {
@@ -560,7 +569,8 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 continue;
             }
             let action = match row.kind {
-                SourceLinkedEffectKind::RemoveAbilities | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn => LayerSixAction::Remove,
+                SourceLinkedEffectKind::RemoveAbilities
+                | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn => LayerSixAction::Remove,
                 SourceLinkedEffectKind::GrantHexproof => LayerSixAction::Grant {
                     keywords: Keywords::HEXPROOF,
                     abilities: Vec::new(),
@@ -722,7 +732,9 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
-pub enum GrantedStaticRule { PlaneswalkerAttackLimit }
+pub enum GrantedStaticRule {
+    PlaneswalkerAttackLimit,
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct GrantedAbilityView {
@@ -760,9 +772,19 @@ impl ObjectView {
     pub(super) fn printed_abilities_available(&self) -> bool {
         self.abilities.as_ref().is_none_or(|value| value.printed)
     }
-    pub(super) fn static_grant_available(&self, grantor: ObjectRef, granting_card: Card, rule: GrantedStaticRule) -> bool {
-        self.abilities.as_ref().is_some_and(|value| value.grants.iter().any(|grant|
-            grant.grantor == grantor && grant.granting_card == granting_card && grant.static_rule == Some(rule)))
+    pub(super) fn static_grant_available(
+        &self,
+        grantor: ObjectRef,
+        granting_card: Card,
+        rule: GrantedStaticRule,
+    ) -> bool {
+        self.abilities.as_ref().is_some_and(|value| {
+            value.grants.iter().any(|grant| {
+                grant.grantor == grantor
+                    && grant.granting_card == granting_card
+                    && grant.static_rule == Some(rule)
+            })
+        })
     }
     pub(super) fn grant_available(
         &self,
@@ -775,7 +797,8 @@ impl ObjectView {
             value.grants.iter().any(|grant| {
                 grant.grantor == grantor
                     && grant.granting_card == granting_card
-                    && grant.ability == Some(ability) && grant.static_rule.is_none()
+                    && grant.ability == Some(ability)
+                    && grant.static_rule.is_none()
                     && timestamp.is_none_or(|time| grant.timestamp == time)
             })
         })

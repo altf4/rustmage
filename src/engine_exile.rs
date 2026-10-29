@@ -49,14 +49,23 @@ impl Game {
     /// and follows its ability and threshold, not the entry trigger's controller.
     pub(super) fn threshold_linked_source(&self, card: CardId) -> Option<(ObjectRef, Option<u64>)> {
         let reference = self.object_ref(card);
-        self.state.linked_choices.as_ref()?.null_cast_links.iter()
-            .find(|link| link.exiled == reference).map(|link| (link.source, link.ability_origin))
+        self.state
+            .linked_choices
+            .as_ref()?
+            .null_cast_links
+            .iter()
+            .find(|link| link.exiled == reference)
+            .map(|link| (link.source, link.ability_origin))
     }
     fn can_cast_threshold_linked_exile(&self, player: Player, card: CardId) -> bool {
-        let Some(object) = self.state.objects.get(card as usize) else { return false };
-        object.zone == Zone::Exile && !object.card.is_land()
-            && self.threshold_linked_source(card).is_some_and(|source|
-                threshold_linked_source_available(self, player, source))
+        let Some(object) = self.state.objects.get(card as usize) else {
+            return false;
+        };
+        object.zone == Zone::Exile
+            && !object.card.is_land()
+            && self
+                .threshold_linked_source(card)
+                .is_some_and(|source| threshold_linked_source_available(self, player, source))
     }
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
         if self.can_cast_threshold_linked_exile(player, card)
@@ -602,15 +611,32 @@ impl Game {
 
 /// Re-evaluate the continuous permission in the live or speculative world.
 pub(super) fn threshold_linked_source_available<W: ability_world::CharacteristicWorld + ?Sized>(
-    world: &W, player: Player, linked: (ObjectRef, Option<u64>),
+    world: &W,
+    player: Player,
+    linked: (ObjectRef, Option<u64>),
 ) -> bool {
     let (source, ability_origin) = linked;
     let object = world.object(source.card);
-    object.zone == Zone::Battlefield && world.reference(source.card) == source
-        && object.controller == player && world.ability_origin(source.card) == ability_origin
+    object.zone == Zone::Battlefield
+        && world.reference(source.card) == source
+        && object.controller == player
+        && world.ability_origin(source.card) == ability_origin
         && activations::graveyard_cards_at_least(world, player, 0, 7)
-        && object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment|
-            matches!(fragment, crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold)))
-        && characteristic_query::CharacteristicQuery::in_world(world).continuous_fragment_available(source.card, |fragment|
-            matches!(fragment, crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold))
+        && object.card.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(
+                    fragment,
+                    crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold
+                )
+            })
+        })
+        && characteristic_query::CharacteristicQuery::in_world(world).continuous_fragment_available(
+            source.card,
+            |fragment| {
+                matches!(
+                    fragment,
+                    crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold
+                )
+            },
+        )
 }

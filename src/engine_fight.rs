@@ -49,19 +49,39 @@ impl Game {
         self.creatures_deal_power_damage(source, recipient, fight, factor);
     }
     /// Each operand must remain a legal target of the resolving item.
-    pub(super) fn planeswalker_loyalty_damage(&mut self, item: &SpellView, source: u16, recipient: u16) {
-        let find = |group: u16, kinds: u16| item.targets.iter().find_map(|bound| {
-            if bound.group == group && self.same_target_object(*bound)
-                && let Target::Card(id) = bound.target
-                && self.on_battlefield(id) && self.current_kinds(id) & kinds != 0
-            { Some(id) } else { None }
-        });
-        let (Some(source), Some(recipient)) = (find(source, 64), find(recipient, 1 | 64)) else { return };
+    pub(super) fn planeswalker_loyalty_damage(
+        &mut self,
+        item: &SpellView,
+        source: u16,
+        recipient: u16,
+    ) {
+        let find = |group: u16, kinds: u16| {
+            item.targets.iter().find_map(|bound| {
+                if bound.group == group
+                    && self.same_target_object(*bound)
+                    && let Target::Card(id) = bound.target
+                    && self.on_battlefield(id)
+                    && self.current_kinds(id) & kinds != 0
+                {
+                    Some(id)
+                } else {
+                    None
+                }
+            })
+        };
+        let (Some(source), Some(recipient)) = (find(source, 64), find(recipient, 1 | 64)) else {
+            return;
+        };
         let amount = i128::from(self.counter_count(source, CounterKind::Loyalty));
-        if amount == 0 { return; }
+        if amount == 0 {
+            return;
+        }
         self.apply_damage_batch(&[DamageEvent {
-            source: self.damage_source(source), target: Target::Card(recipient), amount,
-            combat: false, preventable: true,
+            source: self.damage_source(source),
+            target: Target::Card(recipient),
+            amount,
+            combat: false,
+            preventable: true,
         }]);
     }
     pub(super) fn source_fight(&mut self, item: &SpellView) {

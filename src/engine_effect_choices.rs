@@ -1111,8 +1111,19 @@ impl Game {
                         .map(move |object| (p, object.card))
                 })
                 .collect();
-            let remembers_controller_sacrifice = self.state.resolving.as_ref().unwrap().program.iter()
-                .any(|instruction| matches!(instruction, Instruction::CreateTokenIfControllerSacrificed(_)));
+            let remembers_controller_sacrifice = self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .program
+                .iter()
+                .any(|instruction| {
+                    matches!(
+                        instruction,
+                        Instruction::CreateTokenIfControllerSacrificed(_)
+                    )
+                });
             let controller = self.state.resolving.as_ref().unwrap().item.controller;
             let controller_subject = choice.selected[controller.index()].first().copied();
             if remembers_controller_sacrifice {
@@ -1186,8 +1197,9 @@ impl Game {
                     });
                 self.sacrifice_batch(&sacrifices);
                 if remembers_controller_sacrifice {
-                    let succeeded = controller_subject.is_some_and(|object|
-                        self.object_ref(object.card) != object || !self.on_battlefield(object.card));
+                    let succeeded = controller_subject.is_some_and(|object| {
+                        self.object_ref(object.card) != object || !self.on_battlefield(object.card)
+                    });
                     self.state.resolving.as_mut().unwrap().moved_count = Some(u64::from(succeeded));
                 }
                 if let Some((object, power)) = reflexive_power

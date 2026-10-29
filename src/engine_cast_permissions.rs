@@ -26,9 +26,14 @@ impl Card {
         })
     }
     pub(super) fn has_creature_count_free_hand_cast(self) -> bool {
-        self.static_ability_groups().iter().any(|group| group.fragments.iter().any(|f| {
-            matches!(f, StaticAbilityFragment::FreeHandCastAtMostControlledCreatures)
-        }))
+        self.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|f| {
+                matches!(
+                    f,
+                    StaticAbilityFragment::FreeHandCastAtMostControlledCreatures
+                )
+            })
+        })
     }
     pub(super) fn has_free_hand_cast(self) -> bool {
         self.static_ability_groups().iter().any(|group| {
@@ -41,12 +46,30 @@ impl Card {
 }
 impl Game {
     /// The source is already on the stack when casting restrictions are checked.
-    pub(super) fn spell_graveyard_requirement_holds(&self, actor: Player, id: CardId, definition: Card) -> bool {
+    pub(super) fn spell_graveyard_requirement_holds(
+        &self,
+        actor: Player,
+        id: CardId,
+        definition: Card,
+    ) -> bool {
         let minimum = usize::from(definition.cast_graveyard_minimum());
-        if minimum == 0 { return true; }
-        self.state.objects.iter().enumerate().filter(|(index, object)| {
-            *index != id as usize && object.owner == actor && object.zone == Zone::Graveyard && !object.is_token() && !object.is_spell_copy()
-        }).take(minimum).count() >= minimum
+        if minimum == 0 {
+            return true;
+        }
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(index, object)| {
+                *index != id as usize
+                    && object.owner == actor
+                    && object.zone == Zone::Graveyard
+                    && !object.is_token()
+                    && !object.is_spell_copy()
+            })
+            .take(minimum)
+            .count()
+            >= minimum
     }
 
     pub(super) fn limited_free_hand_permissions(&self, player: Player) -> Vec<ObjectRef> {
@@ -91,20 +114,36 @@ impl Game {
     }
     /// Evaluate against the selected spell face at announcement, before any
     /// additional cost can remove creatures. A free X spell has X equal to zero.
-    pub(super) fn creature_count_free_hand_cast_available(&self, player: Player, definition: Card) -> bool {
-        let count = self.state.objects.iter().enumerate().filter(|(id, object)| {
-            object.zone == Zone::Battlefield && object.controller == player
-                && self.is_creature(*id as CardId)
-        }).count();
+    pub(super) fn creature_count_free_hand_cast_available(
+        &self,
+        player: Player,
+        definition: Card,
+    ) -> bool {
+        let count = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && self.is_creature(*id as CardId)
+            })
+            .count();
         if u128::from(definition.fixed_mana_value()) > count as u128 {
             return false;
         }
         self.state.static_sources.iter().any(|&id| {
             let object = &self.state.objects[id as usize];
-            object.zone == Zone::Battlefield && object.controller == player
+            object.zone == Zone::Battlefield
+                && object.controller == player
                 && object.card.has_creature_count_free_hand_cast()
-                && self.continuous_fragment_available(id, |fragment| matches!(fragment,
-                    StaticAbilityFragment::FreeHandCastAtMostControlledCreatures))
+                && self.continuous_fragment_available(id, |fragment| {
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::FreeHandCastAtMostControlledCreatures
+                    )
+                })
         })
     }
     pub(super) fn has_graveyard_cast(

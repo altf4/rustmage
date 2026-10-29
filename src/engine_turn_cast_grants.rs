@@ -17,26 +17,50 @@ impl Game {
             .filter(|row| *row != PlayerCastGrantsView::default())
     }
     pub(super) fn grant_next_spell_uncounterable(&mut self, player: Player) {
-        self.state.turn_cast_grants.get_or_insert_with(Default::default)[player.index()].next_spell_uncounterable = true;
+        self.state
+            .turn_cast_grants
+            .get_or_insert_with(Default::default)[player.index()]
+        .next_spell_uncounterable = true;
     }
-    pub(super) fn consume_next_spell_uncounterable(&mut self, player: Player, stack: Option<usize>) {
-        let Some(index) = stack else { return; };
-        let Some(rows) = self.state.turn_cast_grants.as_mut() else { return; };
-        if !rows[player.index()].next_spell_uncounterable { return; }
+    pub(super) fn consume_next_spell_uncounterable(
+        &mut self,
+        player: Player,
+        stack: Option<usize>,
+    ) {
+        let Some(index) = stack else {
+            return;
+        };
+        let Some(rows) = self.state.turn_cast_grants.as_mut() else {
+            return;
+        };
+        if !rows[player.index()].next_spell_uncounterable {
+            return;
+        }
         rows[player.index()].next_spell_uncounterable = false;
         let id = self.state.stack[index].id;
         self.prune_uncounterable_spell_ids();
-        self.state.uncounterable_spell_ids.get_or_insert_with(Default::default).push(id);
+        self.state
+            .uncounterable_spell_ids
+            .get_or_insert_with(Default::default)
+            .push(id);
     }
     pub(super) fn prune_uncounterable_spell_ids(&mut self) {
         if let Some(ids) = &mut self.state.uncounterable_spell_ids {
             ids.retain(|id| self.state.stack.iter().any(|item| item.id == *id));
-            if ids.is_empty() { self.state.uncounterable_spell_ids = None; }
+            if ids.is_empty() {
+                self.state.uncounterable_spell_ids = None;
+            }
         }
     }
     pub(super) fn uncounterable_spell_ids_view(&self) -> Vec<u64> {
-        self.state.uncounterable_spell_ids.as_deref().into_iter().flatten().copied()
-            .filter(|id| self.state.stack.iter().any(|item| item.id == *id)).collect()
+        self.state
+            .uncounterable_spell_ids
+            .as_deref()
+            .into_iter()
+            .flatten()
+            .copied()
+            .filter(|id| self.state.stack.iter().any(|item| item.id == *id))
+            .collect()
     }
     pub(super) fn grant_artifact_spell_reduction(&mut self, player: Player, amount: u32) {
         if amount == 0 {

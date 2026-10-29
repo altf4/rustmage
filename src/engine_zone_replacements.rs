@@ -267,9 +267,12 @@ impl Game {
                         && match self.state.objects[id as usize].card.zone_replacement() {
                             Some(ZoneReplacementRule::ExileAllCardsAndTokens) => true,
                             Some(ZoneReplacementRule::ExileInstantSorceryCards) => spell,
-                            Some(ZoneReplacementRule::ExileOpposingCreatureDeathPlain) =>
-                                before.zone == Zone::Battlefield && before.is_creature()
-                                    && self.state.objects[id as usize].controller != before.controller,
+                            Some(ZoneReplacementRule::ExileOpposingCreatureDeathPlain) => {
+                                before.zone == Zone::Battlefield
+                                    && before.is_creature()
+                                    && self.state.objects[id as usize].controller
+                                        != before.controller
+                            }
                             _ => false,
                         }
                 }),

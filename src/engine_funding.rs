@@ -437,8 +437,13 @@ fn source_obligations(
             goal.actor,
             true,
         ) && amounts.contains(counters)
-            && amounts.get(CounterKind::Loyalty).saturating_sub(counters.get(CounterKind::Loyalty))
-                >= ability.cost.loyalty.filter(|change| *change < 0)
+            && amounts
+                .get(CounterKind::Loyalty)
+                .saturating_sub(counters.get(CounterKind::Loyalty))
+                >= ability
+                    .cost
+                    .loyalty
+                    .filter(|change| *change < 0)
                     .map_or(0, |change| u64::from(change.unsigned_abs()))
     } else {
         // The activated ability already exists independently of its source.
@@ -615,9 +620,15 @@ impl<'g> FundingState<'g> {
         let mut power_sensitive = false;
         // Loyalty thresholds must retain all battlefield objects: a projected
         // payment can change control or type before a later guarded mana action.
-        let mut loyalty_threshold_sensitive = goal.source.as_ref().is_some_and(|(_, index, _, definition, _)|
-            matches!(definition.activation(*index).guard,
-                ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. }));
+        let mut loyalty_threshold_sensitive =
+            goal.source
+                .as_ref()
+                .is_some_and(|(_, index, _, definition, _)| {
+                    matches!(
+                        definition.activation(*index).guard,
+                        ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. }
+                    )
+                });
         for (id, object) in game.state.objects.iter().enumerate() {
             if object.zone == Zone::Battlefield && object.controller == goal.actor {
                 let inherited = borrowed_activations::abilities(game, id as CardId);
@@ -628,8 +639,10 @@ impl<'g> FundingState<'g> {
                     .chain(inherited.into_iter().map(|a| a.rules()))
                 {
                     if let Some(production) = ability.mana_production() {
-                        loyalty_threshold_sensitive |= matches!(ability.guard,
-                            ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. });
+                        loyalty_threshold_sensitive |= matches!(
+                            ability.guard,
+                            ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. }
+                        );
                         power_sensitive |= matches!(
                             production.base(),
                             ManaProduction::SourcePower { .. }
@@ -799,8 +812,11 @@ impl<'g> FundingState<'g> {
             && !a.additional_paid
             && a.additional_cost().is_some_and(|s| {
                 evidence::threshold(s).is_some()
-                    || matches!(s.kind, EffectChoiceKind::ExileGraveyardSymbols { .. }
-                        | EffectChoiceKind::RemoveCreatureCounters(_))
+                    || matches!(
+                        s.kind,
+                        EffectChoiceKind::ExileGraveyardSymbols { .. }
+                            | EffectChoiceKind::RemoveCreatureCounters(_)
+                    )
             })
         {
             // Preserve exact additional-cost witnesses while nested mana
@@ -901,7 +917,8 @@ impl<'g> FundingState<'g> {
                 (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
                     || self.game.sneak_attacker(goal.actor, r)
                         && ability_world::CharacteristicWorld::attacking(self, r.card))
-                    && (spec.kind != EffectChoiceKind::DiscardLegendary || ability_world::CharacteristicWorld::legendary(self, r.card))
+                    && (spec.kind != EffectChoiceKind::DiscardLegendary
+                        || ability_world::CharacteristicWorld::legendary(self, r.card))
                     && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
                         || additional_costs::legendary_name_match(self, goal.actor, r.card))
             })
@@ -1128,12 +1145,22 @@ impl<'g> FundingState<'g> {
             }
             ActivationGuard::OwnTurn => self.active == actor,
             ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype, minimum } => {
-                self.resources.iter().filter(|r| {
-                    r.object.zone == Zone::Battlefield && r.object.controller == actor
-                        && self.kinds(r) & 64 != 0
-                        && self.granted_subtypes(r.id).has(r.object.card, subtype)
-                }).fold(0u64, |sum, r| sum.saturating_add(
-                    ability_world::CharacteristicWorld::counter_count(self, r.id, CounterKind::Loyalty))) >= minimum
+                self.resources
+                    .iter()
+                    .filter(|r| {
+                        r.object.zone == Zone::Battlefield
+                            && r.object.controller == actor
+                            && self.kinds(r) & 64 != 0
+                            && self.granted_subtypes(r.id).has(r.object.card, subtype)
+                    })
+                    .fold(0u64, |sum, r| {
+                        sum.saturating_add(ability_world::CharacteristicWorld::counter_count(
+                            self,
+                            r.id,
+                            CounterKind::Loyalty,
+                        ))
+                    })
+                    >= minimum
             }
             ActivationGuard::ControlLandsAtLeast(minimum) => {
                 self.resources
@@ -1490,10 +1517,20 @@ impl<'g> FundingState<'g> {
                 .iter()
                 .any(|g| g.source == source && g.sacrifice)
         });
-        let cost = step.ability.map(|index| step.frozen.as_deref().map_or_else(
-            || step.borrowed.map_or_else(|| self.resources[step.resource].object.card.activation(index), |a| a.rules()),
-            |(definition, _)| definition.activation(index),
-        ).cost);
+        let cost = step.ability.map(|index| {
+            step.frozen
+                .as_deref()
+                .map_or_else(
+                    || {
+                        step.borrowed.map_or_else(
+                            || self.resources[step.resource].object.card.activation(index),
+                            |a| a.rules(),
+                        )
+                    },
+                    |(definition, _)| definition.activation(index),
+                )
+                .cost
+        });
         if let Some(cost) = cost {
             self.life -= i128::from(cost.life);
             self.life_lost[self.actor.index()] |= cost.life > 0;
@@ -1541,9 +1578,16 @@ impl<'g> FundingState<'g> {
         let tap_bonus = if pays_tap
             && CharacteristicWorld::object(self, id).zone == Zone::Battlefield
             && CharacteristicWorld::object(self, id).controller == self.actor
-            && CharacteristicWorld::subtypes(self, id).has(CharacteristicWorld::object(self, id).card, "Mountain")
-        { self.game.state.players[self.actor.index()].mountain_mana_bonus } else { 0 };
-        if pays_tap { self.resources[step.resource].object.tapped = true; }
+            && CharacteristicWorld::subtypes(self, id)
+                .has(CharacteristicWorld::object(self, id).card, "Mountain")
+        {
+            self.game.state.players[self.actor.index()].mountain_mana_bonus
+        } else {
+            0
+        };
+        if pays_tap {
+            self.resources[step.resource].object.tapped = true;
+        }
         // Tap/counter costs are real prior states, even when the departure below
         // still needs replacement planning. Do not award from a tentative raw
         // destination in the preserve-departure path.
@@ -1632,7 +1676,8 @@ impl<'g> FundingState<'g> {
         }
         // Triggered mana is ordinary even when the activated ability's own
         // production has a spending restriction or other quality.
-        self.mana[3] = self.mana[3].checked_add(u128::from(tap_bonus))
+        self.mana[3] = self.mana[3]
+            .checked_add(u128::from(tap_bonus))
             .capacity("mana representation exhausted");
     }
     fn key(&self, goal: &FundingGoal) -> FundingKey {
@@ -1846,7 +1891,9 @@ impl<'g> FundingState<'g> {
             }
             if !object.tapped {
                 // Overcount all possible tap sources; subtype may change during funding.
-                total = total.saturating_add(u128::from(self.game.state.players[self.actor.index()].mountain_mana_bonus));
+                total = total.saturating_add(u128::from(
+                    self.game.state.players[self.actor.index()].mountain_mana_bonus,
+                ));
                 total = total.saturating_add(u128::from(
                     object.card.mana_color().is_some() || self.kinds(resource) & 2 != 0,
                 ));
@@ -1937,7 +1984,9 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             if !object.tapped {
-                upper[3] = upper[3].saturating_add(u128::from(self.game.state.players[self.actor.index()].mountain_mana_bonus));
+                upper[3] = upper[3].saturating_add(u128::from(
+                    self.game.state.players[self.actor.index()].mountain_mana_bonus,
+                ));
             }
             let mut add = |production: ManaProduction, uses: u128| {
                 let production = match production.base() {
@@ -2135,7 +2184,9 @@ impl<'g> FundingState<'g> {
                         .contains(Keywords::HASTE));
             if tap_ready {
                 // Overestimate: a later payment may change this source's subtype.
-                upper[3] = upper[3].saturating_add(u128::from(self.game.state.players[self.actor.index()].mountain_mana_bonus));
+                upper[3] = upper[3].saturating_add(u128::from(
+                    self.game.state.players[self.actor.index()].mountain_mana_bonus,
+                ));
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, resource.id) {
                     grant.production.visit(|mana| {
                         for i in 0..6 {
@@ -3636,16 +3687,33 @@ impl FundingState<'_> {
                 return false;
             }
         }
-        if !after.obligations(goal) { return false; }
-        let reserved = goal.source.as_ref().map_or(0u128, |(source, index, selected, definition, _)| {
-            let object = after.object(source.card);
-            if object.zone != Zone::Battlefield || object.controller != after.actor || after.kinds(&Resource {
-                id: source.card, object: object.clone(), attacking: false,
-            }) & 1 == 0 { return 0; }
-            let loyalty = definition.activation(*index).cost.loyalty.filter(|change| *change < 0)
-                .map_or(0, |change| u64::from(change.unsigned_abs()));
-            selected.total() + u128::from(loyalty)
-        });
+        if !after.obligations(goal) {
+            return false;
+        }
+        let reserved =
+            goal.source
+                .as_ref()
+                .map_or(0u128, |(source, index, selected, definition, _)| {
+                    let object = after.object(source.card);
+                    if object.zone != Zone::Battlefield
+                        || object.controller != after.actor
+                        || after.kinds(&Resource {
+                            id: source.card,
+                            object: object.clone(),
+                            attacking: false,
+                        }) & 1
+                            == 0
+                    {
+                        return 0;
+                    }
+                    let loyalty = definition
+                        .activation(*index)
+                        .cost
+                        .loyalty
+                        .filter(|change| *change < 0)
+                        .map_or(0, |change| u64::from(change.unsigned_abs()));
+                    selected.total() + u128::from(loyalty)
+                });
         let available = after
             .resources
             .iter()

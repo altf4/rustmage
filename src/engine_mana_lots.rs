@@ -552,9 +552,14 @@ impl Game {
     }
     pub(super) fn mountain_tap_bonus(&self, actor: Player, card: CardId) -> u32 {
         let object = &self.state.objects[card as usize];
-        if object.zone == Zone::Battlefield && object.controller == actor && self.has_subtype(card, "Mountain") {
+        if object.zone == Zone::Battlefield
+            && object.controller == actor
+            && self.has_subtype(card, "Mountain")
+        {
             self.state.players[actor.index()].mountain_mana_bonus
-        } else { 0 }
+        } else {
+            0
+        }
     }
     pub(super) fn produce_mountain_tap_bonus(&mut self, actor: Player, amount: u32) {
         if amount > 0 {

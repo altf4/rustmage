@@ -23,23 +23,44 @@ fn schema183_rejects_real_delayed_trigger_after_registry_expires() {
         let mut g = scenario(player);
         let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         let garruk = Card::from_name("Garruk, Curse Breaker").unwrap();
-        g.apply_temporary_copy(g.object_ref(source), CopyRecipe::new(garruk), CopyDeadline::EndOfTurn);
+        g.apply_temporary_copy(
+            g.object_ref(source),
+            CopyRecipe::new(garruk),
+            CopyDeadline::EndOfTurn,
+        );
         g.state.objects[source as usize].counters.loyalty = 5;
         let attacker = put(&mut g, player, "Hill Giant", Zone::Battlefield);
-        act(&mut g, Action::AnnounceActivate { card: source, ability: 2, counter_payment: Counters::default() });
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 2,
+                counter_payment: Counters::default(),
+            },
+        );
         pay(&mut g);
         settle(&mut g);
         assert!(g.state.delayed_opponent_attack_until_next_turn.is_some());
         // Departure restores the underlying supported Bear Cub definition.
         g.move_object(source, Zone::Exile);
-        assert_eq!(g.state.objects[source as usize].card, Card::from_name("Bear Cub").unwrap());
+        assert_eq!(
+            g.state.objects[source as usize].card,
+            Card::from_name("Bear Cub").unwrap()
+        );
         g.state.step = Step::Attackers;
         g.state.pending = Pending::Attackers;
         act(&mut g, Action::Attack { card: attacker });
         act(&mut g, Action::FinishAttackers);
         g.prepare_triggers();
-        assert!(g.state.stack.iter().chain(&g.state.pending_triggers).chain(&g.state.ordering_triggers)
-            .any(|item| item.source_card == garruk && matches!(item.kind, StackKind::TriggeredAbility { .. })));
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .chain(&g.state.pending_triggers)
+                .chain(&g.state.ordering_triggers)
+                .any(|item| item.source_card == garruk
+                    && matches!(item.kind, StackKind::TriggeredAbility { .. }))
+        );
         // Force the deadline boundary while the already-created trigger remains
         // pending, to audit owned continuation independently from the registry.
         // Normal priority rules would resolve it before the next ordinary turn.

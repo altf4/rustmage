@@ -725,7 +725,9 @@ impl Game {
                     .capacity("damage replacement quantity exhausted")
             }
             ReplacementSpec::NoncombatDamageToOpponentPlus(amount) => {
-                event.amount = event.amount.checked_add(i128::from(amount))
+                event.amount = event
+                    .amount
+                    .checked_add(i128::from(amount))
                     .capacity("damage replacement quantity exhausted");
             }
             ReplacementSpec::NoncombatDamagePlusSourcePower => {

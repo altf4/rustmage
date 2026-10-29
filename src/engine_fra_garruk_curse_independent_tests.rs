@@ -3,7 +3,14 @@ use super::*;
 fn garruk_schedule(g: &mut Game, player: Player) -> CardId {
     let source = put(g, player, "Garruk, Curse Breaker", Zone::Battlefield);
     g.state.objects[source as usize].counters.loyalty = 5;
-    act(g, Action::AnnounceActivate { card: source, ability: 2, counter_payment: Counters::default() });
+    act(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 2,
+            counter_payment: Counters::default(),
+        },
+    );
     pay(g);
     settle(g);
     source
@@ -23,13 +30,29 @@ fn copied_delayed_attack_trigger_preserves_exact_attacker_subjects() {
         let source = garruk_schedule(&mut g, player);
         let attacker = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         garruk_attack(&mut g, attacker);
-        let original = g.state.stack.iter().find(|item| item.card == source
-            && matches!(item.kind, StackKind::TriggeredAbility { .. })).unwrap().clone();
+        let original = g
+            .state
+            .stack
+            .iter()
+            .find(|item| {
+                item.card == source && matches!(item.kind, StackKind::TriggeredAbility { .. })
+            })
+            .unwrap()
+            .clone();
         let mut copier = original.clone();
         copier.controller = player.other();
-        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        copier.targets = vec![BoundTarget {
+            group: 0,
+            target: Target::Stack(original.id),
+            object: None,
+        }];
         g.copy_target_ability(&copier, 0);
-        assert!(g.state.stack.iter().any(|item| item.is_copy && item.controller == player.other()));
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .any(|item| item.is_copy && item.controller == player.other())
+        );
         let saved = g.snapshot();
         for _ in 0..2 {
             settle(&mut g);
@@ -61,8 +84,20 @@ fn delayed_garruk_groups_again_on_second_combat_and_bonus_survives_blockers() {
         for _ in 0..2 {
             g.state.step = Step::Blockers;
             g.state.pending = Pending::Blockers;
-            act(&mut g, Action::Block { blocker: blocker_a, attacker: first });
-            act(&mut g, Action::Block { blocker: blocker_b, attacker: first });
+            act(
+                &mut g,
+                Action::Block {
+                    blocker: blocker_a,
+                    attacker: first,
+                },
+            );
+            act(
+                &mut g,
+                Action::Block {
+                    blocker: blocker_b,
+                    attacker: first,
+                },
+            );
             act(&mut g, Action::FinishBlockers);
             assert_eq!(g.state.blocks.len(), 2);
             assert_eq!(stats(&g, first), (4, 4));
@@ -92,12 +127,24 @@ fn delayed_garruk_uses_effect_controller_and_expires_at_that_players_next_turn()
         for _ in 0..2 {
             g.state.active = player.other();
             g.begin_turn();
-            assert_eq!(g.state.delayed_opponent_attack_until_next_turn.as_ref().unwrap().len(), 1);
+            assert_eq!(
+                g.state
+                    .delayed_opponent_attack_until_next_turn
+                    .as_ref()
+                    .unwrap()
+                    .len(),
+                1
+            );
             g.state.active = player;
             g.begin_turn();
             assert!(g.state.delayed_opponent_attack_until_next_turn.is_none());
             garruk_attack(&mut g, first);
-            assert!(!g.state.pending_triggers.iter().any(|item| item.card == source));
+            assert!(
+                !g.state
+                    .pending_triggers
+                    .iter()
+                    .any(|item| item.card == source)
+            );
             g.restore(&saved).unwrap();
         }
     }

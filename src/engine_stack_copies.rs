@@ -28,10 +28,20 @@ pub(super) struct CopyState {
 impl CopyState {
     #[cfg(test)]
     pub(super) fn test_retarget(item: SpellView, template: SpellView) -> Self {
-        Self { delayed: Vec::new(), retarget: Some(Retarget { item, template, remaining: 0, victim: None }) }
+        Self {
+            delayed: Vec::new(),
+            retarget: Some(Retarget {
+                item,
+                template,
+                remaining: 0,
+                victim: None,
+            }),
+        }
     }
     pub(super) fn packets(&self) -> impl Iterator<Item = &SpellView> {
-        self.delayed.iter().chain(self.retarget.iter().flat_map(|r| [&r.item, &r.template]))
+        self.delayed
+            .iter()
+            .chain(self.retarget.iter().flat_map(|r| [&r.item, &r.template]))
     }
 }
 pub(super) fn owned_bytes(state: &Option<Box<CopyState>>) -> usize {
@@ -236,22 +246,32 @@ impl Game {
     pub(super) fn capture_copy_cast(&mut self, stack: Option<usize>, first_trigger: usize) {
         let Some(index) = stack else { return };
         let spell = self.state.stack[index].clone();
-        let instant_or_sorcery = crate::cards::CastFilter::InstantSorcery.matches(spell.source_card);
+        let instant_or_sorcery =
+            crate::cards::CastFilter::InstantSorcery.matches(spell.source_card);
         self.capture_copy_cast_classified(spell, first_trigger, instant_or_sorcery);
     }
 
-    fn capture_copy_cast_classified(&mut self, spell: SpellView, first_trigger: usize, instant_or_sorcery: bool) {
+    fn capture_copy_cast_classified(
+        &mut self,
+        spell: SpellView,
+        first_trigger: usize,
+        instant_or_sorcery: bool,
+    ) {
         if !instant_or_sorcery && !spell.source_card.is_prepared_face() {
             return;
         }
-        let prior = self.state.players[spell.controller.index()].instant_sorcery_cast_this_turn.saturating_sub(1);
+        let prior = self.state.players[spell.controller.index()]
+            .instant_sorcery_cast_this_turn
+            .saturating_sub(1);
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
             if let Some((_, program)) = trigger.program()
                 && let Some(amount) = program.iter().find_map(|i| match i {
                     Instruction::CopyCastSpell { prior_spells } if instant_or_sorcery => {
                         Some(if *prior_spells { prior } else { 1 })
                     }
-                    Instruction::CopyCastSpellChosenX if instant_or_sorcery => Some(u64::from(spell.x.unwrap_or(0))),
+                    Instruction::CopyCastSpellChosenX if instant_or_sorcery => {
+                        Some(u64::from(spell.x.unwrap_or(0)))
+                    }
                     Instruction::CopyPreparedCastSpell => Some(1),
                     _ => None,
                 })
@@ -299,7 +319,11 @@ impl Game {
         self.release_stack_copy_state();
     }
     #[cfg(test)]
-    pub(super) fn test_capture_noninstant_prepared_cast(&mut self, index: usize, first_trigger: usize) {
+    pub(super) fn test_capture_noninstant_prepared_cast(
+        &mut self,
+        index: usize,
+        first_trigger: usize,
+    ) {
         let mut spell = self.state.stack[index].clone();
         // Preserve an actual spell object and stack id, while substituting the
         // existing prepared-face marker. Classification is explicitly non-instant.
@@ -412,7 +436,9 @@ impl Game {
             recipe = recipe.with_exceptions(exceptions);
             self.set_copy_recipe(copy.object, recipe);
             copy.source_copy_recipe = Some(Box::new(recipe));
-            if exceptions.sacrifice_abilities != 0 || exceptions.conditional_sacrifice_abilities != 0 {
+            if exceptions.sacrifice_abilities != 0
+                || exceptions.conditional_sacrifice_abilities != 0
+            {
                 copy.source_keywords = copy.source_keywords.union(Keywords::HASTE);
             }
         }
@@ -466,9 +492,14 @@ impl Game {
     }
     /// Codie's trigger refers to the actual spell, not its last known copy.
     pub(super) fn copy_captured_prepared_spell(&mut self, item: &SpellView) -> bool {
-        let Some(event) = &item.copy_event else { return false };
-        if !self.state.stack.iter().any(|spell| spell.id == event.spell.id
-            && spell.object == event.spell.object && spell.kind == StackKind::Spell) {
+        let Some(event) = &item.copy_event else {
+            return false;
+        };
+        if !self.state.stack.iter().any(|spell| {
+            spell.id == event.spell.id
+                && spell.object == event.spell.object
+                && spell.kind == StackKind::Spell
+        }) {
             return false;
         }
         self.copy_captured_spell(item)

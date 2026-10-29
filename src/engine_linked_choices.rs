@@ -67,8 +67,11 @@ pub(super) struct ChoiceState {
 impl ChoiceState {
     // Suspended interactions may own packets; the remaining bookkeeping owns only references.
     pub(super) fn has_opaque_interaction(&self) -> bool {
-        self.hand.is_some() || self.hand_library_search.is_some() || self.zone_search.is_some()
-            || self.library_cast.is_some() || self.deployment.is_some()
+        self.hand.is_some()
+            || self.hand_library_search.is_some()
+            || self.zone_search.is_some()
+            || self.library_cast.is_some()
+            || self.deployment.is_some()
     }
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
@@ -105,7 +108,8 @@ impl Game {
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
-            if data.links.is_empty() && data.null_cast_links.is_empty()
+            if data.links.is_empty()
+                && data.null_cast_links.is_empty()
                 && data.hideaway_controllers.is_empty()
                 && data.hidden.is_empty()
             {

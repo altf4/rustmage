@@ -1,9 +1,23 @@
 use super::*;
 
 fn hall_activate(g: &mut Game, hall: CardId, target: CardId) {
-    act(g, Action::AnnounceActivate { card: hall, ability: 1, counter_payment: Counters::default() });
-    act(g, Action::ChooseTarget { target: Target::Card(target) });
-    if g.legal_actions().contains(&Action::FinishTargets) { act(g, Action::FinishTargets); }
+    act(
+        g,
+        Action::AnnounceActivate {
+            card: hall,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
     pay(g);
 }
 

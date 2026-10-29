@@ -86,7 +86,8 @@ impl CopyExceptions {
                 .sacrifice_abilities
                 .checked_add(other.sacrifice_abilities)
                 .capacity("copy sacrifice abilities"),
-            conditional_sacrifice_abilities: self.conditional_sacrifice_abilities
+            conditional_sacrifice_abilities: self
+                .conditional_sacrifice_abilities
                 .checked_add(other.conditional_sacrifice_abilities)
                 .capacity("copy conditional sacrifice abilities"),
             nightmare: self.nightmare || other.nightmare,
@@ -1106,9 +1107,15 @@ pub(crate) enum Instruction {
     ReturnOneLinkedExileToHand,
     /// Trigger once per declaration attacking the resolving controller's opponent,
     /// through (but not including) the beginning of that controller's next turn.
-    ScheduleOpponentAttackUntilNextTurn { ability: u16 },
+    ScheduleOpponentAttackUntilNextTurn {
+        ability: u16,
+    },
     /// Apply one temporary bonus to the exact attackers captured by that event.
-    GrowDeclaredAttackers { power: i32, toughness: i32, keywords: Keywords },
+    GrowDeclaredAttackers {
+        power: i32,
+        toughness: i32,
+        keywords: Keywords,
+    },
     WeakenDeclaredAttacker(i32),
     ExileOpponentLibrariesExceptBottom,
     ScheduleAttackTriggerThisTurn {
@@ -1178,7 +1185,9 @@ pub(crate) enum Instruction {
     /// Exile the controller’s top card, then offer one normal-cost cast.
     ExileTopMayCastPaid,
     /// Skip the following instructions if that offered cast committed.
-    IfOfferedCastCommitted { skip: usize },
+    IfOfferedCastCommitted {
+        skip: usize,
+    },
     ExileTargetLibraryTopCastFree {
         amount: u16,
         maximum_casts: u16,
@@ -1759,7 +1768,10 @@ pub(crate) enum Instruction {
     OpponentsDiscardTwoDrawUnlessTwoNonland,
     /// Discard two, then create a reflexive trigger for actual nonland discards.
     DiscardTwoNonlandReflexive(u16),
-    TargetStatsUntilNextTurn { power: i32, toughness: i32 },
+    TargetStatsUntilNextTurn {
+        power: i32,
+        toughness: i32,
+    },
     ChooseObjects {
         kind: EffectChoiceKind,
         players: PlayerSet,
@@ -1780,7 +1792,10 @@ pub(crate) enum Instruction {
         group: u16,
     },
     /// A targeted planeswalker deals damage equal to its current loyalty.
-    LoyaltyDamage { source: u16, recipient: u16 },
+    LoyaltyDamage {
+        source: u16,
+        recipient: u16,
+    },
     PowerDamage {
         source: u16,
         recipient: u16,
@@ -1851,8 +1866,14 @@ pub(crate) enum Instruction {
     /// Single-player optional effect, including zero-card searches.
     /// Record APNAP optional wheel decisions before performing either player's action.
     BeginOptionalWheel(u16),
-    AskOptionalWheel { first: bool, skip: usize },
-    RecordOptionalWheel { first: bool, accept: bool },
+    AskOptionalWheel {
+        first: bool,
+        skip: usize,
+    },
+    RecordOptionalWheel {
+        first: bool,
+        accept: bool,
+    },
     ExecuteOptionalWheel,
     MayPlayer {
         player: PlayerSet,
@@ -3695,7 +3716,10 @@ pub(crate) enum TriggerCondition {
     OtherSubtypeEntersYou(&'static str),
     SubtypeEntersYou(&'static str),
     /// The entrant must match, and the intervening threshold excludes its exact incarnation.
-    SubtypeEntersYouWithOthers { subtype: &'static str, minimum: u16 },
+    SubtypeEntersYouWithOthers {
+        subtype: &'static str,
+        minimum: u16,
+    },
     ArtifactEntersYou,
     EnchantmentEntersYou,
     CreatureEntersYou,
@@ -3959,7 +3983,8 @@ impl ActivatedAbility {
                 assert!(
                     self.origin == ActivationOrigin::Battlefield
                         && self.cost.remove.is_none()
-                        && (self.cost.tap || (*kind == CounterKind::Loyalty && self.cost.loyalty == Some(0))),
+                        && (self.cost.tap
+                            || (*kind == CounterKind::Loyalty && self.cost.loyalty == Some(0))),
                     "variable counter cost requires a tap cost or variable loyalty cost"
                 );
                 Some(*kind)
@@ -4445,7 +4470,8 @@ impl Card {
         generated::role(self)
     }
     pub(crate) fn aura_artifact_or_non_aura_enchantment(self) -> bool {
-        authored::rules(self).is_some_and(|rules| rules.extras.aura_artifact_or_non_aura_enchantment)
+        authored::rules(self)
+            .is_some_and(|rules| rules.extras.aura_artifact_or_non_aura_enchantment)
     }
     pub(crate) fn aura(self) -> Option<AuraSpec> {
         authored::rules(self).map_or_else(|| generated::aura(self), |rules| rules.aura)
@@ -5102,28 +5128,73 @@ pub(crate) mod composite_loyalty_fixture {
     std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
     pub(crate) struct Guard;
     impl Guard {
-        pub(crate) fn new() -> Self { Self::set(1) }
-        pub(crate) fn with_mana() -> Self { Self::set(2) }
-        pub(crate) fn with_mana_two_counters() -> Self { Self::set(3) }
-        fn set(mode: u8) -> Self { MODE.with(|value| { assert_eq!(value.replace(mode), 0); }); Self }
+        pub(crate) fn new() -> Self {
+            Self::set(1)
+        }
+        pub(crate) fn with_mana() -> Self {
+            Self::set(2)
+        }
+        pub(crate) fn with_mana_two_counters() -> Self {
+            Self::set(3)
+        }
+        fn set(mode: u8) -> Self {
+            MODE.with(|value| {
+                assert_eq!(value.replace(mode), 0);
+            });
+            Self
+        }
     }
-    impl Drop for Guard { fn drop(&mut self) { MODE.with(|value| value.set(0)); } }
-    pub(super) fn enabled() -> bool { MODE.with(|value| value.get() != 0) }
+    impl Drop for Guard {
+        fn drop(&mut self) {
+            MODE.with(|value| value.set(0));
+        }
+    }
+    pub(super) fn enabled() -> bool {
+        MODE.with(|value| value.get() != 0)
+    }
     pub(super) fn abilities() -> &'static [ActivatedAbility] {
-        match MODE.with(|value| value.get()) { 2 => MANA_ABILITIES, 3 => TWO_COUNTER_ABILITIES, _ => ABILITIES }
+        match MODE.with(|value| value.get()) {
+            2 => MANA_ABILITIES,
+            3 => TWO_COUNTER_ABILITIES,
+            _ => ABILITIES,
+        }
     }
     const fn ability(mana_component: bool, amount: u16) -> ActivatedAbility {
         ActivatedAbility {
-            exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
-            cycling: false, once_per_turn: false, sorcery: true,
-            cost: ActivationCost { colored: [0; 6], generic: if mana_component { 1 } else { 0 }, alternatives: &[],
-                additional: Some(AdditionalCost { kind: EffectChoiceKind::RemoveCreatureCounters(amount),
-                    filter: SacrificeFilter { keywords: Keywords::NONE, source_only: false, kinds: 1,
-                        nonland: false, other: false, tokens: None, artifact_enchantment_or_token: false,
-                        subtype: None } }),
-                mana_component, tap: false, sacrifice: false, exile_self: false,
-                discard: false, life: 0, remove: Some((None, 1)), loyalty: Some(-1) },
-            targets: TargetPlan::NONE, program: &[],
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            once_per_turn: false,
+            sorcery: true,
+            cost: ActivationCost {
+                colored: [0; 6],
+                generic: if mana_component { 1 } else { 0 },
+                alternatives: &[],
+                additional: Some(AdditionalCost {
+                    kind: EffectChoiceKind::RemoveCreatureCounters(amount),
+                    filter: SacrificeFilter {
+                        keywords: Keywords::NONE,
+                        source_only: false,
+                        kinds: 1,
+                        nonland: false,
+                        other: false,
+                        tokens: None,
+                        artifact_enchantment_or_token: false,
+                        subtype: None,
+                    },
+                }),
+                mana_component,
+                tap: false,
+                sacrifice: false,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: Some((None, 1)),
+                loyalty: Some(-1),
+            },
+            targets: TargetPlan::NONE,
+            program: &[],
         }
     }
     const ABILITIES: &[ActivatedAbility] = &[ability(false, 1)];

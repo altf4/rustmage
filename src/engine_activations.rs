@@ -183,12 +183,26 @@ impl Game {
             ActivationGuard::OwnTurn => self.state.active == actor,
             ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype, minimum } => {
                 let world = self.characteristic_query();
-                self.state.objects.iter().enumerate().filter(|(id, object)| {
-                    object.zone == Zone::Battlefield && object.controller == actor
-                        && ability_world::CharacteristicWorld::kinds(&world, *id as CardId) & 64 != 0
-                        && ability_world::CharacteristicWorld::subtypes(&world, *id as CardId).has(object.card, subtype)
-                }).fold(0u64, |sum, (id, _)| sum.saturating_add(
-                    ability_world::CharacteristicWorld::counter_count(&world, id as CardId, CounterKind::Loyalty))) >= minimum
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == actor
+                            && ability_world::CharacteristicWorld::kinds(&world, *id as CardId) & 64
+                                != 0
+                            && ability_world::CharacteristicWorld::subtypes(&world, *id as CardId)
+                                .has(object.card, subtype)
+                    })
+                    .fold(0u64, |sum, (id, _)| {
+                        sum.saturating_add(ability_world::CharacteristicWorld::counter_count(
+                            &world,
+                            id as CardId,
+                            CounterKind::Loyalty,
+                        ))
+                    })
+                    >= minimum
             }
             ActivationGuard::ControlLandsAtLeast(minimum) => {
                 self.state
@@ -216,12 +230,19 @@ impl Game {
         }
     }
     /// Loyalty timing permission follows current controller, type, and subtype.
-    pub(super) fn loyalty_timing(&self, card: CardId, ability: &ActivatedAbility, actor: Player, sorcery: bool) -> bool {
-        sorcery || (ability.cost.loyalty.is_some()
-            && self.state.players[actor.index()].jace_loyalty_anytime
-            && self.state.objects[card as usize].controller == actor
-            && self.current_kinds(card) & 64 != 0
-            && self.has_subtype(card, "Jace"))
+    pub(super) fn loyalty_timing(
+        &self,
+        card: CardId,
+        ability: &ActivatedAbility,
+        actor: Player,
+        sorcery: bool,
+    ) -> bool {
+        sorcery
+            || (ability.cost.loyalty.is_some()
+                && self.state.players[actor.index()].jace_loyalty_anytime
+                && self.state.objects[card as usize].controller == actor
+                && self.current_kinds(card) & 64 != 0
+                && self.has_subtype(card, "Jace"))
     }
 
     pub(super) fn activation_cost_available(
@@ -295,11 +316,18 @@ impl Game {
             return false;
         }
         if let Some((kind, amount)) = ability.cost.remove {
-            let loyalty_reserve = ability.cost.loyalty.filter(|change| *change < 0)
+            let loyalty_reserve = ability
+                .cost
+                .loyalty
+                .filter(|change| *change < 0)
                 .map_or(0, |change| u64::from(change.unsigned_abs()));
-            let count = counters.available(kind).saturating_sub(if kind.is_none() || kind == Some(CounterKind::Loyalty) {
-                u128::from(loyalty_reserve)
-            } else { 0 });
+            let count = counters.available(kind).saturating_sub(
+                if kind.is_none() || kind == Some(CounterKind::Loyalty) {
+                    u128::from(loyalty_reserve)
+                } else {
+                    0
+                },
+            );
             if count < u128::from(amount) {
                 return false;
             }
@@ -744,9 +772,16 @@ impl Game {
             self.record_power_up_use(item, ability);
         }
         if let Some(change) = cost.loyalty {
-            item.loyalty_counters_paid = item.loyalty_counters_paid
+            item.loyalty_counters_paid = item
+                .loyalty_counters_paid
                 .checked_add(counter_payment.get(CounterKind::Loyalty))
-                .and_then(|paid| paid.checked_add(if change < 0 { u64::from(change.unsigned_abs()) } else { 0 }))
+                .and_then(|paid| {
+                    paid.checked_add(if change < 0 {
+                        u64::from(change.unsigned_abs())
+                    } else {
+                        0
+                    })
+                })
                 .capacity("loyalty activation counter payment exhausted");
         }
         self.pay_counters(item.card, &counter_payment);
@@ -826,9 +861,13 @@ pub(super) fn counter_payments<'a>(
     mut emit: impl FnMut(Counters) -> bool,
 ) -> bool {
     let mut available = available.into();
-    let reserve = cost.loyalty.filter(|change| *change < 0)
+    let reserve = cost
+        .loyalty
+        .filter(|change| *change < 0)
         .map_or(0, |change| u64::from(change.unsigned_abs()));
-    let Some(remaining) = available.hot.loyalty.checked_sub(reserve) else { return false; };
+    let Some(remaining) = available.hot.loyalty.checked_sub(reserve) else {
+        return false;
+    };
     available.hot.loyalty = remaining;
     let Some((kind, amount)) = cost.remove else {
         return emit(Counters::default());

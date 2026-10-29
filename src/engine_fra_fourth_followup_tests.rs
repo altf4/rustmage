@@ -58,9 +58,11 @@ fn vraska_treasure_goes_to_target_controller_and_target_control_is_rechecked() {
                 })
                 .collect();
             assert_eq!(treasures.len(), if invalid { 0 } else { 2 });
-            assert!(treasures
-                .iter()
-                .all(|o| o.controller == p.other() && o.owner == p.other()));
+            assert!(
+                treasures
+                    .iter()
+                    .all(|o| o.controller == p.other() && o.owner == p.other())
+            );
             g.restore(&saved).unwrap();
             settle(&mut g);
             assert_eq!(

@@ -1,7 +1,11 @@
 use super::*;
 
 fn free(card: CardId) -> Action {
-    Action::AnnounceFree { card, face: CastFace::Normal, flash_surcharge: false }
+    Action::AnnounceFree {
+        card,
+        face: CastFace::Normal,
+        flash_surcharge: false,
+    }
 }
 
 #[test]

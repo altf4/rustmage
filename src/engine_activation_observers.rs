@@ -62,14 +62,21 @@ impl Game {
         if let StackKind::ActivatedAbility { ability } = item.kind
             && !item.is_copy
             && item.source_card.activation(ability).cost.loyalty.is_some()
-            && !self.state.cast_rollback.as_ref().is_some_and(|r| r.replay.is_some())
+            && !self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.replay.is_some())
         {
             self.state.players[item.controller.index()].loyalty_ability_activated_this_turn = true;
         }
         if self.state.activation_observers.is_none() {
             return;
         }
-        let StackKind::ActivatedAbility { ability: ability_index } = item.kind else {
+        let StackKind::ActivatedAbility {
+            ability: ability_index,
+        } = item.kind
+        else {
             return;
         };
         if item.is_copy {
@@ -86,7 +93,12 @@ impl Game {
                 && item.source_facts.is_creature()
         };
         self.creature_ability_activated(item.controller, creature);
-        if item.source_card.activation(ability_index).cost.loyalty.is_some()
+        if item
+            .source_card
+            .activation(ability_index)
+            .cost
+            .loyalty
+            .is_some()
             && !self
                 .state
                 .cast_rollback
@@ -99,23 +111,31 @@ impl Game {
                 .as_ref()
                 .unwrap()
                 .iter()
-                .filter(|&&id| {
-                    self.on_battlefield(id)
-                })
+                .filter(|&&id| self.on_battlefield(id))
                 .map(|&id| self.object_view(id))
                 .collect();
             for source in observers {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
                     let triggered = match ability.condition.event() {
-                        TriggerCondition::LoyaltyAbilityActivated => source.controller == item.controller,
-                        TriggerCondition::LoyaltyAbilityActivatedRemoving(minimum) =>
-                            source.controller == item.controller && item.loyalty_counters_paid >= minimum,
-                        TriggerCondition::OpponentLoyaltyAbilityActivated => source.controller != item.controller,
+                        TriggerCondition::LoyaltyAbilityActivated => {
+                            source.controller == item.controller
+                        }
+                        TriggerCondition::LoyaltyAbilityActivatedRemoving(minimum) => {
+                            source.controller == item.controller
+                                && item.loyalty_counters_paid >= minimum
+                        }
+                        TriggerCondition::OpponentLoyaltyAbilityActivated => {
+                            source.controller != item.controller
+                        }
                         _ => false,
                     };
-                    if triggered && self.queue_trigger(&source, index)
-                        && ability.condition.event() == TriggerCondition::OpponentLoyaltyAbilityActivated {
-                        self.state.pending_triggers.last_mut().unwrap().event_player = Some(item.controller);
+                    if triggered
+                        && self.queue_trigger(&source, index)
+                        && ability.condition.event()
+                            == TriggerCondition::OpponentLoyaltyAbilityActivated
+                    {
+                        self.state.pending_triggers.last_mut().unwrap().event_player =
+                            Some(item.controller);
                     }
                 }
             }
@@ -128,7 +148,8 @@ impl Game {
         let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
         if matches!(
             condition.event(),
-            TriggerCondition::CreatureAbilityActivated | TriggerCondition::LoyaltyAbilityActivated
+            TriggerCondition::CreatureAbilityActivated
+                | TriggerCondition::LoyaltyAbilityActivated
                 | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                 | TriggerCondition::OpponentLoyaltyAbilityActivated
         ) && condition.once_per_turn()

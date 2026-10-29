@@ -1526,9 +1526,10 @@ impl SpellView {
             StackKind::CopyEndStepSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeSource]))
             }
-            StackKind::CopyEndStepConditionalSacrifice => {
-                Some((TargetPlan::NONE, &[Instruction::SacrificeSourceIfNoPlaneswalker]))
-            }
+            StackKind::CopyEndStepConditionalSacrifice => Some((
+                TargetPlan::NONE,
+                &[Instruction::SacrificeSourceIfNoPlaneswalker],
+            )),
             StackKind::DelayedTokenCreation { .. } => Some((
                 TargetPlan::NONE,
                 &[Instruction::ResolveDelayedTokenCreation],
@@ -2972,7 +2973,7 @@ impl Game {
                 stack_copy_data: None,
                 delayed_artifact_copies: None,
                 delayed_attack_this_turn: None,
-            delayed_opponent_attack_until_next_turn: None,
+                delayed_opponent_attack_until_next_turn: None,
                 delayed_main_mana: None,
                 delayed_upkeep_tokens: None,
                 modal_history: None,
@@ -4284,22 +4285,46 @@ impl Game {
                     {
                         return true;
                     }
-                    if !casting_prohibited && !obj.is_token() && obj.zone == Zone::Hand && (!free_hand_cast || obj.card.is_land()) {
-                        for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen, CastFace::Back] {
+                    if !casting_prohibited
+                        && !obj.is_token()
+                        && obj.zone == Zone::Hand
+                        && (!free_hand_cast || obj.card.is_land())
+                    {
+                        for face in [
+                            CastFace::Normal,
+                            CastFace::Adventure,
+                            CastFace::Omen,
+                            CastFace::Back,
+                        ] {
                             let definition = match face {
                                 CastFace::Normal => Some(obj.card),
                                 CastFace::Adventure => obj.card.adventure_spell(),
                                 CastFace::Omen => obj.card.omen_spell(),
                                 CastFace::Back => obj.card.back_face(),
                             };
-                            let Some(definition) = definition else { continue };
+                            let Some(definition) = definition else {
+                                continue;
+                            };
                             if !self.creature_count_free_hand_cast_available(actor, definition)
                                 || self.turn_free_creature_available(actor, definition)
-                            { continue; }
+                            {
+                                continue;
+                            }
                             for flash_surcharge in [false, true] {
-                                if self.permitted_cast_available(actor, card, CastMethod::Free, face, sorcery, flash_surcharge)
-                                    && emit(Action::AnnounceFree { card, face, flash_surcharge })
-                                { return true; }
+                                if self.permitted_cast_available(
+                                    actor,
+                                    card,
+                                    CastMethod::Free,
+                                    face,
+                                    sorcery,
+                                    flash_surcharge,
+                                ) && emit(Action::AnnounceFree {
+                                    card,
+                                    face,
+                                    flash_surcharge,
+                                }) {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -4805,7 +4830,8 @@ impl Game {
                     return true;
                 }
                 if !s.selected_attackers.is_empty()
-                    && (self.has_attack_tax_provider() || self.has_planeswalker_attack_limit_provider())
+                    && (self.has_attack_tax_provider()
+                        || self.has_planeswalker_attack_limit_provider())
                     && emit(Action::CancelAttackDeclaration)
                 {
                     return true;
@@ -5453,10 +5479,16 @@ impl Game {
             Action::FinishResolutionCasts => {
                 if let Some(resolution) = self.state.resolving.as_mut()
                     && resolution.pc > 0
-                    && matches!(resolution.program[resolution.pc - 1], Instruction::ExileTopMayCastPaid)
+                    && matches!(
+                        resolution.program[resolution.pc - 1],
+                        Instruction::ExileTopMayCastPaid
+                    )
                 {
                     resolution.moved_count = Some(u64::from(
-                        self.state.resolution_free_casts.as_ref().is_some_and(|offer| offer.casts_remaining == Some(0))
+                        self.state
+                            .resolution_free_casts
+                            .as_ref()
+                            .is_some_and(|offer| offer.casts_remaining == Some(0)),
                     ));
                 }
                 self.finish_paradigm_copy_offer();
@@ -5699,17 +5731,25 @@ impl Game {
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceDisguise { card } | Action::AnnounceDisguiseGraveyard { card, .. } => {
-                let during_resolution = matches!(self.state.pending, Pending::ResolutionCasts { .. });
+                let during_resolution =
+                    matches!(self.state.pending, Pending::ResolutionCasts { .. });
                 if during_resolution {
                     let object = self.object_ref(card);
-                    self.state.resolution_free_casts.as_mut().unwrap().remaining.retain(|r| *r != object);
+                    self.state
+                        .resolution_free_casts
+                        .as_mut()
+                        .unwrap()
+                        .remaining
+                        .retain(|r| *r != object);
                     self.reveal_hideaway_object(object);
                 }
                 let mut item = self.cast_disguised_item(actor, card);
                 item.cast.as_mut().unwrap().method = CastMethod::Disguise;
                 if during_resolution {
                     let free = self.state.resolution_free_casts.as_mut().unwrap();
-                    if free.casts_remaining.is_some() { free.pending_cast = Some(item.id); }
+                    if free.casts_remaining.is_some() {
+                        free.pending_cast = Some(item.id);
+                    }
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
@@ -6193,7 +6233,12 @@ impl Game {
                 self.state.selected_blocks.push((blocker, attacker))
             }
             Action::FinishBlockers => {
-                let declared: Vec<CardId> = self.state.selected_blocks.iter().map(|&(blocker, _)| blocker).collect();
+                let declared: Vec<CardId> = self
+                    .state
+                    .selected_blocks
+                    .iter()
+                    .map(|&(blocker, _)| blocker)
+                    .collect();
                 self.state
                     .blocking
                     .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
@@ -7575,7 +7620,9 @@ impl Game {
             .min(4);
         if let Some(rows) = &mut self.state.delayed_opponent_attack_until_next_turn {
             rows.retain(|item| item.controller != self.state.active);
-            if rows.is_empty() { self.state.delayed_opponent_attack_until_next_turn = None; }
+            if rows.is_empty() {
+                self.state.delayed_opponent_attack_until_next_turn = None;
+            }
         }
         self.begin_player_control_turn();
         self.expire_temporary_copies(false);
@@ -7818,9 +7865,13 @@ impl Game {
             obj.growth = Stats::default();
             obj.gained_keywords = Keywords::NONE;
         }
-        let expired_legend_rule = self.state.players.iter_mut().fold(false, |expired, player| {
-            std::mem::take(&mut player.legend_rule_ignored_this_turn) || expired
-        });
+        let expired_legend_rule = self
+            .state
+            .players
+            .iter_mut()
+            .fold(false, |expired, player| {
+                std::mem::take(&mut player.legend_rule_ignored_this_turn) || expired
+            });
         let expired_copies = self.expire_temporary_copies(true);
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
@@ -7834,7 +7885,8 @@ impl Game {
                 )
                 .into_iter()
                 .any(|lost| lost)
-            || (expired_vehicles || expired_animations || expired_copies || expired_legend_rule) && self.sba_required()
+            || (expired_vehicles || expired_animations || expired_copies || expired_legend_rule)
+                && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
                     && self.is_creature(id as CardId)
@@ -8287,9 +8339,17 @@ impl Game {
             hand_deployment: self.public_hand_deployment_view(),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
                 c.links
-                    .iter().copied().chain(c.null_cast_links.iter().filter(|link|
-                        s.objects[link.exiled.card as usize].zone == Zone::Exile)
-                        .map(|link| LinkedExileView { source: link.source, exiled: link.exiled }))
+                    .iter()
+                    .copied()
+                    .chain(
+                        c.null_cast_links
+                            .iter()
+                            .filter(|link| s.objects[link.exiled.card as usize].zone == Zone::Exile)
+                            .map(|link| LinkedExileView {
+                                source: link.source,
+                                exiled: link.exiled,
+                            }),
+                    )
                     .filter(|link| self.can_view_hideaway(viewer, link.exiled))
                     .collect()
             }),
@@ -8355,8 +8415,12 @@ impl Game {
                 .as_deref()
                 .cloned()
                 .unwrap_or_default(),
-            delayed_opponent_attack_until_next_turn: self.state.delayed_opponent_attack_until_next_turn
-                .as_deref().cloned().unwrap_or_default(),
+            delayed_opponent_attack_until_next_turn: self
+                .state
+                .delayed_opponent_attack_until_next_turn
+                .as_deref()
+                .cloned()
+                .unwrap_or_default(),
             delayed_artifact_copies: self
                 .state
                 .delayed_artifact_copies
@@ -8566,7 +8630,8 @@ impl Game {
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 turns_started: s.players[i].turns_started,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
-                mountain_mana_bonus: (s.players[i].mountain_mana_bonus > 0).then_some(s.players[i].mountain_mana_bonus),
+                mountain_mana_bonus: (s.players[i].mountain_mana_bonus > 0)
+                    .then_some(s.players[i].mountain_mana_bonus),
                 jace_loyalty_anytime: s.players[i].jace_loyalty_anytime.then_some(true),
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
                 no_maximum_hand_size: self.no_maximum_hand_size(if i == 0 {
@@ -8579,7 +8644,8 @@ impl Game {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 scried_or_surveilled_this_turn: s.players[i].scried_or_surveilled_this_turn,
-                loyalty_ability_activated_this_turn: s.players[i].loyalty_ability_activated_this_turn,
+                loyalty_ability_activated_this_turn: s.players[i]
+                    .loyalty_ability_activated_this_turn,
                 legend_rule_ignored_this_turn: s.players[i].legend_rule_ignored_this_turn,
                 noncombat_damage_this_turn: s.players[i].noncombat_damage_this_turn,
                 noncombat_damage_last_turn: s.players[i].noncombat_damage_last_turn,
@@ -8704,7 +8770,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.base_stats.clone()),
-            until_next_turn_stats: s.roles.as_ref().map_or_else(Vec::new, |r| r.until_next_turn_stats.clone()),
+            until_next_turn_stats: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.until_next_turn_stats.clone()),
             live_static_sources: self
                 .state
                 .roles
@@ -8858,7 +8927,10 @@ impl Game {
             equipment_attachment: self.equipment_attachment_view(),
             target_library: self.target_library_view(viewer),
             last_target_library_move: s.last_target_library_move.as_deref().copied(),
-            optional_wheel_choices: s.resolving.as_ref().and_then(|r| r.optional_wheel.map(|w| w.choices)),
+            optional_wheel_choices: s
+                .resolving
+                .as_ref()
+                .and_then(|r| r.optional_wheel.map(|w| w.choices)),
             library_choice: if owns_choice {
                 s.resolving
                     .as_ref()
@@ -9123,10 +9195,15 @@ impl Game {
                         .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
                         .sum::<usize>()
             })
-            + s.delayed_opponent_attack_until_next_turn.as_ref().map_or(0, |rows| {
-                std::mem::size_of::<Vec<SpellView>>() + rows.iter()
-                    .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes()).sum::<usize>()
-            })
+            + s.delayed_opponent_attack_until_next_turn
+                .as_ref()
+                .map_or(0, |rows| {
+                    std::mem::size_of::<Vec<SpellView>>()
+                        + rows
+                            .iter()
+                            .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
+                            .sum::<usize>()
+                })
             + s.delayed_attack_this_turn.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<SpellView>>()
                     + rows
@@ -9154,7 +9231,9 @@ impl Game {
             + s.turn_cast_grants
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<[PlayerCastGrantsView; 2]>())
-            + s.uncounterable_spell_ids.as_ref().map_or(0, |ids| std::mem::size_of::<Vec<u64>>() + ids.len() * std::mem::size_of::<u64>())
+            + s.uncounterable_spell_ids.as_ref().map_or(0, |ids| {
+                std::mem::size_of::<Vec<u64>>() + ids.len() * std::mem::size_of::<u64>()
+            })
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
             + s.resolution_free_casts.as_ref().map_or(0, |f| {
                 std::mem::size_of::<ResolutionFreeCasts>()

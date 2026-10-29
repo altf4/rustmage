@@ -368,7 +368,12 @@ fn creature_counter_selection_preserves_reserved_loyalty_payment() {
     for actor in [Player::P0, Player::P1] {
         let mut game = setup(actor);
         let source = named(&mut game, actor, "Silence the Echo", Zone::Battlefield);
-        let mut context = context(&game, actor, source, EffectChoiceKind::RemoveCreatureCounters(1));
+        let mut context = context(
+            &game,
+            actor,
+            source,
+            EffectChoiceKind::RemoveCreatureCounters(1),
+        );
         game.state.objects[source as usize].card = Card::from_name("Bear Cub").unwrap();
         game.state.objects[source as usize].counters.loyalty = 1;
         context.source_counter_reservation = Counters::of(CounterKind::Loyalty, 1);

@@ -8,7 +8,10 @@ mod workload;
 fn fra_complete_legal_games_replay_owned_and_actual_mechanics() {
     let missing = workload::missing_pool_members().unwrap();
     if !missing.is_empty() {
-        eprintln!("FRA complete games skipped: {} unsupported identities; this is not set acceptance", missing.len());
+        eprintln!(
+            "FRA complete games skipped: {} unsupported identities; this is not set acceptance",
+            missing.len()
+        );
         return;
     }
     let report = workload::run(&workload::cases(4), workload::Mode::Verify, None).unwrap();
@@ -39,7 +42,11 @@ fn fra_pool_audit_and_cases_preserve_the_acceptance_gate() {
     for pair in 0..6 {
         for swapped in [false, true] {
             for starting in [Player::P0, Player::P1] {
-                assert!(cases.iter().any(|&(p, _, seat, swap)| p == pair && seat == starting && swap == swapped));
+                assert!(
+                    cases.iter().any(|&(p, _, seat, swap)| p == pair
+                        && seat == starting
+                        && swap == swapped)
+                );
             }
         }
     }

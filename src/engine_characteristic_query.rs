@@ -268,8 +268,15 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         stats += self.self_granted_artifact_bonus(id);
         if let Some(roles) = self.roles() {
-            for effect in roles.until_next_turn_stats.iter().filter(|effect| effect.recipient == self.reference(id)) {
-                stats += Stats { power: i128::from(effect.power), toughness: i128::from(effect.toughness) };
+            for effect in roles
+                .until_next_turn_stats
+                .iter()
+                .filter(|effect| effect.recipient == self.reference(id))
+            {
+                stats += Stats {
+                    power: i128::from(effect.power),
+                    toughness: i128::from(effect.toughness),
+                };
             }
         }
         stats += self.chosen_bonus(id);
@@ -298,7 +305,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         for &source in self.static_sources() {
             let object = self.object(source);
             if object.zone != Zone::Battlefield
-                && !(object.zone == Zone::Command && object.card.is_emblem()) {
+                && !(object.zone == Zone::Command && object.card.is_emblem())
+            {
                 continue;
             }
             if object.card.static_ability_groups().iter().any(|group| {
@@ -1010,8 +1018,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .map(|grant| GrantedAbilityView {
                     grantor: grant.source,
                     granting_card: grant.granting_card,
-                    ability: match grant.kind { ability_order::GrantedAbilityKind::Template(index) => Some(index), _ => None },
-                    static_rule: match grant.kind { ability_order::GrantedAbilityKind::PlaneswalkerAttackLimit => Some(ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit), _ => None },
+                    ability: match grant.kind {
+                        ability_order::GrantedAbilityKind::Template(index) => Some(index),
+                        _ => None,
+                    },
+                    static_rule: match grant.kind {
+                        ability_order::GrantedAbilityKind::PlaneswalkerAttackLimit => {
+                            Some(ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit)
+                        }
+                        _ => None,
+                    },
                     grantor_controller: grant.grantor_controller,
                     timestamp: grant.timestamp,
                 })

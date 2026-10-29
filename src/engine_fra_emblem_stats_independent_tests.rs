@@ -24,15 +24,31 @@ fn command_emblem_modifiers_stack_follow_control_and_restore() {
 
 #[test]
 fn command_emblem_modifiers_apply_in_projected_characteristic_world() {
-    struct Projected<'a> { game: &'a Game, changed: CardId, object: Object }
+    struct Projected<'a> {
+        game: &'a Game,
+        changed: CardId,
+        object: Object,
+    }
     impl CharacteristicWorld for Projected<'_> {
-        fn game(&self) -> &Game { self.game }
-        fn object(&self, id: CardId) -> &Object {
-            if id == self.changed { &self.object } else { &self.game.state.objects[id as usize] }
+        fn game(&self) -> &Game {
+            self.game
         }
-        fn life(&self, p: Player) -> i128 { CharacteristicWorld::life(self.game, p) }
-        fn gained_life(&self, p: Player) -> bool { CharacteristicWorld::gained_life(self.game, p) }
-        fn attacking(&self, id: CardId) -> bool { CharacteristicWorld::attacking(self.game, id) }
+        fn object(&self, id: CardId) -> &Object {
+            if id == self.changed {
+                &self.object
+            } else {
+                &self.game.state.objects[id as usize]
+            }
+        }
+        fn life(&self, p: Player) -> i128 {
+            CharacteristicWorld::life(self.game, p)
+        }
+        fn gained_life(&self, p: Player) -> bool {
+            CharacteristicWorld::gained_life(self.game, p)
+        }
+        fn attacking(&self, id: CardId) -> bool {
+            CharacteristicWorld::attacking(self.game, id)
+        }
     }
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
@@ -41,7 +57,11 @@ fn command_emblem_modifiers_apply_in_projected_characteristic_world() {
         let before = game.snapshot();
         let mut object = game.state.objects[creature as usize].clone();
         object.controller = player;
-        let world = Projected { game: &game, changed: creature, object };
+        let world = Projected {
+            game: &game,
+            changed: creature,
+            object,
+        };
         let query = characteristic_query::CharacteristicQuery::in_world(&world);
         assert_eq!(query.stats(creature).power, 4);
         assert_eq!(query.stats(creature).toughness, 4);
@@ -54,7 +74,12 @@ fn command_emblem_modifiers_apply_in_projected_characteristic_world() {
 fn ajani_emblem_enables_power_dependent_mana_to_cast_and_survives_suppression() {
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
-        let source = put(&mut game, player, "Doc Samson, Super Psychiatrist", Zone::Battlefield);
+        let source = put(
+            &mut game,
+            player,
+            "Doc Samson, Super Psychiatrist",
+            Zone::Battlefield,
+        );
         let spell = put(&mut game, player, "Tajuru Pathwarden", Zone::Hand);
         game.state.players[player.index()].mana = [0; 6];
         let announce = Action::AnnounceCast { card: spell };

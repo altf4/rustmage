@@ -1,7 +1,16 @@
 use super::*;
 
 fn tokens(g: &Game, card: u16, owner: Player) -> usize {
-    g.state.objects.iter().filter(|o| o.is_token() && o.zone == Zone::Battlefield && o.controller == owner && o.card == Card::test_index(card)).count()
+    g.state
+        .objects
+        .iter()
+        .filter(|o| {
+            o.is_token()
+                && o.zone == Zone::Battlefield
+                && o.controller == owner
+                && o.card == Card::test_index(card)
+        })
+        .count()
 }
 
 #[test]
@@ -22,7 +31,9 @@ fn kwia_uses_one_life_gain_trigger_per_turn_and_queued_trigger_survives() {
         let saved = g.snapshot();
         super::super::contracts::branch_contract(g.clone());
         for replay in 0..2 {
-            if replay == 1 { g.restore(&saved).unwrap(); }
+            if replay == 1 {
+                g.restore(&saved).unwrap();
+            }
             g.move_object(kwia, Zone::Graveyard);
             settle(&mut g);
             assert_eq!(tokens(&g, 5453, p), 1);
@@ -57,11 +68,16 @@ fn kwia_ward_counters_or_allows_opponents_targeting_spell() {
             let spell = put(&mut g, p.other(), "Shock", Zone::Hand);
             cast(&mut g, spell, Some(Target::Card(kwia)));
             for _ in 0..24 {
-                if g.state.pending != Pending::Priority { break; }
+                if g.state.pending != Pending::Priority {
+                    break;
+                }
                 act(&mut g, Action::Pass);
             }
-            if paid { choose(&mut g, |a| matches!(a, Action::PayResolutionMana { .. })); }
-            else { act(&mut g, Action::DeclineResolutionMana); }
+            if paid {
+                choose(&mut g, |a| matches!(a, Action::PayResolutionMana { .. }));
+            } else {
+                act(&mut g, Action::DeclineResolutionMana);
+            }
             settle(&mut g);
             assert_eq!(g.object_view(kwia).damage, if paid { 2 } else { 0 });
         }
@@ -80,7 +96,9 @@ fn kraken_triggers_each_players_upkeep_and_token_belongs_to_trigger_controller()
             let saved = g.snapshot();
             super::super::contracts::branch_contract(g.clone());
             for replay in 0..2 {
-                if replay == 1 { g.restore(&saved).unwrap(); }
+                if replay == 1 {
+                    g.restore(&saved).unwrap();
+                }
                 let reference = g.object_ref(kraken);
                 g.change_controller(reference, p.other());
                 settle(&mut g);

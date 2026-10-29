@@ -8,7 +8,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[Instruction::CounterRelatedUnlessDiscard],
         },
         TriggeredAbility {
-            condition: TriggerCondition::CreatureEnters { relation: CastRelation::Opponent, other: false },
+            condition: TriggerCondition::CreatureEnters {
+                relation: CastRelation::Opponent,
+                other: false,
+            },
             targets: TargetPlan::NONE,
             program: &[Instruction::DamagePlayers(PlayerSet::EventPlayer, 1)],
         },

@@ -396,7 +396,10 @@ impl Game {
         let source = goal.source.as_ref().expect("activation source").0;
         if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
             let purpose = self.funding_purpose(&goal);
-            let selected = self.state.announcing.as_ref()
+            let selected = self
+                .state
+                .announcing
+                .as_ref()
                 .filter(|a| a.item.object == source && a.item.controller == goal.actor)
                 .and_then(|a| a.creature_counter_cost.as_deref())
                 .map_or(&[][..], Vec::as_slice);
@@ -579,11 +582,19 @@ impl Game {
         };
         self.resume_cast_cost_selection();
     }
-    pub(super) fn pay_selected_creature_counters(&mut self, item: &mut SpellView, selected: &[(ObjectRef, CounterKind)]) {
+    pub(super) fn pay_selected_creature_counters(
+        &mut self,
+        item: &mut SpellView,
+        selected: &[(ObjectRef, CounterKind)],
+    ) {
         for &(object, kind) in selected {
             self.pay_counters(object.card, &Counters::of(kind, 1));
-            if matches!(item.kind, StackKind::ActivatedAbility { .. }) && kind == CounterKind::Loyalty {
-                item.loyalty_counters_paid = item.loyalty_counters_paid.checked_add(1)
+            if matches!(item.kind, StackKind::ActivatedAbility { .. })
+                && kind == CounterKind::Loyalty
+            {
+                item.loyalty_counters_paid = item
+                    .loyalty_counters_paid
+                    .checked_add(1)
                     .capacity("loyalty activation counter payment exhausted");
             }
         }
@@ -754,9 +765,7 @@ impl Game {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
-            | EffectChoiceKind::DiscardLegendary => {
-                self.discard_batch(&[object.card], None)
-            }
+            | EffectChoiceKind::DiscardLegendary => self.discard_batch(&[object.card], None),
             EffectChoiceKind::ReturnUnblockedAttacker => {
                 a.item.cast.as_mut().unwrap().sneak_defender = self
                     .state

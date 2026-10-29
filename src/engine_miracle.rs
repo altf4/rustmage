@@ -133,7 +133,13 @@ impl Game {
     pub(super) fn draw_many_recording(&mut self, player: Player, amount: u128, item_id: u64) {
         self.draw_requests(player, amount, false, Some(item_id));
     }
-    fn draw_requests(&mut self, player: Player, amount: u128, replaced: bool, remembering: Option<u64>) {
+    fn draw_requests(
+        &mut self,
+        player: Player,
+        amount: u128,
+        replaced: bool,
+        remembering: Option<u64>,
+    ) {
         let attempts = amount.min(self.state.players[player.index()].library.len() as u128 + 1);
         if self.miracle_choice_pending() {
             self.state
@@ -160,10 +166,22 @@ impl Game {
                 if self.draw_one_unreplaced(player)
                     && let Some(id) = remembering
                 {
-                    let resolving = self.state.resolving.as_mut().expect("remembered draw must have its resolution");
-                    assert_eq!(resolving.item.id, id, "draw request belongs to a different resolution");
-                    let count = resolving.remembered_draws.as_mut().expect("remembered draw counter");
-                    *count = count.checked_add(1).capacity("remembered draw count exhausted");
+                    let resolving = self
+                        .state
+                        .resolving
+                        .as_mut()
+                        .expect("remembered draw must have its resolution");
+                    assert_eq!(
+                        resolving.item.id, id,
+                        "draw request belongs to a different resolution"
+                    );
+                    let count = resolving
+                        .remembered_draws
+                        .as_mut()
+                        .expect("remembered draw counter");
+                    *count = count
+                        .checked_add(1)
+                        .capacity("remembered draw count exhausted");
                 }
                 if self.miracle_choice_pending() {
                     let remaining = attempts - index - 1;

@@ -409,7 +409,7 @@ impl Announcement {
                 StackKind::ActivatedAbility { .. } => self.cost_options().count() > 1,
                 StackKind::TriggeredAbility { .. }
                 | StackKind::CopyEndStepSacrifice
-            | StackKind::CopyEndStepConditionalSacrifice
+                | StackKind::CopyEndStepConditionalSacrifice
                 | StackKind::CasualtyCopy
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
@@ -1618,7 +1618,9 @@ impl Game {
         if origin == Zone::Exile && event.moved && event.destination == Zone::Stack {
             if let Some(data) = &mut self.state.linked_choices {
                 for link in &mut data.null_cast_links {
-                    if link.exiled == event.before.reference { link.exiled = event.after; }
+                    if link.exiled == event.before.reference {
+                        link.exiled = event.after;
+                    }
                 }
             }
         }

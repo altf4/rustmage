@@ -5,8 +5,18 @@ fn vindictive_copy_uses_copy_controller_for_return_and_entry_replacement() {
     for caster in [Player::P0, Player::P1] {
         let mut g = scenario(caster);
         let copy_controller = caster.other();
-        put(&mut g, copy_controller, "Doubling Season", Zone::Battlefield);
-        let target = put(&mut g, caster, "Ajani, Caller of the Pride", Zone::Battlefield);
+        put(
+            &mut g,
+            copy_controller,
+            "Doubling Season",
+            Zone::Battlefield,
+        );
+        let target = put(
+            &mut g,
+            caster,
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
         // The bare battlefield fixture does not apply printed entry loyalty.
         g.state.objects[target as usize].counters.loyalty = 4;
         let spell = put(&mut g, caster, "Vindictive Triumph", Zone::Hand);
@@ -20,10 +30,22 @@ fn vindictive_copy_uses_copy_controller_for_return_and_entry_replacement() {
         for _ in 0..2 {
             for _ in 0..96 {
                 g.prepare_triggers();
-                if g.state.pending == Pending::Priority && g.state.stack.is_empty()
-                    && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { break; }
-                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }
-                    | Action::ChooseReplacement { .. } | Action::ChooseEntryReplacement { .. }));
+                if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                }
+                choose(&mut g, |a| {
+                    matches!(
+                        a,
+                        Action::Pass
+                            | Action::PutTrigger { .. }
+                            | Action::ChooseReplacement { .. }
+                            | Action::ChooseEntryReplacement { .. }
+                    )
+                });
             }
             assert!(g.state.stack.is_empty());
             assert_ne!(g.object_ref(target), before);
@@ -35,9 +57,16 @@ fn vindictive_copy_uses_copy_controller_for_return_and_entry_replacement() {
             g.begin_step(Step::End);
             for _ in 0..96 {
                 g.prepare_triggers();
-                if g.state.pending == Pending::Priority && g.state.stack.is_empty()
-                    && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { break; }
-                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+                if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                {
+                    break;
+                }
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
             }
             assert_eq!(g.object_view(target).zone, Zone::Exile);
             g.restore(&saved).unwrap();

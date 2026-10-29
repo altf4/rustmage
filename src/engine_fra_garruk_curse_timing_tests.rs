@@ -8,13 +8,26 @@ fn curse_fixture(g: &mut Game, player: Player) -> CardId {
     id
 }
 fn curse_activate(g: &mut Game, source: CardId, ability: u16) {
-    act(g, Action::AnnounceActivate { card: source, ability, counter_payment: Counters::default() });
-    if g.legal_actions().contains(&Action::FinishTargets) { act(g, Action::FinishTargets); }
+    act(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
     pay(g);
 }
 fn blank(g: &mut Game, player: Player, source: CardId, target: CardId) {
     let mut item = g.activation_item(player, source, 0);
-    item.targets = vec![BoundTarget { group: 0, target: Target::Card(target), object: Some(g.object_ref(target)) }];
+    item.targets = vec![BoundTarget {
+        group: 0,
+        target: Target::Card(target),
+        object: Some(g.object_ref(target)),
+    }];
     g.remove_target_abilities_until_end_of_turn(&item);
 }
 
@@ -25,12 +38,23 @@ fn garruk_blanking_before_activation_prevents_it_but_after_does_not_cancel_it() 
         let source = curse_fixture(&mut g, player);
         let before = g.snapshot();
         blank(&mut g, player, source, source);
-        assert!(!g.legal_actions().iter().any(|a| matches!(a, Action::AnnounceActivate { card, .. } if *card == source)));
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::AnnounceActivate { card, .. } if *card == source))
+        );
         g.restore(&before).unwrap();
         curse_activate(&mut g, source, 2);
         blank(&mut g, player, source, source);
         settle(&mut g);
-        assert_eq!(g.state.delayed_opponent_attack_until_next_turn.as_ref().unwrap().len(), 1);
+        assert_eq!(
+            g.state
+                .delayed_opponent_attack_until_next_turn
+                .as_ref()
+                .unwrap()
+                .len(),
+            1
+        );
     }
 }
 
@@ -68,10 +92,23 @@ fn garruk_beast_identity_is_visible_to_both_players() {
         let source = curse_fixture(&mut g, player);
         curse_activate(&mut g, source, 1);
         settle(&mut g);
-        let token = g.state.objects.iter().enumerate().find_map(|(id, object)|
-            (object.zone == Zone::Battlefield && object.card == Card::test_index(5239)).then_some(id as CardId)).unwrap();
+        let token = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(id, object)| {
+                (object.zone == Zone::Battlefield && object.card == Card::test_index(5239))
+                    .then_some(id as CardId)
+            })
+            .unwrap();
         for viewer in [player, player.other()] {
-            let view = g.observe(viewer).objects.into_iter().find(|view| view.id == token).unwrap();
+            let view = g
+                .observe(viewer)
+                .objects
+                .into_iter()
+                .find(|view| view.id == token)
+                .unwrap();
             assert_eq!(view.name(), "Beast Token");
             assert_eq!(view.colors, 16);
             assert!(view.has_subtype("Beast"));

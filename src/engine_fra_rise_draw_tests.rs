@@ -14,7 +14,9 @@ fn rise_counts_greatest_current_power_and_actual_replacement_draws() {
         for doubled in [false, true] {
             let mut g = scenario(p);
             put(&mut g, p, "Bear Cub", Zone::Battlefield);
-            if doubled { put(&mut g, p, "Bard, King of Dale", Zone::Battlefield); }
+            if doubled {
+                put(&mut g, p, "Bard, King of Dale", Zone::Battlefield);
+            }
             let amount = if doubled { 6 } else { 2 };
             let before = g.state.players[p.index()].life;
             let drawn = g.state.players[p.index()].cards_drawn_this_turn;
@@ -22,9 +24,14 @@ fn rise_counts_greatest_current_power_and_actual_replacement_draws() {
             let saved = g.snapshot();
             super::super::contracts::branch_contract(g.clone());
             for replay in 0..2 {
-                if replay == 1 { g.restore(&saved).unwrap(); }
+                if replay == 1 {
+                    g.restore(&saved).unwrap();
+                }
                 settle(&mut g);
-                assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, drawn + amount);
+                assert_eq!(
+                    g.state.players[p.index()].cards_drawn_this_turn,
+                    drawn + amount
+                );
                 assert_eq!(g.state.players[p.index()].life, before - i128::from(amount));
             }
         }
@@ -39,7 +46,9 @@ fn rise_defers_life_loss_until_all_miracle_interrupted_draws_finish() {
         let before = g.state.players[p.index()].life;
         cast_mode(&mut g, p, 0);
         for _ in 0..24 {
-            if matches!(g.state.pending, Pending::MiracleReveal { .. }) { break; }
+            if matches!(g.state.pending, Pending::MiracleReveal { .. }) {
+                break;
+            }
             act(&mut g, Action::Pass);
         }
         assert!(matches!(g.state.pending, Pending::MiracleReveal { player } if player == p));
@@ -50,7 +59,9 @@ fn rise_defers_life_loss_until_all_miracle_interrupted_draws_finish() {
         let saved = g.snapshot();
         super::super::contracts::branch_contract(g.clone());
         for replay in 0..2 {
-            if replay == 1 { g.restore(&saved).unwrap(); }
+            if replay == 1 {
+                g.restore(&saved).unwrap();
+            }
             act(&mut g, Action::DeclineMiracle);
             settle(&mut g);
             assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 5);
@@ -91,7 +102,9 @@ fn rise_loses_only_life_for_successful_draws_when_library_runs_out() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         put(&mut g, p, "Bear Cub", Zone::Battlefield);
-        for id in g.state.players[p.index()].library.clone() { g.move_object(id, Zone::Outside); }
+        for id in g.state.players[p.index()].library.clone() {
+            g.move_object(id, Zone::Outside);
+        }
         put(&mut g, p, "Forest", Zone::Library);
         let life = g.state.players[p.index()].life;
         cast_mode(&mut g, p, 0);
@@ -108,28 +121,45 @@ fn rise_counts_only_its_own_draw_request_across_a_miracle_pause() {
         for doubled in [false, true] {
             let mut g = scenario(p);
             put(&mut g, p, "Lorehold, the Historian", Zone::Battlefield);
-            if doubled { put(&mut g, p, "Bard, King of Dale", Zone::Battlefield); }
-            for _ in 0..6 { put(&mut g, p, "Forest", Zone::Library); }
+            if doubled {
+                put(&mut g, p, "Bard, King of Dale", Zone::Battlefield);
+            }
+            for _ in 0..6 {
+                put(&mut g, p, "Forest", Zone::Library);
+            }
             let before = g.state.players[p.index()].life;
             cast_mode(&mut g, p, 0);
             for _ in 0..24 {
-                if matches!(g.state.pending, Pending::MiracleReveal { .. }) { break; }
+                if matches!(g.state.pending, Pending::MiracleReveal { .. }) {
+                    break;
+                }
                 act(&mut g, Action::Pass);
             }
             assert!(matches!(g.state.pending, Pending::MiracleReveal { player } if player == p));
-            assert_eq!(g.state.resolving.as_ref().unwrap().remembered_draws, Some(1));
+            assert_eq!(
+                g.state.resolving.as_ref().unwrap().remembered_draws,
+                Some(1)
+            );
             // This separate draw queues behind Rise's remaining draws; it must not
             // become part of the spell's "drawn this way" life-loss quantity.
             g.draw_many(p, 1);
             let saved = g.snapshot();
             super::super::contracts::branch_contract(g.clone());
             for replay in 0..2 {
-                if replay == 1 { g.restore(&saved).unwrap(); }
+                if replay == 1 {
+                    g.restore(&saved).unwrap();
+                }
                 act(&mut g, Action::DeclineMiracle);
                 settle(&mut g);
                 let multiplier = if doubled { 2 } else { 1 };
-                assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 6 * multiplier);
-                assert_eq!(g.state.players[p.index()].life, before - 5 * i128::from(multiplier));
+                assert_eq!(
+                    g.state.players[p.index()].cards_drawn_this_turn,
+                    6 * multiplier
+                );
+                assert_eq!(
+                    g.state.players[p.index()].life,
+                    before - 5 * i128::from(multiplier)
+                );
             }
         }
     }

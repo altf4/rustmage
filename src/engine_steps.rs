@@ -141,22 +141,48 @@ impl Game {
     }
 
     /// The historic entrant is excluded by exact incarnation, even after it leaves or reenters.
-    pub(super) fn other_controlled_subtypes_at_least(&self, player: Player, entering: ObjectRef, subtype: &str, minimum: u16) -> bool {
-        self.state.objects.iter().enumerate().filter(|(id, o)| {
-            o.zone == Zone::Battlefield && o.controller == player
-                && self.object_ref(*id as CardId) != entering
-                && self.has_subtype(*id as CardId, subtype)
-        }).take(usize::from(minimum)).count() >= usize::from(minimum)
+    pub(super) fn other_controlled_subtypes_at_least(
+        &self,
+        player: Player,
+        entering: ObjectRef,
+        subtype: &str,
+        minimum: u16,
+    ) -> bool {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == player
+                    && self.object_ref(*id as CardId) != entering
+                    && self.has_subtype(*id as CardId, subtype)
+            })
+            .take(usize::from(minimum))
+            .count()
+            >= usize::from(minimum)
     }
     pub(super) fn trigger_item_guards_hold(
         &self,
         item: &SpellView,
         condition: TriggerCondition,
     ) -> bool {
-        if let TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } = condition.event() {
-            let Some(entering) = item.entering_object else { return false; };
-            return self.other_controlled_subtypes_at_least(item.controller, entering, subtype, minimum)
-                && self.trigger_guards_hold(condition, item.controller, item.object, item.source_tapped);
+        if let TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } = condition.event()
+        {
+            let Some(entering) = item.entering_object else {
+                return false;
+            };
+            return self.other_controlled_subtypes_at_least(
+                item.controller,
+                entering,
+                subtype,
+                minimum,
+            ) && self.trigger_guards_hold(
+                condition,
+                item.controller,
+                item.object,
+                item.source_tapped,
+            );
         }
         if let TriggerCondition::InterveningIf {
             guard:
@@ -292,7 +318,9 @@ impl Game {
             }
             StepGuard::GainedLife => return p.life_gained_this_turn > 0,
             StepGuard::ScriedOrSurveilledThisTurn => return p.scried_or_surveilled_this_turn,
-            StepGuard::LoyaltyAbilityActivatedThisTurn => return p.loyalty_ability_activated_this_turn,
+            StepGuard::LoyaltyAbilityActivatedThisTurn => {
+                return p.loyalty_ability_activated_this_turn;
+            }
             StepGuard::OpponentNoncombatDamageLastTurn => {
                 return self.state.players[player.other().index()].noncombat_damage_last_turn;
             }

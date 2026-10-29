@@ -3,7 +3,10 @@
 use super::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(super) enum GrantedAbilityKind { Template(u16), PlaneswalkerAttackLimit }
+pub(super) enum GrantedAbilityKind {
+    Template(u16),
+    PlaneswalkerAttackLimit,
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct GrantedAbilityKey {
