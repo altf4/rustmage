@@ -220,3 +220,40 @@ fn player_counter_prohibition_stops_when_provider_loses_abilities() {
         assert!(game.player_counters_prohibited(controller, crate::cards::PlayerCounterKind::Poison));
     }
 }
+
+#[test]
+fn proliferate_replacement_sibling_survives_provider_departure_and_restore() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let tam = put(&mut game, player, "Tam, the Possibility", Zone::Battlefield);
+        put(&mut game, player, "Ajani, Caller of the Pride", Zone::Battlefield);
+        let provider = put(&mut game, player, "Serra Angel", Zone::Battlefield);
+        let subject = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+        game.add_counter(subject, CounterKind::PlusOne, 1);
+        game.state.players[player.index()].mana = [1, 1, 1, 1, 1, 0];
+        act(&mut game, Action::AnnounceActivate {
+            card: tam, ability: 0, counter_payment: Counters::default(),
+        });
+        pay(&mut game);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert!(matches!(game.state.pending, Pending::Proliferate { player: p } if p == player));
+        let saved = game.snapshot();
+        let subject_ref = game.object_ref(subject);
+        for _ in 0..2 {
+            act(&mut game, Action::ProliferatePermanent { object: subject_ref });
+            // The already-created sibling is an independent event, even if the
+            // replacement provider no longer exists when it is processed.
+            game.move_object(provider, Zone::Graveyard);
+            act(&mut game, Action::FinishProliferate);
+            assert_eq!(game.counter_count(subject, CounterKind::PlusOne), 2);
+            assert!(matches!(game.state.pending, Pending::Proliferate { player: p } if p == player));
+            act(&mut game, Action::ProliferatePermanent { object: subject_ref });
+            act(&mut game, Action::FinishProliferate);
+            assert_eq!(game.counter_count(subject, CounterKind::PlusOne), 3);
+            assert!(!matches!(game.state.pending, Pending::Proliferate { .. }));
+            game.restore(&saved).unwrap();
+        }
+    }
+}
