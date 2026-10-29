@@ -2786,6 +2786,10 @@ pub(crate) enum ReplacementSpec {
 pub(crate) enum OutsideEntryEffectDestination {
     Hand,
     Exile,
+    #[allow(
+        dead_code,
+        reason = "Only synthetic outside-entry prevention providers exist"
+    )]
     Prevent,
 }
 
