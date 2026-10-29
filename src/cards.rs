@@ -152,6 +152,8 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    /// Each distinct target must fit a distinct card-type slot.
+    DistinctCardTypeSlots,
     /// Pair shares at least one current card type, not a subtype or supertype.
     SharedCardType,
     /// Controlled by the player chosen in a distinct target group.

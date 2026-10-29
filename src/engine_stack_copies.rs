@@ -627,6 +627,7 @@ impl Game {
             spec.rule,
             TargetRule::Grouped {
                 constraint: TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::DistinctCardTypeSlots
                     | TargetGroupConstraint::SharedCardType
                     | TargetGroupConstraint::OtherThanGroup(_),
                 ..

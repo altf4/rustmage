@@ -73,6 +73,8 @@ pub use mana_lots::{
 };
 #[path = "engine_card_copies.rs"]
 mod card_copies;
+#[path = "engine_card_type_assignment.rs"]
+mod card_type_assignment;
 #[path = "engine_copies.rs"]
 mod copies;
 #[path = "engine_prepared.rs"]

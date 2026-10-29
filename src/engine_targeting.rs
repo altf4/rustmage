@@ -704,6 +704,23 @@ impl Game {
             }
             return total <= u128::from(maximum);
         }
+        if let TargetGroupConstraint::DistinctCardTypeSlots = constraint {
+            let Target::Card(id) = target else { return false; };
+            if self.state.objects.get(id as usize).is_none_or(|o| o.zone != Zone::Graveyard) {
+                return false;
+            }
+            let mut masks = Vec::new();
+            for bound in chosen.iter().filter(|b| b.group == group) {
+                let Target::Card(other) = bound.target else { return false; };
+                if other == id || !self.same_target_object(*bound)
+                    || self.state.objects[other as usize].zone != Zone::Graveyard {
+                    return false;
+                }
+                masks.push(self.current_kinds(other));
+            }
+            masks.push(self.current_kinds(id));
+            return card_type_assignment::distinct_type_assignment(&masks);
+        }
         if let TargetGroupConstraint::OtherThanGroup(first) = constraint {
             return chosen
                 .iter()
@@ -716,7 +733,8 @@ impl Game {
             return false;
         };
         match constraint {
-            TargetGroupConstraint::OtherThanGroup(_) | TargetGroupConstraint::TotalManaValueAtMost(_) => unreachable!(),
+            TargetGroupConstraint::OtherThanGroup(_) | TargetGroupConstraint::TotalManaValueAtMost(_)
+                | TargetGroupConstraint::DistinctCardTypeSlots => unreachable!(),
             TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
@@ -1236,7 +1254,7 @@ impl Game {
             }
             TargetRule::Grouped { base, constraint } => {
                 let zone = match constraint {
-                    TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
+                    TargetGroupConstraint::SameGraveyard | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
                     | TargetGroupConstraint::SharedCardType
                     | TargetGroupConstraint::ControllerOfPlayerGroup(_)
