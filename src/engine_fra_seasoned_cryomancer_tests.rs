@@ -122,6 +122,9 @@ fn seasoned_replaced_discards_count_and_trigger_survives_source_departure() {
 fn seasoned_miracle_interrupts_draw_before_discard_and_snapshot_replays() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
+        // Group Project has no intrinsic miracle; Lorehold grants the
+        // first-draw reveal and miracle ability to instant/sorcery cards.
+        put(&mut g, player, "Lorehold, the Historian", Zone::Battlefield);
         let source = cryomancer(&mut g, player, Zone::Hand);
         let miracle = put(&mut g, player, "Group Project", Zone::Library);
         act(&mut g, Action::AnnounceCast { card: source });
@@ -132,6 +135,9 @@ fn seasoned_miracle_interrupts_draw_before_discard_and_snapshot_replays() {
             choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
         }
         assert!(matches!(g.state.pending, Pending::MiracleReveal { player: p } if p == player));
+        assert_eq!(g.state.players[player.index()].cards_drawn_this_turn, 1);
+        assert_eq!(g.observe(player).miracle.as_ref().unwrap().object.card, miracle);
+        assert!(g.observe(player.other()).miracle.is_none());
         let saved = g.snapshot();
         for _ in 0..2 {
             act(&mut g, Action::DeclineMiracle);
