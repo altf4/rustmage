@@ -2267,6 +2267,7 @@ fn schema184_rejects_public_and_hidden_paid_offers() {
                 }),
                 casts_remaining: Some(1),
                 pending_cast: None,
+                remaining_mana_value: None,
                 alternative_cost: None,
                 maximum_mana_value: None,
                 origin,

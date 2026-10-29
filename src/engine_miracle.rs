@@ -280,6 +280,7 @@ impl Game {
             paid: None,
             casts_remaining: None,
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: Some(cost),
             maximum_mana_value: None,
             origin: Zone::Hand,

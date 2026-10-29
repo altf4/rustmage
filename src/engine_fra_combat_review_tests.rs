@@ -62,6 +62,7 @@ fn samut_split_second_blocks_casting_from_a_resolving_effect() {
             paid: None,
             casts_remaining: None,
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,

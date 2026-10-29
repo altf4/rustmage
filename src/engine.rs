@@ -5895,7 +5895,7 @@ impl Game {
                 item.cast.as_mut().unwrap().method = CastMethod::Disguise;
                 if during_resolution {
                     let free = self.state.resolution_free_casts.as_mut().unwrap();
-                    if free.casts_remaining.is_some() {
+                    if free.casts_remaining.is_some() || free.remaining_mana_value.is_some() {
                         free.pending_cast = Some(item.id);
                     }
                 }

@@ -353,6 +353,9 @@ pub struct ResolutionFreeCasts {
     /// Exact proposed child; only its committed cast consumes a quota.
     #[serde(skip)]
     pub(super) pending_cast: Option<u64>,
+    /// Inclusive total spell mana value remaining for this free-cast instruction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub remaining_mana_value: Option<u64>,
     pub alternative_cost: Option<ManaCost>,
     pub maximum_mana_value: Option<u64>,
     pub origin: Zone,
@@ -378,6 +381,7 @@ impl Game {
             }),
             casts_remaining: Some(1),
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
@@ -415,6 +419,7 @@ impl Game {
             }),
             casts_remaining: Some(1),
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Graveyard,
@@ -446,6 +451,7 @@ impl Game {
             paid: None,
             casts_remaining: None,
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Graveyard,
@@ -476,6 +482,7 @@ impl Game {
             paid: None,
             casts_remaining: None,
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
@@ -562,6 +569,7 @@ impl Game {
                         && free
                             .maximum_mana_value
                             .is_none_or(|maximum| card.fixed_mana_value() < maximum)
+                        && free.remaining_mana_value.is_none_or(|left| card.fixed_mana_value() <= left)
                 }) && self.permitted_cast_available(
                     player,
                     object.card,
@@ -611,7 +619,7 @@ impl Game {
         self.reveal_hideaway_object(object);
         let mut item = self.cast_item(player, object.card, [0; 6]);
         if let Some(free) = self.state.resolution_free_casts.as_mut()
-            && free.casts_remaining.is_some()
+            && (free.casts_remaining.is_some() || free.remaining_mana_value.is_some())
         {
             free.pending_cast = Some(item.id);
         }
@@ -654,15 +662,20 @@ impl Game {
 
 impl Game {
     pub(super) fn consume_resolution_cast_quota(&mut self, player: Player, stack: Option<usize>) {
-        let Some(id) = stack.map(|i| self.state.stack[i].id) else {
+        let Some(item) = stack.map(|i| &self.state.stack[i]) else {
             return;
         };
+        let (id, value) = (item.id, item.mana_value());
         if let Some(free) = self.state.resolution_free_casts.as_mut()
             && free.player == player
             && free.pending_cast == Some(id)
-            && let Some(left) = &mut free.casts_remaining
         {
-            *left = left.checked_sub(1).expect("a legal quota cast");
+            if let Some(left) = &mut free.casts_remaining {
+                *left = left.checked_sub(1).expect("a legal quota cast");
+            }
+            if let Some(left) = &mut free.remaining_mana_value {
+                *left = left.checked_sub(value).expect("a legal budget cast");
+            }
             free.pending_cast = None;
         }
     }
@@ -706,6 +719,7 @@ impl Game {
             paid: None,
             casts_remaining: Some(maximum_casts),
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,

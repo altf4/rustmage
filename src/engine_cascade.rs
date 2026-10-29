@@ -113,6 +113,7 @@ impl Game {
                 paid: None,
                 casts_remaining: None,
                 pending_cast: None,
+            remaining_mana_value: None,
                 alternative_cost: None,
                 maximum_mana_value: Some(maximum),
                 origin: Zone::Exile,
