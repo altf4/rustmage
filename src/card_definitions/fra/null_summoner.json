@@ -68,6 +68,7 @@
   ],
   "rules_tests": "src/engine_fra_null_summoner_tests.rs",
   "additional_rules_tests": [
-    "src/engine_fra_null_origin_independent_tests.rs"
+    "src/engine_fra_null_origin_independent_tests.rs",
+    "src/engine_fra_null_independent_tests.rs"
   ]
 }
