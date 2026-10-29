@@ -1,0 +1,49 @@
+{
+  "name": "Vicious Verse",
+  "catalogue_id": 5448,
+  "oracle_id": "e8f755f7-ec93-4d2e-bffc-c719984fa13d",
+  "facts_sha256": "f3afeb1c12e0655529505d8d1364ab989e89726fc08729dcfe83a8b9f0b226ee",
+  "complete": false,
+  "physical_metadata_sha256": "2d0e13488e828a49ef1976f5c69d7d17f3f5009f19a3aad1efbacb989323bb7a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StingerquillVoxmancer.java",
+  "java_sha256": "9bcfed14cdba82c9fe3728fd1e24e8ca2e207e307245a3e0d8a622ce0175941e",
+  "rules_tests": "src/engine_fra_prepared_extra_tests.rs",
+  "oracle_face": {
+    "oracle_id": "e8f755f7-ec93-4d2e-bffc-c719984fa13d",
+    "index": 1,
+    "sha256": "ad6f7d190e674562b0fa91bb759d33dc59cf8dc63721fcd8cfd3cbf7eb4e473f"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourcePreparedCondition.java",
+      "sha256": "010390bed14d8e636c2c4ec49831c957b757b6bcba388c437d2015c76b69ca63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ]
+}

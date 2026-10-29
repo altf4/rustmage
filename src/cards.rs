@@ -2357,6 +2357,8 @@ pub(crate) enum StatValue {
     /// Count of this player's committed noncreature spell casts this turn.
     NoncreatureSpellsCastThisTurn,
     LifeGainOccurredThisTurn,
+    /// Whether an opponent has actually been dealt noncombat damage this turn.
+    OpponentNoncombatDamageThisTurn,
     LifeLostThisTurn,
     LinkedExileCardTypes,
     CreaturesDiedThisTurn,

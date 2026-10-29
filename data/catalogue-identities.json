@@ -5452,7 +5452,13 @@
     17,
     3,
     3,
-    3
+    3,
+    12,
+    12,
+    12,
+    6,
+    6,
+    6
   ],
   "aliases": [
     [
@@ -84561,11 +84567,16 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Hallway Heckler",
+        "mana_cost": "{2}{R}",
+        "type_line": "Creature — Elemental Sorcerer"
+      }
     },
     {
       "index": 1933,
@@ -117856,13 +117867,18 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Paradox Shaper",
+        "mana_cost": "{1}{U/B}",
+        "type_line": "Creature — Octopus Wizard"
+      }
     },
     {
       "index": 3099,
@@ -147778,12 +147794,17 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Stingerquill Voxmancer",
+        "mana_cost": "{B/R}",
+        "type_line": "Creature — Goblin Sorcerer"
+      }
     },
     {
       "index": 4147,
@@ -158622,13 +158643,18 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Theorix Metamage",
+        "mana_cost": "{2}{U/B}",
+        "type_line": "Creature — Shade Wizard"
+      }
     },
     {
       "index": 4527,
@@ -170110,12 +170136,17 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Void Extrapolator",
+        "mana_cost": "{1}{B}",
+        "type_line": "Creature — Aetherborn Warlock"
+      }
     },
     {
       "index": 4929,
@@ -173237,12 +173268,17 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3,
+      "front_face": {
+        "name": "Whiplash Wordsmith",
+        "mana_cost": "{3}{B/R}",
+        "type_line": "Creature — Vampire Sorcerer"
+      }
     },
     {
       "index": 5038,
@@ -184618,6 +184654,168 @@
         0
       ],
       "generic": 2
+    },
+    {
+      "index": 5447,
+      "module": "card_5447",
+      "path": "synthetic/prepare_hallway_heckler_vicious_verse.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Vicious Verse",
+      "oracle_id": "d1af8018-35b5-4b6f-93c8-1ed6bd8c92b1",
+      "facts_sha256": "0f069b9d74000f4e46d479b6d987340d63d109170da9ba165ba859820a254ce1",
+      "mana_cost": "{B/R}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5448,
+      "module": "card_5448",
+      "path": "synthetic/prepare_stingerquill_voxmancer_vicious_verse.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Vicious Verse",
+      "oracle_id": "e8f755f7-ec93-4d2e-bffc-c719984fa13d",
+      "facts_sha256": "f3afeb1c12e0655529505d8d1364ab989e89726fc08729dcfe83a8b9f0b226ee",
+      "mana_cost": "{B/R}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5449,
+      "module": "card_5449",
+      "path": "synthetic/prepare_whiplash_wordsmith_vicious_verse.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Vicious Verse",
+      "oracle_id": "e1ffb884-a89e-4e2a-9beb-8bd5838b6a94",
+      "facts_sha256": "25eb340816d785cf8d17c94e7513416a09588e94eb5ad7a9773c250787e9faaf",
+      "mana_cost": "{B/R}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5450,
+      "module": "card_5450",
+      "path": "synthetic/prepare_paradox_shaper_omit_variables.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Omit Variables",
+      "oracle_id": "511951ed-fbff-4e44-9429-27f237496672",
+      "facts_sha256": "230e23946bcc26317eeb881ff978fdaec95410d25619c7f67529c7d5a65fb829",
+      "mana_cost": "{U/B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5451,
+      "module": "card_5451",
+      "path": "synthetic/prepare_theorix_metamage_omit_variables.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Omit Variables",
+      "oracle_id": "92a0aa44-0ef7-4e6f-8288-7c33067c5fd1",
+      "facts_sha256": "b230b4d0c11eba14b77c907fca6ce48f065ea0b9204453cbfb2815458675fa10",
+      "mana_cost": "{U/B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5452,
+      "module": "card_5452",
+      "path": "synthetic/prepare_void_extrapolator_omit_variables.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Omit Variables",
+      "oracle_id": "517f84b5-cf99-410d-96ea-910740231dac",
+      "facts_sha256": "23ce6f944ecd1f26195740467bceb8d9458a44e90d7de7ed97463cd539ca9adf",
+      "mana_cost": "{U/B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

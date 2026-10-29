@@ -1,0 +1,49 @@
+{
+  "name": "Vicious Verse",
+  "catalogue_id": 5447,
+  "oracle_id": "d1af8018-35b5-4b6f-93c8-1ed6bd8c92b1",
+  "facts_sha256": "0f069b9d74000f4e46d479b6d987340d63d109170da9ba165ba859820a254ce1",
+  "complete": false,
+  "physical_metadata_sha256": "a6bc416342f62e0bb5e71718324400fcfcc40f1e4ad28607fce520f544e8226c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HallwayHeckler.java",
+  "java_sha256": "ca9b3d88e75dbf18088be926ba26c4555700296bcbd8e225eafece6282c5d507",
+  "rules_tests": "src/engine_fra_prepared_extra_tests.rs",
+  "oracle_face": {
+    "oracle_id": "d1af8018-35b5-4b6f-93c8-1ed6bd8c92b1",
+    "index": 1,
+    "sha256": "ad6f7d190e674562b0fa91bb759d33dc59cf8dc63721fcd8cfd3cbf7eb4e473f"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
+}

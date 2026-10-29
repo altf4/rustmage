@@ -271,6 +271,9 @@ impl Game {
             StatValue::LifeGainOccurredThisTurn => {
                 i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)
             }
+            StatValue::OpponentNoncombatDamageThisTurn => {
+                i128::from(self.state.players[owner.other().index()].noncombat_damage_this_turn)
+            }
             StatValue::LinkedExileCardTypes => {
                 let mut mask = 0u16;
                 if let Some(links) = &self.state.linked_choices {

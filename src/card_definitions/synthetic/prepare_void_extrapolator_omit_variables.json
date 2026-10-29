@@ -1,0 +1,44 @@
+{
+  "name": "Omit Variables",
+  "catalogue_id": 5452,
+  "oracle_id": "517f84b5-cf99-410d-96ea-910740231dac",
+  "facts_sha256": "23ce6f944ecd1f26195740467bceb8d9458a44e90d7de7ed97463cd539ca9adf",
+  "complete": false,
+  "physical_metadata_sha256": "613a363c95504b1d3e640982ce562d719a9e3a83b168224f65ba82ca0ad52181",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VoidExtrapolator.java",
+  "java_sha256": "468d2792dcb9119bc32c026e655d8dcd4ac259d5966e07636cc201ee279d0fef",
+  "rules_tests": "src/engine_fra_prepared_extra_tests.rs",
+  "oracle_face": {
+    "oracle_id": "517f84b5-cf99-410d-96ea-910740231dac",
+    "index": 1,
+    "sha256": "bc02a0cc3d6b792ac4aee70a7feb977a0e84d357839ff63a6a33a6f7ddcf9523"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
+      "sha256": "f7d6ad71cd5857b9d0c127469d9b39afd84148a38001a42a309c5c218694382a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ]
+}
