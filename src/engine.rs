@@ -4067,6 +4067,7 @@ impl Game {
                         return true;
                     }
                     if obj.zone == Zone::Battlefield
+                        && !self.nonmana_actions_prohibited()
                         && self.visit_planeswalker_grants(card, actor, sorcery, &mut emit)
                     {
                         return true;

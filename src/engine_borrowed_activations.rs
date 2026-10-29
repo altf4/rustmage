@@ -465,7 +465,9 @@ impl Game {
                 continue;
             }
             if !self.activation_guard_available(ability.guard, card, actor)
-                || (ability.mana_production().is_none() && self.named_activation_prohibited(card))
+                || (ability.mana_production().is_none()
+                    && (self.nonmana_actions_prohibited()
+                        || self.named_activation_prohibited(card)))
                 || !Self::object_activation_available_with_kinds(
                     &ready_object,
                     self.counter_amounts(card),

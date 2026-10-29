@@ -215,7 +215,8 @@ impl Game {
         let readiness = self.activation_readiness(actor, ability);
         !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && self.printed_abilities_available(card)
-            && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
+            && (ability.mana_production().is_some()
+                || (!self.nonmana_actions_prohibited() && !self.named_activation_prohibited(card)))
             && self.activation_guard_available(ability.guard, card, actor)
             && self.power_up_available(
                 self.object_ref(card),

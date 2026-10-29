@@ -92,6 +92,7 @@ impl Game {
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacks
+                    | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
@@ -201,7 +202,9 @@ impl Game {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        crate::cards::StaticAbilityFragment::Storied
+                        crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond
+                            | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
+                            | crate::cards::StaticAbilityFragment::Storied
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }

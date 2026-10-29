@@ -832,6 +832,7 @@ impl Game {
                     | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacks
+                    | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::ControlledEquippedCreatureAttacks
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
@@ -1683,6 +1684,18 @@ impl Game {
                             }));
                         }
                     }
+                }
+                if ability.condition.event()
+                    == TriggerCondition::ControlledCreatureAttacksPlayerAlone
+                    && let Some(attacker) = alone
+                    && matches!(declared[0].defender, Some(CombatDefender::Player(_)))
+                    && self.queue_trigger(&source, index)
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .entering_object = Some(attacker);
                 }
                 if ability.condition.event() == TriggerCondition::ControlledEquippedCreatureAttacks
                 {

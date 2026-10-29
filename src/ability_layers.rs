@@ -45,6 +45,11 @@ pub(crate) enum AdditionalTriggerScope {
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub(crate) enum StaticAbilityFragment {
+    /// Controlled instant and sorcery spells have split second.
+    ControlledInstantSorcerySplitSecond,
+    /// During combat no spells or nonmana activated abilities may be started.
+    NoSpellsOrNonmanaDuringCombat,
+
     /// Grants its controller the permanent enduring-story designation at threshold.
     Storied,
     /// This source continuously acquires activations from matching cards in its controller graveyard.

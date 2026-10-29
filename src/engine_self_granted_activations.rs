@@ -19,7 +19,8 @@ impl Game {
         if !rows.iter().any(|row| row.recipient.card == card) {
             return false;
         }
-        if CharacteristicWorld::activation_prohibited(self, actor, card)
+        if self.nonmana_actions_prohibited()
+            || CharacteristicWorld::activation_prohibited(self, actor, card)
             || self.named_activation_prohibited(card)
         {
             return false;

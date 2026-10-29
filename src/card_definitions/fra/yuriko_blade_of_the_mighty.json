@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0806a674dc97fcc18d825b9d76ea3d1e6acd8b303d6ffc4f828234fb4151f23a"
   },
-  "physical_metadata_sha256": "723a8050290b0b6058078192275dc8bf17d680fea237d29c0053b0545e4e3efd"
+  "physical_metadata_sha256": "723a8050290b0b6058078192275dc8bf17d680fea237d29c0053b0545e4e3efd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/y/YurikoBladeOfTheMighty.java",
+  "java_sha256": "704b753bb366d86e11157c1c067d0051b9e81ba8ab20a532a6ef100a62e95771",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksPlayerAloneControlledTriggeredAbility.java",
+      "sha256": "1f6f0b27823a4c13bf6e5e038ad0767b7c77798e315f915cb72dbfceb8a84869"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    }
+  ],
+  "rules_tests": "src/engine_fra_combat_restrictions_tests.rs"
 }
