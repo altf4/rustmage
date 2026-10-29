@@ -1525,28 +1525,90 @@ fn projected_control_return_can_unlock_linked_land_mana() {
         let source = g.object_ref(exile);
         let rows = &mut g.state.roles.get_or_insert_default().source_linked_effects;
         rows.push(SourceLinkedEffectView {
-            source: controller_ref, recipient: land_ref, controller: player.other(),
-            kind: SourceLinkedEffectKind::Control, timestamp: control_time,
+            source: controller_ref,
+            recipient: land_ref,
+            controller: player.other(),
+            kind: SourceLinkedEffectKind::Control,
+            timestamp: control_time,
         });
         rows.push(SourceLinkedEffectView {
-            source, recipient: land_ref, controller: player,
-            kind: SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast, timestamp: grant_time,
+            source,
+            recipient: land_ref,
+            controller: player,
+            kind: SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast,
+            timestamp: grant_time,
         });
         g.refresh_controllers();
         assert_eq!(g.object_view(land).controller, player.other());
-        let goal = FundingGoal { actor: player, required: [0; 6], generic: 5, reserve: None, source: None };
+        let goal = FundingGoal {
+            actor: player,
+            required: [0; 6],
+            generic: 5,
+            reserve: None,
+            source: None,
+        };
         let world = FundingState::from_game(&g, &goal);
-        assert!(world.total_mana_upper() < 5, "current controller inventory misses the land");
-        assert!(world.optimistic(&goal), "dynamic control must bypass that bound");
-        let step = world.moves(&goal).into_iter().find(|step|
-            world.resources[step.resource].id == controller && step.grantor == Some(ring_ref)
-        ).expect("Lotus Ring grants sacrifice mana");
+        assert!(
+            world.total_mana_upper() < 5,
+            "current controller inventory misses the land"
+        );
+        assert!(
+            world.optimistic(&goal),
+            "dynamic control must bypass that bound"
+        );
+        let step = world
+            .moves(&goal)
+            .into_iter()
+            .find(|step| {
+                world.resources[step.resource].id == controller && step.grantor == Some(ring_ref)
+            })
+            .expect("Lotus Ring grants sacrifice mana");
         let mut projected = None;
-        assert!(world.visit_applied(&step, &mut |next| { projected = Some(next.clone()); true }));
+        assert!(world.visit_applied(&step, &mut |next| {
+            projected = Some(next.clone());
+            true
+        }));
         let projected = projected.unwrap();
         assert_eq!(projected.object(land).controller, player);
-        assert!(projected.moves(&goal).iter().any(|step|
-            projected.resources[step.resource].id == land && step.production[5] == 2));
+        assert!(
+            projected.moves(&goal).iter().any(
+                |step| projected.resources[step.resource].id == land && step.production[5] == 2
+            )
+        );
         assert!(projected.reachable(&goal, &mut HashSet::new()));
+    }
+}
+
+#[test]
+fn stable_control_records_keep_large_impossible_funding_search_bounded() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        g.state.players[player.index()].mana = [0; 6];
+        let lands: Vec<_> = (0..18)
+            .map(|_| named(&mut g, player, "Forest", Zone::Battlefield))
+            .collect();
+        let reference = g.object_ref(lands[0]);
+        g.ensure_control_base(reference);
+        g.record_control(reference, player, None);
+        assert!(
+            g.state
+                .controls
+                .as_ref()
+                .is_some_and(|state| !state.effects.is_empty())
+        );
+        let goal = FundingGoal {
+            actor: player,
+            required: [0; 6],
+            generic: 1000,
+            reserve: None,
+            source: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        assert!(world.total_mana_upper() < 1000);
+        assert!(
+            !world.optimistic(&goal),
+            "stable control must retain the proven upper bound"
+        );
+        assert!(!world.reachable(&goal, &mut HashSet::new()));
     }
 }

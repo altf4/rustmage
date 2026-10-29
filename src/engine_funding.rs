@@ -2289,11 +2289,18 @@ impl<'g> FundingState<'g> {
         // A funding departure may end a source-bound or attached control
         // effect and make previously opposing mana sources available. The
         // current-controller inventory cannot bound that future world.
-        if self.game.state.controls.is_some()
-            || self.roles().is_some_and(|roles| roles.source_linked_effects.iter().any(|row|
-                row.kind == SourceLinkedEffectKind::Control))
-            || self.attachment_sources().iter().any(|&id|
-                self.object(id).card.controls_attached())
+        // ControlBase and source-independent ControlEffect rows are stable
+        // for their object's incarnation throughout a mana payment. They do
+        // not by themselves cause an opposing source to change controllers.
+        if self.roles().is_some_and(|roles| {
+            roles
+                .source_linked_effects
+                .iter()
+                .any(|row| row.kind == SourceLinkedEffectKind::Control)
+        }) || self
+            .attachment_sources()
+            .iter()
+            .any(|&id| self.object(id).card.controls_attached())
         {
             return true;
         }
