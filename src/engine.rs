@@ -186,6 +186,8 @@ pub use subtypes::GrantedSubtypes;
 mod battles;
 #[path = "engine_replacements.rs"]
 mod replacements;
+#[path = "engine_player_counter_events.rs"]
+mod player_counter_events;
 #[path = "engine_sagas.rs"]
 mod sagas;
 #[path = "engine_shield_harness.rs"]
