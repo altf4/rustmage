@@ -862,3 +862,35 @@ fn prevention_provider_uses_live_control_and_ability_layer_after_restore() {
         TEST_PREVENT_PROVIDER.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn projected_competing_prevention_and_exile_are_distinct_funding_branches() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        named(&mut g, player, "Rest in Peace", Zone::Battlefield);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        g.state.objects[id as usize].summoning_sick = false;
+        g.state.players[player.index()].mana = [0; 6];
+        let reference = g.object_ref(id);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(reference)));
+        let goal = FundingGoal { actor: player, required: [0, 0, 0, 0, 1, 0], generic: 0, reserve: None, source: None };
+        let world = FundingState::from_game(&g, &goal);
+        let step = world.moves(&goal).into_iter().find(|step|
+            world.resources[step.resource].id == id && step.production == [0, 0, 0, 0, 1, 0]).unwrap();
+        let mut branches = Vec::new();
+        world.visit_applied(&step, &mut |next| { branches.push(next.clone()); false });
+        let prevented = branches.iter().find(|w| w.object(id).zone == Zone::Battlefield).unwrap();
+        let exiled = branches.iter().find(|w| w.object(id).zone == Zone::Exile).unwrap();
+        assert_eq!(prevented.reference(id), reference);
+        assert_ne!(exiled.reference(id), reference);
+        assert_eq!(prevented.mana[4], 1);
+        assert_eq!(exiled.mana[4], 1);
+        assert!(prevented.key(&goal) != exiled.key(&goal));
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
