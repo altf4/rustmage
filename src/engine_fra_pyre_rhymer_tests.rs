@@ -233,3 +233,107 @@ fn molten_tide_extra_mana_follows_kept_or_reversed_mana_event() {
         }
     }
 }
+
+#[test]
+fn molten_tide_announced_mana_pauses_before_the_mountain_is_tapped() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        grant_molten_tide(&mut g, player);
+        let bolg = put(&mut g, player, "Bolg's Company", Zone::Battlefield);
+        let goblin = put(&mut g, player, "Goblin Piker", Zone::Battlefield);
+        let bolg_ref = g.object_ref(bolg);
+        let timestamp = g.next_role_timestamp();
+        g.state.roles.get_or_insert_default().animations.push(AnimationView {
+            object: bolg_ref, timestamp, artifact: false, land: true,
+            preserve_card_types: true, food_only: false, artifact_noncreature: false,
+            colors: None, creature_types: None, all_creature_types: false,
+            base: None, keywords: Keywords::NONE, expires_turn: None,
+        });
+        let item = g.cast_preview(player, bolg, Zone::Battlefield, bolg_ref, 0, [0; 6]);
+        g.add_basic_land_type(&item, Subject::Source, crate::cards::BasicLandType::Mountain);
+        assert!(g.has_subtype(bolg, "Mountain"));
+        g.state.players[player.index()].mana = [0; 6];
+        act(&mut g, Action::AnnounceMana { card: bolg, ability: 0,
+            counter_payment: Counters::default(), production: [0, 0, 1, 1, 0, 0] });
+        assert!(!g.object_view(bolg).tapped);
+        assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            let invalid = g.object_ref(bolg);
+            reject(&mut g, Action::ChooseAdditionalCost { object: invalid });
+            let selected = g.object_ref(goblin);
+            act(&mut g, Action::ChooseAdditionalCost { object: selected });
+            pay(&mut g);
+            assert!(g.object_view(bolg).tapped);
+            assert_eq!(g.object_view(goblin).zone, Zone::Graveyard);
+            assert_eq!(g.state.players[player.index()].mana, [0, 0, 1, 2, 0, 0]);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn molten_tide_borrowed_mana_uses_the_mountain_source_not_the_exiled_donor() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        grant_molten_tide(&mut g, player);
+        let donor = put(&mut g, player.other(), "Bolg's Company", Zone::Battlefield);
+        let forge = put(&mut g, player, "Territory Forge", Zone::Hand);
+        g.state.players[player.index()].mana = [8; 6];
+        cast(&mut g, forge, None);
+        for _ in 0..96 {
+            if g.state.pending == Pending::Priority && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { break; }
+            let target = Action::ChooseTarget { target: Target::Card(donor) };
+            if g.legal_actions().contains(&target) { act(&mut g, target); }
+            else { choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. } | Action::FinishTargets)); }
+        }
+        assert_eq!(g.object_view(donor).zone, Zone::Exile);
+        let forge_ref = g.object_ref(forge);
+        let item = g.cast_preview(player, forge, Zone::Battlefield, forge_ref, 0, [0; 6]);
+        g.add_basic_land_type(&item, Subject::Source, crate::cards::BasicLandType::Mountain);
+        let goblin = put(&mut g, player, "Goblin Piker", Zone::Battlefield);
+        let descriptor = g.borrowed_ability_views().into_iter()
+            .find(|row| row.source.card == forge && row.ability == 0).unwrap();
+        g.state.players[player.index()].mana = [0; 6];
+        let action = Action::AnnounceBorrowedMana { card: forge, exiled: descriptor.exiled,
+            ability: 0, counter_payment: Counters::default(), production: [0, 0, 1, 1, 0, 0] };
+        act(&mut g, action);
+        assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            let selected = g.object_ref(goblin);
+            act(&mut g, Action::ChooseAdditionalCost { object: selected });
+            pay(&mut g);
+            assert!(g.object_view(forge).tapped);
+            assert_eq!(g.object_view(donor).zone, Zone::Exile);
+            assert_eq!(g.object_view(goblin).zone, Zone::Graveyard);
+            assert_eq!(g.state.players[player.index()].mana, [0, 0, 1, 2, 0, 0]);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn molten_tide_uses_current_tapper_not_owner_for_each_seat() {
+    for player in [Player::P0, Player::P1] {
+        for tapper_is_effect_controller in [false, true] {
+            let mut g = scenario(player);
+            grant_molten_tide(&mut g, player);
+            let tapper = if tapper_is_effect_controller { player } else { player.other() };
+            let mountain = put(&mut g, tapper.other(), "Mountain", Zone::Battlefield);
+            let reference = g.object_ref(mountain);
+            g.change_controller(reference, tapper);
+            g.state.active = tapper;
+            g.state.priority = tapper;
+            g.state.players[tapper.index()].mana = [0; 6];
+            let saved = g.snapshot();
+            for _ in 0..2 {
+                act(&mut g, Action::TapMana { card: mountain });
+                assert_eq!(g.state.players[tapper.index()].mana[3], if tapper_is_effect_controller { 2 } else { 1 });
+                assert_eq!(g.observe(player).players[player.index()].mountain_mana_bonus, Some(1));
+                g.restore(&saved).unwrap();
+            }
+        }
+    }
+}
