@@ -16,6 +16,23 @@ impl AttackPayment {
         std::mem::size_of::<Self>() + self.attackers.len() * std::mem::size_of::<ObjectRef>()
     }
 }
+/// Cardinality of a capacity-one defender assignment. Distinct edge sets are
+/// necessary when separate restrictions affect different attackers.
+pub(super) fn maximum_attack_matching(edges: &[Vec<usize>], slots: usize) -> usize {
+    fn augment(i: usize, edges: &[Vec<usize>], seen: &mut [bool], owners: &mut [Option<usize>]) -> bool {
+            for &slot in &edges[i] {
+                if seen[slot] { continue; }
+                seen[slot] = true;
+                if owners[slot].is_none() || augment(owners[slot].unwrap(), edges, seen, owners) {
+                    owners[slot] = Some(i); return true;
+                }
+            }
+            false
+        }
+    let mut owners = vec![None; slots];
+    for i in 0..edges.len() { augment(i, edges, &mut vec![false; slots], &mut owners); }
+    owners.iter().filter(|owner| owner.is_some()).count()
+}
 impl Game {
     /// Costs are attached to attacking a player, not their planeswalkers.
     pub(super) fn attack_controller_tax(&self, defender: Player) -> u32 {
@@ -176,16 +193,6 @@ impl Game {
     /// Maximum number of simultaneously satisfiable attack requirements. Unlimited
     /// defenders need no matching; limited planeswalkers are capacity-one slots.
     fn maximum_mandatory_attackers(&self, actor: Player) -> usize {
-        fn augment(i: usize, edges: &[Vec<usize>], seen: &mut [bool], owners: &mut [Option<usize>]) -> bool {
-            for &slot in &edges[i] {
-                if seen[slot] { continue; }
-                seen[slot] = true;
-                if owners[slot].is_none() || augment(owners[slot].unwrap(), edges, seen, owners) {
-                    owners[slot] = Some(i); return true;
-                }
-            }
-            false
-        }
         let walkers: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(i, o)| {
             let id = i as CardId;
             (o.zone == Zone::Battlefield && o.controller == actor.other() && self.current_kinds(id) & 64 != 0)
@@ -213,9 +220,7 @@ impl Game {
             edges.push(walkers.iter().enumerate().filter_map(|(n, &r)|
                 (self.planeswalker_attack_limited(r) && self.can_attack_defender(id, CombatDefender::Planeswalker(r))).then_some(n)).collect::<Vec<_>>());
         }
-        let mut owners = vec![None; walkers.len()];
-        for i in 0..edges.len() { augment(i, &edges, &mut vec![false; walkers.len()], &mut owners); }
-        free + owners.iter().filter(|owner| owner.is_some()).count()
+        free + maximum_attack_matching(&edges, walkers.len())
     }
 
     /// Every mandatory attacker must attack if at least one legal defender exists.

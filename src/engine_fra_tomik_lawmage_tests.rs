@@ -172,3 +172,109 @@ fn tomik_static_grant_has_distinct_public_identity_from_activated_grants() {
         assert!(!view.grant_available(g.object_ref(source), g.state.objects[source as usize].card, 0, None));
     }
 }
+
+#[test]
+fn tomik_matching_reassigns_earlier_attacker_for_asymmetric_choices() {
+    // First attacker can use either walker; second can use only the first.
+    // A greedy first-slot assignment gets one, while reassignment gets two.
+    assert_eq!(combat_restrictions::maximum_attack_matching(&[vec![0, 1], vec![0]], 2), 2);
+    assert_eq!(combat_restrictions::maximum_attack_matching(&[vec![0], vec![0]], 2), 1);
+    assert_eq!(combat_restrictions::maximum_attack_matching(&[vec![], vec![1]], 2), 1);
+}
+
+#[test]
+fn tomik_optional_attacker_cannot_displace_mandatory_attacker_from_only_free_slot() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p.other(), "Tomik, Orzhov Lawmage", Zone::Battlefield);
+        put(&mut g, p.other(), "Storm, Windrider", Zone::Battlefield);
+        let walker = put(&mut g, p.other(), "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 5;
+        let optional = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let mandatory = put(&mut g, p, "Flamewake Phoenix", Zone::Battlefield);
+        let defender = g.object_ref(walker);
+        g.state.step = Step::Attackers; g.state.pending = Pending::Attackers;
+        act(&mut g, Action::AttackPlaneswalker { card: optional, defender });
+        assert!(!g.legal_actions().contains(&Action::FinishAttackers));
+        act(&mut g, Action::CancelAttackDeclaration);
+        act(&mut g, Action::AttackPlaneswalker { card: mandatory, defender });
+        assert!(g.legal_actions().contains(&Action::FinishAttackers));
+    }
+}
+
+#[test]
+fn tomik_multiple_grants_survive_one_provider_being_suppressed_or_leaving() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let first = put(&mut g, p, "Tomik, Orzhov Lawmage", Zone::Battlefield);
+        let second = put(&mut g, p, "Tomik, Orzhov Lawmage", Zone::Battlefield);
+        let walker = put(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 5;
+        let aura = put(&mut g, p.other(), "Fresh Start", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(first));
+        assert!(g.planeswalker_attack_limited(g.object_ref(walker)));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.move_object(second, Zone::Graveyard);
+            assert!(!g.planeswalker_attack_limited(g.object_ref(walker)));
+            g.move_object(aura, Zone::Graveyard);
+            assert!(g.planeswalker_attack_limited(g.object_ref(walker)));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn tomik_failed_tax_payment_and_abort_restore_entire_declaration() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p.other(), "Tomik, Orzhov Lawmage", Zone::Battlefield);
+        put(&mut g, p.other(), "Dáin, Lord of the Iron Hills", Zone::Battlefield);
+        put(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
+        put(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
+        g.refresh_enduring_stories();
+        let walker = put(&mut g, p.other(), "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 5;
+        let a = put(&mut g, p, "Flamewake Phoenix", Zone::Battlefield);
+        let b = put(&mut g, p, "Flamewake Phoenix", Zone::Battlefield);
+        let land = put(&mut g, p, "Forest", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        g.state.step = Step::Attackers; g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: a });
+        let defender = g.object_ref(walker);
+        act(&mut g, Action::AttackPlaneswalker { card: b, defender });
+        let saved = g.snapshot();
+        act(&mut g, Action::FinishAttackers);
+        act(&mut g, Action::TapMana { card: land });
+        reject(&mut g, Action::PayAttackCost { payment: [0; 6] });
+        act(&mut g, Action::AbortAttackPayment);
+        if matches!(g.state.pending, Pending::ManaRollback { .. }) {
+            act(&mut g, Action::ChooseManaRollback { keep: false });
+        }
+        assert_eq!(g.snapshot(), saved);
+    }
+}
+
+#[test]
+fn tomik_activation_fizzles_after_target_leaves_and_reenters_with_counter() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let tomik = put(&mut g, p, "Tomik, Orzhov Lawmage", Zone::Battlefield);
+        let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.add_counter(target, CounterKind::PlusOne, 1);
+        act(&mut g, Action::AnnounceActivate { card: tomik, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(target) });
+        pay(&mut g);
+        let before = g.object_ref(target);
+        g.move_object(target, Zone::Exile);
+        g.move_object(target, Zone::Battlefield);
+        g.add_counter(target, CounterKind::PlusOne, 1);
+        assert_ne!(before, g.object_ref(target));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert!(!g.keywords(target).contains(Keywords::FLYING));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
