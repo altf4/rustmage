@@ -506,7 +506,13 @@ impl Game {
         let Some(free) = &self.state.resolution_free_casts else {
             return false;
         };
-        if free.casts_remaining == Some(0) {
+        // The cumulative budget models casting without paying mana costs.
+        // Paid and alternative-cost offers can choose nonzero X and need a
+        // separate announced-value legality check before they can use it.
+        if free.casts_remaining == Some(0)
+            || (free.remaining_mana_value.is_some()
+                && (free.paid.is_some() || free.alternative_cost.is_some()))
+        {
             return false;
         }
         for &object in &free.remaining {
