@@ -1168,6 +1168,10 @@ pub(crate) enum Instruction {
         next_turn: bool,
     },
     ExileEachLibraryTopCastFree,
+    /// Exile the controller’s top card, then offer one normal-cost cast.
+    ExileTopMayCastPaid,
+    /// Skip the following instructions if that offered cast committed.
+    IfOfferedCastCommitted { skip: usize },
     ExileTargetLibraryTopCastFree {
         amount: u16,
         maximum_casts: u16,

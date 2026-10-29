@@ -360,6 +360,30 @@ pub struct ResolutionFreeCasts {
     pub remaining: Vec<ObjectRef>,
 }
 impl Game {
+    pub(super) fn exile_top_offer_paid_cast(&mut self, player: Player) -> bool {
+        let Some(card) = self.state.players[player.index()].library.last().copied() else {
+            return false;
+        };
+        let event = self.move_object(card, Zone::Exile);
+        if !event.moved || event.destination != Zone::Exile {
+            return false;
+        }
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
+            paid: Some(ResolutionPaidCast { kinds: u8::MAX, exile_instants_sorceries: false }),
+            casts_remaining: Some(1),
+            pending_cast: None,
+            alternative_cost: None,
+            maximum_mana_value: None,
+            origin: Zone::Exile,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player,
+            remaining: vec![event.after],
+        }));
+        self.state.pending = Pending::ResolutionCasts { player };
+        true
+    }
     pub(super) fn offer_paid_graveyard_cast(
         &mut self,
         item: &SpellView,
@@ -516,7 +540,7 @@ impl Game {
                     !card.is_land()
                         && free
                             .paid
-                            .is_none_or(|paid| card.kind_mask() & u16::from(paid.kinds) != 0)
+                            .is_none_or(|paid| paid.kinds == u8::MAX || card.kind_mask() & u16::from(paid.kinds) != 0)
                         && free
                             .maximum_mana_value
                             .is_none_or(|maximum| card.fixed_mana_value() < maximum)

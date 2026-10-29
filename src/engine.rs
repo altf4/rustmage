@@ -5432,6 +5432,14 @@ impl Game {
                 self.cast_exiled_during_resolution(actor, object, face)
             }
             Action::FinishResolutionCasts => {
+                if let Some(resolution) = self.state.resolving.as_mut()
+                    && resolution.pc > 0
+                    && matches!(resolution.program[resolution.pc - 1], Instruction::ExileTopMayCastPaid)
+                {
+                    resolution.moved_count = Some(u64::from(
+                        self.state.resolution_free_casts.as_ref().is_some_and(|offer| offer.casts_remaining == Some(0))
+                    ));
+                }
                 self.finish_paradigm_copy_offer();
                 self.state.resolution_free_casts = None;
                 self.run_program();

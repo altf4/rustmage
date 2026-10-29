@@ -3543,6 +3543,19 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ExileTopMayCastPaid => {
+                    // Reuse the owned resolution count to retain the committed result
+                    // across the cast announcement, mana payment and snapshots.
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+                    if self.exile_top_offer_paid_cast(item.controller) {
+                        return;
+                    }
+                }
+                Instruction::IfOfferedCastCommitted { skip } => {
+                    if self.state.resolving.as_ref().unwrap().moved_count == Some(1) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::ExileEachLibraryTopCastFree => {
                     self.exile_each_top_cast_free(item.controller);
                     return;
