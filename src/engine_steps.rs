@@ -218,10 +218,11 @@ impl Game {
         item: &SpellView,
         condition: TriggerCondition,
     ) -> bool {
+        let Some(source) = item.source else { return false; };
         if let TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } = condition.event() {
             let Some(entering) = item.entering_object else { return false; };
             return self.other_controlled_subtypes_at_least(item.controller, entering, subtype, minimum)
-                && self.trigger_guards_hold(condition, item.controller, item.object, item.source_tapped);
+                && self.trigger_guards_hold(condition, item.controller, source.object, item.source_tapped);
         }
         if let TriggerCondition::InterveningIf {
             guard:
@@ -232,8 +233,8 @@ impl Game {
                 },
             event,
         } = condition
-            && !(self.on_battlefield(item.object.card)
-                && self.object_ref(item.object.card) == item.object)
+            && !(self.on_battlefield(source.object.card)
+                && self.object_ref(source.object.card) == source.object)
         {
             let value = i128::from(
                 item.source_counter_lki
@@ -246,11 +247,11 @@ impl Game {
                 && self.trigger_guards_hold(
                     *event,
                     item.controller,
-                    item.object,
+                    source.object,
                     item.source_tapped,
                 );
         }
-        self.trigger_guards_hold(condition, item.controller, item.object, item.source_tapped)
+        self.trigger_guards_hold(condition, item.controller, source.object, item.source_tapped)
     }
 
     pub(super) fn step_guard(
