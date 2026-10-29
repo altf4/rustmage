@@ -184,6 +184,102 @@ fn chill_large_loyalty_x_survives_copy_observation_and_restore() {
 }
 
 #[test]
+fn chill_surveil_keeps_top_and_handles_empty_library() {
+    for player in [Player::P0, Player::P1] {
+        for empty in [false, true] {
+            let mut g = scenario(player);
+            let source = chill(&mut g, player, 3);
+            let top = (!empty).then(|| put(&mut g, player, "Shock", Zone::Library));
+            activate(&mut g, source, 0);
+            g.resolve_top();
+            if let Some(card) = top {
+                assert!(matches!(g.state.pending, Pending::EffectLibrary { .. }));
+                let saved = g.snapshot();
+                for _ in 0..2 {
+                    act(&mut g, Action::ArrangeLibrary { card, destination: LibraryDestination::Top });
+                    assert_eq!(g.object_view(card).zone, Zone::Library);
+                    assert_eq!(g.state.players[player.index()].library.last(), Some(&card));
+                    g.restore(&saved).unwrap();
+                }
+            } else {
+                assert!(!matches!(g.state.pending, Pending::EffectLibrary { .. }));
+            }
+        }
+    }
+}
+
+#[test]
+fn chill_restricted_blue_cannot_fund_face_down_creature_and_restores() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = chill(&mut g, player, 3);
+        g.state.players[player.index()].mana = [0; 6];
+        activate(&mut g, source, 1);
+        g.resolve_top();
+        // Face-down disguise is a creature spell, even when its cost is generic.
+        g.state.players[player.index()].mana[5] = 2;
+        let disguise = put(&mut g, player, "Bubble Smuggler", Zone::Hand);
+        let saved = g.snapshot();
+        reject(&mut g, Action::AnnounceDisguise { card: disguise });
+        assert!(g.mana_lots(player).iter().any(|lot| lot.quality.restriction == ManaRestrictionView::NoncreatureSpell));
+        g.restore(&saved).unwrap();
+        reject(&mut g, Action::AnnounceDisguise { card: disguise });
+    }
+}
+
+#[test]
+fn chill_copied_minus_x_retargets_for_new_controller_and_shares_loyalty_use() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = chill(&mut g, player, 5);
+        let first = put(&mut g, player, "Gilded Lotus", Zone::Battlefield);
+        let second = put(&mut g, player.other(), "Gilded Lotus", Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 2, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseSourceCounterAmount { amount: 2 });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(first) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        reject(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        let original = g.state.stack.last().unwrap().clone();
+        let mut copier = original.clone();
+        copier.controller = player.other();
+        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        g.copy_target_ability(&copier, 0);
+        act(&mut g, Action::SetStackTarget { index: 0, target: Target::Card(second) });
+        act(&mut g, Action::FinishStackTargets);
+        assert_eq!(g.state.stack.last().unwrap().controller, player.other());
+        let snapshot = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert_eq!(g.counter_count(first, CounterKind::Stun), 2);
+            assert_eq!(g.counter_count(second, CounterKind::Stun), 2);
+            g.restore(&snapshot).unwrap();
+        }
+    }
+}
+
+#[test]
+fn chill_stun_counters_honor_doubling_season() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = chill(&mut g, player, 4);
+        let target = put(&mut g, player, "Gilded Lotus", Zone::Battlefield);
+        put(&mut g, player, "Doubling Season", Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 2, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseSourceCounterAmount { amount: 2 });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(target) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        let snapshot = g.snapshot();
+        for _ in 0..2 {
+            g.resolve_top();
+            assert_eq!(g.counter_count(target, CounterKind::Stun), 4);
+            g.restore(&snapshot).unwrap();
+        }
+    }
+}
+
+#[test]
 fn chill_loyalty_x_choice_rejects_wrong_actor_and_restores_before_choice() {
     for player in [Player::P0, Player::P1] {
         for amount in [0, u64::from(u32::MAX) + 17] {
