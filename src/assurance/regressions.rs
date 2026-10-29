@@ -380,10 +380,9 @@ fn project_prior_schema181(input: &str) -> Result<String, String> {
     Ok(input.to_owned())
 }
 
-/// Schema-180 rules are carried by these authored card definitions.
+/// These authored rules first became representable in schema 181.
 fn schema181_new_card(card: Card) -> bool {
-    schema180_new_card(card)
-        || matches!(card.identity(), "Gideon the Oathless" | "Vindictive Triumph")
+    matches!(card.identity(), "Gideon the Oathless" | "Vindictive Triumph")
 }
 
 fn schema181_recipe_supported(recipe: &CopyRecipe) -> bool {
@@ -396,9 +395,8 @@ fn schema181_recipe_supported(recipe: &CopyRecipe) -> bool {
 }
 
 fn schema181_facts_supported(facts: &DamageFacts) -> bool {
+    // Schema 180 already represents additive Construct and other subtype facts.
     !schema181_new_card(facts.card)
-        && serde_json::to_string(&facts.granted_subtypes)
-            .is_ok_and(|json| project_prior_schema180(&json).is_ok())
 }
 
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
@@ -443,6 +441,8 @@ fn prior_schema181_state_supported(state: &State) -> bool {
             schema181_new_card(event.explorer.card)
                 || event.revealed.is_some_and(|card| schema181_new_card(card.card)))
         || state.last_target_library_move.as_ref().is_some_and(|event| schema181_new_card(event.card))
+        || state.library_top.as_ref().and_then(|data| data.reveal.as_ref())
+            .is_some_and(|event| schema181_new_card(event.revealed.card))
         || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema181_new_card(row.granting_card)))
         || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema181_new_card(row.granting_card)))
         || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
@@ -500,6 +500,61 @@ fn prior_schema181_state_supported(state: &State) -> bool {
         .chain(state.earthbend_returns.as_deref().into_iter().flatten().map(|r| &r.item))
         .chain(state.manifest.as_ref().into_iter().flat_map(|s| s.deaths.iter().map(|d| &d.source)))
         .all(schema181_packet_supported)
+}
+
+#[test]
+fn schema181_accepts_schema180_cards_and_additive_subtypes() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let hidden = put(&mut g, player, "Bear Cub", Zone::Hand);
+        for name in ["Puppet Crafting", "Variable Chaser // Arc of Fortune"] {
+            g.state.objects[hidden as usize].card = Card::from_name(name).unwrap();
+            assert!(prior_schema181_state_supported(&g.state), "{name}");
+            assert!(!prior_schema180_state_supported(&g.state), "{name}");
+        }
+        g.state.objects[hidden as usize].card = Card::from_name("Bear Cub").unwrap();
+        let target = put(&mut g, player, "Gideon's Memorial", Zone::Battlefield);
+        let aura = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[aura as usize].card = Card::from_name("Puppet Crafting").unwrap();
+        g.register_battlefield_sources(aura);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(target));
+        for viewer in [Player::P0, Player::P1] {
+            let encoded = serde_json::to_string(&g.observe(viewer)).unwrap();
+            assert_eq!(project_prior_schema181(&encoded).unwrap(), encoded);
+            assert!(project_prior_schema180(&encoded).is_err());
+        }
+        assert!(prior_schema181_state_supported(&g.state));
+        let mut packet = g.activation_item(player, target, 0);
+        packet.source_facts = g.damage_source(target).facts;
+        g.state.pending_triggers.push(packet);
+        assert!(prior_schema181_state_supported(&g.state));
+    }
+}
+
+#[test]
+fn schema180_and_181_check_retained_library_reveal_card() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let object = g.object_ref(id);
+        let bear = Card::from_name("Bear Cub").unwrap();
+        g.state.library_top.get_or_insert_default().reveal = Some(library_top::LibraryRevealEvent {
+            sequence: 1, source: object, player,
+            revealed: explore::RevealedLibraryCard { object, card: bear }, drawn: None,
+        });
+        assert!(prior_schema180_state_supported(&g.state));
+        assert!(prior_schema181_state_supported(&g.state));
+        g.state.library_top.as_mut().unwrap().reveal.as_mut().unwrap().revealed.card = Card::from_name("Puppet Crafting").unwrap();
+        assert!(!prior_schema180_state_supported(&g.state));
+        assert!(prior_schema181_state_supported(&g.state));
+        g.state.library_top.as_mut().unwrap().reveal.as_mut().unwrap().revealed.card = Card::from_name("Gideon the Oathless").unwrap();
+        assert!(!prior_schema181_state_supported(&g.state));
+        g.begin_attack_rollback(player);
+        g.state.library_top.as_mut().unwrap().reveal.as_mut().unwrap().revealed.card = bear;
+        assert!(!prior_schema181_state_supported(&g.state));
+        g.state.cast_rollback = None;
+        assert!(prior_schema181_state_supported(&g.state));
+    }
 }
 
 #[test]
@@ -680,6 +735,8 @@ fn prior_schema180_state_supported(state: &State) -> bool {
             schema180_new_card(event.explorer.card)
                 || event.revealed.is_some_and(|card| schema180_new_card(card.card)))
         || state.last_target_library_move.as_ref().is_some_and(|event| schema180_new_card(event.card))
+        || state.library_top.as_ref().and_then(|data| data.reveal.as_ref())
+            .is_some_and(|event| schema180_new_card(event.revealed.card))
         || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema180_new_card(row.granting_card)))
         || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema180_new_card(row.granting_card)))
         || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
