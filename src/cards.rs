@@ -2107,6 +2107,8 @@ pub(crate) enum Instruction {
     IfExiledCreature {
         skip: usize,
     },
+    /// Repeat this non-targeting counter event a frozen number of times.
+    Proliferate(AmountValue),
     RemoveAllCounters,
     RemoveAllCountersFrom(Subject),
     SnapshotDoubleCreatures(CreatureFilter),

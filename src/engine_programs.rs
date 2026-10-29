@@ -24,6 +24,7 @@ pub(super) struct Resolution {
     #[allow(clippy::box_collection)]
     pub immediate_blink_return: Option<Box<Vec<ReturnLinkView>>>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
+    pub proliferate: Option<Box<super::proliferate::ProliferateSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub item: SpellView,
@@ -2203,6 +2204,7 @@ impl Game {
             explore: None,
             evidence: None,
             connive: None,
+            proliferate: None,
             item,
             program,
             pc: 0,
@@ -2339,6 +2341,7 @@ impl Game {
             if self.advance_replacements(false) {
                 return;
             }
+            if self.advance_proliferate() { return; }
             if self.state.entry_batch.is_some()
                 || self
                     .state
@@ -5853,6 +5856,10 @@ impl Game {
                     for id in ids {
                         self.set_counters(id, Counters::default());
                     }
+                }
+                Instruction::Proliferate(amount) => {
+                    let count = self.amount_value(amount, item.object, item.controller);
+                    self.start_proliferate(item.controller, count);
                 }
                 Instruction::RemoveAllCounters => {
                     for bound in &item.targets {

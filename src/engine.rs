@@ -254,6 +254,8 @@ mod activations;
 #[path = "engine_power_up.rs"]
 mod power_up;
 pub use power_up::PowerUpUseView;
+#[path = "engine_proliferate.rs"]
+mod proliferate;
 #[path = "engine_connive.rs"]
 mod connive;
 #[path = "engine_convoke.rs"]
@@ -537,6 +539,9 @@ define_actions! {
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
+    ProliferatePermanent { object: ObjectRef },
+    ProliferatePlayer { player: Player },
+    FinishProliferate,
     ChooseArmy { object: ObjectRef },
     ChooseJace { object: ObjectRef },
     FinishLandSelection,
@@ -1689,6 +1694,7 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    Proliferate { player: Player },
     TargetCounterRemoval {
         player: Player,
     },
@@ -2750,6 +2756,8 @@ pub struct Observation {
     pub evidence: Option<EvidenceView>,
     pub last_evidence: Option<EvidenceEventView>,
     pub connive_choice: Option<connive::ConniveChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proliferate_choice: Option<proliferate::ProliferateView>,
     pub known_hand: Vec<ObjectRef>,
     pub explore_choice: Option<ExploreChoiceView>,
     pub last_explore: Option<ExploreEventView>,
@@ -3136,6 +3144,7 @@ impl Game {
             | Pending::AuraEntry { player }
             | Pending::TokenChoice { player, .. }
             | Pending::KeywordChoice { player, .. }
+            | Pending::Proliferate { player }
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
             | Pending::Role { player }
@@ -3790,6 +3799,22 @@ impl Game {
                         return true;
                     }
                 }
+            }
+            Pending::Proliferate { player } => {
+                let sequence = s.resolving.as_ref().unwrap().proliferate.as_ref().unwrap();
+                for (id, _) in s.objects.iter().enumerate() {
+                    let object = self.object_ref(id as CardId);
+                    if self.on_battlefield(object.card) && self.counter_amounts(object.card).has_any()
+                        && !sequence.permanents.contains(&object)
+                        && emit(Action::ProliferatePermanent { object }) { return true; }
+                }
+                for candidate in [Player::P0, Player::P1] {
+                    if s.players[candidate.index()].poison_counters > 0
+                        && sequence.players & (1 << candidate.index()) == 0
+                        && emit(Action::ProliferatePlayer { player: candidate }) { return true; }
+                }
+                if emit(Action::FinishProliferate) { return true; }
+                let _ = player;
             }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
@@ -6190,6 +6215,13 @@ impl Game {
                 self.create_tokens(actor, token, 1, false);
                 self.run_program();
             }
+            Action::ProliferatePermanent { object } => {
+                self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().permanents.push(object);
+            }
+            Action::ProliferatePlayer { player } => {
+                self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().players |= 1 << player.index();
+            }
+            Action::FinishProliferate => { self.finish_proliferate(); self.run_program(); }
             Action::PutHandCreature { object }
             | Action::PutHandPermanent { object }
             | Action::PutHandLand { object }
@@ -8470,6 +8502,7 @@ impl Game {
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
+                Pending::Proliferate { .. } => "proliferate",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
@@ -8881,6 +8914,7 @@ impl Game {
                     remaining: c.remaining.clone(),
                     current: c.current,
                 }),
+            proliferate_choice: s.resolving.as_ref().and_then(|r| r.proliferate.as_ref()).map(|p| p.view()),
             known_hand: s.known_hand.clone(),
             explore_choice: s
                 .resolving
@@ -9206,6 +9240,7 @@ impl Game {
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
                         + resolution.connive.as_ref().map_or(0, |c| c.bytes())
+                        + resolution.proliferate.as_ref().map_or(0, |p| p.bytes())
                         + resolution.mana_payment.as_ref().map_or(0, |_| {
                             std::mem::size_of::<resolution_mana::ResolutionPayment>()
                         })
