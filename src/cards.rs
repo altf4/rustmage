@@ -2034,6 +2034,8 @@ pub(crate) enum Instruction {
     TopLibrary,
     AdditionalLandPlays(u64),
     OwnerLibrary,
+    /// Its owner chooses top or bottom; successful top movement deals damage.
+    OwnerLibraryTopOrBottomDamage(u16),
     OwnerLibrarySecondFromTop,
     ChooseManaValueParityDestroyOthers,
     /// Shuffle even when the exact source permanent has left (CR701.24c).

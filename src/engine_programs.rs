@@ -2798,6 +2798,9 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::OwnerLibraryTopOrBottomDamage(amount) => {
+                    if self.start_target_library_damage(&item, amount) { return; }
+                }
                 Instruction::OwnerLibrarySecondFromTop => {
                     if self.start_target_library(&item, true) {
                         return;
