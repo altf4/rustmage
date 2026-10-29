@@ -287,12 +287,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     match packet.kind {
                         StackKind::CasualtyCopy
                         | StackKind::CopyEndStepSacrifice
+        | StackKind::CopyEndStepConditionalSacrifice
                         | StackKind::DelayedReturn
                         | StackKind::DelayedTokenCreation { .. }
                         | StackKind::DelayedSacrifice
                         | StackKind::DelayedWarpExile
                         | StackKind::DelayedManifestDread
-                        | StackKind::SiegeDefeat => {
+                        | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => {
                             panic!("no delayed producer in this fixture")
                         }
                         StackKind::Spell => {

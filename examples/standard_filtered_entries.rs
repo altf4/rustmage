@@ -166,12 +166,13 @@ fn classify(s: &SpellView) -> Option<usize> {
     match s.kind {
         StackKind::CasualtyCopy
         | StackKind::CopyEndStepSacrifice
+        | StackKind::CopyEndStepConditionalSacrifice
         | StackKind::DelayedReturn
         | StackKind::DelayedTokenCreation { .. }
         | StackKind::DelayedSacrifice
         | StackKind::DelayedWarpExile
         | StackKind::DelayedManifestDread
-        | StackKind::SiegeDefeat => {
+        | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => {
             panic!("no delayed producer in this fixture")
         }
         StackKind::TriggeredAbility { .. } => s.source().and_then(|source| index(source.card)),

@@ -22,12 +22,13 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     let known = match item.kind {
         StackKind::CasualtyCopy
         | StackKind::CopyEndStepSacrifice
+        | StackKind::CopyEndStepConditionalSacrifice
         | StackKind::DelayedReturn
         | StackKind::DelayedTokenCreation { .. }
         | StackKind::DelayedSacrifice
         | StackKind::DelayedWarpExile
         | StackKind::DelayedManifestDread
-        | StackKind::SiegeDefeat => false,
+        | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => false,
         StackKind::Spell => matches!(
             name,
             "Darkness Descends" | "The Crystal's Chosen" | "Duty Beyond Death"
