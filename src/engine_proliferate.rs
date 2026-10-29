@@ -98,11 +98,14 @@ impl Game {
     }
     pub(super) fn finish_proliferate(&mut self) {
         let mut sequence = self.state.resolving.as_mut().unwrap().proliferate.take().unwrap();
-        let mut poison = [0; 2];
+        let mut counters = [[0; 5]; 2];
         for player in [Player::P0, Player::P1] {
-            if sequence.players & (1 << player.index()) != 0
-                && self.state.players[player.index()].poison_counters > 0 {
-                poison[player.index()] = 1;
+            if sequence.players & (1 << player.index()) != 0 {
+                for kind in crate::cards::PlayerCounterKind::ALL {
+                    if self.state.players[player.index()].player_counter(kind) > 0 {
+                        counters[player.index()][kind.index()] = 1;
+                    }
+                }
             }
         }
         let changes = sequence.permanents.drain(..).filter_map(|object| {
@@ -121,6 +124,6 @@ impl Game {
             self.state.resolving.as_mut().unwrap().proliferate = Some(sequence);
         }
         self.state.pending = Pending::Priority;
-        self.proliferate_counters(changes, poison, player);
+        self.proliferate_counters(changes, counters, player);
     }
 }

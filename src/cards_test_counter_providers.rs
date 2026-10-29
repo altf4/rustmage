@@ -25,6 +25,20 @@ const EFFECT_ONLY: ReplacementSpec = ReplacementSpec::PlayerCounters {
     kind: PlayerCounterKind::Poison, relation: CastRelation::You,
     placed_by: Some(CastRelation::You), effects_only: true, factor: 2, add: 0,
 };
+const ENERGY_DOUBLE: ReplacementSpec = ReplacementSpec::PlayerCounters {
+    kind: PlayerCounterKind::Energy, relation: CastRelation::You,
+    placed_by: Some(CastRelation::You), effects_only: false, factor: 2, add: 0,
+};
+const ENERGY_PLUS: ReplacementSpec = ReplacementSpec::PlayerCounters {
+    kind: PlayerCounterKind::Energy, relation: CastRelation::You,
+    placed_by: Some(CastRelation::You), effects_only: false, factor: 1, add: 1,
+};
+const ENERGY_GROUP: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0, first_layer: AbilityLayer::Rule, fragments: &[
+        StaticAbilityFragment::Replacement(0, ENERGY_DOUBLE),
+        StaticAbilityFragment::Replacement(1, ENERGY_PLUS),
+    ],
+}];
 const EVENT_DOUBLE: ReplacementSpec = ReplacementSpec::Proliferate {
     relation: CastRelation::You, factor: 2, add: 0,
 };
@@ -53,6 +67,7 @@ pub(super) fn provider(card: Card) -> Option<(&'static [StaticAbilityGroup], &'s
     else if Some(card) == Card::from_name("Hill Giant") { Some((DOUBLE_GROUP, &[DOUBLE])) }
     else if Some(card) == Card::from_name("Grizzly Bears") { Some((PLUS_GROUP, &[PLUS])) }
     else if Some(card) == Card::from_name("Aegis Turtle") { Some((EFFECT_GROUP, &[EFFECT_ONLY])) }
+    else if Some(card) == Card::from_name("Goblin Piker") { Some((ENERGY_GROUP, &[ENERGY_DOUBLE, ENERGY_PLUS])) }
     else if Some(card) == Card::from_name("Serra Angel") { Some((EVENT_GROUP, &[EVENT_DOUBLE])) }
     else { None }
 }

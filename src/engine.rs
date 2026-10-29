@@ -3837,7 +3837,8 @@ impl Game {
                         && emit(Action::ProliferatePermanent { object }) { return true; }
                 }
                 for candidate in [Player::P0, Player::P1] {
-                    if s.players[candidate.index()].poison_counters > 0
+                    if crate::cards::PlayerCounterKind::ALL.into_iter()
+                        .any(|kind| s.players[candidate.index()].player_counter(kind) > 0)
                         && sequence.players & (1 << candidate.index()) == 0
                         && emit(Action::ProliferatePlayer { player: candidate }) { return true; }
                 }

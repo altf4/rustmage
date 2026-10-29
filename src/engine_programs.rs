@@ -5816,16 +5816,17 @@ impl Game {
                 }
                 Instruction::AddOneOfEachCounterKind => {
                     let mut changes = Vec::new();
-                    let mut poison = [0; 2];
+                    let mut player_counters = [[0; 5]; 2];
                     for bound in &item.targets {
                         if !self.same_target_object(*bound) {
                             continue;
                         }
                         match bound.target {
                             Target::Player(player) => {
-                                // Poison is the pool's represented player counter kind.
-                                if self.state.players[player.index()].poison_counters > 0 {
-                                    poison[player.index()] = 1;
+                                for kind in crate::cards::PlayerCounterKind::ALL {
+                                    if self.state.players[player.index()].player_counter(kind) > 0 {
+                                        player_counters[player.index()][kind.index()] = 1;
+                                    }
                                 }
                             }
                             Target::Card(id) if self.on_battlefield(id) => {
@@ -5840,7 +5841,7 @@ impl Game {
                             _ => {}
                         }
                     }
-                    self.effect_counters_with_poison(changes, poison, item.controller, replacements::ResumeMode::Program);
+                    self.effect_counters_with_players(changes, player_counters, item.controller, replacements::ResumeMode::Program);
                 }
                 Instruction::DoubleCounters => {
                     // Doubling puts the existing quantity of each kind on the object.

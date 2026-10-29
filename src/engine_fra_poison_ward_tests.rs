@@ -401,3 +401,52 @@ fn mixed_counter_batch_preserves_atomicity_across_prohibition_and_opponent_choic
         }
     }
 }
+
+#[test]
+fn tam_proliferates_all_player_counter_types_with_atomic_replacements() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let tam = put(&mut game, player, "Tam, the Possibility", Zone::Battlefield);
+        let walker = put(&mut game, player, "Ajani, Caller of the Pride", Zone::Battlefield);
+        game.state.objects[walker as usize].counters.loyalty = 3;
+        let provider = put(&mut game, player, "Goblin Piker", Zone::Battlefield);
+        let subject = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+        game.add_counter(subject, CounterKind::PlusOne, 1);
+        game.state.players[player.index()].add_player_counter(crate::cards::PlayerCounterKind::Energy, 2);
+        game.state.players[player.index()].add_player_counter(crate::cards::PlayerCounterKind::Experience, 1);
+        game.state.players[player.other().index()].add_player_counter(crate::cards::PlayerCounterKind::Rad, 1);
+        game.state.players[player.index()].mana = [1, 1, 1, 1, 1, 0];
+        act(&mut game, Action::AnnounceActivate { card: tam, ability: 0, counter_payment: Counters::default() });
+        pay(&mut game);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert!(game.legal_actions().contains(&Action::ProliferatePlayer { player }));
+        assert!(game.legal_actions().contains(&Action::ProliferatePlayer { player: player.other() }));
+        let object = game.object_ref(subject);
+        act(&mut game, Action::ProliferatePermanent { object });
+        act(&mut game, Action::ProliferatePlayer { player });
+        act(&mut game, Action::ProliferatePlayer { player: player.other() });
+        act(&mut game, Action::FinishProliferate);
+        assert!(matches!(game.state.pending, Pending::Replacement { player: actor } if actor == player));
+        assert_eq!(game.counter_count(subject, CounterKind::PlusOne), 1);
+        assert_eq!(game.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Energy), 2);
+        assert_eq!(game.state.players[player.other().index()].player_counter(crate::cards::PlayerCounterKind::Rad), 1);
+        let saved = game.snapshot();
+        for (ability, expected) in [(0, 5), (1, 6)] {
+            game.restore(&saved).unwrap();
+            let choice = Action::ChooseReplacement { source: game.object_ref(provider), ability };
+            assert!(game.apply(player.other(), choice.clone()).is_err());
+            assert_eq!(game.snapshot(), saved);
+            act(&mut game, choice);
+            assert_eq!(game.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Energy), expected);
+            assert_eq!(game.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Experience), 2);
+            assert_eq!(game.state.players[player.other().index()].player_counter(crate::cards::PlayerCounterKind::Rad), 2);
+            assert_eq!(game.counter_count(subject, CounterKind::PlusOne), 2);
+            for viewer in [player, player.other()] {
+                let view = game.observe(viewer);
+                assert!(view.players[player.index()].other_counters.iter().any(|c| c.kind == crate::cards::PlayerCounterKind::Energy && c.count == expected));
+            }
+        }
+    }
+}
