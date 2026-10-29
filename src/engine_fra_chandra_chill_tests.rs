@@ -351,6 +351,7 @@ fn chill_restricted_blue_pays_prepared_noncreature_face() {
         let mut g = scenario(player);
         let prepared = put(&mut g, player, "Theorix Metamage // Omit Variables", Zone::Hand);
         act(&mut g, Action::AnnounceCast { card: prepared });
+        choose(&mut g, |a| matches!(a, Action::ChooseSpellCost { .. }));
         pay(&mut g);
         settle(&mut g);
         let permanent = g.object_ref(prepared);
