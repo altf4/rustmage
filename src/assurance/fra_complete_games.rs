@@ -67,6 +67,15 @@ fn fra_admitted_decks_finish_and_replay_in_both_seats() {
     let report = workload::run_admitted_smoke(&cases).unwrap();
     assert_eq!(report.workload, "FRA_ADMITTED_SMOKE_ONLY");
     assert_eq!(report.games.len(), 24);
+    assert!(
+        report
+            .witnesses
+            .get("empower_counters")
+            .copied()
+            .unwrap_or(0)
+            > 0,
+        "no observed empower loyalty increase"
+    );
     // Record the observed cards and mechanics so a terminal game caused by
     // empty-library draws alone cannot be mistaken for exercised spell play.
     println!(

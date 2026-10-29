@@ -388,7 +388,7 @@ impl Tracker {
             for object in &after.objects {
                 if object.zone != Zone::Battlefield
                     || object.controller != packet.controller
-                    || object.card.name() != "@token/jace-planeswalker"
+                    || object.card.identity() != "@token/jace-planeswalker"
                 {
                     continue;
                 }
