@@ -455,12 +455,13 @@ impl Game {
         self.advance_copy_targets()
     }
     fn ability_source_kinds(&self, item: &SpellView) -> u16 {
+        let Some(source) = item.source() else { return 0; };
         self.state
             .objects
-            .get(item.object.card as usize)
-            .filter(|source| source.generation == item.object.generation)
-            .map_or(item.source_facts.kinds, |_| {
-                self.current_kinds(item.object.card)
+            .get(source.object.card as usize)
+            .filter(|object| object.generation == source.object.generation)
+            .map_or(source.facts.kinds, |_| {
+                self.current_kinds(source.object.card)
             })
     }
     /// Codie's trigger refers to the actual spell, not its last known copy.
