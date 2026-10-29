@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0c8364e0ae9ecf3987572b638818a674863f1e3d697b76b8633fbed19bfa14e7",
+  "catalogue_version": "a7335bf603b2e3f7e0e2c05e5423a0d51823c935575522486dcc3880251a8046",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2912,
-  "implemented_total": 2918,
+  "implemented_standard_cards": 2913,
+  "implemented_total": 2919,
   "token_definitions": 144,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 265,
-      "gated": 20
+      "complete": 266,
+      "gated": 19
     },
     "frc": {
       "total": 6,
@@ -37227,8 +37227,8 @@
     {
       "name": "Tomik, Orzhov Lawmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/tomik_orzhov_lawmage.rs",
       "set": "fra"
     },

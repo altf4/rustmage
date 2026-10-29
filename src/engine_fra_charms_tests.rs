@@ -7652,3 +7652,9 @@ mod engine_fra_gideon_source_independent_tests;
 
 #[path = "engine_fra_vindictive_controller_independent_tests.rs"]
 mod engine_fra_vindictive_controller_independent_tests;
+
+#[path = "engine_fra_tomik_lawmage_tests.rs"]
+mod engine_fra_tomik_lawmage_tests;
+
+#[path = "engine_fra_tomik_cancellation_independent_tests.rs"]
+mod engine_fra_tomik_cancellation_independent_tests;

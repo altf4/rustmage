@@ -142,7 +142,7 @@ impl Game {
                     granted: true,
                     origin: self.copy_ability_origin(grant.grantor),
                 });
-                if self.queue_trigger_from(&source, usize::from(grant.ability), Some(event)) {
+                if self.queue_trigger_from(&source, usize::from(grant.ability.expect("conditional ward has a trigger template")), Some(event)) {
                     self.state
                         .pending_triggers
                         .last_mut()
