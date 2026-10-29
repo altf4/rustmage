@@ -452,7 +452,7 @@ fn echo_legally_copies_animated_chandra_loyalty_ability() {
         let object = g.object_ref(source);
         let timestamp = g.next_role_timestamp();
         g.state.roles.get_or_insert_with(Default::default).animations.push(AnimationView {
-            object, timestamp, artifact: false, land: false, preserve_card_types: true,
+            object, timestamp, artifact: false, land: false, preserve_card_types: false,
             food_only: false, artifact_noncreature: false, colors: None,
             creature_types: None, all_creature_types: false, base: Some((3, 3)),
             keywords: Keywords::NONE, expires_turn: None,

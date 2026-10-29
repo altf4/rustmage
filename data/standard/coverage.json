@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "373d19d591861b5f75b7961bf51fb1013e20ea1c3e0ad2bfdc8eb3ef3f99a99a",
+  "catalogue_version": "647a5afde5449e062f417760e64bd6befe788b35d483aa0cef8b4e5365ed7205",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2920,
-  "implemented_total": 2926,
+  "implemented_standard_cards": 2922,
+  "implemented_total": 2928,
   "token_definitions": 146,
   "emblem_definitions": 6,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 273,
-      "gated": 12
+      "complete": 275,
+      "gated": 10
     },
     "frc": {
       "total": 6,
@@ -5915,8 +5915,8 @@
     {
       "name": "Chandra, Chill of Compliance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/chandra_chill_of_compliance.rs",
       "set": "fra"
     },
@@ -13707,8 +13707,8 @@
     {
       "name": "Garruk, Veiled Butcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/garruk_veiled_butcher.rs",
       "set": "fra"
     },

@@ -3207,6 +3207,14 @@
     "journal": "543918deceb4be8c",
     "observations": "e76c1ee8a9a3f178"
   },
+  "Chandra, Chill of Compliance": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3fba902266e1c58c",
+    "observations": "69c81415597b6743"
+  },
   "Chandra, Flameshaper": {
     "root": "main",
     "status": "completed",
@@ -7671,6 +7679,14 @@
     "journal": "f833142f3ffafc96",
     "observations": "79f2007ab57c14aa"
   },
+  "Garruk, Veiled Butcher": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e8de1199f21a06d6",
+    "observations": "b0fbda5d578dbc5f"
+  },
   "Gate Colossus": {
     "root": "main",
     "status": "completed",
@@ -10334,6 +10350,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "4cef1c7ce27c881b"
+  },
+  "Jace, Reality Sculptor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b03a6e1714d41d9e",
+    "observations": "476aacb799ab5d92"
   },
   "Jade-Cast Sentinel": {
     "root": "main",
@@ -15046,6 +15070,14 @@
     "zone": "Battlefield",
     "journal": "17b1007f413b3222",
     "observations": "646a733aca7ea11d"
+  },
+  "Pyre Rhymer // Molten Tide": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "8628206654ab4c6c",
+    "observations": "28b53f0bbd6c6177"
   },
   "Pyroclasm": {
     "root": "main",
