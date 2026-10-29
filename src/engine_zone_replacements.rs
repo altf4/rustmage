@@ -78,6 +78,10 @@ pub(super) struct Plan {
     pub reflexive: Option<(u16, Box<ObjectView>)>,
 }
 impl ZoneState {
+    // Choices and replays own checkpoints; passive reveals and object links do not.
+    pub(super) fn has_checkpoint(&self) -> bool {
+        self.choice.is_some() || self.replay.is_some()
+    }
     pub fn bytes(&self) -> usize {
         let base_bytes = |base: &Base| {
             base.bytes

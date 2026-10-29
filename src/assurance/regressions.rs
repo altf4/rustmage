@@ -413,15 +413,25 @@ fn project_prior_schema179_copy_abilities(input: &str) -> Result<String, String>
 /// Audit accessible copy recipes and spell packets explicitly. Opaque suspended
 /// continuations can retain private recipes; reject them rather than guessing.
 fn prior_schema179_copy_owned_state_supported(game: &Game) -> bool {
-    let state = &game.state;
-    if state.paradigm.is_some() || state.cast_rollback.is_some() || state.replacements.is_some()
-        || state.entry_batch.is_some() || state.zone_rules.is_some()
-        || state.linked_choices.is_some() || state.stack_copy_data.is_some()
-        || state.delayed_returns.is_some() || state.earthbend_returns.is_some()
-        || state.manifest.is_some() || state.resolving.is_some()
+    prior_schema179_copy_state_supported(&game.state)
+}
+
+fn prior_schema179_copy_state_supported(state: &State) -> bool {
+    if state.replacements.is_some()
+        || state.entry_batch.is_some() || state.resolving.is_some()
         || state.announcing.is_some() || state.mana_announcement_stack.is_some()
+        || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
+        || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
     {
         return false;
+    }
+    if let Some(rollback) = &state.cast_rollback {
+        // Mana recordings are opaque; an empty checkpoint can be checked recursively.
+        if !rollback.events.is_empty() || rollback.replay.is_some() || rollback.capture.is_some()
+            || !prior_schema179_copy_state_supported(&rollback.before)
+        {
+            return false;
+        }
     }
     let safe = |recipe: &CopyRecipe| recipe.exceptions.conditional_sacrifice_abilities == 0;
     if state.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row| !safe(&row.recipe)))
@@ -432,14 +442,49 @@ fn prior_schema179_copy_owned_state_supported(game: &Game) -> bool {
     {
         return false;
     }
-    // SpellView serialization retains nested copy events, LKI recipes and kind.
-    // Its skipped fields are unrelated trigger-count/target witnesses.
+    // These owned containers can hold private SpellViews that observations omit.
+    // SpellView serialization retains nested copy events, LKI recipes and kind;
+    // skipped fields are unrelated trigger-count/target witnesses.
+    let packet_safe = |item: &SpellView| serde_json::to_string(item)
+        .is_ok_and(|json| project_prior_schema179_copy_abilities(&json).is_ok());
     state.stack.iter().chain(&state.pending_triggers).chain(&state.ordering_triggers)
         .chain(state.delayed_artifact_copies.as_deref().into_iter().flatten())
         .chain(state.delayed_attack_this_turn.as_deref().into_iter().flatten())
         .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
         .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
-        .all(|item| serde_json::to_string(item).is_ok_and(|json| project_prior_schema179_copy_abilities(&json).is_ok()))
+        .chain(state.stack_copy_data.as_ref().into_iter().flat_map(|s| s.packets()))
+        .chain(state.paradigm.as_ref().into_iter().flat_map(|s| s.packets()))
+        .chain(state.delayed_returns.as_deref().into_iter().flatten().map(|r| &r.item))
+        .chain(state.earthbend_returns.as_deref().into_iter().flatten().map(|r| &r.item))
+        .chain(state.manifest.as_ref().into_iter().flat_map(|s| s.deaths.iter().map(|d| &d.source)))
+        .all(packet_safe)
+}
+
+#[test]
+fn prior_schema179_inspects_passive_containers_and_hidden_packets() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        g.state.zone_rules = Some(Box::default());
+        g.state.linked_choices = Some(Box::default());
+        g.state.stack_copy_data = Some(Box::default());
+        g.state.manifest = Some(Box::default());
+        assert!(prior_schema179_copy_owned_state_supported(&g));
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let mut packet = g.activation_item(player, source, 0);
+        let active = CopyRecipe::new(Card::from_name("Bear Cub").unwrap()).with_exceptions(
+            CopyExceptions { conditional_sacrifice_abilities: 1, ..CopyExceptions::NONE });
+        packet.source_copy_recipe = Some(Box::new(active));
+        let reference = g.object_ref(source);
+        g.state.manifest.as_mut().unwrap().deaths.push(manifest::ManifestDeath {
+            object: reference, source: packet,
+        });
+        assert!(!prior_schema179_copy_owned_state_supported(&g));
+        g.state.manifest.as_mut().unwrap().deaths.clear();
+        g.begin_attack_rollback(player);
+        assert!(prior_schema179_copy_owned_state_supported(&g));
+        g.set_copy_recipe(reference, active);
+        assert!(!prior_schema179_copy_owned_state_supported(&g));
+    }
 }
 
 #[test]
@@ -452,6 +497,9 @@ fn prior_schema179_rejects_private_paradigm_copy_packets() {
         let mut item = g.cast_preview(player, source, Zone::Hand, reference, 0, [0; 6]);
         let recipe = CopyRecipe::new(Card::from_name("Bear Cub").unwrap()).with_exceptions(
             CopyExceptions { conditional_sacrifice_abilities: 1, ..CopyExceptions::NONE });
+        g.resolve_paradigm(&item, 0);
+        assert!(prior_schema179_copy_owned_state_supported(&g));
+        g.state.paradigm = None;
         item.source_copy_recipe = Some(Box::new(recipe));
         // The delayed packet survives after the source packet and live recipe
         // are gone; the public paradigm view does not expose its recipe.

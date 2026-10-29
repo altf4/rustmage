@@ -25,6 +25,11 @@ pub(super) struct CopyState {
     delayed: Vec<SpellView>,
     retarget: Option<Retarget>,
 }
+impl CopyState {
+    pub(super) fn packets(&self) -> impl Iterator<Item = &SpellView> {
+        self.delayed.iter().chain(self.retarget.iter().flat_map(|r| [&r.item, &r.template]))
+    }
+}
 pub(super) fn owned_bytes(state: &Option<Box<CopyState>>) -> usize {
     state.as_ref().map_or(0, |state| {
         std::mem::size_of::<CopyState>()

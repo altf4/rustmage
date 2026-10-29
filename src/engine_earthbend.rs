@@ -9,7 +9,7 @@ pub struct EarthbendReturnView {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EarthbendReturn {
     subject: ObjectRef,
-    item: SpellView,
+    pub(super) item: SpellView,
 }
 impl Game {
     pub(super) fn animate_earthbend_targets(&mut self, item: &SpellView) {
