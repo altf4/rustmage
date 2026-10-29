@@ -90,6 +90,171 @@ fn previous_schema_projection_removes_battle_protector() {
     );
 }
 
+/// Recording-only projection to the schema preceding behold and universal
+/// basic-land mana. Reject cases whose old wire representation cannot preserve
+/// the observed ability identity or land-subtype semantics.
+fn project_prior_behold_json(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::Array(items) => {
+                for item in items {
+                    check(item)?;
+                }
+            }
+            serde_json::Value::Object(map) => {
+                for key in ["borrowed_abilities", "graveyard_borrowed_abilities"] {
+                    if map
+                        .get(key)
+                        .is_some_and(|v| !v.is_null() && v.as_array().is_none_or(|a| !a.is_empty()))
+                    {
+                        return Err(format!(
+                            "{key} uses new acquisition slots and ability indices"
+                        ));
+                    }
+                }
+                if map.get("borrowed_slot").is_some_and(|v| !v.is_null()) {
+                    return Err("a borrowed ability on the stack has a new acquisition slot".into());
+                }
+                if map.get("decision").and_then(|v| v.as_str()) == Some("entry_behold")
+                    || map.contains_key("ChooseEntryBehold")
+                    || map.contains_key("Behold")
+                    || map.get("kind").and_then(|v| v.as_str()) == Some("Behold")
+                {
+                    return Err("behold decision or cost has no prior-schema representation".into());
+                }
+                for key in ["added_basic_lands", "effective_basic_lands"] {
+                    if let Some(value) = map.get(key) {
+                        let types = value
+                            .as_array()
+                            .ok_or_else(|| format!("invalid {key} array"))?;
+                        if types.iter().any(|kind| {
+                            !matches!(
+                                kind.as_str(),
+                                Some("Plains" | "Island" | "Swamp" | "Mountain" | "Forest")
+                            )
+                        }) {
+                            return Err(format!("invalid basic land type in {key}"));
+                        }
+                    }
+                }
+                if map
+                    .get("suppress_printed_land")
+                    .is_some_and(|v| v.as_bool() != Some(true))
+                {
+                    return Err("invalid printed land suppression flag".into());
+                }
+                let added = map.get("added_basic_lands").and_then(|v| v.as_array());
+                if added.is_some_and(|a| !a.is_empty()) {
+                    return Err(
+                        "an added basic land subtype is not expressible in the prior schema".into(),
+                    );
+                }
+                let effective = map.get("effective_basic_lands").and_then(|v| v.as_array());
+                let chosen = map.get("basic_land").and_then(|v| v.as_str());
+                let suppressed = map
+                    .get("suppress_printed_land")
+                    .and_then(|v| v.as_bool())
+                    .unwrap_or(false);
+                if suppressed
+                    && !(chosen.is_some()
+                        && effective.is_some_and(|a| a.len() == 1 && a[0].as_str() == chosen))
+                {
+                    return Err(
+                        "lost printed land subtypes cannot be expressed in the prior schema".into(),
+                    );
+                }
+                if let (Some(kind), Some(types)) = (chosen, effective)
+                    && !(types.len() == 1 && types[0].as_str() == Some(kind))
+                {
+                    return Err(
+                        "effective basic land subtypes disagree with the prior chosen type".into(),
+                    );
+                }
+                for value in map.values() {
+                    check(value)?;
+                }
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+    let parsed: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&parsed)?;
+    let mut output = input.to_owned();
+    // These fields are always emitted after existing fields, so removing their
+    // leading comma preserves every other byte and hence the historical hash.
+    for key in ["effective_basic_lands", "added_basic_lands"] {
+        let prefix = format!(",\"{key}\":[");
+        while let Some(start) = output.find(&prefix) {
+            let value_start = start + prefix.len();
+            let end = output[value_start..]
+                .find(']')
+                .ok_or("malformed subtype array")?
+                + value_start;
+            output.replace_range(start..=end, "");
+        }
+    }
+    output = output.replace(",\"suppress_printed_land\":true", "");
+    // Parsing again detects accidental damage without changing field order.
+    serde_json::from_str::<serde_json::Value>(&output).map_err(|e| e.to_string())?;
+    Ok(output)
+}
+
+fn prior_behold_journal_supported(journal: &[Action]) -> bool {
+    !journal.iter().any(|action| {
+        matches!(
+            action,
+            Action::ChooseEntryBehold { .. }
+                | Action::TapMana { .. }
+                | Action::TapGrantedMana { .. }
+                | Action::AnnounceMana { .. }
+                | Action::ActivateMana { .. }
+                | Action::AnnounceGraveyardBorrowedAbility { .. }
+                | Action::AnnounceGraveyardBorrowedMana { .. }
+                | Action::ActivateGraveyardBorrowedMana { .. }
+                | Action::AnnounceBorrowedAbility { .. }
+                | Action::AnnounceBorrowedMana { .. }
+                | Action::ActivateBorrowedMana { .. }
+        )
+    })
+}
+
+#[test]
+fn prior_behold_projection_preserves_order_and_rejects_unrepresentable_state() {
+    let current = r#"[{"granted_subtypes":{"added":[],"creature_types":null,"effective_basic_lands":["Island"]},"borrowed_abilities":[],"borrowed_slot":null}]"#;
+    let previous = r#"[{"granted_subtypes":{"added":[],"creature_types":null},"borrowed_abilities":[],"borrowed_slot":null}]"#;
+    assert_eq!(project_prior_behold_json(current).unwrap(), previous);
+    let escaped = r#"{"label":"x,\"effective_basic_lands\":[\"Island\"]"}"#;
+    assert_eq!(project_prior_behold_json(escaped).unwrap(), escaped);
+    let chosen = r#"{"granted_subtypes":{"added":[],"creature_types":null,"effective_basic_lands":["Forest"],"suppress_printed_land":true,"basic_land":"Forest"}}"#;
+    let expected =
+        r#"{"granted_subtypes":{"added":[],"creature_types":null,"basic_land":"Forest"}}"#;
+    assert_eq!(project_prior_behold_json(chosen).unwrap(), expected);
+    for unrepresentable in [
+        r#"{"granted_subtypes":{"added":[],"added_basic_lands":["Forest"]}}"#,
+        r#"{"granted_subtypes":{"added":[],"effective_basic_lands":[],"suppress_printed_land":true}}"#,
+        r#"{"borrowed_abilities":[{"ability":65533,"slot":0}]}"#,
+        r#"{"graveyard_borrowed_abilities":[{"ability":0,"slot":0}]}"#,
+        r#"{"borrowed_slot":0}"#,
+        r#"{"decision":"entry_behold"}"#,
+        r#"{"entry_replacement":{"kind":{"Behold":"Jace"}}}"#,
+        r#"{"additional_cost":{"kind":"Behold"}}"#,
+        r#"{"granted_subtypes":{"effective_basic_lands":["unknown"]}}"#,
+    ] {
+        assert!(
+            project_prior_behold_json(unrepresentable).is_err(),
+            "{unrepresentable}"
+        );
+    }
+    assert!(prior_behold_journal_supported(&[Action::Pass]));
+    assert!(!prior_behold_journal_supported(&[Action::TapMana {
+        card: 0
+    }]));
+    assert!(!prior_behold_journal_supported(&[
+        Action::ChooseEntryBehold { object: None }
+    ]));
+}
+
 fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
     let mut g = fixture();
     let id = put(&mut g, Player::P0, card.identity(), Zone::Hand);
@@ -239,6 +404,18 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
         }
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
+    let mut projection_error = None;
+    if schema_projection.is_some_and(|schema| schema < 177) {
+        if !prior_behold_journal_supported(&journal) {
+            projection_error =
+                Some("journal contains behold or mana-ability actions whose old identities cannot be proved".to_owned());
+        } else {
+            match project_prior_behold_json(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
     if schema_projection.is_some_and(|schema| schema < 175) {
         for field in [
             "\"noncombat_damage_this_turn\":true,",
@@ -304,11 +481,17 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
     }
     Trace {
         root: root.into(),
-        status: status.into(),
+        status: projection_error.as_ref().map_or_else(
+            || status.to_owned(),
+            |reason| format!("prior_schema_unrepresentable: {reason}"),
+        ),
         decisions: journal.len(),
         zone: format!("{:?}", g.object_view(id).zone),
         journal: digest(&serde_json::to_vec(&journal).unwrap()),
-        observations: digest(observation_bytes.as_bytes()),
+        observations: projection_error.map_or_else(
+            || digest(observation_bytes.as_bytes()),
+            |reason| format!("UNREPRESENTABLE: {reason}"),
+        ),
     }
 }
 
