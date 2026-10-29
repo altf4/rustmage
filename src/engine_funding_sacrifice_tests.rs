@@ -947,3 +947,31 @@ fn prevented_repeatable_black_mana_cannot_fund_missing_blue() {
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn simultaneous_sacrifices_freeze_animated_type_before_provider_leaves() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Battlefield);
+        let aura = named(&mut g, player, "Puppet Crafting", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(artifact));
+        assert!(g.is_creature(artifact));
+        let refs = [g.object_ref(aura), g.object_ref(artifact)];
+        let goal = FundingGoal { actor: player, required: [0; 6], generic: 0, reserve: None, source: None };
+        let world = FundingState::from_game(&g, &goal);
+        assert!(world.resources.iter().any(|r| r.id == aura));
+        assert!(world.resources.iter().any(|r| r.id == artifact));
+        let mut projected = None;
+        assert!(world.cost_departures(&refs, Zone::Graveyard, &mut |next| { projected = Some(next.clone()); true }));
+        let projected = projected.unwrap();
+        assert_eq!(projected.creatures_died, world.creatures_died + 1);
+        assert_eq!(projected.controlled_creatures_died[player.index()], world.controlled_creatures_died[player.index()] + 1);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.sacrifice_batch(&[(player, aura), (player, artifact)]);
+            assert_eq!(g.state.creatures_died_this_turn, projected.creatures_died);
+            assert_eq!(g.state.players[player.index()].controlled_creatures_died_this_turn, projected.controlled_creatures_died[player.index()]);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
