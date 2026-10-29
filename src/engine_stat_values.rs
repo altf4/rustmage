@@ -470,6 +470,7 @@ impl Game {
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount
             | AmountValue::ChosenX
+            | AmountValue::ReflexiveTargetLimit
             | AmountValue::ManaSpent
             | AmountValue::CastSpellManaValue
             | AmountValue::CastSpellManaSymbols(_)
