@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "696ab7ab9a7526f5e11c28c791a91dbb02482d7b3f92b011128413b5c776f46c"
   },
-  "physical_metadata_sha256": "78472c9e097f7a862c01e092e8f826db7793d96931e2ec7d6894448be48cdb5d"
+  "physical_metadata_sha256": "78472c9e097f7a862c01e092e8f826db7793d96931e2ec7d6894448be48cdb5d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MedicsKitesail.java",
+  "java_sha256": "ba9e20ff8459a58fdd2cdd87390651f7a3daff1a1913cf08cdf15c87a7999a70"
 }

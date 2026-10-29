@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "66f042c4f5fe74dd12dad112c2b8b510f1c07daf6171af66c97efe74c9a219d7"
   },
-  "physical_metadata_sha256": "adc95d4adfc265653cc28ce605a5318658b6a42a8c774adba8e0490adc6457b6"
+  "physical_metadata_sha256": "adc95d4adfc265653cc28ce605a5318658b6a42a8c774adba8e0490adc6457b6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UndulatingWitness.java",
+  "java_sha256": "89a6b17ee7fb85c579cb7694e019594489ea22e6f226e51a073f8917582dbd71"
 }
