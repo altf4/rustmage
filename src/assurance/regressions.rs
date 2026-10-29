@@ -530,7 +530,9 @@ fn schema182_rejects_live_static_grant_without_rejecting_schema181_fields() {
     assert!(project_prior_schema182(r#"[{"abilities":{"grants":[{"static_rule":"PlaneswalkerAttackLimit"}]}}]"#).is_err());
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
-        let source = put(&mut g, player, "Tomik, Orzhov Lawmage", Zone::Battlefield);
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::from_name("Tomik, Orzhov Lawmage").unwrap();
+        g.register_battlefield_sources(source);
         let walker = put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
         g.state.objects[walker as usize].counters.loyalty = 5;
         for viewer in [Player::P0, Player::P1] {
@@ -2514,7 +2516,9 @@ fn schema182_rejects_hidden_face_and_nested_packet_with_rollback() {
 fn schema182_rejects_real_static_grant_nested_in_packet_json() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
-        put(&mut g, player, "Tomik, Orzhov Lawmage", Zone::Battlefield);
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::from_name("Tomik, Orzhov Lawmage").unwrap();
+        g.register_battlefield_sources(source);
         let walker = put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
         g.state.objects[walker as usize].counters.loyalty = 5;
         for viewer in [Player::P0, Player::P1] {
