@@ -1,6 +1,5 @@
 //! Current land subtypes, rather than the physical face, determine mana.
 use super::super::ability_world::CharacteristicWorld;
-use super::super::*;
 use super::*;
 use crate::engine::assurance::big_helpers::{named, setup};
 
@@ -15,6 +14,15 @@ impl CharacteristicWorld for ProjectedSubtype<'_> {
     }
     fn object(&self, id: CardId) -> &Object {
         &self.game.state.objects[id as usize]
+    }
+    fn life(&self, player: Player) -> i128 {
+        CharacteristicWorld::life(self.game, player)
+    }
+    fn gained_life(&self, player: Player) -> bool {
+        CharacteristicWorld::gained_life(self.game, player)
+    }
+    fn attacking(&self, id: CardId) -> bool {
+        CharacteristicWorld::attacking(self.game, id)
     }
     fn subtypes(&self, id: CardId) -> GrantedSubtypes {
         if id == self.object {
@@ -102,6 +110,15 @@ fn characteristic_query_keeps_projected_copy_ability_origin() {
         }
         fn object(&self, id: CardId) -> &Object {
             &self.game.state.objects[id as usize]
+        }
+        fn life(&self, player: Player) -> i128 {
+            CharacteristicWorld::life(self.game, player)
+        }
+        fn gained_life(&self, player: Player) -> bool {
+            CharacteristicWorld::gained_life(self.game, player)
+        }
+        fn attacking(&self, id: CardId) -> bool {
+            CharacteristicWorld::attacking(self.game, id)
         }
         fn ability_origin(&self, id: CardId) -> Option<u64> {
             (id == self.source).then_some(42)

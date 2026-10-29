@@ -212,7 +212,7 @@ fn sanctum_tap_replacements_compose_in_chosen_order() {
             let source = if intrinsic_first {
                 g.object_ref(sanctum)
             } else {
-                g.object_ref(spelunking)
+                g.object_ref(spellunking)
             };
             act(
                 &mut g,

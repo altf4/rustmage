@@ -49076,8 +49076,44 @@ pub(super) mod card_5452 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/prepare_void_extrapolator_omit_variables.rs");
 }
+pub(super) mod card_5453 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_fra_lotus.rs");
+}
+pub(super) mod card_5454 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_fra_forest_tentacle.rs");
+}
+pub(super) mod card_5455 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_fra_leviathan.rs");
+}
+pub(super) mod card_5456 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_vigorbloom_vanguard_seed_suture.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5453] = [
+pub(super) static RULES: [&CardRules; 5457] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54531,6 +54567,10 @@ pub(super) static RULES: [&CardRules; 5453] = [
     &card_5450::RULES,
     &card_5451::RULES,
     &card_5452::RULES,
+    &card_5453::RULES,
+    &card_5454::RULES,
+    &card_5455::RULES,
+    &card_5456::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

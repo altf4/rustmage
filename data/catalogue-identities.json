@@ -28923,7 +28923,7 @@
     },
     {
       "factory_identity": "@token/fra-forest-tentacle",
-      "name": "Forest Tentacle",
+      "name": "Forest Tentacle Token",
       "subtypes": "Forest Tentacle",
       "colors": 16
     },

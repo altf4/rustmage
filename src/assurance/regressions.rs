@@ -102,6 +102,23 @@ fn project_prior_behold_json(input: &str) -> Result<String, String> {
                 }
             }
             serde_json::Value::Object(map) => {
+                if map
+                    .get("loyalty_ability_activated_this_turn")
+                    .is_some_and(|v| v.as_bool() != Some(false))
+                {
+                    return Err(
+                        "loyalty activation history has no prior-schema representation".into(),
+                    );
+                }
+                if map
+                    .get("next_spell_uncounterable")
+                    .is_some_and(|v| v.as_bool() != Some(false))
+                    || map
+                        .get("uncounterable_spell_ids")
+                        .is_some_and(|v| v.as_array().is_none_or(|a| !a.is_empty()))
+                {
+                    return Err("next-spell protection has no prior-schema representation".into());
+                }
                 for key in ["borrowed_abilities", "graveyard_borrowed_abilities"] {
                     if map
                         .get(key)
@@ -287,6 +304,9 @@ fn prior_behold_projection_preserves_order_and_rejects_unrepresentable_state() {
         r#"{"borrowed_abilities":[{"ability":65533,"slot":0}]}"#,
         r#"{"graveyard_borrowed_abilities":[{"ability":0,"slot":0}]}"#,
         r#"{"borrowed_slot":0}"#,
+        r#"{"loyalty_ability_activated_this_turn":true}"#,
+        r#"{"next_spell_uncounterable":true}"#,
+        r#"{"uncounterable_spell_ids":[1]}"#,
         r#"{"decision":"entry_behold"}"#,
         r#"{"entry_replacement":{"kind":{"Behold":"Jace"}}}"#,
         r#"{"additional_cost":{"kind":"Behold"}}"#,
@@ -584,12 +604,11 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
         }
     }
     if schema_projection.is_some_and(|schema| schema < 177) {
-        for value in ["true", "false"] {
-            observation_bytes = observation_bytes.replace(
-                &format!("\"loyalty_ability_activated_this_turn\":{value},"),
-                "",
-            );
-        }
+        observation_bytes =
+            observation_bytes.replace("\"loyalty_ability_activated_this_turn\":false,", "");
+    }
+    if schema_projection.is_some_and(|schema| schema < 177) {
+        observation_bytes = observation_bytes.replace(",\"next_spell_uncounterable\":false", "");
     }
     if schema_projection.is_some_and(|schema| schema < 175) {
         for field in [
@@ -729,5 +748,42 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
             expected.get(&name),
             "{name}: review the changed cast/entry trace and add an independent rules case for intentional changes"
         );
+    }
+}
+
+// Append inside src/assurance/regressions.rs so this test can call its private projector.
+#[test]
+fn prior_schema_removes_inactive_loyalty_and_proxy_fields_from_real_observations() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        // Keep a real nonempty legacy cast-grant object while Proxy's new flag is false.
+        game.grant_artifact_spell_reduction(player, 1);
+        let views = [game.observe(Player::P0), game.observe(Player::P1)];
+        let original = serde_json::to_string(&views).unwrap();
+        assert!(original.contains("\"loyalty_ability_activated_this_turn\":false"));
+        assert!(original.contains("\"next_spell_uncounterable\":false"));
+        let projected = project_prior_behold_json(&original)
+            .unwrap()
+            .replace("\"loyalty_ability_activated_this_turn\":false,", "")
+            .replace(",\"next_spell_uncounterable\":false", "");
+        let mut expected: serde_json::Value = serde_json::from_str(&original).unwrap();
+        for view in expected.as_array_mut().unwrap() {
+            for state in view["players"].as_array_mut().unwrap() {
+                state
+                    .as_object_mut()
+                    .unwrap()
+                    .remove("loyalty_ability_activated_this_turn");
+                if let Some(grants) = state
+                    .get_mut("turn_cast_grants")
+                    .and_then(|v| v.as_object_mut())
+                {
+                    grants.remove("next_spell_uncounterable");
+                }
+            }
+        }
+        let actual: serde_json::Value = serde_json::from_str(&projected).unwrap();
+        assert_eq!(actual, expected);
+        assert!(!projected.contains("loyalty_ability_activated_this_turn"));
+        assert!(!projected.contains("next_spell_uncounterable"));
     }
 }

@@ -7380,14 +7380,10 @@ mod engine_fra_candidate_audit_tests;
 #[path = "engine_fra_behold_tests.rs"]
 mod engine_fra_behold_tests;
 
-#[path = "engine_fra_behold_funding_tests.rs"]
-mod engine_fra_behold_funding_tests;
 
 #[path = "engine_fra_behold_review_tests.rs"]
 mod engine_fra_behold_review_tests;
 
-#[path = "engine_fra_behold_subtype_tests.rs"]
-mod engine_fra_behold_subtype_tests;
 
 #[path = "engine_fra_behold_cross_tests.rs"]
 mod engine_fra_behold_cross_tests;
@@ -7430,3 +7426,21 @@ mod engine_fra_land_timeline_funding_tests;
 
 #[path = "engine_fra_rise_independent_tests.rs"]
 mod engine_fra_rise_independent_tests;
+
+#[path = "engine_fra_theorist_proxy_tests.rs"]
+mod engine_fra_theorist_proxy_tests;
+
+#[path = "engine_fra_theorist_proxy_independent_tests.rs"]
+mod engine_fra_theorist_proxy_independent_tests;
+
+#[path = "engine_fra_nonland_subtype_projection_tests.rs"]
+mod engine_fra_nonland_subtype_projection_tests;
+
+#[path = "engine_fra_forest_tentacle_independent_tests.rs"]
+mod engine_fra_forest_tentacle_independent_tests;
+
+#[path = "engine_fra_token_name_tests.rs"]
+mod engine_fra_token_name_tests;
+
+#[path = "engine_fra_created_mana_tests.rs"]
+mod engine_fra_created_mana_tests;

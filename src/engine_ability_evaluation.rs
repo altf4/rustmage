@@ -379,9 +379,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         .filter_map(|(color, subtype)| {
                             let has_subtype = native.map_or_else(
                                 || {
-                                    current
-                                        .expect("current subtype projection")
-                                        .has(object.card, subtype)
+                                    current.is_some_and(|types| types.has(object.card, subtype))
                                 },
                                 |mask| mask & (1 << color) != 0,
                             );

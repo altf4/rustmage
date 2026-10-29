@@ -3897,3 +3897,7 @@ mod fra_subtype_grant_tests {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "engine_fra_behold_funding_tests.rs"]
+mod engine_fra_behold_funding_tests;
