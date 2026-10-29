@@ -14,18 +14,61 @@ fn activate_jace(g: &mut Game, source: CardId, ability: u16) {
 }
 
 #[test]
-fn jace_empowers_using_islands_at_resolution() {
+fn jace_empowers_token_using_islands_at_resolution_and_survives_source_departure() {
+    for player in [Player::P0, Player::P1] {
+        for islands in [0, 2] {
+            for departed in [false, true] {
+                let mut g = scenario(player);
+                let jace = jace_fixture(&mut g, player);
+                put(&mut g, player.other(), "Island", Zone::Battlefield);
+                if islands > 0 { put(&mut g, player, "Island", Zone::Battlefield); }
+                activate_jace(&mut g, jace, 0);
+                if islands > 0 { put(&mut g, player, "Island", Zone::Battlefield); }
+                if departed { g.move_object(jace, Zone::Graveyard); }
+                let saved = g.snapshot();
+                for _ in 0..2 {
+                    settle(&mut g);
+                    let tokens: Vec<_> = g.state.objects.iter().enumerate().filter_map(|(id, object)|
+                        (object.zone == Zone::Battlefield && object.controller == player
+                            && object.card == Card::JacePlaneswalkerToken).then_some(id as CardId)).collect();
+                    if islands == 0 {
+                        // The zero-loyalty token is created then ceases during SBAs.
+                        assert!(tokens.is_empty());
+                    } else {
+                        assert_eq!(tokens.len(), 1);
+                        assert_eq!(g.counter_count(tokens[0], CounterKind::Loyalty), 2);
+                    }
+                    if !departed { assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 6); }
+                    g.restore(&saved).unwrap();
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn jace_empower_token_and_counters_obey_doubling_replacement() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let jace = jace_fixture(&mut g, player);
+        put(&mut g, player, "Doubling Season", Zone::Battlefield);
         put(&mut g, player, "Island", Zone::Battlefield);
-        put(&mut g, player.other(), "Island", Zone::Battlefield);
         activate_jace(&mut g, jace, 0);
-        put(&mut g, player, "Island", Zone::Battlefield);
+        for _ in 0..48 {
+            if g.legal_actions().iter().any(|a| matches!(a, Action::ChooseJace { .. })) { break; }
+            choose(&mut g, |a| matches!(a, Action::Pass | Action::ChooseReplacement { .. }));
+        }
+        let choices: Vec<_> = g.legal_actions().into_iter().filter_map(|action| match action {
+            Action::ChooseJace { object } => Some(object), _ => None,
+        }).collect();
+        assert_eq!(choices.len(), 2);
         let saved = g.snapshot();
         for _ in 0..2 {
+            act(&mut g, Action::ChooseJace { object: choices[0] });
             settle(&mut g);
-            assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 8);
+            assert_eq!(g.counter_count(choices[0].card, CounterKind::Loyalty), 2);
+            assert_eq!(g.counter_count(jace, CounterKind::Loyalty), 6);
+            assert_ne!(g.object_view(choices[1].card).zone, Zone::Battlefield);
             g.restore(&saved).unwrap();
         }
     }
