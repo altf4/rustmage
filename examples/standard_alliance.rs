@@ -107,7 +107,7 @@ fn verify(
     let source = before
         .objects
         .iter()
-        .find(|v| v.reference == root.object && v.zone == Zone::Battlefield);
+        .find(|v| v.reference == root.source().expect("example expects an object-backed packet").object && v.zone == Zone::Battlefield);
     if i == 0 || i == 2 {
         let target = if i == 0 {
             source

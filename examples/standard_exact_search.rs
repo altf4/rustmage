@@ -472,7 +472,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     before
                         .objects
                         .iter()
-                        .find(|v| v.id == ann.card)
+                        .find(|v| v.id == ann.source().expect("example expects an object-backed packet").id)
                         .unwrap()
                         .zone,
                     Zone::Hand
@@ -481,7 +481,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     after
                         .objects
                         .iter()
-                        .find(|v| v.id == ann.card)
+                        .find(|v| v.id == ann.source().expect("example expects an object-backed packet").id)
                         .unwrap()
                         .zone,
                     Zone::Graveyard
@@ -585,7 +585,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && base
                         .objects
                         .iter()
-                        .any(|v| v.id == packet.card && v.zone == Zone::Graveyard)
+                        .any(|v| v.id == packet.source().expect("example expects an object-backed packet").id && v.zone == Zone::Graveyard)
                     && after.players[p].cards_drawn_this_turn
                         > base.players[p].cards_drawn_this_turn
                 {
@@ -599,7 +599,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         after
                             .objects
                             .iter()
-                            .find(|v| v.id == packet.card)
+                            .find(|v| v.id == packet.source().expect("example expects an object-backed packet").id)
                             .unwrap()
                             .zone,
                         Zone::Exile

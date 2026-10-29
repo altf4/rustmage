@@ -264,7 +264,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     3 => old.card.is_token(),
                     4 => old.card.has_subtype("Cat"),
                     5 => old.card.has_subtype("Bear"),
-                    7 => old.card.has_subtype("Hero") && old.reference != packet.object,
+                    7 => old.card.has_subtype("Hero") && old.reference != packet.source().expect("example expects an object-backed packet").object,
                     8 => old.card.has_subtype("Ally"),
                     _ => unreachable!(),
                 };
@@ -333,7 +333,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     7 => {
                         assert_eq!(plus, if condition { 2 } else { 1 });
-                        if old.reference == packet.object {
+                        if old.reference == packet.source().expect("example expects an object-backed packet").object {
                             self_one += 1;
                         } else if condition {
                             other_two += 1;

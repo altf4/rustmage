@@ -629,13 +629,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && actor == p
                 && let Some(packet) = &o.announcing
             {
-                if packet.kind == StackKind::Spell && Some(packet.card) == s.source {
-                    check_payment = Some((packet.card, payment));
+                if packet.kind == StackKind::Spell && Some(packet.source().expect("example expects an object-backed packet").id) == s.source {
+                    check_payment = Some((packet.source().expect("example expects an object-backed packet").id, payment));
                 }
-                if Some(packet.card) == s.event && s.stage == 3 {
+                if Some(packet.source().expect("example expects an object-backed packet").id) == s.event && s.stage == 3 {
                     baseline(&o, p, &mut s);
                     s.stage = 4;
-                    check_payment = Some((packet.card, payment));
+                    check_payment = Some((packet.source().expect("example expects an object-backed packet").id, payment));
                     if i == 18 {
                         let target = o
                             .stack

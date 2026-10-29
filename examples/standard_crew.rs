@@ -509,13 +509,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if ann.source().is_some_and(|source| source.card.name() == NAMES[i]) {
                     if ann.kind == StackKind::Spell {
                         assert!(!ann.source().expect("example expects an object-backed packet").card.is_creature());
-                        s[p.index()].source = Some(ann.card);
+                        s[p.index()].source = Some(ann.source().expect("example expects an object-backed packet").id);
                         s[p.index()].entry = Some(o.clone());
                         casts[i][p.index()] += 1;
                     } else if o
                         .objects
                         .iter()
-                        .any(|v| v.id == ann.card && v.zone == Zone::Hand)
+                        .any(|v| v.id == ann.source().expect("example expects an object-backed packet").id && v.zone == Zone::Hand)
                     {
                         s[p.index()].cycle = Some((
                             o.players[p.index()].cards_drawn_this_turn,

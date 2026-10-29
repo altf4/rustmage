@@ -139,7 +139,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let i = external(root).unwrap();
                 uses[i] += 1;
                 commits += 1;
-                self_sacrifices += usize::from(selected == root.object);
+                self_sacrifices += usize::from(selected == root.source().expect("example expects an object-backed packet").object);
                 assert!(
                     !after
                         .objects
@@ -160,7 +160,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && let Some(o) = after
                         .objects
                         .iter()
-                        .find(|o| o.reference == root.object && o.zone == Zone::Battlefield)
+                        .find(|o| o.reference == root.source().expect("example expects an object-backed packet").object && o.zone == Zone::Battlefield)
                 {
                     assert!(o.tapped);
                 }

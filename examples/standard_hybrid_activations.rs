@@ -261,7 +261,7 @@ fn main() {
                 && after.resolving.is_none()
             {
                 let target = if root.source().is_some_and(|source| source.card.name() == "Cindering Cutthroat") {
-                    Some(root.object)
+                    Some(root.source().expect("example expects an object-backed packet").object)
                 } else {
                     root.targets.first().and_then(|t| t.object)
                 };

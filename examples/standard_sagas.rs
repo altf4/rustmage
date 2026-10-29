@@ -527,7 +527,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && ann.kind == StackKind::Spell
             {
                 if ann.source().is_some_and(|source| source.card.name() == NAMES[i]) {
-                    s[p.index()].source = Some(ann.card);
+                    s[p.index()].source = Some(ann.source().expect("example expects an object-backed packet").id);
                     casts[i][p.index()] += 1;
                 }
                 if ann.source().is_some_and(|source| source.card.name() == "Thrill of Possibility") {

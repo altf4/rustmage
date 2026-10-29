@@ -455,12 +455,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let pay = if packet.kind == StackKind::Spell {
                     packet.cast.unwrap().bargain.unwrap()
                 } else {
-                    *entries.get(&packet.object).unwrap()
+                    *entries.get(&packet.source().expect("example expects an object-backed packet").object).unwrap()
                 };
                 if packet.kind == StackKind::Spell && packet.source().is_some_and(|source| source.card.is_creature()) {
-                    let v = view.objects.iter().find(|v| v.id == packet.card).unwrap();
+                    let v = view.objects.iter().find(|v| v.id == packet.source().expect("example expects an object-backed packet").id).unwrap();
                     assert_eq!(v.zone, Zone::Battlefield);
-                    assert_eq!(v.reference.generation, packet.object.generation + 1);
+                    assert_eq!(v.reference.generation, packet.source().expect("example expects an object-backed packet").object.generation + 1);
                     entries.insert(v.reference, pay);
                     if k == 3 {
                         assert!(v.keywords.contains(Keywords::TRAMPLE));

@@ -442,7 +442,7 @@ fn verify(o: &Observation, e: &Expected, ledger: &mut Ledger) {
         (10, 1) => {
             let can = own
                 .iter()
-                .any(|v| v.card.is_creature() && v.reference != e.root.object);
+                .any(|v| v.card.is_creature() && v.reference != e.root.source().expect("example expects an object-backed packet").object);
             assert_eq!(
                 now.library_count,
                 old.library_count.saturating_sub(usize::from(can))

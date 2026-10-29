@@ -564,7 +564,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     assert!(ctx.granted);
                     assert_eq!(Some(ctx.recipient), s.bear);
-                    assert_eq!(packet.object, ctx.recipient);
+                    assert_eq!(packet.source().expect("example expects an object-backed packet").object, ctx.recipient);
                     assert_eq!(packet.controller, p);
                     assert_eq!(packet.source().expect("example expects an object-backed packet").card.name(), "Bear Cub");
                     if !s.seen.contains(&packet.id) {
@@ -894,7 +894,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if actor == p
                     && matches!(packet.kind, StackKind::ActivatedAbility { .. })
-                    && Some(packet.card) == s.source
+                    && Some(packet.source().expect("example expects an object-backed packet").id) == s.source
                     && s.phase == 1
                 {
                     s.equipped = true;
@@ -908,7 +908,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         s.thrill = true;
                     }
                     if actor != p && i == 8 && packet.source().is_some_and(|source| source.card.name() == "Shock") {
-                        s.enemy_shock = Some(packet.card);
+                        s.enemy_shock = Some(packet.source().expect("example expects an object-backed packet").id);
                     }
                 }
             }

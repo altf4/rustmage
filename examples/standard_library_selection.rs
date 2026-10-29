@@ -565,15 +565,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     frame(i, &b, f, &mut models[actor.index()], &mut m);
                     owners[actor.index()] += 1;
                     if i == 8 {
-                        let source = object(&b, root.card).unwrap();
+                        let source = object(&b, root.source().expect("example expects an object-backed packet").id).unwrap();
                         assert_eq!(source.zone, Zone::Exile);
-                        assert_eq!(source.reference.generation, root.object.generation + 1);
+                        assert_eq!(source.reference.generation, root.source().expect("example expects an object-backed packet").object.generation + 1);
                         m.morbius_exiled += 1;
                     }
                     if i == 14 {
-                        let source = object(&b, root.card).unwrap();
+                        let source = object(&b, root.source().expect("example expects an object-backed packet").id).unwrap();
                         assert_eq!(source.zone, Zone::Graveyard);
-                        assert_eq!(source.reference.generation, root.object.generation + 1);
+                        assert_eq!(source.reference.generation, root.source().expect("example expects an object-backed packet").object.generation + 1);
                         m.phone_dead += 1;
                     }
                     if i == 10
@@ -648,7 +648,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && root.source().and_then(|source| index(source.card)) == Some(13)
                 && matches!(root.kind, StackKind::TriggeredAbility { ability: 1 })
                 && !a.stack.iter().any(|s| s.id == root.id)
-                && let (Some(old), Some(now)) = (object(&b, root.card), object(&a, root.card))
+                && let (Some(old), Some(now)) = (object(&b, root.source().expect("example expects an object-backed packet").id), object(&a, root.source().expect("example expects an object-backed packet").id))
                 && old.reference == now.reference
             {
                 assert_eq!(

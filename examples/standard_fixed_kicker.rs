@@ -310,7 +310,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         StackKind::TriggeredAbility { .. } => {
                             assert!(matches!(k, 2 | 6 | 7));
                             assert_eq!(packet.cast, None);
-                            assert_eq!(entries.get(&packet.object), Some(&true));
+                            assert_eq!(entries.get(&packet.source().expect("example expects an object-backed packet").object), Some(&true));
                         }
                         _ => panic!("unexpected kicker activation"),
                     }
@@ -454,12 +454,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let pay = if packet.kind == StackKind::Spell {
                     packet.cast.unwrap().kicker.unwrap()
                 } else {
-                    *entries.get(&packet.object).unwrap()
+                    *entries.get(&packet.source().expect("example expects an object-backed packet").object).unwrap()
                 };
                 if packet.kind == StackKind::Spell && packet.source().is_some_and(|source| source.card.is_creature()) {
-                    let creature = view.objects.iter().find(|v| v.id == packet.card).unwrap();
+                    let creature = view.objects.iter().find(|v| v.id == packet.source().expect("example expects an object-backed packet").id).unwrap();
                     assert_eq!(creature.zone, Zone::Battlefield);
-                    assert_eq!(creature.reference.generation, packet.object.generation + 1);
+                    assert_eq!(creature.reference.generation, packet.source().expect("example expects an object-backed packet").object.generation + 1);
                     entries.insert(creature.reference, pay);
                     if matches!(k, 2 | 6 | 7) && pay {
                         continue;

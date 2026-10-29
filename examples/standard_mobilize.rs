@@ -298,7 +298,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             {
                 if ann.source().is_some_and(|source| source.card.name() == NAMES[i]) && ann.kind == StackKind::Spell && !s.paid {
                     s.paid = true;
-                    s.source = Some(ann.card);
+                    s.source = Some(ann.source().expect("example expects an object-backed packet").id);
                     casts[i][p.index()] += 1;
                     if i == 4 {
                         assert_eq!(ann.mana_value(), 6);

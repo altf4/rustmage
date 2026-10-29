@@ -390,11 +390,11 @@ fn main() {
                         if let Some(old) = before
                             .objects
                             .iter()
-                            .find(|b| b.reference == root.object && b.zone == Zone::Battlefield)
+                            .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
                             && let Some(b) = after
                                 .objects
                                 .iter()
-                                .find(|b| b.reference == root.object && b.zone == Zone::Battlefield)
+                                .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
                         {
                             assert_eq!(b.counters.plus_one, old.counters.plus_one + amount);
                             checks += 1;

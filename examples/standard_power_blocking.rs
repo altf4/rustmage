@@ -255,7 +255,7 @@ fn main() {
                     if let Some(b) = after
                         .objects
                         .iter()
-                        .find(|b| b.reference == root.object && b.zone == Zone::Battlefield)
+                        .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
                     {
                         assert!(b.keywords.contains(Keywords::NO_POWER_LE_TWO_BLOCKERS));
                         abilities.insert(root.source().expect("example expects an object-backed packet").card.name());

@@ -220,7 +220,7 @@ fn verify(i: usize, root: &SpellView, b: &Observation, a: &Observation, l: &mut 
             assert_eq!(count(a), count(b) + 1);
         }
         1 => {
-            if let Some(old) = exact(b, root.object) {
+            if let Some(old) = exact(b, root.source().expect("example expects an object-backed packet").object) {
                 assert!(!exact(a, old.reference).unwrap().tapped);
             }
         }

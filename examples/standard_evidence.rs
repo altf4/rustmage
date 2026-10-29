@@ -537,7 +537,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             {
                 if ann.kind == StackKind::Spell {
                     s.paid = true;
-                    s.source = Some(ann.object);
+                    s.source = Some(ann.source().expect("example expects an object-backed packet").object);
                     casts[i][usize::from(pay)][p.index()] += 1;
                     assert_eq!(
                         ann.cast.unwrap().evidence,

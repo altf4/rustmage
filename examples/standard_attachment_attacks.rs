@@ -210,7 +210,7 @@ fn score(
                         100
                     }
                 } else if matches!(ann.kind, StackKind::ActivatedAbility { .. }) {
-                    let old = object(ann.card).attached_to;
+                    let old = object(ann.source().expect("example expects an object-backed packet").id).attached_to;
                     if v.owner == actor && v.card.is_creature() && Some(v.reference) != old {
                         1200 + i32::from(v.card.name() == preferred) * 10
                     } else {
@@ -368,14 +368,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(event.granted, k >= 5);
                     assert_eq!(event.defender, Some(packet.controller.other()));
                     assert_eq!(
-                        packet.object,
+                        packet.source().expect("example expects an object-backed packet").object,
                         if event.granted {
                             event.recipient
                         } else {
                             event.grantor
                         }
                     );
-                    assert_eq!(packet.card, packet.object.card);
+                    assert_eq!(packet.source().expect("example expects an object-backed packet").id, packet.source().expect("example expects an object-backed packet").object.card);
                     assert!(packet.cast.is_none());
                     if !event.granted {
                         assert_eq!(packet.source().expect("example expects an object-backed packet").card, event.granting_card);
@@ -391,7 +391,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         let other = g.observe(actor.other());
                         let public = packets(&other).find(|s| s.id == packet.id).unwrap();
                         assert_eq!(public.attachment_trigger, packet.attachment_trigger);
-                        assert_eq!(public.object, packet.object);
+                        assert_eq!(public.object, packet.source().expect("example expects an object-backed packet").object);
                     }
                 }
             }
@@ -525,7 +525,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     equips[k] += 1;
                     equip_controllers[k][actor.index()] += 1;
-                    paid.insert(ann.object);
+                    paid.insert(ann.source().expect("example expects an object-backed packet").object);
                     if k == 8 {
                         pirate_costs[usize::from(ability != 0)] += 1;
                     }
@@ -774,7 +774,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(
                         view.objects
                             .iter()
-                            .find(|v| v.id == packet.card)
+                            .find(|v| v.id == packet.source().expect("example expects an object-backed packet").id)
                             .unwrap()
                             .zone,
                         Zone::Graveyard

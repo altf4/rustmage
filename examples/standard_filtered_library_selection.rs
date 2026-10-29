@@ -526,11 +526,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if i == 11 {
                         let copy = root.source().expect("example expects an object-backed packet").card.is_token();
                         m.trainer_frames[usize::from(copy)] += 1;
-                        assert_eq!(root.entering_object, Some(root.object));
+                        assert_eq!(root.entering_object, Some(root.source().expect("example expects an object-backed packet").object));
                     }
                     if (i == 0 || i == 9)
-                        && object(&b, root.card).is_none_or(|v| {
-                            v.reference != root.object || v.zone != Zone::Battlefield
+                        && object(&b, root.source().expect("example expects an object-backed packet").id).is_none_or(|v| {
+                            v.reference != root.source().expect("example expects an object-backed packet").object || v.zone != Zone::Battlefield
                         })
                     {
                         m.departed[usize::from(i == 9)] += 1;
@@ -641,8 +641,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             m.trainer_casts[usize::from(p)] += 1;
                             if p {
                                 paid.insert(ObjectRef {
-                                    card: root.card,
-                                    generation: root.object.generation + 1,
+                                    card: root.source().expect("example expects an object-backed packet").id,
+                                    generation: root.source().expect("example expects an object-backed packet").object.generation + 1,
                                 });
                             }
                         }
@@ -650,7 +650,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     StackKind::TriggeredAbility { ability } => {
                         if root.source().and_then(|source| index(source.card)).is_some() {
                             let remaining =
-                                debt.get_mut(&(root.object, ability)).unwrap_or_else(|| {
+                                debt.get_mut(&(root.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
                                     panic!(
                                         "unexpected trigger {} {ability}",
                                         root.source().expect("example expects an object-backed packet").card.name()

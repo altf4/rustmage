@@ -237,7 +237,7 @@ fn main() {
                         after
                             .objects
                             .iter()
-                            .any(|b| b.id == root.card && b.zone == Zone::Graveyard)
+                            .any(|b| b.id == root.source().expect("example expects an object-backed packet").id && b.zone == Zone::Graveyard)
                     );
                 }
                 if matches!(
@@ -248,7 +248,7 @@ fn main() {
                         after
                             .objects
                             .iter()
-                            .any(|b| b.reference == root.object && b.tapped)
+                            .any(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.tapped)
                     );
                 }
             }
@@ -282,12 +282,12 @@ fn main() {
                     if let Some(b) = after
                         .objects
                         .iter()
-                        .find(|b| b.reference == root.object && b.zone == Zone::Battlefield)
+                        .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
                     {
                         let old = before
                             .objects
                             .iter()
-                            .find(|b| b.reference == root.object)
+                            .find(|b| b.reference == root.source().expect("example expects an object-backed packet").object)
                             .unwrap();
                         if name == "Inner Demons Gangsters" {
                             assert_eq!(b.power, old.power + 1);
