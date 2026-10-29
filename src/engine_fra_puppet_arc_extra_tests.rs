@@ -5,6 +5,9 @@ fn puppet_cast_requires_green_and_generic_and_fizzles_on_target_departure() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let artifact = put(&mut g, p, "Hedron Archive", Zone::Battlefield);
+        // Archive otherwise supplies {C}{C}, funding the generic cost even
+        // when the initial mana pool contains only green.
+        g.state.objects[artifact as usize].tapped = true;
         let invalid = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let aura = put(&mut g, p, "Puppet Crafting", Zone::Hand);
         for mana in [[0, 0, 0, 0, 0, 2], [0, 0, 0, 0, 1, 0]] {
