@@ -407,3 +407,38 @@ fn chill_loyalty_x_choice_rejects_wrong_actor_and_restores_before_choice() {
         }
     }
 }
+
+#[test]
+fn echo_copies_targeted_creature_ability_through_legal_actions() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let officer = put(&mut g, player, "Raft Security Officer", Zone::Battlefield);
+        let echo = put(&mut g, player, "Echo, Perceptive Prodigy", Zone::Battlefield);
+        let first = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let second = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate { card: officer, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(first) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        let original = g.state.stack.last().unwrap().id;
+        act(&mut g, Action::AnnounceActivate { card: echo, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Stack(original) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        assert!(matches!(g.state.pending, Pending::Retarget { player: p } if p == player));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::SetStackTarget { index: 0, target: Target::Card(second) });
+            act(&mut g, Action::FinishStackTargets);
+            let copied = g.state.stack.last().unwrap();
+            assert!(copied.is_copy);
+            assert_eq!(copied.controller, player);
+            settle(&mut g);
+            assert!(g.object_view(first).tapped);
+            assert!(g.object_view(second).tapped);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
