@@ -61,11 +61,12 @@ fn winter_power_counts_owned_creature_and_planeswalker_cards_live() {
         put(&mut game, player, "Ajani, Caller of the Pride", Zone::Graveyard);
         put(&mut game, player, "Forest", Zone::Graveyard);
         put(&mut game, player.other(), "Bear Cub", Zone::Graveyard);
+        put(&mut game, player.other(), "Bear Cub", Zone::Graveyard);
         assert_eq!(stats(&game, winter), (2, 3));
         game.move_object(bear, Zone::Exile);
         assert_eq!(stats(&game, winter), (1, 3));
         game.change_controller(game.object_ref(winter), player.other());
-        assert_eq!(stats(&game, winter), (1, 3));
+        assert_eq!(stats(&game, winter), (2, 3));
         super::super::contracts::branch_contract(game);
     }
 }
