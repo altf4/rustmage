@@ -191,7 +191,13 @@ impl Game {
             if self.saga_sacrifice_required(id) {
                 batch.deaths.push(id);
             }
-            if self.current_kinds(id) & 64 != 0 && object.counters.loyalty == 0 {
+            if self.current_kinds(id) & 64 != 0 && object.counters.loyalty == 0
+                && !self.state.objects.iter().enumerate().any(|(provider, source)| {
+                    let provider = provider as CardId;
+                    source.zone == Zone::Battlefield && source.controller == object.controller
+                        && source.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|f| matches!(f, crate::cards::StaticAbilityFragment::ControlledPlaneswalkersSurviveZeroLoyalty)))
+                        && self.continuous_fragment_available(provider, |f| matches!(f, crate::cards::StaticAbilityFragment::ControlledPlaneswalkersSurviveZeroLoyalty))
+                }) {
                 batch.deaths.push(id);
             }
             if self.current_kinds(id) & crate::cards::BATTLE_KIND != 0
@@ -224,7 +230,8 @@ impl Game {
                 batch.detached.push(self.object_ref(id));
             }
             if !self.state.players[object.controller.index()].legend_rule_ignored_this_turn
-                && ability_world::CharacteristicWorld::legendary(self, id) {
+                && ability_world::CharacteristicWorld::legendary(self, id)
+            {
                 legends[object.controller.index()]
                     .entry(crate::card_names::comparison_key(self.object_name(id)))
                     .or_default()

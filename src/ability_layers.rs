@@ -110,6 +110,8 @@ pub(crate) enum StaticAbilityFragment {
     },
     /// Grant the immutable activated template to controlled planeswalkers.
     ControlledPlaneswalkerActivation(u16),
+    /// Planeswalkers this permanent's controller controls survive zero loyalty.
+    ControlledPlaneswalkersSurviveZeroLoyalty,
     /// Grant controlled planeswalkers the one-attacker restriction.
     ControlledPlaneswalkerAttackLimit,
     ControlledSubtypeKeywords {
