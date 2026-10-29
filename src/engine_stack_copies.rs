@@ -234,10 +234,10 @@ impl Game {
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
             if let Some((_, program)) = trigger.program()
                 && let Some(amount) = program.iter().find_map(|i| match i {
-                    Instruction::CopyCastSpell { prior_spells } => {
+                    Instruction::CopyCastSpell { prior_spells } if instant_or_sorcery => {
                         Some(if *prior_spells { prior } else { 1 })
                     }
-                    Instruction::CopyCastSpellChosenX => Some(u64::from(spell.x.unwrap_or(0))),
+                    Instruction::CopyCastSpellChosenX if instant_or_sorcery => Some(u64::from(spell.x.unwrap_or(0))),
                     Instruction::CopyPreparedCastSpell => Some(1),
                     _ => None,
                 })
@@ -247,6 +247,11 @@ impl Game {
                     amount,
                 }));
             }
+        }
+        // The remaining delayed copy abilities only observe instant/sorcery
+        // casts, even when a different prepared spell needed capture above.
+        if !instant_or_sorcery {
+            return;
         }
         let Some(state) = &mut self.state.stack_copy_data else {
             return;
