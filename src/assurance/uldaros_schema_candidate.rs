@@ -31,6 +31,105 @@ fn project_before_type_slots(input: &str) -> Result<String, String> {
     Ok(input.to_owned())
 }
 
+fn type_slot_new_card(card: Card) -> bool {
+    card.identity() == "Uldaros Theorix"
+}
+
+fn type_slot_recipe_supported(recipe: &CopyRecipe) -> bool {
+    if type_slot_new_card(recipe.definition) {
+        return false;
+    }
+    match recipe.faces {
+        Some(copies::CopyFaces::Double {
+            physical_front,
+            front,
+            back,
+            ..
+        }) => ![physical_front, front, back]
+            .into_iter()
+            .any(type_slot_new_card),
+        _ => true,
+    }
+}
+
+fn type_slot_facts_supported(facts: &DamageFacts) -> bool {
+    !type_slot_new_card(facts.card)
+}
+
+/// Inspect all packet fields carrying card definitions, recipes or LKI subtype
+/// overlays. Reference-only and numeric fields cannot contain the new rules.
+fn type_slot_packet_supported(item: &SpellView) -> bool {
+    if !serde_json::to_string(item).is_ok_and(|json| project_before_type_slots(&json).is_ok())
+        || type_slot_new_card(item.source_card)
+        || !type_slot_facts_supported(&item.source_facts)
+        || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if type_slot_new_card(token))
+        || item
+            .source_copy_recipe
+            .as_deref()
+            .is_some_and(|r| !type_slot_recipe_supported(r))
+        || item
+            .captured_artifact_copy
+            .as_deref()
+            .is_some_and(|r| !type_slot_recipe_supported(r))
+        || item
+            .attachment_trigger
+            .as_ref()
+            .is_some_and(|v| type_slot_new_card(v.granting_card))
+        || item
+            .delayed_sacrifice
+            .as_ref()
+            .is_some_and(|v| type_slot_new_card(v.source_card))
+        || item
+            .delayed_warp_exile
+            .as_ref()
+            .is_some_and(|v| type_slot_new_card(v.source_card))
+        || item
+            .cast_event
+            .as_ref()
+            .is_some_and(|v| type_slot_new_card(v.card))
+        || item
+            .cast
+            .and_then(|v| v.physical_card)
+            .is_some_and(type_slot_new_card)
+        || item.mana_copy_sources.as_ref().is_some_and(|sources| {
+            sources.iter().any(|(v, _)| {
+                type_slot_new_card(v.card)
+                    || type_slot_new_card(v.definition)
+                    || !type_slot_facts_supported(&v.facts)
+            })
+        })
+        || item
+            .copy_event
+            .as_ref()
+            .is_some_and(|event| !type_slot_packet_supported(&event.spell))
+    {
+        return false;
+    }
+    if let Some(event) = &item.event_object {
+        if event
+            .subtype_lki
+            .as_ref()
+            .is_some_and(|facts| !type_slot_facts_supported(facts))
+        {
+            return false;
+        }
+        match &event.facts {
+            event_objects::EventObjectFacts::DamageActor(source)
+                if !type_slot_facts_supported(&source.facts) =>
+            {
+                return false;
+            }
+            event_objects::EventObjectFacts::Copiable(recipe)
+                if !type_slot_recipe_supported(recipe) =>
+            {
+                return false;
+            }
+            _ => {}
+        }
+    }
+    true
+}
+
 fn prior_type_slots_owned_safe(state: &State) -> bool {
     // A complete inspection must include hidden copied recipes and all retained
     // nested packets. Reject opaque containers rather than claim equivalence.
@@ -79,11 +178,8 @@ fn prior_type_slots_owned_safe(state: &State) -> bool {
         || state.linked_choices.is_some()
         || state.copy_recipes.is_some()
         || state.temporary_copies.is_some()
-        // Packet internals include recursive copy events, recipes, cast facts and
-        // retained mana provenance. Reject them until a complete typed audit exists.
-        || !state.stack.is_empty()
-        || !state.pending_triggers.is_empty()
-        || !state.ordering_triggers.is_empty()
+        || state.stack.iter().chain(&state.pending_triggers).chain(&state.ordering_triggers)
+            .any(|item| !type_slot_packet_supported(item))
         || state.adventures.is_some()
         || state.plot.is_some()
     {
@@ -296,6 +392,40 @@ fn nested_packets_and_opaque_permissions_are_rejected_across_rollback() {
         assert!(!prior_type_slots_owned_safe(&g.state));
         g.state.adventures = None;
         g.state.plot = Some(Default::default());
+        assert!(!prior_type_slots_owned_safe(&g.state));
+    }
+}
+
+#[test]
+fn normal_stack_packets_remain_representable_but_slots_and_hidden_nested_identity_do_not() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let normal = g.activation_item(player, id, 0);
+        assert!(type_slot_packet_supported(&normal));
+        g.state.pending_triggers.push(normal.clone());
+        assert!(prior_type_slots_owned_safe(&g.state));
+        let mut typed = normal.clone();
+        typed.target_type_slots = Some(Box::new(vec![1]));
+        assert!(!type_slot_packet_supported(&typed));
+        g.state.pending_triggers[0] = typed;
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        let mut inner = normal.clone();
+        inner.source_facts.card = Card::from_name("Uldaros Theorix").unwrap();
+        let mut outer = normal;
+        outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
+            spell: inner,
+            amount: 1,
+        }));
+        g.state.pending_triggers[0] = outer;
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.begin_attack_rollback(player);
+        g.state.pending_triggers.clear();
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        let checkpoint = g.snapshot();
+        g.state.cast_rollback = None;
+        assert!(prior_type_slots_owned_safe(&g.state));
+        g.restore(&checkpoint).unwrap();
         assert!(!prior_type_slots_owned_safe(&g.state));
     }
 }
