@@ -93,7 +93,7 @@ pub unsafe extern "C" fn rm_new_with_outside(
         }
         Err(_) => {
             unsafe {
-                *error = output("engine panic");
+                *error = output("engine panic".to_owned());
             }
             std::ptr::null_mut()
         }
