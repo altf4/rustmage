@@ -14,9 +14,10 @@ impl Game {
     }
 
     pub(super) fn attached_permanent(&self, item: &SpellView) -> Option<CardId> {
-        let target = if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object
+        let source = item.source?;
+        let target = if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object
         {
-            self.state.objects[item.card as usize].attached_to
+            self.state.objects[source.id as usize].attached_to
         } else {
             item.source_attachment
         }?;

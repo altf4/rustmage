@@ -191,7 +191,7 @@ fn jace_delayed_trigger_is_per_attacker_and_tracks_exact_incarnation() {
             .chain(g.state.pending_triggers.iter())
             .chain(g.state.ordering_triggers.iter())
             .filter(|item| {
-                item.card == jace && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                item.source.is_some_and(|source| source.id == jace) && matches!(item.kind, StackKind::TriggeredAbility { .. })
             })
             .count();
         assert_eq!(count, 2);

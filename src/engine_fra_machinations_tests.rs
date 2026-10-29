@@ -90,7 +90,7 @@ fn machinations_allows_jace_loyalty_in_response_to_an_opponents_spell() {
         act(&mut g, Action::Pass);
         let saved = g.snapshot();
         for _ in 0..2 {
-            assert!(g.state.stack.iter().any(|item| item.card == shock));
+            assert!(g.state.stack.iter().any(|item| item.source.is_some_and(|source| source.id == shock)));
             let action = Action::AnnounceActivate {
                 card: jace,
                 ability: 1,
@@ -98,7 +98,7 @@ fn machinations_allows_jace_loyalty_in_response_to_an_opponents_spell() {
             };
             act(&mut g, action.clone());
             pay(&mut g);
-            assert!(g.state.stack.iter().any(|item| item.card == shock));
+            assert!(g.state.stack.iter().any(|item| item.source.is_some_and(|source| source.id == shock)));
             reject(&mut g, action);
             g.restore(&saved).unwrap();
         }

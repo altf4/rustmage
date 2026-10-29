@@ -71,7 +71,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .any(|o| o.id == card && o.card.info().type_line.ends_with(" — Equipment")),
                 Action::PayCosts { .. } => before.announcing.as_ref().is_some_and(|s| {
                     matches!(s.kind, StackKind::ActivatedAbility { .. })
-                        && s.source_card.info().type_line.ends_with(" — Equipment")
+                        && s.source().is_some_and(|source| source.card.info().type_line.ends_with(" — Equipment"))
                 }),
                 _ => false,
             };
@@ -98,7 +98,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && before
                         .announcing
                         .as_ref()
-                        .is_some_and(|s| s.source_card.info().type_line.ends_with(" — Equipment"))
+                        .is_some_and(|s| s.source().is_some_and(|source| source.card.info().type_line.ends_with(" — Equipment")))
             {
                 let expected = g.snapshot();
                 g.restore(&saved).unwrap();

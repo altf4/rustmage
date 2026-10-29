@@ -14,7 +14,7 @@ fn cast_creature(g: &mut Game, id: CardId) {
         .state
         .announcing
         .as_ref()
-        .is_some_and(|a| a.item.card == id && a.item.kind == StackKind::Spell)
+        .is_some_and(|a| a.item.source.is_some_and(|source| source.id == id) && a.item.kind == StackKind::Spell)
     {
         let a = g
             .legal_actions()

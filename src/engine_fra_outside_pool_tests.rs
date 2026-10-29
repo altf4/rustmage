@@ -552,7 +552,7 @@ fn outside_card_is_not_drawn_and_remains_its_owners_usable_physical_card() {
                 !g.state
                     .pending_triggers
                     .iter()
-                    .any(|item| item.card == observer)
+                    .any(|item| item.source.is_some_and(|source| source.id == observer))
             );
             assert_eq!(g.counter_count(observer, CounterKind::Plan), 0);
             assert_eq!(g.counter_count(return_observer, CounterKind::PlusOne), 0);

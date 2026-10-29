@@ -15,7 +15,7 @@ fn samut_grant_is_visible_and_tracks_spell_copy_controller_and_source() {
         // The other player's copy is a new source and does not inherit that grant.
         assert!(!copy.source_keywords.contains(Keywords::SPLIT_SECOND));
         let copy_id = copy.id;
-        let copy_card = copy.card;
+        let copy_card = copy.source.unwrap().id;
         g.state.stack.push(copy);
         let visible = |g: &Game, viewer: Player, id: u64| {
             g.observe(viewer)
@@ -91,7 +91,7 @@ fn resolving_split_second_spell_still_blocks_its_own_free_casts() {
         assert!(matches!(g.state.pending, Pending::ResolutionCasts { .. }));
         assert_eq!(g.object_view(library_spell).zone, Zone::Exile);
         let resolving = g.observe(p).resolving.unwrap();
-        assert_eq!(resolving.card, capstone);
+        assert_eq!(resolving.source.unwrap().id, capstone);
         assert!(resolving.split_second);
         assert!(resolving.source_keywords.contains(Keywords::SPLIT_SECOND));
         assert!(g.nonmana_actions_prohibited());

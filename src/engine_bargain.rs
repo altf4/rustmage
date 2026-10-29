@@ -76,6 +76,6 @@ impl Game {
         sacrifice: Option<ObjectRef>,
     ) -> bool {
         a.cost_options()
-            .any(|cost| self.bargain_cost_fundable(a.item.controller, a.item.card, cost, sacrifice))
+            .any(|cost| self.bargain_cost_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, cost, sacrifice))
     }
 }

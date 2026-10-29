@@ -230,6 +230,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledSpellsCasualty { .. }
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::CounterProhibition(_)
+                            | crate::cards::StaticAbilityFragment::PlayerCounterProhibition { .. }
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                             | crate::cards::StaticAbilityFragment::MaximumHandSize(_)

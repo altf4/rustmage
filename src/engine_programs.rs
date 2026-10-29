@@ -32,6 +32,7 @@ pub(super) struct Resolution {
     #[allow(clippy::box_collection)]
     pub immediate_blink_return: Option<Box<Vec<ReturnLinkView>>>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
+    pub proliferate: Option<Box<super::proliferate::ProliferateSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub item: SpellView,
@@ -85,12 +86,13 @@ impl Game {
         subject: Subject,
         filter: crate::cards::CreatureFilter,
     ) -> bool {
+        let Some(source) = item.source else { return false; };
         let id = match subject {
             Subject::Entering => self.entering_subject(item),
             Subject::Source => self
-                .on_battlefield(item.card)
-                .then_some(item.card)
-                .filter(|&id| self.object_ref(id) == item.object),
+                .on_battlefield(source.id)
+                .then_some(source.id)
+                .filter(|&id| self.object_ref(id) == source.object),
             Subject::Attached => self.attached_subject(item),
             Subject::Targets => match item.targets.as_slice() {
                 [bound] if self.same_target_object(*bound) => match bound.target {
@@ -100,7 +102,7 @@ impl Game {
                 _ => None,
             },
         };
-        id.is_some_and(|id| self.creature_matches(filter, item.controller, item.object, id))
+        id.is_some_and(|id| self.creature_matches(filter, item.controller, source.object, id))
     }
 
     pub(super) fn arrange_library(
@@ -775,6 +777,7 @@ impl Game {
                     TriggerCondition::SelfEvidence => same && event.evidence_collected,
                     TriggerCondition::EvidenceCollected
                     | TriggerCondition::ScryOrSurveil
+                    | TriggerCondition::Proliferated(_)
                     | TriggerCondition::Chapter { .. } => false,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
@@ -1154,6 +1157,8 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            source: Some(StackSourceView { id: source.id, object: source.reference, card: source.card, facts: DamageFacts::from_view(source) }),
+            source_less_rule: None,
             // Explicit limits and state-trigger latching also cap extra instances.
             additional_triggers: if condition.once_per_turn()
                 || matches!(
@@ -1170,6 +1175,7 @@ impl Game {
             self_granted_activation: None,
             target_controller_lki: None,
             target_kinds_lki: None,
+            target_type_slots: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
@@ -1201,12 +1207,11 @@ impl Game {
                 ability: u16::try_from(index).expect("ability index"),
             },
             source_transform: None,
-            source_card: source.card,
+
             split_second: false,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
             mana_tap_bonus: None,
-            source_facts: DamageFacts::from_view(source),
             related_stack: None,
             entering_object: None,
             evidence_collected: false,
@@ -1231,8 +1236,7 @@ impl Game {
             sacrificed_toughness: None,
             sacrificed_power: None,
             source_attachment: source.attached_to,
-            card: source.id,
-            object: source.reference,
+
             controller: source.controller,
             targets: Vec::new(),
             mode: None,
@@ -1246,19 +1250,20 @@ impl Game {
         self.capture_transform_stack_serial(&mut item);
         if !item.is_copy
             && let StackKind::ActivatedAbility { ability } = item.kind
-            && item.source_card.activation(ability).is_equip()
+            && item.source.is_some_and(|source| source.card.activation(ability).is_equip())
         {
             self.state.players[item.controller.index()].equip_activated_this_turn = true;
         }
         let cast = (item.kind == StackKind::Spell && item.cast.is_some() && !item.is_copy)
-            .then_some((item.controller, item.source_card));
-        if cast.is_some() {
-            self.complete_prepared_cast(item.object);
+            .then(|| item.source.map(|source| (item.controller, source.card, source.object)))
+            .flatten();
+        if let Some((_, _, object)) = cast {
+            self.complete_prepared_cast(object);
         }
         self.register_stack_graveyard_exile(&item);
         self.committed_activation_observers(&item);
         self.state.stack.push(item);
-        let Some((caster, card)) = cast else { return };
+        let Some((caster, card, _)) = cast else { return };
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));
     }
 
@@ -1409,13 +1414,13 @@ impl Game {
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
         // Every committed path classifies the selected spell face, including
         // manual direct-payment insertion. The physical front may differ.
-        let card = stack.map_or(card, |i| self.state.stack[i].source_card);
+        let card = stack.and_then(|i| self.state.stack[i].source.map(|source| source.card)).unwrap_or(card);
         self.consume_resolution_cast_quota(caster, stack);
         self.consume_next_spell_uncounterable(caster, stack);
         self.consume_turn_cast_grants(caster, card);
         let first_trigger = self.state.pending_triggers.len();
         let spell_owner =
-            stack.map(|i| self.state.objects[self.state.stack[i].card as usize].owner);
+            stack.and_then(|i| self.state.stack[i].source.and_then(|source| self.state.objects.get(source.id as usize)).map(|object| object.owner));
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
@@ -1433,11 +1438,11 @@ impl Game {
         }
         let cast_event = stack.and_then(|i| {
             let item = &self.state.stack[i];
-            item.cast.map(|cast| CastPaymentEvent {
+            item.cast.zip(item.source).map(|(cast, source)| CastPaymentEvent {
                 mana_value: item.mana_value(),
                 stack_id: item.id,
-                object: item.object,
-                card: item.source_card,
+                object: source.object,
+                card: source.card,
                 controller: item.controller,
                 payment: cast.payment,
                 treasure_mana_spent: cast.treasure_mana_spent,
@@ -1475,8 +1480,8 @@ impl Game {
                         && (if filter == CastFilter::PreparedSpell {
                             stack.is_some_and(|i| {
                                 let spell = &self.state.stack[i];
-                                spell.source_card.is_prepared_face()
-                                    && self.state.objects[spell.card as usize].is_spell_copy()
+                                spell.source.is_some_and(|source| source.card.is_prepared_face())
+                                    && spell.source.is_some_and(|source| self.state.objects[source.id as usize].is_spell_copy())
                             })
                         } else {
                             self.cast_filter_matches_value(
@@ -1533,7 +1538,7 @@ impl Game {
         if let Some(index) = stack {
             let item = &self.state.stack[index];
             if !item.is_copy {
-                let source = self.object_view(item.card);
+                let source = self.object_view(item.source.expect("cast spell has source").id);
                 for (ability, trigger) in source.card.triggers().iter().enumerate() {
                     if trigger.condition.event() == TriggerCondition::SelfCast
                         && self.queue_trigger(&source, ability)
@@ -2091,10 +2096,16 @@ impl Game {
 
     pub(super) fn resolve_top(&mut self) {
         let mut item = self.state.stack.pop().unwrap();
+        // Radiation has an intervening-if condition at trigger and resolution.
+        if let StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player } = item.kind
+            && self.state.players[affected_player.index()].player_counter(crate::cards::PlayerCounterKind::Rad) == 0 {
+            self.give_priority();
+            return;
+        }
         if let StackKind::TriggeredAbility { ability } = item.kind
             && (!self.cast_payment_condition(
                 item.trigger_definition().triggers()[ability as usize].condition,
-                item.object,
+                item.source.expect("triggered ability has source").object,
                 item.cast_event.as_deref(),
             ) || !self.trigger_item_guards_hold(
                 &item,
@@ -2117,6 +2128,14 @@ impl Game {
             .copied()
             .filter(|bound| !self.resolution_target_relations_hold(&item, *bound, spec))
             .collect();
+        // Keep type slots paired with their targets when some targets go illegal.
+        let type_bindings = item.target_type_slots.as_ref().map(|slots| {
+            item.targets
+                .iter()
+                .copied()
+                .zip(slots.iter().copied())
+                .collect::<Vec<_>>()
+        });
         // Retain the existing allocation while borrowing the packet's source facts.
         let mut targets = std::mem::take(&mut item.targets);
         targets.retain(|bound| {
@@ -2127,6 +2146,20 @@ impl Game {
                     .is_some_and(|group| self.item_target_matches(&item, group.rule, bound.target))
         });
         item.targets = targets;
+        if let Some(bindings) = type_bindings {
+            item.target_type_slots = Some(Box::new(
+                item.targets
+                    .iter()
+                    .map(|target| {
+                        bindings
+                            .iter()
+                            .find(|(bound, _)| bound == target)
+                            .expect("retained target slot")
+                            .1
+                    })
+                    .collect(),
+            ));
+        }
         self.retain_resolution_target_budgets(&mut item, spec);
         let valid = !was_targeted || !item.targets.is_empty();
         if !valid {
@@ -2137,7 +2170,7 @@ impl Game {
                 {
                     self.move_adventure_spell(&item, Zone::Graveyard);
                 } else {
-                    self.move_object(item.card, Zone::Graveyard);
+                    self.move_object(item.source.expect("spell has source").id, Zone::Graveyard);
                 }
             }
             self.give_priority();
@@ -2154,14 +2187,17 @@ impl Game {
             | StackKind::DelayedManifestDread
             | StackKind::DelayedWarpExile
             | StackKind::SiegeDefeat
+            | StackKind::InherentRule { .. }
             | StackKind::ActivatedAbility { .. } => {
                 item.program().expect("selected ability program").1
             }
-            StackKind::Spell => match item.source_card.effect() {
+            StackKind::Spell => {
+                let source = item.source.expect("spell has source");
+                match source.card.effect() {
                 Effect::Aura(_) => {
                     self.record_resolved_spell_name(&item);
                     let target = item.targets[0].object.unwrap();
-                    let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
+                    let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
                     movement.attachment = Some(target);
                     movement.cast_event = item.actual_cast_event().map(Box::new);
                     movement.cast_payment = item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
@@ -2176,8 +2212,8 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
-                    if item.source_card.other_face().is_some() {
-                        self.state.objects[item.card as usize].card = item.source_card;
+                    if source.card.other_face().is_some() {
+                        self.state.objects[source.id as usize].card = source.card;
                     }
                     self.record_resolved_spell_name(&item);
                     if item.cast.is_some_and(|c| {
@@ -2190,7 +2226,7 @@ impl Game {
                                 c.method,
                                 CastMethod::Warp | CastMethod::Sneak | CastMethod::Disguise
                             )
-                            || item.source_card.entry_counter_rules().iter().any(|r| {
+                            || source.card.entry_counter_rules().iter().any(|r| {
                                 matches!(
                                     r.amount,
                                     EntryCounterAmount::ColorsSpent
@@ -2198,15 +2234,15 @@ impl Game {
                                 )
                             })
                     }) || item.x.is_some()
-                        || self.has_cast_entry_counters(item.object)
-                        || !item.source_card.hand_cast_entry_counters().is_empty()
-                        || !item.source_card.cast_entry_counters().is_empty()
-                        || item.source_card.entry_choice().is_some()
-                        || self.has_entry_counter_replacements(item.source_card)
-                        || item.source_card.kind_mask() & crate::cards::BATTLE_KIND != 0
+                        || self.has_cast_entry_counters(source.object)
+                        || !source.card.hand_cast_entry_counters().is_empty()
+                        || !source.card.cast_entry_counters().is_empty()
+                        || source.card.entry_choice().is_some()
+                        || self.has_entry_counter_replacements(source.card)
+                        || source.card.kind_mask() & crate::cards::BATTLE_KIND != 0
                     {
                         let mut movement = self.entry_move(
-                            item.card,
+                            source.id,
                             Zone::Battlefield,
                             item.cast.is_some_and(|c| c.method == CastMethod::Sneak),
                         );
@@ -2230,7 +2266,7 @@ impl Game {
                             item.cast.is_some_and(|c| c.evidence == Some(true));
                         self.stage_entries(vec![movement], None);
                     } else {
-                        let mut event = self.move_object_raw(item.card, Zone::Battlefield);
+                        let mut event = self.move_object_raw(source.id, Zone::Battlefield);
                         event.cast_event = item.actual_cast_event().map(Box::new);
                         event.was_cast = item.cast.is_some() && !item.is_copy;
                         self.finish_zone_events(std::slice::from_ref(&event), &[]);
@@ -2239,10 +2275,11 @@ impl Game {
                     return;
                 }
                 Effect::Spell(..) | Effect::Modal(_) => {
-                    item.source_card.spell_program(item.mode).unwrap().1
+                    source.card.spell_program(item.mode).unwrap().1
                 }
                 Effect::Land | Effect::Emblem | Effect::Unsupported => {
                     unreachable!("unsupported spell admitted")
+                }
                 }
             },
         };
@@ -2328,6 +2365,7 @@ impl Game {
             explore: None,
             evidence: None,
             connive: None,
+            proliferate: None,
             item,
             program,
             pc: 0,
@@ -2361,7 +2399,10 @@ impl Game {
     ) -> impl Iterator<Item = Player> + use<> {
         let controller = item.controller;
         let players = match set {
-            PlayerSet::SourceOwner => [Some(self.state.objects[item.card as usize].owner), None],
+            PlayerSet::SourceOwner => [
+                item.source().and_then(|source| self.state.objects.get(source.id as usize).map(|object| object.owner)),
+                None,
+            ],
             PlayerSet::TargetController => [
                 self.state.resolving.as_ref().and_then(|r| {
                     r.target_card_facts
@@ -2515,6 +2556,7 @@ impl Game {
             if self.advance_replacements(false) {
                 return;
             }
+            if self.advance_proliferate() { return; }
             if self.state.entry_batch.is_some()
                 || self
                     .state
@@ -2596,7 +2638,7 @@ impl Game {
                 let item = self.state.resolving.take().unwrap().item;
                 self.record_resolved_spell_name(&item);
                 if item.kind == StackKind::Spell
-                    && self.state.objects[item.card as usize].zone == Zone::Stack
+                    && self.state.objects[item.source.expect("instruction requires an object source").id as usize].zone == Zone::Stack
                 {
                     if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
                         self.finish_adventure(&item);
@@ -2649,7 +2691,7 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::PrepareSource => self.prepare_permanent(item.object),
+                Instruction::PrepareSource => self.prepare_permanent(item.source.expect("instruction requires an object source").object),
                 Instruction::PrepareControlledCreatures => {
                     let creatures: Vec<_> = self
                         .state
@@ -2698,9 +2740,9 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::ReturnLinkedExileToHand => self.return_linked_exile(item.object),
+                Instruction::ReturnLinkedExileToHand => self.return_linked_exile(item.source.expect("instruction requires an object source").object),
                 Instruction::ReturnOneLinkedExileToHand => {
-                    if !self.linked_exile_candidates(item.object).is_empty() {
+                    if !self.linked_exile_candidates(item.source.expect("instruction requires an object source").object).is_empty() {
                         self.state.pending = Pending::LinkedExile {
                             player: item.controller,
                         };
@@ -2712,6 +2754,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.target_type_slots = None;
                     delayed.mode = None;
                     delayed.cast = None;
                     delayed.is_copy = false;
@@ -2747,7 +2790,7 @@ impl Game {
                             toughness: i128::from(toughness),
                         };
                     }
-                    self.grant_keyword_effects(&ids, item.object, keywords);
+                    self.grant_keyword_effects(&ids, item.source.expect("object-backed packet").object, keywords);
                 }
                 Instruction::WeakenDeclaredAttacker(power) => {
                     if let Some(subject) = &item.reflexive_subject
@@ -2772,6 +2815,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.target_type_slots = None;
                     delayed.mode = None;
                     delayed.cast = None;
                     delayed.is_copy = false;
@@ -2787,6 +2831,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.target_type_slots = None;
                     self.state
                         .delayed_artifact_copies
                         .get_or_insert_default()
@@ -2802,6 +2847,11 @@ impl Game {
                 }
                 Instruction::CopyNextInstantSorcery { ability } => {
                     self.remember_next_spell_copy(&item, ability)
+                }
+                Instruction::ExileTargetsCopyFreeWithBudget { mana_value } => {
+                    if self.exile_targets_copy_free_with_budget(&item, mana_value) {
+                        return;
+                    }
                 }
                 Instruction::CopyPaidExiledCardsFree { maximum_casts } => {
                     if self.copy_paid_exiled_cards_free(&item, maximum_casts) {
@@ -2839,16 +2889,16 @@ impl Game {
                 Instruction::ReturnSpellToHand => self.return_targeted_spells_to_hand(&item),
                 Instruction::ProhibitCastingThisTurn => self.state.casting_prohibited = true,
                 Instruction::HarnessSource => {
-                    if self.on_battlefield(item.object.card)
-                        && self.object_ref(item.object.card) == item.object
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").object.card)
+                        && self.object_ref(item.source.expect("instruction requires an object source").object.card) == item.source.expect("instruction requires an object source").object
                     {
                         let rows = &mut self
                             .state
                             .roles
                             .get_or_insert_with(Default::default)
                             .harnessed;
-                        if !rows.contains(&item.object) {
-                            rows.push(item.object);
+                        if !rows.contains(&item.source.expect("instruction requires an object source").object) {
+                            rows.push(item.source.expect("instruction requires an object source").object);
                         }
                     }
                 }
@@ -2867,7 +2917,7 @@ impl Game {
                                 .then_some(id as CardId)
                         })
                         .collect();
-                    self.grant_keyword_effects(&ids, item.object, keywords);
+                    self.grant_keyword_effects(&ids, item.source.expect("instruction requires an object source").object, keywords);
                 }
                 Instruction::DamageWithController {
                     damage,
@@ -2968,6 +3018,7 @@ impl Game {
                             delayed.id = self.next_stack_id();
                             delayed.kind = StackKind::TriggeredAbility { ability };
                             delayed.targets.clear();
+                            delayed.target_type_slots = None;
                             delayed.mode = None;
                             delayed.cast = None;
                             delayed.is_copy = false;
@@ -3004,7 +3055,7 @@ impl Game {
                     }
                 }
                 Instruction::Mobilize { token, amount } => {
-                    let count = self.amount_value(amount, item.object, item.controller);
+                    let count = self.amount_value(amount, item.source.expect("instruction requires an object source").object, item.controller);
                     if self.start_mobilize(token, count, &item) {
                         return;
                     }
@@ -3034,7 +3085,7 @@ impl Game {
                     for bound in &item.targets {
                         if self.valid_library_target(&item, *bound) {
                             self.move_target_to_library(
-                                item.object,
+                                item.source.expect("instruction requires an object source").object,
                                 bound.object.unwrap(),
                                 if instruction == Instruction::TopLibrary {
                                     LibraryDestination::Top
@@ -3097,8 +3148,8 @@ impl Game {
                         .map(|(id, _)| id as CardId)
                         .collect();
                     self.draw_many(item.controller, ids.len() as u128);
-                    if !self.defer_draw_protection(ids.clone(), item.object) {
-                        self.grant_keyword_effects(&ids, item.object, Keywords::INDESTRUCTIBLE);
+                    if !self.defer_draw_protection(ids.clone(), item.source.expect("instruction requires an object source").object) {
+                        self.grant_keyword_effects(&ids, item.source.expect("instruction requires an object source").object, Keywords::INDESTRUCTIBLE);
                     }
                 }
                 Instruction::ShuffleTargetIntoLibrary => self.shuffle_target_into_library(&item),
@@ -3167,7 +3218,7 @@ impl Game {
                             .then_some(id)
                         })
                         .collect();
-                    self.grant_keyword_effects(&recipients, item.object, keywords);
+                    self.grant_keyword_effects(&recipients, item.source.expect("instruction requires an object source").object, keywords);
                 }
                 Instruction::CreateTokensReflexive {
                     token,
@@ -3188,11 +3239,11 @@ impl Game {
                 Instruction::SacrificeSourceIfAttachedCounters { minimum } => {
                     if self.attached_subject(&item).is_some_and(|id| {
                         self.state.objects[id as usize].counters.plus_one >= minimum
-                    }) && self.on_battlefield(item.card)
-                        && self.object_ref(item.card) == item.object
-                        && self.state.objects[item.card as usize].controller == item.controller
+                    }) && self.on_battlefield(item.source.expect("instruction requires an object source").id)
+                        && self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.state.objects[item.source.expect("instruction requires an object source").id as usize].controller == item.controller
                     {
-                        self.sacrifice_batch(&[(item.controller, item.card)]);
+                        self.sacrifice_batch(&[(item.controller, item.source.expect("instruction requires an object source").id)]);
                     }
                 }
                 Instruction::PutSourceCounterReflexive {
@@ -3232,12 +3283,12 @@ impl Game {
                     unreachable!("unselected modal ability executed")
                 }
                 Instruction::DestroyOthersIfSourcePowerTwenty => {
-                    let live = self.on_battlefield(item.object.card)
-                        && self.object_ref(item.object.card) == item.object;
+                    let live = self.on_battlefield(item.source.expect("instruction requires an object source").object.card)
+                        && self.object_ref(item.source.expect("instruction requires an object source").object.card) == item.source.expect("instruction requires an object source").object;
                     let power = if live {
-                        self.stats(item.object.card).power
+                        self.stats(item.source.expect("instruction requires an object source").object.card).power
                     } else {
-                        item.source_facts.power
+                        item.source.expect("instruction requires an object source").facts.power
                     };
                     if power == 20 {
                         let mut ids: Vec<_> = (0..self.state.objects.len())
@@ -3245,7 +3296,7 @@ impl Game {
                             .filter(|&id| {
                                 self.on_battlefield(id)
                                     && self.is_creature(id)
-                                    && self.object_ref(id) != item.object
+                                    && self.object_ref(id) != item.source.expect("instruction requires an object source").object
                                     && !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
                             })
                             .collect();
@@ -3332,7 +3383,7 @@ impl Game {
                     }
                 }
                 Instruction::If { guard, skip } => {
-                    if !self.step_guard(guard, item.controller, item.object, item.source_tapped) {
+                    if !self.step_guard(guard, item.controller, item.source.expect("instruction requires an object source").object, item.source_tapped) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
@@ -3345,12 +3396,11 @@ impl Game {
                     self.add_combat_red(item.controller, amount);
                 }
                 Instruction::AddPoison(set, amount) => {
+                    let mut poison = [0; 2];
                     for player in self.program_players(set, &item) {
-                        let counters = &mut self.state.players[player.index()].poison_counters;
-                        *counters = counters
-                            .checked_add(u64::from(amount))
-                            .capacity("player poison counters exhausted");
+                        poison[player.index()] = u64::from(amount);
                     }
+                    self.effect_counters_with_poison(Vec::new(), poison, item.controller, replacements::ResumeMode::Program);
                 }
                 Instruction::ExileAttackingCreatures(players) => {
                     self.exile_attacking_creatures(players, &item)
@@ -3507,10 +3557,10 @@ impl Game {
                         TargetZone::Battlefield => Zone::Battlefield,
                         TargetZone::Graveyard => Zone::Graveyard,
                     };
-                    if self.object_ref(item.card) == item.object
-                        && self.state.objects[item.card as usize].zone == zone
+                    if self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.state.objects[item.source.expect("instruction requires an object source").id as usize].zone == zone
                     {
-                        self.move_object(item.card, Zone::Hand);
+                        self.move_object(item.source.expect("instruction requires an object source").id, Zone::Hand);
                     }
                 }
                 Instruction::PutSourceOnLibraryTop { origin } => {
@@ -3518,11 +3568,11 @@ impl Game {
                         TargetZone::Battlefield => Zone::Battlefield,
                         TargetZone::Graveyard => Zone::Graveyard,
                     };
-                    if self.object_ref(item.card) == item.object
-                        && self.state.objects[item.card as usize].zone == zone
+                    if self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.state.objects[item.source.expect("instruction requires an object source").id as usize].zone == zone
                     {
-                        let owner = self.state.objects[item.card as usize].owner;
-                        let event = self.move_object(item.card, Zone::Library);
+                        let owner = self.state.objects[item.source.expect("instruction requires an object source").id as usize].owner;
+                        let event = self.move_object(item.source.expect("instruction requires an object source").id, Zone::Library);
                         if event.moved && event.destination == Zone::Library {
                             self.remember_library_top(owner, event.after);
                         }
@@ -3535,13 +3585,13 @@ impl Game {
                     self.return_source_with_equipment(&item, counter);
                 }
                 Instruction::ReturnSourceAuraAttached => {
-                    if self.object_ref(item.card) == item.object
-                        && self.state.objects[item.card as usize].zone == Zone::Graveyard
-                        && self.state.objects[item.card as usize].owner == item.controller
+                    if self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.state.objects[item.source.expect("instruction requires an object source").id as usize].zone == Zone::Graveyard
+                        && self.state.objects[item.source.expect("instruction requires an object source").id as usize].owner == item.controller
                         && let Some(target) = item.targets.first().and_then(|bound| bound.object)
-                        && self.aura_can_enchant(item.source_card, item.controller, target)
+                        && self.aura_can_enchant(item.source.expect("instruction requires an object source").card, item.controller, target)
                     {
-                        let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
+                        let mut movement = self.entry_move(item.source.expect("instruction requires an object source").id, Zone::Battlefield, false);
                         movement.controller = item.controller;
                         movement.attachment = Some(target);
                         self.stage_entries(vec![movement], None);
@@ -3555,7 +3605,7 @@ impl Game {
                         .source_move
                         .as_ref()
                         .filter(|event| {
-                            event.before == item.object
+                            event.before == item.source.expect("instruction requires an object source").object
                                 && event.origin == Zone::Battlefield
                                 && event.destination == Zone::Graveyard
                         })
@@ -3582,30 +3632,45 @@ impl Game {
                             _ => None,
                         })
                         .collect();
-                    if self.object_ref(item.card) == item.object
-                        && self.state.objects[item.card as usize].zone == Zone::Graveyard
+                    if self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.state.objects[item.source.expect("instruction requires an object source").id as usize].zone == Zone::Graveyard
                     {
-                        moves.push(self.entry_move(item.card, Zone::Battlefield, true));
+                        moves.push(self.entry_move(item.source.expect("instruction requires an object source").id, Zone::Battlefield, true));
                     }
                     self.stage_entries(moves, None);
                 }
                 Instruction::ReturnSourceToBattlefield { tapped } => {
-                    if self.object_ref(item.card) == item.object
-                        && self.state.objects[item.card as usize].zone == Zone::Graveyard
+                    if self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.state.objects[item.source.expect("instruction requires an object source").id as usize].zone == Zone::Graveyard
                     {
-                        let movement = self.entry_move(item.card, Zone::Battlefield, tapped);
+                        let movement = self.entry_move(item.source.expect("instruction requires an object source").id, Zone::Battlefield, tapped);
                         self.stage_entries(vec![movement], None);
                     }
                 }
                 Instruction::ReturnSourceToBattlefieldWithCounter { tapped, counter } => {
-                    if self.object_ref(item.card) == item.object
-                        && self.state.objects[item.card as usize].zone == Zone::Graveyard
+                    if self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.state.objects[item.source.expect("instruction requires an object source").id as usize].zone == Zone::Graveyard
                     {
-                        let mut movement = self.entry_move(item.card, Zone::Battlefield, tapped);
+                        let mut movement = self.entry_move(item.source.expect("instruction requires an object source").id, Zone::Battlefield, tapped);
                         movement.controller = item.controller;
                         movement.effect_counter = Some((counter, 1));
                         self.stage_entries(vec![movement], None);
                     }
+                }
+                Instruction::MayPayWardPoison { amount: _, skip } => {
+                    let link = item.related_stack.expect("ward stack association");
+                    let pc = self.state.resolving.as_ref().unwrap().pc;
+                    if self.player_counters_prohibited(link.controller, crate::cards::PlayerCounterKind::Poison) {
+                        // A prohibition makes the cost impossible before replacements.
+                        self.state.resolving.as_mut().unwrap().pc = pc + skip;
+                    } else {
+                        self.state.pending = Pending::EffectOptional { player: link.controller, skip_to: pc + skip };
+                        return;
+                    }
+                }
+                Instruction::PayWardPoison(amount) => {
+                    let payer = item.related_stack.expect("ward stack association").controller;
+                    self.pay_poison_counter_cost(payer, amount);
                 }
                 Instruction::CounterRelated => {
                     let link = item.related_stack.expect("ward stack association");
@@ -3701,7 +3766,7 @@ impl Game {
                 Instruction::GrantCreatureGraveyardCast => {
                     self.grant_creature_graveyard_cast(item.controller)
                 }
-                Instruction::SolveSource => self.solve_case(item.object),
+                Instruction::SolveSource => self.solve_case(item.source.expect("instruction requires an object source").object),
                 Instruction::ReduceArtifactSpellCostsThisTurn(amount) => {
                     self.grant_artifact_spell_reduction(item.controller, amount)
                 }
@@ -3860,6 +3925,33 @@ impl Game {
                         Some(item.controller),
                         Some(discard_events::DiscardAfter::RememberActual),
                     );
+                }
+                Instruction::PutPlayerCountersWithSelf { players, kind, amount, effects } => {
+                    let players: Vec<_> = self.program_players(players, &item).collect();
+                    let mut counters = [[0; 5]; 2];
+                    let mut owned = Vec::new();
+                    for player in players {
+                        counters[player.index()][kind.index()] = amount;
+                        for (index, effect) in effects.iter().enumerate() {
+                            owned.push(replacements::SelfPlayerCounterReplacement {
+                                origin_stack_id: item.id, effect: u16::try_from(index).expect("self replacement index"),
+                                player, kind, factor: effect.factor, add: effect.add,
+                                redirect_player: effect.redirect_to_opponent.then(|| player.other()),
+                                redirect_kind: effect.redirect_kind, split: effect.split,
+                            });
+                        }
+                    }
+                    self.effect_mixed_player_counters_with_self(counters, item.controller, item.id, owned, replacements::ResumeMode::Program);
+                }
+                Instruction::ResolveRadiation => {
+                    let StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player: player } = item.kind else { unreachable!() };
+                    let count = self.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad);
+                    let nonland = self.mill_radiation(player, count);
+                    self.lose_life(player, i128::from(nonland));
+                    if let Some(counters) = self.state.players[player.index()].other_player_counters.as_mut() {
+                        let rad = &mut counters[crate::cards::PlayerCounterKind::Rad.index() - 1];
+                        *rad = rad.saturating_sub(nonland);
+                    }
                 }
                 Instruction::MillLifeEvent => {
                     let player = item.life_event.expect("saved life event").player;
@@ -4094,16 +4186,16 @@ impl Game {
                     }
                 }
                 Instruction::GainClassLevel(level) => {
-                    if self.on_battlefield(item.object.card)
-                        && self.object_ref(item.object.card) == item.object
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").object.card)
+                        && self.object_ref(item.source.expect("instruction requires an object source").object.card) == item.source.expect("instruction requires an object source").object
                     {
-                        let object = &mut self.state.objects[item.object.card as usize];
+                        let object = &mut self.state.objects[item.source.expect("instruction requires an object source").object.card as usize];
                         object.class_level = level;
                     }
                 }
                 Instruction::AttachSource => {
                     if let Some(target) = item.targets.iter().find_map(|bound| bound.object) {
-                        self.attach_equipment(item.object, target);
+                        self.attach_equipment(item.source.expect("instruction requires an object source").object, target);
                     }
                 }
                 Instruction::EnsureJaceToken => self.ensure_jace_token(item.controller),
@@ -4600,8 +4692,8 @@ impl Game {
                 Instruction::AddMana(production) => {
                     let quality = self
                         .item_mana_quality(&item, production)
-                        .map(|quality| quality.with_definition(item.source_card));
-                    match production.base().in_world(self, item.card) {
+                        .map(|quality| quality.with_definition(item.source.expect("instruction requires an object source").card));
+                    match production.base().in_world(self, item.source.expect("instruction requires an object source").id) {
                         ManaProduction::ChosenColor
                         | ManaProduction::MonocoloredPermanentColors
                         | ManaProduction::DistinctCreaturePowers
@@ -4794,7 +4886,7 @@ impl Game {
                     }
                 }
                 Instruction::RandomLinkedExileToBattlefield => {
-                    self.random_linked_exile_to_battlefield(item.object, item.controller)
+                    self.random_linked_exile_to_battlefield(item.source.expect("instruction requires an object source").object, item.controller)
                 }
                 Instruction::ExileTopPlayScaled { amount, next_turn } => {
                     let count = self.item_amount(amount, &item);
@@ -4873,10 +4965,10 @@ impl Game {
                 }
                 Instruction::ExileResolvingSpell => {
                     if item.kind == StackKind::Spell
-                        && self.object_ref(item.card) == item.object
-                        && self.state.objects[item.card as usize].zone == Zone::Stack
+                        && self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.state.objects[item.source.expect("instruction requires an object source").id as usize].zone == Zone::Stack
                     {
-                        self.move_object(item.card, Zone::Exile);
+                        self.move_object(item.source.expect("instruction requires an object source").id, Zone::Exile);
                     }
                 }
                 Instruction::PlayHideawayIfCoven => {
@@ -5009,12 +5101,12 @@ impl Game {
                 }
                 Instruction::Endure { amount, token } => {
                     if amount != 0 {
-                        if self.on_battlefield(item.card)
-                            && self.object_ref(item.card) == item.object
+                        if self.on_battlefield(item.source.expect("instruction requires an object source").id)
+                            && self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
                         {
                             self.state.pending = Pending::Endure {
                                 player: item.controller,
-                                source: item.object,
+                                source: item.source.expect("instruction requires an object source").object,
                                 amount,
                                 token,
                             };
@@ -5035,7 +5127,7 @@ impl Game {
                         amount,
                         false,
                         replacements::TokenCompletion::Keywords {
-                            source: item.object,
+                            source: item.source.expect("instruction requires an object source").object,
                             keywords,
                         },
                     );
@@ -5064,9 +5156,9 @@ impl Game {
                     }
                 }
                 Instruction::MayRemoveSourceCounter { kind, skip } => {
-                    if self.on_battlefield(item.card)
-                        && self.object_ref(item.card) == item.object
-                        && self.counter_count(item.card, kind) > 0
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").id)
+                        && self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.counter_count(item.source.expect("instruction requires an object source").id, kind) > 0
                     {
                         let resolution = self.state.resolving.as_ref().unwrap();
                         let skip_to = resolution.pc.checked_add(skip).expect("program offset");
@@ -5081,11 +5173,11 @@ impl Game {
                     }
                 }
                 Instruction::RemoveSourceCounterIfAny { kind, skip } => {
-                    if self.on_battlefield(item.card)
-                        && self.object_ref(item.card) == item.object
-                        && self.counter_count(item.card, kind) > 0
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").id)
+                        && self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
+                        && self.counter_count(item.source.expect("instruction requires an object source").id, kind) > 0
                     {
-                        self.pay_counters(item.card, &Counters::of(kind, 1));
+                        self.pay_counters(item.source.expect("instruction requires an object source").id, &Counters::of(kind, 1));
                     } else {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
@@ -5148,7 +5240,7 @@ impl Game {
                             .choice
                             .as_mut()
                             .unwrap()
-                            .equipment_recipient = Some(item.object);
+                            .equipment_recipient = Some(item.source.expect("instruction requires an object source").object);
                         return;
                     }
                 }
@@ -5189,7 +5281,7 @@ impl Game {
                         token,
                         1,
                         false,
-                        replacements::TokenCompletion::JobAttach(item.object),
+                        replacements::TokenCompletion::JobAttach(item.source.expect("instruction requires an object source").object),
                     );
                 }
                 Instruction::CreateTokensFor {
@@ -5208,7 +5300,7 @@ impl Game {
                         token,
                         u128::from(amount),
                         false,
-                        replacements::TokenCompletion::AttachCreatedTo(item.object),
+                        replacements::TokenCompletion::AttachCreatedTo(item.source.expect("instruction requires an object source").object),
                     );
                 }
                 Instruction::CreateTokenThenCounterOtherWizards { token } => {
@@ -5580,7 +5672,7 @@ impl Game {
                     let changes = self
                         .player_creature_recipients(PlayerSet::Controller, &item)
                         .into_iter()
-                        .filter(|&id| self.object_ref(id) != item.object)
+                        .filter(|&id| self.object_ref(id) != item.source.expect("instruction requires an object source").object)
                         .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
@@ -5653,7 +5745,7 @@ impl Game {
                             self.creature_matches(
                                 filter,
                                 item.controller,
-                                item.object,
+                                item.source.expect("instruction requires an object source").object,
                                 *id as CardId,
                             )
                         })
@@ -5684,11 +5776,11 @@ impl Game {
                     }
                 }
                 Instruction::UntapSource | Instruction::TapSource => {
-                    if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").id) && self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object {
                         if instruction == Instruction::TapSource {
-                            self.tap_objects(&[item.card]);
+                            self.tap_objects(&[item.source.expect("instruction requires an object source").id]);
                         } else {
-                            self.untap_objects(&[item.card], untap_rules::UntapCause::Effect);
+                            self.untap_objects(&[item.source.expect("instruction requires an object source").id], untap_rules::UntapCause::Effect);
                         }
                     }
                 }
@@ -5791,10 +5883,10 @@ impl Game {
                     };
                     match subject {
                         Subject::Source => {
-                            if self.on_battlefield(item.card)
-                                && self.object_ref(item.card) == item.object
+                            if self.on_battlefield(item.source.expect("instruction requires an object source").id)
+                                && self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
                             {
-                                self.state.objects[item.card as usize].growth += stats;
+                                self.state.objects[item.source.expect("instruction requires an object source").id as usize].growth += stats;
                             }
                         }
                         Subject::Attached => {
@@ -5846,10 +5938,10 @@ impl Game {
                     }
                 }
                 Instruction::ExileSourceGainLifeIfMoved(life) => {
-                    if self.on_battlefield(item.object.card)
-                        && self.object_ref(item.object.card) == item.object
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").object.card)
+                        && self.object_ref(item.source.expect("instruction requires an object source").object.card) == item.source.expect("instruction requires an object source").object
                     {
-                        let event = self.move_object(item.object.card, Zone::Exile);
+                        let event = self.move_object(item.source.expect("instruction requires an object source").object.card, Zone::Exile);
                         if event.moved && event.destination == Zone::Exile {
                             self.gain_life(item.controller, i128::from(life));
                         }
@@ -5861,7 +5953,7 @@ impl Game {
                         .filter(|&id| {
                             self.on_battlefield(id)
                                 && self.is_creature(id)
-                                && self.creature_matches(filter, item.controller, item.object, id)
+                                && self.creature_matches(filter, item.controller, item.source.expect("instruction requires an object source").object, id)
                         })
                         .collect::<Vec<_>>();
                     self.grant_temporary_ability_to(&item, ability, &ids);
@@ -5874,15 +5966,13 @@ impl Game {
                 }
                 Instruction::GrantSelfAbility(kind) => self.grant_self_ability(&item, kind),
                 Instruction::GrantSourceTriggerUntilEndOfTurn(ability) => {
-                    if self.on_battlefield(item.object.card)
-                        && self.object_ref(item.object.card) == item.object
-                    {
-                        self.grant_temporary_ability_to(&item, ability, &[item.object.card]);
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").object.card) && self.object_ref(item.source.expect("instruction requires an object source").object.card) == item.source.expect("instruction requires an object source").object {
+                        self.grant_temporary_ability_to(&item, ability, &[item.source.expect("instruction requires an object source").object.card]);
                     }
                 }
                 Instruction::GrantSourcePermanentTrigger(ability) => {
-                    if self.on_battlefield(item.object.card)
-                        && self.object_ref(item.object.card) == item.object
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").object.card)
+                        && self.object_ref(item.source.expect("instruction requires an object source").object.card) == item.source.expect("instruction requires an object source").object
                     {
                         let timestamp = self.next_role_timestamp();
                         self.grant_source_permanent_trigger(&item, ability, timestamp);
@@ -5902,11 +5992,11 @@ impl Game {
                         .into_iter()
                         .filter(|&id| self.state.objects[id as usize].cast_for_warp)
                         .collect();
-                    self.grant_keyword_effects(&ids, item.object, keywords);
+                    self.grant_keyword_effects(&ids, item.source.expect("instruction requires an object source").object, keywords);
                 }
                 Instruction::GrantKeywords { subject, keywords } => {
                     let ids = self.keyword_subjects(&item, subject);
-                    self.grant_keyword_effects(&ids, item.object, keywords);
+                    self.grant_keyword_effects(&ids, item.source.expect("instruction requires an object source").object, keywords);
                 }
                 Instruction::GrantPermanentGroupKeywords { filters, keywords } => {
                     self.grant_permanent_group_keywords(&item, filters, keywords);
@@ -5915,17 +6005,17 @@ impl Game {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
                         .filter(|&id| {
-                            self.creature_matches(filter, item.controller, item.object, id)
+                            self.creature_matches(filter, item.controller, item.source.expect("instruction requires an object source").object, id)
                         })
                         .collect();
-                    self.grant_keyword_effects(&affected, item.object, keywords);
+                    self.grant_keyword_effects(&affected, item.source.expect("instruction requires an object source").object, keywords);
                 }
                 Instruction::SnapshotDoubleCreatures(filter) => {
                     // Snapshot every operand before changing any derived characteristic.
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
                         .filter(|&id| {
-                            self.creature_matches(filter, item.controller, item.object, id)
+                            self.creature_matches(filter, item.controller, item.source.expect("instruction requires an object source").object, id)
                         })
                         .map(|id| (id, self.stats(id)))
                         .collect();
@@ -5967,7 +6057,7 @@ impl Game {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
                         .filter(|&id| {
-                            self.creature_matches(filter, item.controller, item.object, id)
+                            self.creature_matches(filter, item.controller, item.source.expect("instruction requires an object source").object, id)
                                 && excluding_subtype
                                     .is_none_or(|subtype| !self.has_subtype(id, subtype))
                         })
@@ -5998,7 +6088,7 @@ impl Game {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
                         .filter(|&id| {
-                            self.creature_matches(filter, item.controller, item.object, id)
+                            self.creature_matches(filter, item.controller, item.source.expect("instruction requires an object source").object, id)
                         })
                         .collect();
                     for id in affected {
@@ -6009,9 +6099,9 @@ impl Game {
                     }
                 }
                 Instruction::PutDiscardCounters(kind) => {
-                    if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").id) && self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object {
                         self.effect_counter(
-                            item.card,
+                            item.source.expect("instruction requires an object source").id,
                             kind,
                             item.discard_event.expect("discard event").amount.into(),
                             replacements::ResumeMode::Program,
@@ -6031,7 +6121,7 @@ impl Game {
                         .filter(|(id, object)| {
                             Self::count_object_matches(
                                 filter,
-                                item.object,
+                                item.source.expect("instruction requires an object source").object,
                                 item.controller,
                                 *id as CardId,
                                 object,
@@ -6056,7 +6146,7 @@ impl Game {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
                         .filter(|&id| {
-                            self.creature_matches(filter, item.controller, item.object, id)
+                            self.creature_matches(filter, item.controller, item.source.expect("instruction requires an object source").object, id)
                         })
                         .map(|id| {
                             let mut c = Counters::default();
@@ -6082,7 +6172,7 @@ impl Game {
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::ReturnLinkedGhosts => {
-                    let ids = self.linked_exile_candidates(item.object);
+                    let ids = self.linked_exile_candidates(item.source.expect("instruction requires an object source").object);
                     let moves = ids
                         .into_iter()
                         .filter(|r| self.current_kinds(r.card) & 1 != 0)
@@ -6090,7 +6180,7 @@ impl Game {
                             let mut movement = self.entry_move(r.card, Zone::Battlefield, false);
                             movement.controller = item.controller;
                             movement.effect_counter = Some((CounterKind::Flying, 1));
-                            movement.ghost_vacuum_after = Some(item.object);
+                            movement.ghost_vacuum_after = Some(item.source.expect("instruction requires an object source").object);
                             movement
                         })
                         .collect();
@@ -6118,7 +6208,7 @@ impl Game {
                                 .get_or_insert_default()
                                 .links
                                 .push(linked_choices::LinkedExileView {
-                                    source: item.object,
+                                    source: item.source.expect("instruction requires an object source").object,
                                     exiled: event.after,
                                 });
                         }
@@ -6173,8 +6263,8 @@ impl Game {
                     }
                 }
                 Instruction::GainMissingTargetKeywordCounters => {
-                    if self.on_battlefield(item.object.card)
-                        && self.object_ref(item.object.card) == item.object
+                    if self.on_battlefield(item.source.expect("instruction requires an object source").object.card)
+                        && self.object_ref(item.source.expect("instruction requires an object source").object.card) == item.source.expect("instruction requires an object source").object
                         && let Some(target) = item.targets.iter().find_map(|bound| {
                             if self.same_target_object(*bound)
                                 && let Target::Card(id) = bound.target
@@ -6188,7 +6278,7 @@ impl Game {
                         })
                     {
                         let donor = self.keywords(target);
-                        let existing = self.keywords(item.object.card);
+                        let existing = self.keywords(item.source.expect("instruction requires an object source").object.card);
                         let mut counters = Counters::default();
                         for kind in CounterKind::KEYWORDS {
                             let keyword = kind.keyword().unwrap();
@@ -6197,25 +6287,24 @@ impl Game {
                             }
                         }
                         self.effect_counters(
-                            vec![(item.object, counters)],
+                            vec![(item.source.expect("instruction requires an object source").object, counters)],
                             replacements::ResumeMode::Program,
                         );
                     }
                 }
                 Instruction::AddOneOfEachCounterKind => {
                     let mut changes = Vec::new();
+                    let mut player_counters = [[0; 5]; 2];
                     for bound in &item.targets {
                         if !self.same_target_object(*bound) {
                             continue;
                         }
                         match bound.target {
                             Target::Player(player) => {
-                                // Poison is the pool's represented player counter kind.
-                                let count = &mut self.state.players[player.index()].poison_counters;
-                                if *count > 0 {
-                                    *count = count
-                                        .checked_add(1)
-                                        .capacity("player poison counters exhausted");
+                                for kind in crate::cards::PlayerCounterKind::ALL {
+                                    if self.state.players[player.index()].player_counter(kind) > 0 {
+                                        player_counters[player.index()][kind.index()] = 1;
+                                    }
                                 }
                             }
                             Target::Card(id) if self.on_battlefield(id) => {
@@ -6230,7 +6319,7 @@ impl Game {
                             _ => {}
                         }
                     }
-                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                    self.effect_counters_with_players(changes, player_counters, item.controller, replacements::ResumeMode::Program);
                 }
                 Instruction::DoubleCounters => {
                     // Doubling puts the existing quantity of each kind on the object.
@@ -6259,6 +6348,10 @@ impl Game {
                     for id in ids {
                         self.set_counters(id, Counters::default());
                     }
+                }
+                Instruction::Proliferate(amount) => {
+                    let count = self.amount_value(amount, item.source.expect("instruction requires an object source").object, item.controller);
+                    self.start_proliferate(item.controller, count);
                 }
                 Instruction::RemoveAllCounters => {
                     for bound in &item.targets {
@@ -6347,10 +6440,10 @@ impl Game {
                         Subject::Entering => self.entering_subject(&item).into_iter().collect(),
                         Subject::Attached => self.attached_subject(&item).into_iter().collect(),
                         Subject::Source => {
-                            if self.on_battlefield(item.card)
-                                && self.object_ref(item.card) == item.object
+                            if self.on_battlefield(item.source.expect("instruction requires an object source").id)
+                                && self.object_ref(item.source.expect("instruction requires an object source").id) == item.source.expect("instruction requires an object source").object
                             {
-                                vec![item.card]
+                                vec![item.source.expect("instruction requires an object source").id]
                             } else {
                                 Vec::new()
                             }

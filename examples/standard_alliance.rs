@@ -107,7 +107,7 @@ fn verify(
     let source = before
         .objects
         .iter()
-        .find(|v| v.reference == root.object && v.zone == Zone::Battlefield);
+        .find(|v| v.reference == root.source().expect("example expects an object-backed packet").object && v.zone == Zone::Battlefield);
     if i == 0 || i == 2 {
         let target = if i == 0 {
             source
@@ -188,7 +188,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let action = actions[rustmage::policy::smoke_index(&g, &actions)].clone();
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| index(s.source_card).is_some());
+                || before.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(actor, action.clone())?;
@@ -202,7 +202,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     continue;
                 }
-                if let Some(i) = index(s.source_card) {
+                if let Some(i) = s.source().and_then(|source| index(source.card)) {
                     if s.kind == StackKind::Spell {
                         casts[i] += 1;
                     } else if matches!(s.kind, StackKind::TriggeredAbility { .. }) {
@@ -212,7 +212,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(action, Action::Pass)
                 && let Some(root) = before.stack.last()
-                && let Some(i) = index(root.source_card)
+                && let Some(i) = root.source().and_then(|source| index(source.card))
                 && matches!(root.kind, StackKind::TriggeredAbility { .. })
                 && !after.stack.iter().any(|s| s.id == root.id)
                 && after.outcome.is_none()

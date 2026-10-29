@@ -8,5 +8,6 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a7d2b19fcec887cd7354cad892aa449bdac38e44c0cd7d108647acdd095f8d15"
   },
-  "physical_metadata_sha256": "c295907c3630338a2bc75234beb64efa4122dbe46d0568643c4071e4a59c48f5"
+  "physical_metadata_sha256": "c295907c3630338a2bc75234beb64efa4122dbe46d0568643c4071e4a59c48f5",
+  "source_note": "Complete frozen Oracle reviewed; pinned XMage inventory has no Uldaros implementation. Target-slot assignment, exile and copy casting remain gated pending authoritative source evidence, review and validation."
 }

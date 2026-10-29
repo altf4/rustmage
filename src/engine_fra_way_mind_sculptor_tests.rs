@@ -97,7 +97,7 @@ fn mind_sculptor_committed_threshold_survives_countering_and_source_departure() 
                 .chain(g.state.pending_triggers.iter())
                 .chain(g.state.ordering_triggers.iter())
                 .filter(|item| {
-                    item.card == way && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.is_some_and(|source| source.id == way) && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 })
                 .count();
             assert_eq!(trigger_count, expected);
@@ -106,7 +106,7 @@ fn mind_sculptor_committed_threshold_survives_countering_and_source_departure() 
                 .stack
                 .iter()
                 .find(|item| {
-                    item.card == walker && matches!(item.kind, StackKind::ActivatedAbility { .. })
+                    item.source.is_some_and(|source| source.id == walker) && matches!(item.kind, StackKind::ActivatedAbility { .. })
                 })
                 .unwrap()
                 .id;
@@ -142,7 +142,7 @@ fn mind_sculptor_failed_loyalty_cost_is_atomic_and_granted_ability_counts() {
         let saved = g.snapshot();
         reject(&mut g, action.clone());
         assert_eq!(g.snapshot(), saved);
-        assert!(!g.state.pending_triggers.iter().any(|item| item.card == way));
+        assert!(!g.state.pending_triggers.iter().any(|item| item.source.is_some_and(|source| source.id == way)));
         g.state.objects[walker as usize].counters.loyalty = 9;
         act(&mut g, action);
         pay(&mut g);
@@ -153,7 +153,7 @@ fn mind_sculptor_failed_loyalty_cost_is_atomic_and_granted_ability_counts() {
                 .iter()
                 .chain(g.state.pending_triggers.iter())
                 .chain(g.state.ordering_triggers.iter())
-                .any(|item| item.card == way
+                .any(|item| item.source.is_some_and(|source| source.id == way)
                     && matches!(item.kind, StackKind::TriggeredAbility { .. }))
         );
         let id = g
@@ -161,7 +161,7 @@ fn mind_sculptor_failed_loyalty_cost_is_atomic_and_granted_ability_counts() {
             .stack
             .iter()
             .find(|item| {
-                item.card == walker && matches!(item.kind, StackKind::ActivatedAbility { .. })
+                item.source.is_some_and(|source| source.id == walker) && matches!(item.kind, StackKind::ActivatedAbility { .. })
             })
             .unwrap()
             .id;
@@ -198,7 +198,7 @@ fn mind_sculptor_counts_actual_additional_loyalty_counter_payment() {
             g.state
                 .pending_triggers
                 .iter()
-                .any(|packet| packet.card == way)
+                .any(|packet| packet.source.is_some_and(|source| source.id == way))
         );
     }
 }
@@ -236,7 +236,7 @@ fn mind_sculptor_counts_external_creature_loyalty_cost_and_preserves_source_paym
                 g.state
                     .pending_triggers
                     .iter()
-                    .any(|packet| packet.card == way)
+                    .any(|packet| packet.source.is_some_and(|source| source.id == way))
             );
             g.restore(&saved).unwrap();
             item.loyalty_counters_paid = 0;
@@ -292,7 +292,7 @@ fn copied_mind_sculptor_observes_loyalty_only_while_ability_survives() {
             if blank {
                 let animation_item = g.activation_item(actor, walker, 0);
                 let mut animation_item = animation_item;
-                animation_item.object = g.object_ref(source);
+                animation_item.source.as_mut().expect("object-backed packet").object = g.object_ref(source);
                 g.animate_source(
                     &animation_item,
                     AnimationSpec {
@@ -322,7 +322,7 @@ fn copied_mind_sculptor_observes_loyalty_only_while_ability_survives() {
                 .chain(g.state.pending_triggers.iter())
                 .chain(g.state.ordering_triggers.iter())
                 .filter(|packet| {
-                    packet.card == source
+                    packet.source.is_some_and(|identity| identity.id == source)
                         && matches!(packet.kind, StackKind::TriggeredAbility { .. })
                 })
                 .count();
@@ -408,7 +408,7 @@ fn composite_loyalty_cost_public_actions_reserve_counters_and_replay() {
                     .chain(g.state.pending_triggers.iter())
                     .chain(g.state.ordering_triggers.iter())
                     .filter(|packet| {
-                        packet.card == way
+                        packet.source.is_some_and(|source| source.id == way)
                             && matches!(packet.kind, StackKind::TriggeredAbility { .. })
                     })
                     .count();
@@ -478,7 +478,7 @@ fn composite_loyalty_mana_window_preserves_reservations_and_observes_commit_cont
                 !g.state
                     .pending_triggers
                     .iter()
-                    .any(|packet| packet.card == way)
+                    .any(|packet| packet.source.is_some_and(|source| source.id == way))
             );
             // No cancellation action exists for normal activation announcements;
             // an owned snapshot can still abandon the complete pending transaction.
@@ -508,7 +508,7 @@ fn composite_loyalty_mana_window_preserves_reservations_and_observes_commit_cont
                     .chain(g.state.pending_triggers.iter())
                     .chain(g.state.ordering_triggers.iter())
                     .filter(|packet| {
-                        packet.card == way
+                        packet.source.is_some_and(|source| source.id == way)
                             && matches!(packet.kind, StackKind::TriggeredAbility { .. })
                     })
                     .count();
@@ -683,7 +683,7 @@ fn composite_two_counter_cost_rechecks_incarnation_control_and_nested_mana() {
                     .iter()
                     .chain(g.state.pending_triggers.iter())
                     .chain(g.state.ordering_triggers.iter())
-                    .any(|packet| packet.card == way
+                    .any(|packet| packet.source.is_some_and(|source| source.id == way)
                         && matches!(packet.kind, StackKind::TriggeredAbility { .. }))
             );
             g.restore(&funded).unwrap();

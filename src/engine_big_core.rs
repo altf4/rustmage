@@ -7,7 +7,7 @@ impl Game {
             panic!("optional once-per-turn use requires a triggered ability")
         };
         TriggerUse {
-            source: item.object,
+            source: item.source.expect("triggered ability has source").object,
             ability,
             origin: item.source_ability_origin,
         }

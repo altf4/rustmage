@@ -70,7 +70,7 @@ fn score(
                 == u16::from(o.stack.iter().any(|s| {
                     s.kind == StackKind::Spell
                         && s.controller != o.actor.unwrap()
-                        && !s.source_card.is_creature()
+                        && !s.source().expect("example expects an object-backed packet").card.is_creature()
                 }))
             {
                 850
@@ -249,7 +249,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             for packet in before.stack.iter().chain(before.announcing.iter()) {
                 if packet.kind == StackKind::Spell
-                    && packet.source_card.name() == NAMES[index]
+                    && packet.source().is_some_and(|source| source.card.name() == NAMES[index])
                     && seen.insert(packet.id)
                 {
                     casts[index] += 1;
@@ -332,7 +332,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && before
                     .resolving
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Hoverstone Pilgrim")
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Hoverstone Pilgrim"))
             {
                 assert_eq!(before.resolution_payment.as_ref().unwrap().cost.generic, 2);
                 ward_payments += 1;
@@ -345,9 +345,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let resolved = resolving.map(|s| {
                 (
                     s.id,
-                    s.source_card
+                    s.source().expect("example expects an object-backed packet").card
                         .token_info()
-                        .map_or(s.source_card.name(), |t| t.name),
+                        .map_or(s.source().expect("example expects an object-backed packet").card.name(), |t| t.name),
                     s.targets.clone(),
                     s.kind,
                     s.controller,
@@ -447,7 +447,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 &before,
                                 &after,
                                 r,
-                                resolving.unwrap().object,
+                                resolving.unwrap().source().expect("resolving packet has source").object,
                                 LibraryDestination::Bottom,
                             );
                             if i == 4 {

@@ -121,7 +121,7 @@ impl Game {
             .capacity("library reveal sequence exhausted");
         self.state.library_top.get_or_insert_default().reveal = Some(LibraryRevealEvent {
             sequence,
-            source: item.object,
+            source: item.source.expect("library effect requires source").object,
             player,
             revealed,
             drawn: None,
@@ -157,7 +157,7 @@ impl Game {
             .capacity("library reveal sequence exhausted");
         let mut event = LibraryRevealEvent {
             sequence,
-            source: item.object,
+            source: item.source.expect("library effect requires source").object,
             player,
             revealed,
             drawn: None,
@@ -191,10 +191,10 @@ impl Game {
                 if self.state.objects[event.after.card as usize]
                     .card
                     .has_subtype(subtype)
-                    && self.on_battlefield(item.card)
-                    && self.object_ref(item.card) == item.object
+                    && self.on_battlefield(item.source.expect("library effect requires source").id)
+                    && self.object_ref(item.source.expect("library effect requires source").id) == item.source.expect("library effect requires source").object
                 {
-                    self.state.objects[item.card as usize].growth += Stats {
+                    self.state.objects[item.source.expect("library effect requires source").id as usize].growth += Stats {
                         power: i128::from(power),
                         toughness: i128::from(toughness),
                     };

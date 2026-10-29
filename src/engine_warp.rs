@@ -86,12 +86,15 @@ impl Game {
             let view = d.view;
             let id = self.next_stack_id();
             self.state.pending_triggers.push(SpellView {
+            source: Some(StackSourceView { id: view.source.card, object: view.source, card: view.source_card, facts: d.facts }),
+                source_less_rule: None,
                 additional_triggers: 0,
                 source_move: None,
                 borrowed_slot: None,
                 self_granted_activation: None,
                 target_controller_lki: None,
                 target_kinds_lki: None,
+                target_type_slots: None,
                 gift: None,
                 reflexive_subject: None,
                 delayed_warp_exile: Some(Box::new(view)),
@@ -116,14 +119,14 @@ impl Game {
                 evidence_collected: false,
                 id,
                 kind: StackKind::DelayedWarpExile,
-                source_card: view.source_card,
+
                 split_second: false,
                 source_keywords: d.keywords,
                 source_tapped: d.tapped,
                 mana_tap_bonus: None,
                 source_attachment: d.attachment,
                 source_transform: None,
-                source_facts: d.facts,
+
                 related_stack: None,
                 damage_event: None,
                 damage_received: None,
@@ -141,8 +144,8 @@ impl Game {
                 manifest_event: None,
                 sacrificed_toughness: None,
                 sacrificed_power: None,
-                card: view.source.card,
-                object: view.source,
+
+
                 targets: Vec::new(),
                 mode: None,
                 controller: view.controller,

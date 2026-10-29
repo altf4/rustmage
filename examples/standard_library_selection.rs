@@ -172,7 +172,7 @@ fn rule(
     }
 }
 fn selection(s: &SpellView) -> Option<usize> {
-    let i = index(s.source_card)?;
+    let i = s.source().and_then(|source| index(source.card))?;
     match (i, s.kind) {
         (1 | 8 | 11, StackKind::ActivatedAbility { ability: 0 })
         | (13 | 14, StackKind::TriggeredAbility { ability: 0 }) => Some(i),
@@ -476,7 +476,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     Action::ChooseMode { mode }
                         if b.announcing
                             .as_ref()
-                            .is_some_and(|s| s.source_card == focus && family == 5) =>
+                            .is_some_and(|s| s.source().is_some_and(|source| source.card == focus) && family == 5) =>
                     {
                         if *mode == u16::from(wants_counter) {
                             400
@@ -565,15 +565,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     frame(i, &b, f, &mut models[actor.index()], &mut m);
                     owners[actor.index()] += 1;
                     if i == 8 {
-                        let source = object(&b, root.card).unwrap();
+                        let source = object(&b, root.source().expect("example expects an object-backed packet").id).unwrap();
                         assert_eq!(source.zone, Zone::Exile);
-                        assert_eq!(source.reference.generation, root.object.generation + 1);
+                        assert_eq!(source.reference.generation, root.source().expect("example expects an object-backed packet").object.generation + 1);
                         m.morbius_exiled += 1;
                     }
                     if i == 14 {
-                        let source = object(&b, root.card).unwrap();
+                        let source = object(&b, root.source().expect("example expects an object-backed packet").id).unwrap();
                         assert_eq!(source.zone, Zone::Graveyard);
-                        assert_eq!(source.reference.generation, root.object.generation + 1);
+                        assert_eq!(source.reference.generation, root.source().expect("example expects an object-backed packet").object.generation + 1);
                         m.phone_dead += 1;
                     }
                     if i == 10
@@ -587,10 +587,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = b.library_selection.is_some()
                 || b.resolving.is_some()
-                || b.stack.iter().any(|s| index(s.source_card).is_some())
+                || b.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some())
                 || b.announcing
                     .as_ref()
-                    .is_some_and(|s| index(s.source_card).is_some());
+                    .is_some_and(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(actor, action.clone())?;
@@ -639,16 +639,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Action::ChooseMode { mode } = action
                 && b.announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == NAMES[5])
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == NAMES[5]))
             {
                 m.counter_modes[usize::from(mode)] += 1;
             }
             if matches!(action, Action::Pass)
                 && let Some(root) = b.stack.last()
-                && index(root.source_card) == Some(13)
+                && root.source().and_then(|source| index(source.card)) == Some(13)
                 && matches!(root.kind, StackKind::TriggeredAbility { ability: 1 })
                 && !a.stack.iter().any(|s| s.id == root.id)
-                && let (Some(old), Some(now)) = (object(&b, root.card), object(&a, root.card))
+                && let (Some(old), Some(now)) = (object(&b, root.source().expect("example expects an object-backed packet").id), object(&a, root.source().expect("example expects an object-backed packet").id))
                 && old.reference == now.reference
             {
                 assert_eq!(
@@ -661,11 +661,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 action,
                 Action::PayResolutionMana { .. } | Action::DeclineResolutionMana
             ) && let Some(root) = &b.resolving
-                && root.source_card.name() == NAMES[5]
+                && root.source().is_some_and(|source| source.card.name() == NAMES[5])
                 && root.mode == Some(1)
             {
                 let victim = root.targets[0].object.unwrap();
-                let before = b.stack.iter().find(|s| s.object == victim).unwrap();
+                let before = b.stack.iter().find(|s| s.source().expect("example expects an object-backed packet").object == victim).unwrap();
                 let now = object(&a, victim.card).unwrap();
                 if matches!(action, Action::PayResolutionMana { .. }) {
                     assert_eq!((now.zone, now.reference), (Zone::Stack, victim));

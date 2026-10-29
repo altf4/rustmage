@@ -491,7 +491,7 @@ fn sos_dragon_miracle_mandatory_additional_cost_or_mana_alternative() {
                 choose_extra(&mut g, sacrifice);
             }
             pay(&mut g);
-            assert_eq!(g.state.stack.last().unwrap().card, spell);
+            assert_eq!(g.state.stack.last().unwrap().source.unwrap().id, spell);
             big_helpers::checked(&mut g, Action::FinishResolutionCasts);
             big_helpers::settle(&mut g);
             assert_eq!(g.object_view(target).zone, Zone::Exile);

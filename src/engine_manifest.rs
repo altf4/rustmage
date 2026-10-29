@@ -220,6 +220,7 @@ impl Game {
             item.id = self.next_stack_id();
             item.kind = StackKind::DelayedManifestDread;
             item.targets.clear();
+            item.target_type_slots = None;
             item.mode = None;
             item.cast = None;
             item.is_copy = false;
@@ -304,7 +305,7 @@ impl Game {
             .get_or_insert_with(Default::default)
             .spells
             .push(FaceDownPermanent {
-                object: item.object,
+                object: item.source.expect("face-down cast has source").object,
                 underlying: physical,
                 known,
                 known_to,
@@ -1436,7 +1437,7 @@ mod tests {
         game.apply(Player::P0, payment).unwrap();
         let original = game.state.stack.last().unwrap().clone();
         let copy = game.allocate_spell_copy(&original, Player::P0);
-        let copied_id = copy.card;
+        let copied_id = copy.source.unwrap().id;
         game.state.stack.push(copy);
         settle(&mut game);
         assert!(game.is_face_down(game.object_ref(id)));
@@ -1573,7 +1574,7 @@ mod tests {
                 .iter()
                 .any(|row| row.id == id && row.card == physical)
         );
-        assert_ne!(item.object, game.object_ref(id));
+        assert_ne!(item.source.unwrap().object, game.object_ref(id));
     }
 
     #[test]
@@ -1923,7 +1924,7 @@ mod tests {
             assert!(!game.start_manifest_dread(player));
             assert_eq!(game.state.pending_triggers.len(), 1);
             let trigger = game.state.pending_triggers.pop().unwrap();
-            assert_eq!(trigger.object, game.object_ref(observer));
+            assert_eq!(trigger.source.unwrap().object, game.object_ref(observer));
             assert_eq!(trigger.kind, StackKind::TriggeredAbility { ability: 0 });
             let event = trigger.manifest_event.unwrap();
             assert_eq!(event.player, player);
@@ -1947,14 +1948,14 @@ mod tests {
             assert!(game.turn_manifest_face_up(permanent));
             let triggers = &game.state.pending_triggers;
             assert_eq!(triggers.len(), 3);
-            assert!(triggers.iter().any(|trigger| trigger.object == permanent
+            assert!(triggers.iter().any(|trigger| trigger.source.unwrap().object == permanent
                 && trigger.kind == StackKind::TriggeredAbility { ability: 1 }));
-            assert!(triggers.iter().any(|trigger| trigger.object == permanent
+            assert!(triggers.iter().any(|trigger| trigger.source.unwrap().object == permanent
                 && trigger.kind == StackKind::TriggeredAbility { ability: 2 }));
             assert!(
                 triggers
                     .iter()
-                    .any(|trigger| trigger.object == game.object_ref(observer)
+                    .any(|trigger| trigger.source.unwrap().object == game.object_ref(observer)
                         && trigger.kind == StackKind::TriggeredAbility { ability: 2 })
             );
             assert!(triggers.iter().all(|trigger| {
@@ -1966,7 +1967,7 @@ mod tests {
             assert!(
                 !triggers
                     .iter()
-                    .any(|trigger| trigger.object == game.object_ref(opponent))
+                    .any(|trigger| trigger.source.unwrap().object == game.object_ref(opponent))
             );
         }
     }

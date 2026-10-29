@@ -92,7 +92,7 @@ fn ingris_does_not_observe_opponents_attacking_creatures() {
                 .pending_triggers
                 .iter()
                 .chain(g.state.stack.iter())
-                .any(|item| item.card == ingris)
+                .any(|item| item.source.is_some_and(|source| source.id == ingris))
         );
     }
 }

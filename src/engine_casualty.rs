@@ -82,7 +82,7 @@ impl Game {
         if item.kind != StackKind::Spell || item.is_copy {
             return None;
         }
-        let rows = self.casualty_grants(item.controller, item.source_card);
+        let rows = self.casualty_grants(item.controller, item.source?.card);
         (!rows.is_empty()).then(|| Box::new(rows))
     }
     pub(super) fn choose_casualty(&mut self, pay: bool) {
@@ -134,6 +134,7 @@ impl Game {
             trigger.kind = StackKind::CasualtyCopy;
             trigger.mode = None;
             trigger.targets.clear();
+            trigger.target_type_slots = None;
             trigger.cast = None;
             trigger.is_copy = false;
             trigger.cast_event = None;

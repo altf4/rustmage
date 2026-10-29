@@ -57,14 +57,8 @@ fn yuriko_never_grants_double_strike_when_two_creatures_attack() {
         act(&mut g, Action::Attack { card: first });
         act(&mut g, Action::Attack { card: second });
         act(&mut g, Action::FinishAttackers);
-        assert!(
-            !g.state
-                .stack
-                .iter()
-                .chain(g.state.pending_triggers.iter())
-                .chain(g.state.ordering_triggers.iter())
-                .any(|s| s.card == yuriko && matches!(s.kind, StackKind::TriggeredAbility { .. }))
-        );
+        assert!(!g.state.stack.iter().chain(g.state.pending_triggers.iter()).chain(g.state.ordering_triggers.iter())
+            .any(|s| s.source.is_some_and(|source| source.id == yuriko) && matches!(s.kind, StackKind::TriggeredAbility { .. })));
         finish_combat_trigger(&mut g);
         assert!(!g.keywords(first).contains(Keywords::DOUBLE_STRIKE));
         assert!(!g.keywords(second).contains(Keywords::DOUBLE_STRIKE));
@@ -81,14 +75,8 @@ fn yuriko_trigger_does_not_grant_double_strike_to_reentered_attacker() {
         g.state.pending = Pending::Attackers;
         act(&mut g, Action::Attack { card: attacker });
         act(&mut g, Action::FinishAttackers);
-        assert!(
-            g.state
-                .stack
-                .iter()
-                .chain(g.state.pending_triggers.iter())
-                .chain(g.state.ordering_triggers.iter())
-                .any(|s| s.card == yuriko && matches!(s.kind, StackKind::TriggeredAbility { .. }))
-        );
+        assert!(g.state.stack.iter().chain(g.state.pending_triggers.iter()).chain(g.state.ordering_triggers.iter())
+            .any(|s| s.source.is_some_and(|source| source.id == yuriko) && matches!(s.kind, StackKind::TriggeredAbility { .. })));
         let prior = g.object_ref(attacker);
         g.move_object(attacker, Zone::Exile);
         g.move_object(attacker, Zone::Battlefield);

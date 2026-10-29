@@ -303,7 +303,7 @@ impl Game {
             .enumerate()
             .filter(|(id, object)| {
                 object.zone == Zone::Battlefield
-                    && self.creature_matches(filter, item.controller, item.object, *id as CardId)
+                    && item.source.is_some_and(|source| self.creature_matches(filter, item.controller, source.object, *id as CardId))
             })
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
@@ -324,7 +324,7 @@ impl Game {
         let mut damaged = [false; 2];
         if let Some(rules) = &self.state.combat_rules {
             for row in &rules.damaged_players {
-                if row.source == item.object {
+                if item.source.is_some_and(|source| row.source == source.object) {
                     damaged[row.player.index()] = true;
                 }
             }
@@ -369,10 +369,10 @@ impl Announcement {
     pub(super) fn has_x_cost(&self) -> bool {
         match self.item.kind {
             StackKind::Spell => {
-                self.item.source_card.x_symbols() > 0 || self.item.source_card.life_x_cost()
+                self.item.source.expect("cost announcement has object source").card.x_symbols() > 0 || self.item.source.expect("cost announcement has object source").card.life_x_cost()
             }
             StackKind::ActivatedAbility { ability } => {
-                self.item.source_card.activation(ability).has_x_cost()
+                self.item.source.expect("cost announcement has object source").card.activation(ability).has_x_cost()
             }
             _ => false,
         }

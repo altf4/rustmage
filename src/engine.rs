@@ -73,6 +73,8 @@ pub use mana_lots::{
 };
 #[path = "engine_card_copies.rs"]
 mod card_copies;
+#[path = "engine_card_type_assignment.rs"]
+mod card_type_assignment;
 #[path = "engine_copies.rs"]
 mod copies;
 #[path = "engine_prepared.rs"]
@@ -186,13 +188,16 @@ pub use subtypes::GrantedSubtypes;
 mod battles;
 #[path = "engine_replacements.rs"]
 mod replacements;
+#[path = "engine_player_counter_events.rs"]
+mod player_counter_events;
 #[path = "engine_sagas.rs"]
 mod sagas;
 #[path = "engine_shield_harness.rs"]
 mod shield_harness;
 pub use replacements::{
     CreatedTokenChoiceView, DamageEventOrderView, DamagePreventionKind, DamagePreventionView,
-    ReplacementChoiceView, ReplacementEffectView, TokenGroupView,
+    PlayerCounterPlacementView, ProliferateReplacementView, ReplacementChoiceView,
+    ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -254,6 +259,8 @@ mod activations;
 #[path = "engine_power_up.rs"]
 mod power_up;
 pub use power_up::PowerUpUseView;
+#[path = "engine_proliferate.rs"]
+mod proliferate;
 #[path = "engine_connive.rs"]
 mod connive;
 #[path = "engine_convoke.rs"]
@@ -524,6 +531,7 @@ define_actions! {
     FinishEvidence,
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
+    ChooseSelfCounterReplacement { effect: u16 },
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
     ChooseDamageEvent { index: u32 },
     ChooseCreatedToken { object: ObjectRef },
@@ -541,6 +549,9 @@ define_actions! {
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
+    ProliferatePermanent { object: ObjectRef },
+    ProliferatePlayer { player: Player },
+    FinishProliferate,
     ChooseArmy { object: ObjectRef },
     ChooseJace { object: ObjectRef },
     FinishLandSelection,
@@ -740,6 +751,8 @@ define_actions! {
     ChooseTarget {
         target: Target,
     },
+    // Select one target and its chosen distinct card-type bit.
+    ChooseTargetCardType { target: Target, type_mask: u16 },
     FinishTargets,
     Attack {
         card: CardId,
@@ -985,6 +998,8 @@ struct PlayerState {
     greatest_declared_attack_power_this_turn: Option<i128>,
     life: i128,
     poison_counters: u64,
+    /// Sparse non-poison counters; poison keeps its existing public fast path.
+    other_player_counters: Option<Box<[u64; 4]>>,
     mana: Mana,
     library: SharedVec<CardId>, // top is last, bottom is first
     mulligans: u8,
@@ -992,6 +1007,22 @@ struct PlayerState {
     attempted_empty_draw: bool,
     // Subset of mana[3], retained across steps until this combat ends.
     combat_red_mana: u32,
+}
+
+impl PlayerState {
+    fn player_counter(&self, kind: crate::cards::PlayerCounterKind) -> u64 {
+        if kind == crate::cards::PlayerCounterKind::Poison { return self.poison_counters; }
+        self.other_player_counters.as_ref().map_or(0, |c| c[kind.index() - 1])
+    }
+    fn add_player_counter(&mut self, kind: crate::cards::PlayerCounterKind, amount: u64) {
+        if amount == 0 { return; }
+        let slot = if kind == crate::cards::PlayerCounterKind::Poison {
+            &mut self.poison_counters
+        } else {
+            &mut self.other_player_counters.get_or_insert_with(|| Box::new([0; 4]))[kind.index() - 1]
+        };
+        *slot = slot.checked_add(amount).capacity("player counter quantity exhausted");
+    }
 }
 
 /// How an actual spell was cast; abilities have no cast information.
@@ -1097,8 +1128,29 @@ fn is_false(value: &bool) -> bool {
     !*value
 }
 
+/// An inherent game-rule ability has no object or card as its source.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum SourceLessRule {
+    Radiation,
+}
+
+/// Object-backed stack source, absent for inherent game-rule abilities.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct StackSourceView {
+    pub id: CardId,
+    pub object: ObjectRef,
+    pub card: Card,
+    pub facts: DamageFacts,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    /// Owned source identity and last-known facts; inherent rules have no source.
+    pub(crate) source: Option<StackSourceView>,
+    /// Present only for an inherent rule ability; its legacy source fields are
+    /// not authoritative. This field is owned by stack copies and snapshots.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) source_less_rule: Option<SourceLessRule>,
     // Number of additional instances, zero for ordinary/published packets.
     // Frozen mana-event packets and typed snapshots retain this owned witness;
     // the JSON control plane restores opaque snapshot handles, never packets.
@@ -1125,6 +1177,10 @@ pub struct SpellView {
     #[serde(skip)]
     #[allow(clippy::box_collection)]
     pub(crate) target_kinds_lki: Option<Box<Vec<(ObjectRef, u16)>>>,
+    /// Public type-slot choices retained by copied and retargeted abilities.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub target_type_slots: Option<Box<Vec<u16>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<Box<GiftContext>>,
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
@@ -1174,7 +1230,6 @@ pub struct SpellView {
     pub kind: StackKind,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_transform: Option<u64>,
-    pub source_card: Card,
     /// Current split second on a spell, computed for public views.
     #[serde(skip_serializing_if = "is_false")]
     pub split_second: bool,
@@ -1210,10 +1265,7 @@ pub struct SpellView {
     /// Last-known power of the successfully sacrificed permanent for a reflexive ability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_power: Option<Box<i128>>,
-    pub source_facts: DamageFacts,
     pub related_stack: Option<StackLink>,
-    pub card: CardId,
-    pub object: ObjectRef,
     pub targets: Vec<BoundTarget>,
     pub mode: Option<u16>,
     pub controller: Player,
@@ -1241,7 +1293,7 @@ impl SpellView {
             }
             StackKind::ActivatedAbility { ability }
                 if self
-                    .source_card
+                    .source.expect("activated ability has source").card
                     .activations()
                     .get(ability as usize)
                     .is_none() =>
@@ -1302,6 +1354,9 @@ impl SpellView {
             + self.source_counter_lki.as_ref().map_or(0, |facts| {
                 std::mem::size_of::<Vec<SourceCounterQuantityView>>()
                     + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
+            })
+            + self.target_type_slots.as_ref().map_or(0, |v| {
+                std::mem::size_of::<Vec<u16>>() + v.len() * std::mem::size_of::<u16>()
             })
             + self.target_kinds_lki.as_ref().map_or(0, |v| {
                 std::mem::size_of::<Vec<(ObjectRef, u16)>>()
@@ -1371,14 +1426,37 @@ impl SpellView {
     pub(crate) fn target_source(&self) -> ObjectRef {
         self.source_move
             .as_ref()
-            .map_or(self.object, |event| event.after)
+            .map(|event| event.after)
+            .unwrap_or_else(|| self.source.expect("source-relative operation needs an object source").object)
+    }
+
+    /// The inherent rule responsible for a source-less ability, if any.
+    pub fn source_less_rule(&self) -> Option<SourceLessRule> {
+        self.source_less_rule
+    }
+
+    /// Return real source data, or None for an inherent player ability.
+    pub fn source(&self) -> Option<StackSourceView> {
+        self.source
+    }
+
+    /// Change the definition of a physical-source packet during face or grant selection.
+    pub(crate) fn set_source_definition(&mut self, definition: Card) {
+        assert!(self.source_less_rule.is_none(), "inherent rules have no source definition");
+        self.source.as_mut().expect("inherent rules have no source definition").card = definition;
+    }
+
+    /// Source identity for consumers that can also encounter inherent rules.
+    pub fn source_identity(&self) -> Option<(ObjectRef, Card)> {
+        self.source().map(|source| (source.object, source.card))
     }
 
     /// Characteristics of this stack spell, independent of actual mana paid.
     pub fn mana_value(&self) -> u64 {
-        self.source_card.fixed_mana_value()
+        let Some(source) = self.source() else { return 0; };
+        source.card.fixed_mana_value()
             + if self.kind == StackKind::Spell {
-                u64::from(self.source_card.x_symbols()) * u64::from(self.x.unwrap_or(0))
+                u64::from(source.card.x_symbols()) * u64::from(self.x.unwrap_or(0))
             } else {
                 0
             }
@@ -1387,12 +1465,12 @@ impl SpellView {
         self.attachment_trigger
             .as_ref()
             .filter(|event| event.granted)
-            .map_or(self.source_card, |event| event.granting_card)
+            .map_or(self.source.expect("object-backed stack kind").card, |event| event.granting_card)
     }
 
     pub(crate) fn modes(&self) -> Option<&'static [SpellMode]> {
         match self.kind {
-            StackKind::Spell => match self.source_card.effect() {
+            StackKind::Spell => match self.source.expect("object-backed stack kind").card.effect() {
                 Effect::Modal(modes) => Some(modes),
                 _ => None,
             },
@@ -1410,7 +1488,7 @@ impl SpellView {
                 _ => None,
             },
             StackKind::ActivatedAbility { ability } => {
-                match self.source_card.activation(ability).program.first() {
+                match self.source.expect("object-backed stack kind").card.activation(ability).program.first() {
                     Some(Instruction::Modal(modes)) => Some(modes),
                     _ => None,
                 }
@@ -1423,7 +1501,7 @@ impl SpellView {
             | StackKind::CasualtyCopy
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. } => None,
-            StackKind::DelayedManifestDread => None,
+            StackKind::DelayedManifestDread | StackKind::InherentRule { .. } => None,
         }
     }
     pub(crate) fn bounded_mode_count(&self, mode: usize) -> Option<u8> {
@@ -1485,7 +1563,7 @@ impl SpellView {
                         };
                         spec.rule = TargetRule::GraveCreaturePower {
                             excluded_subtype,
-                            maximum: Some(self.source_facts.power),
+                            maximum: Some(self.source.expect("object-backed stack kind").facts.power),
                         };
                         TargetPlan::Single(spec)
                     }
@@ -1513,25 +1591,25 @@ impl SpellView {
                 Some((targets, a.program))
             }
             StackKind::ActivatedAbility { ability } => {
-                let a = &self.source_card.activation(ability);
+                let a = &self.source.expect("object-backed stack kind").card.activation(ability);
                 Some((a.targets, a.program))
             }
             StackKind::Spell => self
-                .source_card
+                .source.expect("spell has a source").card
                 .spell_program(self.mode)
                 .map(|(plan, program)| {
                     let promised = self
                         .cast
                         .is_some_and(|c| matches!(c.gift, Some(GiftDeclaration::Promised { .. })));
                     let plan = if promised {
-                        self.source_card
+                        self.source.expect("object-backed stack kind").card
                             .gift()
                             .map_or(plan, |gift| gift.promised_targets)
                     } else {
                         plan
                     };
                     let plan = if self.cast.is_some_and(|c| c.teamwork == Some(true)) {
-                        self.source_card
+                        self.source.expect("object-backed stack kind").card
                             .teamwork()
                             .and_then(|s| s.paid_targets)
                             .unwrap_or(plan)
@@ -1539,7 +1617,7 @@ impl SpellView {
                         plan
                     };
                     let plan = if self.cast.is_some_and(|c| c.kicker == Some(true)) {
-                        self.source_card.kicked_targets().unwrap_or(plan)
+                        self.source.expect("object-backed stack kind").card.kicked_targets().unwrap_or(plan)
                     } else {
                         plan
                     };
@@ -1575,6 +1653,7 @@ impl SpellView {
                 Some((TargetPlan::NONE, &[Instruction::ExileWarpedPermanent]))
             }
             StackKind::SiegeDefeat => Some((TargetPlan::NONE, &[Instruction::ResolveSiegeDefeat])),
+            StackKind::InherentRule { rule: SourceLessRule::Radiation, .. } => Some((TargetPlan::NONE, &[Instruction::ResolveRadiation])),
         }
     }
 }
@@ -1612,6 +1691,7 @@ pub struct DamageTriggerView {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum StackKind {
     Spell,
+    InherentRule { rule: SourceLessRule, affected_player: Player },
     TriggeredAbility { ability: u16 },
     ActivatedAbility { ability: u16 },
     DelayedSacrifice,
@@ -1735,6 +1815,7 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    Proliferate { player: Player },
     TargetCounterRemoval {
         player: Player,
     },
@@ -2368,6 +2449,12 @@ pub struct ZoneChange {
     pub evidence_collected: bool,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerCounterAmountView {
+    pub kind: crate::cards::PlayerCounterKind,
+    pub count: u64,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub enduring_story: bool,
@@ -2405,6 +2492,8 @@ pub struct PlayerView {
     pub attacked_this_turn: bool,
     pub life: i128,
     pub poison_counters: u64,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub other_counters: Vec<PlayerCounterAmountView>,
     pub mana: Mana,
     pub combat_red_mana: u32,
     pub library_count: usize,
@@ -2823,6 +2912,8 @@ pub struct Observation {
     pub evidence: Option<EvidenceView>,
     pub last_evidence: Option<EvidenceEventView>,
     pub connive_choice: Option<connive::ConniveChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proliferate_choice: Option<proliferate::ProliferateView>,
     pub known_hand: Vec<ObjectRef>,
     pub explore_choice: Option<ExploreChoiceView>,
     pub last_explore: Option<ExploreEventView>,
@@ -3018,6 +3109,7 @@ impl Game {
             greatest_declared_attack_power_this_turn: None,
             life: STARTING_LIFE,
             poison_counters: 0,
+            other_player_counters: None,
             mana: [0; 6],
             library: SharedVec::default(),
             mulligans: 0,
@@ -3302,6 +3394,7 @@ impl Game {
             | Pending::AuraEntry { player }
             | Pending::TokenChoice { player, .. }
             | Pending::KeywordChoice { player, .. }
+            | Pending::Proliferate { player }
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
             | Pending::Role { player }
@@ -3814,7 +3907,7 @@ impl Game {
                 }
             }
             Pending::LinkedExile { .. } => {
-                let source = s.resolving.as_ref().unwrap().item.object;
+                let Some(source) = s.resolving.as_ref().and_then(|r| r.item.source).map(|s| s.object) else { return false; };
                 for object in self.linked_exile_candidates(source) {
                     if emit(Action::ChooseLinkedExile { object }) {
                         return true;
@@ -3962,6 +4055,23 @@ impl Game {
                         return true;
                     }
                 }
+            }
+            Pending::Proliferate { player } => {
+                let sequence = s.resolving.as_ref().unwrap().proliferate.as_ref().unwrap();
+                for (id, _) in s.objects.iter().enumerate() {
+                    let object = self.object_ref(id as CardId);
+                    if self.on_battlefield(object.card) && self.counter_amounts(object.card).has_any()
+                        && !sequence.permanents.contains(&object)
+                        && emit(Action::ProliferatePermanent { object }) { return true; }
+                }
+                for candidate in [Player::P0, Player::P1] {
+                    if crate::cards::PlayerCounterKind::ALL.into_iter()
+                        .any(|kind| s.players[candidate.index()].player_counter(kind) > 0)
+                        && sequence.players & (1 << candidate.index()) == 0
+                        && emit(Action::ProliferatePlayer { player: candidate }) { return true; }
+                }
+                if emit(Action::FinishProliferate) { return true; }
+                let _ = player;
             }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
@@ -5274,6 +5384,51 @@ impl Game {
                         &announcement.item,
                         announcement.spec.rule,
                         |target| {
+                            if matches!(
+                                announcement.spec.rule,
+                                TargetRule::Grouped {
+                                    constraint: TargetGroupConstraint::DistinctCardTypeSlots,
+                                    ..
+                                }
+                            ) {
+                                let Target::Card(id) = target else {
+                                    return false;
+                                };
+                                if announcement.item.targets.iter().any(|bound| {
+                                    bound.group == announcement.group && bound.target == target
+                                }) {
+                                    return false;
+                                }
+                                let used = announcement
+                                    .item
+                                    .target_type_slots
+                                    .as_ref()
+                                    .map_or(0, |slots| {
+                                        slots.iter().fold(0u16, |mask, kind| mask | *kind)
+                                    });
+                                if !self.announcement_target_fundable(
+                                    announcement,
+                                    None,
+                                    None,
+                                    None,
+                                    Some(target),
+                                    false,
+                                ) {
+                                    return false;
+                                }
+                                let mut available = self.current_kinds(id) & !used;
+                                while available != 0 {
+                                    let kind = 1u16 << available.trailing_zeros();
+                                    available &= !kind;
+                                    if emit(Action::ChooseTargetCardType {
+                                        target,
+                                        type_mask: kind,
+                                    }) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            }
                             self.target_group_compatible(
                                 announcement.spec.rule,
                                 announcement.group,
@@ -5503,6 +5658,7 @@ impl Game {
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
             }
+            Action::ChooseSelfCounterReplacement { effect } => self.choose_self_counter_replacement(effect),
             Action::ChooseDamagePrevention { source, prevention } => {
                 self.choose_damage_prevention(source, prevention)
             }
@@ -5760,10 +5916,10 @@ impl Game {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 self.set_cast_face(&mut item, face);
                 let origin_counter_cost =
-                    counter_origin.then(|| item.source_card.graveyard_counter_cost().unwrap());
+                    counter_origin.then(|| item.source.expect("cast or activated ability has a source").card.graveyard_counter_cost().unwrap());
                 item.cast.as_mut().unwrap().method = CastMethod::Free;
                 item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement_with_origin_cost(
@@ -5793,7 +5949,7 @@ impl Game {
                 self.set_cast_face(&mut item, face);
                 item.cast.as_mut().unwrap().method = CastMethod::Free;
                 item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
@@ -5862,12 +6018,12 @@ impl Game {
                 };
                 item.cast.as_mut().unwrap().physical_card =
                     Some(self.state.objects[card as usize].card);
-                item.source_card = definition;
+                item.set_source_definition(definition);
                 item.source_keywords = definition.info().keywords;
-                item.source_facts.card = definition;
-                item.source_facts.colors = definition.colors();
-                item.source_facts.kinds = definition.kind_mask();
-                item.source_facts.power = 0;
+                item.source.as_mut().expect("spell source exists").facts.card = definition;
+                item.source.as_mut().expect("spell source exists").facts.colors = definition.colors();
+                item.source.as_mut().expect("spell source exists").facts.kinds = definition.kind_mask();
+                item.source.as_mut().expect("spell source exists").facts.power = 0;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceSneak { card, permission } => {
@@ -5914,7 +6070,7 @@ impl Game {
             Action::AnnouncePlotted { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Plot;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
@@ -5922,7 +6078,7 @@ impl Game {
             Action::AnnounceHarmonize { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Harmonize;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 // Reuse the exact-object leave-stack exile replacement.
@@ -5932,7 +6088,7 @@ impl Game {
             Action::AnnounceFlashback { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Flashback;
-                if item.source_card.x_symbols() > 0 {
+                if item.source.expect("cast or activated ability has a source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.state.objects[card as usize].flashback = true;
@@ -5989,13 +6145,13 @@ impl Game {
                 let mut item = self.borrowed_activation_item(actor, card, exiled, ability);
                 let quality = self
                     .mana_quality(
-                        item.source_card
+                        item.source.expect("cast or activated ability has a source").card
                             .activation(ability)
                             .mana_production()
                             .unwrap(),
                         card,
                     )
-                    .map(|quality| quality.with_definition(item.source_card));
+                    .map(|quality| quality.with_definition(item.source.expect("cast or activated ability has a source").card));
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
                 self.produce_mountain_tap_bonus(actor, item.mana_tap_bonus.unwrap_or(0));
@@ -6130,7 +6286,7 @@ impl Game {
                     let item = self.state.stack.last().unwrap().clone();
                     let outcome = self.spend_mana_for(actor, payment, self.purpose_for_item(&item));
                     if outcome.haste {
-                        self.grant_stack_keywords(item.object, Keywords::HASTE);
+                        self.grant_stack_keywords(item.source.expect("cast or activated ability has a source").object, Keywords::HASTE);
                     }
                     self.state
                         .stack
@@ -6233,7 +6389,7 @@ impl Game {
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
                 let a = self.state.announcing.as_mut().unwrap();
-                if a.item.kind == StackKind::Spell && a.item.source_card.life_x_cost() {
+                if a.item.kind == StackKind::Spell && a.item.source.expect("cast or activated ability has a source").card.life_x_cost() {
                     a.add_cast_cost_clause(CastCostClause::Life(value));
                 }
                 if self
@@ -6242,7 +6398,7 @@ impl Game {
                     .as_ref()
                     .unwrap()
                     .item
-                    .source_card
+                    .source.expect("object-backed announcement").card
                     .targets_up_to_x()
                 {
                     let plan = self.target_spec(&self.state.announcing.as_ref().unwrap().item);
@@ -6266,7 +6422,7 @@ impl Game {
                     .as_ref()
                     .unwrap()
                     .item
-                    .source_card
+                    .source.expect("object-backed announcement").card
                     .kicked_targets()
                     .filter(|_| pay)
                 {
@@ -6295,6 +6451,29 @@ impl Game {
             Action::AllocateTargetAmount { amount } => self.choose_target_amount(amount),
             Action::SetStackTarget { index, target } => self.set_stack_target(index, target),
             Action::RestoreStackTarget { index } => self.restore_stack_target(index),
+            Action::ChooseTargetCardType { target, type_mask } => {
+                let mut bound = self.bind_target(target);
+                let item = self.state.announcing.as_ref().unwrap().item.clone();
+                self.target_becomes_bound(&item, bound);
+                let announcement = self.state.announcing.as_mut().unwrap();
+                bound.group = announcement.group;
+                announcement
+                    .item
+                    .target_type_slots
+                    .get_or_insert_default()
+                    .push(type_mask);
+                announcement.item.targets.push(bound);
+                if announcement
+                    .item
+                    .targets
+                    .iter()
+                    .filter(|bound| bound.group == announcement.group)
+                    .count()
+                    == announcement.spec.max
+                {
+                    self.finish_target_group();
+                }
+            }
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
                 let item = self.state.announcing.as_ref().unwrap().item.clone();
@@ -6432,7 +6611,7 @@ impl Game {
                     .map(|r| r.card)
                     .collect();
                 let keywords = choices[usize::from(index)];
-                let source = self.state.resolving.as_ref().unwrap().item.object;
+                let source = self.state.resolving.as_ref().unwrap().item.source.expect("cast or activated ability has a source").object;
                 self.grant_keyword_effects(&ids, source, keywords);
                 self.run_program();
             }
@@ -6440,6 +6619,13 @@ impl Game {
                 self.create_tokens(actor, token, 1, false);
                 self.run_program();
             }
+            Action::ProliferatePermanent { object } => {
+                self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().permanents.push(object);
+            }
+            Action::ProliferatePlayer { player } => {
+                self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().players |= 1 << player.index();
+            }
+            Action::FinishProliferate => { self.finish_proliferate(); self.run_program(); }
             Action::PutHandCreature { object }
             | Action::PutHandPermanent { object }
             | Action::PutHandLand { object }
@@ -7124,8 +7310,7 @@ impl Game {
         {
             self.state.stack.retain(|item| {
                 !(item.kind == StackKind::Spell
-                    && item.card == id
-                    && item.object == before.reference)
+                    && item.source.is_some_and(|source| source.id == id && source.object == before.reference))
             });
             self.clear_copy_recipe(before.reference);
             let object = &mut self.state.objects[id as usize];
@@ -7360,7 +7545,7 @@ impl Game {
         if before.zone == Zone::Stack {
             self.state
                 .stack
-                .retain(|spell| spell.kind != StackKind::Spell || spell.object != before.reference);
+                .retain(|spell| spell.kind != StackKind::Spell || !spell.source.is_some_and(|source| source.object == before.reference));
         }
         if before.zone == Zone::Battlefield {
             self.capture_delayed_copy_source_departure(&before);
@@ -7422,11 +7607,11 @@ impl Game {
                         history.push((before.reference, before.controller));
                     }
                 }
-                if item.object == before.reference {
+                if item.source.is_some_and(|source| source.object == before.reference) {
                     item.source_keywords = before.keywords;
                     item.source_tapped = before.tapped;
                     item.source_attachment = before.attached_to;
-                    item.source_facts = DamageFacts::from_view(&before);
+                    item.source.as_mut().expect("matched source").facts = DamageFacts::from_view(&before);
                     // Opt-in copy continuations read the last battlefield blueprint,
                     // not the blueprint from when the ability originally triggered.
                     if item.program().is_some_and(|(_, program)| {
@@ -7443,7 +7628,7 @@ impl Game {
                         let recipe = before
                             .copy_recipe
                             .unwrap_or_else(|| CopyRecipe::new(before.card));
-                        item.source_copy_recipe = (recipe.definition != item.source_card
+                        item.source_copy_recipe = (recipe.definition != item.source.expect("matched source").card
                             || recipe.exceptions != CopyExceptions::NONE
                             || recipe.overrides.is_some()
                             || recipe.faces.is_some())
@@ -8759,6 +8944,7 @@ impl Game {
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
+                Pending::Proliferate { .. } => "proliferate",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
@@ -8810,6 +8996,11 @@ impl Game {
                 attacked_this_turn: s.players[i].attacked_this_turn,
                 life: s.players[i].life,
                 poison_counters: s.players[i].poison_counters,
+                other_counters: crate::cards::PlayerCounterKind::ALL.into_iter().skip(1)
+                    .filter_map(|kind| {
+                        let count = s.players[i].player_counter(kind);
+                        (count != 0).then_some(PlayerCounterAmountView { kind, count })
+                    }).collect(),
                 mana: s.players[i].mana,
                 combat_red_mana: s.players[i].combat_red_mana,
                 library_count: s.players[i].library.len(),
@@ -8991,6 +9182,7 @@ impl Game {
                 let mut item = self.spell_with_current_abilities(&announcement.item);
                 if !owns_choice {
                     item.targets.clear();
+                    item.target_type_slots = None;
                 }
                 item
             }),
@@ -9056,7 +9248,7 @@ impl Game {
                     .map(|(index, mode)| ModeChoiceView {
                         mode: index as u16,
                         text: mode.text,
-                        additional_mana: item.source_card.tiered_costs().map(|costs| costs[index]),
+                        additional_mana: item.source.and_then(|source| source.card.tiered_costs().map(|costs| costs[index])),
                     })
                     .collect()
             } else {
@@ -9183,6 +9375,7 @@ impl Game {
                     remaining: c.remaining.clone(),
                     current: c.current,
                 }),
+            proliferate_choice: s.resolving.as_ref().and_then(|r| r.proliferate.as_ref()).map(|p| p.view()),
             known_hand: s.known_hand.clone(),
             explore_choice: s
                 .resolving
@@ -9274,6 +9467,7 @@ impl Game {
                         .map(|p| p.capacity() * std::mem::size_of::<u16>())
                         .sum::<usize>()
             })
+            + s.players.iter().filter(|p| p.other_player_counters.is_some()).count() * std::mem::size_of::<[u64; 4]>()
             + s.player_control.as_ref().map_or(0, |_| {
                 std::mem::size_of::<player_control::PlayerControlState>()
             })
@@ -9293,7 +9487,7 @@ impl Game {
                 .map_or(0, |_| std::mem::size_of::<[u64; 2]>())
             + s.combat_defender_types.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<(ObjectRef, u16)>>()
-                    + rows.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                    + rows.len() * std::mem::size_of::<u16>()
             })
             + s.battle_combat_types.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<(ObjectRef, bool)>>()
@@ -9530,6 +9724,7 @@ impl Game {
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
                         + resolution.connive.as_ref().map_or(0, |c| c.bytes())
+                        + resolution.proliferate.as_ref().map_or(0, |p| p.bytes())
                         + resolution.mana_payment.as_ref().map_or(0, |_| {
                             std::mem::size_of::<resolution_mana::ResolutionPayment>()
                         })

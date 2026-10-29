@@ -41,6 +41,7 @@ impl Game {
             }
         }
         if step == Step::Main1 {
+            self.queue_radiation_trigger();
             self.queue_paradigm_triggers();
             self.precombat_lore_counters();
         }
@@ -86,6 +87,83 @@ impl Game {
                 }
             }
         }
+    }
+
+    fn queue_radiation_trigger(&mut self) {
+        let player = self.state.active;
+        if self.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad)
+            == 0
+        {
+            return;
+        }
+        let id = self.next_stack_id();
+        self.state.pending_triggers.push(SpellView {
+            source: None,
+            source_less_rule: Some(SourceLessRule::Radiation),
+            target_type_slots: None,
+            additional_triggers: 0,
+            loyalty_counters_paid: 0,
+            loyalty_x: None,
+            reflexive_target_limit: None,
+            mana_tap_bonus: None,
+            event_player: None,
+            source_move: None,
+            borrowed_slot: None,
+            self_granted_activation: None,
+            target_controller_lki: None,
+            target_kinds_lki: None,
+            gift: None,
+            reflexive_subject: None,
+            delayed_warp_exile: None,
+            return_link: None,
+            crew: None,
+            cast_event: None,
+            cast_creature_subjects: None,
+            copy_event: None,
+            captured_artifact_copy: None,
+            source_copy_recipe: None,
+            source_ability_origin: None,
+            target_allocations: None,
+            mana_copy_sources: None,
+            is_copy: false,
+            delayed_sacrifice: None,
+            x: None,
+            attachment_trigger: None,
+            cast: None,
+            entering_object: None,
+            evidence_collected: false,
+            id,
+            kind: StackKind::InherentRule {
+                rule: SourceLessRule::Radiation,
+                affected_player: player,
+            },
+
+            split_second: false,
+            source_keywords: Keywords::NONE,
+            source_tapped: false,
+            source_attachment: None,
+            source_transform: None,
+
+            related_stack: None,
+            damage_event: None,
+            damage_received: None,
+            creature_combat_event: None,
+            discard_event: None,
+            draw_event: None,
+            life_event: None,
+            source_counter_payment: None,
+            exiled_symbol_cards: None,
+            source_counter_lki: None,
+            source_quantity_lki: None,
+            event_object: None,
+            manifest_event: None,
+            sacrificed_toughness: None,
+            sacrificed_power: None,
+
+            targets: Vec::new(),
+            mode: None,
+            controller: player,
+        });
     }
 
     pub(super) fn trigger_time_guards_hold(
@@ -167,6 +245,9 @@ impl Game {
         item: &SpellView,
         condition: TriggerCondition,
     ) -> bool {
+        let Some(source) = item.source else {
+            return false;
+        };
         if let TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } = condition.event()
         {
             let Some(entering) = item.entering_object else {
@@ -180,7 +261,7 @@ impl Game {
             ) && self.trigger_guards_hold(
                 condition,
                 item.controller,
-                item.object,
+                source.object,
                 item.source_tapped,
             );
         }
@@ -193,8 +274,8 @@ impl Game {
                 },
             event,
         } = condition
-            && !(self.on_battlefield(item.object.card)
-                && self.object_ref(item.object.card) == item.object)
+            && !(self.on_battlefield(source.object.card)
+                && self.object_ref(source.object.card) == source.object)
         {
             let value = i128::from(
                 item.source_counter_lki
@@ -207,11 +288,16 @@ impl Game {
                 && self.trigger_guards_hold(
                     *event,
                     item.controller,
-                    item.object,
+                    source.object,
                     item.source_tapped,
                 );
         }
-        self.trigger_guards_hold(condition, item.controller, item.object, item.source_tapped)
+        self.trigger_guards_hold(
+            condition,
+            item.controller,
+            source.object,
+            item.source_tapped,
+        )
     }
 
     pub(super) fn step_guard(

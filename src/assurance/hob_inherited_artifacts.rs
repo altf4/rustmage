@@ -501,7 +501,7 @@ fn hob_inherited_artifacts_spatula_paid_entry_gains_two_even_after_source_depart
                 g.state
                     .stack
                     .iter()
-                    .any(|s| s.card == e && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+                    .any(|s| s.source.is_some_and(|source| source.id == e) && matches!(s.kind, StackKind::TriggeredAbility { .. }))
             });
             if source_leaves {
                 g.move_object(e, Zone::Graveyard);

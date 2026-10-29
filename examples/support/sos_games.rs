@@ -335,12 +335,15 @@ impl Tracker {
             if !self.seen_packets.insert(s.id) {
                 continue;
             }
+            let Some(source) = s.source() else {
+                continue;
+            };
             if s.kind == StackKind::Spell {
                 if let Some(cast) = s.cast.filter(|_| !s.is_copy) {
-                    self.cards.insert(s.source_card.name().into());
-                    self.colors |= s.source_card.colors();
+                    self.cards.insert(source.card.name().into());
+                    self.colors |= source.card.colors();
                     self.hit("actual_cast", s.id.to_string());
-                    if s.source_card.name() == "Witherbloom, the Balancer"
+                    if s.source().is_some_and(|source| source.card.name() == "Witherbloom, the Balancer")
                         && cast.method == CastMethod::Normal
                         && cast.mana_spent() < 8
                         && before.objects.iter().any(|o| {
@@ -365,8 +368,8 @@ impl Tracker {
                     }
                     if cast.origin == Zone::Exile
                         && self.prepared_copies.iter().any(|copy| {
-                            copy.card == s.object.card
-                                && copy.generation.checked_add(1) == Some(s.object.generation)
+                            copy.card == s.source().expect("example expects an object-backed packet").object.card
+                                && copy.generation.checked_add(1) == Some(s.source().expect("example expects an object-backed packet").object.generation)
                         })
                     {
                         self.hit("prepared_spell_cast", s.id.to_string());
@@ -378,7 +381,7 @@ impl Tracker {
                         && cast.origin == Zone::Exile
                         && before.resolving.as_ref().is_some_and(|packet| {
                             matches!(packet.kind, StackKind::TriggeredAbility { .. })
-                                && packet.source_card == s.source_card
+                                && packet.source().is_some_and(|other| other.card == source.card)
                         })
                         && before.cascade.is_none()
                         && [
@@ -388,13 +391,13 @@ impl Tracker {
                             "Restoration Seminar",
                             "Improvisation Capstone",
                         ]
-                        .contains(&s.source_card.name())
+                        .contains(&source.card.name())
                     {
                         self.hit("paradigm_copy_cast", s.id.to_string());
                     }
                 } else if s.is_copy {
                     self.hit("uncast_copy", s.id.to_string());
-                    if s.source_card.name() == "Lumaret's Favor" {
+                    if s.source().is_some_and(|source| source.card.name() == "Lumaret's Favor") {
                         self.hit("infusion_copy", s.id.to_string());
                     }
                     if let Some(cause) = self.copy_causes.get(&s.id).copied().or(immediate_cause) {
@@ -403,12 +406,12 @@ impl Tracker {
                 }
             }
             if s.kind == (StackKind::ActivatedAbility { ability: 1 })
-                && s.source_card.name() == "Page, Loose Leaf"
+                && s.source().is_some_and(|source| source.card.name() == "Page, Loose Leaf")
             {
                 self.hit("grandeur_paid", s.id.to_string());
             }
             if let StackKind::TriggeredAbility { ability } = s.kind {
-                let key = match (s.source_card.name(), ability) {
+                let key = match (source.card.name(), ability) {
                     ("Cuboid Colony", 0) | ("Textbook Tabulator", 1) => Some("increment_trigger"),
                     ("Informed Inkwright", 0)
                     | ("Inkling Mascot", 0)
@@ -479,7 +482,7 @@ impl Tracker {
         }
         let mill_packet = before.resolving.as_ref().or_else(|| before.stack.last());
         if mill_packet.is_some_and(|packet| {
-            packet.source_card.name() == "Exhibition Tidecaller"
+            packet.source().is_some_and(|source| source.card.name() == "Exhibition Tidecaller")
                 && matches!(packet.kind, StackKind::TriggeredAbility { .. })
         }) && [Player::P0, Player::P1].into_iter().any(|player| {
             after.players[player.index()].library_count
@@ -509,7 +512,7 @@ impl Tracker {
             }
             if object.name == "Rancorous Archaic" && object.zone == Zone::Battlefield {
                 for spell in &before.stack {
-                    if spell.card == object.id
+                    if spell.source().is_some_and(|source| source.id == object.id)
                         && let Some(cast) = spell.cast
                         && cast.colors_spent() >= 2
                         && object.counters.plus_one >= u64::from(cast.colors_spent())

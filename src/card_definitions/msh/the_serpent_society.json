@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8f71356986097f74b40555a628a6a1c9b729da5eb1813f6b94ae8ee5bbc344c2"
   },
-  "physical_metadata_sha256": "409f04f342606fbd0f066b808f798fb31e2da7d850183d985055616f4bff3286"
+  "physical_metadata_sha256": "409f04f342606fbd0f066b808f798fb31e2da7d850183d985055616f4bff3286",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheSerpentSociety.java",
+  "java_sha256": "9347c36edcfc2ca7dc125f918cf2ba611bc4f30e53046f4eb80fdd0fee4fe70d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/GetPoisonCountersCost.java",
+      "sha256": "61efdebd86d0d29bc486773bad2ea8056f2a82fcc7afbdd64742fc816d010cbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ]
 }

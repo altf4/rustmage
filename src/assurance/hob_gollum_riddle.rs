@@ -153,7 +153,7 @@ fn hob_riddle_master_zero_is_even_opponent_only_and_copy_is_not_cast() {
             .state
             .stack
             .iter()
-            .find(|item| item.card == opponent_spell && item.kind == StackKind::Spell)
+            .find(|item| item.source.unwrap().id == opponent_spell && item.kind == StackKind::Spell)
             .unwrap()
             .clone();
         let before = g.state.pending_triggers.len();

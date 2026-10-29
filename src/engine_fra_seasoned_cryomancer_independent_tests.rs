@@ -212,6 +212,7 @@ fn seasoned_copied_reflexive_retargets_with_same_public_limit() {
             sacrificed_power: None,
             discard_after: None,
             optional_wheel: None,
+            proliferate: None,
             discards: [0; 2],
             selected_discards: [Vec::new(), Vec::new()],
             milled: Vec::new(),

@@ -182,7 +182,7 @@ fn torch_emblem_survives_source_and_triggers_for_its_controllers_casts() {
             .state
             .stack
             .iter()
-            .find(|s| s.source_card == Card::test_index(5465))
+            .find(|s| s.source.is_some_and(|source| source.card == Card::test_index(5465)))
             .expect("emblem cast trigger");
         assert_eq!(trigger.controller, player);
         let life = g.state.players[player.other().index()].life;

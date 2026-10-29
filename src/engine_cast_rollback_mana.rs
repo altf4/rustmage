@@ -63,7 +63,7 @@ impl ManaEvent {
     fn source(&self) -> ObjectRef {
         match &self.kind {
             ManaEventKind::Basic { source } | ManaEventKind::Granted { source, .. } => *source,
-            ManaEventKind::Activated { item, .. } => item.object,
+            ManaEventKind::Activated { item, .. } => item.source.expect("mana activation has source").object,
         }
     }
     fn payment(&self) -> Mana {
@@ -167,7 +167,7 @@ impl Game {
         let event = rollback.events.get(replay.index)?;
         let source = event.source();
         let definition = match &event.kind {
-            ManaEventKind::Activated { item, .. } => item.source_card,
+            ManaEventKind::Activated { item, .. } => item.source?.card,
             _ => self.state.objects[source.card as usize].card,
         };
         Some(ManaRollbackView {
@@ -339,7 +339,7 @@ impl Game {
                 let StackKind::ActivatedAbility { ability } = item.kind else {
                     return false;
                 };
-                let definition = item.source_card.activation(ability);
+                let definition = item.source.expect("mana activation has source").card.activation(ability);
                 let cost = definition.cost;
                 if self.state.players[event.actor.index()].life < i128::from(cost.life)
                     && cost.life > 0

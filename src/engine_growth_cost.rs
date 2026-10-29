@@ -97,7 +97,7 @@ impl Game {
         let giver = self.state.objects[grantor.card as usize].card;
         let actor = self.state.objects[source.card as usize].controller;
         let mut item = self.activation_item(actor, source.card, ability);
-        item.source_card = giver;
+        item.set_source_definition(giver);
         item.source_ability_origin = self.copied_grant_origin(grantor);
         item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
             grantor,
@@ -118,9 +118,10 @@ impl Game {
         keywords: Keywords,
         ability: Option<u16>,
     ) {
-        if !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
-            || !self.has_subtype(item.card, required)
+        let Some(source) = item.source else { return; };
+        if !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
+            || !self.has_subtype(source.id, required)
         {
             return;
         }
@@ -142,7 +143,7 @@ impl Game {
                 .permanent = true;
         }
         if keywords != Keywords::NONE {
-            self.grant_keyword_effects(&[item.card], item.object, keywords);
+            self.grant_keyword_effects(&[source.id], source.object, keywords);
             self.state
                 .roles
                 .as_mut()
@@ -158,9 +159,9 @@ impl Game {
                 .temporary_abilities
                 .get_or_insert_with(|| Box::new(Vec::new()))
                 .push(TemporaryAbilityView {
-                    recipient: item.object,
-                    grantor: item.object,
-                    granting_card: item.source_card,
+                    recipient: source.object,
+                    grantor: source.object,
+                    granting_card: source.card,
                     ability,
                     grantor_controller: item.controller,
                     expires_turn: self.state.turn,
@@ -257,7 +258,7 @@ impl Game {
         let giver = self.state.objects[grantor.card as usize].card;
         let actor = self.state.objects[recipient.card as usize].controller;
         let mut item = self.activation_item(actor, recipient.card, ability);
-        item.source_card = giver;
+        item.set_source_definition(giver);
         item.source_ability_origin = self.copied_grant_origin(grantor);
         item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
             grantor,

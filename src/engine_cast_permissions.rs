@@ -244,7 +244,7 @@ impl Game {
         if face == CastFace::Normal {
             return;
         }
-        let physical = self.state.objects[item.card as usize].card;
+        let physical = self.state.objects[item.source.expect("cast spell has source").id as usize].card;
         let definition = match face {
             CastFace::Adventure => physical.adventure_spell(),
             CastFace::Omen => physical.omen_spell(),
@@ -255,12 +255,12 @@ impl Game {
         let cast = item.cast.as_mut().unwrap();
         cast.face = face;
         cast.physical_card = Some(physical);
-        item.source_card = definition;
+        item.set_source_definition(definition);
         item.source_keywords = definition.info().keywords;
-        item.source_facts.card = definition;
-        item.source_facts.colors = definition.colors();
-        item.source_facts.kinds = definition.kind_mask();
-        item.source_facts.power = 0;
+        item.source.as_mut().expect("spell source exists").facts.card = definition;
+        item.source.as_mut().expect("spell source exists").facts.colors = definition.colors();
+        item.source.as_mut().expect("spell source exists").facts.kinds = definition.kind_mask();
+        item.source.as_mut().expect("spell source exists").facts.power = 0;
     }
     pub(super) fn permitted_cast_available(
         &self,

@@ -52,7 +52,7 @@ fn choose(
             Action::Concede => -1000,
             Action::Pass
                 if o.stack.last().is_some_and(|s| {
-                    s.source_card.name() == RESCUE
+                    s.source().is_some_and(|source| source.card.name() == RESCUE)
                         && matches!(s.kind, StackKind::ActivatedAbility { .. })
                 }) =>
             {
@@ -76,7 +76,7 @@ fn choose(
                 let b = o.objects.iter().find(|b| b.id == *card).unwrap();
                 if preserve_token && b.card.name() != RESCUE
                     || b.card.name() == RESCUE
-                        && o.stack.iter().any(|s| s.source_card.name() == "Gold Pan")
+                        && o.stack.iter().any(|s| s.source().is_some_and(|source| source.card.name() == "Gold Pan"))
                 {
                     -100
                 } else if !used.contains(&(b.reference, *ability)) {
@@ -225,7 +225,7 @@ fn main() {
             let root = before
                 .stack
                 .last()
-                .filter(|s| NEW.contains(&s.source_card.name()) && s.kind != StackKind::Spell)
+                .filter(|s| s.source().is_some_and(|source| NEW.contains(&source.card.name())) && s.kind != StackKind::Spell)
                 .cloned();
             let saved = g.snapshot();
             let expected =
@@ -268,20 +268,20 @@ fn main() {
             if let Some(s) = cost
                 && let StackKind::ActivatedAbility { ability } = s.kind
             {
-                if s.source_card.name() == ZEI && ability == 1 {
+                if s.source().is_some_and(|source| source.card.name() == ZEI) && ability == 1 {
                     assert!(
                         after
                             .objects
                             .iter()
-                            .any(|b| b.id == s.card && b.zone == Zone::Graveyard)
+                            .any(|b| b.id == s.source().expect("example expects an object-backed packet").id && b.zone == Zone::Graveyard)
                     );
                 }
-                if s.source_card.name() == RESCUE {
+                if s.source().is_some_and(|source| source.card.name() == RESCUE) {
                     assert!(
                         after
                             .objects
                             .iter()
-                            .any(|b| b.reference == s.object && b.tapped)
+                            .any(|b| b.reference == s.source().expect("example expects an object-backed packet").object && b.tapped)
                     );
                 }
             }
@@ -291,7 +291,7 @@ fn main() {
             {
                 if let Some(target) = s.targets.first().and_then(|t| t.object) {
                     if let Some(old) = before.objects.iter().find(|b| b.reference == target) {
-                        let zone = if s.source_card.name() == RESCUE {
+                        let zone = if s.source().is_some_and(|source| source.card.name() == RESCUE) {
                             Zone::Battlefield
                         } else {
                             Zone::Graveyard
@@ -301,7 +301,7 @@ fn main() {
                                 assert!(matches!(old.card.info().type_line, "Instant" | "Sorcery"));
                                 recovered_types.insert(old.card.info().type_line);
                             } else {
-                                assert_ne!(old.reference, s.object);
+                                assert_ne!(old.reference, s.source().expect("example expects an object-backed packet").object);
                             }
                             if old.card.is_token() {
                                 assert!(!after.objects.iter().any(|b| b.id == target.card));
@@ -323,10 +323,10 @@ fn main() {
                                 }
                             }
                             recovery_checks += 1;
-                            recovered.insert(s.source_card.name());
+                            recovered.insert(s.source().expect("example expects an object-backed packet").card.name());
                         }
                     }
-                } else if s.source_card.name() == ZEI {
+                } else if s.source().is_some_and(|source| source.card.name() == ZEI) {
                     let p = s.controller.index();
                     assert_eq!(
                         after.players[p].cards_drawn_this_turn,
@@ -334,16 +334,16 @@ fn main() {
                             + u64::from(before.players[p].library_count > 0)
                     );
                     loot_checks += 1;
-                } else if s.source_card.name() == DOWSER
+                } else if s.source().is_some_and(|source| source.card.name() == DOWSER)
                     && let Some(b) = after
                         .objects
                         .iter()
-                        .find(|b| b.reference == s.object && b.zone == Zone::Battlefield)
+                        .find(|b| b.reference == s.source().expect("example expects an object-backed packet").object && b.zone == Zone::Battlefield)
                 {
                     let old = before
                         .objects
                         .iter()
-                        .find(|b| b.reference == s.object)
+                        .find(|b| b.reference == s.source().expect("example expects an object-backed packet").object)
                         .unwrap();
                     assert_eq!(b.power, old.power + 1);
                     assert_eq!(b.toughness, old.toughness + 1);
