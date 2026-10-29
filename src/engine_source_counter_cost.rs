@@ -4,7 +4,7 @@ impl SpellView {
     pub(super) fn source_counter_cost(&self) -> Option<CounterKind> {
         match self.kind {
             StackKind::ActivatedAbility { ability } => {
-                self.source_card.activation(ability).source_counter_cost()
+                self.source?.card.activation(ability).source_counter_cost()
             }
             _ => None,
         }
@@ -19,17 +19,18 @@ impl Game {
         }
         let a = self.state.announcing.as_ref()?;
         let kind = a.item.source_counter_cost()?;
-        let object = self.state.objects.get(a.item.object.card as usize)?;
+        let source = a.item.source?;
+        let object = self.state.objects.get(source.object.card as usize)?;
         if object.zone != Zone::Battlefield
-            || self.object_ref(a.item.card) != a.item.object
+            || self.object_ref(source.id) != source.object
             || object.controller != a.item.controller
         {
             return None;
         }
         Some(SourceCounterChoiceView {
-            source: a.item.object,
+            source: source.object,
             kind,
-            maximum: self.counter_count(a.item.card, kind),
+            maximum: self.counter_count(source.id, kind),
         })
     }
     pub(super) fn choose_source_counter_amount(&mut self, amount: u64) {

@@ -83,7 +83,7 @@ impl Game {
         }
         let source = self.object_ref(id);
         let pending = |item: &SpellView| {
-            item.object == source
+            item.source.is_some_and(|identity| identity.object == source)
                 && !matches!(
                     item.kind,
                     StackKind::Spell | StackKind::ActivatedAbility { .. }
@@ -108,16 +108,17 @@ impl Game {
                 .is_some_and(|r| pending(&r.item))
     }
     pub(super) fn resolve_siege_defeat(&mut self, item: &SpellView) -> bool {
-        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+        let Some(source) = item.source else { return false; };
+        if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return false;
         }
-        let token = self.state.objects[item.card as usize].is_token();
-        let event = self.move_object(item.card, Zone::Exile);
+        let token = self.state.objects[source.id as usize].is_token();
+        let event = self.move_object(source.id, Zone::Exile);
         if token
             || !event.moved
             || event.destination != Zone::Exile
-            || self.object_ref(item.card) != event.after
-            || self.state.objects[item.card as usize]
+            || self.object_ref(source.id) != event.after
+            || self.state.objects[source.id as usize]
                 .card
                 .back_face()
                 .is_none()
