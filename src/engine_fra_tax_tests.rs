@@ -341,3 +341,29 @@ fn thalia_tax_applies_to_flashback() {
         assert_eq!(game.state.players[actor.index()].mana, [0; 6]);
     }
 }
+
+#[test]
+fn thalia_tax_uses_the_adventure_face_not_the_creature_front() {
+    for actor in [Player::P0, Player::P1] {
+        let mut game = scenario(actor);
+        put(
+            &mut game,
+            actor.other(),
+            "Thalia, the Survivor",
+            Zone::Battlefield,
+        );
+        let spell = put(
+            &mut game,
+            actor,
+            "Great Ugly-Looking Goblin // Clap! Snap!",
+            Zone::Hand,
+        );
+        game.state.players[actor.index()].mana = [0, 0, 1, 0, 0, 1];
+        reject(&mut game, Action::AnnounceAdventure { card: spell });
+        game.state.players[actor.index()].mana[5] = 2;
+        act(&mut game, Action::AnnounceAdventure { card: spell });
+        pay(&mut game);
+        assert_eq!(game.object_view(spell).zone, Zone::Stack);
+        assert_eq!(game.state.players[actor.index()].mana, [0; 6]);
+    }
+}
