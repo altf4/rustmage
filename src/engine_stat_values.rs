@@ -159,6 +159,18 @@ impl Game {
                     })
                     .count() as i128
             }
+            StatValue::ControllerDomain => {
+                let mut mask = 0u8;
+                for (id, object) in objects() {
+                    if object.zone != Zone::Battlefield || object.controller != owner
+                        || kinds(id, object) & 2 == 0 { continue; }
+                    let types = subtypes(id);
+                    for (bit, name) in ["Plains", "Island", "Swamp", "Mountain", "Forest"].iter().enumerate() {
+                        if types.has(object.card, name) { mask |= 1 << bit; }
+                    }
+                }
+                i128::from(mask.count_ones())
+            }
             StatValue::ControllerHandSize => objects()
                 .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand)
                 .count() as i128,

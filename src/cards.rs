@@ -1077,6 +1077,8 @@ pub(crate) enum Instruction {
         next_turn: bool,
     },
     SearchDifferentNames(SearchSpec),
+    /// Distinct-name search capped by the triggering entry's chosen X.
+    SearchDifferentNamesChosenX(SearchSpec),
     RandomLinkedExileToBattlefield,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
@@ -2366,6 +2368,8 @@ pub(crate) enum StatValue {
     Not(&'static StatValue),
     CardsDrawnThisTurn,
     ControllerHandSize,
+    /// Number of distinct basic land types among lands the controller controls.
+    ControllerDomain,
     NonlandEntriesThisTurn,
     SourceAttacking,
     AttackingCreatures,

@@ -4254,12 +4254,16 @@ impl Game {
                 | Instruction::SearchTargetPlayer(spec)
                 | Instruction::SearchTargetPlayerMovedCount(spec)
                 | Instruction::SearchRequired(spec)
-                | Instruction::SearchDifferentNames(spec) => {
+                | Instruction::SearchDifferentNames(spec)
+                | Instruction::SearchDifferentNamesChosenX(spec) => {
                     let mut spec = spec;
                     if matches!(instruction, Instruction::SearchDamageReceived(_)) {
                         spec.maximum = u64::try_from(
                             item.damage_received.as_ref().expect("damage event").amount
                         ).unwrap_or(u64::MAX);
+                    }
+                    if matches!(instruction, Instruction::SearchDifferentNamesChosenX(_)) {
+                        spec.maximum = u64::from(item.x.unwrap_or(0));
                     }
                     if matches!(instruction, Instruction::SearchTargetPlayerMovedCount(_)) {
                         spec.maximum = resolution.moved_count.unwrap_or(0);
@@ -4301,7 +4305,7 @@ impl Game {
                             minimum,
                             different_names: matches!(
                                 instruction,
-                                Instruction::SearchDifferentNames(_)
+                                Instruction::SearchDifferentNames(_) | Instruction::SearchDifferentNamesChosenX(_)
                             ),
                             selected: Vec::new(),
                             battlefield: None,

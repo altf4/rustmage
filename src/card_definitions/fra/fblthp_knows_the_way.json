@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7e1aa33d1e87a08aa80e52d5c760ad377bbfc66a67d4f9815c5f8c7933cad893"
   },
-  "physical_metadata_sha256": "384ae3ed01fddeb0d55c8acc7d7c9ad8253e0067c3decd237d241307cf9934de"
+  "physical_metadata_sha256": "384ae3ed01fddeb0d55c8acc7d7c9ad8253e0067c3decd237d241307cf9934de",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FblthpKnowsTheWay.java",
+  "java_sha256": "2993daac6933859e50ccf3a9207fc0542eeae667d24766e004cf4f8049489c0c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/DomainValue.java",
+      "sha256": "672ff499a53807d016efec0d4b80c68aaa913f3b9388013fd170ff98e46c0d5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerSourceEffect.java",
+      "sha256": "07d7b0ba8fdb6f3e6eeb405c2768a37677e7fded311795af1425dc2bfdb9bbd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardWithDifferentNameInLibrary.java",
+      "sha256": "9b476ca557a122039f3b6e71a99683785f4ca8242e526d0f0434f827644ae9b0"
+    }
+  ],
+  "rules_tests": "src/engine_fra_fblthp_domain_tests.rs"
 }
