@@ -1619,6 +1619,8 @@ fn lute_spell_mana_does_not_fund_emrakul_hand_activation() {
         let mut g = setup(player);
         let lute = named(&mut g, player, "Resonating Lute", Zone::Battlefield);
         let source = named(&mut g, player, "Bear Cub", Zone::Hand);
+        let instant = named(&mut g, player, "Giant Growth", Zone::Hand);
+        named(&mut g, player, "Bear Cub", Zone::Battlefield);
         let emrakul = Card::test_index(1324);
         g.state.objects[source as usize].card = emrakul;
         let names = [
@@ -1650,8 +1652,10 @@ fn lute_spell_mana_does_not_fund_emrakul_hand_activation() {
             counter_payment: Counters::default(),
         };
         let world = FundingState::from_game(&g, &goal);
-        assert!(world.fixed_spell_only_activation_cannot_pay(&goal));
-        assert!(!g.legal_actions().contains(&announcement));
+        assert!(world.fixed_ineligible_spell_mana_cannot_pay(&goal));
+        let legal = g.legal_actions();
+        assert!(!legal.contains(&announcement));
+        assert!(legal.contains(&Action::AnnounceCast { card: instant }));
         let before = g.snapshot();
         assert!(!g.can_fund(goal.clone()));
         assert_eq!(g.snapshot(), before);
@@ -1672,7 +1676,7 @@ fn lute_spell_mana_does_not_fund_emrakul_hand_activation() {
         assert!(!g.can_fund(goal.clone()));
         let forest = named(&mut g, player, "Forest", Zone::Battlefield);
         let world = FundingState::from_game(&g, &goal);
-        assert!(!world.fixed_spell_only_activation_cannot_pay(&goal));
+        assert!(!world.fixed_ineligible_spell_mana_cannot_pay(&goal));
         assert!(g.can_fund(goal));
         assert!(g.legal_actions().contains(&announcement));
         assert!(!g.object_view(forest).tapped);

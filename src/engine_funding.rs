@@ -2269,15 +2269,17 @@ impl<'g> FundingState<'g> {
         upper
     }
     /// A fixed battlefield whose only potential mana grants are spell-only
-    /// cannot improve an activated ability payment by tapping those sources.
+    /// and ineligible for this payment cannot improve it by tapping those sources.
     /// This deliberately conservative shortcut falls back to the normal search
     /// whenever an ability, type, controller, copy, or tap-triggered mana may
     /// change the available sources during payment.
-    fn fixed_spell_only_activation_cannot_pay(&self, goal: &FundingGoal) -> bool {
+    fn fixed_ineligible_spell_mana_cannot_pay(&self, goal: &FundingGoal) -> bool {
         use crate::cards::{ManaRestriction, StaticAbilityFragment};
-        if !matches!(self.purpose, mana_lots::Purpose::Activation(_))
-            || goal.source.is_none()
-            || goal.reserve.is_some()
+        let purpose = self.payment_purpose(goal);
+        if !matches!(
+            purpose,
+            mana_lots::Purpose::Activation(_) | mana_lots::Purpose::Spell(_)
+        ) || goal.reserve.is_some()
             || self.continuation.is_some()
             || self.cast_costs.is_some()
             || self.entry_projection.is_some()
@@ -2333,7 +2335,8 @@ impl<'g> FundingState<'g> {
                     } if matches!(quality.restriction,
                         ManaRestriction::ArtifactSpell | ManaRestriction::InstantSorcery
                         | ManaRestriction::NoncreatureSpell | ManaRestriction::PlaneswalkerSpell
-                        | ManaRestriction::SpellSubtype(_)))
+                        | ManaRestriction::SpellSubtype(_))
+                        && !mana_lots::Quality::capture(self, id as CardId, **quality).eligible(purpose))
                 })
             }) {
                 return false;
@@ -2346,7 +2349,6 @@ impl<'g> FundingState<'g> {
                 return false;
             }
         }
-        let purpose = self.payment_purpose(goal);
         let adjusted = cast_origins::payment_goal(self, goal, purpose);
         !payable(
             mana_lots::available(self.mana, &self.lots, purpose),
@@ -2355,7 +2357,7 @@ impl<'g> FundingState<'g> {
         )
     }
     fn optimistic(&self, goal: &FundingGoal) -> bool {
-        if self.fixed_spell_only_activation_cannot_pay(goal) {
+        if self.fixed_ineligible_spell_mana_cannot_pay(goal) {
             return false;
         }
         // Immediate linked returns may introduce new sources, untap them, or
@@ -2660,23 +2662,13 @@ impl<'g> FundingState<'g> {
             return false;
         }
         let mut moves = self.moves(goal);
-        if matches!(purpose, mana_lots::Purpose::Activation(_)) {
-            // Spell-only mana cannot pay this activation or any mana ability.
-            // Try usable sources first, but retain every move: tapping an
-            // otherwise unusable source can still change the projected world.
-            moves.sort_by_key(|step| {
-                step.quality.is_some_and(|quality| {
-                    matches!(
-                        quality.restriction,
-                        mana_lots::ManaRestrictionView::ArtifactSpell
-                            | mana_lots::ManaRestrictionView::InstantSorcery
-                            | mana_lots::ManaRestrictionView::NoncreatureSpell
-                            | mana_lots::ManaRestrictionView::PlaneswalkerSpell
-                            | mana_lots::ManaRestrictionView::SpellSubtype(_)
-                    )
-                })
-            });
-        }
+        // Prefer mana eligible for the final payment, but retain every move:
+        // an ineligible lot can still fund an intermediate ability or change
+        // the projected world. Stable sorting preserves order within groups.
+        moves.sort_by_key(|step| {
+            step.quality
+                .is_some_and(|quality| !quality.eligible(purpose))
+        });
         for step in moves {
             if self.visit_applied(&step, &mut |next| {
                 next.reachable_with_evidence(goal, evidence, visited)
