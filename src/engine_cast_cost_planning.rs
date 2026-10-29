@@ -264,6 +264,12 @@ impl FundingState<'_> {
         requested: Zone,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        // Simultaneous departures all use characteristics from the same
+        // pre-event world, even when one leaving object is a type provider.
+        let before_facts: Vec<_> = objects.iter().map(|r| {
+            let object = self.object(r.card);
+            (object.zone, object.controller, object.owner, CharacteristicWorld::kinds(self, r.card))
+        }).collect();
         let destinations = objects
             .iter()
             .map(|r| {
@@ -325,7 +331,7 @@ impl FundingState<'_> {
             initial.remember_payment_departure(object.card);
         }
         let mut worlds = vec![initial];
-        for (r, choices) in objects.iter().zip(destinations) {
+        for ((r, choices), &(before_zone, controller, owner, kinds)) in objects.iter().zip(destinations).zip(&before_facts) {
             let mut next = Vec::new();
             for w in worlds {
                 for &zone in &choices {
@@ -344,12 +350,10 @@ impl FundingState<'_> {
                         .iter()
                         .position(|v| v.id == r.card)
                         .expect("cost resource retained");
-                    let before = &n.resources[i].object;
-                    if before.zone == Zone::Battlefield
+                    if before_zone == Zone::Battlefield
                         && zone == Zone::Graveyard
-                        && CharacteristicWorld::kinds(&n, r.card) & 1 != 0
+                        && kinds & 1 != 0
                     {
-                        let controller = before.controller;
                         n.controlled_creatures_died[controller.index()] = n
                             .controlled_creatures_died[controller.index()]
                         .checked_add(1)
@@ -359,8 +363,8 @@ impl FundingState<'_> {
                             .checked_add(1)
                             .capacity("virtual death history exhausted");
                     }
-                    if before.zone == Zone::Graveyard {
-                        n.graveyard_left[before.owner.index()] = true;
+                    if before_zone == Zone::Graveyard {
+                        n.graveyard_left[owner.index()] = true;
                     }
                     let face_down_physical = n.projected_face_down_physical(*r);
                     n.resources[i].object.zone = zone;

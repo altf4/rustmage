@@ -477,7 +477,7 @@ fn activation_gain_upper<'a>(
     }
     // A true repeatable positive engine keeps an unbounded upper bound. Exact
     // reachability still determines whether its seed cost/colors are attainable.
-    let mut uses = if cost.tap || cost.sacrifice || ability.once_per_turn || ability.exhaust {
+    let mut uses = if cost.tap || ability.once_per_turn || ability.exhaust {
         1
     } else {
         u128::MAX
@@ -2064,7 +2064,7 @@ impl<'g> FundingState<'g> {
                     continue;
                 }
                 let mut uses =
-                    if cost.tap || cost.sacrifice || ability.once_per_turn || ability.exhaust {
+                    if cost.tap || ability.once_per_turn || ability.exhaust {
                         1
                     } else {
                         u128::MAX
@@ -2087,17 +2087,6 @@ impl<'g> FundingState<'g> {
         upper
     }
     fn optimistic(&self, goal: &FundingGoal) -> bool {
-        // A prevented sacrifice can leave a non-tapping mana source available
-        // again. The ordinary single-use sacrifice upper bound is then unsafe,
-        // even if the provider is temporarily blanked during this branch.
-        if self.game.state.objects.iter().any(|object| zone_replacements::card_provides_prevention(object.card))
-            || self.resources.iter().any(|resource| zone_replacements::card_provides_prevention(resource.object.card))
-            || {
-                #[cfg(test)] { zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get().is_some())
-                    || zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get().is_some()) }
-                #[cfg(not(test))] { false }
-            }
-        { return true; }
         // Immediate linked returns may introduce new sources, untap them, or
         // restore an ability provider. Current-resource bounds are inapplicable.
         if !self.game.state.exile_links.is_empty() {
@@ -2211,7 +2200,7 @@ impl<'g> FundingState<'g> {
                 }
                 let cost = ability.cost;
                 let mut uses =
-                    if cost.tap || cost.sacrifice || ability.once_per_turn || ability.exhaust {
+                    if cost.tap || ability.once_per_turn || ability.exhaust {
                         1
                     } else {
                         u64::MAX

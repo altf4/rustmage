@@ -928,3 +928,22 @@ fn prevented_nontapping_sacrifice_mana_can_fund_repeatedly() {
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn prevented_repeatable_black_mana_cannot_fund_missing_blue() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::new();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(id))));
+        let goal = FundingGoal { actor: player, required: [0, 1, 0, 0, 0, 0], generic: 0, reserve: None, source: None };
+        assert!(!g.can_fund(goal));
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
