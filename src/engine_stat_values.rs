@@ -104,6 +104,9 @@ impl Game {
         I: Iterator<Item = (CardId, &'a Object)>,
     {
         match value {
+            StatValue::SourceHasNotDealtCombatDamage => objects()
+                .find(|(id, object)| *id == source.card && object.generation == source.generation)
+                .map_or(0, |(_, object)| i128::from(!object.dealt_combat_damage_this_incarnation)),
             StatValue::Fixed(n) => i128::from(n),
             StatValue::HasEnduringStory => i128::from(enduring_story),
             StatValue::SourceCounters(kind) => objects()

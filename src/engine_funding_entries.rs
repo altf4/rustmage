@@ -1195,6 +1195,7 @@ impl FundingState<'_> {
             o.damage = 0;
             o.damaged_this_turn = false;
             o.dealt_damage_this_turn = false;
+            o.dealt_combat_damage_this_incarnation = false;
             o.deathtouch_since_sba = false;
             o.attached_to = m.attachment;
             o.tapped = m.tapped;

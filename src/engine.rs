@@ -883,6 +883,8 @@ struct Object {
     damage: i128,
     damaged_this_turn: bool,
     dealt_damage_this_turn: bool,
+    // History belongs to this exact zone incarnation and persists across turns.
+    dealt_combat_damage_this_incarnation: bool,
     deathtouch_since_sba: bool,
     growth: Stats,
     gained_keywords: Keywords,
@@ -2208,6 +2210,7 @@ pub struct ObjectView {
     pub damage: i128,
     pub damaged_this_turn: bool,
     pub dealt_damage_this_turn: bool,
+    pub dealt_combat_damage_this_incarnation: bool,
     pub counters: Counters,
     pub used_abilities: u64,
     /// Loyalty use is shared by all of this exact permanent's abilities.
@@ -2875,6 +2878,7 @@ impl Game {
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
+                    dealt_combat_damage_this_incarnation: false,
                     deathtouch_since_sba: false,
                     growth: Stats::default(),
                     gained_keywords: Keywords::NONE,
@@ -7299,6 +7303,7 @@ impl Game {
         obj.damage = 0;
         obj.damaged_this_turn = false;
         obj.dealt_damage_this_turn = false;
+        obj.dealt_combat_damage_this_incarnation = false;
         obj.deathtouch_since_sba = false;
         obj.growth = Stats::default();
         obj.gained_keywords = Keywords::NONE;
@@ -7893,6 +7898,9 @@ impl Game {
                 && source.generation == event.source.reference.generation
             {
                 source.dealt_damage_this_turn = true;
+                if event.combat {
+                    source.dealt_combat_damage_this_incarnation = true;
+                }
             }
             if event.source.keywords.contains(Keywords::LIFELINK) {
                 // One source damaging multiple objects simultaneously causes a

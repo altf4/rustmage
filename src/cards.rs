@@ -2371,6 +2371,8 @@ pub(crate) enum SourceCharacteristicFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    /// The source has not dealt combat damage in its current incarnation.
+    SourceHasNotDealtCombatDamage,
     ControlledCreatureDiedThisTurn,
     CardLeftGraveyardThisTurn,
     Fixed(u16),

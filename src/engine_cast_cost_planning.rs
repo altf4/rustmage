@@ -366,6 +366,7 @@ impl FundingState<'_> {
                     n.resources[i].object.damage = 0;
                     n.resources[i].object.damaged_this_turn = false;
                     n.resources[i].object.dealt_damage_this_turn = false;
+                    n.resources[i].object.dealt_combat_damage_this_incarnation = false;
                     n.resources[i].object.deathtouch_since_sba = false;
                     n.resources[i].object.gained_keywords = Keywords::NONE;
                     n.resources[i].object.used_abilities = 0;

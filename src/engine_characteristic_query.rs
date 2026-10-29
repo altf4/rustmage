@@ -1056,6 +1056,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             damage: obj.damage,
             damaged_this_turn: obj.damaged_this_turn,
             dealt_damage_this_turn: obj.dealt_damage_this_turn,
+            dealt_combat_damage_this_incarnation: obj.dealt_combat_damage_this_incarnation,
             counters: self.counter_amounts(id).to_owned(),
             used_abilities: obj.used_abilities,
             loyalty_activated_this_turn: obj.loyalty_activated_this_turn,

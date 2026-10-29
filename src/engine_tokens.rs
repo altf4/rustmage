@@ -181,6 +181,7 @@ impl Game {
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
+                    dealt_combat_damage_this_incarnation: false,
                     deathtouch_since_sba: false,
                     growth: Stats::default(),
                     gained_keywords: Keywords::NONE,
@@ -276,6 +277,7 @@ impl Game {
         object.damage = 0;
         object.damaged_this_turn = false;
         object.dealt_damage_this_turn = false;
+        object.dealt_combat_damage_this_incarnation = false;
         object.deathtouch_since_sba = false;
         object.growth = Stats::default();
         object.gained_keywords = Keywords::NONE;

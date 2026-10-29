@@ -63,6 +63,7 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
         damage: 0,
         damaged_this_turn: false,
         dealt_damage_this_turn: false,
+        dealt_combat_damage_this_incarnation: false,
         deathtouch_since_sba: false,
         growth: Stats::default(),
         gained_keywords: Keywords::NONE,
