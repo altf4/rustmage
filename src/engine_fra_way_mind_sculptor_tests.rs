@@ -327,3 +327,63 @@ fn composite_loyalty_mana_cannot_consume_selected_external_counter() {
         assert!(!g.object_view(forest).tapped);
     }
 }
+
+#[test]
+fn composite_two_counter_cost_rechecks_incarnation_control_and_nested_mana() {
+    let _fixture = crate::cards::composite_loyalty_fixture::Guard::with_mana_two_counters();
+    for actor in [Player::P0, Player::P1] {
+        let mut g = scenario(actor);
+        let way = put(&mut g, actor, "Way of the Mind Sculptor", Zone::Battlefield);
+        let walker = mind_jace(&mut g, actor);
+        g.state.objects[walker as usize].counters.loyalty = 1;
+        g.state.objects[walker as usize].counters.plus_one = 1;
+        let animation = g.activation_item(actor, walker, 0);
+        g.animate_source(&animation, AnimationSpec { artifact: false, creature_types: AnimationCreatureTypes::Unchanged,
+            base: Some((3, 3)), keywords: Keywords::NONE, duration: AnimationDuration::EndOfTurn });
+        let first = put(&mut g, actor, "Goblin Piker", Zone::Battlefield);
+        let second = put(&mut g, actor, "Bear Cub", Zone::Battlefield);
+        let stale = put(&mut g, actor, "Bear Cub", Zone::Battlefield);
+        g.add_counter(first, CounterKind::PlusOne, 1);
+        g.add_counter(second, CounterKind::Loyalty, 1);
+        g.add_counter(stale, CounterKind::PlusOne, 1);
+        let old_stale = g.object_ref(stale);
+        g.move_object(stale, Zone::Exile);
+        g.move_object(stale, Zone::Battlefield);
+        g.add_counter(stale, CounterKind::PlusOne, 1);
+        let current_stale = g.object_ref(stale);
+        let bolg = put(&mut g, actor, "Bolg's Company", Zone::Battlefield);
+        let forest = put(&mut g, actor, "Forest", Zone::Battlefield);
+        g.state.players[actor.index()].mana = [0; 6];
+        let action = Action::AnnounceActivate { card: walker, ability: 0,
+            counter_payment: Counters::of(CounterKind::PlusOne, 1) };
+        act(&mut g, action);
+        let first_ref = g.object_ref(first);
+        let second_ref = g.object_ref(second);
+        act(&mut g, Action::ChooseCreatureCounterCost { object: first_ref, counter: CounterKind::PlusOne });
+        let saved = g.snapshot();
+        reject(&mut g, Action::ChooseCreatureCounterCost { object: first_ref, counter: CounterKind::PlusOne });
+        reject(&mut g, Action::ChooseCreatureCounterCost { object: old_stale, counter: CounterKind::PlusOne });
+        g.change_controller(current_stale, actor.other());
+        reject(&mut g, Action::ChooseCreatureCounterCost { object: current_stale, counter: CounterKind::PlusOne });
+        g.restore(&saved).unwrap();
+        act(&mut g, Action::ChooseCreatureCounterCost { object: second_ref, counter: CounterKind::Loyalty });
+        // A direct fixture mutation emulates an invalidated selected donor; the
+        // owned checkpoint restores the legal pending transaction afterwards.
+        let selected = g.snapshot();
+        g.change_controller(first_ref, actor.other());
+        assert!(!g.legal_actions().iter().any(|action| matches!(action, Action::PayCosts { .. })));
+        g.restore(&selected).unwrap();
+        assert!(!g.legal_actions().iter().any(|action| matches!(action,
+            Action::AnnounceMana { card, .. } | Action::ActivateMana { card, .. } if *card == bolg)));
+        act(&mut g, Action::TapMana { card: forest });
+        let funded = g.snapshot();
+        for _ in 0..2 {
+            pay(&mut g);
+            assert_eq!(g.counter_count(first, CounterKind::PlusOne), 0);
+            assert_eq!(g.counter_count(second, CounterKind::Loyalty), 0);
+            assert!(g.state.stack.iter().chain(g.state.pending_triggers.iter()).chain(g.state.ordering_triggers.iter())
+                .any(|packet| packet.card == way && matches!(packet.kind, StackKind::TriggeredAbility { .. })));
+            g.restore(&funded).unwrap();
+        }
+    }
+}

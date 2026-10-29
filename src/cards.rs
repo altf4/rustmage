@@ -5075,19 +5075,20 @@ pub(crate) mod composite_loyalty_fixture {
     impl Guard {
         pub(crate) fn new() -> Self { Self::set(1) }
         pub(crate) fn with_mana() -> Self { Self::set(2) }
+        pub(crate) fn with_mana_two_counters() -> Self { Self::set(3) }
         fn set(mode: u8) -> Self { MODE.with(|value| { assert_eq!(value.replace(mode), 0); }); Self }
     }
     impl Drop for Guard { fn drop(&mut self) { MODE.with(|value| value.set(0)); } }
     pub(super) fn enabled() -> bool { MODE.with(|value| value.get() != 0) }
     pub(super) fn abilities() -> &'static [ActivatedAbility] {
-        if MODE.with(|value| value.get()) == 2 { MANA_ABILITIES } else { ABILITIES }
+        match MODE.with(|value| value.get()) { 2 => MANA_ABILITIES, 3 => TWO_COUNTER_ABILITIES, _ => ABILITIES }
     }
-    const fn ability(mana_component: bool) -> ActivatedAbility {
+    const fn ability(mana_component: bool, amount: u16) -> ActivatedAbility {
         ActivatedAbility {
             exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
             cycling: false, once_per_turn: false, sorcery: true,
             cost: ActivationCost { colored: [0; 6], generic: if mana_component { 1 } else { 0 }, alternatives: &[],
-                additional: Some(AdditionalCost { kind: EffectChoiceKind::RemoveCreatureCounters(1),
+                additional: Some(AdditionalCost { kind: EffectChoiceKind::RemoveCreatureCounters(amount),
                     filter: SacrificeFilter { keywords: Keywords::NONE, source_only: false, kinds: 1,
                         nonland: false, other: false, tokens: None, artifact_enchantment_or_token: false,
                         subtype: None } }),
@@ -5096,6 +5097,7 @@ pub(crate) mod composite_loyalty_fixture {
             targets: TargetPlan::NONE, program: &[],
         }
     }
-    const ABILITIES: &[ActivatedAbility] = &[ability(false)];
-    const MANA_ABILITIES: &[ActivatedAbility] = &[ability(true)];
+    const ABILITIES: &[ActivatedAbility] = &[ability(false, 1)];
+    const MANA_ABILITIES: &[ActivatedAbility] = &[ability(true, 1)];
+    const TWO_COUNTER_ABILITIES: &[ActivatedAbility] = &[ability(true, 2)];
 }
