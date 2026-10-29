@@ -212,6 +212,7 @@ impl Game {
     }
 
     pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return; };
         let objects = item
             .targets
             .iter()
@@ -219,7 +220,7 @@ impl Game {
             .filter(|&b| self.same_target_object(b))
             .filter_map(|b| b.object)
             .collect::<Vec<_>>();
-        self.exile_objects_until_source_leaves(item.object, &objects);
+        self.exile_objects_until_source_leaves(source.object, &objects);
     }
     /// A non-target hand choice and an ordinary bound target share the same exact
     /// movement/link transaction. Only an actual arrival in exile creates a link.
@@ -435,7 +436,7 @@ impl Game {
         cast.spend_any_mana = false;
         cast.exile_on_graveyard = false;
         cast.stash_origin = false;
-        if item.source_card.x_symbols() > 0 {
+        if item.source.expect("cast spell has source").card.x_symbols() > 0 {
             item.x = Some(0);
         }
     }
@@ -547,6 +548,7 @@ impl Game {
         amount: u16,
         subtype: &'static str,
     ) {
+        let Some(source) = item.source else { return; };
         let ids = top_library_cards(
             &self.state.players[item.controller.index()].library,
             u128::from(amount),
@@ -562,7 +564,7 @@ impl Game {
                 .linked_choices
                 .get_or_insert_default()
                 .hidden
-                .push((item.object, event.after, 1 << item.controller.index()));
+                .push((source.object, event.after, 1 << item.controller.index()));
             let at = self
                 .state
                 .exile_permissions
