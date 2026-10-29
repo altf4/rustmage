@@ -1,11 +1,20 @@
 # Reality Fracture: outside-game card selection
 
-This is an unimplemented dependency, not evidence of card support. Extrapolate
-the Impossible is present in the pinned Standard Oracle inventory, but the
-pinned XMage inventory lists no implementation for it. The current engine
-configuration accepts main decks only; its `Zone::Outside` is also used as an
-internal staging and recycling zone for tokens and spell copies. Neither that
-zone nor the global catalogue is a player's sideboard.
+> **Current status (October 29, 2026):** The design notes below describe historical
+> stages and their then-current gates. The outside-entry scheduler is integrated,
+> and Extrapolate the Impossible is admitted as a candidate after the user
+> authorized Oracle and official rules in place of its unavailable XMage class.
+> Its provenance records that exception. Generic outside-to-exile observer
+> semantics remain unresolved for synthetic replacement effects; no applicable
+> production provider has been identified. Admission does not establish full-set
+> acceptance or close the final review gates.
+
+At the original design checkpoint, Extrapolate the Impossible was an
+unimplemented dependency. It appears in the pinned Standard Oracle inventory,
+but the pinned XMage inventory lists no implementation. The engine then accepted
+main decks only; its `Zone::Outside` is also used as an internal staging and
+recycling zone for tokens and spell copies. Neither that zone nor the global
+catalogue is a player's sideboard.
 
 Wizards' [Reality Fracture release notes](https://www.magic.wizards.com/en/news/feature/reality-fracture-release-notes)
 state that the spell may reveal exactly two owned cards with different names;
