@@ -520,6 +520,17 @@ impl Game {
             if casting_prohibited {
                 continue;
             }
+            // A paid permission permits a card's alternative disguise cost.
+            // Disguise is a creature spell with mana value zero regardless of
+            // the printed face; free-cast permissions cannot pay this cost.
+            if free.paid.is_some_and(|paid| paid.kinds == u8::MAX || paid.kinds & 1 != 0)
+                && !free.siege_transformed
+                && free.maximum_mana_value.is_none_or(|maximum| maximum > 0)
+                && self.disguise_mana_fundable(player, object.card)
+                && emit(Action::AnnounceDisguise { card: object.card })
+            {
+                return true;
+            }
             for face in [
                 CastFace::Normal,
                 CastFace::Adventure,

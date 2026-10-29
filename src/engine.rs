@@ -5676,8 +5676,18 @@ impl Game {
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceDisguise { card } | Action::AnnounceDisguiseGraveyard { card, .. } => {
+                let during_resolution = matches!(self.state.pending, Pending::ResolutionCasts { .. });
+                if during_resolution {
+                    let object = self.object_ref(card);
+                    self.state.resolution_free_casts.as_mut().unwrap().remaining.retain(|r| *r != object);
+                    self.reveal_hideaway_object(object);
+                }
                 let mut item = self.cast_disguised_item(actor, card);
                 item.cast.as_mut().unwrap().method = CastMethod::Disguise;
+                if during_resolution {
+                    let free = self.state.resolution_free_casts.as_mut().unwrap();
+                    if free.casts_remaining.is_some() { free.pending_cast = Some(item.id); }
+                }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceWarp { card } => {

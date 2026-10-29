@@ -159,3 +159,95 @@ fn torch_copied_ability_resolves_separately_for_its_controller() {
         assert_eq!(g.state.players[player.other().index()].life, other_life - 2);
     }
 }
+
+#[test]
+fn torch_can_cast_exiled_disguise_for_three_and_remembers_commit() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let chandra = put(&mut g, player, "Chandra, Torch of Defiance", Zone::Battlefield);
+        g.state.objects[chandra as usize].counters.loyalty = 4;
+        // Bubble Smuggler is the engine's pinned test-only disguise fixture.
+        let creature = put(&mut g, player, "Bubble Smuggler", Zone::Library);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+        let life = g.state.players[player.other().index()].life;
+        torch_activate(&mut g, chandra, 0);
+        g.resolve_top();
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::AnnounceDisguise { card: creature });
+            pay(&mut g);
+            assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+            assert_eq!(g.state.resolution_free_casts.as_ref().unwrap().casts_remaining, Some(0));
+            assert_eq!(g.state.stack.last().unwrap().cast.unwrap().method, CastMethod::Disguise);
+            act(&mut g, Action::FinishResolutionCasts);
+            assert_eq!(g.state.players[player.other().index()].life, life);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn torch_countered_committed_cast_still_avoids_damage() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let chandra = put(&mut g, player, "Chandra, Torch of Defiance", Zone::Battlefield);
+        g.state.objects[chandra as usize].counters.loyalty = 4;
+        let bear = put(&mut g, player, "Bear Cub", Zone::Library);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 1, 1];
+        let life = g.state.players[player.other().index()].life;
+        torch_activate(&mut g, chandra, 0);
+        g.resolve_top();
+        let object = g.object_ref(bear);
+        act(&mut g, Action::CastExiledDuringResolution { object, face: CastFace::Normal });
+        pay(&mut g);
+        let stack_id = g.state.stack.last().unwrap().id;
+        act(&mut g, Action::FinishResolutionCasts);
+        assert!(g.counter_stack_item(stack_id, false));
+        assert_eq!(g.state.players[player.other().index()].life, life);
+    }
+}
+
+#[test]
+fn torch_foreign_entry_choice_can_reverse_unfundable_cast_before_declining() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let silver = put(&mut g, player, "Silverquill, the Disputant", Zone::Battlefield);
+        g.state.objects[silver as usize].growth.power = -1;
+        let enemy = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let aura = put(&mut g, player.other(), "Witness Protection", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(enemy));
+        let prison = put(&mut g, player, "Banishing Light", Zone::Hand);
+        super::super::big_helpers::cast(&mut g, prison, None, &[]);
+        for _ in 0..40 {
+            if g.state.pending != Pending::Priority { break; }
+            act(&mut g, Action::Pass);
+        }
+        act(&mut g, Action::ChooseTarget { target: Target::Card(aura) });
+        super::super::big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(aura).zone, Zone::Exile);
+        let chandra = put(&mut g, player, "Chandra, Torch of Defiance", Zone::Battlefield);
+        g.state.objects[chandra as usize].counters.loyalty = 4;
+        let spell = put(&mut g, player, "Candy Grapple", Zone::Library);
+        let life = g.state.players[player.other().index()].life;
+        torch_activate(&mut g, chandra, 0);
+        g.resolve_top();
+        let before = g.snapshot();
+        let object = g.object_ref(spell);
+        act(&mut g, Action::CastExiledDuringResolution { object, face: CastFace::Normal });
+        let sacrifice = g.object_ref(prison);
+        act(&mut g, Action::ChooseBargain { sacrifice: Some(sacrifice) });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(enemy) });
+        pay(&mut g);
+        let clause = g.observe(player).cast_costs.unwrap().clauses.iter()
+            .position(|row| row.clause == CastCostClause::Additional && !row.paid).unwrap();
+        act(&mut g, Action::ChooseCastCost { clause: clause as u16 });
+        assert_eq!(g.actor(), Some(player.other()));
+        let silver_object = g.object_ref(silver);
+        act(&mut g, Action::ChooseAuraAttachment { object: silver_object });
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        act(&mut g, Action::FinishResolutionCasts);
+        assert_eq!(g.state.players[player.other().index()].life, life - 2);
+    }
+}
