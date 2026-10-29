@@ -94,11 +94,15 @@ fn previous_schema_projection_removes_battle_protector() {
 /// basic-land mana. Reject cases whose old wire representation cannot preserve
 /// the observed ability identity or land-subtype semantics.
 fn project_prior_behold_json(input: &str) -> Result<String, String> {
-    fn check(value: &serde_json::Value) -> Result<(), String> {
+    project_prior_behold_candidate(input, false)
+}
+
+fn project_prior_behold_candidate(input: &str, compare_mana: bool) -> Result<String, String> {
+    fn check(value: &serde_json::Value, compare_mana: bool) -> Result<(), String> {
         match value {
             serde_json::Value::Array(items) => {
                 for item in items {
-                    check(item)?;
+                    check(item, compare_mana)?;
                 }
             }
             serde_json::Value::Object(map) => {
@@ -138,20 +142,21 @@ fn project_prior_behold_json(input: &str) -> Result<String, String> {
                     .get("kind")
                     .and_then(|v| v.as_str())
                     .is_some_and(|kind| {
-                        matches!(
-                            kind,
-                            "TapMana"
-                                | "TapGrantedMana"
-                                | "AnnounceMana"
-                                | "ActivateMana"
-                                | "AnnounceGraveyardBorrowedAbility"
-                                | "AnnounceGraveyardBorrowedMana"
-                                | "ActivateGraveyardBorrowedMana"
-                                | "AnnounceBorrowedAbility"
-                                | "AnnounceBorrowedMana"
-                                | "ActivateBorrowedMana"
-                                | "ChooseEntryBehold"
-                        )
+                        (!compare_mana
+                            && matches!(
+                                kind,
+                                "TapMana" | "TapGrantedMana" | "AnnounceMana" | "ActivateMana"
+                            ))
+                            || matches!(
+                                kind,
+                                "AnnounceGraveyardBorrowedAbility"
+                                    | "AnnounceGraveyardBorrowedMana"
+                                    | "ActivateGraveyardBorrowedMana"
+                                    | "AnnounceBorrowedAbility"
+                                    | "AnnounceBorrowedMana"
+                                    | "ActivateBorrowedMana"
+                                    | "ChooseEntryBehold"
+                            )
                     })
                 {
                     return Err(
@@ -215,7 +220,7 @@ fn project_prior_behold_json(input: &str) -> Result<String, String> {
                     );
                 }
                 for value in map.values() {
-                    check(value)?;
+                    check(value, compare_mana)?;
                 }
             }
             _ => {}
@@ -223,7 +228,7 @@ fn project_prior_behold_json(input: &str) -> Result<String, String> {
         Ok(())
     }
     let parsed: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
-    check(&parsed)?;
+    check(&parsed, compare_mana)?;
     let mut output = input.to_owned();
     // These fields are always emitted after existing fields, so removing their
     // leading comma preserves every other byte and hence the historical hash.
@@ -269,21 +274,29 @@ fn prior_behold_owned_state_supported(game: &Game) -> bool {
 }
 
 fn prior_behold_journal_supported(journal: &[Action]) -> bool {
+    prior_behold_candidate_journal_supported(journal, false)
+}
+
+fn prior_behold_candidate_journal_supported(journal: &[Action], compare_mana: bool) -> bool {
     !journal.iter().any(|action| {
-        matches!(
-            action,
-            Action::ChooseEntryBehold { .. }
-                | Action::TapMana { .. }
-                | Action::TapGrantedMana { .. }
-                | Action::AnnounceMana { .. }
-                | Action::ActivateMana { .. }
-                | Action::AnnounceGraveyardBorrowedAbility { .. }
-                | Action::AnnounceGraveyardBorrowedMana { .. }
-                | Action::ActivateGraveyardBorrowedMana { .. }
-                | Action::AnnounceBorrowedAbility { .. }
-                | Action::AnnounceBorrowedMana { .. }
-                | Action::ActivateBorrowedMana { .. }
-        )
+        (!compare_mana
+            && matches!(
+                action,
+                Action::TapMana { .. }
+                    | Action::TapGrantedMana { .. }
+                    | Action::AnnounceMana { .. }
+                    | Action::ActivateMana { .. }
+            ))
+            || matches!(
+                action,
+                Action::ChooseEntryBehold { .. }
+                    | Action::AnnounceGraveyardBorrowedAbility { .. }
+                    | Action::AnnounceGraveyardBorrowedMana { .. }
+                    | Action::ActivateGraveyardBorrowedMana { .. }
+                    | Action::AnnounceBorrowedAbility { .. }
+                    | Action::AnnounceBorrowedMana { .. }
+                    | Action::ActivateBorrowedMana { .. }
+            )
     })
 }
 
@@ -438,6 +451,10 @@ fn prior_projection_rejects_hidden_retained_borrowing_state() {
 }
 
 fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
+    trace_candidate(card, schema_projection, false)
+}
+
+fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: bool) -> Trace {
     let mut g = fixture();
     let id = put(&mut g, Player::P0, card.identity(), Zone::Hand);
     let opening = if card.is_land() {
@@ -593,11 +610,11 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
                 "owned borrowing acquisition state cannot be reconstructed in the prior schema"
                     .to_owned(),
             );
-        } else if !prior_behold_journal_supported(&journal) {
+        } else if !prior_behold_candidate_journal_supported(&journal, compare_mana) {
             projection_error =
                 Some("journal contains behold or mana-ability actions whose old identities cannot be proved".to_owned());
         } else {
-            match project_prior_behold_json(&observation_bytes) {
+            match project_prior_behold_candidate(&observation_bytes, compare_mana) {
                 Ok(projected) => observation_bytes = projected,
                 Err(reason) => projection_error = Some(reason),
             }
@@ -689,6 +706,58 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
     }
 }
 
+// Compare every field, retaining the historical digest and never treating an
+// unsupported state as equal, even if a baseline happened to contain it.
+fn classify_mana_candidate(candidate: &Trace, baseline: Option<&Trace>) -> &'static str {
+    if candidate
+        .status
+        .starts_with("prior_schema_unrepresentable:")
+    {
+        "unrepresentable"
+    } else if baseline == Some(candidate) {
+        "matches_baseline"
+    } else {
+        "different_or_missing_baseline"
+    }
+}
+
+#[test]
+fn prior_mana_audit_detects_offered_action_identity_and_payload_changes() {
+    fn row(actions: &str) -> Trace {
+        let bytes = project_prior_behold_candidate(actions, true).unwrap();
+        Trace {
+            root: "main".into(),
+            status: "completed".into(),
+            decisions: 0,
+            zone: "Battlefield".into(),
+            journal: digest(b"[]"),
+            observations: digest(bytes.as_bytes()),
+        }
+    }
+    let baseline = row(r#"[{"actions":[{"kind":"TapMana","card":1}]}]"#);
+    assert_eq!(
+        classify_mana_candidate(&baseline, Some(&baseline)),
+        "matches_baseline"
+    );
+    for changed in [
+        r#"[{"actions":[{"kind":"TapMana","card":2}]}]"#,
+        r#"[{"actions":[{"kind":"TapGrantedMana","card":1,"grantor":{"card":3,"generation":0},"production":[0,0,0,0,1,0]}]}]"#,
+    ] {
+        assert_eq!(
+            classify_mana_candidate(&row(changed), Some(&baseline)),
+            "different_or_missing_baseline"
+        );
+    }
+    assert!(
+        project_prior_behold_candidate(
+            r#"[{"actions":[{"kind":"ChooseEntryBehold","object":null}]}]"#,
+            true
+        )
+        .is_err()
+    );
+    assert!(project_prior_behold_candidate(r#"[{"borrowed_abilities":[{}]}]"#, true).is_err());
+}
+
 #[test]
 fn supported_cards_retain_bounded_cast_and_entry_traces() {
     let coverage: serde_json::Value =
@@ -733,6 +802,31 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
                 serde_json::to_string_pretty(&previous).unwrap() + "\n",
             )
             .unwrap();
+            // Opt-in evidence only: exact whole-trace equality against the
+            // existing baseline; no historical re-recording or acceptance.
+            // Observations are final only, and the historical digest is FNV64.
+            if std::env::var_os("RUSTMAGE_AUDIT_PRIOR_MANA_ACTIONS").is_some() {
+                let baseline: BTreeMap<String, Trace> =
+                    serde_json::from_str(include_str!("card_traces.json")).unwrap();
+                let results: BTreeMap<String, &str> = coverage["cards"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .filter(|row| row["implemented"] == true)
+                    .map(|row| {
+                        let name = row["name"].as_str().unwrap();
+                        let candidate =
+                            trace_candidate(Card::from_name(name).unwrap(), Some(schema), true);
+                        let result = classify_mana_candidate(&candidate, baseline.get(name));
+                        (name.to_owned(), result)
+                    })
+                    .collect();
+                std::fs::write(
+                    path.with_extension("prior-mana-audit.json"),
+                    serde_json::to_string_pretty(&results).unwrap() + "\n",
+                )
+                .unwrap();
+            }
         }
     }
     let expected: BTreeMap<String, Trace> =
