@@ -218,10 +218,10 @@ impl Game {
         cast.physical_card = Some(physical);
         item.set_source_definition(definition);
         item.source_keywords = definition.info().keywords;
-        item.source_facts.card = definition;
-        item.source_facts.colors = definition.colors();
-        item.source_facts.kinds = definition.kind_mask();
-        item.source_facts.power = 0;
+        item.source.as_mut().expect("spell source exists").facts.card = definition;
+        item.source.as_mut().expect("spell source exists").facts.colors = definition.colors();
+        item.source.as_mut().expect("spell source exists").facts.kinds = definition.kind_mask();
+        item.source.as_mut().expect("spell source exists").facts.power = 0;
     }
     pub(super) fn permitted_cast_available(
         &self,

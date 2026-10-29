@@ -204,10 +204,12 @@ impl Game {
                 let mut trigger = spell.clone();
                 trigger.id = self.next_stack_id();
                 trigger.kind = StackKind::TriggeredAbility { ability: 0 };
-                trigger.card = source.object.card;
-                trigger.object = source.object;
-                trigger.source_card = source.definition;
-                trigger.source_facts = source.facts;
+                trigger.source = Some(StackSourceView {
+                    id: source.object.card,
+                    object: source.object,
+                    card: source.definition,
+                    facts: source.facts,
+                });
                 trigger.source_keywords = source.keywords;
                 trigger.source_tapped = source.tapped;
                 trigger.source_attachment = None;
@@ -302,7 +304,7 @@ impl Game {
         let mut spell = self.state.stack[index].clone();
         // Preserve an actual spell object and stack id, while substituting the
         // existing prepared-face marker. Classification is explicitly non-instant.
-        spell.source_card = Card::test_index(5458);
+        spell.source.as_mut().unwrap().card = Card::test_index(5458);
         self.capture_copy_cast_classified(spell, first_trigger, false);
     }
     pub(super) fn allocate_spell_copy(
@@ -353,10 +355,11 @@ impl Game {
         }
         let mut copy = template.clone();
         copy.id = self.next_stack_id();
-        copy.card = card;
-        copy.object = self.object_ref(card);
+        let source = copy.source.as_mut().expect("a copied spell has an object source");
+        source.id = card;
+        source.object = self.object_ref(card);
+        source.facts.controller = controller;
         copy.controller = controller;
-        copy.source_facts.controller = controller;
         copy.is_copy = true;
         if let Some(cast) = &mut copy.cast {
             cast.payment = [0; 6];
@@ -530,7 +533,7 @@ impl Game {
         if let Some(state) = &mut self.state.stack_copy_data {
             for item in &mut state.delayed {
                 if item.object == before.reference && delayed_copy_reads_source_power(item) {
-                    item.source_facts = DamageFacts::from_view(before);
+                    item.source.as_mut().expect("delayed source exists").facts = DamageFacts::from_view(before);
                     item.source_keywords = before.keywords;
                     item.source_tapped = before.tapped;
                 }

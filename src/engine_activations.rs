@@ -766,7 +766,7 @@ impl Game {
             // The local announcement is temporarily outside State while costs
             // commit. Freeze its post-payment source facts before departure too.
             let source = self.object_view(item.card);
-            item.source_facts = DamageFacts::from_view(&source);
+            item.source.as_mut().expect("activated ability source exists").facts = DamageFacts::from_view(&source);
             item.source_keywords = source.keywords;
             item.source_tapped = source.tapped;
             item.source_attachment = source.attached_to;
