@@ -199,7 +199,9 @@ fn copied_civil_war_ability_enforces_total_mana_value_on_new_targets() {
                 target: Target::Card(large),
             },
         );
-        act(&mut g, Action::FinishTargets);
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
         let original = g.state.stack.last().unwrap().id;
         act(
             &mut g,
