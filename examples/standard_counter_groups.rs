@@ -17,7 +17,8 @@ fn deck(lands: &[(&str, usize)], spells: &[&str]) -> Vec<Card> {
     cards
 }
 fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
-    let name = item.source_card.name();
+    let Some(source) = item.source() else { return 0; };
+    let name = source.card.name();
     let known = match item.kind {
         StackKind::CasualtyCopy
         | StackKind::CopyEndStepSacrifice

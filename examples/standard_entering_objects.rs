@@ -135,7 +135,7 @@ fn bump(l: &mut Ledger, r: ObjectRef, turn: u32, c: u64, haste: bool) {
     }
 }
 fn verify(s: &SpellView, b: &Observation, a: &Observation, l: &mut Ledger) -> Option<usize> {
-    let name = s.source_card.name();
+    let name = s.source()?.card.name();
     let r = s.entering_object.expect("entry trigger context");
     assert!(s.targets.is_empty());
     if let Some(i) = NAMES.iter().position(|n| *n == name) {

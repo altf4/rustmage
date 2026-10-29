@@ -313,7 +313,8 @@ fn before_generic(obs: &Observation, index: u16) -> u32 {
         .generic
 }
 fn body(before: &Observation, after: &Observation, item: &SpellView) -> usize {
-    let name = item.source_card.name();
+    let Some(source) = item.source() else { return 0; };
+    let name = source.card.name();
     let p = item.controller.index();
     let target = item.targets.first().and_then(|b| {
         if let Target::Card(id) = b.target {

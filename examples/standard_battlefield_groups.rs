@@ -49,7 +49,8 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     if item.kind != StackKind::Spell {
         return 0;
     }
-    let name = item.source_card.name();
+    let Some(source) = item.source() else { return 0; };
+    let name = source.card.name();
     let mode = item.mode;
     let moved = matches!(
         name,
