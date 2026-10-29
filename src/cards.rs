@@ -4681,6 +4681,10 @@ impl Card {
         }
     }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
+        #[cfg(test)]
+        if self == Card::JacePlaneswalkerToken && composite_loyalty_fixture::enabled() {
+            return composite_loyalty_fixture::ABILITIES;
+        }
         generated::DEFINITIONS[self.0 as usize].activated
     }
     pub(crate) fn entry_tapped(self) -> EntryTapped {
@@ -5059,4 +5063,30 @@ pub(crate) enum RoleKind {
     Sorcerer,
     Wicked,
     YoungHero,
+}
+
+/// A scoped, thread-local typed provider for exercising composite loyalty costs
+/// through the public action path. It never changes non-test gameplay.
+#[cfg(test)]
+pub(crate) mod composite_loyalty_fixture {
+    use super::*;
+    std::thread_local! { static ENABLED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) }; }
+    pub(crate) struct Guard;
+    impl Guard {
+        pub(crate) fn new() -> Self { ENABLED.with(|value| { assert!(!value.replace(true)); }); Self }
+    }
+    impl Drop for Guard { fn drop(&mut self) { ENABLED.with(|value| value.set(false)); } }
+    pub(super) fn enabled() -> bool { ENABLED.with(std::cell::Cell::get) }
+    pub(super) const ABILITIES: &[ActivatedAbility] = &[ActivatedAbility {
+        exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
+        cycling: false, once_per_turn: false, sorcery: true,
+        cost: ActivationCost { colored: [0; 6], generic: 0, alternatives: &[],
+            additional: Some(AdditionalCost { kind: EffectChoiceKind::RemoveCreatureCounters(1),
+                filter: SacrificeFilter { keywords: Keywords::NONE, source_only: false, kinds: 1,
+                    nonland: false, other: false, tokens: None, artifact_enchantment_or_token: false,
+                    subtype: None } }),
+            mana_component: false, tap: false, sacrifice: false, exile_self: false,
+            discard: false, life: 0, remove: Some((None, 1)), loyalty: Some(-1) },
+        targets: TargetPlan::NONE, program: &[],
+    }];
 }

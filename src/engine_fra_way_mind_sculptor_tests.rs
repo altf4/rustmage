@@ -189,3 +189,49 @@ fn copied_mind_sculptor_observes_loyalty_only_while_ability_survives() {
         }
     }
 }
+
+#[test]
+fn composite_loyalty_cost_public_actions_reserve_counters_and_replay() {
+    let _fixture = crate::cards::composite_loyalty_fixture::Guard::new();
+    for actor in [Player::P0, Player::P1] {
+        for extra_kind in [CounterKind::Loyalty, CounterKind::PlusOne] {
+            let mut g = scenario(actor);
+            let way = put(&mut g, actor, "Way of the Mind Sculptor", Zone::Battlefield);
+            let walker = mind_jace(&mut g, actor);
+            g.state.objects[walker as usize].counters.loyalty = 1;
+            g.state.objects[walker as usize].counters.plus_one = 1;
+            let item = g.activation_item(actor, walker, 0);
+            g.animate_source(&item, AnimationSpec { artifact: false, creature_types: AnimationCreatureTypes::Unchanged,
+                base: Some((3, 3)), keywords: Keywords::NONE, duration: AnimationDuration::EndOfTurn });
+            assert!(g.is_creature(walker));
+            let valid_payment = Counters::of(CounterKind::PlusOne, 1);
+            let action = Action::AnnounceActivate { card: walker, ability: 0, counter_payment: valid_payment };
+            let no_extra = g.snapshot();
+            reject(&mut g, action.clone());
+            assert_eq!(g.snapshot(), no_extra);
+            let donor = put(&mut g, actor, "Bear Cub", Zone::Battlefield);
+            g.add_counter(donor, extra_kind, 1);
+            let overcommitted = Action::AnnounceActivate { card: walker, ability: 0,
+                counter_payment: Counters::of(CounterKind::Loyalty, 1) };
+            reject(&mut g, overcommitted);
+            let source = g.object_ref(walker);
+            let donor_ref = g.object_ref(donor);
+            let before = g.snapshot();
+            for _ in 0..2 {
+                act(&mut g, action.clone());
+                let selected = g.snapshot();
+                reject(&mut g, Action::ChooseCreatureCounterCost { object: source, counter: CounterKind::Loyalty });
+                reject(&mut g, Action::ChooseCreatureCounterCost { object: source, counter: CounterKind::PlusOne });
+                assert_eq!(g.snapshot(), selected);
+                act(&mut g, Action::ChooseCreatureCounterCost { object: donor_ref, counter: extra_kind });
+                super::super::contracts::branch_contract(g.clone());
+                pay(&mut g);
+                assert_eq!(g.counter_count(donor, extra_kind), 0);
+                let count = g.state.stack.iter().chain(g.state.pending_triggers.iter()).chain(g.state.ordering_triggers.iter())
+                    .filter(|packet| packet.card == way && matches!(packet.kind, StackKind::TriggeredAbility { .. })).count();
+                assert_eq!(count, usize::from(extra_kind == CounterKind::Loyalty));
+                g.restore(&before).unwrap();
+            }
+        }
+    }
+}
