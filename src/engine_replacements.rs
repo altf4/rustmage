@@ -1009,7 +1009,7 @@ impl Game {
         let completed = completion.as_ref().is_some_and(|c| {
             placements.iter().any(|p| {
                 p.entry_index.is_none()
-                    && p.object == c.item.object
+                    && c.item.source.is_some_and(|source| p.object == source.object)
                     && p.amount.get(c.kind) > 0
                     && self.on_battlefield(p.object.card)
                     && self.object_ref(p.object.card) == p.object
@@ -1171,23 +1171,24 @@ impl Game {
         amount: u64,
         ability: u16,
     ) {
+        let Some(source) = item.source else { return; };
         if amount == 0
-            || !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
+            || !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
         {
             return;
         }
-        let o = &self.state.objects[item.card as usize];
+        let o = &self.state.objects[source.id as usize];
         let placement = CounterPlacement {
             placed_by: item.controller,
-            object: item.object,
+            object: source.object,
             card: o.card,
             owner: o.owner,
             controller: o.controller,
-            protector: self.battle_protector(item.object),
-            subtypes: self.granted_subtypes(item.card),
-            kind: self.current_kinds(item.card),
-            power: self.stats(item.card).power,
+            protector: self.battle_protector(source.object),
+            subtypes: self.granted_subtypes(source.id),
+            kind: self.current_kinds(source.id),
+            power: self.stats(source.id).power,
             amount: Counters::of(kind, amount),
             effect: true,
             entry_index: None,
@@ -2798,6 +2799,7 @@ impl Game {
         recipient: ObjectRef,
         amount: u64,
     ) {
+        let Some(source) = item.source else { return; };
         // The paused program owns this immutable continuation. Army selection
         // reuses the ordinary public amass choice without a global last result.
         let attach = self.state.resolving.as_ref().is_some_and(|resolution| {
@@ -2819,14 +2821,14 @@ impl Game {
         );
         if let Some(state) = self.state.replacements.as_mut() {
             state.work.push_back(Work::AmassSubtype {
-                source: item.object,
+                source: source.object,
                 recipient,
                 attach,
             });
         } else {
-            self.grant_amass_goblin_type(item.object, recipient);
+            self.grant_amass_goblin_type(source.object, recipient);
             if attach {
-                self.attach_equipment(item.object, recipient);
+                self.attach_equipment(source.object, recipient);
             }
         }
     }
