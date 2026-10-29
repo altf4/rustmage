@@ -307,3 +307,33 @@ fn veiled_simultaneous_sacrifices_suspend_for_each_competing_zone_replacement() 
         }
     }
 }
+
+#[test]
+fn veiled_sacrifice_uses_captured_ability_controller_after_source_control_change_and_departure() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = veiled_fixture(&mut g, player);
+        let own = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let other = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 1, counter_payment: Counters::default() });
+        pay(&mut g);
+        let source_ref = g.object_ref(source);
+        g.change_controller(source_ref, player.other());
+        g.move_object(source, Zone::Graveyard);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            let own_ref = g.object_ref(own);
+            let other_ref = g.object_ref(other);
+            act(&mut g, Action::Sacrifice { object: own_ref });
+            act(&mut g, Action::Sacrifice { object: other_ref });
+            settle(&mut g);
+            assert_eq!(g.object_view(own).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(other).zone, Zone::Graveyard);
+            assert!(g.state.objects.iter().any(|o| o.zone == Zone::Battlefield
+                && o.controller == player && o.card == Card::test_index(5239)));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
