@@ -287,3 +287,39 @@ fn forbidden_poison_ward_cost_cannot_use_ordinary_replacement_to_escape() {
         }
     }
 }
+
+#[test]
+fn tam_proliferate_replaces_only_eligible_player_counter_with_snapshot_replay() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let tam = put(&mut game, player, "Tam, the Possibility", Zone::Battlefield);
+        let walker = put(&mut game, player, "Ajani, Caller of the Pride", Zone::Battlefield);
+        game.state.objects[walker as usize].counters.loyalty = 3;
+        // The test provider doubles counters placed by its controller on themself.
+        put(&mut game, player, "Hill Giant", Zone::Battlefield);
+        game.state.players[player.index()].poison_counters = 1;
+        game.state.players[player.other().index()].poison_counters = 1;
+        game.state.players[player.index()].mana = [1, 1, 1, 1, 1, 0];
+        act(&mut game, Action::AnnounceActivate {
+            card: tam, ability: 0, counter_payment: Counters::default(),
+        });
+        pay(&mut game);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert!(matches!(game.state.pending, Pending::Proliferate { player: actor } if actor == player));
+        let before = game.snapshot();
+        let opponent_choice = Action::ProliferatePlayer { player: player.other() };
+        assert!(game.apply(player.other(), opponent_choice.clone()).is_err());
+        assert_eq!(game.snapshot(), before);
+        for _ in 0..2 {
+            act(&mut game, Action::ProliferatePlayer { player });
+            act(&mut game, opponent_choice.clone());
+            act(&mut game, Action::FinishProliferate);
+            assert_eq!(game.state.players[player.index()].poison_counters, 3);
+            assert_eq!(game.state.players[player.other().index()].poison_counters, 2);
+            assert!(!matches!(game.state.pending, Pending::Proliferate { .. }));
+            game.restore(&before).unwrap();
+        }
+    }
+}
