@@ -3606,6 +3606,8 @@ pub(crate) enum TriggerCondition {
     },
     OtherSubtypeEntersYou(&'static str),
     SubtypeEntersYou(&'static str),
+    /// The entrant must match, and the intervening threshold excludes its exact incarnation.
+    SubtypeEntersYouWithOthers { subtype: &'static str, minimum: u16 },
     ArtifactEntersYou,
     EnchantmentEntersYou,
     CreatureEntersYou,

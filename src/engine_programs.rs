@@ -922,6 +922,10 @@ impl Game {
                     TriggerCondition::SubtypeEntersYou(subtype) => {
                         yours && entered.has_subtype(subtype)
                     }
+                    TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } => {
+                        yours && entered.has_subtype(subtype)
+                            && self.other_controlled_subtypes_at_least(source.controller, event.after, subtype, minimum)
+                    }
                     TriggerCondition::ArtifactEntersYou => yours && entered.kinds & 16 != 0,
                     TriggerCondition::EnchantmentEntersYou => yours && entered.kinds & 32 != 0,
                     TriggerCondition::CreatureEntersYou => yours && entered.is_creature(),
