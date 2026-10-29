@@ -1,0 +1,18 @@
+{
+  "name": "@token/fra-forest-tentacle",
+  "catalogue_id": 5454,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "93f081e7a4931382dffe9f8c686fa1230c2131dae1a0d8d33b89394c1a0bf3d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/ForestTentacleToken.java",
+  "java_sha256": "cac2d039a3fd42b5f21cc23791306a3ed53a5f1740db88e40ef63677215afd17",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+    }
+  ]
+}

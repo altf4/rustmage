@@ -5458,7 +5458,10 @@
     12,
     6,
     6,
-    6
+    6,
+    0,
+    16,
+    2
   ],
   "aliases": [
     [
@@ -6300,6 +6303,18 @@
     [
       "@token/fc4d98b9982bc99c31b60b7c",
       5332
+    ],
+    [
+      "@token/fra-forest-tentacle",
+      5454
+    ],
+    [
+      "@token/fra-leviathan",
+      5455
+    ],
+    [
+      "@token/fra-lotus",
+      5453
     ],
     [
       "@token/goblin_army",
@@ -28898,6 +28913,24 @@
       "name": "Heartwood Token",
       "subtypes": "Heartwood",
       "colors": 24
+    },
+    {
+      "factory_identity": "@token/fra-lotus",
+      "name": "Lotus",
+      "subtypes": "",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/fra-forest-tentacle",
+      "name": "Forest Tentacle",
+      "subtypes": "Forest Tentacle",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/fra-leviathan",
+      "name": "Leviathan Token",
+      "subtypes": "Leviathan",
+      "colors": 2
     }
   ],
   "emblems": [
@@ -184810,6 +184843,89 @@
       "colored": [
         0,
         1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5453,
+      "module": "card_5453",
+      "path": "synthetic/token_fra_lotus.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fra-lotus",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5454,
+      "module": "card_5454",
+      "path": "synthetic/token_fra_forest_tentacle.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fra-forest-tentacle",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Land Creature — Forest Tentacle",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 3,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5455,
+      "module": "card_5455",
+      "path": "synthetic/token_fra_leviathan.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fra-leviathan",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Leviathan",
+      "oracle_keywords": [
+        "Hexproof"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
         0,
         0,
         0,
