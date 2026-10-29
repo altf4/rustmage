@@ -186,13 +186,10 @@ impl EntryBatch {
                     m.delayed_return_exile.as_ref().map_or(0, |item| {
                         std::mem::size_of::<SpellView>() + item.owned_bytes()
                     }) + m.counters.owned_bytes()
-                        + m.before.counters.owned_bytes()
-                        + m.before.temporary_copy_bytes()
-                        + m.source_before.as_ref().map_or(0, |v| {
-                            std::mem::size_of::<ObjectView>()
-                                + v.counters.owned_bytes()
-                                + v.temporary_copy_bytes()
-                        })
+                        + m.before.owned_bytes()
+                        + m.source_before
+                            .as_ref()
+                            .map_or(0, |v| std::mem::size_of::<ObjectView>() + v.owned_bytes())
                 })
                 .sum::<usize>()
             + self

@@ -34,14 +34,7 @@ impl DiscardContext {
             + self
                 .sources
                 .iter()
-                .map(|s| {
-                    s.counters.owned_bytes()
-                        + s.temporary_copy_bytes()
-                        + s.abilities.as_ref().map_or(0, |a| {
-                            std::mem::size_of::<AbilityAvailabilityView>()
-                                + a.grants.len() * std::mem::size_of::<GrantedAbilityView>()
-                        })
-                })
+                .map(ObjectView::owned_bytes)
                 .sum::<usize>()
             + self.shuffles.len() * std::mem::size_of::<ObjectRef>()
     }
@@ -415,6 +408,51 @@ mod balin_result_tests {
             generation: 0,
         });
         assert_eq!(context.owned_bytes(), std::mem::size_of::<ObjectRef>());
+    }
+
+    #[test]
+    fn captured_view_counts_abilities_and_power_up_uses() {
+        let mut game = setup(Player::P0);
+        let id = named(&mut game, Player::P0, "Forest", Zone::Battlefield);
+        let mut view = game.object_view(id);
+        view.abilities = None;
+        view.power_up_uses.clear();
+        let before = view.owned_bytes();
+        view.abilities = Some(Box::new(AbilityAvailabilityView {
+            printed: true,
+            grants: vec![GrantedAbilityView {
+                grantor: view.reference,
+                granting_card: view.card,
+                ability: Some(0),
+                static_rule: None,
+                grantor_controller: Player::P0,
+                timestamp: 0,
+            }],
+        }));
+        view.power_up_uses.push(PowerUpUseView {
+            definition: view.card,
+            ability: 0,
+            borrowed_slot: None,
+            origin: None,
+            count: 1,
+        });
+        assert_eq!(
+            view.owned_bytes(),
+            before
+                + std::mem::size_of::<AbilityAvailabilityView>()
+                + std::mem::size_of::<GrantedAbilityView>()
+                + std::mem::size_of::<PowerUpUseView>()
+        );
+        let context = DiscardContext {
+            sources: vec![view],
+            cycled: None,
+            shuffles: Vec::new(),
+            after: None,
+        };
+        assert_eq!(
+            context.owned_bytes(),
+            std::mem::size_of::<ObjectView>() + context.sources[0].owned_bytes()
+        );
     }
 
     fn root(p: Player) -> Game {

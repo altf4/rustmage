@@ -2470,6 +2470,16 @@ pub struct ObjectView {
 }
 
 impl ObjectView {
+    /// Owned initialized data; the containing object accounts for the inline view.
+    pub(super) fn owned_bytes(&self) -> usize {
+        self.counters.owned_bytes()
+            + self.temporary_copy_bytes()
+            + self.abilities.as_ref().map_or(0, |a| {
+                std::mem::size_of::<AbilityAvailabilityView>()
+                    + a.grants.len() * std::mem::size_of::<GrantedAbilityView>()
+            })
+            + self.power_up_uses.len() * std::mem::size_of::<PowerUpUseView>()
+    }
     pub(super) fn copied_grant_origin(&self) -> Option<u64> {
         self.provided_ability_origin
     }
