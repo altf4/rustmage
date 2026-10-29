@@ -4132,6 +4132,8 @@ mod generated {
     include!("generated/catalogue.rs");
 }
 pub use generated::{CATALOGUE_VERSION, CREATURE_TYPES};
+// The source-less sentinel must never alias a real catalogue identity.
+const _: () = assert!(generated::DEFINITIONS.len() < u16::MAX as usize);
 
 /// Creature types from the pinned Comprehensive Rules, including Time Lord.
 pub fn is_creature_type(subtype: &str) -> bool {
