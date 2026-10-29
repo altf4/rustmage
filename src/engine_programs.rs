@@ -1126,6 +1126,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            source: Some(StackSourceView { id: source.id, object: source.reference, card: source.card, facts: DamageFacts::from_view(source) }),
             source_less_rule: None,
             // Explicit limits and state-trigger latching also cap extra instances.
             additional_triggers: if condition.once_per_turn()
@@ -1172,11 +1173,11 @@ impl Game {
                 ability: u16::try_from(index).expect("ability index"),
             },
             source_transform: None,
-            source_card: source.card,
+
             split_second: false,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
-            source_facts: DamageFacts::from_view(source),
+
             related_stack: None,
             entering_object: None,
             evidence_collected: false,
@@ -1199,8 +1200,7 @@ impl Game {
             sacrificed_toughness: None,
             sacrificed_power: None,
             source_attachment: source.attached_to,
-            card: source.id,
-            object: source.reference,
+
             controller: source.controller,
             targets: Vec::new(),
             mode: None,

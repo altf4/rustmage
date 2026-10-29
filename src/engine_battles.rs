@@ -14,6 +14,7 @@ impl Game {
         let source = self.object_view(reference.card);
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            source: Some(StackSourceView { id: source.id, object: reference, card: source.card, facts: DamageFacts::from_view(&source) }),
             source_less_rule: None,
             additional_triggers: source.additional_triggers,
             source_move: None,
@@ -43,13 +44,13 @@ impl Game {
             evidence_collected: false,
             id,
             kind: StackKind::SiegeDefeat,
-            source_card: source.card,
+
             split_second: false,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
             source_attachment: source.attached_to,
             source_transform: None,
-            source_facts: DamageFacts::from_view(&source),
+
             related_stack: None,
             damage_event: None,
             damage_received: None,
@@ -65,8 +66,7 @@ impl Game {
             manifest_event: None,
             sacrificed_toughness: None,
             sacrificed_power: None,
-            card: source.id,
-            object: reference,
+
             targets: Vec::new(),
             mode: None,
             controller: source.controller,

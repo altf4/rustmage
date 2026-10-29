@@ -94,6 +94,7 @@ impl Game {
         if self.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad) == 0 { return; }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            source: None,
             source_less_rule: Some(SourceLessRule::Radiation),
             additional_triggers: 0,
             source_move: None,
@@ -123,13 +124,13 @@ impl Game {
             evidence_collected: false,
             id,
             kind: StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player: player },
-            source_card: Card::SOURCELESS,
+
             split_second: false,
             source_keywords: Keywords::NONE,
             source_tapped: false,
             source_attachment: None,
             source_transform: None,
-            source_facts: DamageFacts { token: false, controller: player, kinds: 0, colors: 0, power: 0, power_above_base: false, granted_subtypes: GrantedSubtypes::default(), card: Card::SOURCELESS, battlefield: false, counter: false, plus_one: false, modified: false, attacking: false },
+
             related_stack: None,
             damage_event: None,
             damage_received: None,
@@ -145,8 +146,7 @@ impl Game {
             manifest_event: None,
             sacrificed_toughness: None,
             sacrificed_power: None,
-            card: CardId::MAX,
-            object: ObjectRef { card: CardId::MAX, generation: 0 },
+
             targets: Vec::new(),
             mode: None,
             controller: player,

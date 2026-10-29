@@ -559,6 +559,7 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
+            source: Some(StackSourceView { id: card, object: self.object_ref(card), card: self.state.objects[card as usize].card, facts: self.damage_facts(card) }),
             source_less_rule: None,
             additional_triggers: 0,
             source_move: None,
@@ -599,11 +600,11 @@ impl Game {
                 .get(usize::from(ability))
                 .is_some_and(|ability| ability.program.contains(&Instruction::TransformSource))
                 .then(|| self.transform_serial(self.object_ref(card))),
-            source_card: self.state.objects[card as usize].card,
+
             split_second: false,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
-            source_facts: self.damage_facts(card),
+
             related_stack: None,
             entering_object: None,
             evidence_collected: false,
@@ -631,8 +632,7 @@ impl Game {
             sacrificed_toughness: None,
             sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,
-            card,
-            object: self.object_ref(card),
+
             controller: actor,
             targets: Vec::new(),
             mode: None,

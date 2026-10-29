@@ -230,6 +230,7 @@ impl Game {
             let card = b.view.source_card;
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
+            source: Some(StackSourceView { id: source.card, object: source, card: card, facts: b.facts }),
                 source_less_rule: None,
                 additional_triggers: 0,
                 source_move: None,
@@ -259,13 +260,13 @@ impl Game {
                 evidence_collected: false,
                 id,
                 kind: StackKind::DelayedSacrifice,
-                source_card: card,
+
                 split_second: false,
                 source_keywords: b.keywords,
                 source_tapped: b.tapped,
                 source_attachment: b.attachment,
                 source_transform: None,
-                source_facts: b.facts,
+
                 related_stack: None,
                 damage_event: None,
                 damage_received: None,
@@ -281,8 +282,8 @@ impl Game {
                 manifest_event: None,
                 sacrificed_toughness: None,
                 sacrificed_power: None,
-                card: source.card,
-                object: source,
+
+
                 targets: Vec::new(),
                 mode: None,
                 controller,

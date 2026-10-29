@@ -1636,6 +1636,7 @@ impl Game {
         payment: Mana,
     ) -> SpellView {
         SpellView {
+            source: Some(StackSourceView { id: card, object: object, card: self.state.objects[card as usize].card, facts: self.damage_facts(card) }),
             source_less_rule: None,
             additional_triggers: 0,
             gift: None,
@@ -1684,11 +1685,11 @@ impl Game {
             id,
             kind: StackKind::Spell,
             source_transform: None,
-            source_card: self.state.objects[card as usize].card,
+
             split_second: false,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
-            source_facts: self.damage_facts(card),
+
             related_stack: None,
             entering_object: None,
             evidence_collected: false,
@@ -1707,8 +1708,7 @@ impl Game {
             sacrificed_toughness: None,
             sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,
-            card,
-            object,
+
             controller: actor,
             targets: Vec::new(),
             mode: None,
