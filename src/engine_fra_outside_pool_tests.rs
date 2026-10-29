@@ -16,6 +16,33 @@ fn pool(mode: OutsideGameMode, a: Vec<Card>, b: Vec<Card>) -> OutsideGameConfig 
     }
 }
 #[test]
+fn state_bytes_counts_initialized_outside_and_combat_rows() {
+    let mut g = Game::new_with_outside(
+        config(DeckRules::Freeform),
+        pool(
+            OutsideGameMode::CasualCollection,
+            vec![Card::Forest],
+            vec![],
+        ),
+    )
+    .unwrap();
+    let before = g.state_bytes();
+    let outside = g.state.outside_game.as_mut().unwrap();
+    outside.pools[0].reserve(64);
+    outside.known[0].reserve(64);
+    assert_eq!(g.state_bytes(), before);
+    g.state.outside_game.as_mut().unwrap().known[0].push(0);
+    assert_eq!(g.state_bytes(), before + std::mem::size_of::<u16>());
+
+    g.state.combat_defender_types = Some(Vec::new().into());
+    let empty = g.state_bytes();
+    g.state.combat_defender_types = Some(vec![(g.object_ref(0), 1)].into());
+    assert_eq!(
+        g.state_bytes(),
+        empty + std::mem::size_of::<(ObjectRef, u16)>()
+    );
+}
+#[test]
 fn outside_constructor_validates_combined_limits_and_preserves_old_constructor() {
     let shock = Card::from_name("Shock").unwrap();
     assert!(Game::new(config(DeckRules::Constructed)).is_ok());

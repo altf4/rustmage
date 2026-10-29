@@ -9931,11 +9931,11 @@ impl Game {
                     + self.outside_entry_bytes()
                     + v.pools
                         .iter()
-                        .map(|p| p.capacity() * std::mem::size_of::<Card>())
+                        .map(|p| p.len() * std::mem::size_of::<Card>())
                         .sum::<usize>()
                     + v.known
                         .iter()
-                        .map(|p| p.capacity() * std::mem::size_of::<u16>())
+                        .map(|p| p.len() * std::mem::size_of::<u16>())
                         .sum::<usize>()
             })
             + s.players
@@ -9962,7 +9962,7 @@ impl Game {
                 .map_or(0, |_| std::mem::size_of::<[u64; 2]>())
             + s.combat_defender_types.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<(ObjectRef, u16)>>()
-                    + rows.len() * std::mem::size_of::<u16>()
+                    + rows.len() * std::mem::size_of::<(ObjectRef, u16)>()
             })
             + s.battle_combat_types.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<(ObjectRef, bool)>>()
