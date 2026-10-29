@@ -200,3 +200,73 @@ fn veiled_discard_draw_waits_for_replaced_miracle_draw_before_finishing() {
         }
     }
 }
+
+#[test]
+fn veiled_copied_modifier_uses_each_controller_and_stacks_with_base_set_and_blanking() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = veiled_fixture(&mut g, player);
+        let target = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(target) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        let original = g.state.stack.last().unwrap().clone();
+        let mut copier = original.clone();
+        copier.controller = player.other();
+        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        g.copy_target_ability(&copier, 0);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(stats(&g, target), (-5, 1));
+        let mut item = g.activation_item(player, target, 0);
+        item.targets = vec![BoundTarget { group: 0, target: Target::Card(target), object: Some(g.object_ref(target)) }];
+        g.set_base_stats(&item, Subject::Targets, Some(10), Some(10));
+        g.remove_target_abilities_until_end_of_turn(&item);
+        assert_eq!(stats(&g, target), (2, 8));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.state.active = player.other();
+            g.begin_turn();
+            assert_eq!(stats(&g, target), (6, 9));
+            g.state.active = player;
+            g.begin_turn();
+            assert_eq!(stats(&g, target), (10, 10));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn veiled_modifier_expires_at_actual_extra_turn_not_skipped_turn() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = veiled_fixture(&mut g, player);
+        let target = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(target) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        settle(&mut g);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.add_extra_turn(player.other(), false);
+            g.advance_to_actual_turn();
+            g.begin_turn();
+            assert_eq!(stats(&g, target), (-1, 2));
+            let mut skips = [0; 2];
+            skips[player.index()] = 1;
+            g.state.turn_skips = Some(Box::new(skips));
+            g.advance_to_actual_turn();
+            g.begin_turn();
+            assert_ne!(g.state.active, player);
+            assert_eq!(stats(&g, target), (-1, 2));
+            g.add_extra_turn(player, false);
+            g.advance_to_actual_turn();
+            g.begin_turn();
+            assert_eq!(g.state.active, player);
+            assert_eq!(stats(&g, target), (3, 3));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
