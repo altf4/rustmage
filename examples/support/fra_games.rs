@@ -691,7 +691,7 @@ fn survey_decks() -> Result<(Vec<Deck>, usize), String> {
             || cards.iter().any(|card| {
                 counts[card.name()] > 4
                     && !matches!(
-                        card,
+                        *card,
                         Card::Plains | Card::Island | Card::Swamp | Card::Mountain | Card::Forest
                     )
             })
