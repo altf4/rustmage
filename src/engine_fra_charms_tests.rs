@@ -7215,3 +7215,6 @@ mod candidate_followup;
 
 #[path = "engine_fra_second_followup_tests.rs"]
 mod second_followup;
+
+#[path = "engine_fra_scry_events_tests.rs"]
+mod scry_events;

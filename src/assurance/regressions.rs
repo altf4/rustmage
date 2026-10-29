@@ -239,6 +239,14 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
         }
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
+    if schema_projection.is_some_and(|schema| schema < 174) {
+        for field in [
+            "\"scried_or_surveilled_this_turn\":true,",
+            "\"scried_or_surveilled_this_turn\":false,",
+        ] {
+            observation_bytes = observation_bytes.replace(field, "");
+        }
+    }
     if schema_projection.is_some_and(|schema| schema < 173) {
         for view in &views {
             for player in &view.players {
