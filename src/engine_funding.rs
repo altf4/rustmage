@@ -1554,7 +1554,7 @@ impl<'g> FundingState<'g> {
         if let Some(destination) = departure {
             // Counter and tap payments precede the actual move, as in the real
             // payment path. Capture characteristics before zone effects cease.
-            self.remember_payment_departure(id);
+            if !preserve_departure_counters { self.remember_payment_departure(id); }
             let reference = self.reference(id);
             // The fast path has already ruled out replacement effects. The
             // slow path commits its replacement-adjusted destination through

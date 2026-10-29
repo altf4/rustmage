@@ -790,3 +790,40 @@ fn prohibition_provider_is_tracked_in_funding_world_and_key() {
         TEST_SACRIFICE_PROHIBITOR.with(|row| row.set(None));
     }
 }
+
+#[test]
+fn prevented_sacrifice_mana_projection_matches_owned_payment() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        g.state.objects[id as usize].summoning_sick = false;
+        g.state.players[player.index()].mana = [0; 6];
+        let original = g.object_ref(id);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(original)));
+        let goal = FundingGoal { actor: player, required: [0, 0, 0, 0, 1, 0], generic: 0, reserve: None, source: None };
+        let world = FundingState::from_game(&g, &goal);
+        let step = world.moves(&goal).into_iter().find(|step|
+            world.resources[step.resource].id == id && step.production == [0, 0, 0, 0, 1, 0]).unwrap();
+        let mut projected = None;
+        assert!(world.visit_applied(&step, &mut |next| { projected = Some(next.clone()); true }));
+        let projected = projected.unwrap();
+        assert_eq!(projected.reference(id), original);
+        assert_eq!(projected.object(id).zone, Zone::Battlefield);
+        assert!(projected.object(id).tapped);
+        assert_eq!(projected.mana[4], 1);
+        assert!(world.key(&goal) != projected.key(&goal));
+        let action = g.legal_actions().into_iter().find(|a| matches!(a,
+            Action::ActivateMana { card, production: [0, 0, 0, 0, 1, 0], .. } if *card == id)).unwrap();
+        owned_step(&mut g, action);
+        assert_eq!(g.object_ref(id), projected.reference(id));
+        assert_eq!(g.state.objects[id as usize].zone, projected.object(id).zone);
+        assert_eq!(g.state.objects[id as usize].tapped, projected.object(id).tapped);
+        assert_eq!(u128::from(g.state.players[player.index()].mana[4]), projected.mana[4]);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}

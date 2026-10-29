@@ -268,8 +268,12 @@ impl FundingState<'_> {
             .iter()
             .map(|r| {
                 let o = self.object(r.card);
+                #[cfg(test)]
+                let prevented = zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get() == Some(*r));
+                #[cfg(not(test))]
+                let prevented = false;
                 if requested != Zone::Graveyard {
-                    return vec![requested];
+                    return if prevented { vec![None] } else { vec![Some(requested)] };
                 }
                 let own = o.card.zone_replacement();
                 let shuffle = own == Some(crate::cards::ZoneReplacementRule::RevealShuffleSelf)
@@ -306,12 +310,15 @@ impl FundingState<'_> {
                                     rule.object == *r && rule.expires_turn == self.game.state.turn
                                 })
                             })));
-                match (shuffle, exile) {
-                    (true, true) => vec![Zone::Library, Zone::Exile],
-                    (true, false) => vec![Zone::Library],
-                    (false, true) => vec![Zone::Exile],
-                    _ => vec![Zone::Graveyard],
-                }
+                let mut choices = match (shuffle, exile) {
+                    (true, true) => vec![Some(Zone::Library), Some(Zone::Exile)],
+                    (true, false) => vec![Some(Zone::Library)],
+                    (false, true) => vec![Some(Zone::Exile)],
+                    _ if prevented => Vec::new(),
+                    _ => vec![Some(Zone::Graveyard)],
+                };
+                if prevented { choices.push(None); }
+                choices
             })
             .collect::<Vec<_>>();
         let mut initial = self.clone();
@@ -326,6 +333,15 @@ impl FundingState<'_> {
             for w in worlds {
                 for &zone in &choices {
                     let mut n = w.clone();
+                    let Some(zone) = zone else {
+                        // No departure happened; do not retain a newly captured
+                        // departure witness for this prevented event.
+                        if !self.payment_departures.iter().any(|(reference, _)| reference == r) {
+                            n.payment_departures.retain(|(reference, _)| reference != r);
+                        }
+                        next.push(n);
+                        continue;
+                    };
                     let i = n
                         .resources
                         .iter()
