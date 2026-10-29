@@ -31,7 +31,7 @@ fn serpent_ward_uses_targeting_player_cost_and_keeps_choice_transactional() {
 }
 
 #[test]
-fn serpent_ward_does_not_ask_payment_after_related_spell_leaves() {
+fn serpent_ward_still_offers_payment_after_related_spell_leaves() {
     for owner in [Player::P0, Player::P1] {
         let mut game = scenario(owner);
         let society = put(&mut game, owner, "The Serpent Society", Zone::Battlefield);
@@ -44,8 +44,16 @@ fn serpent_ward_does_not_ask_payment_after_related_spell_leaves() {
         });
         game.prepare_triggers();
         game.move_object(spell, Zone::Graveyard);
-        settle(&mut game);
-        assert_eq!(game.state.players[attacker.index()].poison_counters, 0);
-        assert_eq!(game.object_view(society).zone, Zone::Battlefield);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert!(matches!(game.state.pending, Pending::EffectOptional { player, .. } if player == attacker));
+        let saved = game.snapshot();
+        for pay_cost in [false, true] {
+            game.restore(&saved).unwrap();
+            act(&mut game, Action::ChooseOptional { accept: pay_cost });
+            settle(&mut game);
+            assert_eq!(game.state.players[attacker.index()].poison_counters, if pay_cost { 5 } else { 0 });
+            assert_eq!(game.object_view(society).zone, Zone::Battlefield);
+        }
     }
 }

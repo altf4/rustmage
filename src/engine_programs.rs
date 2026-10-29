@@ -3309,10 +3309,7 @@ impl Game {
                 Instruction::MayPayWardPoison { amount: _, skip } => {
                     let link = item.related_stack.expect("ward stack association");
                     let pc = self.state.resolving.as_ref().unwrap().pc;
-                    if !self.state.stack.iter().any(|spell| spell.id == link.id) {
-                        // There is no related spell or ability left to counter.
-                        self.state.resolving.as_mut().unwrap().pc = pc + skip + 1;
-                    } else if self.player_counters_prohibited(link.controller, crate::cards::PlayerCounterKind::Poison) {
+                    if self.player_counters_prohibited(link.controller, crate::cards::PlayerCounterKind::Poison) {
                         // A prohibition makes the cost impossible before replacements.
                         self.state.resolving.as_mut().unwrap().pc = pc + skip;
                     } else {

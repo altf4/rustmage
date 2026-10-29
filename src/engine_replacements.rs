@@ -75,7 +75,7 @@ pub struct PlayerCounterPlacementView {
     pub kind: crate::cards::PlayerCounterKind,
     pub amount: u64,
     pub placed_by: Player,
-    /// False for an unmodified cost; replacement effects can make it true.
+    /// False for a cost event, including after amount replacements.
     pub effect: bool,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -1257,8 +1257,8 @@ impl Game {
     ) {
         self.effect_counters_by(changes, Some(placed_by), player_poison, true, None, mode);
     }
-    // CR 118.11 and 614.16: replacement-modified actions still pay the cost,
-    // and a later effects-only replacement may apply to the replacement event.
+    // CR 118.11: replacement-modified actions still pay the cost.
+    // CR 614.16's effects-only exception does not extend to player counters.
     pub(super) fn pay_poison_counter_cost(&mut self, player: Player, amount: u16) {
         let mut poison = [0; 2];
         poison[player.index()] = u64::from(amount);
@@ -1878,7 +1878,6 @@ impl Game {
                                 [only] => {
                                     batch.player_poison[player.index()] = modified_player_counters(
                                         only.source_card.replacement_effects()[only.ability as usize], amount);
-                                    batch.player_effect[player.index()] = true;
                                     batch.used.push((only.source, only.ability));
                                 }
                                 _ => {
@@ -2251,7 +2250,6 @@ impl Game {
                     .into_iter().find(|c| c.source == source && c.ability == ability).unwrap();
                 batch.player_poison[player.index()] = modified_player_counters(
                     choice.source_card.replacement_effects()[ability as usize], amount);
-                batch.player_effect[player.index()] = true;
                 batch.used.push((source, ability));
             }
             Event::Counters(batch) => {
