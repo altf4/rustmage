@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f4a8970e34ec4a6be192b2fe76114a0191e9fe46fef927d5318cdb90273e1ba2",
+  "catalogue_version": "b3acc234fde1cd72cb74e7ef99e47408543a3742ed76da318f171b742128cb12",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2923,
-  "implemented_total": 2929,
+  "implemented_standard_cards": 2924,
+  "implemented_total": 2930,
   "token_definitions": 146,
   "emblem_definitions": 6,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 276,
-      "gated": 9
+      "complete": 277,
+      "gated": 8
     },
     "frc": {
       "total": 6,
@@ -32331,8 +32331,8 @@
     {
       "name": "Sphinx's Approach",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/sphinx_s_approach.rs",
       "set": "fra"
     },
