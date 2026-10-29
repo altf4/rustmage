@@ -56,6 +56,10 @@ pub struct Report {
     pub mode: &'static str,
     pub scope: &'static str,
     pub pool_members: usize,
+    /// Physical identities present in decks actually used by these cases.
+    pub played_deck_identities: usize,
+    /// Distinct observed spell-face names, including prepared faces.
+    pub observed_spell_faces: usize,
     pub unique_cases: usize,
     pub decks: Vec<DeckReport>,
     pub games: Vec<GameReport>,
@@ -625,6 +629,20 @@ fn run_inner(
         });
     }
     let seconds = started.elapsed().as_secs_f64();
+    let played_deck_identities = cases
+        .iter()
+        .flat_map(|(pair, _, _, _)| {
+            let (left, right) = pairings[*pair];
+            decks[left].cards.iter().chain(&decks[right].cards)
+        })
+        .filter_map(|card| card.info().oracle_id)
+        .collect::<BTreeSet<_>>()
+        .len();
+    let observed_spell_faces = games
+        .iter()
+        .flat_map(|game| game.cards_cast.iter())
+        .collect::<BTreeSet<_>>()
+        .len();
     Ok(Report {
         workload: if require_complete {
             "FRA_ARCHETYPES_V1"
@@ -637,8 +655,10 @@ fn run_inner(
         } else {
             "benchmark"
         },
-        scope: "Six exactly 60-card Standard decks; physical FRA members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory",
+        scope: "Selected cases from six exactly 60-card Standard decks; physical FRA members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory; not exhaustive gameplay coverage",
         pool_members,
+        played_deck_identities,
+        observed_spell_faces,
         unique_cases: cases.iter().copied().collect::<BTreeSet<_>>().len(),
         decks: decks.into_iter().map(|d| d.report).collect(),
         games_per_second: games.len() as f64 / seconds,
