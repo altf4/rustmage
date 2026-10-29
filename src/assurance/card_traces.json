@@ -455,6 +455,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "1927bf395f73b1b3"
   },
+  "Ajani Unrelenting": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b46e0d343c9fed61",
+    "observations": "9f55967c1a8428d3"
+  },
   "Ajani's Pridemate": {
     "root": "main",
     "status": "completed",
@@ -3582,6 +3590,14 @@
     "zone": "Graveyard",
     "journal": "5a4831c03761a4ff",
     "observations": "a47f5b1c188a1e93"
+  },
+  "Compel Brutality": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "0182b92301a8522b",
+    "observations": "464af88dbe2a05e2"
   },
   "Concealed Courtyard": {
     "root": "main",
@@ -7767,6 +7783,14 @@
     "journal": "9ce6814005c6e51b",
     "observations": "6ab5adf6980ef264"
   },
+  "Gideon's Memorial": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "d20c9d504a166f95"
+  },
   "Gigantic Big Bear": {
     "root": "main",
     "status": "completed",
@@ -8574,6 +8598,14 @@
     "zone": "Battlefield",
     "journal": "1ee756735d2f017d",
     "observations": "947056c31bdc4a7a"
+  },
+  "Guiding Hydra": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "f61d0f56ff706ac2",
+    "observations": "04165f2ccc0bf85c"
   },
   "Gundabad Opportunist": {
     "root": "main",
@@ -9759,6 +9791,14 @@
     "journal": "db7b0f4bd7e53672",
     "observations": "277612bf5a0ae54a"
   },
+  "Ingris Stingerquill": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "eaeb8477c359689c",
+    "observations": "95a7d161fbfc09f5"
+  },
   "Inkling Mascot": {
     "root": "main",
     "status": "completed",
@@ -9822,6 +9862,14 @@
     "zone": "Graveyard",
     "journal": "266d2f6018e75813",
     "observations": "ac220a950537e6ff"
+  },
+  "Inspired Tethermage": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "9ff1087ff884298d"
   },
   "Inspiring Call": {
     "root": "main",
@@ -14423,6 +14471,14 @@
     "journal": "d5a68de4869301a5",
     "observations": "b539c5c791fad967"
   },
+  "Primal Witchstalker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 9,
+    "zone": "Battlefield",
+    "journal": "611bf480634e75b2",
+    "observations": "582c1dc746cb4efe"
+  },
   "Primary Research": {
     "root": "main",
     "status": "completed",
@@ -17599,6 +17655,14 @@
     "journal": "0a12e2364ba8262b",
     "observations": "8f07f8cd056d8690"
   },
+  "Solitary Cell": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "443885f5322dfa00",
+    "observations": "92a1c342a5671098"
+  },
   "Solve for Disappointment": {
     "root": "main",
     "status": "completed",
@@ -17814,6 +17878,14 @@
     "zone": "Battlefield",
     "journal": "a1eca0ec70ed20b5",
     "observations": "adc40a771903b75b"
+  },
+  "Sphinx of False Conclusions": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9fb8f9361b7adf8f",
+    "observations": "0eac985dd2d32a54"
   },
   "Sphinx of Forgotten Lore": {
     "root": "main",
@@ -21583,6 +21655,14 @@
     "journal": "a27193617312f89f",
     "observations": "805b07ecdec1cae9"
   },
+  "Violent Echoes": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "871abeb8d3b1caad",
+    "observations": "70ded2c2a16ced1d"
+  },
   "Violent Urge": {
     "root": "main",
     "status": "completed",
@@ -21774,6 +21854,14 @@
     "zone": "Battlefield",
     "journal": "3ad6d4893695dc9c",
     "observations": "52e75ab50f0e2704"
+  },
+  "Vraska's Final Mercy": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "4c12143e8f0f639c",
+    "observations": "a970696ebb5904ff"
   },
   "Vraska, Soul of Stone": {
     "root": "main",

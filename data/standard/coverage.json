@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "86917f637c8b1a72485089fe8450846228eaf0ffba91d3ba4d47c12c75261bd9",
+  "catalogue_version": "f9b96d570160c40d8feb38cc410de883db3b8074ca2bc3e13c297e4767ca42c3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2849,
-  "implemented_total": 2855,
+  "implemented_standard_cards": 2860,
+  "implemented_total": 2866,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 202,
-      "gated": 83
+      "complete": 213,
+      "gated": 72
     },
     "frc": {
       "total": 6,
@@ -1099,8 +1099,8 @@
     {
       "name": "Ajani Unrelenting",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/ajani_unrelenting.rs",
       "set": "fra"
     },
@@ -6763,8 +6763,8 @@
     {
       "name": "Compel Brutality",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/compel_brutality.rs",
       "set": "fra"
     },
@@ -14155,8 +14155,8 @@
     {
       "name": "Gideon's Memorial",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/gideon_s_memorial.rs",
       "set": "fra"
     },
@@ -15459,8 +15459,8 @@
     {
       "name": "Guiding Hydra",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/guiding_hydra.rs",
       "set": "fra"
     },
@@ -17547,8 +17547,8 @@
     {
       "name": "Ingris Stingerquill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/ingris_stingerquill.rs",
       "set": "fra"
     },
@@ -17691,8 +17691,8 @@
     {
       "name": "Inspired Tethermage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/inspired_tethermage.rs",
       "set": "fra"
     },
@@ -26059,8 +26059,8 @@
     {
       "name": "Primal Witchstalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/primal_witchstalker.rs",
       "set": "fra"
     },
@@ -31875,8 +31875,8 @@
     {
       "name": "Solitary Cell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/solitary_cell.rs",
       "set": "fra"
     },
@@ -32307,8 +32307,8 @@
     {
       "name": "Sphinx of False Conclusions",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/sphinx_of_false_conclusions.rs",
       "set": "fra"
     },
@@ -39427,8 +39427,8 @@
     {
       "name": "Violent Echoes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/violent_echoes.rs",
       "set": "fra"
     },
@@ -39763,8 +39763,8 @@
     {
       "name": "Vraska's Final Mercy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/vraska_s_final_mercy.rs",
       "set": "fra"
     },

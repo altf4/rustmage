@@ -7370,3 +7370,9 @@ mod engine_fra_ajani_unrelenting_tests;
 
 #[path = "engine_fra_gideon_memorial_tests.rs"]
 mod engine_fra_gideon_memorial_tests;
+
+#[path = "engine_fra_guiding_hydra_payment_tests.rs"]
+mod engine_fra_guiding_hydra_payment_tests;
+
+#[path = "engine_fra_candidate_audit_tests.rs"]
+mod engine_fra_candidate_audit_tests;
