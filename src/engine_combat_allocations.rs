@@ -297,7 +297,7 @@ impl Game {
             .enumerate()
             .filter(|(id, object)| {
                 object.zone == Zone::Battlefield
-                    && self.creature_matches(filter, item.controller, item.object, *id as CardId)
+                    && item.source.is_some_and(|source| self.creature_matches(filter, item.controller, source.object, *id as CardId))
             })
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
@@ -318,7 +318,7 @@ impl Game {
         let mut damaged = [false; 2];
         if let Some(rules) = &self.state.combat_rules {
             for row in &rules.damaged_players {
-                if row.source == item.object {
+                if item.source.is_some_and(|source| row.source == source.object) {
                     damaged[row.player.index()] = true;
                 }
             }

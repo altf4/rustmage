@@ -302,7 +302,7 @@ impl Game {
         } else {
             let r = self.state.resolving.as_mut().unwrap();
             let e = r.evidence.take().unwrap();
-            let source = r.item.object;
+            let source = r.item.source.expect("evidence effect has source").object;
             self.commit_evidence(&e, source);
             self.run_program();
         }
