@@ -769,24 +769,23 @@ impl Game {
                 ..
             }
         ) {
-            // Ignore inherited targets that are already individually illegal,
-            // just as resolution does. The final set of legal targets must
-            // still satisfy the joint budget after all retargeting edits.
-            let other_legal: Vec<_> = item
+            // A retained target can be illegal (for example, it gained
+            // hexproof) while still being part of the final target set. Count
+            // its current mana value when checking a newly selected target.
+            // CR 115.7d–e and XMage's total-value helper support this reading;
+            // neither is a card-specific ruling for this interaction. Targets
+            // that left the zone or changed incarnation remain excluded.
+            let other_present: Vec<_> = item
                 .targets
                 .iter()
                 .enumerate()
-                .filter(|(i, other)| {
-                    *i != index
-                        && self.same_target_object(**other)
-                        && self.item_target_matches(item, spec.rule, other.target)
-                })
+                .filter(|(i, other)| *i != index && self.same_target_object(**other))
                 .map(|(_, bound)| *bound)
                 .collect();
             return self.target_group_compatible(
                 spec.rule,
                 bound.group,
-                &other_legal,
+                &other_present,
                 bound.target,
             );
         }

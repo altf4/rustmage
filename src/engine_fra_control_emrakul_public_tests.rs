@@ -259,3 +259,68 @@ fn copied_civil_war_ability_enforces_total_mana_value_on_new_targets() {
         assert!(matches!(g.state.pending, Pending::Retarget { player: p } if p == player));
     }
 }
+
+#[test]
+fn copied_civil_war_counts_retained_hexproof_target_toward_mana_value() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let echo = put(&mut g, player, "Echo, Perceptive Prodigy", Zone::Battlefield);
+        put(&mut g, player, "High Fae Trickster", Zone::Battlefield);
+        let small = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let large = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+        let other_large = put(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+        let other_small = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let saga = put(&mut g, player, "The Super Hero Civil War", Zone::Hand);
+        cast(&mut g, saga, None);
+        for _ in 0..40 {
+            if matches!(g.state.pending, Pending::Targets { .. }) {
+                break;
+            }
+            choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        }
+        act(&mut g, Action::ChooseTarget { target: Target::Card(small) });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(large) });
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        let original = g.state.stack.last().unwrap().id;
+        // A flash Aura makes the Saga a creature so Echo can copy its chapter.
+        let puppet = put(&mut g, player, "Puppet Crafting", Zone::Hand);
+        cast(&mut g, puppet, Some(Target::Card(saga)));
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        assert_ne!(g.current_kinds(saga) & 1, 0);
+        assert_eq!(g.state.stack.last().unwrap().id, original);
+        // The opponent protects the original target while it remains present.
+        let veil = put(&mut g, player.other(), "Snakeskin Veil", Zone::Hand);
+        act(&mut g, Action::Pass);
+        cast(&mut g, veil, Some(Target::Card(large)));
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        assert_eq!(g.object_view(large).zone, Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate {
+            card: echo,
+            ability: 0,
+            counter_payment: Counters::default(),
+        });
+        act(&mut g, Action::ChooseTarget { target: Target::Stack(original) });
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        assert!(matches!(g.state.pending, Pending::Retarget { player: p } if p == player));
+        let before = g.snapshot();
+        assert!(g.legal_actions().contains(&Action::FinishStackTargets));
+        act(&mut g, Action::SetStackTarget { index: 0, target: Target::Card(other_large) });
+        assert!(!g.legal_actions().contains(&Action::FinishStackTargets));
+        reject(&mut g, Action::FinishStackTargets);
+        act(&mut g, Action::SetStackTarget { index: 0, target: Target::Card(other_small) });
+        assert!(g.legal_actions().contains(&Action::FinishStackTargets));
+        act(&mut g, Action::FinishStackTargets);
+        assert!(g.state.stack.last().unwrap().is_copy);
+        g.restore(&before).unwrap();
+        assert!(matches!(g.state.pending, Pending::Retarget { player: p } if p == player));
+    }
+}
