@@ -63,3 +63,17 @@ fn loot_projected_mana_funds_a_spell_using_one_chosen_color() {
         assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn loot_zero_creature_production_has_one_zero_mana_choice() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        // Loot's ability can be borrowed by a noncreature source.
+        let source = put(&mut g, player, "Forest", Zone::Battlefield);
+        let production = ManaProduction::DistinctCreaturePowers.in_world(&g, source);
+        assert_eq!(production, ManaProduction::Fixed([0; 6]));
+        let mut rows = Vec::new();
+        production.visit(|mana| { rows.push(mana); false });
+        assert_eq!(rows, vec![[0; 6]]);
+    }
+}

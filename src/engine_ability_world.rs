@@ -867,7 +867,12 @@ impl ManaProduction {
                 }
                 powers.sort_unstable();
                 powers.dedup();
-                Self::any_color(u32::try_from(powers.len()).capacity("mana representation exhausted"))
+                let amount = u32::try_from(powers.len()).capacity("mana representation exhausted");
+                if amount == 0 {
+                    Self::Fixed([0; 6])
+                } else {
+                    Self::any_color(amount)
+                }
             }
             Self::MonocoloredPermanentColors => {
                 let controller = world.object(source).controller;
