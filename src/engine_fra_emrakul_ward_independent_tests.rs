@@ -121,7 +121,7 @@ fn echoed_ward_survives_emrakul_departure_and_each_instance_can_be_paid() {
         g.move_object(emrakul, Zone::Graveyard);
         let checkpoint = g.snapshot();
         for _ in 0..2 {
-            for group in sacrifices.chunks_exact(3) {
+            for group in sacrifices.as_chunks::<3>().0 {
                 wait_for_ward_payment(&mut g, payer);
                 for &id in group {
                     let object = g.object_ref(id);
@@ -220,7 +220,7 @@ fn echoed_wards_offer_payment_even_after_targeting_spell_leaves() {
         );
         let checkpoint = g.snapshot();
         for _ in 0..2 {
-            for group in sacrifices.chunks_exact(3) {
+            for group in sacrifices.as_chunks::<3>().0 {
                 wait_for_ward_payment(&mut g, payer);
                 for &id in group {
                     let object = g.object_ref(id);
