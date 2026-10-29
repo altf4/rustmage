@@ -613,6 +613,11 @@ impl<'g> FundingState<'g> {
         let mut graveyard_mana_cost = false;
         let mut sacrifice_mana_cost = false;
         let mut power_sensitive = false;
+        // Loyalty thresholds must retain all battlefield objects: a projected
+        // payment can change control or type before a later guarded mana action.
+        let mut loyalty_threshold_sensitive = goal.source.as_ref().is_some_and(|(_, index, _, definition, _)|
+            matches!(definition.activation(*index).guard,
+                ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. }));
         for (id, object) in game.state.objects.iter().enumerate() {
             if object.zone == Zone::Battlefield && object.controller == goal.actor {
                 let inherited = borrowed_activations::abilities(game, id as CardId);
@@ -623,6 +628,8 @@ impl<'g> FundingState<'g> {
                     .chain(inherited.into_iter().map(|a| a.rules()))
                 {
                     if let Some(production) = ability.mana_production() {
+                        loyalty_threshold_sensitive |= matches!(ability.guard,
+                            ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. });
                         power_sensitive |= matches!(
                             production.base(),
                             ManaProduction::SourcePower { .. }
@@ -664,7 +671,7 @@ impl<'g> FundingState<'g> {
                         .source.as_ref()
                         .is_some_and(|(source, _, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
-                        && (sacrifice_mana_cost || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
+                        && (loyalty_threshold_sensitive || sacrifice_mana_cost || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
                             || object.card.attachment_bonus().is_some()
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
