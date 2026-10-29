@@ -95,3 +95,53 @@ fn loot_threshold_cost_excludes_self_and_accepts_creature_or_planeswalker() {
         }
     }
 }
+
+#[test]
+fn loot_rule_tracks_blanking_copy_and_power_sign() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = loot(&mut g, player);
+        let other = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        assert_eq!(g.combat_assignment_amount(source), 2);
+        let mut item = g.activation_item(player, source, 0);
+        item.targets = vec![BoundTarget { group: 0, target: Target::Card(source), object: Some(g.object_ref(source)) }];
+        let saved = g.snapshot();
+        g.remove_target_abilities_until_end_of_turn(&item);
+        assert_eq!(g.combat_assignment_amount(source), 0);
+        g.restore(&saved).unwrap();
+        g.state.objects[source as usize].growth.power = 2;
+        assert_eq!(g.combat_assignment_amount(source), 0);
+        g.state.objects[source as usize].growth.power = 5;
+        assert_eq!(g.combat_assignment_amount(source), 3);
+        let object = g.object_ref(other);
+        g.apply_temporary_copy(object, CopyRecipe::new(Card::from_name("Loot, the Anomaly").unwrap()), CopyDeadline::EndOfTurn);
+        assert_eq!(g.combat_assignment_amount(other), 2);
+    }
+}
+
+#[test]
+fn loot_sacrifice_replacement_pays_and_queued_effect_tracks_incarnation() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = loot(&mut g, player);
+        for _ in 0..7 { put(&mut g, player, "Forest", Zone::Graveyard); }
+        let fodder = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        put(&mut g, player, "Rest in Peace", Zone::Battlefield);
+        let action = Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() };
+        act(&mut g, action);
+        let object = g.object_ref(fodder);
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        assert_eq!(g.object_view(fodder).zone, Zone::Exile);
+        let saved = g.snapshot();
+        for reenter in [false, true] {
+            if reenter {
+                g.move_object(source, Zone::Exile);
+                g.move_object(source, Zone::Battlefield);
+            }
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (if reenter { -2 } else { -4 }, 4));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
