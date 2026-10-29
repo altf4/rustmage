@@ -3,7 +3,7 @@
   "catalogue_id": 5452,
   "oracle_id": "517f84b5-cf99-410d-96ea-910740231dac",
   "facts_sha256": "23ce6f944ecd1f26195740467bceb8d9458a44e90d7de7ed97463cd539ca9adf",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "613a363c95504b1d3e640982ce562d719a9e3a83b168224f65ba82ca0ad52181",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/v/VoidExtrapolator.java",

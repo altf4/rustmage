@@ -3,7 +3,7 @@
   "catalogue_id": 5444,
   "oracle_id": "1063822f-47d3-42e9-8a21-f62b12609fe1",
   "facts_sha256": "b7c1659a12594135f805236ead8bc7d07fcaa9b46bf7e50fe4b8eb86c95f6e1e",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "1d2231fad0d913683fa0a33a25010ff079f6aea12950189a21a1129f0086f106",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/f/FateholdChronologist.java",

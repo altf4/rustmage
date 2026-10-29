@@ -3,7 +3,7 @@
   "catalogue_id": 2366,
   "oracle_id": "02b41d0e-82e7-4307-8cc4-8175ff78ea1f",
   "facts_sha256": "59946e3db46190109bddc8e19f0e57110762550ed1c1ce6f6698dfb59bad602b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bebf89cbcb6a23721e9b8d00d4205d2eb35ea34450f8d24c2a6a71f5d055a63e"
@@ -38,5 +38,6 @@
       "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
       "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_teyo_followup_tests.rs"
 }

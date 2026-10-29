@@ -3,7 +3,7 @@
   "catalogue_id": 5450,
   "oracle_id": "511951ed-fbff-4e44-9429-27f237496672",
   "facts_sha256": "230e23946bcc26317eeb881ff978fdaec95410d25619c7f67529c7d5a65fb829",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "c1ad51c28a615999341e720e610a99b9bad81215cef6ec8daef39af3abf80c2b",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/p/ParadoxShaper.java",

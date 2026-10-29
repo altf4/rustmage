@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c6fb0a5e868cbe4e9a3050ce8f66972438c49cb9004756cedc421fb4a0c2e127",
+  "catalogue_version": "efd4705272044279521016168ee77a9cbc4980d080799fc07cf5b6e1fd71e234",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2791,
-  "implemented_total": 2797,
+  "implemented_standard_cards": 2812,
+  "implemented_total": 2818,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 144,
-      "gated": 141
+      "complete": 165,
+      "gated": 120
     },
     "frc": {
       "total": 6,
@@ -6699,8 +6699,8 @@
     {
       "name": "Command the Stage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/command_the_stage.rs",
       "set": "fra"
     },
@@ -8547,8 +8547,8 @@
     {
       "name": "Denzilore Fatehold",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/denzilore_fatehold.rs",
       "set": "fra"
     },
@@ -8667,8 +8667,8 @@
     {
       "name": "Desperate Futurescribe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/desperate_futurescribe.rs",
       "set": "fra"
     },
@@ -11835,8 +11835,8 @@
     {
       "name": "Fatehold Chronologist // Peer Review",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/fatehold_chronologist_peer_review.rs",
       "set": "fra"
     },
@@ -15259,8 +15259,8 @@
     {
       "name": "Grim Repriser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/grim_repriser.rs",
       "set": "fra"
     },
@@ -15659,8 +15659,8 @@
     {
       "name": "Hallway Heckler // Vicious Verse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/hallway_heckler_vicious_verse.rs",
       "set": "fra"
     },
@@ -19131,8 +19131,8 @@
     {
       "name": "Kiora of Fire and Ashes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/kiora_of_fire_and_ashes.rs",
       "set": "fra"
     },
@@ -24987,8 +24987,8 @@
     {
       "name": "Paradox Shaper // Omit Variables",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/paradox_shaper_omit_variables.rs",
       "set": "fra"
     },
@@ -26171,8 +26171,8 @@
     {
       "name": "Proctor of Potential",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/proctor_of_potential.rs",
       "set": "fra"
     },
@@ -26219,8 +26219,8 @@
     {
       "name": "Proft, Consulting Detective",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/proft_consulting_detective.rs",
       "set": "fra"
     },
@@ -26347,8 +26347,8 @@
     {
       "name": "Prudent Fateseer // Peer Review",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/prudent_fateseer_peer_review.rs",
       "set": "fra"
     },
@@ -29435,8 +29435,8 @@
     {
       "name": "Saheeli, Consul of Oversight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/saheeli_consul_of_oversight.rs",
       "set": "fra"
     },
@@ -30483,8 +30483,8 @@
     {
       "name": "Semester Foreseer // Peer Review",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/semester_foreseer_peer_review.rs",
       "set": "fra"
     },
@@ -33371,8 +33371,8 @@
     {
       "name": "Stingerquill Voxmancer // Vicious Verse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/stingerquill_voxmancer_vicious_verse.rs",
       "set": "fra"
     },
@@ -34395,8 +34395,8 @@
     {
       "name": "Surveillance Phantasm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/surveillance_phantasm.rs",
       "set": "fra"
     },
@@ -35475,16 +35475,16 @@
     {
       "name": "Teyo, Diamondblade Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/teyo_diamondblade_mage.rs",
       "set": "fra"
     },
     {
       "name": "Teyo, Lightshield Expert",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/teyo_lightshield_expert.rs",
       "set": "fra"
     },
@@ -35507,8 +35507,8 @@
     {
       "name": "Thalia, the Survivor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/thalia_the_survivor.rs",
       "set": "fra"
     },
@@ -36411,8 +36411,8 @@
     {
       "name": "Theorix Metamage // Omit Variables",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/theorix_metamage_omit_variables.rs",
       "set": "fra"
     },
@@ -39627,8 +39627,8 @@
     {
       "name": "Void Extrapolator // Omit Variables",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/void_extrapolator_omit_variables.rs",
       "set": "fra"
     },
@@ -40499,8 +40499,8 @@
     {
       "name": "Whiplash Wordsmith // Vicious Verse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/whiplash_wordsmith_vicious_verse.rs",
       "set": "fra"
     },

@@ -3503,6 +3503,14 @@
     "journal": "100cb581dd613f1f",
     "observations": "af83b19d040cf14b"
   },
+  "Command the Stage": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "543918deceb4be8c",
+    "observations": "c8c8b7cd14dc037b"
+  },
   "Commercial District": {
     "root": "main",
     "status": "completed",
@@ -4455,6 +4463,14 @@
     "journal": "e52ccec308bcae2d",
     "observations": "e73f4693100799df"
   },
+  "Denzilore Fatehold": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e6b57c7d18aeeefd",
+    "observations": "86eb8d130c0eac0c"
+  },
   "Dependable Quinjet": {
     "root": "main",
     "status": "completed",
@@ -4526,6 +4542,14 @@
     "zone": "Battlefield",
     "journal": "83f6077e8fb7050d",
     "observations": "55c8f3b0597fd578"
+  },
+  "Desperate Futurescribe": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "6d1bbae7b5f6c07d",
+    "observations": "295f963bbcb84f5e"
   },
   "Detention Chariot": {
     "root": "main",
@@ -6358,6 +6382,14 @@
     "zone": "Graveyard",
     "journal": "041072842308ceea",
     "observations": "9e3dbfe94e36274c"
+  },
+  "Fatehold Chronologist // Peer Review": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "3ae16c4d2132fee0",
+    "observations": "f30407298d8cd5b5"
   },
   "Fateshaper Aspirant": {
     "root": "main",
@@ -8343,6 +8375,14 @@
     "journal": "9d78478b460edd3d",
     "observations": "6cb205e272501602"
   },
+  "Grim Repriser": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "02d924b8eb6dcbdf",
+    "observations": "2e7d3e4b8994eb10"
+  },
   "Grizzly Bears": {
     "root": "main",
     "status": "completed",
@@ -8550,6 +8590,14 @@
     "zone": "Battlefield",
     "journal": "12e1a713ea13279c",
     "observations": "0b96857ce38b8993"
+  },
+  "Hallway Heckler // Vicious Verse": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "f6f1d7f63e5706d9"
   },
   "Hamato Guardian Stance": {
     "root": "main",
@@ -10350,6 +10398,14 @@
     "zone": "Battlefield",
     "journal": "b7e8650770c4fc3c",
     "observations": "d73e8e89cdd46fb4"
+  },
+  "Kiora of Fire and Ashes": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "0653fadb625ba641",
+    "observations": "cf619ade8013a05b"
   },
   "Kiora, the Rising Tide": {
     "root": "main",
@@ -13599,6 +13655,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "8e001bccc804fedd"
   },
+  "Paradox Shaper // Omit Variables": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "6a420d25772ef5d8",
+    "observations": "0825dd9126cc08a7"
+  },
   "Paradox Surveyor": {
     "root": "main",
     "status": "completed",
@@ -14231,6 +14295,14 @@
     "journal": "1a8b528150847710",
     "observations": "b5ad35fa0bf760a5"
   },
+  "Proctor of Potential": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "8a2094cb420e3770",
+    "observations": "f77f78cd266a2688"
+  },
   "Proctor's Gaze": {
     "root": "main",
     "status": "completed",
@@ -14262,6 +14334,14 @@
     "zone": "Battlefield",
     "journal": "5cbad8cd6d1a3eda",
     "observations": "701e77e873cecfe0"
+  },
+  "Proft, Consulting Detective": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "d55cfa08e949da68"
   },
   "Progenitus": {
     "root": "main",
@@ -14350,6 +14430,14 @@
     "zone": "Battlefield",
     "journal": "53116e4964ed0a0e",
     "observations": "0df34c2794a366b4"
+  },
+  "Prudent Fateseer // Peer Review": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "945fce9c5ce295cb",
+    "observations": "3b9b978c95e47ead"
   },
   "Pterafractyl": {
     "root": "main",
@@ -15911,6 +15999,14 @@
     "journal": "b6cf3749b9ab6fcf",
     "observations": "72e68ddc7ede3aa8"
   },
+  "Saheeli, Consul of Oversight": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "157c935ef8d4f416",
+    "observations": "a26820b0f2063046"
+  },
   "Saheeli, Jewel of Avishkar": {
     "root": "main",
     "status": "completed",
@@ -16486,6 +16582,14 @@
     "zone": "Graveyard",
     "journal": "7413af33e4837b13",
     "observations": "82a72aeb0f4dae8b"
+  },
+  "Semester Foreseer // Peer Review": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "0ad24a794a30d34a",
+    "observations": "087203cef2f41b7d"
   },
   "Send in the Pest": {
     "root": "main",
@@ -18015,6 +18119,14 @@
     "journal": "299398cd1be7b07e",
     "observations": "b571879f48559e47"
   },
+  "Stingerquill Voxmancer // Vicious Verse": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "6a8b7702bcd27b01",
+    "observations": "ad8e74aeb03d010a"
+  },
   "Stinging Cave Crawler": {
     "root": "main",
     "status": "completed",
@@ -18647,6 +18759,14 @@
     "journal": "621cb049055112b8",
     "observations": "ec0893eeaf01d8ca"
   },
+  "Surveillance Phantasm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "d1f2d69fe09e7125"
+  },
   "Surveillance Room": {
     "root": "main",
     "status": "completed",
@@ -19215,6 +19335,30 @@
     "journal": "c88e9d51af225cf5",
     "observations": "0217fa0b64fa0190"
   },
+  "Teyo, Diamondblade Mage": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "23fa9208b9c6239b",
+    "observations": "ba115ed22b4daa60"
+  },
+  "Teyo, Lightshield Expert": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "d2b5ed4d948d6929",
+    "observations": "c25fb18286f3ce64"
+  },
+  "Thalia, the Survivor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1ee756735d2f017d",
+    "observations": "1389fe15ba0d029c"
+  },
   "Thanos, the Mad Titan": {
     "root": "main",
     "status": "completed",
@@ -19550,6 +19694,14 @@
     "zone": "Graveyard",
     "journal": "51d6d68ec0b92a7b",
     "observations": "30bab9ca6523eb9f"
+  },
+  "Theorix Metamage // Omit Variables": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "d917348d6f27efeb",
+    "observations": "f6bee329eeedb523"
   },
   "They Went This Way": {
     "root": "main",
@@ -21303,6 +21455,14 @@
     "journal": "ce93789b5fa64c9f",
     "observations": "1f7231b0a13ad487"
   },
+  "Void Extrapolator // Omit Variables": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "5b864de1261a068b"
+  },
   "Volatile Wanderglyph": {
     "root": "main",
     "status": "completed",
@@ -21686,6 +21846,14 @@
     "zone": "Battlefield",
     "journal": "fde81ed0fe19a62e",
     "observations": "ecd2f4ca42e04b30"
+  },
+  "Whiplash Wordsmith // Vicious Verse": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "860998a80b565962",
+    "observations": "a9c71eab0f283de9"
   },
   "Whiplash, Vengeful Engineer": {
     "root": "main",

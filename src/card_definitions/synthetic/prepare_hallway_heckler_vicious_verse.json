@@ -3,7 +3,7 @@
   "catalogue_id": 5447,
   "oracle_id": "d1af8018-35b5-4b6f-93c8-1ed6bd8c92b1",
   "facts_sha256": "0f069b9d74000f4e46d479b6d987340d63d109170da9ba165ba859820a254ce1",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "a6bc416342f62e0bb5e71718324400fcfcc40f1e4ad28607fce520f544e8226c",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/h/HallwayHeckler.java",

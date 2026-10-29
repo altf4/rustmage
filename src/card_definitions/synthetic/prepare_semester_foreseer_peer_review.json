@@ -3,7 +3,7 @@
   "catalogue_id": 5445,
   "oracle_id": "21b8d59f-a90d-44ff-a2e3-9f439ac3e14a",
   "facts_sha256": "213f2b2bc3ee193b10a2c0bd17ecdc0ce3aef76468db3c3fd41525bf43269b92",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "f878fa5b47faa77a16908318a179b757f486855838f95ba24c8aecf30ec5012a",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SemesterForeseer.java",

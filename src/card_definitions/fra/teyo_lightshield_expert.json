@@ -3,7 +3,7 @@
   "catalogue_id": 4410,
   "oracle_id": "77a9fac6-3c26-4456-9e0b-f5839a3dcae2",
   "facts_sha256": "c58b5648722729ba21b60012773f1580020e20b2097cfbea614ef9dd82dc2ec3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ca6e717db185796423c59fd9dc99b85ec951149261501ed2e4b6da1811886201"
@@ -48,5 +48,6 @@
       "path": "Mage/src/main/java/mage/counters/CounterType.java",
       "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_teyo_followup_tests.rs"
 }

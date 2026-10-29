@@ -3,7 +3,7 @@
   "catalogue_id": 5449,
   "oracle_id": "e1ffb884-a89e-4e2a-9beb-8bd5838b6a94",
   "facts_sha256": "25eb340816d785cf8d17c94e7513416a09588e94eb5ad7a9773c250787e9faaf",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "cbc94215cddeb9bd8a3ab39ffb2344f25c09c726cfa4a78657389d62d4265e74",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/w/WhiplashWordsmith.java",

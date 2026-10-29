@@ -3,7 +3,7 @@
   "catalogue_id": 5448,
   "oracle_id": "e8f755f7-ec93-4d2e-bffc-c719984fa13d",
   "facts_sha256": "f3afeb1c12e0655529505d8d1364ab989e89726fc08729dcfe83a8b9f0b226ee",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "2d0e13488e828a49ef1976f5c69d7d17f3f5009f19a3aad1efbacb989323bb7a",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/StingerquillVoxmancer.java",
