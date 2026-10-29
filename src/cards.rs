@@ -2569,6 +2569,8 @@ pub(crate) enum ReplacementSpec {
     DoubleCreatureDamage,
     DoubleOpponentDamage,
     NoncombatDamagePlusSourcePower,
+    /// Add a fixed amount to controlled-source noncombat damage to opponents or their permanents.
+    NoncombatDamageToOpponentPlus(u16),
     DoubleEquippedDamage,
     HealPreviousDamageToSelf,
     PreventOtherCreatureNoncombatDamage,

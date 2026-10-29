@@ -601,7 +601,8 @@ impl Game {
                         event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
                     }
-                    ReplacementSpec::NoncombatDamagePlusSourcePower => {
+                    ReplacementSpec::NoncombatDamagePlusSourcePower
+                    | ReplacementSpec::NoncombatDamageToOpponentPlus(_) => {
                         !event.combat
                             && event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
@@ -722,6 +723,10 @@ impl Game {
                     .amount
                     .checked_mul(2)
                     .capacity("damage replacement quantity exhausted")
+            }
+            ReplacementSpec::NoncombatDamageToOpponentPlus(amount) => {
+                event.amount = event.amount.checked_add(i128::from(amount))
+                    .capacity("damage replacement quantity exhausted");
             }
             ReplacementSpec::NoncombatDamagePlusSourcePower => {
                 // CR107.1b uses signed intermediate values and clamps the final damage result.
