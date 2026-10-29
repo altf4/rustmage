@@ -5465,7 +5465,8 @@
     17,
     2,
     2,
-    4
+    4,
+    2
   ],
   "aliases": [
     [
@@ -167974,13 +167975,18 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Variable Chaser",
+        "mana_cost": "{2}{U}",
+        "type_line": "Creature — Human Wizard"
+      }
     },
     {
       "index": 4851,
@@ -185071,6 +185077,33 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5460,
+      "module": "card_5460",
+      "path": "synthetic/prepare_variable_chaser_arc_of_fortune.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Arc of Fortune",
+      "oracle_id": "67c603cc-ad66-4a1c-8386-5901c9c01bfb",
+      "facts_sha256": "9464e84f9a1255a8c673918490129b8bb970167af7ff5bd40d08b7419e5aa7bf",
+      "mana_cost": "{2}{U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
     }
   ]
 }

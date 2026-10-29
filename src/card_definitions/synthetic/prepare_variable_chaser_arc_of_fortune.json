@@ -1,0 +1,13 @@
+{
+  "name": "Arc of Fortune",
+  "catalogue_id": 5460,
+  "oracle_id": "67c603cc-ad66-4a1c-8386-5901c9c01bfb",
+  "facts_sha256": "9464e84f9a1255a8c673918490129b8bb970167af7ff5bd40d08b7419e5aa7bf",
+  "complete": false,
+  "physical_metadata_sha256": "eeb3aeeba17bad23288f7be34634abb6aef3e2d22e8e9aa85f2233a26eb98ef0",
+  "oracle_face": {
+    "oracle_id": "67c603cc-ad66-4a1c-8386-5901c9c01bfb",
+    "index": 1,
+    "sha256": "595cf3f41abe9bcf4f9f6017fd0554941dd96ce4dbacdf5f25142f34b7e5944f"
+  }
+}
