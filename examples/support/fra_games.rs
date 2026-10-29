@@ -88,7 +88,7 @@ impl Report {
     }
 }
 pub fn cases(seeds_per_pair: u64) -> Vec<(usize, u64, Player, bool)> {
-    (0..7)
+    (0..8)
         .flat_map(|pair| {
             (0..seeds_per_pair).flat_map(move |seed| {
                 [false, true].into_iter().map(move |swapped| {
@@ -321,6 +321,82 @@ fn decks(require_complete: bool) -> Result<(Vec<Deck>, usize), String> {
                 "Yoshimaru, Scrappy Stray",
             ],
         ),
+        (
+            "Fatehold Second Survey",
+            ["Plains", "Island"],
+            [
+                "Chandra, Chill of Compliance",
+                "Countersculpt",
+                "Cruel Calculations",
+                "Denzilore Fatehold",
+                "Fateshaper Aspirant",
+                "Generous Revival",
+                "Germinate Recruits",
+                "Gideon's Memorial",
+                "Guiding Hydra",
+                "Hapatra, the Desert Frost",
+                "Hexhaven Battalion",
+                "Infinite Coursework",
+                "Jace, Reality Sculptor",
+                "Memory Trap",
+                "Plan for All Outcomes",
+                "Protege's Awakening",
+                "Prudent Fateseer // Peer Review",
+                "Ruric Thar, Biomagus",
+                "Saheeli, Consul of Oversight",
+                "Seasoned Cryomancer",
+                "Semester Foreseer // Peer Review",
+                "Shatterwing Pegasus",
+                "Sphinx of False Conclusions",
+                "Sphinx's Approach",
+                "Tetsuko Umezawa, Fugitive",
+                "Teyo, Lightshield Expert",
+                "Thalia, the Survivor",
+                "Tomik, Orzhov Lawmage",
+                "Traxos, Academy Guardian",
+                "Undulating Witness",
+                "Variable Chaser // Arc of Fortune",
+                "Way of the Cryomancer",
+            ],
+        ),
+        (
+            "Stingerquill Second Survey",
+            ["Swamp", "Mountain"],
+            [
+                "Ajani Unrelenting",
+                "Ajani's Anguish",
+                "Apex Witchstalker",
+                "Arni, Renowned Champion",
+                "Artifist Acumen",
+                "Awaken the Inferno",
+                "Chandra's Emberling",
+                "Chandra, Torch of Defiance",
+                "Command the Stage",
+                "Curse-Marred Demon",
+                "Draconic Visitor",
+                "Essence Burn",
+                "Extrapolate the Impossible",
+                "Fulminous Forte",
+                "Gallia, the Merrymaker",
+                "Garruk, Veiled Butcher",
+                "Heartstring Puller",
+                "Identity Echo",
+                "Ingris Stingerquill",
+                "Jiang Yanggu, Alone",
+                "Kiora of Fire and Ashes",
+                "Koth, the Geomancer",
+                "Massacre Girl, Most Wanted",
+                "Master of Barbs",
+                "No Admittance",
+                "Overwrite the Multiverse",
+                "Pia, Determined Rebuilder",
+                "Pompous Battlemage // Improvised Act",
+                "Pyre Rhymer // Molten Tide",
+                "Rewrite Regrets",
+                "Rise of the Deathbringer",
+                "Samut, Hazoret's Champion",
+            ],
+        ),
     ];
     let all_specs = specifications
         .iter()
@@ -532,7 +608,16 @@ fn run_inner(
     require_complete: bool,
 ) -> Result<Report, String> {
     let (decks, pool_members) = decks(require_complete)?;
-    let pairings = [(0, 1), (2, 3), (4, 1), (1, 2), (3, 4), (5, 2), (6, 7)];
+    let pairings = [
+        (0, 1),
+        (2, 3),
+        (4, 1),
+        (1, 2),
+        (3, 4),
+        (5, 2),
+        (6, 7),
+        (8, 9),
+    ];
     let started = Instant::now();
     let mut games = Vec::new();
     let mut total_witnesses = BTreeMap::new();
@@ -743,7 +828,7 @@ fn run_inner(
         } else {
             "benchmark"
         },
-        scope: "Selected cases from eight exactly 60-card Standard decks; physical FRA members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory; not exhaustive gameplay coverage",
+        scope: "Selected cases from ten exactly 60-card Standard decks; physical FRA members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory; not exhaustive gameplay coverage",
         pool_members,
         played_deck_identities,
         observed_spell_faces,
