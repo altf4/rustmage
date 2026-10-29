@@ -961,6 +961,8 @@ struct PlayerState {
     greatest_declared_attack_power_this_turn: Option<i128>,
     life: i128,
     poison_counters: u64,
+    /// Sparse non-poison counters; poison keeps its existing public fast path.
+    other_player_counters: Option<Box<[u64; 4]>>,
     mana: Mana,
     library: SharedVec<CardId>, // top is last, bottom is first
     mulligans: u8,
@@ -968,6 +970,22 @@ struct PlayerState {
     attempted_empty_draw: bool,
     // Subset of mana[3], retained across steps until this combat ends.
     combat_red_mana: u32,
+}
+
+impl PlayerState {
+    fn player_counter(&self, kind: crate::cards::PlayerCounterKind) -> u64 {
+        if kind == crate::cards::PlayerCounterKind::Poison { return self.poison_counters; }
+        self.other_player_counters.as_ref().map_or(0, |c| c[kind.index() - 1])
+    }
+    fn add_player_counter(&mut self, kind: crate::cards::PlayerCounterKind, amount: u64) {
+        if amount == 0 { return; }
+        let slot = if kind == crate::cards::PlayerCounterKind::Poison {
+            &mut self.poison_counters
+        } else {
+            &mut self.other_player_counters.get_or_insert_with(|| Box::new([0; 4]))[kind.index() - 1]
+        };
+        *slot = slot.checked_add(amount).capacity("player counter quantity exhausted");
+    }
 }
 
 /// How an actual spell was cast; abilities have no cast information.
@@ -2322,6 +2340,12 @@ pub struct ZoneChange {
     pub evidence_collected: bool,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerCounterAmountView {
+    pub kind: crate::cards::PlayerCounterKind,
+    pub count: u64,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub enduring_story: bool,
@@ -2355,6 +2379,8 @@ pub struct PlayerView {
     pub attacked_this_turn: bool,
     pub life: i128,
     pub poison_counters: u64,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub other_counters: Vec<PlayerCounterAmountView>,
     pub mana: Mana,
     pub combat_red_mana: u32,
     pub library_count: usize,
@@ -2870,6 +2896,7 @@ impl Game {
             greatest_declared_attack_power_this_turn: None,
             life: STARTING_LIFE,
             poison_counters: 0,
+            other_player_counters: None,
             mana: [0; 6],
             library: SharedVec::default(),
             mulligans: 0,
@@ -8551,6 +8578,11 @@ impl Game {
                 attacked_this_turn: s.players[i].attacked_this_turn,
                 life: s.players[i].life,
                 poison_counters: s.players[i].poison_counters,
+                other_counters: crate::cards::PlayerCounterKind::ALL.into_iter().skip(1)
+                    .filter_map(|kind| {
+                        let count = s.players[i].player_counter(kind);
+                        (count != 0).then_some(PlayerCounterAmountView { kind, count })
+                    }).collect(),
                 mana: s.players[i].mana,
                 combat_red_mana: s.players[i].combat_red_mana,
                 library_count: s.players[i].library.len(),
@@ -8996,6 +9028,7 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + s.players.iter().filter(|p| p.other_player_counters.is_some()).count() * std::mem::size_of::<[u64; 4]>()
             + s.player_control.as_ref().map_or(0, |_| {
                 std::mem::size_of::<player_control::PlayerControlState>()
             })

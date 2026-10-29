@@ -2675,8 +2675,12 @@ pub(crate) enum ReplacementSpec {
 }
 
 /// Player counters currently represented by the game state.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
-pub enum PlayerCounterKind { Poison }
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
+pub enum PlayerCounterKind { Poison, Energy, Experience, Rad, Ticket }
+impl PlayerCounterKind {
+    pub const ALL: [Self; 5] = [Self::Poison, Self::Energy, Self::Experience, Self::Rad, Self::Ticket];
+    pub(crate) fn index(self) -> usize { self as usize }
+}
 
 /// Card-type bit reserved for battles.
 pub(crate) const BATTLE_KIND: u16 = 256;
