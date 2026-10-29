@@ -233,15 +233,16 @@ impl Game {
         self.state.passes = 0;
     }
     pub(super) fn resolve_saddle(&mut self, item: &SpellView) {
-        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+        let Some(source) = item.source else { return; };
+        if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return;
         }
-        let first = !self.is_saddled(item.object);
+        let first = !self.is_saddled(source.object);
         if first {
-            self.state.saddled.push(item.object);
+            self.state.saddled.push(source.object);
         }
         if first {
-            let source = self.object_view(item.card);
+            let source = self.object_view(source.id);
             for (index, a) in source.card.triggers().iter().enumerate() {
                 if matches!(a.condition.event(), TriggerCondition::SelfSaddledFirst) {
                     self.queue_trigger(&source, index);

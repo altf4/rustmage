@@ -279,7 +279,7 @@ impl Game {
                 }
             }
             return Some(XChoiceView {
-                card: self.state.resolving.as_ref().unwrap().item.object,
+                card: self.state.resolving.as_ref()?.item.source?.object,
                 intervals: vec![XInterval {
                     minimum: 0,
                     maximum: lo as u32,
@@ -416,11 +416,8 @@ impl Game {
                     .map_or(0, |f| f.power.max(0) as u128)
             }
             AmountValue::SourceLastKnownPower => {
-                if item.source_facts.is_creature() {
-                    item.source_facts.power.max(0) as u128
-                } else {
-                    0
-                }
+                item.source.filter(|source| source.facts.is_creature())
+                    .map_or(0, |source| source.facts.power.max(0) as u128)
             }
             AmountValue::SacrificedToughness => item
                 .sacrificed_toughness
@@ -439,8 +436,7 @@ impl Game {
                 .source_counter_payment
                 .filter(|payment| payment.paid && payment.kind == kind)
                 .map_or(0, |payment| u128::from(payment.amount)),
-            AmountValue::SourceCounterQuantity(kind) => self
-                .source_counter_quantity_live(item.object, kind)
+            AmountValue::SourceCounterQuantity(kind) => item.source.and_then(|source| self.source_counter_quantity_live(source.object, kind))
                 .map(u128::from)
                 .unwrap_or_else(|| {
                     item.source_counter_lki
@@ -451,11 +447,13 @@ impl Game {
             AmountValue::SourceToughness => self.source_toughness(item),
             AmountValue::SourceEquipmentCount => self.source_equipment_quantity(item),
             AmountValue::SourcePower => {
-                if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
-                    self.stats(item.card).power.max(0) as u128
-                } else {
-                    item.source_facts.power.max(0) as u128
-                }
+                item.source.map_or(0, |source| {
+                    if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
+                        self.stats(source.id).power.max(0) as u128
+                    } else {
+                        source.facts.power.max(0) as u128
+                    }
+                })
             }
             AmountValue::LifeEventAmount => {
                 item.life_event.expect("saved life event").amount.max(0) as u128
@@ -484,7 +482,7 @@ impl Game {
                 .item_amount(*value, item)
                 .checked_mul(u128::from(factor))
                 .capacity("effect amount representation exhausted"),
-            other => self.amount_value(other, item.object, item.controller),
+            other => item.source.map_or(0, |source| self.amount_value(other, source.object, item.controller)),
         }
     }
 }

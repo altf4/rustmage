@@ -13,7 +13,7 @@ impl Game {
             return None;
         }
         item.mode.and_then(|mode| {
-            item.source_card
+            item.source?.card
                 .tiered_costs()?
                 .get(usize::from(mode))
                 .copied()
@@ -77,11 +77,12 @@ impl Game {
 
 impl Game {
     pub(super) fn shuffle_source_into_owner_library(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return; };
         // Ownership of a physical card cannot change. Its stable slot retains
         // that fact after departure, while the exact ref forbids a later incarnation.
-        let owner = self.state.objects[item.card as usize].owner;
-        if self.object_ref(item.card) == item.object && self.on_battlefield(item.card) {
-            self.move_object(item.card, Zone::Library);
+        let owner = self.state.objects[source.id as usize].owner;
+        if self.object_ref(source.id) == source.object && self.on_battlefield(source.id) {
+            self.move_object(source.id, Zone::Library);
         }
         // CR701.24c requires this shuffle even if the source cannot be moved.
         self.forget_library_top(owner);
@@ -90,6 +91,7 @@ impl Game {
             .shuffle(&mut self.state.players[owner.index()].library);
     }
     pub(super) fn shuffle_target_into_library(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return; };
         for bound in &item.targets {
             if !self.valid_library_target(item, *bound) {
                 continue;
@@ -104,7 +106,7 @@ impl Game {
                 .shuffle(&mut self.state.players[before.owner.index()].library);
             if event.moved && event.destination == Zone::Library {
                 self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
-                    source: item.object,
+                    source: source.object,
                     card: before.card,
                     target_before: object,
                     target_after: event.after,

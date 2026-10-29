@@ -289,7 +289,8 @@ impl Game {
         }
     }
     pub(super) fn resolve_crew(&mut self, item: &SpellView) {
-        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+        let Some(source) = item.source else { return; };
+        if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return;
         }
         self.animate_source(
@@ -303,12 +304,12 @@ impl Game {
             },
         );
         let state = self.state.crew.get_or_insert_with(Default::default);
-        if let Err(at) = state.animated.binary_search(&item.object) {
+        if let Err(at) = state.animated.binary_search(&source.object) {
             state
                 .animated
                 .try_reserve(1)
                 .capacity("Vehicle animation capacity exhausted");
-            state.animated.insert(at, item.object)
+            state.animated.insert(at, source.object)
         }
     }
 }
