@@ -242,8 +242,96 @@ fn decks(require_complete: bool) -> Result<(Vec<Deck>, usize), String> {
             ],
         ),
     ];
+    // Singleton spells broaden the exercised identities without changing the
+    // existing archetype decks or their mechanic witnesses.
+    let diverse = [
+        (
+            "Fatehold Survey",
+            ["Plains", "Island"],
+            [
+                "Academic Ascent",
+                "Afterthought Sentry",
+                "Arni, Humble Scribe",
+                "Cryotheory Adept",
+                "Danitha, Sword of Hope",
+                "Desperate Futurescribe",
+                "Divining Duelist",
+                "Enlightened Confidant",
+                "Fblthp, Impossibly Lost",
+                "Flickering Hound",
+                "Geist of Saint Thalia",
+                "Graft Surgeon",
+                "Icy Reception",
+                "Jace's Machinations",
+                "Karn, Argent Defender",
+                "Koth of the Homestead",
+                "Liliana the Faultless",
+                "Living Library",
+                "Loyal Tutor",
+                "Lyra, Archangel of Dawn",
+                "Lyra, Tolarian Archangel",
+                "Mindseeker Oculus",
+                "Perfected Theory",
+                "Precise Redaction",
+                "Predictive Preparations",
+                "Proft, Consulting Detective",
+                "Prophesied End",
+                "Refute Destiny",
+                "Rescue Girl, First Responder",
+                "Samut, Tyrant of Naktamun",
+                "Surgical Precision",
+                "Yuriko, Hope from the Shadows",
+            ],
+        ),
+        (
+            "Vigorbloom Survey",
+            ["Forest", "Swamp"],
+            [
+                "Bestial Incursion",
+                "Bloodline Recollector // Ancestral Craving",
+                "Break Under Pressure",
+                "Cast Away Doubt",
+                "Compel Brutality",
+                "Danitha, Spear of Agony",
+                "Darklight Phoenix",
+                "Extended Absence",
+                "Ferocity of the Hunt",
+                "Flourishing Grapple",
+                "Gallia, Tragic Host",
+                "Gideon the Oathless",
+                "Greenhouse Propagator",
+                "Hunter's Axe",
+                "Inspired Tethermage",
+                "Jiang Yanggu, Never Alone",
+                "Lich's Relic",
+                "Liliana the Repentant",
+                "Loot, the Anomaly",
+                "Loot, the Nexus",
+                "Mabel, Bitter Recluse",
+                "Marwyn, the Preserver",
+                "Multiply by Zero",
+                "Pia, Aether Ascetic",
+                "Primal Witchstalker",
+                "Proft, Sinister Mastermind",
+                "Rampart Hunter",
+                "Sanctum Lurker",
+                "Screeching Soulbreaker",
+                "Simulacrum Shaper",
+                "Theoretical Necromancer",
+                "Yoshimaru, Scrappy Stray",
+            ],
+        ),
+    ];
+    let all_specs = specifications
+        .iter()
+        .map(|(name, lands, spells)| (*name, *lands, spells.as_slice(), 4))
+        .chain(
+            diverse
+                .iter()
+                .map(|(name, lands, spells)| (*name, *lands, spells.as_slice(), 1)),
+        );
     let mut out = Vec::new();
-    for (name, lands, spells) in specifications {
+    for (name, lands, spells, copies) in all_specs {
         let mut cards = Vec::new();
         for land in lands {
             let card = Card::from_name(land).unwrap();
@@ -252,7 +340,7 @@ fn decks(require_complete: bool) -> Result<(Vec<Deck>, usize), String> {
         for spell in spells {
             let card =
                 Card::from_name(spell).ok_or_else(|| format!("unknown workload card {spell}"))?;
-            cards.extend(std::iter::repeat_n(card, 4));
+            cards.extend(std::iter::repeat_n(card, copies));
         }
         let mut counts = BTreeMap::new();
         for &c in &cards {
@@ -444,7 +532,7 @@ fn run_inner(
     require_complete: bool,
 ) -> Result<Report, String> {
     let (decks, pool_members) = decks(require_complete)?;
-    let pairings = [(0, 1), (2, 3), (4, 1), (1, 2), (3, 4), (5, 2)];
+    let pairings = [(0, 1), (2, 3), (4, 1), (1, 2), (3, 4), (5, 2), (6, 7)];
     let started = Instant::now();
     let mut games = Vec::new();
     let mut total_witnesses = BTreeMap::new();
@@ -655,7 +743,7 @@ fn run_inner(
         } else {
             "benchmark"
         },
-        scope: "Selected cases from six exactly 60-card Standard decks; physical FRA members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory; not exhaustive gameplay coverage",
+        scope: "Selected cases from eight exactly 60-card Standard decks; physical FRA members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory; not exhaustive gameplay coverage",
         pool_members,
         played_deck_identities,
         observed_spell_faces,

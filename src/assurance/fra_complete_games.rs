@@ -62,11 +62,17 @@ fn fra_pool_audit_and_cases_preserve_the_acceptance_gate() {
 // This bounded smoke is not set acceptance; `run` retains its full-pool gate.
 #[test]
 fn fra_admitted_decks_finish_and_replay_in_both_seats() {
-    let cases = workload::cases(2);
-    assert_eq!(cases.len(), 24);
+    let mut cases = workload::cases(2);
+    for (seed, start) in [(898100, Player::P0), (898101, Player::P1)] {
+        for swap in [false, true] {
+            cases.push((6, seed, start, swap));
+        }
+    }
+    assert_eq!(cases.len(), 28);
     let report = workload::run_admitted_smoke(&cases).unwrap();
     assert_eq!(report.workload, "FRA_ADMITTED_SMOKE_ONLY");
-    assert_eq!(report.games.len(), 24);
+    assert_eq!(report.games.len(), 28);
+    assert!(report.played_deck_identities >= 100);
     assert!(
         report
             .witnesses
