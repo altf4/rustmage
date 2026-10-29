@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ddf564c8c6d1afe41a59255419b2f977464e226e28eac88f362b534c4f1718eb",
+  "catalogue_version": "22cf6adcad7abb4fa56b8c6499ea77c43f4a592aa331684d283891dca82be680",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2908,
-  "implemented_total": 2914,
+  "implemented_standard_cards": 2910,
+  "implemented_total": 2916,
   "token_definitions": 144,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 261,
-      "gated": 24
+      "complete": 263,
+      "gated": 22
     },
     "frc": {
       "total": 6,
@@ -26467,8 +26467,8 @@
     {
       "name": "Puppet Crafting",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/puppet_crafting.rs",
       "set": "fra"
     },
@@ -39003,8 +39003,8 @@
     {
       "name": "Variable Chaser // Arc of Fortune",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/variable_chaser_arc_of_fortune.rs",
       "set": "fra"
     },

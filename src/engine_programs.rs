@@ -3143,7 +3143,7 @@ impl Game {
                     });
                 }
                 Instruction::AskOptionalWheel { first, skip } => {
-                    let wheel = self.state.resolving.as_ref().unwrap().optional_wheel.unwrap();
+                    let wheel = resolution.optional_wheel.unwrap();
                     let player = if first { wheel.first } else { wheel.first.other() };
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());

@@ -7622,3 +7622,18 @@ mod engine_fra_ruric_yuriko_review_tests;
 
 #[path = "engine_fra_anguish_cost_tests.rs"]
 mod engine_fra_anguish_cost_tests;
+
+#[path = "engine_fra_variable_chaser_tests.rs"]
+mod engine_fra_variable_chaser_tests;
+
+#[path = "engine_fra_arc_entry_independent_tests.rs"]
+mod engine_fra_arc_entry_independent_tests;
+
+#[path = "engine_fra_puppet_crafting_tests.rs"]
+mod engine_fra_puppet_crafting_tests;
+
+#[path = "engine_fra_puppet_crafting_independent_tests.rs"]
+mod engine_fra_puppet_crafting_independent_tests;
+
+#[path = "engine_fra_puppet_arc_extra_tests.rs"]
+mod engine_fra_puppet_arc_extra_tests;
