@@ -6587,6 +6587,28 @@ impl Game {
         self.finish_zone_events(&events, &sources);
     }
 
+    /// Freeze and choose every replacement before committing a zone-change
+    /// cost. Redirected outcomes remain payable; only prevented events fail.
+    /// The action checkpoint owns any replacement-choice continuation.
+    fn plan_atomic_zone_cost(
+        &mut self, moves: &[(ObjectRef, Zone)],
+    ) -> Option<Vec<(ObjectView, zone_replacements::Plan)>> {
+        if moves.iter().enumerate().any(|(i, &(reference, _))| {
+            self.state.objects.get(reference.card as usize).is_none_or(|o| o.generation != reference.generation)
+                || moves[..i].iter().any(|&(other, _)| other == reference)
+        }) { return None; }
+        let views: Vec<_> = moves.iter().map(|&(reference, destination)| {
+            let view = self.object_view(reference.card);
+            let rules = self.freeze_zone_rules(&view, destination, None);
+            (view, destination, rules)
+        }).collect();
+        let plans: Vec<_> = views.into_iter().map(|(view, destination, rules)| {
+            let plan = self.plan_zone_move(&view, destination, rules);
+            (view, plan)
+        }).collect();
+        plans.iter().all(|(_, plan)| !plan.prevented).then_some(plans)
+    }
+
     /// Pay simultaneous sacrifice costs only after every replacement outcome
     /// has been chosen and all proposed events remain possible. Redirected
     /// events are valid costs; a prevented event rejects the whole batch.
@@ -6599,17 +6621,12 @@ impl Game {
                 || ability_world::CharacteristicWorld::sacrifice_prohibited(self, id)
         }) { return false; }
         let sources = self.death_trigger_sources();
-        let views: Vec<_> = sacrifices.iter().map(|&(_, id)| self.object_view(id)).collect();
-        let frozen: Vec<_> = views.iter().map(|view| self.freeze_zone_rules(view, Zone::Graveyard, None)).collect();
-        // Each plan may suspend for an affected player's replacement choice.
-        // The action checkpoint replays all earlier choices before any commit.
-        let plans: Vec<_> = views.iter().zip(frozen).map(|(view, rules)|
-            self.plan_zone_move(view, Zone::Graveyard, rules)).collect();
-        if plans.iter().any(|plan| plan.prevented) { return false; }
-        self.capture_event_object_facts(views.iter());
-        self.capture_source_quantities(views.iter());
+        let moves: Vec<_> = sacrifices.iter().map(|&(_, id)| (self.object_ref(id), Zone::Graveyard)).collect();
+        let Some(plans) = self.plan_atomic_zone_cost(&moves) else { return false; };
+        self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
+        self.capture_source_quantities(plans.iter().map(|(view, _)| view));
         self.food_sacrifice_triggers(sacrifices, &sources);
-        let mut events: Vec<_> = views.into_iter().zip(plans).map(|(before, plan)|
+        let mut events: Vec<_> = plans.into_iter().map(|(before, plan)|
             self.commit_planned_zone_move(before, plan, false, Counters::default(),
                 EntryIdentity::default(), ZoneObservers::default())).collect();
         for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) { event.sacrificed_by = Some(actor); }

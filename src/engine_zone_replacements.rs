@@ -237,8 +237,12 @@ impl Game {
         requested: Zone,
         discard_cause: Option<Player>,
     ) -> FrozenRules {
+        #[cfg(test)]
+        let prevent = TEST_PREVENT_ZONE_MOVE.with(|r| r.get() == Some(before.reference));
+        #[cfg(not(test))]
+        let prevent = false;
         if requested != Zone::Graveyard {
-            return FrozenRules::default();
+            return FrozenRules { prevent, ..FrozenRules::default() };
         }
         let own = before.card.zone_replacement();
         let own_available =
@@ -265,10 +269,7 @@ impl Game {
             Vec::new()
         };
         FrozenRules {
-            #[cfg(test)]
-            prevent: TEST_PREVENT_ZONE_MOVE.with(|r| r.get() == Some(before.reference)),
-            #[cfg(not(test))]
-            prevent: false,
+            prevent,
             reflexive_exiles,
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
             exile_spell: (before.zone == Zone::Stack
@@ -321,7 +322,7 @@ impl Game {
                 reflexive: None,
             };
         }
-        if requested != Zone::Graveyard
+        if !rules.prevent && requested != Zone::Graveyard
             && !(before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback)
         {
             return Plan {

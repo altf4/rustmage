@@ -403,3 +403,29 @@ fn ward_atomic_replacement_prevention_and_redirect_choice_restore() {
         }
     }
 }
+
+#[test]
+fn atomic_zone_cost_preflight_rejects_each_prevented_component_without_movement() {
+    use zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        let mut ids = vec![source];
+        ids.extend((0..4).map(|_| put(&mut g, player, "Bear Cub", Zone::Graveyard)));
+        let moves: Vec<_> = ids.iter().map(|&id| (g.object_ref(id), Zone::Exile)).collect();
+        let saved = g.snapshot();
+        for &id in &ids {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(id))));
+            assert!(g.plan_atomic_zone_cost(&moves).is_none());
+            assert!(moves.iter().all(|&(reference, _)| g.object_ref(reference.card) == reference));
+            assert_eq!(g.object_view(source).zone, Zone::Hand);
+            assert!(ids[1..].iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
+            g.restore(&saved).unwrap();
+        }
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        assert!(g.plan_atomic_zone_cost(&moves).is_some());
+    }
+}
