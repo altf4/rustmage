@@ -834,7 +834,7 @@ fn sos_jadzi_x_counts_all_own_fractals_and_two_x_symbols_are_paid() {
                 .as_ref()
                 .unwrap()
                 .iter()
-                .find(|r| r.permanent.source.is_some_and(|identity| identity.id == source))
+                .find(|r| r.permanent.card == source)
                 .unwrap()
                 .spell_copy
                 .card;
