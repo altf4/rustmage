@@ -380,6 +380,223 @@ fn project_prior_schema181(input: &str) -> Result<String, String> {
     Ok(input.to_owned())
 }
 
+/// Schema 184 adds Chandra and changes the available actions during paid
+/// immediate cast offers. Keep unchanged observations byte-for-byte.
+fn project_prior_schema184(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::Array(rows) => for row in rows { check(row)?; },
+            serde_json::Value::String(name) if matches!(name.as_str(), "Chandra, Torch of Defiance" | "@emblem/fra-chandra-torch") => {
+                return Err("Chandra rules or emblem have no schema-183 baseline".to_owned());
+            }
+            serde_json::Value::Object(map) => {
+                if map.get("resolution_free_casts").and_then(|v| v.as_object())
+                    .and_then(|v| v.get("paid")).is_some_and(|v| !v.is_null()) {
+                    return Err("paid resolution-cast actions differ from schema 183".to_owned());
+                }
+                for value in map.values() { check(value)?; }
+            }
+            _ => (),
+        }
+        Ok(())
+    }
+    let value: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&value)?;
+    Ok(input.to_owned())
+}
+
+fn schema184_new_card(card: Card) -> bool {
+    matches!(card.identity(), "Chandra, Torch of Defiance" | "@emblem/fra-chandra-torch")
+}
+
+fn schema184_recipe_supported(recipe: &CopyRecipe) -> bool {
+    if schema184_new_card(recipe.definition) { return false; }
+    match recipe.faces {
+        Some(copies::CopyFaces::Double { physical_front, front, back, .. }) =>
+            ![physical_front, front, back].into_iter().any(schema184_new_card),
+        _ => true,
+    }
+}
+
+fn schema184_facts_supported(facts: &DamageFacts) -> bool {
+    // Schema 180 already represents additive Construct and other subtype facts.
+    !schema184_new_card(facts.card)
+}
+
+/// Inspect all packet fields carrying card definitions, recipes or LKI subtype
+/// overlays. Reference-only and numeric fields cannot contain the new rules.
+fn schema184_packet_supported(item: &SpellView) -> bool {
+    if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema184(&json).is_ok())
+        || schema184_new_card(item.source_card) || !schema184_facts_supported(&item.source_facts)
+        || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema184_new_card(token))
+        || item.source_copy_recipe.as_deref().is_some_and(|r| !schema184_recipe_supported(r))
+        || item.captured_artifact_copy.as_deref().is_some_and(|r| !schema184_recipe_supported(r))
+        || item.attachment_trigger.as_ref().is_some_and(|v| schema184_new_card(v.granting_card))
+        || item.delayed_sacrifice.as_ref().is_some_and(|v| schema184_new_card(v.source_card))
+        || item.delayed_warp_exile.as_ref().is_some_and(|v| schema184_new_card(v.source_card))
+        || item.cast_event.as_ref().is_some_and(|v| schema184_new_card(v.card))
+        || item.cast.and_then(|v| v.physical_card).is_some_and(schema184_new_card)
+        || item.mana_copy_sources.as_ref().is_some_and(|sources| sources.iter().any(|(v, _)|
+            schema184_new_card(v.card) || schema184_new_card(v.definition) || !schema184_facts_supported(&v.facts)))
+        || item.copy_event.as_ref().is_some_and(|event| !schema184_packet_supported(&event.spell))
+    { return false; }
+    if let Some(event) = &item.event_object {
+        if event.subtype_lki.as_ref().is_some_and(|facts| !schema184_facts_supported(facts)) {
+            return false;
+        }
+        match &event.facts {
+            event_objects::EventObjectFacts::DamageActor(source) if !schema184_facts_supported(&source.facts) => return false,
+            event_objects::EventObjectFacts::Copiable(recipe) if !schema184_recipe_supported(recipe) => return false,
+            _ => {}
+        }
+    }
+    true
+}
+
+/// Conservatively reject opaque continuations, while checking copy layers and
+/// retained packets by type. Rollback snapshots retain independent hidden state.
+fn prior_schema184_state_supported(state: &State) -> bool {
+    if state.resolution_free_casts.as_ref().is_some_and(|offer| offer.paid.is_some())
+        || state.resolving.is_some() || state.announcing.is_some()
+        || state.mana_announcement_stack.is_some() || state.replacements.is_some()
+        || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
+        || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
+        || state.objects.iter().any(|o| schema184_new_card(o.card))
+        || state.explore_data.as_ref().and_then(|data| data.last.as_ref()).is_some_and(|event|
+            schema184_new_card(event.explorer.card)
+                || event.revealed.is_some_and(|card| schema184_new_card(card.card)))
+        || state.last_target_library_move.as_ref().is_some_and(|event| schema184_new_card(event.card))
+        || state.library_top.as_ref().and_then(|data| data.reveal.as_ref())
+            .is_some_and(|event| schema184_new_card(event.revealed.card))
+        || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema184_new_card(row.granting_card)))
+        || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema184_new_card(row.granting_card)))
+        || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            schema184_new_card(row.provider) || schema184_new_card(row.definition)))
+        // Slots retain an optional immutable donor definition; all other slot
+        // fields are object references or numeric acquisition/use identities.
+        || state.borrowed_slots.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            row.definition.is_some_and(schema184_new_card)))
+        || state.warp.as_ref().is_some_and(|w| !w.delayed.is_empty())
+        // Delayed sacrifice packets retain public source-card identity and
+        // frozen damage facts, including hidden/copied subtype overlays.
+        || state.delayed_sacrifices.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            schema184_new_card(row.view.source_card) || !schema184_facts_supported(&row.facts)))
+        || state.mobilize.is_some() || state.miracle.is_some()
+        || state.adventures.as_ref().is_some_and(|a| a.permissions.iter().any(|v| schema184_new_card(v.card)))
+        || state.plot.as_ref().and_then(|p| p.payment.as_ref()).is_some_and(|p| schema184_new_card(p.source_card))
+        || state.hits.iter().any(|hit| !schema184_facts_supported(&hit.source.facts))
+        || state.damage_choices.iter().any(|hit| !schema184_facts_supported(&hit.source.facts))
+        || state.manifest.as_ref().is_some_and(|manifest| {
+            manifest.permanents.iter().chain(manifest.spells.iter())
+                .any(|row| schema184_new_card(row.underlying))
+        })
+        || state.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row| !schema184_recipe_supported(&row.recipe)))
+        || state.temporary_copies.as_ref().is_some_and(|rows| rows.iter().any(|row| {
+            schema184_new_card(row.physical_card)
+                || row.original_recipe.as_ref().is_some_and(|r| !schema184_recipe_supported(r))
+                || row.layers.iter().any(|layer| !schema184_recipe_supported(&layer.value.recipe))
+        }))
+    { return false; }
+    if let Some(mana) = &state.mana_lots {
+        let copy_safe = |source: &mana_lots::ManaCopySource| {
+            !schema184_new_card(source.card) && !schema184_new_card(source.definition)
+                && schema184_facts_supported(&source.facts)
+        };
+        let quality_safe = |quality: &mana_lots::Quality| quality.copy_source.as_ref().is_none_or(copy_safe);
+        if mana.trace.is_some() || mana.replay.is_some() || mana.choice.is_some()
+            || mana.pools.iter().flat_map(|rows| rows.iter()).any(|lot| !quality_safe(&lot.quality))
+            || mana.effect_quality.as_ref().is_some_and(|q| !quality_safe(q))
+            || mana.announcement_quality.as_ref().is_some_and(|(_, q)| !quality_safe(q))
+        { return false; }
+    }
+    if let Some(rollback) = &state.cast_rollback {
+        if !rollback.events.is_empty() || rollback.replay.is_some() || rollback.capture.is_some()
+            || !prior_schema184_state_supported(&rollback.before) { return false; }
+    }
+    state.stack.iter().chain(&state.pending_triggers).chain(&state.ordering_triggers)
+        .chain(state.delayed_artifact_copies.as_deref().into_iter().flatten())
+        .chain(state.delayed_attack_this_turn.as_deref().into_iter().flatten())
+        .chain(state.delayed_opponent_attack_until_next_turn.as_deref().into_iter().flatten())
+        .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
+        .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
+        .chain(state.stack_copy_data.as_ref().into_iter().flat_map(|s| s.packets()))
+        .chain(state.paradigm.as_ref().into_iter().flat_map(|s| s.packets()))
+        .chain(state.delayed_returns.as_deref().into_iter().flatten().map(|r| &r.item))
+        .chain(state.earthbend_returns.as_deref().into_iter().flatten().map(|r| &r.item))
+        .chain(state.manifest.as_ref().into_iter().flat_map(|s| s.deaths.iter().map(|d| &d.source)))
+        .all(schema184_packet_supported)
+}
+
+
+#[test]
+fn schema184_preserves_old_bytes_and_rejects_changed_card_and_paid_offer() {
+    let old = r#"[{"resolution_free_casts":{"paid":null},"other":true}]"#;
+    assert_eq!(project_prior_schema184(old).unwrap(), old);
+    for card in ["Chandra, Torch of Defiance", "@emblem/fra-chandra-torch"] {
+        assert!(project_prior_schema184(&serde_json::json!({"card":card}).to_string()).is_err());
+    }
+    let paid = r#"[{"resolution_free_casts":{"paid":{"kinds":255}}}]"#;
+    assert!(project_prior_schema184(paid).is_err());
+}
+
+#[test]
+fn schema184_rejects_public_and_hidden_paid_offers() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        assert!(prior_schema184_state_supported(&g.state));
+        for origin in [Zone::Exile, Zone::Library] {
+            g.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+                siege_transformed: false,
+                paid: Some(ResolutionPaidCast { kinds: u8::MAX, exile_instants_sorceries: false }),
+                casts_remaining: Some(1), pending_cast: None, alternative_cost: None,
+                maximum_mana_value: None, origin, exile_on_graveyard: false,
+                allow_lands: false, player, remaining: Vec::new(),
+            }));
+            assert!(!prior_schema184_state_supported(&g.state));
+            for viewer in [player, player.other()] {
+                let view = serde_json::to_string(&g.observe(viewer)).unwrap();
+                if origin == Zone::Exile || viewer == player {
+                    assert!(project_prior_schema184(&view).is_err());
+                }
+            }
+            let saved = g.snapshot();
+            g.state.resolution_free_casts = None;
+            assert!(prior_schema184_state_supported(&g.state));
+            g.restore(saved);
+            assert!(!prior_schema184_state_supported(&g.state));
+        }
+    }
+}
+
+#[test]
+fn schema184_rejects_hidden_card_recipe_and_rollback_checkpoint() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Hand);
+        let reference = g.object_ref(id);
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let chandra = Card::from_name("Chandra, Torch of Defiance").unwrap();
+        let normal = CopyRecipe::new(bear);
+        let hidden = normal.with_faces(copies::CopyFaces::Double {
+            physical_front: bear, front: bear, back: chandra, back_up: false,
+        });
+        assert!(prior_schema184_state_supported(&g.state));
+        g.set_copy_recipe(reference, hidden);
+        assert!(!prior_schema184_state_supported(&g.state));
+        g.begin_attack_rollback(player);
+        g.set_copy_recipe(reference, normal);
+        assert!(!prior_schema184_state_supported(&g.state));
+        g.state.cast_rollback = None;
+        assert!(prior_schema184_state_supported(&g.state));
+        g.state.objects[id as usize].card = chandra;
+        assert!(!prior_schema184_state_supported(&g.state));
+        for viewer in [player, player.other()] {
+            let view = serde_json::to_string(&g.observe(viewer)).unwrap();
+            if viewer == player { assert!(project_prior_schema184(&view).is_err()); }
+        }
+    }
+}
+
 /// Schema 183 exposes the persistent, exact-source delayed attack continuation.
 /// Preserve prior JSON byte-for-byte only when no new field or card identity occurs.
 fn project_prior_schema183(input: &str) -> Result<String, String> {
@@ -2222,7 +2439,17 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 183) {
+    if schema_projection.is_some_and(|schema| schema < 184) {
+        if !prior_schema184_state_supported(&g.state) {
+            projection_error = Some("owned Chandra or paid resolution cast cannot be projected to schema 183".to_owned());
+        } else {
+            match project_prior_schema184(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 183) {
         if !prior_schema183_state_supported(&g.state) {
             projection_error = Some("owned Garruk delayed attack rules cannot be projected to schema 182".to_owned());
         } else {
