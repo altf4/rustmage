@@ -7277,3 +7277,15 @@ mod engine_fra_cohort_review;
 
 #[path = "engine_fra_peer_lifecycle_review_tests.rs"]
 mod engine_fra_peer_lifecycle_review_tests;
+
+#[path = "engine_fra_noncombat_boost_tests.rs"]
+mod engine_fra_noncombat_boost_tests;
+
+#[path = "engine_fra_combat_assignment_tests.rs"]
+mod engine_fra_combat_assignment_tests;
+
+#[path = "engine_fra_tomik_followup.rs"]
+mod engine_fra_tomik_followup;
+
+#[path = "engine_fra_ghalta_followup.rs"]
+mod engine_fra_ghalta_followup;
