@@ -1882,12 +1882,19 @@ impl<'g> FundingState<'g> {
             && self.sacrifice_group.is_empty()
             && self.required_face_up.is_none()
             && !self.convoke;
+        // Spell-only lots cannot pay any mana activation. In this standalone
+        // search their only consumer is the fixed final payment, which spends
+        // at most the total printed goal. Extra units of one quality and color
+        // cannot change reachability. This is a demand-derived equivalence for
+        // the key only; all actual pools and payment witnesses remain exact.
+        let final_demand =
+            goal.required.into_iter().map(u128::from).sum::<u128>() + u128::from(goal.generic);
         let mut key_mana = self.mana;
         let key_lots = self
             .lots
             .iter()
             .filter_map(|lot| {
-                let inert = inert_spell_lots
+                let spell_only = inert_spell_lots
                     && matches!(
                         lot.quality.restriction,
                         mana_lots::ManaRestrictionView::ArtifactSpell
@@ -1895,16 +1902,23 @@ impl<'g> FundingState<'g> {
                             | mana_lots::ManaRestrictionView::NoncreatureSpell
                             | mana_lots::ManaRestrictionView::PlaneswalkerSpell
                             | mana_lots::ManaRestrictionView::SpellSubtype(_)
-                    )
-                    && !lot.quality.eligible(self.purpose);
-                if inert {
+                    );
+                if !spell_only {
+                    return Some(lot.clone());
+                }
+                if !lot.quality.eligible(self.purpose) {
                     for (pool, amount) in key_mana.iter_mut().zip(lot.amounts) {
                         *pool -= amount;
                     }
-                    None
-                } else {
-                    Some(lot.clone())
+                    return None;
                 }
+                let mut capped = lot.clone();
+                for (pool, amount) in key_mana.iter_mut().zip(&mut capped.amounts) {
+                    let excess = amount.saturating_sub(final_demand);
+                    *amount -= excess;
+                    *pool -= excess;
+                }
+                Some(capped)
             })
             .collect();
         FundingKey {

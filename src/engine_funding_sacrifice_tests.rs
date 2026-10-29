@@ -1361,8 +1361,11 @@ fn eligible_restricted_mana_does_not_enable_converter_or_missing_color() {
                     .all(|step| world.resources[step.resource].id != converter)
             );
             assert!(world.optimistic(&goal));
-            assert!(old != world.key(&goal));
+            if amount > 1 {
+                assert!(old == world.key(&goal));
+            }
         }
+        assert!(!g.can_fund_for(goal, purpose));
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
