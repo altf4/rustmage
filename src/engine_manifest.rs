@@ -304,7 +304,7 @@ impl Game {
             .get_or_insert_with(Default::default)
             .spells
             .push(FaceDownPermanent {
-                object: item.object,
+                object: item.source.expect("face-down cast has source").object,
                 underlying: physical,
                 known,
                 known_to,
