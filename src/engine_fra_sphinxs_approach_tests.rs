@@ -269,8 +269,8 @@ fn copied_spell_moves_between_zones_before_sba_and_reuses_slot_safely() {
                     assert!(!g.state.players[p.index()].library.contains(&initial.card));
                 }
                 let replacement = g.allocate_spell_copy(&original, p);
-                assert_eq!(replacement.card, initial.card);
-                assert_ne!(replacement.object, second.after);
+                assert_eq!(replacement.source.unwrap().id, initial.card);
+                assert_ne!(replacement.source.unwrap().object, second.after);
                 assert_eq!(g.object_view(spell).zone, Zone::Stack);
                 g.restore(&checkpoint).unwrap();
                 assert_eq!(g.object_ref(initial.card), second.after);
