@@ -789,11 +789,12 @@ impl<'g> FundingState<'g> {
             && !a.additional_paid
             && a.additional_cost().is_some_and(|s| {
                 evidence::threshold(s).is_some()
-                    || matches!(s.kind, EffectChoiceKind::ExileGraveyardSymbols { .. })
+                    || matches!(s.kind, EffectChoiceKind::ExileGraveyardSymbols { .. }
+                        | EffectChoiceKind::RemoveCreatureCounters(_))
             })
         {
-            // Ordinary evidence declarations also need their selected exact
-            // incarnations protected while nested mana abilities consume fuel.
+            // Preserve exact additional-cost witnesses while nested mana
+            // abilities consume fuel, including selected creature counters.
             result.set_payment_context(a);
         }
         if let Some(a) = game.state.announcing.as_ref()
@@ -2499,12 +2500,12 @@ impl Game {
         }
         if let Some(a) = &self.state.announcing
             && !a.additional_paid
-            && a.graveyard_origin_counter_cost().is_some()
+            && a.creature_counter_cost_amount().is_some()
         {
             return self.creature_counter_fundable(
                 goal,
                 purpose,
-                a.graveyard_origin_counter_cost().unwrap(),
+                a.creature_counter_cost_amount().unwrap(),
                 a.creature_counter_cost
                     .as_ref()
                     .map_or(&[], |v| v.as_slice()),

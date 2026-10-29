@@ -309,7 +309,7 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        let amount = a.graveyard_origin_counter_cost().unwrap();
+        let amount = a.creature_counter_cost_amount().unwrap();
         let mut selected = a
             .creature_counter_cost
             .as_ref()
@@ -342,7 +342,7 @@ impl Game {
     }
     pub(super) fn choose_creature_counter_cost(&mut self, object: ObjectRef, kind: CounterKind) {
         let a = self.state.announcing.as_mut().unwrap();
-        let amount = a.graveyard_origin_counter_cost().unwrap();
+        let amount = a.creature_counter_cost_amount().unwrap();
         let selected = a
             .creature_counter_cost
             .get_or_insert_with(|| Box::new(Vec::new()));

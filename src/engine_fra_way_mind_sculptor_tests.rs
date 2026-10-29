@@ -235,3 +235,95 @@ fn composite_loyalty_cost_public_actions_reserve_counters_and_replay() {
         }
     }
 }
+
+#[test]
+fn composite_loyalty_mana_window_preserves_reservations_and_observes_commit_controller() {
+    let _fixture = crate::cards::composite_loyalty_fixture::Guard::with_mana();
+    for actor in [Player::P0, Player::P1] {
+        for into_control in [false, true] {
+            let mut g = scenario(actor);
+            let way = put(&mut g, if into_control { actor.other() } else { actor },
+                "Way of the Mind Sculptor", Zone::Battlefield);
+            let walker = mind_jace(&mut g, actor);
+            g.state.objects[walker as usize].counters.loyalty = 1;
+            g.state.objects[walker as usize].counters.plus_one = 1;
+            let item = g.activation_item(actor, walker, 0);
+            g.animate_source(&item, AnimationSpec { artifact: false, creature_types: AnimationCreatureTypes::Unchanged,
+                base: Some((3, 3)), keywords: Keywords::NONE, duration: AnimationDuration::EndOfTurn });
+            let donor = put(&mut g, actor, "Bear Cub", Zone::Battlefield);
+            g.add_counter(donor, CounterKind::Loyalty, 1);
+            let land = put(&mut g, actor, "Forest", Zone::Battlefield);
+            g.state.players[actor.index()].mana = [0; 6];
+            let action = Action::AnnounceActivate { card: walker, ability: 0,
+                counter_payment: Counters::of(CounterKind::PlusOne, 1) };
+            let original = g.snapshot();
+            act(&mut g, action.clone());
+            let donor_ref = g.object_ref(donor);
+            act(&mut g, Action::ChooseCreatureCounterCost { object: donor_ref, counter: CounterKind::Loyalty });
+            assert!(!g.legal_actions().iter().any(|action| matches!(action, Action::PayCosts { .. })));
+            assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 1);
+            assert_eq!(g.counter_count(walker, CounterKind::PlusOne), 1);
+            assert_eq!(g.counter_count(donor, CounterKind::Loyalty), 1);
+            act(&mut g, Action::TapMana { card: land });
+            assert!(g.object_view(land).tapped);
+            assert!(!g.state.pending_triggers.iter().any(|packet| packet.card == way));
+            // No cancellation action exists for normal activation announcements;
+            // an owned snapshot can still abandon the complete pending transaction.
+            g.restore(&original).unwrap();
+            assert!(!g.object_view(land).tapped);
+            assert_eq!(g.state.players[actor.index()].mana, [0; 6]);
+            act(&mut g, action);
+            act(&mut g, Action::ChooseCreatureCounterCost { object: donor_ref, counter: CounterKind::Loyalty });
+            act(&mut g, Action::TapMana { card: land });
+            let funding_window = g.snapshot();
+            for _ in 0..2 {
+                g.change_controller(g.object_ref(way), if into_control { actor } else { actor.other() });
+                pay(&mut g);
+                let count = g.state.stack.iter().chain(g.state.pending_triggers.iter()).chain(g.state.ordering_triggers.iter())
+                    .filter(|packet| packet.card == way && matches!(packet.kind, StackKind::TriggeredAbility { .. })).count();
+                assert_eq!(count, usize::from(into_control));
+                assert_eq!(g.counter_count(donor, CounterKind::Loyalty), 0);
+                g.restore(&funding_window).unwrap();
+            }
+        }
+    }
+}
+
+#[test]
+fn composite_loyalty_mana_cannot_consume_selected_external_counter() {
+    let _fixture = crate::cards::composite_loyalty_fixture::Guard::with_mana();
+    for actor in [Player::P0, Player::P1] {
+        let mut g = scenario(actor);
+        put(&mut g, actor, "Way of the Mind Sculptor", Zone::Battlefield);
+        let walker = mind_jace(&mut g, actor);
+        g.state.objects[walker as usize].counters.loyalty = 1;
+        g.state.objects[walker as usize].counters.plus_one = 1;
+        let item = g.activation_item(actor, walker, 0);
+        g.animate_source(&item, AnimationSpec { artifact: false, creature_types: AnimationCreatureTypes::Unchanged,
+            base: Some((3, 3)), keywords: Keywords::NONE, duration: AnimationDuration::EndOfTurn });
+        let ramos = put(&mut g, actor, "Ramos, Dragon Engine", Zone::Battlefield);
+        g.add_counter(ramos, CounterKind::PlusOne, 5);
+        g.state.players[actor.index()].mana = [0; 6];
+        let action = Action::AnnounceActivate { card: walker, ability: 0,
+            counter_payment: Counters::of(CounterKind::PlusOne, 1) };
+        // Ramos alone could supply mana only by consuming the whole donor cost.
+        let before = g.snapshot();
+        reject(&mut g, action.clone());
+        assert_eq!(g.snapshot(), before);
+        let forest = put(&mut g, actor, "Forest", Zone::Battlefield);
+        act(&mut g, action);
+        let donor = g.object_ref(ramos);
+        act(&mut g, Action::ChooseCreatureCounterCost { object: donor, counter: CounterKind::PlusOne });
+        let before = g.snapshot();
+        assert!(!g.legal_actions().iter().any(|action| matches!(action,
+            Action::AnnounceMana { card, .. } | Action::ActivateMana { card, .. } if *card == ramos)));
+        assert!(g.legal_actions().contains(&Action::TapMana { card: forest }));
+        act(&mut g, Action::TapMana { card: forest });
+        assert_eq!(g.counter_count(ramos, CounterKind::PlusOne), 5);
+        pay(&mut g);
+        assert_eq!(g.counter_count(ramos, CounterKind::PlusOne), 4);
+        g.restore(&before).unwrap();
+        assert_eq!(g.counter_count(ramos, CounterKind::PlusOne), 5);
+        assert!(!g.object_view(forest).tapped);
+    }
+}

@@ -4683,7 +4683,7 @@ impl Card {
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
         #[cfg(test)]
         if self == Card::JacePlaneswalkerToken && composite_loyalty_fixture::enabled() {
-            return composite_loyalty_fixture::ABILITIES;
+            return composite_loyalty_fixture::abilities();
         }
         generated::DEFINITIONS[self.0 as usize].activated
     }
@@ -5070,23 +5070,32 @@ pub(crate) enum RoleKind {
 #[cfg(test)]
 pub(crate) mod composite_loyalty_fixture {
     use super::*;
-    std::thread_local! { static ENABLED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) }; }
+    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
     pub(crate) struct Guard;
     impl Guard {
-        pub(crate) fn new() -> Self { ENABLED.with(|value| { assert!(!value.replace(true)); }); Self }
+        pub(crate) fn new() -> Self { Self::set(1) }
+        pub(crate) fn with_mana() -> Self { Self::set(2) }
+        fn set(mode: u8) -> Self { MODE.with(|value| { assert_eq!(value.replace(mode), 0); }); Self }
     }
-    impl Drop for Guard { fn drop(&mut self) { ENABLED.with(|value| value.set(false)); } }
-    pub(super) fn enabled() -> bool { ENABLED.with(std::cell::Cell::get) }
-    pub(super) const ABILITIES: &[ActivatedAbility] = &[ActivatedAbility {
-        exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
-        cycling: false, once_per_turn: false, sorcery: true,
-        cost: ActivationCost { colored: [0; 6], generic: 0, alternatives: &[],
-            additional: Some(AdditionalCost { kind: EffectChoiceKind::RemoveCreatureCounters(1),
-                filter: SacrificeFilter { keywords: Keywords::NONE, source_only: false, kinds: 1,
-                    nonland: false, other: false, tokens: None, artifact_enchantment_or_token: false,
-                    subtype: None } }),
-            mana_component: false, tap: false, sacrifice: false, exile_self: false,
-            discard: false, life: 0, remove: Some((None, 1)), loyalty: Some(-1) },
-        targets: TargetPlan::NONE, program: &[],
-    }];
+    impl Drop for Guard { fn drop(&mut self) { MODE.with(|value| value.set(0)); } }
+    pub(super) fn enabled() -> bool { MODE.with(|value| value.get() != 0) }
+    pub(super) fn abilities() -> &'static [ActivatedAbility] {
+        if MODE.with(|value| value.get()) == 2 { MANA_ABILITIES } else { ABILITIES }
+    }
+    const fn ability(mana_component: bool) -> ActivatedAbility {
+        ActivatedAbility {
+            exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
+            cycling: false, once_per_turn: false, sorcery: true,
+            cost: ActivationCost { colored: [0; 6], generic: if mana_component { 1 } else { 0 }, alternatives: &[],
+                additional: Some(AdditionalCost { kind: EffectChoiceKind::RemoveCreatureCounters(1),
+                    filter: SacrificeFilter { keywords: Keywords::NONE, source_only: false, kinds: 1,
+                        nonland: false, other: false, tokens: None, artifact_enchantment_or_token: false,
+                        subtype: None } }),
+                mana_component, tap: false, sacrifice: false, exile_self: false,
+                discard: false, life: 0, remove: Some((None, 1)), loyalty: Some(-1) },
+            targets: TargetPlan::NONE, program: &[],
+        }
+    }
+    const ABILITIES: &[ActivatedAbility] = &[ability(false)];
+    const MANA_ABILITIES: &[ActivatedAbility] = &[ability(true)];
 }

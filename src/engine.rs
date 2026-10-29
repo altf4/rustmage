@@ -3911,7 +3911,7 @@ impl Game {
                     .announcing
                     .as_ref()
                     .unwrap()
-                    .graveyard_origin_counter_cost()
+                    .creature_counter_cost_amount()
                     .is_some()
                 {
                     return self.visit_creature_counter_cost(&mut emit);

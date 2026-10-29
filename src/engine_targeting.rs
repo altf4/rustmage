@@ -74,6 +74,12 @@ impl Announcement {
             _ => None,
         })
     }
+    pub(super) fn creature_counter_cost_amount(&self) -> Option<u16> {
+        self.additional_cost().and_then(|cost| match cost.kind {
+            EffectChoiceKind::RemoveCreatureCounters(amount) => Some(amount),
+            _ => None,
+        })
+    }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
         if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
             return None;

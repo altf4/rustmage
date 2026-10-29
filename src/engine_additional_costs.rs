@@ -394,6 +394,14 @@ impl Game {
             return self.can_fund(goal);
         };
         let source = goal.source.as_ref().expect("activation source").0;
+        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
+            let purpose = self.funding_purpose(&goal);
+            let selected = self.state.announcing.as_ref()
+                .filter(|a| a.item.object == source && a.item.controller == goal.actor)
+                .and_then(|a| a.creature_counter_cost.as_deref())
+                .map_or(&[][..], Vec::as_slice);
+            return self.creature_counter_fundable(goal, purpose, amount, selected);
+        }
         if matches!(
             spec.kind,
             EffectChoiceKind::TapPermanents(_)
