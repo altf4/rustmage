@@ -6060,3 +6060,6 @@ fn outside_projection_checks_actual_private_and_public_views_for_both_players() 
         assert!(!prior_outside_state_supported(&g.state));
     }
 }
+
+#[path = "schema189_independent_tests.rs"]
+mod schema189_independent_tests;
