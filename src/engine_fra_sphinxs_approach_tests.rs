@@ -668,3 +668,88 @@ fn approach_unlimited_deck_limit_survives_constructed_combined_count() {
         );
     }
 }
+
+#[test]
+fn approach_paid_search_with_no_sphinx_still_shuffles_and_replays() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let cards: Vec<_> = (0..4)
+            .map(|_| put_approach(&mut g, player, Zone::Graveyard))
+            .collect();
+        let spell = put_approach(&mut g, player, Zone::Hand);
+        cast(&mut g, spell, None);
+        approach_until_choice(&mut g);
+        for &card in &cards {
+            let object = g.object_ref(card);
+            act(&mut g, Action::SelectResolutionExile { object });
+        }
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert!(
+            cards
+                .iter()
+                .all(|&id| g.object_view(id).zone == Zone::Exile)
+        );
+        assert!(g.legal_actions().contains(&Action::FinishSearch));
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|action| matches!(action, Action::ChooseSearch { .. }))
+        );
+        let mut expected = g.state.players[player.index()].library.clone();
+        let mut rng = g.state.rng;
+        rng.shuffle(&mut expected);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::FinishSearch);
+            settle(&mut g);
+            assert_eq!(g.state.players[player.index()].library, expected);
+            assert_eq!(g.state.rng, rng);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn approach_waits_for_miracle_interruption_before_payment_choice() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        put(&mut g, player, "Lorehold, the Historian", Zone::Battlefield);
+        let cards: Vec<_> = (0..4)
+            .map(|_| put_approach(&mut g, player, Zone::Graveyard))
+            .collect();
+        let miracle = put(&mut g, player, "Group Project", Zone::Library);
+        let spell = put_approach(&mut g, player, Zone::Hand);
+        cast(&mut g, spell, None);
+        for _ in 0..64 {
+            if matches!(g.state.pending, Pending::MiracleReveal { .. }) {
+                break;
+            }
+            choose(&mut g, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
+        }
+        assert!(matches!(g.state.pending, Pending::MiracleReveal { player: p } if p == player));
+        assert_eq!(g.state.players[player.index()].cards_drawn_this_turn, 1);
+        assert_eq!(g.observe(player).miracle.unwrap().object.card, miracle);
+        assert!(g.observe(player.other()).miracle.is_none());
+        assert_eq!(g.object_view(spell).zone, Zone::Stack);
+        assert!(
+            cards
+                .iter()
+                .all(|&id| g.object_view(id).zone == Zone::Graveyard)
+        );
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::DeclineMiracle);
+            assert_eq!(g.state.players[player.index()].cards_drawn_this_turn, 2);
+            assert!(matches!(g.state.pending, Pending::EffectChoice { player: p } if p == player));
+            for &card in &cards {
+                let object = g.object_ref(card);
+                act(&mut g, Action::SelectResolutionExile { object });
+            }
+            assert_eq!(g.object_view(spell).zone, Zone::Exile);
+            assert!(g.legal_actions().contains(&Action::FinishSearch));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
