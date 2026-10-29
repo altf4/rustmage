@@ -34,5 +34,13 @@
       "sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
     }
   ],
-  "rules_tests": "src/engine_fra_tam_proliferate_tests.rs"
+  "rules_tests": "src/engine_fra_tam_proliferate_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_fra_tam_independent_tests.rs",
+    "src/engine_fra_planeswalker_type_count_tests.rs",
+    "src/engine_fra_proliferate_batch_tests.rs",
+    "src/engine_fra_poison_ward_tests.rs",
+    "src/engine_fra_self_replacement_tests.rs",
+    "src/engine_fra_radiation_order_tests.rs"
+  ]
 }
