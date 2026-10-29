@@ -1311,10 +1311,12 @@ impl SpellView {
                 std::mem::size_of::<Vec<SourceCounterQuantityView>>()
                     + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
             })
-            + self.target_type_slots.as_ref().map_or(0, |v| v.capacity() * std::mem::size_of::<u16>())
+            + self.target_type_slots.as_ref().map_or(0, |v| {
+                std::mem::size_of::<Vec<u16>>() + v.len() * std::mem::size_of::<u16>()
+            })
             + self.target_kinds_lki.as_ref().map_or(0, |v| {
                 std::mem::size_of::<Vec<(ObjectRef, u16)>>()
-                    + v.len() * std::mem::size_of::<u16>()
+                    + v.len() * std::mem::size_of::<(ObjectRef, u16)>()
             })
             + self.target_controller_lki.as_ref().map_or(0, |v| {
                 std::mem::size_of::<Vec<(ObjectRef, Player)>>()

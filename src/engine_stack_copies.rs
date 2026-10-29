@@ -619,6 +619,12 @@ impl Game {
         let Some(spec) = self.target_spec(&r.item).group(old.group) else {
             return false;
         };
+        if matches!(spec.rule, TargetRule::Grouped {
+            constraint: TargetGroupConstraint::DistinctCardTypeSlots, ..
+        }) {
+            let Some(slot) = r.item.target_type_slots.as_ref().and_then(|slots| slots.get(index)) else { return false; };
+            if !matches!(target, Target::Card(id) if self.current_kinds(id) & *slot != 0) { return false; }
+        }
         self.item_target_matches(&r.item, spec.rule, target)
     }
     fn stack_target_relations_hold(&self, item: &SpellView, index: usize) -> bool {

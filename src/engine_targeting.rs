@@ -1261,6 +1261,11 @@ impl Game {
                 });
             }
             TargetRule::Grouped { base, constraint } => {
+                if constraint == TargetGroupConstraint::DistinctCardTypeSlots
+                    && !matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| !o.is_token() && !o.is_spell_copy()))
+                {
+                    return false;
+                }
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers

@@ -38,6 +38,25 @@ fn prior_type_slots_owned_safe(state: &State) -> bool {
         .objects
         .iter()
         .any(|o| o.card.identity() == "Uldaros Theorix")
+        || state
+            .explore_data
+            .as_ref()
+            .and_then(|data| data.last.as_ref())
+            .is_some_and(|event| {
+                event.explorer.card.identity() == "Uldaros Theorix"
+                    || event
+                        .revealed
+                        .is_some_and(|card| card.card.identity() == "Uldaros Theorix")
+            })
+        || state
+            .last_target_library_move
+            .as_ref()
+            .is_some_and(|event| event.card.identity() == "Uldaros Theorix")
+        || state
+            .library_top
+            .as_ref()
+            .and_then(|data| data.reveal.as_ref())
+            .is_some_and(|event| event.revealed.card.identity() == "Uldaros Theorix")
         || state.announcing.is_some()
         || state.resolving.is_some()
         || state.stack_copy_data.is_some()
@@ -108,6 +127,55 @@ fn type_slot_projection_rejects_new_action_and_nested_view() {
         g.state.cast_rollback = None;
         assert!(prior_type_slots_owned_safe(&g.state));
         g.restore(&checkpoint).unwrap();
+        assert!(!prior_type_slots_owned_safe(&g.state));
+    }
+}
+
+#[test]
+fn historical_uldaros_identity_is_rejected_even_after_the_object_changes() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let object = g.object_ref(id);
+        let card = Card::from_name("Uldaros Theorix").unwrap();
+        g.state.explore_data.get_or_insert_default().last = Some(explore::ExploreEventView {
+            sequence: 1,
+            explorer: explore::ExplorerView {
+                kinds: 1,
+                object,
+                card,
+                controller: player,
+            },
+            revealed: None,
+            destination: None,
+            result: None,
+            counter_added: false,
+        });
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.state.explore_data.as_mut().unwrap().last = None;
+        g.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
+            source: object,
+            card,
+            target_before: object,
+            target_after: object,
+            owner: player,
+            destination: LibraryDestination::Top,
+        }));
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.state.last_target_library_move = None;
+        g.state.library_top.get_or_insert_default().reveal =
+            Some(library_top::LibraryRevealEvent {
+                sequence: 1,
+                source: object,
+                player,
+                revealed: explore::RevealedLibraryCard { object, card },
+                drawn: None,
+            });
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        let snapshot = g.snapshot();
+        g.state.library_top.as_mut().unwrap().reveal = None;
+        assert!(prior_type_slots_owned_safe(&g.state));
+        g.restore(&snapshot).unwrap();
         assert!(!prior_type_slots_owned_safe(&g.state));
     }
 }

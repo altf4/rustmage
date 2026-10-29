@@ -28,6 +28,22 @@ fn graveyard_type_slots_allow_reassignment_but_reject_duplicates_and_collisions(
         let land = put(&mut g, player, "Forest", Zone::Graveyard);
         let enemy = put(&mut g, player.other(), "Shock", Zone::Graveyard);
         let item = g.activation_item(player, source, 0);
+        let copy = g.allocate_card_copy(Card::from_name("Bear Cub").unwrap(), player);
+        g.state.objects[copy.card as usize].zone = Zone::Graveyard;
+        assert!(!g.item_target_matches(&item, EACH_TYPE, Target::Card(copy.card)));
+        let mut measured = item.clone();
+        let before = measured.owned_bytes();
+        measured.target_type_slots = Some(Box::new(vec![1, 16]));
+        assert_eq!(
+            measured.owned_bytes() - before,
+            std::mem::size_of::<Vec<u16>>() + 2 * std::mem::size_of::<u16>()
+        );
+        measured.target_type_slots = None;
+        measured.target_kinds_lki = Some(Box::new(vec![(g.object_ref(dual), 17)]));
+        assert_eq!(
+            measured.owned_bytes() - before,
+            std::mem::size_of::<Vec<(ObjectRef, u16)>>() + std::mem::size_of::<(ObjectRef, u16)>()
+        );
         assert!(g.item_target_matches(&item, EACH_TYPE, Target::Card(dual)));
         assert!(!g.item_target_matches(&item, EACH_TYPE, Target::Card(land)));
         assert!(!g.item_target_matches(&item, EACH_TYPE, Target::Card(enemy)));
@@ -115,6 +131,10 @@ fn uldaros_actual_target_actions_freeze_explicit_slots_and_restore() {
                 object: None,
             }];
             assert!(g.copy_target_ability(&copier, 0));
+            assert!(!g.legal_actions().contains(&Action::SetStackTarget {
+                index: creature_index as u32,
+                target: Target::Card(artifact),
+            }));
             let changed = Action::SetStackTarget {
                 index: creature_index as u32,
                 target: Target::Card(replacement),
