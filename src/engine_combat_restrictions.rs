@@ -106,6 +106,12 @@ impl Game {
         let keywords = self.keywords(id);
         (!object.summoning_sick || keywords.contains(Keywords::HASTE))
             && (!keywords.contains(Keywords::DEFENDER)
+                || self.state.static_sources.iter().copied().any(|source| {
+                    self.on_battlefield(source)
+                        && self.state.objects[source as usize].controller == actor
+                        && self.continuous_fragment_available(source, |fragment| matches!(fragment,
+                            crate::cards::StaticAbilityFragment::ControlledAttackWithoutDefender))
+                })
                 || (self.state.players[actor.index()].scried_or_surveilled_this_turn
                     && object.card.static_ability_groups().iter().any(|group| {
                         group.fragments.iter().any(|fragment| {

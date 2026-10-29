@@ -3160,6 +3160,7 @@ pub(crate) enum SpellReductionAmount {
         greatest: bool,
     },
     SourcePower,
+    GreatestCreatureToughness,
     EquippedPower,
 }
 /// Permission belonging to the chosen spell, checked before costs (CR601.6a).

@@ -51,6 +51,10 @@ pub(crate) enum StaticAbilityFragment {
     BorrowGraveyardActivations(&'static str),
     /// This creature can attack despite defender after its controller scries or surveils.
     AttackWithoutDefenderIfScried,
+    /// Controlled creatures may attack despite defender.
+    ControlledAttackWithoutDefender,
+    /// Controlled creatures with greater toughness assign combat damage using toughness.
+    ControlledCombatDamageByGreaterToughness,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
     /// Increase opponents' noncreature spell costs by generic mana.

@@ -7938,9 +7938,15 @@ impl Game {
     /// Assignment rule only. Actual characteristic power and noncombat damage are unchanged.
     pub(super) fn combat_assignment_amount(&self, id: CardId) -> i128 {
         let stats = self.stats(id);
-        if self.state.roles.as_ref().is_some_and(|r| {
+        if (self.state.roles.as_ref().is_some_and(|r| {
             r.toughness_combat_damage[self.state.objects[id as usize].controller.index()]
-        }) && stats.toughness > stats.power
+        }) || self.state.static_sources.iter().copied().any(|source| {
+            self.on_battlefield(source)
+                && self.state.objects[source as usize].controller == self.state.objects[id as usize].controller
+                && self.is_creature(id)
+                && self.continuous_fragment_available(source, |fragment| matches!(fragment,
+                    crate::cards::StaticAbilityFragment::ControlledCombatDamageByGreaterToughness))
+        })) && stats.toughness > stats.power
         {
             stats.toughness.max(0)
         } else {

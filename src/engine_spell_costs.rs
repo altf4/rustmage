@@ -396,6 +396,14 @@ impl Game {
                     u64::try_from(self.stats_without_hand(target.card, departing).power.max(0))
                         .unwrap_or(u64::MAX)
                 }),
+            crate::cards::SpellReductionAmount::GreatestCreatureToughness => {
+                let maximum = self.state.objects.iter().enumerate().filter_map(|(id, object)| {
+                    (object.zone == Zone::Battlefield && object.controller == actor
+                        && self.is_creature(id as CardId))
+                        .then(|| self.stats_without_hand(id as CardId, departing).toughness)
+                }).max().unwrap_or(0).max(0);
+                u64::try_from(maximum).unwrap_or(u64::MAX)
+            }
             crate::cards::SpellReductionAmount::SourcePower => {
                 u64::try_from(self.stats_without_hand(source, departing).power.max(0))
                     .unwrap_or(u64::MAX)
