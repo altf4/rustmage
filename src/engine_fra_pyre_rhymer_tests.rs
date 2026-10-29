@@ -59,7 +59,13 @@ fn grant_molten_tide(g: &mut Game, player: Player) {
     g.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
     act(g, Action::AnnounceExile { card: copy.card });
     pay(g);
-    settle(g);
+    for _ in 0..96 {
+        g.prepare_triggers();
+        if g.state.pending == Pending::Priority && g.state.stack.is_empty()
+            && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { return; }
+        choose(g, |action| matches!(action, Action::Pass | Action::PutTrigger { .. }));
+    }
+    panic!("Molten Tide resolution did not finish");
 }
 
 #[test]
