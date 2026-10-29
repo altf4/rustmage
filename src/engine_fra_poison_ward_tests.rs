@@ -533,7 +533,11 @@ fn radiation_trigger_is_sourceless_and_uses_current_counters_on_resolution() {
             assert_eq!(packet.source_identity(), None);
             assert_eq!(packet.kind, StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player: player });
             for viewer in [player, player.other()] {
-                let observed = serde_json::to_value(game.observe(viewer)).unwrap();
+                let native_view = game.observe(viewer);
+                let native_packet = native_view.stack.last().unwrap();
+                assert_eq!(native_packet.source(), None);
+                assert_eq!(native_packet.source_less_rule(), Some(SourceLessRule::Radiation));
+                let observed = serde_json::to_value(native_view).unwrap();
                 let stack = observed["stack"].as_array().unwrap();
                 let source = stack.last().unwrap();
                 for field in ["card", "object", "source_card", "source_facts"] { assert!(source[field].is_null()); }
