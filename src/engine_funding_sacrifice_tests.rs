@@ -804,6 +804,10 @@ fn prevented_sacrifice_mana_projection_matches_owned_payment() {
         g.state.objects[id as usize].summoning_sick = false;
         g.state.players[player.index()].mana = [0; 6];
         let original = g.object_ref(id);
+        g.state.roles.get_or_insert_default().source_linked_effects.push(SourceLinkedEffectView {
+            source: original, recipient: original, controller: player,
+            kind: SourceLinkedEffectKind::PreventDamageBy, timestamp: 1,
+        });
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(original)));
         let goal = FundingGoal { actor: player, required: [0, 0, 0, 0, 1, 0], generic: 0, reserve: None, source: None };
         let world = FundingState::from_game(&g, &goal);
@@ -816,6 +820,7 @@ fn prevented_sacrifice_mana_projection_matches_owned_payment() {
         assert_eq!(projected.object(id).zone, Zone::Battlefield);
         assert!(projected.object(id).tapped);
         assert_eq!(projected.mana[4], 1);
+        assert!(projected.roles().unwrap().source_linked_effects.iter().any(|row| row.source == original));
         assert!(world.key(&goal) != projected.key(&goal));
         let action = g.legal_actions().into_iter().find(|a| matches!(a,
             Action::ActivateMana { card, production: [0, 0, 0, 0, 1, 0], .. } if *card == id)).unwrap();
@@ -823,7 +828,37 @@ fn prevented_sacrifice_mana_projection_matches_owned_payment() {
         assert_eq!(g.object_ref(id), projected.reference(id));
         assert_eq!(g.state.objects[id as usize].zone, projected.object(id).zone);
         assert_eq!(g.state.objects[id as usize].tapped, projected.object(id).tapped);
+        assert!(g.state.roles.as_ref().unwrap().source_linked_effects.iter().any(|row| row.source == original));
         assert_eq!(u128::from(g.state.players[player.index()].mana[4]), projected.mana[4]);
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn prevention_provider_uses_live_control_and_ability_layer_after_restore() {
+    use crate::engine::zone_replacements::TEST_PREVENT_PROVIDER;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_PROVIDER.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let provider = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let land = named(&mut g, player, "Forest", Zone::Battlefield);
+        g.state.static_sources.push(provider);
+        g.state.zone_rules.get_or_insert_default();
+        let source = g.object_ref(provider);
+        let target = g.object_ref(land);
+        TEST_PREVENT_PROVIDER.with(|p| p.set(Some(source)));
+        assert!(g.zone_move_prevented(target, Zone::Graveyard));
+        let saved = g.snapshot();
+        let mut blank = g.activation_item(player, land, 0);
+        blank.targets = vec![BoundTarget { group: 0, target: Target::Card(provider), object: Some(source) }];
+        g.remove_target_abilities_until_end_of_turn(&blank);
+        assert!(!g.zone_move_prevented(target, Zone::Graveyard));
+        g.restore(&saved).unwrap();
+        assert!(g.zone_move_prevented(target, Zone::Graveyard));
+        g.change_controller(source, player.other());
+        assert!(!g.zone_move_prevented(target, Zone::Graveyard));
+        TEST_PREVENT_PROVIDER.with(|p| p.set(None));
     }
 }

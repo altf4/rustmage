@@ -1,5 +1,6 @@
 //! Typed graveyard-event replacements and rare owned competing-effect choices.
 use super::*;
+use super::ability_world::CharacteristicWorld;
 use crate::cards::ZoneReplacementRule;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -144,6 +145,11 @@ impl ZoneState {
 #[cfg(test)]
 thread_local! {
     pub(super) static TEST_PREVENT_ZONE_MOVE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_PREVENT_PROVIDER: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+}
+pub(super) fn card_provides_prevention(card: Card) -> bool {
+    card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment|
+        matches!(fragment, crate::cards::StaticAbilityFragment::PreventControlledPermanentGraveyardMove)))
 }
 impl Game {
     pub(super) fn register_stack_graveyard_exile(&mut self, item: &SpellView) {
@@ -178,7 +184,7 @@ impl Game {
     }
 
     pub(super) fn register_zone_rule_card(&mut self, card: Card) {
-        if card.zone_replacement().is_some() {
+        if card.zone_replacement().is_some() || card_provides_prevention(card) {
             self.state.zone_rules.get_or_insert_default();
         }
     }
@@ -237,10 +243,7 @@ impl Game {
         requested: Zone,
         discard_cause: Option<Player>,
     ) -> FrozenRules {
-        #[cfg(test)]
-        let prevent = TEST_PREVENT_ZONE_MOVE.with(|r| r.get() == Some(before.reference));
-        #[cfg(not(test))]
-        let prevent = false;
+        let prevent = self.zone_move_prevented(before.reference, requested);
         if requested != Zone::Graveyard {
             return FrozenRules { prevent, ..FrozenRules::default() };
         }

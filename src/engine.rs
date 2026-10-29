@@ -3073,7 +3073,7 @@ impl Game {
             .state
             .objects
             .iter()
-            .any(|o| o.card.zone_replacement().is_some())
+            .any(|o| o.card.zone_replacement().is_some() || zone_replacements::card_provides_prevention(o.card))
         {
             game.state.zone_rules = Some(Box::default());
         }

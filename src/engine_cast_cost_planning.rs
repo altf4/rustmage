@@ -268,10 +268,7 @@ impl FundingState<'_> {
             .iter()
             .map(|r| {
                 let o = self.object(r.card);
-                #[cfg(test)]
-                let prevented = zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get() == Some(*r));
-                #[cfg(not(test))]
-                let prevented = false;
+                let prevented = self.zone_move_prevented(*r, requested);
                 if requested != Zone::Graveyard {
                     return if prevented { vec![None] } else { vec![Some(requested)] };
                 }

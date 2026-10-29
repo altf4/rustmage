@@ -302,6 +302,26 @@ pub(super) trait CharacteristicWorld {
             keywords
         }
     }
+    fn zone_move_prevented(&self, object: ObjectRef, requested: Zone) -> bool {
+        #[cfg(test)]
+        if zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get() == Some(object)) { return true; }
+        let target = self.object(object.card);
+        if self.reference(object.card) != object || target.zone != Zone::Battlefield || requested != Zone::Graveyard { return false; }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        self.static_sources().iter().any(|&source| {
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield || provider.controller != target.controller { return false; }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| matches!(f, crate::cards::StaticAbilityFragment::PreventControlledPermanentGraveyardMove);
+            let printed = provider.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(fragment))
+                && query.continuous_fragment_available(source, fragment);
+            #[cfg(test)]
+            let synthetic = zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(self.reference(source)))
+                && self.printed_abilities_available(source);
+            #[cfg(not(test))]
+            let synthetic = false;
+            printed || synthetic
+        })
+    }
     /// Keep potential providers in speculative worlds even while blanked.
     fn sacrifice_prohibition_source(&self, id: CardId) -> bool {
         let object = self.object(id);
