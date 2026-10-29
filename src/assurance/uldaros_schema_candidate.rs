@@ -57,6 +57,14 @@ fn prior_type_slots_owned_safe(state: &State) -> bool {
             .as_ref()
             .and_then(|data| data.reveal.as_ref())
             .is_some_and(|event| event.revealed.card.identity() == "Uldaros Theorix")
+        || state.hits.iter().any(|event| event.source.facts.card.identity() == "Uldaros Theorix")
+        || state.damage_choices.iter().any(|event| event.source.facts.card.identity() == "Uldaros Theorix")
+        || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| row.granting_card.identity() == "Uldaros Theorix"))
+        || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| row.granting_card.identity() == "Uldaros Theorix"))
+        || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
+            row.provider.identity() == "Uldaros Theorix" || row.definition.identity() == "Uldaros Theorix"))
+        // Slot registry internals are intentionally opaque here.
+        || state.borrowed_slots.is_some()
         || state.announcing.is_some()
         || state.resolving.is_some()
         || state.stack_copy_data.is_some()
@@ -174,6 +182,88 @@ fn historical_uldaros_identity_is_rejected_even_after_the_object_changes() {
         assert!(!prior_type_slots_owned_safe(&g.state));
         let snapshot = g.snapshot();
         g.state.library_top.as_mut().unwrap().reveal = None;
+        assert!(prior_type_slots_owned_safe(&g.state));
+        g.restore(&snapshot).unwrap();
+        assert!(!prior_type_slots_owned_safe(&g.state));
+    }
+}
+
+#[test]
+fn retained_damage_grants_and_borrowed_registries_are_audited() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let reference = g.object_ref(id);
+        let card = Card::from_name("Uldaros Theorix").unwrap();
+        let mut source = g.damage_source(id);
+        source.facts.card = card;
+        g.state.hits.push(DamageEvent {
+            preventable: true,
+            source,
+            target: Target::Player(player.other()),
+            amount: 1,
+            combat: false,
+        });
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.state.hits.clear();
+        g.state.damage_choices.push(DamageChoice {
+            source,
+            defender: None,
+            blockers: vec![],
+            remaining: 1,
+            trample: false,
+            prior_blockers_lethal: true,
+        });
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.state.damage_choices.clear();
+        g.state.temporary_abilities =
+            Some(Box::new(vec![temporary_abilities::TemporaryAbilityView {
+                recipient: reference,
+                grantor: reference,
+                granting_card: card,
+                ability: 0,
+                grantor_controller: player,
+                expires_turn: g.state.turn,
+                permanent: false,
+                timestamp: 1,
+                origin: None,
+            }]));
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.state.temporary_abilities = None;
+        g.state.self_granted_abilities = Some(Box::new(vec![self_granted::Row {
+            recipient: reference,
+            granting_card: card,
+            kind: SelfGrantedAbilityKind::ControllerHandPower,
+            timestamp: 1,
+            effect_timestamp: None,
+            expires_turn: None,
+        }]));
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.state.self_granted_abilities = None;
+        g.state.graveyard_borrowing = Some(
+            vec![graveyard_borrowing::Row {
+                source: reference,
+                provider: card,
+                origin: None,
+                controller: player,
+                donor: reference,
+                definition: Card::from_name("Bear Cub").unwrap(),
+                first_slot: 0,
+                width: 1,
+                active: true,
+            }]
+            .into(),
+        );
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        let row = &mut g.state.graveyard_borrowing.as_mut().unwrap()[0];
+        row.provider = Card::from_name("Bear Cub").unwrap();
+        row.definition = card;
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.state.graveyard_borrowing = None;
+        g.state.borrowed_slots = Some(Default::default());
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        let snapshot = g.snapshot();
+        g.state.borrowed_slots = None;
         assert!(prior_type_slots_owned_safe(&g.state));
         g.restore(&snapshot).unwrap();
         assert!(!prior_type_slots_owned_safe(&g.state));
