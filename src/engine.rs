@@ -2726,6 +2726,9 @@ pub struct Observation {
     pub cost_choices: Vec<SpellCostChoiceView>,
     pub announcing_cost: Option<ManaCost>,
     pub targeting_group: Option<u16>,
+    /// Public APNAP choices already made for an optional wheel; None means undecided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub optional_wheel_choices: Option<[Option<bool>; 2]>,
     pub library_choice: Option<LibraryChoiceView>,
     pub library_selection: Option<LibrarySelectionView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8779,6 +8782,7 @@ impl Game {
             equipment_attachment: self.equipment_attachment_view(),
             target_library: self.target_library_view(viewer),
             last_target_library_move: s.last_target_library_move.as_deref().copied(),
+            optional_wheel_choices: s.resolving.as_ref().and_then(|r| r.optional_wheel.map(|w| w.choices)),
             library_choice: if owns_choice {
                 s.resolving
                     .as_ref()

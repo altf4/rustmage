@@ -1396,6 +1396,7 @@ fn fra_empower_scaled_zero_and_three() {
                 moved_count: None,
                 remembered_draws: None,
                 discard_after: None,
+                optional_wheel: None,
                 discards: [0; 2],
                 selected_discards: [vec![], vec![]],
                 milled: vec![],

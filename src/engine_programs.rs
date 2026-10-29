@@ -13,6 +13,14 @@ pub(super) struct TargetCardFacts {
     pub power: i128,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct OptionalWheel {
+    pub first: Player,
+    pub choices: [Option<bool>; 2],
+    pub amount: u16,
+    pub next: u8,
+    pub running: bool,
+}
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
@@ -37,6 +45,7 @@ pub(super) struct Resolution {
     pub remembered_draws: Option<u64>,
     pub sacrificed_power: Option<Box<i128>>,
     pub discard_after: Option<discard_events::DiscardAfter>,
+    pub optional_wheel: Option<OptionalWheel>,
     pub discards: [usize; 2],
     pub selected_discards: [Vec<CardId>; 2],
     pub milled: Vec<ObjectRef>,
@@ -2210,6 +2219,7 @@ impl Game {
             moved_count: None,
             remembered_draws: None,
             discard_after: None,
+            optional_wheel: None,
             discards: [0; 2],
             mana_payment: None,
             forage: None,
@@ -2311,6 +2321,27 @@ impl Game {
             .collect()
     }
 
+    /// Advance one chosen player's discard and draw; entry and Miracle choices
+    /// suspend the interpreter before the next player's action.
+    fn advance_optional_wheel(&mut self) -> bool {
+        let Some(wheel) = self.state.resolving.as_ref().and_then(|r| r.optional_wheel) else { return false; };
+        if !wheel.running { return false; }
+        if wheel.next >= 2 {
+            self.state.resolving.as_mut().unwrap().optional_wheel = None;
+            return false;
+        }
+        let player = if wheel.next == 0 { wheel.first } else { wheel.first.other() };
+        self.state.resolving.as_mut().unwrap().optional_wheel.as_mut().unwrap().next += 1;
+        if wheel.choices[player.index()] == Some(true) {
+            let cause = self.state.resolving.as_ref().unwrap().item.controller;
+            let cards: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(id, object)|
+                (object.zone == Zone::Hand && object.owner == player).then_some(id as CardId)
+            ).collect();
+            self.discard_batch_with_after(&cards, None, Some(cause),
+                Some(discard_events::DiscardAfter::DrawFixed { player, amount: wheel.amount }));
+        }
+        true
+    }
     pub(super) fn run_program(&mut self) {
         if self.miracle_choice_pending() {
             return;
@@ -2362,6 +2393,7 @@ impl Game {
             {
                 return;
             }
+            if self.advance_optional_wheel() { continue; }
             if self.resume_immediate_blink() {
                 continue;
             }
@@ -3100,6 +3132,27 @@ impl Game {
                 }
                 Instruction::ExileAttackingCreatures(players) => {
                     self.exile_attacking_creatures(players, &item)
+                }
+                Instruction::BeginOptionalWheel(amount) => {
+                    self.state.resolving.as_mut().unwrap().optional_wheel = Some(OptionalWheel {
+                        first: self.state.active, choices: [None; 2], amount, next: 0, running: false,
+                    });
+                }
+                Instruction::AskOptionalWheel { first, skip } => {
+                    let wheel = self.state.resolving.as_ref().unwrap().optional_wheel.unwrap();
+                    let player = if first { wheel.first } else { wheel.first.other() };
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    self.state.pending = Pending::EffectOptional { player, skip_to };
+                    return;
+                }
+                Instruction::RecordOptionalWheel { first, accept } => {
+                    let wheel = self.state.resolving.as_mut().unwrap().optional_wheel.as_mut().unwrap();
+                    let player = if first { wheel.first } else { wheel.first.other() };
+                    wheel.choices[player.index()] = Some(accept);
+                }
+                Instruction::ExecuteOptionalWheel => {
+                    self.state.resolving.as_mut().unwrap().optional_wheel.as_mut().unwrap().running = true;
                 }
                 Instruction::MayPlayer { player, skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");

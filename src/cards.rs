@@ -1817,6 +1817,11 @@ pub(crate) enum Instruction {
     /// Search up to the saved actual result of the preceding move instruction.
     SearchTargetPlayerMovedCount(SearchSpec),
     /// Single-player optional effect, including zero-card searches.
+    /// Record APNAP optional wheel decisions before performing either player's action.
+    BeginOptionalWheel(u16),
+    AskOptionalWheel { first: bool, skip: usize },
+    RecordOptionalWheel { first: bool, accept: bool },
+    ExecuteOptionalWheel,
     MayPlayer {
         player: PlayerSet,
         skip: usize,
