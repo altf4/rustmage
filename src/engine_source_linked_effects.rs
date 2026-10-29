@@ -85,6 +85,7 @@ impl Game {
         let Some(source_move) = item.source_move.as_ref() else { return; };
         if source_move.origin != Zone::Hand || source_move.destination != Zone::Exile { return; }
         let source = source_move.after;
+        if self.state.roles.as_ref().is_some_and(|roles| roles.exile_grant_cast_history.contains(&source)) { return; }
         let recipients: Vec<_> = self.keyword_subjects(item, Subject::Targets).into_iter()
             .filter(|&id| self.on_battlefield(id) && self.current_kinds(id) & 2 != 0)
             .map(|id| self.object_ref(id)).collect();
@@ -109,6 +110,16 @@ impl Game {
         if !item.cast.is_some_and(|cast| cast.origin == Zone::Exile) { return; }
         let Some(generation) = item.object.generation.checked_sub(1) else { return; };
         let before = ObjectRef { card: item.object.card, generation };
+        let pending = self.state.stack.iter().chain(&self.state.pending_triggers)
+            .chain(&self.state.ordering_triggers)
+            .chain(self.state.stack_copy_data.as_ref().into_iter().flat_map(|state| state.packets()))
+            .any(|packet| packet.source_move.as_ref().is_some_and(|movement| movement.after == before)
+                && packet.source_card.activations().iter().any(|ability|
+                    ability.program.contains(&Instruction::GrantLandManaUntilSourceCast)));
+        if pending {
+            let rows = &mut self.state.roles.get_or_insert_default().exile_grant_cast_history;
+            if !rows.contains(&before) { rows.push(before); }
+        }
         if let Some(roles) = &mut self.state.roles {
             roles.source_linked_effects.retain(|row| row.kind != SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast || row.source != before);
         }

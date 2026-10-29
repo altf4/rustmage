@@ -136,3 +136,63 @@ fn emrakul_hand_exile_grants_land_mana_until_that_exile_incarnation_is_cast() {
         }
     }
 }
+
+#[test]
+fn emrakul_cast_before_hand_ability_resolves_does_not_start_ended_grant() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        put(&mut g, player, "High Fae Trickster", Zone::Battlefield);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        let land = put(&mut g, player, "Forest", Zone::Battlefield);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 13];
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(land) });
+        pay(&mut g);
+        let exile_ref = g.object_ref(source);
+        // Model a separate already-existing permission; the pending activation
+        // has not yet created its own permission.
+        g.grant_exile_play_permission(player, exile_ref, false);
+        act(&mut g, Action::AnnounceExile { card: source });
+        pay(&mut g);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert!(!g.state.roles.as_ref().is_some_and(|roles| roles.source_linked_effects.iter().any(|row|
+                row.source == exile_ref && row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast)));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn emrakul_exile_departure_and_reentry_does_not_rebind_old_grant() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        let land = put(&mut g, player, "Forest", Zone::Battlefield);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(land) });
+        pay(&mut g);
+        let old = g.object_ref(source);
+        settle(&mut g);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.move_object(source, Zone::Hand);
+            g.move_object(source, Zone::Exile);
+            let new = g.object_ref(source);
+            assert_ne!(old, new);
+            assert!(!g.can_play_exiled(player, source));
+            let action = Action::TapGrantedMana { card: land, grantor: old, production: [0, 0, 0, 0, 0, 2] };
+            assert!(g.legal_actions().contains(&action));
+            g.grant_exile_play_permission(player, new, false);
+            g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 10];
+            act(&mut g, Action::AnnounceExile { card: source });
+            pay(&mut g);
+            assert!(g.legal_actions().contains(&action));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
