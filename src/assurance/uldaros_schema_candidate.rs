@@ -79,14 +79,13 @@ fn prior_type_slots_owned_safe(state: &State) -> bool {
         || state.linked_choices.is_some()
         || state.copy_recipes.is_some()
         || state.temporary_copies.is_some()
-        || state
-            .stack
-            .iter()
-            .chain(&state.pending_triggers)
-            .chain(&state.ordering_triggers)
-            .any(|item| {
-                item.target_type_slots.is_some() || item.source_card.identity() == "Uldaros Theorix"
-            })
+        // Packet internals include recursive copy events, recipes, cast facts and
+        // retained mana provenance. Reject them until a complete typed audit exists.
+        || !state.stack.is_empty()
+        || !state.pending_triggers.is_empty()
+        || !state.ordering_triggers.is_empty()
+        || state.adventures.is_some()
+        || state.plot.is_some()
     {
         return false;
     }
@@ -266,6 +265,37 @@ fn retained_damage_grants_and_borrowed_registries_are_audited() {
         g.state.borrowed_slots = None;
         assert!(prior_type_slots_owned_safe(&g.state));
         g.restore(&snapshot).unwrap();
+        assert!(!prior_type_slots_owned_safe(&g.state));
+    }
+}
+
+#[test]
+fn nested_packets_and_opaque_permissions_are_rejected_across_rollback() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let mut nested = g.activation_item(player, id, 0);
+        nested.source_card = Card::from_name("Uldaros Theorix").unwrap();
+        let mut outer = g.activation_item(player, id, 0);
+        outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
+            spell: nested,
+            amount: 1,
+        }));
+        g.state.pending_triggers.push(outer);
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.begin_attack_rollback(player);
+        g.state.pending_triggers.clear();
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        let saved = g.snapshot();
+        g.state.cast_rollback = None;
+        assert!(prior_type_slots_owned_safe(&g.state));
+        g.restore(&saved).unwrap();
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.state.cast_rollback = None;
+        g.state.adventures = Some(Default::default());
+        assert!(!prior_type_slots_owned_safe(&g.state));
+        g.state.adventures = None;
+        g.state.plot = Some(Default::default());
         assert!(!prior_type_slots_owned_safe(&g.state));
     }
 }
