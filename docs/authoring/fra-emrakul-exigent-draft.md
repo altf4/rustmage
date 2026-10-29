@@ -57,3 +57,18 @@ space. An arbitrary cap, forward pruning of a larger mana state, or treating all
 colored mana as interchangeable can discard the only legal route. Keep this
 mechanic and Emrakul gated until the supported transition subset is formally
 bounded and checked against actual payment and rollback behavior.
+
+The current draft also normalizes a spell-only lot in a standalone fixed-purpose
+search when that lot is ineligible for the goal. Such mana cannot fund any mana
+activation, and the frozen spell/activation purpose cannot spend it; all other
+quality, non-mana state and exact pools are retained. This does not generalize to
+an eligible lot. For example, an artifact-only green producer with a prevented
+non-tapping sacrifice and a generic-to-blue converter can generate arbitrarily
+many distinct useful artifact-spell lots even when a blue artifact-spell goal
+cannot be reached: the converter cannot spend those lots, but the color upper
+bound can count its blue production. Dropping or arbitrarily capping the green
+lots would need a proof that no later reachable goal or cost can use them.
+
+The fixed-purpose test is unlinked and unbuilt. Full termination still requires
+a finite-control argument and a sound coverability treatment across nested
+payment choices, conversions, and quality-changing or source-changing events.

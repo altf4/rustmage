@@ -1027,3 +1027,46 @@ fn spell_only_repeat_mana_cannot_pay_other_or_fuel_a_converter_but_can_pay_artif
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn repeatable_artifact_only_mana_is_inert_for_a_fixed_nonartifact_spell_goal() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let source = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::test_index(5437);
+        let converter = named(&mut g, player, "Barrels of Blasting Jelly", Zone::Battlefield);
+        let creature = named(&mut g, player, "Bear Cub", Zone::Hand);
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Hand);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(source))));
+        let goal = FundingGoal { actor: player, required: [0, 0, 0, 0, 1, 0], generic: 0, reserve: None, source: None };
+        let creature_purpose = mana_lots::Purpose::Spell(mana_lots::Source::in_world(&g, creature));
+        let artifact_purpose = mana_lots::Purpose::Spell(mana_lots::Source::in_world(&g, artifact));
+        let mut world = FundingState::from_game(&g, &goal);
+        world.set_purpose(creature_purpose);
+        for amount in 1..=3 {
+            let old = world.key(&goal);
+            let step = world.moves(&goal).into_iter().find(|step| world.resources[step.resource].id == source).unwrap();
+            let mut next = None;
+            assert!(world.visit_applied(&step, &mut |branch| { next = Some(branch.clone()); true }));
+            world = next.unwrap();
+            assert_eq!(world.mana[4], amount);
+            assert_eq!(mana_lots::available(world.mana, &world.lots, creature_purpose)[4], 0);
+            assert_eq!(mana_lots::available(world.mana, &world.lots, artifact_purpose)[4], amount);
+            assert!(world.moves(&goal).iter().all(|step| world.resources[step.resource].id != converter));
+            if amount > 1 { assert!(old == world.key(&goal)); }
+        }
+        assert!(!g.can_fund_for(goal.clone(), creature_purpose));
+        assert!(g.can_fund_for(goal, artifact_purpose));
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
