@@ -387,3 +387,49 @@ fn sphinx_synchronous_staged_failure_keeps_live_replay_until_caller_consumes_it(
         }
     }
 }
+
+#[test]
+fn sphinx_preexisting_graveyard_exile_prohibition_skips_optional_payment() {
+    use ability_world::TEST_EXILE_PROHIBITOR;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let provider = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let cards: Vec<_> = (0..4)
+            .map(|_| sphinx_card(&mut game, player, Zone::Graveyard))
+            .collect();
+        let source = sphinx_card(&mut game, player, Zone::Hand);
+        TEST_EXILE_PROHIBITOR.with(|p| p.set(Some(game.object_ref(provider))));
+        cast(&mut game, source, None);
+        let checkpoint = game.snapshot();
+        for _ in 0..2 {
+            for _ in 0..32 {
+                assert!(!matches!(game.state.pending, Pending::EffectChoice { .. }));
+                assert!(!matches!(game.state.pending, Pending::EffectSearch { .. }));
+                if game.state.pending == Pending::Priority
+                    && game.state.stack.is_empty()
+                    && game.state.resolving.is_none()
+                {
+                    break;
+                }
+                act(&mut game, Action::Pass);
+            }
+            assert!(game.state.stack.is_empty() && game.state.resolving.is_none());
+            assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+            assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+            assert!(
+                cards
+                    .iter()
+                    .all(|&id| game.object_view(id).zone == Zone::Graveyard)
+            );
+            game.restore(&checkpoint).unwrap();
+        }
+        TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
+    }
+}
