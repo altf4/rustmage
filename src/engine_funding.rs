@@ -515,6 +515,7 @@ impl<'g> FundingState<'g> {
                 mask,
                 amount: u32::MAX,
             },
+            ManaProduction::DistinctCreaturePowers => ManaProduction::any_color(u32::MAX),
             ManaProduction::SourcePower { color } => {
                 let mut mana = [0; 6];
                 mana[usize::from(color)] = u32::MAX;
@@ -622,6 +623,7 @@ impl<'g> FundingState<'g> {
                             production.base(),
                             ManaProduction::SourcePower { .. }
                                 | ManaProduction::TapSourcePowerChoice { .. }
+                                | ManaProduction::DistinctCreaturePowers
                         );
                         sacrifice_mana_cost |= ability
                             .cost
@@ -1914,6 +1916,7 @@ impl<'g> FundingState<'g> {
                         mask,
                         amount: u32::MAX,
                     },
+                    ManaProduction::DistinctCreaturePowers => ManaProduction::any_color(u32::MAX),
                     ManaProduction::SourcePower { color } => {
                         let mut mana = [0; 6];
                         mana[usize::from(color)] = u32::MAX;

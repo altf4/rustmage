@@ -4235,6 +4235,7 @@ impl Game {
                     match production.base().in_world(self, item.card) {
                         ManaProduction::ChosenColor
                         | ManaProduction::MonocoloredPermanentColors
+                        | ManaProduction::DistinctCreaturePowers
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::SourcePower { .. }
                         | ManaProduction::TapSourcePowerChoice { .. }

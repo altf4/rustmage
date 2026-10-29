@@ -848,6 +848,27 @@ impl ManaProduction {
                 }
                 Self::Fixed(mana)
             }
+            Self::DistinctCreaturePowers => {
+                // Mana resolves after the source is tapped; power and even creature
+                // status can depend on that tap in either the live or projected world.
+                let mut object = world.object(source).clone();
+                object.tapped = true;
+                let tapped = SourceTappedWorld { parent: world, source, object };
+                let controller = tapped.object(source).controller;
+                let mut powers = Vec::new();
+                for id in 0..tapped.game().state.objects.len() {
+                    let id = id as CardId;
+                    let object = tapped.object(id);
+                    if object.zone == Zone::Battlefield && object.controller == controller
+                        && tapped.kinds(id) & 1 != 0
+                    {
+                        powers.push(tapped.power(id));
+                    }
+                }
+                powers.sort_unstable();
+                powers.dedup();
+                Self::any_color(u32::try_from(powers.len()).capacity("mana representation exhausted"))
+            }
             Self::MonocoloredPermanentColors => {
                 let controller = world.object(source).controller;
                 let mut mask = 0u8;

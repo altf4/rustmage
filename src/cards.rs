@@ -531,6 +531,8 @@ pub(crate) enum ManaProduction {
         mask: u8,
     },
     MonocoloredPermanentColors,
+    /// Choose one color and produce one mana per distinct controlled creature power.
+    DistinctCreaturePowers,
     Fixed(Mana),
     CountSubtype {
         color: u8,
@@ -570,6 +572,7 @@ impl ManaProduction {
             | Self::SourcePower { .. }
             | Self::TapSourcePowerChoice { .. }
             | Self::MonocoloredPermanentColors
+            | Self::DistinctCreaturePowers
             | Self::CountSubtype { .. } => {
                 panic!("dynamic mana requires a characteristic world")
             }
