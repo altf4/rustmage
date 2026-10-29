@@ -1082,7 +1082,9 @@ fn outside_replacement_chain_uses_public_choices_under_player_control() {
         assert!(game.observe(owner.other()).actions.contains(&first));
         assert!(game.apply(owner, first.clone()).is_err());
         let before = game.snapshot();
+        outside_choices::start_provider_trace();
         game.apply(owner.other(), first).unwrap();
+        assert_eq!(outside_choices::take_provider_trace(), vec![(out, 0)]);
         assert!(
             matches!(game.state.pending, Pending::OutsideEntryReplacement { player } if player == owner)
         );
@@ -1098,7 +1100,24 @@ fn outside_replacement_chain_uses_public_choices_under_player_control() {
         assert!(game.observe(owner.other()).actions.contains(&second));
         let after_first = game.snapshot();
         for _ in 0..2 {
+            outside_choices::start_provider_trace();
             game.apply(owner.other(), second.clone()).unwrap();
+            assert_eq!(
+                outside_choices::take_provider_trace(),
+                vec![(back, 0), (out, 1), (back, 1)]
+            );
+            assert!(!matches!(
+                game.state.pending,
+                Pending::OutsideEntryReplacement { .. }
+            ));
+            assert!(
+                game.state
+                    .outside_game
+                    .as_ref()
+                    .unwrap()
+                    .pending_entry
+                    .is_none()
+            );
             assert_eq!(
                 game.state.outside_game.as_ref().unwrap().pools[owner.index()],
                 vec![bear]
@@ -1110,6 +1129,14 @@ fn outside_replacement_chain_uses_public_choices_under_player_control() {
                     .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Hand)
             );
             assert!(!game.state.cards_exiled_this_turn);
+            for viewer in [Player::P0, Player::P1] {
+                assert!(
+                    game.observe(viewer)
+                        .objects
+                        .iter()
+                        .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Hand)
+                );
+            }
             game.restore(&after_first).unwrap();
         }
         game.restore(&before).unwrap();

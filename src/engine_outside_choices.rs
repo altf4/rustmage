@@ -1,6 +1,20 @@
 //! Owned, private outside-game selection; the outside pool is not a game zone.
 use super::*;
 
+// Test-only trace is deliberately external to owned rules state; each replay
+// clears it before recording its independently executed provider sequence.
+#[cfg(test)]
+thread_local! {
+    static TEST_PROVIDER_TRACE: std::cell::RefCell<Option<Vec<(ObjectRef, u16)>>> = const { std::cell::RefCell::new(None) };
+}
+#[cfg(test)]
+pub(super) fn start_provider_trace() {
+    TEST_PROVIDER_TRACE.with(|trace| *trace.borrow_mut() = Some(Vec::new()));
+}
+#[cfg(test)]
+pub(super) fn take_provider_trace() -> Vec<(ObjectRef, u16)> {
+    TEST_PROVIDER_TRACE.with(|trace| trace.borrow_mut().take().unwrap())
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum Selection {
     Pool(u16),
@@ -504,6 +518,12 @@ impl Game {
             .unwrap();
         event.destination = candidate.2;
         event.provider_applied.push((source, ability));
+        #[cfg(test)]
+        TEST_PROVIDER_TRACE.with(|trace| {
+            if let Some(events) = trace.borrow_mut().as_mut() {
+                events.push((source, ability));
+            }
+        });
         event.provider_choices.clear();
         true
     }
