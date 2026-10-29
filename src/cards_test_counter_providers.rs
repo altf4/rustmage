@@ -98,13 +98,33 @@ const EVENT_GROUP: &[StaticAbilityGroup] = &[StaticAbilityGroup {
     first_layer: AbilityLayer::Rule,
     fragments: &[StaticAbilityFragment::Replacement(0, EVENT_DOUBLE)],
 }];
+const OUTSIDE_PREVENT: ReplacementSpec = ReplacementSpec::OutsideEntry {
+    relation: CastRelation::You,
+    from: OutsideEntryEffectDestination::Hand,
+    to: OutsideEntryEffectDestination::Prevent,
+};
+const OUTSIDE_EXILE: ReplacementSpec = ReplacementSpec::OutsideEntry {
+    relation: CastRelation::You,
+    from: OutsideEntryEffectDestination::Hand,
+    to: OutsideEntryEffectDestination::Exile,
+};
+const OUTSIDE_GROUP: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[
+        StaticAbilityFragment::Replacement(0, OUTSIDE_PREVENT),
+        StaticAbilityFragment::Replacement(1, OUTSIDE_EXILE),
+    ],
+}];
 pub(super) fn provider(
     card: Card,
 ) -> Option<(&'static [StaticAbilityGroup], &'static [ReplacementSpec])> {
     if !ACTIVE.with(Cell::get) {
         return None;
     }
-    if Some(card) == Card::from_name("Bear Cub") {
+    if Some(card) == Card::from_name("Silvercoat Lion") {
+        Some((OUTSIDE_GROUP, &[OUTSIDE_PREVENT, OUTSIDE_EXILE]))
+    } else if Some(card) == Card::from_name("Bear Cub") {
         Some((BLOCK_GROUP, &[]))
     } else if Some(card) == Card::from_name("Hill Giant") {
         Some((DOUBLE_GROUP, &[DOUBLE]))

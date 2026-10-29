@@ -947,3 +947,55 @@ fn synthetic_outside_entry_replacement_choices_are_owned_and_transactional() {
         }
     }
 }
+
+#[test]
+fn outside_admission_uses_real_provider_choice_and_replays() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut game = outside_scenario(owner, vec![shock, bear]);
+        let provider = put(&mut game, owner, "Silvercoat Lion", Zone::Battlefield);
+        let source = game.object_ref(provider);
+        cast_extrapolate(&mut game, owner);
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+        assert!(
+            matches!(game.state.pending, Pending::OutsideEntryReplacement { player } if player == owner)
+        );
+        let before = game.snapshot();
+        assert!(game.observe(owner).outside_entry_replacement.is_some());
+        assert!(
+            game.observe(owner.other())
+                .outside_entry_replacement
+                .is_none()
+        );
+        let prevent = Action::ChooseOutsideEntryReplacement { source, ability: 0 };
+        let exile = Action::ChooseOutsideEntryReplacement { source, ability: 1 };
+        assert!(game.legal_actions().contains(&prevent));
+        assert!(game.legal_actions().contains(&exile));
+        act(&mut game, prevent);
+        assert_eq!(
+            game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+            vec![shock, bear]
+        );
+        game.restore(&before).unwrap();
+        act(&mut game, exile);
+        assert_eq!(
+            game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+            vec![bear]
+        );
+        assert!(
+            game.state
+                .objects
+                .iter()
+                .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Exile)
+        );
+        assert!(game.state.cards_exiled_this_turn);
+        let after = game.snapshot();
+        game.restore(&before).unwrap();
+        act(&mut game, exile);
+        assert_eq!(game.snapshot(), after);
+    }
+}

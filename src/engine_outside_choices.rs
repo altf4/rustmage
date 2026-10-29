@@ -60,6 +60,13 @@ pub struct OutsideChoiceView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub revealed: Option<[Card; 2]>,
 }
+/// Public provider identities are shown only to the player making the
+/// replacement decision (or the player controlling that decision).
+#[derive(Clone, Debug, Serialize)]
+pub struct OutsideEntryReplacementView {
+    pub player: Player,
+    pub providers: Vec<(ObjectRef, u16)>,
+}
 // Count names rather than testing every pair. Large casual collections may
 // contain many duplicates, and action enumeration must not become quadratic.
 struct NameIndex {
@@ -538,11 +545,88 @@ impl Game {
 
     pub(super) fn choose_outside_revealed(&mut self, index: u8) {
         assert!(self.plan_outside_hand(index), "validated outside selection");
+        self.advance_outside_entry();
+    }
+    fn advance_outside_entry(&mut self) {
+        loop {
+            assert!(
+                self.prepare_outside_entry_providers(),
+                "valid outside continuation"
+            );
+            let event = self
+                .state
+                .outside_game
+                .as_ref()
+                .unwrap()
+                .pending_entry
+                .as_ref()
+                .unwrap();
+            match event.provider_choices.as_slice() {
+                [] => {
+                    assert!(
+                        self.commit_outside_hand(),
+                        "outside selection remains valid"
+                    );
+                    self.run_program();
+                    return;
+                }
+                [(source, ability, _)] => {
+                    let (source, ability) = (*source, *ability);
+                    assert!(self.apply_outside_entry_provider(source, ability));
+                }
+                _ => {
+                    let player = event.owner;
+                    self.state.pending = Pending::OutsideEntryReplacement { player };
+                    return;
+                }
+            }
+        }
+    }
+    pub(super) fn visit_outside_entry_replacements(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let Some(event) = self
+            .state
+            .outside_game
+            .as_ref()
+            .and_then(|s| s.pending_entry.as_ref())
+        else {
+            return false;
+        };
+        event.provider_choices.iter().any(|(source, ability, _)| {
+            emit(Action::ChooseOutsideEntryReplacement {
+                source: *source,
+                ability: *ability,
+            })
+        })
+    }
+    pub(super) fn outside_entry_replacement_view(
+        &self,
+        viewer: Player,
+    ) -> Option<OutsideEntryReplacementView> {
+        let Pending::OutsideEntryReplacement { player } = self.state.pending else {
+            return None;
+        };
+        if !self.shares_information(viewer, player) {
+            return None;
+        }
+        let event = self.state.outside_game.as_ref()?.pending_entry.as_ref()?;
+        Some(OutsideEntryReplacementView {
+            player,
+            providers: event
+                .provider_choices
+                .iter()
+                .map(|(source, ability, _)| (*source, *ability))
+                .collect(),
+        })
+    }
+    pub(super) fn choose_outside_provider(&mut self, source: ObjectRef, ability: u16) {
         assert!(
-            self.commit_outside_hand(),
-            "outside selection must remain valid"
+            self.apply_outside_entry_provider(source, ability),
+            "validated outside replacement"
         );
-        self.run_program();
+        self.advance_outside_entry();
     }
     /// Commit only if the selected slot and owned choice have not changed.
     /// False leaves the plan, pool, public knowledge and objects unchanged.
@@ -629,6 +713,8 @@ impl Game {
         });
         if event.destination == OutsideEntryDestination::Hand {
             self.state.known_hand.push(self.object_ref(id));
+        } else if event.destination == OutsideEntryDestination::Exile {
+            self.state.cards_exiled_this_turn = true;
         }
         true
     }

@@ -789,6 +789,7 @@ define_actions! {
     CancelOutsideCard,
     DeclineOutsideCards,
     ChooseOutsideRevealed { index: u8 },
+    ChooseOutsideEntryReplacement { source: ObjectRef, ability: u16 },
     ChooseSearch {
         card: CardId,
     },
@@ -2164,6 +2165,9 @@ enum Pending {
     OutsideGameChoice {
         player: Player,
     },
+    OutsideEntryReplacement {
+        player: Player,
+    },
     Attackers,
     Blockers,
     Damage,
@@ -2781,6 +2785,8 @@ pub struct KeywordChoiceView {
 pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_choice: Option<outside_choices::OutsideChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub outside_entry_replacement: Option<outside_choices::OutsideEntryReplacementView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owned_outside: Option<[Option<Vec<Card>>; 2]>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3502,7 +3508,8 @@ impl Game {
             | Pending::Forage { player }
             | Pending::EffectOptional { player, .. }
             | Pending::EffectDiscard { player, .. }
-            | Pending::OutsideGameChoice { player } => Some(player),
+            | Pending::OutsideGameChoice { player }
+            | Pending::OutsideEntryReplacement { player } => Some(player),
             Pending::Attackers | Pending::Damage | Pending::Discard => Some(self.state.active),
             Pending::Blockers => Some(self.state.active.other()),
             Pending::Terminal => None,
@@ -3859,6 +3866,11 @@ impl Game {
         type SpellFundingCacheEntry = (Mana, u32, Card, bool, bool);
         let mut spell_funding_cache: [Option<SpellFundingCacheEntry>; 8] = [None; 8];
         match s.pending {
+            Pending::OutsideEntryReplacement { .. } => {
+                if self.visit_outside_entry_replacements(&mut emit) {
+                    return true;
+                }
+            }
             Pending::OutsideGameChoice { .. } => {
                 if self.visit_outside_choices(&mut emit) {
                     return true;
@@ -5756,6 +5768,9 @@ impl Game {
             Action::CancelOutsideCard => self.cancel_outside_card(),
             Action::DeclineOutsideCards => self.decline_outside_cards(),
             Action::ChooseOutsideRevealed { index } => self.choose_outside_revealed(index),
+            Action::ChooseOutsideEntryReplacement { source, ability } => {
+                self.choose_outside_provider(source, ability)
+            }
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
@@ -9042,6 +9057,7 @@ impl Game {
             .collect();
         Observation {
             outside_choice: self.outside_choice_view(viewer),
+            outside_entry_replacement: self.outside_entry_replacement_view(viewer),
             owned_outside: self.owned_outside_view(viewer),
             known_outside: self.known_outside_view(),
             sideboard_counts: self.sideboard_counts_view(),
@@ -9374,6 +9390,7 @@ impl Game {
                 }
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::OutsideGameChoice { .. } => "outside_game_choice",
+                Pending::OutsideEntryReplacement { .. } => "outside_entry_replacement",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
