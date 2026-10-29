@@ -5,6 +5,7 @@ pub(super) mod big_helpers;
 mod cards;
 mod contracts;
 mod fra_complete_games;
+mod fra_coverage_gaps;
 mod fra_way_loyalty_foundation;
 mod interactions;
 mod regressions;
