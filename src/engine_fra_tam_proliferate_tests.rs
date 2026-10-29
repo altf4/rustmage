@@ -49,3 +49,13 @@ fn tam_pays_five_colors_and_repeats_for_distinct_live_planeswalker_types() {
         assert!(g.on_battlefield(ajani));
     }
 }
+
+#[test]
+fn planeswalker_cast_filter_distinguishes_card_kinds() {
+    let walker = Card::from_name("Ajani, Caller of the Pride").unwrap();
+    let creature = Card::from_name("Bear Cub").unwrap();
+    assert!(CastFilter::Planeswalker.matches(walker));
+    assert!(!CastFilter::Planeswalker.matches(creature));
+    assert!(CastFilter::Planeswalker.matches_mana_value(walker, 0));
+    assert!(!CastFilter::Planeswalker.matches_mana_value(creature, 99));
+}

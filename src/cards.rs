@@ -733,7 +733,6 @@ impl SearchFilter {
             Self::Creature => card.is_creature(),
             Self::Legendary => card.is_legendary(),
             Self::Artifact => card.is_artifact(),
-            Self::Planeswalker => card.kind_mask() & 64 != 0,
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
         }
@@ -3191,6 +3190,7 @@ impl CastFilter {
             Self::InstantSorcery => card.kind_mask() & (4 | 8) != 0,
             Self::Sorcery => card.kind_mask() & 4 != 0,
             Self::Artifact => card.is_artifact(),
+            Self::Planeswalker => card.kind_mask() & 64 != 0,
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
             Self::AnyOf(filters) => filters
