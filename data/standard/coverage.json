@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2f01a4e1eb61a5d8ef699324e1c69e4a842b44fe4b1ce6e207773fc2aff1d0ce",
+  "catalogue_version": "8de7c69187e003180bff9b3fa679076eefa26edbfcf5e8c6369e685b82d741cb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2931,
-  "implemented_total": 2937,
+  "implemented_standard_cards": 2932,
+  "implemented_total": 2938,
   "token_definitions": 146,
   "emblem_definitions": 6,
   "adventure_definitions": 49,
@@ -71,8 +71,7 @@
     },
     "fra": {
       "total": 285,
-      "complete": 284,
-      "gated": 1
+      "complete": 285
     },
     "frc": {
       "total": 6,
@@ -10795,8 +10794,8 @@
     {
       "name": "Emrakul, the Exigent Doom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/emrakul_the_exigent_doom.rs",
       "set": "fra"
     },

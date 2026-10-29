@@ -1,4 +1,3 @@
-// Partial draft: ward payment and hand-exile permission remain unvalidated; gated.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(12, 12),
     keywords: Keywords::FLYING.union(Keywords::TRAMPLE),
