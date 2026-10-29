@@ -842,6 +842,7 @@ impl<'g> FundingState<'g> {
                 group.iter().all(|r| {
                     let o = ability_world::CharacteristicWorld::object(self, r.card);
                     o.generation == r.generation
+                        && (!matches!(spec.kind, EffectChoiceKind::Sacrifice | EffectChoiceKind::SacrificeDifferentNames(_) | EffectChoiceKind::SacrificeAttachedEquipment) || !self.sacrifice_prohibited(r.card))
                         && (spec.kind != EffectChoiceKind::DiscardLegendary
                             || ability_world::CharacteristicWorld::legendary(self, r.card))
                         && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
@@ -871,6 +872,7 @@ impl<'g> FundingState<'g> {
                 o.zone == Zone::Battlefield
                     && o.generation == r.generation
                     && o.controller == goal.actor
+                    && !self.sacrifice_prohibited(r.card)
                     && o.is_token()
                     && ability_world::CharacteristicWorld::kinds(self, r.card) & 16 != 0
             })
@@ -895,7 +897,8 @@ impl<'g> FundingState<'g> {
                     })
             })
             && goal.reserve.is_none_or(|(r, spec)| {
-                (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+                (!matches!(spec.kind, EffectChoiceKind::Sacrifice | EffectChoiceKind::SacrificeDifferentNames(_) | EffectChoiceKind::SacrificeAttachedEquipment) || !self.sacrifice_prohibited(r.card))
+                    && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
                     || self.game.sneak_attacker(goal.actor, r)
                         && ability_world::CharacteristicWorld::attacking(self, r.card))
                     && (spec.kind != EffectChoiceKind::DiscardLegendary || ability_world::CharacteristicWorld::legendary(self, r.card))
@@ -910,6 +913,8 @@ impl<'g> FundingState<'g> {
                 reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
                 reserve.map_or("", |r| ability_world::CharacteristicWorld::name(self, r.id)),
             )
+            && goal.source.as_ref().is_none_or(|(r, index, _, definition, _)|
+                !definition.activation(*index).cost.sacrifice || !self.sacrifice_prohibited(r.card))
             && source_obligations(
                 goal,
                 source.map(|r| &r.object),
@@ -1194,6 +1199,7 @@ impl<'g> FundingState<'g> {
                         .contains(Keywords::HASTE))
             {
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, entry.id) {
+                    if grant.sacrifice && self.sacrifice_prohibited(entry.id) { continue; }
                     let quality = mana_lots::quality_from_world(self, grant.production, entry.id);
                     grant
                         .production
@@ -1251,6 +1257,7 @@ impl<'g> FundingState<'g> {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
+                if ability.cost.sacrifice && self.sacrifice_prohibited(entry.id) { continue; }
                 // CR605.3c forbids recursively activating the same mana ability
                 // before the enclosing activation has resolved.
                 if goal

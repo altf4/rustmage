@@ -223,6 +223,7 @@ impl Game {
     ) -> bool {
         let readiness = self.activation_readiness(actor, ability);
         !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            && (!ability.cost.sacrifice || !ability_world::CharacteristicWorld::sacrifice_prohibited(self, card))
             && self.printed_abilities_available(card)
             && (ability.mana_production().is_some()
                 || (!self.nonmana_actions_prohibited() && !self.named_activation_prohibited(card)))
@@ -315,6 +316,7 @@ impl Game {
             return false;
         }
         for grant in ability_world::CharacteristicWorld::granted_mana(self, card) {
+            if grant.sacrifice && ability_world::CharacteristicWorld::sacrifice_prohibited(self, card) { continue; }
             if grant.production.in_world(self, card).visit(|production| {
                 emit(Action::TapGrantedMana {
                     card,

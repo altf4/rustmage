@@ -328,3 +328,32 @@ fn ward_sacrifice_prohibition_and_partial_decline_preserve_all_permanents() {
         TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn sacrifice_prohibition_blocks_real_mana_actions_and_funding() {
+    use ability_world::TEST_SACRIFICE_PROHIBITOR;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let treasure = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[treasure as usize].card = Card::test_index(5437);
+        g.state.objects[treasure as usize].summoning_sick = false;
+        let provider = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let goal = FundingGoal { actor: player, required: [0, 0, 0, 0, 1, 0], generic: 0, reserve: None, source: None };
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(Some(g.object_ref(provider))));
+            assert!(!g.can_fund(goal.clone()));
+            assert!(!g.legal_actions().iter().any(|a| matches!(a, Action::ActivateMana { card, .. } if *card == treasure)));
+            TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(None));
+            assert!(g.can_fund(goal.clone()));
+            let action = g.legal_actions().into_iter().find(|a| matches!(a, Action::ActivateMana { card, production: [0, 0, 0, 0, 1, 0], .. } if *card == treasure)).unwrap();
+            act(&mut g, action);
+            assert_eq!(g.state.players[player.index()].mana[4], 1);
+            assert_ne!(g.object_view(treasure).zone, Zone::Battlefield);
+            g.restore(&saved).unwrap();
+        }
+    }
+}

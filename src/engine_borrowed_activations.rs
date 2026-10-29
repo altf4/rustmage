@@ -464,7 +464,8 @@ impl Game {
             {
                 continue;
             }
-            if !self.activation_guard_available(ability.guard, card, actor)
+            if (ability.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, card))
+                || !self.activation_guard_available(ability.guard, card, actor)
                 || (ability.mana_production().is_none()
                     && (self.nonmana_actions_prohibited()
                         || self.named_activation_prohibited(card)))
