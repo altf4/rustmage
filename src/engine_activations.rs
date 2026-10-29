@@ -801,7 +801,7 @@ impl Game {
         }
         if cost.exile_self {
             let event = self.move_object(item.card, Zone::Exile);
-            if definition.program.contains(&Instruction::GrantLandManaUntilSourceCast) && event.moved {
+            if definition.program.contains(&Instruction::GrantLandManaUntilSourceCast) {
                 item.source_move = Some(Box::new(TriggerSourceMoveView {
                     before: event.before.reference, after: event.after,
                     origin: event.before.zone, destination: event.destination,

@@ -494,3 +494,33 @@ fn emrakul_cast_history_survives_retained_retarget_copy_packet_and_restore() {
         }
     }
 }
+
+#[test]
+fn emrakul_prevented_exile_cost_still_grants_land_mana_without_exile_permission() {
+    use zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        let land = put(&mut g, player, "Forest", Zone::Battlefield);
+        let original = g.object_ref(source);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(original)));
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(land) });
+        pay(&mut g);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert_eq!(g.object_ref(source), original);
+            assert_eq!(g.object_view(source).zone, Zone::Hand);
+            assert!(!g.can_play_exiled(player, source));
+            assert!(g.legal_actions().contains(&Action::TapGrantedMana { card: land, grantor: original, production: [0, 0, 0, 0, 0, 2] }));
+            g.restore(&saved).unwrap();
+        }
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}

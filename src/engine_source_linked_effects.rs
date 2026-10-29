@@ -83,7 +83,10 @@ impl Game {
     }
     pub(super) fn grant_land_mana_until_paid_source_cast(&mut self, item: &SpellView) {
         let Some(source_move) = item.source_move.as_ref() else { return; };
-        if source_move.origin != Zone::Hand || source_move.destination != Zone::Exile { return; }
+        // A replacement can change or prevent the exile event while the cost
+        // remains paid (CR 118.11). The exact resulting incarnation anchors
+        // the duration; exile permission is separately conditional below.
+        if source_move.origin != Zone::Hand { return; }
         let source = source_move.after;
         if self.state.roles.as_ref().is_some_and(|roles| roles.exile_grant_cast_history.contains(&source)) { return; }
         let recipients: Vec<_> = self.keyword_subjects(item, Subject::Targets).into_iter()
