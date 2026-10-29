@@ -357,3 +357,49 @@ fn sacrifice_prohibition_blocks_real_mana_actions_and_funding() {
         }
     }
 }
+
+#[test]
+fn ward_atomic_replacement_prevention_and_redirect_choice_restore() {
+    use zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        for prevent in [false, true] {
+            let mut g = scenario(player);
+            put(&mut g, player, "Rest in Peace", Zone::Battlefield);
+            let emrakul = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+            g.state.objects[emrakul as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+            g.register_battlefield_sources(emrakul);
+            let payer = player.other();
+            let permanents: Vec<_> = (0..3).map(|_| put(&mut g, payer, "Forest", Zone::Battlefield)).collect();
+            let shock = put(&mut g, payer, "Shock", Zone::Hand);
+            g.state.active = payer;
+            g.state.priority = payer;
+            cast(&mut g, shock, Some(Target::Card(emrakul)));
+            for _ in 0..48 {
+                if matches!(g.state.pending, Pending::EffectChoice { player: p } if p == payer) { break; }
+                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+            }
+            let saved = g.snapshot();
+            for _ in 0..2 {
+                TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(permanents[1]))));
+                for &id in &permanents {
+                    let reference = g.object_ref(id);
+                    act(&mut g, Action::Sacrifice { object: reference });
+                }
+                let selected = if prevent { ZoneReplacementKind::Prevent } else { ZoneReplacementKind::Exile };
+                assert!(g.legal_actions().contains(&Action::ChooseZoneReplacement { effect: selected }));
+                assert!(permanents.iter().all(|&id| g.object_view(id).zone == Zone::Battlefield));
+                act(&mut g, Action::ChooseZoneReplacement { effect: selected });
+                settle(&mut g);
+                for &id in &permanents {
+                    assert_eq!(g.object_view(id).zone, if prevent { Zone::Battlefield } else { Zone::Exile });
+                }
+                assert_eq!(g.object_view(emrakul).damage, if prevent { 0 } else { 2 });
+                g.restore(&saved).unwrap();
+            }
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+}

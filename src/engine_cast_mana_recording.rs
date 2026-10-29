@@ -265,7 +265,7 @@ impl Game {
             capture
                 .event
                 .moves
-                .push((before.reference, plan.destination, plan.shuffle));
+                .push((before.reference, plan.destination, plan.shuffle, plan.prevented));
             capture.event.irreversible |= plan.shuffle
                 || plan.destination == Zone::Library
                 || before.zone == Zone::Library && plan.destination != Zone::Stack;

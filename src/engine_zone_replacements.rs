@@ -5,6 +5,8 @@ use crate::cards::ZoneReplacementRule;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ZoneReplacementKind {
     RevealShuffle,
+    /// The event is prevented; the object remains in its original zone.
+    Prevent,
     Exile,
     /// Distinct replacement identity; only the selected source creates a reflexive packet.
     ExileReflexive {
@@ -66,6 +68,7 @@ pub(super) struct ZoneState {
 }
 #[derive(Clone, Debug, Default)]
 pub(super) struct FrozenRules {
+    pub prevent: bool,
     pub shuffle_self: bool,
     pub exile_spell: bool,
     pub discard_to_battlefield: bool,
@@ -74,6 +77,7 @@ pub(super) struct FrozenRules {
 #[derive(Clone, Debug)]
 pub(super) struct Plan {
     pub destination: Zone,
+    pub prevented: bool,
     pub shuffle: bool,
     pub reflexive: Option<(u16, Box<ObjectView>)>,
 }
@@ -136,6 +140,10 @@ impl ZoneState {
                 .as_ref()
                 .map_or(0, |r| std::mem::size_of::<Replay>() + base_bytes(&r.base))
     }
+}
+#[cfg(test)]
+thread_local! {
+    pub(super) static TEST_PREVENT_ZONE_MOVE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
 }
 impl Game {
     pub(super) fn register_stack_graveyard_exile(&mut self, item: &SpellView) {
@@ -257,6 +265,10 @@ impl Game {
             Vec::new()
         };
         FrozenRules {
+            #[cfg(test)]
+            prevent: TEST_PREVENT_ZONE_MOVE.with(|r| r.get() == Some(before.reference)),
+            #[cfg(not(test))]
+            prevent: false,
             reflexive_exiles,
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
             exile_spell: (before.zone == Zone::Stack
@@ -304,6 +316,7 @@ impl Game {
         {
             return Plan {
                 destination: Zone::Outside,
+                prevented: false,
                 shuffle: false,
                 reflexive: None,
             };
@@ -313,11 +326,13 @@ impl Game {
         {
             return Plan {
                 destination: requested,
+                prevented: false,
                 shuffle: false,
                 reflexive: None,
             };
         }
         let mut choices = Vec::new();
+        if rules.prevent { choices.push(ZoneReplacementKind::Prevent); }
         if before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback
             || rules.exile_spell
             || self.death_exile_destination(before, requested) != requested
@@ -340,6 +355,7 @@ impl Game {
             [] => {
                 return Plan {
                     destination: requested,
+                    prevented: false,
                     shuffle: false,
                     reflexive: None,
                 };
@@ -389,12 +405,14 @@ impl Game {
     fn zone_plan(effect: ZoneReplacementKind, rules: &FrozenRules) -> Plan {
         Plan {
             destination: match effect {
+                ZoneReplacementKind::Prevent => Zone::Graveyard,
                 ZoneReplacementKind::RevealShuffle => Zone::Library,
                 ZoneReplacementKind::Exile | ZoneReplacementKind::ExileReflexive { .. } => {
                     Zone::Exile
                 }
                 ZoneReplacementKind::Battlefield => Zone::Battlefield,
             },
+            prevented: effect == ZoneReplacementKind::Prevent,
             shuffle: effect == ZoneReplacementKind::RevealShuffle,
             reflexive: if let ZoneReplacementKind::ExileReflexive { source, ability } = effect {
                 Some((

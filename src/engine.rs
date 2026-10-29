@@ -6587,6 +6587,38 @@ impl Game {
         self.finish_zone_events(&events, &sources);
     }
 
+    /// Pay simultaneous sacrifice costs only after every replacement outcome
+    /// has been chosen and all proposed events remain possible. Redirected
+    /// events are valid costs; a prevented event rejects the whole batch.
+    fn sacrifice_cost_batch_atomic(&mut self, sacrifices: &[(Player, CardId)]) -> bool {
+        self.refresh_enduring_stories();
+        if sacrifices.iter().enumerate().any(|(i, &(actor, id))| {
+            let object = &self.state.objects[id as usize];
+            object.zone != Zone::Battlefield || object.controller != actor
+                || sacrifices[..i].iter().any(|&(_, prior)| prior == id)
+                || ability_world::CharacteristicWorld::sacrifice_prohibited(self, id)
+        }) { return false; }
+        let sources = self.death_trigger_sources();
+        let views: Vec<_> = sacrifices.iter().map(|&(_, id)| self.object_view(id)).collect();
+        let frozen: Vec<_> = views.iter().map(|view| self.freeze_zone_rules(view, Zone::Graveyard, None)).collect();
+        // Each plan may suspend for an affected player's replacement choice.
+        // The action checkpoint replays all earlier choices before any commit.
+        let plans: Vec<_> = views.iter().zip(frozen).map(|(view, rules)|
+            self.plan_zone_move(view, Zone::Graveyard, rules)).collect();
+        if plans.iter().any(|plan| plan.prevented) { return false; }
+        self.capture_event_object_facts(views.iter());
+        self.capture_source_quantities(views.iter());
+        self.food_sacrifice_triggers(sacrifices, &sources);
+        let mut events: Vec<_> = views.into_iter().zip(plans).map(|(before, plan)|
+            self.commit_planned_zone_move(before, plan, false, Counters::default(),
+                EntryIdentity::default(), ZoneObservers::default())).collect();
+        for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) { event.sacrificed_by = Some(actor); }
+        self.refresh_controllers();
+        self.record_own_sacrifices(&events);
+        self.finish_zone_events(&events, &sources);
+        true
+    }
+
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
         self.move_objects_raw_with_library_positions(ids, destination, None)
@@ -6909,6 +6941,12 @@ impl Game {
             returned_hand: returned_hand_observers,
         } = observers;
         let id = before.id;
+        if plan.prevented {
+            return ZoneChange { cast_event: None, entry_counter_player: None, graveyard_observers: None,
+                returned_hand_observers: None, was_cast: false, gift: None, after: before.reference,
+                destination: before.zone, before, moved: false, sacrificed_by: None,
+                offspring_paid: false, kicked: false, bargained: false, x: 0, evidence_collected: false };
+        }
         // A public exile can be followed by another move within this action.
         // Capture it before its exact exile reference and visibility are lost.
         if before.zone == Zone::Exile {

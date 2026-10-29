@@ -1028,11 +1028,13 @@ impl Game {
                 empty.selected = std::array::from_fn(|_| Vec::new());
                 rows.iter().all(|&r| self.effect_choice_candidate(&empty, player, r))
             });
-            if !valid {
+            let sacrifices: Vec<_> = [self.state.active, self.state.active.other()].into_iter()
+                .flat_map(|p| choice.selected[p.index()].iter().map(move |r| (p, r.card))).collect();
+            if !valid || !self.sacrifice_cost_batch_atomic(&sacrifices) {
                 let related = self.state.resolving.as_ref().unwrap().item.related_stack;
                 if let Some(related) = related { self.counter_stack_item(related.id, false); }
-                return false;
             }
+            return false;
         }
         if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
