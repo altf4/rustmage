@@ -608,14 +608,13 @@ fn prior_outside_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_outside_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_outside_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack
