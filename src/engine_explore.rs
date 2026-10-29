@@ -119,23 +119,23 @@ impl Game {
             Subject::Source => {
                 let Some(source) = item.source else { return false; };
                 ExplorerView {
-                kinds: if self.on_battlefield(source.id)
-                    && self.object_ref(source.id) == source.object
-                {
-                    self.current_kinds(source.id)
-                } else {
-                    source.facts.kinds
-                    }
-            },
-                object: source.object,
-                card: source.card,
-                controller: if self.on_battlefield(source.id)
-                    && self.object_ref(source.id) == source.object
-                {
-                    self.state.objects[source.id as usize].controller
-                } else {
-                    source.facts.controller
-                },
+                    kinds: if self.on_battlefield(source.id)
+                        && self.object_ref(source.id) == source.object
+                    {
+                        self.current_kinds(source.id)
+                    } else {
+                        source.facts.kinds
+                    },
+                    object: source.object,
+                    card: source.card,
+                    controller: if self.on_battlefield(source.id)
+                        && self.object_ref(source.id) == source.object
+                    {
+                        self.state.objects[source.id as usize].controller
+                    } else {
+                        source.facts.controller
+                    },
+                }
             },
             Subject::Targets => {
                 let Some(bound) = item.targets.first().copied() else {
