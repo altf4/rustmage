@@ -26,11 +26,12 @@ impl SpellView {
         let Some(GiftDeclaration::Promised { beneficiary }) = self.cast?.gift else {
             return None;
         };
+        let source = self.source?;
         Some(GiftContext {
-            source: self.object,
+            source: source.object,
             caster: self.controller,
             beneficiary,
-            kind: self.source_card.gift()?.kind,
+            kind: source.card.gift()?.kind,
             entry: None,
         })
     }

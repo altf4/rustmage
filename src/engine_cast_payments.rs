@@ -91,11 +91,12 @@ impl SpellView {
     pub(super) fn actual_cast_event(&self) -> Option<CastPaymentEvent> {
         self.cast
             .filter(|_| !self.is_copy)
-            .map(|cast| CastPaymentEvent {
+            .zip(self.source)
+            .map(|(cast, source)| CastPaymentEvent {
                 mana_value: self.mana_value(),
                 stack_id: self.id,
-                object: self.object,
-                card: self.source_card,
+                object: source.object,
+                card: source.card,
                 controller: cast.caster,
                 payment: cast.payment,
                 treasure_mana_spent: cast.treasure_mana_spent,
