@@ -7,8 +7,9 @@ impl Game {
         filters: &[BattlefieldFilter],
         keywords: Keywords,
     ) {
+        let Some(source) = item.source else { return; };
         let recipients = self.battlefield_group(item, filters);
-        self.grant_keyword_effects(&recipients, item.object, keywords);
+        self.grant_keyword_effects(&recipients, source.object, keywords);
     }
     pub(super) fn grow_permanent_group(
         &mut self,
@@ -36,7 +37,7 @@ impl Game {
         let affected: Vec<_> = self
             .battlefield_group(item, filters)
             .into_iter()
-            .filter(|&id| !exclude_source || self.object_ref(id) != item.object)
+            .filter(|&id| !exclude_source || item.source.is_none_or(|source| self.object_ref(id) != source.object))
             .collect();
         for id in affected {
             self.state.objects[id as usize].growth += Stats {

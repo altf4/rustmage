@@ -142,14 +142,15 @@ impl Game {
         if item.kind == StackKind::Spell
             && !item.is_copy
             && item.cast.is_some_and(|cast| cast.exile_on_graveyard)
+            && let Some(source) = item.source
         {
             let rows = &mut self
                 .state
                 .zone_rules
                 .get_or_insert_default()
                 .graveyard_exile_spells;
-            if !rows.contains(&item.object) {
-                rows.push(item.object);
+            if !rows.contains(&source.object) {
+                rows.push(source.object);
             }
         }
     }
