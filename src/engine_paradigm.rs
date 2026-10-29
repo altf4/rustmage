@@ -21,6 +21,7 @@ pub(super) struct ParadigmState {
     ephemeral: Option<ObjectRef>,
 }
 impl ParadigmState {
+    #[cfg(test)]
     pub(super) fn packets(&self) -> impl Iterator<Item = &SpellView> {
         self.delayed.iter()
     }

@@ -106,7 +106,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .as_ref()
                         .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Kingpin's Enforcers"))
                 {
-                    let source = before.announcing.as_ref().unwrap().object;
+                    let source = before.announcing.as_ref().unwrap().source().expect("activation has source").object;
                     if cost.candidates.contains(&source) {
                         action = Action::ChooseAdditionalCost { object: source };
                     }

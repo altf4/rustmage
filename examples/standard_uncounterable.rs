@@ -70,7 +70,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 before
                                     .stack
                                     .iter()
-                                    .find(|v| v.card == id && v.kind == StackKind::Spell)
+                                    .find(|v| v.source().is_some_and(|source| source.id == id) && v.kind == StackKind::Spell)
                                     .map(|v| v.id)
                             } else {
                                 None

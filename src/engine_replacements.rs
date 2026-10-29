@@ -1306,6 +1306,7 @@ impl Game {
             })
             .collect()
     }
+    #[cfg(test)]
     pub(super) fn effect_mixed_counters_with_self(
         &mut self, changes: Vec<(ObjectRef, Counters)>, counters: [[u64; 5]; 2], placed_by: Player,
         origin_stack_id: u64, effects: Vec<SelfPlayerCounterReplacement>, mode: ResumeMode,
@@ -1331,6 +1332,7 @@ impl Game {
     ) {
         self.effect_counters_by(changes, Some(placed_by), counters, true, None, mode);
     }
+    #[cfg(test)]
     pub(super) fn effect_player_counters_with_self(
         &mut self, player: Player, kind: crate::cards::PlayerCounterKind, amount: u64,
         origin_stack_id: u64, effects: Vec<SelfPlayerCounterReplacement>, mode: ResumeMode,

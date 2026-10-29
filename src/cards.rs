@@ -1654,6 +1654,7 @@ pub(crate) enum Instruction {
     },
     CounterRelated,
     AddPoison(PlayerSet, u16),
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     MayOpponent {
         skip: usize,
     },
@@ -1682,6 +1683,7 @@ pub(crate) enum Instruction {
     /// Inherent rad-counter trigger: mill, lose life, then remove rad counters.
     ResolveRadiation,
     /// Event-local self-replacements belong to this resolving instruction.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     PutPlayerCountersWithSelf { players: PlayerSet, kind: PlayerCounterKind, amount: u64, effects: &'static [SelfPlayerCounterTemplate] },
     /// Mill the specified number, then queue a reflexive ability only if all were milled.
     MillThenReflexive {
@@ -2659,8 +2661,10 @@ pub(crate) enum ReplacementSpec {
         effects_only: bool,
     },
     /// Replace a proliferate event by a number of events for the related player.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     Proliferate { relation: CastRelation, factor: u32, add: u32 },
     /// Replace counters placed on a player related to the source controller.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     PlayerCounters {
         kind: PlayerCounterKind,
         relation: CastRelation,
@@ -3444,6 +3448,7 @@ pub(crate) enum TriggerCondition {
     /// The controller completed a positive scry or surveil instruction.
     ScryOrSurveil,
     /// One event for each completed proliferate, even when no object was chosen.
+    #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     Proliferated(CastRelation),
     /// First declaration in the turn whose signed creature-power total reaches this threshold.
     FirstAttackWithTotalPowerAtLeast(u16),

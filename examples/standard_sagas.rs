@@ -489,7 +489,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 }
                 if let Some(item) = view.stack.last().filter(|v| {
-                    Some(v.card) == f.source && matches!(v.kind, StackKind::TriggeredAbility { .. })
+                    v.source().map(|source| source.id) == f.source && matches!(v.kind, StackKind::TriggeredAbility { .. })
                 }) && view.resolving.is_none()
                     && view.announcing.is_none()
                 {

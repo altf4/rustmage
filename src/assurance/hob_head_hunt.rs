@@ -75,7 +75,7 @@ fn hob_hunt_flash_paid_body_real_death_defers_token_and_source_removal_keeps_pac
         packet(&mut g);
         assert_eq!(g.object_view(v).zone, Zone::Exile);
         assert!(wolves(&g, p).is_empty());
-        assert_eq!(g.state.stack.last().unwrap().object, g.object_ref(s));
+        assert_eq!(g.state.stack.last().unwrap().source.unwrap().object, g.object_ref(s));
         g.move_object(s, Zone::Hand);
         finish(&mut g);
         let w = wolves(&g, p);
@@ -337,7 +337,7 @@ fn hob_hunt_copied_provider_and_old_incarnation_packet_survive_later_source_chan
         g.move_object(v, Zone::Graveyard);
         packet(&mut g);
         let old = g.object_ref(h);
-        assert_eq!(g.state.stack.last().unwrap().object, old);
+        assert_eq!(g.state.stack.last().unwrap().source.unwrap().object, old);
         assert_eq!(
             g.state.stack.last().unwrap().source.unwrap().card,
             Card::from_name("Head of the Hunt").unwrap()

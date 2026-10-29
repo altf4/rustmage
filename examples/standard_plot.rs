@@ -650,7 +650,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let spell = after
                     .stack
                     .iter()
-                    .find(|v| v.card == a.card && v.kind == StackKind::Spell)
+                    .find(|v| v.source().zip(a.source()).is_some_and(|(v, a)| v.id == a.id) && v.kind == StackKind::Spell)
                     .unwrap();
                 let cast = serde_json::to_value(spell.cast)?;
                 assert_eq!(cast["method"], if plotted { "Plot" } else { "Normal" });

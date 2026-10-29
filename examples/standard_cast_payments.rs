@@ -688,7 +688,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let spell = v
                     .stack
                     .iter()
-                    .find(|v| v.kind == StackKind::Spell && v.card == card)
+                    .find(|v| v.kind == StackKind::Spell && v.source().is_some_and(|source| source.id == card))
                     .unwrap();
                 assert_eq!(spell.cast.unwrap().payment, payment);
             }

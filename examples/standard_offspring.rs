@@ -252,7 +252,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     Action::PayCosts { .. } => 500,
                     Action::ChooseOffspring { pay } => {
                         let wanted =
-                            (seed + b.announcing.as_ref().unwrap().card as usize).is_multiple_of(2);
+                            (seed + b.announcing.as_ref().unwrap().source().expect("spell has source").id as usize).is_multiple_of(2);
                         if *pay == wanted { 450 } else { 100 }
                     }
                     Action::TapMana { .. }
