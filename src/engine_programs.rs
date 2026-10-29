@@ -129,14 +129,14 @@ impl Game {
             .unwrap();
         self.forget_library_top(player);
         // No zone changes or observable partial rearrangement occur while choosing.
-        // Detach retained cards by identity before replacements can shuffle.
-        // Their specified positions are preserved through a simultaneous shuffle.
-        let library = &mut self.state.players[player.index()].library;
-        library.retain(|card| !choice.top.contains(card) && !choice.bottom.contains(card));
         // Surveilled cards enter the graveyard as one simultaneous event.
-        // Freeze replacement plans before committing any member of the batch,
-        // then dispatch batch observers exactly once using actual destinations.
-        let events = self.move_objects_raw(&choice.graveyard, Zone::Graveyard);
+        // Freeze replacement plans while retained cards are still visible, then
+        // reserve their specified positions before committing any shuffles.
+        let events = self.move_objects_raw_with_library_positions(
+            &choice.graveyard,
+            Zone::Graveyard,
+            Some((player, &choice.top, &choice.bottom)),
+        );
         let mut return_cards = Vec::new();
         for event in &events {
             let card = event.before.reference.card;

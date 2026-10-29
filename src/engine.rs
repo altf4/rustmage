@@ -6437,6 +6437,17 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        self.move_objects_raw_with_library_positions(ids, destination, None)
+    }
+
+    /// Preserve explicitly ordered library cards across simultaneous replacement
+    /// shuffles, without removing them during replacement planning.
+    fn move_objects_raw_with_library_positions(
+        &mut self,
+        ids: &[CardId],
+        destination: Zone,
+        positions: Option<(Player, &[CardId], &[CardId])>,
+    ) -> Vec<ZoneChange> {
         self.refresh_enduring_stories();
         let returned_hand_observers =
             if destination == Zone::Hand && ids.iter().any(|&id| self.on_battlefield(id)) {
@@ -6520,6 +6531,11 @@ impl Game {
                 (before, plan, tapped, counters)
             })
             .collect();
+        if let Some((player, top, bottom)) = positions {
+            self.state.players[player.index()]
+                .library
+                .retain(|card| !top.contains(card) && !bottom.contains(card));
+        }
         let events = planned
             .into_iter()
             .map(|(before, plan, tapped, counters)| {
