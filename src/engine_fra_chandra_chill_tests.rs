@@ -442,3 +442,48 @@ fn echo_copies_targeted_creature_ability_through_legal_actions() {
         }
     }
 }
+
+#[test]
+fn echo_legally_copies_animated_chandra_loyalty_ability() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = chill(&mut g, player, 3);
+        let object = g.object_ref(source);
+        let timestamp = g.next_role_timestamp();
+        g.state.roles.get_or_insert_with(Default::default).animations.push(AnimationView {
+            object, timestamp, artifact: false, land: false, preserve_card_types: true,
+            food_only: false, artifact_noncreature: false, colors: None,
+            creature_types: None, all_creature_types: false, base: Some((3, 3)),
+            keywords: Keywords::NONE, expires_turn: None,
+        });
+        assert_eq!(g.current_kinds(source) & (1 | 64), 1 | 64);
+        let echo = put(&mut g, player, "Echo, Perceptive Prodigy", Zone::Battlefield);
+        let first = put(&mut g, player.other(), "Gilded Lotus", Zone::Battlefield);
+        let second = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 2, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseSourceCounterAmount { amount: 2 });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(first) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        let original = g.state.stack.last().unwrap().id;
+        act(&mut g, Action::AnnounceActivate { card: echo, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Stack(original) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        pay(&mut g);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        assert!(matches!(g.state.pending, Pending::Retarget { player: p } if p == player));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::SetStackTarget { index: 0, target: Target::Card(second) });
+            act(&mut g, Action::FinishStackTargets);
+            let copied = g.state.stack.last().unwrap();
+            assert!(copied.is_copy);
+            assert_eq!(copied.loyalty_x, Some(2));
+            settle(&mut g);
+            assert_eq!(g.counter_count(first, CounterKind::Stun), 2);
+            assert_eq!(g.counter_count(second, CounterKind::Stun), 2);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
