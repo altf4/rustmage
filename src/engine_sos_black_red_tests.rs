@@ -2775,7 +2775,7 @@ fn sos_sparks_cannot_be_copied_by_targeted_or_captured_copy_effects() {
         announce_sparks(&mut g, second, 0, &[first]);
         until_choice(&mut g);
         assert_eq!(
-            g.observe(p).retarget.as_ref().unwrap().item.source_card,
+            g.observe(p).retarget.as_ref().unwrap().item.source.unwrap().card,
             Card::Shock
         );
         act(&mut g, Action::FinishStackTargets);
@@ -2801,7 +2801,7 @@ fn sos_sparks_cannot_be_copied_by_targeted_or_captured_copy_effects() {
         );
         until_choice(&mut g);
         assert_eq!(
-            g.observe(p).retarget.as_ref().unwrap().item.source_card,
+            g.observe(p).retarget.as_ref().unwrap().item.source.unwrap().card,
             Card::Shock
         );
         act(&mut g, Action::FinishStackTargets);
@@ -3102,7 +3102,7 @@ fn sos_silverquill_zero_power_foreign_creatures_and_cannot_copy_spell() {
         pay_casualty(&mut g, bear);
         until_choice(&mut g);
         assert_eq!(
-            g.observe(p).retarget.as_ref().unwrap().item.source_card,
+            g.observe(p).retarget.as_ref().unwrap().item.source.unwrap().card,
             Card::Shock
         );
         act(&mut g, Action::FinishStackTargets);
