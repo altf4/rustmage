@@ -8,5 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "646cc0624c38978a226256a932371e0da8bc7f5842a4e1a3278d100e68900a59"
   },
-  "physical_metadata_sha256": "72f6f2d0e26cbe9b089f701588331275cc8ecdd07aef664d326a7b9257686eb8"
+  "physical_metadata_sha256": "72f6f2d0e26cbe9b089f701588331275cc8ecdd07aef664d326a7b9257686eb8",
+  "source_note": "Full frozen Oracle reviewed; no pinned XMage implementation is available. No Null Summoner entry appears in official Reality Fracture release notes. Card remains gated.",
+  "official_release_notes": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes"
 }

@@ -6,6 +6,7 @@ pub enum HandChoiceKind {
     RevealSubset,
     DiscardRevealed,
     ExileRevealedOrCreature,
+    ExileRevealedLinked,
     /// Choose a controlled permanent of the requested subtype or reveal a hand card.
     Behold,
 }
@@ -190,6 +191,20 @@ impl Game {
         });
         true
     }
+    pub(super) fn start_revealed_hand_exile_linked(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else { return false };
+        let hand = self.exact_hand(victim);
+        self.reveal_hand_refs(&hand);
+        let candidates: Vec<_> = hand.into_iter().filter(|r|
+            !self.state.objects[r.card as usize].card.is_land()).collect();
+        if candidates.is_empty() { return false; }
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::ExileRevealedLinked, actor: item.controller,
+            controller: item.controller, victim: Some(victim), source: item.object,
+            required: 1, selected: Vec::new(), candidates,
+        });
+        true
+    }
     fn hand_choice_candidate(&self, interaction: &HandInteraction, reference: ObjectRef) -> bool {
         if !interaction.candidates.contains(&reference)
             || interaction.selected.contains(&reference)
@@ -202,6 +217,10 @@ impl Game {
             HandChoiceKind::DeployCreatures => unreachable!(),
             HandChoiceKind::RevealSubset | HandChoiceKind::DiscardRevealed => {
                 o.zone == Zone::Hand && Some(o.owner) == interaction.victim && !o.is_token()
+            }
+            HandChoiceKind::ExileRevealedLinked => {
+                o.zone == Zone::Hand && Some(o.owner) == interaction.victim
+                    && !o.is_token() && !o.card.is_land()
             }
             HandChoiceKind::ExileRevealedOrCreature => {
                 self.on_battlefield(interaction.source.card)
@@ -279,6 +298,13 @@ impl Game {
                 }
                 HandChoiceKind::ExileRevealedOrCreature => {
                     self.exile_objects_until_source_leaves(interaction.source, &[object])
+                }
+                HandChoiceKind::ExileRevealedLinked => {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        self.state.linked_choices.get_or_insert_default().null_cast_links.push(
+                            linked_choices::LinkedExileView { source: interaction.source, exiled: event.after });
+                    }
                 }
                 HandChoiceKind::Behold => {
                     if self.state.objects[object.card as usize].zone == Zone::Hand {

@@ -54,6 +54,7 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    pub null_cast_links: Vec<LinkedExileView>,
     pub hidden: Vec<(ObjectRef, ObjectRef, u8)>,
     pub hideaway_controllers: Vec<(ObjectRef, u8)>,
 }
@@ -77,7 +78,7 @@ impl ChoiceState {
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hideaway_controllers.len() * std::mem::size_of::<(ObjectRef, u8)>()
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, ObjectRef, u8)>()
-            + self.links.len() * std::mem::size_of::<LinkedExileView>()
+            + (self.links.len() + self.null_cast_links.len()) * std::mem::size_of::<LinkedExileView>()
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()
             })
@@ -97,7 +98,7 @@ impl Game {
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
-            if data.links.is_empty()
+            if data.links.is_empty() && data.null_cast_links.is_empty()
                 && data.hideaway_controllers.is_empty()
                 && data.hidden.is_empty()
             {
@@ -586,6 +587,10 @@ impl Game {
         data.hidden.retain(|&(_, exiled, _)| {
             let o = &objects[exiled.card as usize];
             o.zone == Zone::Exile && o.generation == exiled.generation
+        });
+        data.null_cast_links.retain(|link| {
+            let o = &objects[link.exiled.card as usize];
+            o.zone == Zone::Exile && o.generation == link.exiled.generation
         });
         data.links.retain(|link| {
             let o = &objects[link.exiled.card as usize];

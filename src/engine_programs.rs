@@ -3809,6 +3809,9 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::RevealTargetHandExileLinked => {
+                    if self.start_revealed_hand_exile_linked(&item) { return; }
+                }
                 Instruction::RevealTargetHandExileUntilSourceLeaves => {
                     if self.start_revealed_hand_exile(&item) {
                         return;

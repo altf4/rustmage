@@ -45,8 +45,27 @@ pub(super) fn top_library_cards(library: &[CardId], amount: u128) -> Vec<CardId>
     library.iter().rev().take(count).copied().collect()
 }
 impl Game {
+    /// The linked permission is controlled by the source's current controller
+    /// and follows its ability and threshold, not the entry trigger's controller.
+    fn can_cast_threshold_linked_exile(&self, player: Player, card: CardId) -> bool {
+        let Some(object) = self.state.objects.get(card as usize) else { return false };
+        if object.zone != Zone::Exile || object.card.is_land()
+            || !activations::graveyard_cards_at_least(self, player, 0, 7) { return false; }
+        let exiled = self.object_ref(card);
+        self.state.linked_choices.as_ref().is_some_and(|data| data.null_cast_links.iter().any(|link| {
+            link.exiled == exiled && self.on_battlefield(link.source.card)
+                && self.object_ref(link.source.card) == link.source
+                && self.state.objects[link.source.card as usize].controller == player
+                && self.state.objects[link.source.card as usize].card.static_ability_groups().iter().any(|group|
+                    group.fragments.iter().any(|fragment| matches!(fragment,
+                        crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold)))
+                && self.continuous_fragment_available(link.source.card, |fragment| matches!(fragment,
+                    crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold))
+        }))
+    }
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
-        if self.can_cast_prepared(player, card)
+        if self.can_cast_threshold_linked_exile(player, card)
+            || self.can_cast_prepared(player, card)
             || self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
             || self.can_cast_warped(player, card)
@@ -87,7 +106,7 @@ impl Game {
                     && row.expiry.active(self.state.turn)
                     && self.exile_permission_guard(row)
             })
-            .fold((false, false), |flags, row| {
+            .fold((self.can_cast_threshold_linked_exile(player, card), false), |flags, row| {
                 (
                     flags.0 || row.spend_any_mana,
                     flags.1 || row.exile_on_graveyard,

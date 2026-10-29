@@ -1718,6 +1718,7 @@ pub(crate) enum Instruction {
     MayCounterSourceOtherwiseCast,
     RevealTargetHandSubsetDiscard(AmountValue),
     RevealTargetHandExileUntilSourceLeaves,
+    RevealTargetHandExileLinked,
     RevealHandDiscard {
         excluded_kinds: u16,
     },
