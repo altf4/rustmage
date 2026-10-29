@@ -60,6 +60,8 @@ pub(crate) enum StaticAbilityFragment {
     ControlledAttackWithoutDefender,
     /// Controlled creatures with greater toughness assign combat damage using toughness.
     ControlledCombatDamageByGreaterToughness,
+    /// This source assigns combat damage using the magnitude of negative power.
+    SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
     /// Increase opponents' noncreature spell costs by generic mana.

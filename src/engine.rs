@@ -8108,6 +8108,14 @@ impl Game {
         })) && stats.toughness > stats.power
         {
             stats.toughness.max(0)
+        } else if stats.power < 0
+            && self.state.objects[id as usize].card.static_ability_groups().iter().any(|group|
+                group.fragments.iter().any(|fragment| matches!(fragment,
+                    crate::cards::StaticAbilityFragment::SourceNegativePowerCombatDamage)))
+            && self.continuous_fragment_available(id, |fragment| matches!(fragment,
+                crate::cards::StaticAbilityFragment::SourceNegativePowerCombatDamage))
+        {
+            stats.power.checked_neg().capacity("combat damage assignment magnitude exhausted")
         } else {
             stats.power.max(0)
         }
