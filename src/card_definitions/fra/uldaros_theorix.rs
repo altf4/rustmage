@@ -1,5 +1,5 @@
 // Partial target-choice draft only; Oracle source lacks a pinned XMage class.
-// Exile, copy and cast instructions remain unimplemented; keep gated.
+// Exile and free-copy casting are drafted; keep gated pending integration validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(5, 5),
     triggers: &[TriggeredAbility {
@@ -21,7 +21,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             min: 0,
             max: 16,
         }),
-        program: &[],
+        program: &[Instruction::ExileTargetsCopyFreeWithBudget { mana_value: 6 }],
     }],
     keywords: Keywords::FLYING,
     ..CardRules::EMPTY

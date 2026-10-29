@@ -1161,6 +1161,8 @@ pub(crate) enum Instruction {
     /// Copy the actual triggering spell its chosen X times.
     CopyCastSpellChosenX,
     CopyPreparedCastSpell,
+    /// Exile legal graveyard targets together, then copy the exiled cards and offer free casts.
+    ExileTargetsCopyFreeWithBudget { mana_value: u64 },
     CopyPaidExiledCardsFree {
         maximum_casts: u16,
     },
