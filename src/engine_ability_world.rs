@@ -302,6 +302,17 @@ pub(super) trait CharacteristicWorld {
             keywords
         }
     }
+    /// Keep potential providers in speculative worlds even while blanked.
+    fn sacrifice_prohibition_source(&self, id: CardId) -> bool {
+        let object = self.object(id);
+        let printed = object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|f|
+            matches!(f, crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed)));
+        #[cfg(test)]
+        let synthetic = TEST_SACRIFICE_PROHIBITOR.with(|p| p.get() == Some(self.reference(id)));
+        #[cfg(not(test))]
+        let synthetic = false;
+        printed || synthetic
+    }
     /// Whether a permanent can be sacrificed in this world, including projected
     /// source control and live layer-six suppression.
     fn sacrifice_prohibited(&self, id: CardId) -> bool {

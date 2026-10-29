@@ -671,7 +671,7 @@ impl<'g> FundingState<'g> {
                         .source.as_ref()
                         .is_some_and(|(source, _, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
-                        && (loyalty_threshold_sensitive || sacrifice_mana_cost || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
+                        && (loyalty_threshold_sensitive || sacrifice_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
                             || object.card.attachment_bonus().is_some()
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
@@ -1698,7 +1698,7 @@ impl<'g> FundingState<'g> {
                 // Unattached, unmodified basic lands remain interchangeable even
                 // when an unrelated Aura is present. Keep exact identities for
                 // attachment participants, nonbasics and named-counter worlds.
-                identity: (self.roles().is_some_and(|roles| {
+                identity: (self.sacrifice_prohibition_source(r.id) || self.roles().is_some_and(|roles| {
                     roles
                         .source_linked_effects
                         .iter()

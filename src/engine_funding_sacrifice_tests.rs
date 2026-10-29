@@ -763,3 +763,30 @@ fn projected_type_transformation_funds_new_basic_type_without_live_fallback() {
         assert_eq!(g.snapshot(), before);
     }
 }
+
+#[test]
+fn prohibition_provider_is_tracked_in_funding_world_and_key() {
+    use crate::engine::ability_world::TEST_SACRIFICE_PROHIBITOR;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let provider = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let treasure = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[treasure as usize].card = Card::test_index(5437);
+        g.state.objects[treasure as usize].summoning_sick = false;
+        g.state.players[p.index()].mana = [0; 6];
+        TEST_SACRIFICE_PROHIBITOR.with(|row| row.set(Some(g.object_ref(provider))));
+        let goal = FundingGoal { actor: p, required: [0, 0, 0, 0, 1, 0], generic: 0, reserve: None, source: None };
+        let world = FundingState::from_game(&g, &goal);
+        assert!(world.resources.iter().any(|r| r.id == provider));
+        assert!(!world.moves(&goal).iter().any(|m| world.resources[m.resource].id == treasure));
+        let mut departed = world.clone();
+        let source = departed.resources.iter_mut().find(|r| r.id == provider).unwrap();
+        source.object.zone = Zone::Graveyard;
+        assert!(world.key(&goal) != departed.key(&goal));
+        assert!(departed.moves(&goal).iter().any(|m| departed.resources[m.resource].id == treasure));
+        TEST_SACRIFICE_PROHIBITOR.with(|row| row.set(None));
+    }
+}
