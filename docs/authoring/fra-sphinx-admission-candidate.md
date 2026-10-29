@@ -16,7 +16,7 @@ tests include ordinary payment, decline and short graveyards, both players,
 copy lifecycle, invalid selections, search and restore; the independent payment
 tests include synthetic prohibition and replacement cases. A conditional positive test covers eight copies in a constructed deck and
 seven more in its sideboard, together with the ordinary combined Shock limit.
-It is written but unrun and requires the regenerated admission catalogue.
+The test passed with the regenerated admission catalogue in the grouped run at `0b033812`. That run passed 2,761 tests; its sole failure was the expected missing new assurance trace. All 2,929 existing traces were unchanged, and the new Sphinx trace has been recorded. Final validation and independent review remain required.
 
 The mixed-zone and copied-card foundation is shared experimental work. Its
 synthetic battlefield redirect and injected stale-incarnation fixtures do not

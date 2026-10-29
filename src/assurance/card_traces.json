@@ -18263,6 +18263,14 @@
     "journal": "79397f3e65b5c440",
     "observations": "3a37dde413888f46"
   },
+  "Sphinx's Approach": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "3fba902266e1c58c",
+    "observations": "14a2c855f9c34b4b"
+  },
   "Spider Manifestation": {
     "root": "main",
     "status": "completed",
