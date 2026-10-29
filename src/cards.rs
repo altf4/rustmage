@@ -733,6 +733,7 @@ impl SearchFilter {
             Self::Creature => card.is_creature(),
             Self::Legendary => card.is_legendary(),
             Self::Artifact => card.is_artifact(),
+            Self::Planeswalker => card.kind_mask() & 64 != 0,
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
         }
@@ -3127,6 +3128,7 @@ pub(crate) enum CastFilter {
     InstantSorcery,
     Sorcery,
     Artifact,
+    Planeswalker,
     // Compiler vocabulary; no complete admitted card currently uses this filter.
     #[allow(dead_code)]
     Enchantment,
