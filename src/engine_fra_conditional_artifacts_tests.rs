@@ -86,7 +86,7 @@ fn relic_payment_precedes_reflexive_target_and_survives_source_departure() {
             assert!(game.state.stack.iter().all(|item| !matches!(
                 item.kind,
                 StackKind::TriggeredAbility { ability: 1 }
-            ) || item.card != relic));
+            ) || item.source.is_none_or(|source| source.id != relic)));
             game.move_object(relic, Zone::Graveyard);
             if paid {
                 choose(&mut game, |a| matches!(a, Action::PayResolutionMana { .. }));

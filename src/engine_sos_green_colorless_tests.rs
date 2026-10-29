@@ -3646,7 +3646,7 @@ fn sos_original_manawurm_referee_and_witherbloom_distinguish_actual_payment_and_
                 g.state
                     .stack
                     .iter()
-                    .find(|item| item.card == dragon)
+                    .find(|item| item.source.is_some_and(|source| source.id == dragon))
                     .unwrap()
                     .cast
                     .unwrap()
@@ -3679,7 +3679,7 @@ fn sos_original_manawurm_referee_and_witherbloom_distinguish_actual_payment_and_
                 g.state
                     .stack
                     .iter()
-                    .find(|item| item.card == spell)
+                    .find(|item| item.source.is_some_and(|source| source.id == spell))
                     .unwrap()
                     .cast
                     .unwrap()

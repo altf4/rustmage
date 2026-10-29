@@ -25,11 +25,10 @@ fn ingris_jiang_and_tetsuko_keep_distinct_attack_and_block_events() {
                 .state
                 .ordering_triggers
                 .iter()
-                .find(|item| item.card == selected_first)
+                .find(|item| item.source.is_some_and(|source| source.id == selected_first))
                 .unwrap()
                 .id;
-            assert!(g.state.ordering_triggers.iter().any(|item| item.card
-                == if selected_first == ingris {
+            assert!(g.state.ordering_triggers.iter().any(|item| item.source.is_some_and(|source| source.id == if) selected_first == ingris {
                     jiang
                 } else {
                     ingris
@@ -63,7 +62,7 @@ fn ingris_jiang_and_tetsuko_keep_distinct_attack_and_block_events() {
                     .stack
                     .iter()
                     .chain(g.state.pending_triggers.iter())
-                    .any(|item| item.card == tetsuko
+                    .any(|item| item.source.is_some_and(|source| source.id == tetsuko)
                         && matches!(item.kind, StackKind::TriggeredAbility { .. }))
             );
             let old_blocker = g.object_ref(blocker);

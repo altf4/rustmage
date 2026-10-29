@@ -53,8 +53,8 @@ fn codie_copies_prepared_cast_only_if_original_spell_still_exists() {
             let prepared = prepared_peer(&mut g, player);
             codie_announce(&mut g, Action::AnnounceExile { card: prepared.card });
             let spell = g.state.stack.iter().find(|s| s.object == g.object_ref(prepared.card)).unwrap().id;
-            assert!(g.state.pending_triggers.iter().any(|item| item.card == codie)
-                || g.state.stack.iter().any(|item| item.card == codie && item.kind != StackKind::Spell));
+            assert!(g.state.pending_triggers.iter().any(|item| item.source.is_some_and(|source| source.id == codie))
+                || g.state.stack.iter().any(|item| item.source.is_some_and(|source| source.id == codie) && item.kind != StackKind::Spell));
             if countered { assert!(g.counter_stack_item(spell, false)); }
             let saved = g.snapshot();
             codie_settle(&mut g);

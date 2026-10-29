@@ -48,7 +48,7 @@ fn canopy_requires_five_other_forests_at_trigger_and_resolution() {
                 g.move_object(incoming, Zone::Battlefield);
                 g.prepare_triggers();
                 if other_count == 4 {
-                    assert!(!g.state.pending_triggers.iter().chain(g.state.stack.iter()).any(|item| item.card == canopy));
+                    assert!(!g.state.pending_triggers.iter().chain(g.state.stack.iter()).any(|item| item.source.is_some_and(|source| source.id == canopy)));
                     continue;
                 }
                 if remove_other { g.move_object(forests[0], Zone::Graveyard); }
