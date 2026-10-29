@@ -325,7 +325,7 @@ fn body(before: &Observation, after: &Observation, item: &SpellView) -> usize {
             None
         }
     });
-    if item.kind == StackKind::Spell && item.source_card.is_creature() {
+    if item.kind == StackKind::Spell && item.source().is_some_and(|source| source.card.is_creature()) {
         let stats = match name {
             "Archmage of Runes" => (3, 6),
             "Ballyrush Banneret" => (2, 1),

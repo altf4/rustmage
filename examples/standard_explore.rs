@@ -522,7 +522,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if invalid {
                     continue;
                 }
-                if item.kind == StackKind::Spell && item.source_card.is_creature() {
+                if item.kind == StackKind::Spell && item.source().is_some_and(|source| source.card.is_creature()) {
                     let v = view.objects.iter().find(|v| v.id == item.card).unwrap();
                     assert_eq!(v.zone, Zone::Battlefield);
                     let expected = [

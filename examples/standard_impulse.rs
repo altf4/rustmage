@@ -339,7 +339,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if let Some(i) = s.source().and_then(|source| family(source.card)) {
                     if s.kind == StackKind::Spell
-                        && s.source_card.is_creature()
+                        && s.source().is_some_and(|source| source.card.is_creature())
                         && let Some(v) = a
                             .objects
                             .iter()

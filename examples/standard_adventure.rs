@@ -879,7 +879,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if matches!(item.kind, StackKind::ActivatedAbility { .. })
                     && !progress[actor.index()].extra
                     && (item.source_card == focal
-                        || (i == 3 && item.source_card.has_subtype("Food")))
+                        || (i == 3 && item.source().is_some_and(|source| source.card.has_subtype("Food"))))
                 {
                     progress[actor.index()].activation = Some(flight());
                 }

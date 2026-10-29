@@ -260,7 +260,7 @@ fn body(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     let name = item.source_card.name();
     let p = item.controller.index();
     let trigger = matches!(item.kind, StackKind::TriggeredAbility { .. });
-    if item.kind == StackKind::Spell && item.source_card.is_creature() {
+    if item.kind == StackKind::Spell && item.source().is_some_and(|source| source.card.is_creature()) {
         let stats = match name {
             "Fire Nation Raider" => (4, 2),
             "Gorehorn Raider" => (4, 4),

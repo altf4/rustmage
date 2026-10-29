@@ -171,10 +171,10 @@ fn qualifies(i: usize, source: &ObjectView, s: &SpellView, o: &Observation) -> b
                 .any(|b| matches!(b.target,Target::Player(p)if p!=source.owner))
                 || targeted(1, false)
         }
-        2 => s.source_card.has_subtype("Equipment") || targeted(0, false),
-        3 => !s.source_card.is_creature() || s.source_card.has_subtype("Dragon"),
+        2 => s.source().is_some_and(|source| source.card.has_subtype("Equipment")) || targeted(0, false),
+        3 => !s.source_card.is_creature() || s.source().is_some_and(|source| source.card.has_subtype("Dragon")),
         5 => targeted(-1, true),
-        11 => s.source_card.has_subtype("Villain"),
+        11 => s.source().is_some_and(|source| source.card.has_subtype("Villain")),
         15 => o.players[s.controller.index()].spells_cast_this_turn == 1,
         _ => matches!(s.source_card.info().type_line, "Instant" | "Sorcery") && targeted(-1, false),
     }

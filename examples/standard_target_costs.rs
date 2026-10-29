@@ -70,7 +70,7 @@ fn qualifies(i: usize, p: Player, t: Target, b: &Observation) -> bool {
                     s.source_card.is_instant()
                         || s.source_card.info().type_line.starts_with("Sorcery")
                 }
-                10 => s.source_card.is_creature(),
+                10 => s.source().is_some_and(|source| source.card.is_creature()),
                 _ => false,
             }),
         Target::Card(id) => b

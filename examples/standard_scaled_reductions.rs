@@ -291,7 +291,7 @@ fn before_generic(obs: &Observation, index: u16) -> u32 {
 fn body(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     let name = item.source_card.name();
     let p = item.controller.index();
-    if item.kind == StackKind::Spell && item.source_card.is_creature() {
+    if item.kind == StackKind::Spell && item.source().is_some_and(|source| source.card.is_creature()) {
         let stats = match name {
             "Chitin Gravestalker" => (5, 4),
             "Gargantuan Leech" => (5, 5),

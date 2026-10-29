@@ -457,7 +457,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 } else {
                     *entries.get(&packet.object).unwrap()
                 };
-                if packet.kind == StackKind::Spell && packet.source_card.is_creature() {
+                if packet.kind == StackKind::Spell && packet.source().is_some_and(|source| source.card.is_creature()) {
                     let v = view.objects.iter().find(|v| v.id == packet.card).unwrap();
                     assert_eq!(v.zone, Zone::Battlefield);
                     assert_eq!(v.reference.generation, packet.object.generation + 1);
