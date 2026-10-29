@@ -190,9 +190,6 @@ impl Game {
     }
     pub(super) fn start_ward_discard_or_mana(&mut self, item: &SpellView, cost: ManaCost) -> bool {
         let related = item.related_stack.expect("ward stack association");
-        if !self.state.stack.iter().any(|s| s.id == related.id) {
-            return false;
-        }
         self.start_resolution_payment(item, cost, CounterSubject::Related, false, 0);
         self.state
             .resolving

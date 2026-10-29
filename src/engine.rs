@@ -1149,6 +1149,9 @@ pub struct SpellView {
     pub discard_event: Option<DiscardTriggerView>,
     pub draw_event: Option<DrawTriggerView>,
     pub life_event: Option<LifeTriggerView>,
+    /// Non-targeted player captured when an ability triggered.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub event_player: Option<Player>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub source_counter_lki: Option<Box<Vec<SourceCounterQuantityView>>>,

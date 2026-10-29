@@ -110,8 +110,9 @@ impl Game {
                         TriggerCondition::OpponentLoyaltyAbilityActivated => source.controller != item.controller,
                         _ => false,
                     };
-                    if triggered {
-                        self.queue_trigger(&source, index);
+                    if triggered && self.queue_trigger(&source, index)
+                        && ability.condition.event() == TriggerCondition::OpponentLoyaltyAbilityActivated {
+                        self.state.pending_triggers.last_mut().unwrap().event_player = Some(item.controller);
                     }
                 }
             }

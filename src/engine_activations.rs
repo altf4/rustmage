@@ -625,6 +625,7 @@ impl Game {
                     })
                 }),
             source_quantity_lki: None,
+            event_player: None,
             event_object: None,
             manifest_event: None,
             sacrificed_toughness: None,

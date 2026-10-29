@@ -948,6 +948,10 @@ impl Game {
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
+                    if ability.program.iter().any(|instruction| matches!(instruction,
+                        Instruction::DamagePlayers(PlayerSet::EventPlayer, _))) {
+                        self.state.pending_triggers.last_mut().unwrap().event_player = Some(entered.controller);
+                    }
                     if ability.condition.event()
                         == TriggerCondition::OtherCreatureEntersYouIfGreaterStats
                     {
@@ -1200,6 +1204,7 @@ impl Game {
                 definition.triggers()[index].program,
                 |kind| source.counters.get(kind),
             ),
+            event_player: None,
             event_object: None,
             manifest_event: None,
             source_quantity_lki: self
@@ -2258,6 +2263,7 @@ impl Game {
                 }),
                 None,
             ],
+            PlayerSet::EventPlayer => [Some(item.event_player.expect("event player must be captured")), None],
             PlayerSet::CastingPlayer => [
                 Some(
                     item.cast_event

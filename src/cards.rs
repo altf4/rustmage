@@ -362,6 +362,8 @@ pub(crate) enum PlayerSet {
     /// Frozen controller of the first surviving creature target in this group.
     TargetController,
     CastingPlayer,
+    /// Untargeted player frozen when the triggering event occurred.
+    EventPlayer,
     DrawingPlayer,
     Active,
     DamagedPlayer,

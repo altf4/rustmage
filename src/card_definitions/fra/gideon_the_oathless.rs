@@ -10,12 +10,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         TriggeredAbility {
             condition: TriggerCondition::CreatureEnters { relation: CastRelation::Opponent, other: false },
             targets: TargetPlan::NONE,
-            program: &[Instruction::DamagePlayers(PlayerSet::Opponent, 1)],
+            program: &[Instruction::DamagePlayers(PlayerSet::EventPlayer, 1)],
         },
         TriggeredAbility {
             condition: TriggerCondition::OpponentLoyaltyAbilityActivated,
             targets: TargetPlan::NONE,
-            program: &[Instruction::DamagePlayers(PlayerSet::Opponent, 1)],
+            program: &[Instruction::DamagePlayers(PlayerSet::EventPlayer, 1)],
         },
     ],
     ..CardRules::EMPTY

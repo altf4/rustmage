@@ -79,19 +79,24 @@ fn gideon_ward_with_empty_hand_can_only_be_declined() {
 }
 
 #[test]
-fn gideon_ward_does_not_charge_when_related_spell_has_left() {
+fn gideon_ward_offers_captured_payer_choice_after_related_spell_leaves() {
     for payer in [Player::P0, Player::P1] {
-        let mut game = scenario(payer);
-        let gideon = put(&mut game, payer.other(), "Gideon the Oathless", Zone::Battlefield);
-        let shock = put(&mut game, payer, "Shock", Zone::Hand);
-        let secret = put(&mut game, payer, "Forest", Zone::Hand);
-        cast(&mut game, shock, Some(Target::Card(gideon)));
-        let id = game.state.stack.iter().find(|s| s.card == shock).unwrap().id;
-        assert!(game.counter_stack_item(id, false));
-        game.resolve_top();
-        assert!(!matches!(game.state.pending, Pending::ResolutionMana { .. }));
-        assert_eq!(game.object_view(secret).zone, Zone::Hand);
-        assert!(!game.observe(payer.other()).objects.iter().any(|o| o.id == secret));
+        for discard in [false, true] {
+            let mut game = scenario(payer);
+            let gideon = put(&mut game, payer.other(), "Gideon the Oathless", Zone::Battlefield);
+            let shock = put(&mut game, payer, "Shock", Zone::Hand);
+            let secret = put(&mut game, payer, "Forest", Zone::Hand);
+            cast(&mut game, shock, Some(Target::Card(gideon)));
+            let id = game.state.stack.iter().find(|s| s.card == shock).unwrap().id;
+            assert!(game.counter_stack_item(id, false));
+            game.resolve_top();
+            assert!(matches!(game.state.pending, Pending::ResolutionMana { player } if player == payer));
+            assert!(!game.observe(payer.other()).objects.iter().any(|o| o.id == secret));
+            if discard { act(&mut game, Action::Discard { card: secret }); }
+            else { act(&mut game, Action::DeclineResolutionMana); }
+            settle(&mut game);
+            assert_eq!(game.object_view(secret).zone, if discard { Zone::Graveyard } else { Zone::Hand });
+        }
     }
 }
 
@@ -179,5 +184,44 @@ fn gideon_does_not_observe_failed_loyalty_cost_or_own_creature_entries() {
         reject(&mut g, Action::AnnounceActivate { card: walker, ability: 1, counter_payment: Counters::default() });
         assert_eq!(g.snapshot(), saved);
         assert!(!g.state.pending_triggers.iter().any(|s| s.card == gideon));
+    }
+}
+
+#[test]
+fn copied_gideon_triggers_keep_the_event_player() {
+    for actor in [Player::P0, Player::P1] {
+        for loyalty in [false, true] {
+            let mut g = scenario(actor);
+            let gideon = put(&mut g, actor.other(), "Gideon the Oathless", Zone::Battlefield);
+            let life = g.state.players[actor.index()].life;
+            let other_life = g.state.players[actor.other().index()].life;
+            if loyalty {
+                g.create_tokens(actor, Card::JacePlaneswalkerToken, 1, false);
+                let walker = g.state.objects.iter().enumerate().find_map(|(id, object)|
+                    (object.zone == Zone::Battlefield && object.controller == actor && object.is_token()
+                        && g.has_subtype(id as CardId, "Jace")).then_some(id as CardId)).unwrap();
+                // Ignore the Jace entry trigger to isolate the loyalty trigger.
+                gideon_finish_events(&mut g);
+                g.state.players[actor.index()].life = life;
+                g.state.objects[walker as usize].counters.loyalty = 5;
+                act(&mut g, Action::AnnounceActivate { card: walker, ability: 1, counter_payment: Counters::default() });
+                pay(&mut g);
+            } else {
+                g.create_tokens(actor, Card::test_index(5298), 1, false);
+                g.prepare_triggers();
+            }
+            let trigger = g.state.stack.iter().find(|item| item.card == gideon
+                && matches!(item.kind, StackKind::TriggeredAbility { .. })).unwrap().clone();
+            assert_eq!(trigger.event_player, Some(actor));
+            let mut copier = trigger.clone();
+            copier.controller = actor;
+            copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(trigger.id), object: None }];
+            g.copy_target_ability(&copier, 0);
+            assert!(g.state.stack.iter().any(|item| item.is_copy && item.controller == actor
+                && item.event_player == Some(actor)));
+            gideon_finish_events(&mut g);
+            assert_eq!(g.state.players[actor.index()].life, life - 2);
+            assert_eq!(g.state.players[actor.other().index()].life, other_life);
+        }
     }
 }
