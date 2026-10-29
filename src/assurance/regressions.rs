@@ -380,14 +380,14 @@ fn project_prior_schema181(input: &str) -> Result<String, String> {
     Ok(input.to_owned())
 }
 
-/// Candidate audit for Cryomancer’s public reflexive target limit.
-/// Integration assigns the next schema number and wires dispatch.
-fn project_prior_cryomancer(input: &str) -> Result<String, String> {
+/// Schema 188 adds Cryomancer's public target limit and new Null/Sanctum rules.
+/// Reject new retained behavior rather than fabricating a schema-187 baseline.
+fn project_prior_schema188(input: &str) -> Result<String, String> {
     fn check(value: &serde_json::Value) -> Result<(), String> {
         match value {
             serde_json::Value::Array(rows) => for row in rows { check(row)?; },
-            serde_json::Value::String(name) if matches!(name.as_str(), "Seasoned Cryomancer") => {
-                return Err("Cryomancer rules have no earlier baseline".to_owned());
+            serde_json::Value::String(name) if matches!(name.as_str(), "Seasoned Cryomancer" | "Null Summoner" | "Sanctum Lurker") => {
+                return Err("Null, Sanctum, or Cryomancer rules have no schema-187 baseline".to_owned());
             }
             serde_json::Value::Object(map) => {
                 if ["reflexive_target_limit"]
@@ -405,48 +405,48 @@ fn project_prior_cryomancer(input: &str) -> Result<String, String> {
     Ok(input.to_owned())
 }
 
-fn cryomancer_new_card(card: Card) -> bool {
-    matches!(card.identity(), "Seasoned Cryomancer")
+fn schema188_new_card(card: Card) -> bool {
+    matches!(card.identity(), "Seasoned Cryomancer" | "Null Summoner" | "Sanctum Lurker")
 }
 
-fn cryomancer_recipe_supported(recipe: &CopyRecipe) -> bool {
-    if cryomancer_new_card(recipe.definition) { return false; }
+fn schema188_recipe_supported(recipe: &CopyRecipe) -> bool {
+    if schema188_new_card(recipe.definition) { return false; }
     match recipe.faces {
         Some(copies::CopyFaces::Double { physical_front, front, back, .. }) =>
-            ![physical_front, front, back].into_iter().any(cryomancer_new_card),
+            ![physical_front, front, back].into_iter().any(schema188_new_card),
         _ => true,
     }
 }
 
-fn cryomancer_facts_supported(facts: &DamageFacts) -> bool {
+fn schema188_facts_supported(facts: &DamageFacts) -> bool {
     // Schema 180 already represents additive Construct and other subtype facts.
-    !cryomancer_new_card(facts.card)
+    !schema188_new_card(facts.card)
 }
 
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
-fn cryomancer_packet_supported(item: &SpellView) -> bool {
-    if !serde_json::to_string(item).is_ok_and(|json| project_prior_cryomancer(&json).is_ok())
-        || cryomancer_new_card(item.source_card) || !cryomancer_facts_supported(&item.source_facts)
-        || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if cryomancer_new_card(token))
-        || item.source_copy_recipe.as_deref().is_some_and(|r| !cryomancer_recipe_supported(r))
-        || item.captured_artifact_copy.as_deref().is_some_and(|r| !cryomancer_recipe_supported(r))
-        || item.attachment_trigger.as_ref().is_some_and(|v| cryomancer_new_card(v.granting_card))
-        || item.delayed_sacrifice.as_ref().is_some_and(|v| cryomancer_new_card(v.source_card))
-        || item.delayed_warp_exile.as_ref().is_some_and(|v| cryomancer_new_card(v.source_card))
-        || item.cast_event.as_ref().is_some_and(|v| cryomancer_new_card(v.card))
-        || item.cast.and_then(|v| v.physical_card).is_some_and(cryomancer_new_card)
+fn schema188_packet_supported(item: &SpellView) -> bool {
+    if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema188(&json).is_ok())
+        || schema188_new_card(item.source_card) || !schema188_facts_supported(&item.source_facts)
+        || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema188_new_card(token))
+        || item.source_copy_recipe.as_deref().is_some_and(|r| !schema188_recipe_supported(r))
+        || item.captured_artifact_copy.as_deref().is_some_and(|r| !schema188_recipe_supported(r))
+        || item.attachment_trigger.as_ref().is_some_and(|v| schema188_new_card(v.granting_card))
+        || item.delayed_sacrifice.as_ref().is_some_and(|v| schema188_new_card(v.source_card))
+        || item.delayed_warp_exile.as_ref().is_some_and(|v| schema188_new_card(v.source_card))
+        || item.cast_event.as_ref().is_some_and(|v| schema188_new_card(v.card))
+        || item.cast.and_then(|v| v.physical_card).is_some_and(schema188_new_card)
         || item.mana_copy_sources.as_ref().is_some_and(|sources| sources.iter().any(|(v, _)|
-            cryomancer_new_card(v.card) || cryomancer_new_card(v.definition) || !cryomancer_facts_supported(&v.facts)))
-        || item.copy_event.as_ref().is_some_and(|event| !cryomancer_packet_supported(&event.spell))
+            schema188_new_card(v.card) || schema188_new_card(v.definition) || !schema188_facts_supported(&v.facts)))
+        || item.copy_event.as_ref().is_some_and(|event| !schema188_packet_supported(&event.spell))
     { return false; }
     if let Some(event) = &item.event_object {
-        if event.subtype_lki.as_ref().is_some_and(|facts| !cryomancer_facts_supported(facts)) {
+        if event.subtype_lki.as_ref().is_some_and(|facts| !schema188_facts_supported(facts)) {
             return false;
         }
         match &event.facts {
-            event_objects::EventObjectFacts::DamageActor(source) if !cryomancer_facts_supported(&source.facts) => return false,
-            event_objects::EventObjectFacts::Copiable(recipe) if !cryomancer_recipe_supported(recipe) => return false,
+            event_objects::EventObjectFacts::DamageActor(source) if !schema188_facts_supported(&source.facts) => return false,
+            event_objects::EventObjectFacts::Copiable(recipe) if !schema188_recipe_supported(recipe) => return false,
             _ => {}
         }
     }
@@ -455,51 +455,52 @@ fn cryomancer_packet_supported(item: &SpellView) -> bool {
 
 /// Conservatively reject opaque continuations, while checking copy layers and
 /// retained packets by type. Rollback snapshots retain independent hidden state.
-fn prior_cryomancer_state_supported(state: &State) -> bool {
-    if state.resolving.is_some() || state.announcing.is_some()
+fn prior_schema188_state_supported(state: &State) -> bool {
+    if state.linked_choices.as_ref().is_some_and(|data| !data.null_cast_links.is_empty())
+        || state.resolving.is_some() || state.announcing.is_some()
         || state.mana_announcement_stack.is_some() || state.replacements.is_some()
         || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
         || state.linked_choices.as_ref().is_some_and(|c| c.has_opaque_interaction())
-        || state.objects.iter().any(|o| cryomancer_new_card(o.card))
+        || state.objects.iter().any(|o| schema188_new_card(o.card))
         || state.explore_data.as_ref().and_then(|data| data.last.as_ref()).is_some_and(|event|
-            cryomancer_new_card(event.explorer.card)
-                || event.revealed.is_some_and(|card| cryomancer_new_card(card.card)))
-        || state.last_target_library_move.as_ref().is_some_and(|event| cryomancer_new_card(event.card))
+            schema188_new_card(event.explorer.card)
+                || event.revealed.is_some_and(|card| schema188_new_card(card.card)))
+        || state.last_target_library_move.as_ref().is_some_and(|event| schema188_new_card(event.card))
         || state.library_top.as_ref().and_then(|data| data.reveal.as_ref())
-            .is_some_and(|event| cryomancer_new_card(event.revealed.card))
-        || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| cryomancer_new_card(row.granting_card)))
-        || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| cryomancer_new_card(row.granting_card)))
+            .is_some_and(|event| schema188_new_card(event.revealed.card))
+        || state.temporary_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema188_new_card(row.granting_card)))
+        || state.self_granted_abilities.as_ref().is_some_and(|rows| rows.iter().any(|row| schema188_new_card(row.granting_card)))
         || state.graveyard_borrowing.as_ref().is_some_and(|rows| rows.iter().any(|row|
-            cryomancer_new_card(row.provider) || cryomancer_new_card(row.definition)))
+            schema188_new_card(row.provider) || schema188_new_card(row.definition)))
         // Slots retain an optional immutable donor definition; all other slot
         // fields are object references or numeric acquisition/use identities.
         || state.borrowed_slots.as_ref().is_some_and(|rows| rows.iter().any(|row|
-            row.definition.is_some_and(cryomancer_new_card)))
+            row.definition.is_some_and(schema188_new_card)))
         || state.warp.as_ref().is_some_and(|w| !w.delayed.is_empty())
         // Delayed sacrifice packets retain public source-card identity and
         // frozen damage facts, including hidden/copied subtype overlays.
         || state.delayed_sacrifices.as_ref().is_some_and(|rows| rows.iter().any(|row|
-            cryomancer_new_card(row.view.source_card) || !cryomancer_facts_supported(&row.facts)))
+            schema188_new_card(row.view.source_card) || !schema188_facts_supported(&row.facts)))
         || state.mobilize.is_some() || state.miracle.is_some()
-        || state.adventures.as_ref().is_some_and(|a| a.permissions.iter().any(|v| cryomancer_new_card(v.card)))
-        || state.plot.as_ref().and_then(|p| p.payment.as_ref()).is_some_and(|p| cryomancer_new_card(p.source_card))
-        || state.hits.iter().any(|hit| !cryomancer_facts_supported(&hit.source.facts))
-        || state.damage_choices.iter().any(|hit| !cryomancer_facts_supported(&hit.source.facts))
+        || state.adventures.as_ref().is_some_and(|a| a.permissions.iter().any(|v| schema188_new_card(v.card)))
+        || state.plot.as_ref().and_then(|p| p.payment.as_ref()).is_some_and(|p| schema188_new_card(p.source_card))
+        || state.hits.iter().any(|hit| !schema188_facts_supported(&hit.source.facts))
+        || state.damage_choices.iter().any(|hit| !schema188_facts_supported(&hit.source.facts))
         || state.manifest.as_ref().is_some_and(|manifest| {
             manifest.permanents.iter().chain(manifest.spells.iter())
-                .any(|row| cryomancer_new_card(row.underlying))
+                .any(|row| schema188_new_card(row.underlying))
         })
-        || state.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row| !cryomancer_recipe_supported(&row.recipe)))
+        || state.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row| !schema188_recipe_supported(&row.recipe)))
         || state.temporary_copies.as_ref().is_some_and(|rows| rows.iter().any(|row| {
-            cryomancer_new_card(row.physical_card)
-                || row.original_recipe.as_ref().is_some_and(|r| !cryomancer_recipe_supported(r))
-                || row.layers.iter().any(|layer| !cryomancer_recipe_supported(&layer.value.recipe))
+            schema188_new_card(row.physical_card)
+                || row.original_recipe.as_ref().is_some_and(|r| !schema188_recipe_supported(r))
+                || row.layers.iter().any(|layer| !schema188_recipe_supported(&layer.value.recipe))
         }))
     { return false; }
     if let Some(mana) = &state.mana_lots {
         let copy_safe = |source: &mana_lots::ManaCopySource| {
-            !cryomancer_new_card(source.card) && !cryomancer_new_card(source.definition)
-                && cryomancer_facts_supported(&source.facts)
+            !schema188_new_card(source.card) && !schema188_new_card(source.definition)
+                && schema188_facts_supported(&source.facts)
         };
         let quality_safe = |quality: &mana_lots::Quality| {
             quality.copy_source.as_ref().is_none_or(copy_safe)
@@ -512,7 +513,7 @@ fn prior_cryomancer_state_supported(state: &State) -> bool {
     }
     if let Some(rollback) = &state.cast_rollback {
         if !rollback.events.is_empty() || rollback.replay.is_some() || rollback.capture.is_some()
-            || !prior_cryomancer_state_supported(&rollback.before) { return false; }
+            || !prior_schema188_state_supported(&rollback.before) { return false; }
     }
     state.stack.iter().chain(&state.pending_triggers).chain(&state.ordering_triggers)
         .chain(state.delayed_artifact_copies.as_deref().into_iter().flatten())
@@ -525,7 +526,7 @@ fn prior_cryomancer_state_supported(state: &State) -> bool {
         .chain(state.delayed_returns.as_deref().into_iter().flatten().map(|r| &r.item))
         .chain(state.earthbend_returns.as_deref().into_iter().flatten().map(|r| &r.item))
         .chain(state.manifest.as_ref().into_iter().flat_map(|s| s.deaths.iter().map(|d| &d.source)))
-        .all(cryomancer_packet_supported)
+        .all(schema188_packet_supported)
 }
 
 
@@ -1195,7 +1196,7 @@ fn prior_schema184_state_supported(state: &State) -> bool {
 
 #[test]
 fn schema184_preserves_old_bytes_and_rejects_changed_card_and_paid_offer() {
-    assert_eq!(OBSERVATION_SCHEMA, 187);
+    assert_eq!(OBSERVATION_SCHEMA, 188);
     let old = r#"[{"resolution_free_casts":{"paid":null},"other":true}]"#;
     assert_eq!(project_prior_schema184(old).unwrap(), old);
     for card in ["Chandra, Torch of Defiance", "@emblem/fra-chandra-torch"] {
@@ -3105,7 +3106,17 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 187) {
+    if schema_projection.is_some_and(|schema| schema < 188) {
+        if !prior_schema188_state_supported(&g.state) {
+            projection_error = Some("owned Null, Sanctum, or Cryomancer rules cannot be projected to schema 187".to_owned());
+        } else {
+            match project_prior_schema188(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 187) {
         if !prior_schema187_state_supported(&g.state) {
             projection_error = Some("owned Jace loyalty timing cannot be projected to schema 186".to_owned());
         } else {
@@ -3878,26 +3889,61 @@ fn schema187_preserves_old_bytes_and_rejects_jace_timing_and_nested_rollback() {
 #[test]
 fn cryomancer_projection_rejects_quantity_nested_packets_and_rollback() {
     let old = r#"[{"jace_loyalty_anytime":true}]"#;
-    assert_eq!(project_prior_cryomancer(old).unwrap(), old);
-    assert!(project_prior_cryomancer(r#"[{"reflexive_target_limit":0}]"#).is_err());
-    assert!(project_prior_cryomancer(r#"[{"card":"Seasoned Cryomancer"}]"#).is_err());
+    assert_eq!(project_prior_schema188(old).unwrap(), old);
+    assert!(project_prior_schema188(r#"[{"reflexive_target_limit":0}]"#).is_err());
+    assert!(project_prior_schema188(r#"[{"card":"Seasoned Cryomancer"}]"#).is_err());
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
-        assert!(prior_cryomancer_state_supported(&g.state));
+        assert!(prior_schema188_state_supported(&g.state));
         let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         let mut inner = g.activation_item(player, source, 0);
         inner.reflexive_target_limit = Some(0);
         let mut outer = g.activation_item(player, source, 0);
         outer.copy_event = Some(Box::new(stack_copies::CopyEvent { spell: inner, amount: 1 }));
         g.state.pending_triggers.push(outer);
-        assert!(!prior_cryomancer_state_supported(&g.state));
+        assert!(!prior_schema188_state_supported(&g.state));
         g.begin_attack_rollback(player);
         g.state.pending_triggers.clear();
-        assert!(!prior_cryomancer_state_supported(&g.state));
+        assert!(!prior_schema188_state_supported(&g.state));
         let snapshot = g.snapshot();
         g.state.cast_rollback = None;
-        assert!(prior_cryomancer_state_supported(&g.state));
+        assert!(prior_schema188_state_supported(&g.state));
         g.restore(&snapshot).unwrap();
-        assert!(!prior_cryomancer_state_supported(&g.state));
+        assert!(!prior_schema188_state_supported(&g.state));
+    }
+}
+
+#[test]
+fn schema188_preserves_schema187_jace_and_rejects_new_cards_and_hidden_null_links() {
+    let old = r#"[{"card":"Jace's Machinations","jace_loyalty_anytime":true}]"#;
+    assert_eq!(project_prior_schema188(old).unwrap(), old);
+    for name in ["Null Summoner", "Sanctum Lurker", "Seasoned Cryomancer"] {
+        assert!(project_prior_schema188(&serde_json::json!({"card":name}).to_string()).is_err());
+    }
+    assert!(project_prior_schema188(r#"[{"nested":{"reflexive_target_limit":0}}]"#).is_err());
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let hidden = put(&mut g, player, "Opt", Zone::Hand);
+        let source_ref = g.object_ref(source);
+        let hidden_ref = g.object_ref(hidden);
+        g.state.players[player.index()].jace_loyalty_anytime = true;
+        assert!(prior_schema188_state_supported(&g.state));
+        g.state.linked_choices.get_or_insert_default().null_cast_links.push(linked_choices::NullCastLink {
+            source: source_ref, exiled: hidden_ref, ability_origin: Some(41),
+        });
+        for viewer in [player, player.other()] {
+            let view = serde_json::to_value(g.observe(viewer)).unwrap();
+            assert_eq!(view["linked_exile"], serde_json::json!([]));
+            assert!(!prior_schema188_state_supported(&g.state));
+        }
+        g.begin_attack_rollback(player);
+        g.state.linked_choices.as_mut().unwrap().null_cast_links.clear();
+        assert!(!prior_schema188_state_supported(&g.state));
+        let snapshot = g.snapshot();
+        g.state.cast_rollback = None;
+        assert!(prior_schema188_state_supported(&g.state));
+        g.restore(&snapshot).unwrap();
+        assert!(!prior_schema188_state_supported(&g.state));
     }
 }
