@@ -1169,6 +1169,7 @@ impl Game {
             },
             source_transform: None,
             source_card: source.card,
+            split_second: false,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
             source_facts: DamageFacts::from_view(source),

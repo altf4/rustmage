@@ -259,6 +259,7 @@ impl Game {
                 id,
                 kind: StackKind::DelayedSacrifice,
                 source_card: card,
+                split_second: false,
                 source_keywords: b.keywords,
                 source_tapped: b.tapped,
                 source_attachment: b.attachment,

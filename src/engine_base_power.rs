@@ -2,7 +2,32 @@
 use super::*;
 
 impl Game {
-    /// Active rule restrictions are sampled live, including while a spell is being cast.
+    /// Compute the spell's live keyword, without copying a continuous grant
+    /// into its copiable values or ability packet. The spell may currently be
+    /// resolving; it remains on the stack until its resolution finishes.
+    pub(super) fn spell_has_split_second(&self, spell: &SpellView) -> bool {
+        if spell.kind != StackKind::Spell {
+            return false;
+        }
+        if spell.source_keywords.contains(Keywords::SPLIT_SECOND) {
+            return true;
+        }
+        if spell.source_facts.kinds & (4 | 8) == 0 {
+            return false;
+        }
+        self.state.static_sources.iter().copied().any(|id| {
+            let source = &self.state.objects[id as usize];
+            self.on_battlefield(id) && source.controller == spell.controller
+                && source.card.static_ability_groups().iter().any(|g| g.fragments.iter().any(|f| matches!(f, crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond)))
+                && self.continuous_fragment_available(id, |f| matches!(f, crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond))
+        })
+    }
+    pub(super) fn spell_with_current_abilities(&self, item: &SpellView) -> SpellView {
+        let mut view = item.clone();
+        view.split_second = self.spell_has_split_second(item);
+        view
+    }
+    /// Active rule restrictions are sampled live, including during resolution.
     pub(super) fn nonmana_actions_prohibited(&self) -> bool {
         let combat = matches!(
             self.state.step,
@@ -13,53 +38,43 @@ impl Game {
                 | Step::CombatDamage
                 | Step::EndCombat
         );
-        let providers = self
-            .state
-            .static_sources
-            .iter()
-            .copied()
-            .filter(|&id| self.on_battlefield(id));
-        for id in providers {
-            let source = &self.state.objects[id as usize];
-            if combat
-                && source.card.static_ability_groups().iter().any(|g| {
-                    g.fragments.iter().any(|f| {
+        if combat
+            && self.state.static_sources.iter().copied().any(|id| {
+                let source = &self.state.objects[id as usize];
+                self.on_battlefield(id)
+                    && source.card.static_ability_groups().iter().any(|g| {
+                        g.fragments.iter().any(|f| {
+                            matches!(
+                                f,
+                                crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
+                            )
+                        })
+                    })
+                    && self.continuous_fragment_available(id, |f| {
                         matches!(
                             f,
                             crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                         )
                     })
-                })
-                && self.continuous_fragment_available(id, |f| {
-                    matches!(
-                        f,
-                        crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
-                    )
-                })
-            {
-                return true;
-            }
-            if source.card.static_ability_groups().iter().any(|g| {
-                g.fragments.iter().any(|f| {
-                    matches!(
-                        f,
-                        crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond
-                    )
-                })
-            }) && self.continuous_fragment_available(id, |f| {
-                matches!(
-                    f,
-                    crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond
-                )
-            }) && self.state.stack.iter().any(|item| {
-                item.kind == StackKind::Spell
-                    && item.controller == source.controller
-                    && item.source_facts.kinds & (4 | 8) != 0
-            }) {
-                return true;
-            }
+            })
+        {
+            return true;
         }
-        false
+        self.state
+            .stack
+            .iter()
+            .any(|spell| self.spell_has_split_second(spell))
+            || self.state.resolving.as_ref().is_some_and(|r| {
+                r.item.kind == StackKind::Spell
+                    && self
+                        .state
+                        .objects
+                        .get(r.item.card as usize)
+                        .is_some_and(|o| {
+                            o.zone == Zone::Stack && o.generation == r.item.object.generation
+                        })
+                    && self.spell_has_split_second(&r.item)
+            })
     }
     pub(super) fn static_casting_prohibited(&self, actor: Player) -> bool {
         self.nonmana_actions_prohibited()

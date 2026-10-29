@@ -115,6 +115,7 @@ impl Game {
                 id,
                 kind: StackKind::DelayedWarpExile,
                 source_card: view.source_card,
+                split_second: false,
                 source_keywords: d.keywords,
                 source_tapped: d.tapped,
                 source_attachment: d.attachment,

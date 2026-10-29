@@ -3962,6 +3962,8 @@ impl Keywords {
     pub const ONLY_HASTE_BLOCKERS: Self = Self(536870912);
     /// Contribution bonus while paying crew or saddle costs.
     pub const CREW_SADDLE_PLUS_TWO: Self = Self(1073741824);
+    /// The spell prevents further spells and nonmana activations while on the stack.
+    pub const SPLIT_SECOND: Self = Self(1u32 << 31);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }

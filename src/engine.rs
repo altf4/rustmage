@@ -1060,6 +1060,10 @@ pub struct ReflexiveSubjectView {
     pub additional_objects: Vec<ObjectRef>,
 }
 
+fn is_false(value: &bool) -> bool {
+    !*value
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
     // Number of additional instances, zero for ordinary/published packets.
@@ -1129,6 +1133,9 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_transform: Option<u64>,
     pub source_card: Card,
+    /// Current split second on a spell, computed for public views.
+    #[serde(skip_serializing_if = "is_false")]
+    pub split_second: bool,
     pub source_keywords: Keywords,
     pub source_tapped: bool,
     pub source_attachment: Option<ObjectRef>,
@@ -8616,7 +8623,11 @@ impl Game {
                         .collect()
                 })
                 .unwrap_or_default(),
-            stack: s.stack.clone(),
+            stack: s
+                .stack
+                .iter()
+                .map(|item| self.spell_with_current_abilities(item))
+                .collect(),
             uncounterable_spell_ids: self.uncounterable_spell_ids_view(),
             retarget: self.retarget_view(),
             target_amount: self.target_amount_choice(),
@@ -8624,7 +8635,7 @@ impl Game {
             resolving: s
                 .resolving
                 .as_ref()
-                .map(|resolution| resolution.item.clone()),
+                .map(|resolution| self.spell_with_current_abilities(&resolution.item)),
             group_move_count: s
                 .resolving
                 .as_ref()

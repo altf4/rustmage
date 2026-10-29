@@ -1678,6 +1678,7 @@ impl Game {
             kind: StackKind::Spell,
             source_transform: None,
             source_card: self.state.objects[card as usize].card,
+            split_second: false,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
             source_facts: self.damage_facts(card),

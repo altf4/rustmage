@@ -1050,10 +1050,28 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             power_above_base: obj.zone == Zone::Battlefield
                 && self.is_creature(id)
                 && stats.power > base.power,
-            keywords: if inset {
-                definition.info().keywords
-            } else {
-                self.keywords(id)
+            keywords: {
+                let base = if inset {
+                    definition.info().keywords
+                } else {
+                    self.keywords(id)
+                };
+                let spell = self
+                    .game
+                    .state
+                    .stack
+                    .iter()
+                    .chain(self.game.state.resolving.iter().map(|r| &r.item))
+                    .find(|item| {
+                        item.kind == StackKind::Spell && item.object == self.object_ref(id)
+                    });
+                if obj.zone == Zone::Stack
+                    && spell.is_some_and(|item| self.game.spell_has_split_second(item))
+                {
+                    base.union(Keywords::SPLIT_SECOND)
+                } else {
+                    base
+                }
             },
             copy_recipe: self.stored_recipe(id),
             temporary_copy: if obj.zone == Zone::Battlefield {

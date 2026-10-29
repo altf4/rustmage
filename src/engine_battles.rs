@@ -43,6 +43,7 @@ impl Game {
             id,
             kind: StackKind::SiegeDefeat,
             source_card: source.card,
+            split_second: false,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
             source_attachment: source.attached_to,
