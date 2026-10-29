@@ -78,6 +78,9 @@ pub(super) struct CounterPlacement {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct CounterBatch {
+    // Player poison additions commit with the permanent placements after all
+    // permanent replacement choices have completed.
+    player_poison: [u64; 2],
     completion: Option<Box<CounterReflexiveCompletion>>,
     placements: Vec<CounterPlacement>,
     next: usize,
@@ -808,6 +811,7 @@ impl Game {
     fn commit_counter_placements(
         &mut self,
         mut placements: Vec<CounterPlacement>,
+        player_poison: [u64; 2],
         completion: Option<Box<CounterReflexiveCompletion>>,
     ) {
         for placement in &mut placements {
@@ -841,6 +845,11 @@ impl Game {
             self.materialize_face_up(object);
         }
         // Commit the complete world before any placement observer sees it.
+        for player in [Player::P0, Player::P1] {
+            let counters = &mut self.state.players[player.index()].poison_counters;
+            *counters = counters.checked_add(player_poison[player.index()])
+                .capacity("player poison counters exhausted");
+        }
         for p in &placements {
             if let Some(index) = p.entry_index {
                 self.state
@@ -887,11 +896,12 @@ impl Game {
         placements: Vec<CounterPlacement>,
         mode: ResumeMode,
     ) {
-        self.stage_counter_placements_inner(placements, mode, None);
+        self.stage_counter_placements_inner(placements, [0; 2], mode, None);
     }
     fn stage_counter_placements_inner(
         &mut self,
         mut placements: Vec<CounterPlacement>,
+        player_poison: [u64; 2],
         mode: ResumeMode,
         completion: Option<Box<CounterReflexiveCompletion>>,
     ) {
@@ -901,7 +911,7 @@ impl Game {
             }
         }
         placements.retain(|p| p.amount.has_any());
-        if placements.is_empty() {
+        if placements.is_empty() && player_poison == [0; 2] {
             return;
         }
         placements.sort_by_key(|p| (p.controller != self.state.active, p.object.card));
@@ -910,7 +920,7 @@ impl Game {
                 .iter()
                 .all(|p| self.counter_replacements(p, &[]).is_empty())
         {
-            self.commit_counter_placements(placements, completion);
+            self.commit_counter_placements(placements, player_poison, completion);
             self.finish_face_up_counter_replacement();
             return;
         }
@@ -928,6 +938,7 @@ impl Game {
             "one owned replacement continuation at a time"
         );
         state.work.push_back(Work::Counters(CounterBatch {
+            player_poison,
             completion,
             placements,
             next: 0,
@@ -965,6 +976,7 @@ impl Game {
         };
         self.stage_counter_placements_inner(
             vec![placement],
+            [0; 2],
             ResumeMode::Program,
             Some(Box::new(CounterReflexiveCompletion {
                 item: item.clone(),
@@ -1025,12 +1037,13 @@ impl Game {
         changes: Vec<(ObjectRef, Counters)>,
         mode: ResumeMode,
     ) {
-        self.effect_counters_by(changes, None, mode);
+        self.effect_counters_by(changes, None, [0; 2], mode);
     }
     fn effect_counters_by(
         &mut self,
         changes: Vec<(ObjectRef, Counters)>,
         placed_by: Option<Player>,
+        player_poison: [u64; 2],
         mode: ResumeMode,
     ) {
         let placements = changes
@@ -1062,7 +1075,15 @@ impl Game {
                 })
             })
             .collect();
-        self.stage_counter_placements(placements, mode);
+        self.stage_counter_placements_inner(placements, player_poison, mode, None);
+    }
+    /// Stage a single mixed player/permanent placement event. Only poison
+    /// player counters currently exist in the engine.
+    pub(super) fn effect_counters_with_poison(
+        &mut self, changes: Vec<(ObjectRef, Counters)>, player_poison: [u64; 2],
+        placed_by: Player, mode: ResumeMode,
+    ) {
+        self.effect_counters_by(changes, Some(placed_by), player_poison, mode);
     }
     pub(super) fn effect_counter(
         &mut self,
@@ -1125,7 +1146,7 @@ impl Game {
         }
         let mut counters = Counters::default();
         counters.add(kind, amount);
-        self.effect_counters_by(vec![(self.object_ref(id), counters)], Some(placed_by), mode);
+        self.effect_counters_by(vec![(self.object_ref(id), counters)], Some(placed_by), [0; 2], mode);
     }
     pub(super) fn defer_empty_explore(&mut self, explorer: ExplorerView, counter_added: bool) {
         self.state
@@ -1466,6 +1487,7 @@ impl Game {
                             self.created_token_counter_placements(player, &created, &counters);
                         if !placements.is_empty() {
                             state.work.push_front(Work::Counters(CounterBatch {
+                                player_poison: [0; 2],
                                 completion: None,
                                 placements,
                                 next: 0,
@@ -1483,6 +1505,7 @@ impl Game {
                             self.created_token_counter_placements(player, &created, &counters);
                         if !placements.is_empty() {
                             state.work.push_front(Work::Counters(CounterBatch {
+                                player_poison: [0; 2],
                                 completion: None,
                                 placements,
                                 next: 0,
@@ -1636,7 +1659,7 @@ impl Game {
                         let Some(Event::Counters(batch)) = state.active.take() else {
                             unreachable!()
                         };
-                        self.commit_counter_placements(batch.placements, batch.completion);
+                        self.commit_counter_placements(batch.placements, batch.player_poison, batch.completion);
                         continue;
                     }
                     let p = &mut batch.placements[batch.next];
@@ -1806,6 +1829,7 @@ impl Game {
                                     );
                                     if !placements.is_empty() {
                                         state.work.push_front(Work::Counters(CounterBatch {
+                                            player_poison: [0; 2],
                                             completion: None,
                                             placements,
                                             next: 0,
@@ -1837,6 +1861,7 @@ impl Game {
                                     );
                                     if !placements.is_empty() {
                                         state.work.push_front(Work::Counters(CounterBatch {
+                                            player_poison: [0; 2],
                                             completion: None,
                                             placements,
                                             next: 0,
@@ -2261,6 +2286,7 @@ impl Game {
         self.effect_counters_by(
             vec![(recipient, Counters::of(CounterKind::Loyalty, amount))],
             Some(player),
+            [0; 2],
             ResumeMode::Program,
         );
     }
@@ -2357,6 +2383,7 @@ impl Game {
         self.effect_counters_by(
             vec![(recipient, Counters::of(CounterKind::PlusOne, amount))],
             Some(player),
+            [0; 2],
             ResumeMode::Program,
         );
         if let Some(state) = self.state.replacements.as_mut() {
