@@ -317,7 +317,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && !a.stack.iter().any(|x| x.id == s.id)
                 && a.outcome.is_none()
             {
-                let i = index(s.source_card).unwrap();
+                let i = s.source().and_then(|source| index(source.card)).unwrap();
                 verify(i, s, &b, &a, &mut ledger);
                 effects[i] += 1;
             }
@@ -328,12 +328,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert!(s.entering_object.is_none());
                 match s.kind {
                     StackKind::Spell => {
-                        if let Some(i) = index(s.source_card) {
+                        if let Some(i) = s.source().and_then(|source| index(source.card)) {
                             casts[i] += 1;
                         }
                     }
                     StackKind::TriggeredAbility { ability } => {
-                        let i = index(s.source_card).unwrap();
+                        let i = s.source().and_then(|source| index(source.card)).unwrap();
                         let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
                             panic!("unexpected {} seed{seed}", s.source_card.name())
                         });

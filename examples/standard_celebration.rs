@@ -230,7 +230,7 @@ fn main() -> Result<(), Error> {
                 )
             }
             for item in packets(&before) {
-                if index(item.source_card).is_some()
+                if item.source().and_then(|source| index(source.card)).is_some()
                     && matches!(
                         item.kind,
                         StackKind::TriggeredAbility { .. } | StackKind::ActivatedAbility { .. }
@@ -284,7 +284,7 @@ fn main() -> Result<(), Error> {
                 && let Some(item) = &before.announcing
                 && item.kind == StackKind::Spell
             {
-                if let Some(i) = index(item.source_card) {
+                if let Some(i) = item.source().and_then(|source| index(source.card)) {
                     casts[i][p.index()] += 1
                 }
                 let printed: u32 = item
@@ -381,7 +381,7 @@ fn main() -> Result<(), Error> {
                 .collect::<Vec<_>>();
             for id in finished {
                 let (item, base) = active.remove(&id).unwrap();
-                let i = index(item.source_card).unwrap();
+                let i = item.source().and_then(|source| index(source.card)).unwrap();
                 let owner = item.controller;
                 let view = g.observe(owner);
                 let source = view

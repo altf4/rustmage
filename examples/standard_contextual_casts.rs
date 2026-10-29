@@ -364,7 +364,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !seen_cast.insert(s.id) {
                     continue;
                 }
-                if let Some(i) = index(s.source_card) {
+                if let Some(i) = s.source().and_then(|source| index(source.card)) {
                     casts[i] += 1;
                 }
                 assert!(s.entering_object.is_none());
@@ -393,7 +393,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         bump(&mut ledger, r, a.turn, 0, 3, 3, Keywords::NONE);
                     }
                 } else if let StackKind::TriggeredAbility { ability } = s.kind
-                    && let Some(i) = index(s.source_card)
+                    && let Some(i) = s.source().and_then(|source| index(source.card))
                     && !(matches!(i, 4 | 9) && ability == 0)
                 {
                     if exact(&a, s.object).is_some() {
@@ -427,7 +427,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if !seen_trigger.insert(s.id) {
                         continue;
                     }
-                    let i = index(s.source_card).unwrap();
+                    let i = s.source().and_then(|source| index(source.card)).unwrap();
                     assert!(s.entering_object.is_none());
                     if matches!(i, 4 | 9) && ability == 0 {
                         assert!(s.related_stack.is_some());

@@ -358,7 +358,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !seen_cast.insert(s.id) {
                     continue;
                 }
-                if let Some(i) = index(s.source_card) {
+                if let Some(i) = s.source().and_then(|source| index(source.card)) {
                     casts[i] += 1;
                     match s.cast.as_ref().unwrap().offspring {
                         Some(true) => paid[i] += 1,
@@ -452,7 +452,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         panic!("no delayed producer in this fixture")
                     }
                     StackKind::TriggeredAbility { ability } => {
-                        let i = index(s.source_card).unwrap();
+                        let i = s.source().and_then(|source| index(source.card)).unwrap();
                         verify(i, ability, s, &b, &a, &mut ledger);
                         if ability == 0 {
                             effects[i] += 1
@@ -490,7 +490,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     assert_eq!(
                         s.entering_object.is_some(),
-                        ability == 0 || matches!(index(s.source_card).unwrap(), 1 | 3 | 4 | 6)
+                        ability == 0 || matches!(s.source().and_then(|source| index(source.card)).unwrap(), 1 | 3 | 4 | 6)
                     );
                     let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
                         panic!(

@@ -168,7 +168,7 @@ fn items(o: &Observation) -> impl Iterator<Item = &SpellView> {
         .chain(&o.resolving)
 }
 fn selection(s: &SpellView) -> Option<usize> {
-    let i = index(s.source_card)?;
+    let i = s.source().and_then(|source| index(source.card))?;
     match (i, s.kind) {
         (2, StackKind::Spell) => Some(i),
         (11, StackKind::TriggeredAbility { ability: 1 }) => Some(i),
@@ -506,7 +506,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let action = actions[selected].clone();
             if let Action::ChooseSpellCost { cost: k } = action {
                 let root = b.announcing.as_ref().unwrap();
-                if let Some(i) = index(root.source_card) {
+                if let Some(i) = root.source().and_then(|source| index(source.card)) {
                     assert!((3..=7).contains(&i));
                     for option in &b.cost_choices {
                         let expected = cost(i, usize::from(option.index));
@@ -636,7 +636,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         panic!("no delayed producer in this fixture")
                     }
                     StackKind::Spell => {
-                        if index(root.source_card) == Some(11) {
+                        if root.source().and_then(|source| index(source.card)) == Some(11) {
                             let p = root.cast.unwrap().offspring.unwrap();
                             m.trainer_casts[usize::from(p)] += 1;
                             if p {
@@ -648,7 +648,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     StackKind::TriggeredAbility { ability } => {
-                        if index(root.source_card).is_some() {
+                        if root.source().and_then(|source| index(source.card)).is_some() {
                             let remaining =
                                 debt.get_mut(&(root.object, ability)).unwrap_or_else(|| {
                                     panic!(

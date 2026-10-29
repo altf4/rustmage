@@ -112,7 +112,7 @@ fn verify(
     let p = s.controller.index();
     let draw = a.players[p].cards_drawn_this_turn - b.players[p].cards_drawn_this_turn;
     let discard = a.players[p].cards_discarded_this_turn - b.players[p].cards_discarded_this_turn;
-    let Some(i) = index(s.source_card) else {
+    let Some(i) = s.source().and_then(|source| index(source.card)) else {
         return false;
     };
     assert!(s.entering_object.is_none() || i == 4);
@@ -370,7 +370,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for id in done {
                 let (s, before) = pending.remove(&id).unwrap();
                 if a.outcome.is_none() && verify(&s, &before, &a, &mut debuff) {
-                    effects[index(s.source_card).unwrap()] += 1;
+                    effects[s.source().and_then(|source| index(source.card)).unwrap()] += 1;
                 }
             }
             for old in battlefield(&b) {
@@ -431,7 +431,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     StackKind::Spell => {
                         assert!(s.entering_object.is_none());
-                        if let Some(i) = index(s.source_card) {
+                        if let Some(i) = s.source().and_then(|source| index(source.card)) {
                             casts[i] += 1;
                         }
                     }
@@ -443,7 +443,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         assert!(*n > 0);
                         *n -= 1;
                         if ability == 0
-                            && let Some(i) = index(s.source_card)
+                            && let Some(i) = s.source().and_then(|source| index(source.card))
                         {
                             assert!(s.entering_object.is_none());
                             triggers[i] += 1;

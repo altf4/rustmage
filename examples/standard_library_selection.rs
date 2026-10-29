@@ -172,7 +172,7 @@ fn rule(
     }
 }
 fn selection(s: &SpellView) -> Option<usize> {
-    let i = index(s.source_card)?;
+    let i = s.source().and_then(|source| index(source.card))?;
     match (i, s.kind) {
         (1 | 8 | 11, StackKind::ActivatedAbility { ability: 0 })
         | (13 | 14, StackKind::TriggeredAbility { ability: 0 }) => Some(i),
@@ -587,10 +587,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = b.library_selection.is_some()
                 || b.resolving.is_some()
-                || b.stack.iter().any(|s| index(s.source_card).is_some())
+                || b.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some())
                 || b.announcing
                     .as_ref()
-                    .is_some_and(|s| index(s.source_card).is_some());
+                    .is_some_and(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(actor, action.clone())?;
@@ -645,7 +645,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(action, Action::Pass)
                 && let Some(root) = b.stack.last()
-                && index(root.source_card) == Some(13)
+                && root.source().and_then(|source| index(source.card)) == Some(13)
                 && matches!(root.kind, StackKind::TriggeredAbility { ability: 1 })
                 && !a.stack.iter().any(|s| s.id == root.id)
                 && let (Some(old), Some(now)) = (object(&b, root.card), object(&a, root.card))

@@ -174,8 +174,8 @@ fn classify(s: &SpellView) -> Option<usize> {
         | StackKind::SiegeDefeat => {
             panic!("no delayed producer in this fixture")
         }
-        StackKind::TriggeredAbility { .. } => index(s.source_card),
-        StackKind::ActivatedAbility { .. } => match index(s.source_card) {
+        StackKind::TriggeredAbility { .. } => s.source().and_then(|source| index(source.card)),
+        StackKind::ActivatedAbility { .. } => match s.source().and_then(|source| index(source.card)) {
             Some(1) => Some(8),
             Some(5) => Some(9),
             _ => s
@@ -431,7 +431,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 if s.kind == StackKind::Spell {
-                    if let Some(i) = index(s.source_card) {
+                    if let Some(i) = s.source().and_then(|source| index(source.card)) {
                         casts[i] += 1;
                     }
                 } else if let Some(i) = classify(s) {

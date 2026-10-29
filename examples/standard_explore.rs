@@ -368,7 +368,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         panic!("no delayed producer in this fixture")
                     }
                     StackKind::Spell => {
-                        if let Some(k) = index(item.source_card) {
+                        if let Some(k) = item.source().and_then(|source| index(source.card)) {
                             casts[k][p.index()] += 1;
                         }
                     }
@@ -382,7 +382,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(action, Action::Pass)
                 && let Some(item) = before.stack.last()
-                && (index(item.source_card).is_some() || is_map(item.source_card))
+                && (item.source().and_then(|source| index(source.card)).is_some() || is_map(item.source_card))
             {
                 active.insert(item.id, (item.clone(), g.observe(item.controller)));
             }
@@ -513,7 +513,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let (item, base) = active.remove(&id).unwrap();
                 let view = g.observe(item.controller);
                 let owner = item.controller;
-                let k = index(item.source_card);
+                let k = item.source().and_then(|source| index(source.card));
                 let invalid = !item.targets.is_empty()
                     && item.targets.iter().all(|t| {
                         t.object

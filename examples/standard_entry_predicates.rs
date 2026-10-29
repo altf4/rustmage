@@ -298,7 +298,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && matches!(root.kind, StackKind::TriggeredAbility { .. })
                 && !a.stack.iter().any(|s| s.id == root.id)
             {
-                let i = index(root.source_card).unwrap();
+                let i = root.source().and_then(|source| index(source.card)).unwrap();
                 pending.insert(root.id, (i, root.clone(), b.clone()));
             }
             let finished: Vec<_> = pending
@@ -350,11 +350,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 if item.kind == StackKind::Spell {
-                    if let Some(i) = index(item.source_card) {
+                    if let Some(i) = item.source().and_then(|source| index(source.card)) {
                         casts[i] += 1;
                     }
                 } else if let StackKind::TriggeredAbility { ability } = item.kind {
-                    let i = index(item.source_card).unwrap();
+                    let i = item.source().and_then(|source| index(source.card)).unwrap();
                     let count = debt.get_mut(&(item.object, ability)).unwrap_or_else(|| {
                         panic!("unexpected trigger {} seed{seed}", item.source_card.name())
                     });

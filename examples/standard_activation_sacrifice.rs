@@ -25,7 +25,7 @@ fn index(card: Card) -> Option<usize> {
     NAMES.iter().position(|n| *n == card.name())
 }
 fn external(s: &rustmage::SpellView) -> Option<usize> {
-    let i = index(s.source_card)?;
+    let i = s.source().and_then(|source| index(source.card))?;
     matches!(s.kind,StackKind::ActivatedAbility{ability}if ability==if i==3{1}else{0}).then_some(i)
 }
 fn deck(kind: usize) -> Vec<Card> {

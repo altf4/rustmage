@@ -174,7 +174,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| index(s.source_card).is_some());
+                || before.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(p, action.clone())?;
@@ -188,7 +188,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     continue;
                 }
-                let Some(i) = index(s.source_card) else {
+                let Some(i) = s.source().and_then(|source| index(source.card)) else {
                     continue;
                 };
                 if let StackKind::ActivatedAbility { ability } = s.kind

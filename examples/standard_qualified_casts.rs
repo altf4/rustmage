@@ -517,7 +517,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !seen_cast.insert(spell.id) {
                     continue;
                 }
-                if let Some(i) = index(spell.source_card) {
+                if let Some(i) = spell.source().and_then(|source| index(source.card)) {
                     casts[i] += 1;
                 }
                 for s in a.objects.iter().filter(|v| v.zone == Zone::Battlefield) {
@@ -545,7 +545,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     unreachable!()
                 };
                 let i =
-                    index(item.source_card).expect("only qualified cast triggers in these decks");
+                    item.source().and_then(|source| index(source.card)).expect("only qualified cast triggers in these decks");
                 let n = debt.get_mut(&(item.object, ability)).unwrap_or_else(|| {
                     panic!("unexpected {} trigger seed{seed}", item.source_card.name())
                 });
@@ -560,7 +560,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             {
                 pending.insert(
                     root.id,
-                    (index(root.source_card).unwrap(), root.clone(), b.clone()),
+                    (root.source().and_then(|source| index(source.card)).unwrap(), root.clone(), b.clone()),
                 );
             }
             let done: Vec<_> = pending

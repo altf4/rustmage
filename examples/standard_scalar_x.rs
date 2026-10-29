@@ -269,7 +269,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     req.required.iter().map(|v| u64::from(*v)).sum::<u64>()
                         + u64::from(req.generic)
                 );
-                if let Some(k) = index(ann.source_card) {
+                if let Some(k) = ann.source().and_then(|source| index(source.card)) {
                     paid[k][actor.index()] += 1;
                     if ann.x.unwrap() > 0 {
                         positive[k][actor.index()] += 1;
@@ -282,7 +282,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if a == Action::Pass
                 && let Some(s) = before.stack.last()
-                && index(s.source_card).is_some()
+                && s.source().and_then(|source| index(source.card)).is_some()
             {
                 active.insert(s.id, (s.clone(), before.clone()));
             }
@@ -307,7 +307,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .collect::<Vec<_>>();
             for id in done {
                 let (s, b) = active.remove(&id).unwrap();
-                let k = index(s.source_card).unwrap();
+                let k = s.source().and_then(|source| index(source.card)).unwrap();
                 let p = s.controller;
                 let x = s.x.unwrap();
                 if after.outcome.is_some() {

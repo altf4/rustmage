@@ -492,7 +492,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if let Action::PayCosts { payment } = a
                 && let Some(ann) = &before.announcing
-                && let Some(k) = index(ann.source_card)
+                && let Some(k) = ann.source().and_then(|source| index(source.card))
             {
                 let requested = before.payment_request.as_ref().unwrap();
                 let expected = if ann.kind == StackKind::Spell {

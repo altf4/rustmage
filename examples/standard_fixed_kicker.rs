@@ -283,7 +283,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let before = g.observe(actor);
             let want = (round + actor.index()).is_multiple_of(2);
             for packet in packets(&before) {
-                if let Some(k) = index(packet.source_card) {
+                if let Some(k) = packet.source().and_then(|source| index(source.card)) {
                     match packet.kind {
                         StackKind::CasualtyCopy
                         | StackKind::CopyEndStepSacrifice
@@ -368,7 +368,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if let Action::PayCosts { payment } = a
                 && let Some(ann) = &before.announcing
-                && let Some(k) = index(ann.source_card)
+                && let Some(k) = ann.source().and_then(|source| index(source.card))
             {
                 let pay = ann.cast.unwrap().kicker.unwrap();
                 let expected = cost(ann.source_card, pay);
@@ -389,7 +389,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(a, Action::Pass)
                 && let Some(packet) = before.stack.last()
-                && index(packet.source_card).is_some()
+                && packet.source().and_then(|source| index(source.card)).is_some()
             {
                 active.insert(packet.id, (packet.clone(), g.observe(packet.controller)));
             }
@@ -430,7 +430,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let (packet, base) = active.remove(&id).unwrap();
                 let view = g.observe(packet.controller);
                 let p = packet.controller.index();
-                let k = index(packet.source_card).unwrap();
+                let k = packet.source().and_then(|source| index(source.card)).unwrap();
                 if g.outcome() == Some(rustmage::Outcome::Winner(packet.controller.other()))
                     && base.players[p].library_count == 0
                 {

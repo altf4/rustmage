@@ -126,7 +126,7 @@ fn choose(g: &Game, o: &Observation, actions: &[Action], seed: usize, uses: &[us
             }
             Action::ChooseMode { mode } => {
                 let root = o.announcing.as_ref().unwrap();
-                let i = index(root.source_card).unwrap();
+                let i = root.source().and_then(|source| index(source.card)).unwrap();
                 if usize::from(*mode) == (seed + i + uses[i]) % COUNTS[i] {
                     350
                 } else {
@@ -523,7 +523,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| index(s.source_card).is_some());
+                || before.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some());
             if matches!(action, Action::ChooseMode { .. }) {
                 let hidden = g.observe(p.other());
                 assert!(hidden.mode_choices.is_empty() && hidden.actions.is_empty());
@@ -537,14 +537,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let after = g.observe(p);
             if let Action::ChooseMode { mode } = action {
                 let root = before.announcing.as_ref().unwrap();
-                let i = index(root.source_card).unwrap();
+                let i = root.source().and_then(|source| index(source.card)).unwrap();
                 assert!(matches!(root.kind, StackKind::TriggeredAbility { .. }));
                 assert!(root.mode.is_none());
                 chosen[i][usize::from(mode)] += 1;
                 uses[i] += 1;
             }
             if let Some(root) = before.stack.last()
-                && let Some(i) = index(root.source_card)
+                && let Some(i) = root.source().and_then(|source| index(source.card))
                 && !after.stack.iter().any(|v| v.id == root.id)
                 && matches!(action, Action::Pass)
                 && let Some(e) = expected(&before, root, i)
@@ -557,7 +557,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     continue;
                 }
-                let Some(i) = index(s.source_card) else {
+                let Some(i) = s.source().and_then(|source| index(source.card)) else {
                     continue;
                 };
                 if s.kind == StackKind::Spell {

@@ -358,7 +358,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let a = before.actions[j].clone();
             if let Action::PayCosts { payment } = a
                 && let Some(ann) = &before.announcing
-                && let Some(k) = index(ann.source_card)
+                && let Some(k) = ann.source().and_then(|source| index(source.card))
             {
                 let cast = ann.cast.unwrap();
                 assert_eq!(cast.origin, Zone::Hand);
@@ -384,7 +384,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if matches!(a, Action::Pass)
                 && let Some(packet) = before.stack.last()
-                && index(packet.source_card).is_some()
+                && packet.source().and_then(|source| index(source.card)).is_some()
             {
                 active.insert(packet.id, (packet.clone(), g.observe(packet.controller)));
             }
@@ -431,7 +431,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .collect::<Vec<_>>();
             for id in complete {
                 let (packet, base) = active.remove(&id).unwrap();
-                let k = index(packet.source_card).unwrap();
+                let k = packet.source().and_then(|source| index(source.card)).unwrap();
                 let p = packet.controller.index();
                 let view = g.observe(packet.controller);
                 let resolved = before.resolving.as_ref().is_some_and(|s| s.id == id)

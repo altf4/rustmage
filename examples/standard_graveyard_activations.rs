@@ -23,7 +23,7 @@ fn index(c: Card) -> Option<usize> {
     NAMES.iter().position(|n| *n == c.name())
 }
 fn grave_ability(s: &SpellView) -> Option<usize> {
-    let i = index(s.source_card)?;
+    let i = s.source().and_then(|source| index(source.card))?;
     matches!(s.kind,StackKind::ActivatedAbility{ability}if ability==if i==8{1}else{0}).then_some(i)
 }
 fn deck(family: usize) -> Vec<Card> {
