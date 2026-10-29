@@ -1422,3 +1422,82 @@ fn prior_schema_removes_inactive_loyalty_and_proxy_fields_from_real_observations
         assert!(!projected.contains("next_spell_uncounterable"));
     }
 }
+
+#[test]
+fn prior_schema179_inspects_nested_copy_event_and_captured_recipe() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let mut packet = g.activation_item(player, source, 0);
+        let zero = CopyRecipe::new(Card::from_name("Bear Cub").unwrap());
+        let active = zero.with_exceptions(CopyExceptions {
+            conditional_sacrifice_abilities: 1, ..CopyExceptions::NONE
+        });
+        let inner = packet.clone();
+        packet.copy_event = Some(Box::new(stack_copies::CopyEvent { spell: inner, amount: 1 }));
+        g.state.pending_triggers.push(packet);
+        assert!(prior_schema179_copy_owned_state_supported(&g));
+        let saved = g.snapshot();
+        for replay in 0..2 {
+            if replay == 1 { g.restore(&saved).unwrap(); }
+            g.state.pending_triggers.last_mut().unwrap().copy_event.as_mut().unwrap()
+                .spell.captured_artifact_copy = Some(Box::new(active));
+            assert!(!prior_schema179_copy_owned_state_supported(&g));
+        }
+    }
+}
+
+#[test]
+fn prior_schema179_inspects_both_hidden_retarget_packets() {
+    for player in [Player::P0, Player::P1] {
+        for unsafe_item in [false, true] {
+            let mut g = scenario(player);
+            let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+            let zero = g.activation_item(player, source, 0);
+            let mut active = zero.clone();
+            active.source_copy_recipe = Some(Box::new(CopyRecipe::new(active.source_card).with_exceptions(
+                CopyExceptions { conditional_sacrifice_abilities: 1, ..CopyExceptions::NONE })));
+            g.state.stack_copy_data = Some(Box::new(stack_copies::CopyState::test_retarget(zero.clone(), zero.clone())));
+            assert!(prior_schema179_copy_owned_state_supported(&g));
+            let saved = g.snapshot();
+            let (item, template) = if unsafe_item { (active, zero) } else { (zero, active) };
+            g.state.stack_copy_data = Some(Box::new(stack_copies::CopyState::test_retarget(item, template)));
+            assert!(!prior_schema179_copy_owned_state_supported(&g));
+            g.restore(&saved).unwrap();
+            assert!(prior_schema179_copy_owned_state_supported(&g));
+        }
+    }
+}
+
+#[test]
+fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
+    for player in [Player::P0, Player::P1] {
+        for earthbend in [false, true] {
+            let mut g = scenario(player);
+            let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+            let reference = g.object_ref(source);
+            let mut packet = g.activation_item(player, source, 0);
+            packet.source_copy_recipe = Some(Box::new(CopyRecipe::new(packet.source_card).with_exceptions(
+                CopyExceptions { conditional_sacrifice_abilities: 1, ..CopyExceptions::NONE })));
+            if earthbend {
+                packet.targets.push(BoundTarget { group: 0, target: Target::Card(source), object: Some(reference) });
+                g.register_earthbend_return(&packet);
+                assert!(g.state.earthbend_returns.is_some());
+            } else {
+                let link = return_links::ReturnLinkView { additional_returning: None, object: reference,
+                    zone: Zone::Graveyard, controller: player, counter: None, tapped: false };
+                let view = return_links::DelayedReturnView { id: 1, source: reference,
+                    source_card: packet.source_card, controller: player, returning: link };
+                g.state.delayed_returns = Some(Box::new(vec![return_links::DelayedReturn { view, item: packet }]));
+            }
+            assert!(g.observe(player).stack.is_empty());
+            assert!(g.observe(player.other()).stack.is_empty());
+            let saved = g.snapshot();
+            assert!(!prior_schema179_copy_owned_state_supported(&g));
+            if earthbend { g.state.earthbend_returns = None; } else { g.state.delayed_returns = None; }
+            assert!(prior_schema179_copy_owned_state_supported(&g));
+            g.restore(&saved).unwrap();
+            assert!(!prior_schema179_copy_owned_state_supported(&g));
+        }
+    }
+}

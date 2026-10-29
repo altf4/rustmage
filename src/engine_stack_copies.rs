@@ -26,6 +26,10 @@ pub(super) struct CopyState {
     retarget: Option<Retarget>,
 }
 impl CopyState {
+    #[cfg(test)]
+    pub(super) fn test_retarget(item: SpellView, template: SpellView) -> Self {
+        Self { delayed: Vec::new(), retarget: Some(Retarget { item, template, remaining: 0, victim: None }) }
+    }
     pub(super) fn packets(&self) -> impl Iterator<Item = &SpellView> {
         self.delayed.iter().chain(self.retarget.iter().flat_map(|r| [&r.item, &r.template]))
     }
