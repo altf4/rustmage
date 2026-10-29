@@ -77,3 +77,32 @@ fn teyo_entry_trigger_does_not_follow_a_blinked_target() {
         }
     }
 }
+
+#[test]
+fn kiora_activation_on_opponents_turn_keeps_its_controller_after_theft() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p.other());
+        let kiora = put(&mut g, p, "Kiora of Fire and Ashes", Zone::Battlefield);
+        g.state.priority = p;
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 8];
+        let action = Action::AnnounceActivate {
+            card: kiora,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        act(&mut g, action);
+        pay(&mut g);
+        super::super::contracts::branch_contract(g.clone());
+        let source = g.object_ref(kiora);
+        g.change_controller(source, p.other());
+        settle(&mut g);
+        let dragons = g
+            .state
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Battlefield && o.is_token() && o.card == Card(5288))
+            .collect::<Vec<_>>();
+        assert_eq!(dragons.len(), 1);
+        assert_eq!(dragons[0].controller, p);
+    }
+}
