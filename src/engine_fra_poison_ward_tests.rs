@@ -546,3 +546,40 @@ fn radiation_trigger_is_sourceless_and_uses_current_counters_on_resolution() {
         }
     }
 }
+
+#[test]
+fn radiation_copy_keeps_affected_player_when_controller_changes() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let first = put(&mut game, player, "Shock", Zone::Library);
+        let second = put(&mut game, player, "Bear Cub", Zone::Library);
+        let other_card = put(&mut game, player.other(), "Hill Giant", Zone::Library);
+        let copier_source = put(&mut game, player.other(), "Gilded Lotus", Zone::Battlefield);
+        game.state.players[player.index()].add_player_counter(crate::cards::PlayerCounterKind::Rad, 1);
+        game.begin_step(Step::Main1);
+        game.prepare_triggers();
+        let original = game.state.stack.last().unwrap().clone();
+        let mut copier = game.activation_item(player.other(), copier_source, 0);
+        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        game.copy_target_ability(&copier, 0);
+        if game.legal_actions().contains(&Action::FinishStackTargets) { act(&mut game, Action::FinishStackTargets); }
+        let copy = game.state.stack.last().unwrap();
+        assert!(copy.is_copy);
+        assert_eq!(copy.controller, player.other());
+        assert_eq!(copy.source_identity(), None);
+        assert_eq!(copy.kind, StackKind::InherentRule { rule: SourceLessRule::Radiation, affected_player: player });
+        let snapshot = game.snapshot();
+        for _ in 0..2 {
+            game.resolve_top();
+            // The copy consumes the rad counter; the original's intervening-if fails.
+            assert_eq!(game.state.players[player.index()].life, 19);
+            assert_eq!(game.state.players[player.index()].player_counter(crate::cards::PlayerCounterKind::Rad), 0);
+            game.resolve_top();
+            assert_eq!(game.state.players[player.other().index()].life, 20);
+            assert_eq!(game.object_view(second).zone, Zone::Graveyard);
+            assert_eq!(game.object_view(first).zone, Zone::Library);
+            assert_eq!(game.object_view(other_card).zone, Zone::Library);
+            game.restore(&snapshot).unwrap();
+        }
+    }
+}
