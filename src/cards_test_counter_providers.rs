@@ -127,11 +127,41 @@ const OUTSIDE_GROUP: &[StaticAbilityGroup] = &[StaticAbilityGroup {
         StaticAbilityFragment::Replacement(1, OUTSIDE_EXILE),
     ],
 }];
+// Two distinct replacements at each destination force two public decisions.
+const OUTSIDE_RETURN: ReplacementSpec = ReplacementSpec::OutsideEntry {
+    relation: CastRelation::You,
+    from: OutsideEntryEffectDestination::Exile,
+    to: OutsideEntryEffectDestination::Hand,
+};
+const OUTSIDE_EXILE_PAIR: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[
+        StaticAbilityFragment::Replacement(0, OUTSIDE_EXILE),
+        StaticAbilityFragment::Replacement(1, OUTSIDE_EXILE),
+    ],
+}];
+const OUTSIDE_RETURN_PAIR: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[
+        StaticAbilityFragment::Replacement(0, OUTSIDE_RETURN),
+        StaticAbilityFragment::Replacement(1, OUTSIDE_RETURN),
+    ],
+}];
 pub(super) fn provider(
     card: Card,
 ) -> Option<(&'static [StaticAbilityGroup], &'static [ReplacementSpec])> {
-    if OUTSIDE_ACTIVE.with(Cell::get) && Some(card) == Card::from_name("Healer's Hawk") {
-        return Some((OUTSIDE_GROUP, &[OUTSIDE_PREVENT, OUTSIDE_EXILE]));
+    if OUTSIDE_ACTIVE.with(Cell::get) {
+        if Some(card) == Card::from_name("Healer's Hawk") {
+            return Some((OUTSIDE_GROUP, &[OUTSIDE_PREVENT, OUTSIDE_EXILE]));
+        }
+        if Some(card) == Card::from_name("Aegis Turtle") {
+            return Some((OUTSIDE_EXILE_PAIR, &[OUTSIDE_EXILE, OUTSIDE_EXILE]));
+        }
+        if Some(card) == Card::from_name("Hill Giant") {
+            return Some((OUTSIDE_RETURN_PAIR, &[OUTSIDE_RETURN, OUTSIDE_RETURN]));
+        }
     }
     if !ACTIVE.with(Cell::get) {
         return None;

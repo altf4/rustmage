@@ -378,10 +378,6 @@ impl Game {
     /// Provider identities refer to battlefield objects, never to the card
     /// outside the game. The caller must retain applied identities with the
     /// event and re-discover after every transformation.
-    #[allow(
-        dead_code,
-        reason = "Decision and observer continuation is not yet wired"
-    )]
     fn outside_entry_providers(
         &self,
         event: &OutsideHandEvent,
@@ -437,9 +433,8 @@ impl Game {
 
     /// Prepare the next live provider decision. No card is consumed here; a
     /// suspended continuation owns both candidate and already-applied keys.
-    /// This deliberately remains internal until its public decision, observer
-    /// dispatch and schema migration are implemented together.
-    #[allow(dead_code, reason = "Outside admission continuation remains gated")]
+    /// The public decision is exposed; incoming-card self replacements and
+    /// generic outside-entry observers remain unimplemented.
     pub(super) fn prepare_outside_entry_providers(&mut self) -> bool {
         let Some(event) = self
             .state
@@ -466,7 +461,6 @@ impl Game {
 
     /// Apply a selected frozen provider only if it is still live and the
     /// entire outside selection still matches the pending event.
-    #[allow(dead_code, reason = "Outside admission continuation remains gated")]
     pub(super) fn apply_outside_entry_provider(&mut self, source: ObjectRef, ability: u16) -> bool {
         let Some(state) = self.state.outside_game.as_ref() else {
             return false;

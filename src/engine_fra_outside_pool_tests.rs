@@ -1054,3 +1054,64 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
         }
     }
 }
+
+#[test]
+fn outside_replacement_chain_uses_public_choices_under_player_control() {
+    let _fixture = crate::cards::test_counter_providers::activate_outside();
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut game = outside_scenario(owner, vec![shock, bear]);
+        let out = put(&mut game, owner, "Aegis Turtle", Zone::Battlefield);
+        let back = put(&mut game, owner, "Hill Giant", Zone::Battlefield);
+        let out = game.object_ref(out);
+        let back = game.object_ref(back);
+        cast_extrapolate(&mut game, owner);
+        act(&mut game, Action::ChooseOutsideCard { index: 0 });
+        act(&mut game, Action::ChooseOutsideCard { index: 1 });
+        act(&mut game, Action::ChooseOutsideRevealed { index: 0 });
+        game.state.active = owner;
+        game.schedule_player_control(owner, owner.other());
+        game.begin_player_control_turn();
+        let first = Action::ChooseOutsideEntryReplacement {
+            source: out,
+            ability: 0,
+        };
+        assert_eq!(game.actor(), Some(owner.other()));
+        assert!(game.observe(owner).actions.is_empty());
+        assert!(game.observe(owner.other()).actions.contains(&first));
+        assert!(game.apply(owner, first.clone()).is_err());
+        let before = game.snapshot();
+        game.apply(owner.other(), first).unwrap();
+        assert!(
+            matches!(game.state.pending, Pending::OutsideEntryReplacement { player } if player == owner)
+        );
+        assert_eq!(
+            game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+            vec![shock, bear]
+        );
+        assert!(!game.state.cards_exiled_this_turn);
+        let second = Action::ChooseOutsideEntryReplacement {
+            source: back,
+            ability: 0,
+        };
+        assert!(game.observe(owner.other()).actions.contains(&second));
+        let after_first = game.snapshot();
+        for _ in 0..2 {
+            game.apply(owner.other(), second.clone()).unwrap();
+            assert_eq!(
+                game.state.outside_game.as_ref().unwrap().pools[owner.index()],
+                vec![bear]
+            );
+            assert!(
+                game.state
+                    .objects
+                    .iter()
+                    .any(|o| o.owner == owner && o.card == shock && o.zone == Zone::Hand)
+            );
+            assert!(!game.state.cards_exiled_this_turn);
+            game.restore(&after_first).unwrap();
+        }
+        game.restore(&before).unwrap();
+    }
+}
