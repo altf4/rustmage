@@ -489,6 +489,8 @@ pub(crate) enum ManaRestriction {
     /// Spells or activated abilities of any source with this subtype.
     SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
+    /// Only the cost of casting a planeswalker spell.
+    PlaneswalkerSpell,
     Unrestricted,
     SpellSubtype(&'static str),
     ChosenCreatureSpellOrActivation,

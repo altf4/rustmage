@@ -15,6 +15,7 @@ pub enum ManaRestrictionView {
     ExceptNonArtifactSpells,
     SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
+    PlaneswalkerSpell,
     Unrestricted,
     Unavailable,
     SpellSubtype(&'static str),
@@ -135,6 +136,7 @@ impl Quality {
                     ManaRestrictionView::SubtypeSpellOrActivation(subtype)
                 }
                 ManaRestriction::InstantSorcery => ManaRestrictionView::InstantSorcery,
+                ManaRestriction::PlaneswalkerSpell => ManaRestrictionView::PlaneswalkerSpell,
                 ManaRestriction::Unrestricted => ManaRestrictionView::Unrestricted,
                 ManaRestriction::SpellSubtype(subtype) => {
                     ManaRestrictionView::SpellSubtype(subtype)
@@ -202,6 +204,9 @@ impl Quality {
             },
             ManaRestrictionView::InstantSorcery => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & (4 | 8) != 0)
+            }
+            ManaRestrictionView::PlaneswalkerSpell => {
+                matches!(purpose, Purpose::Spell(facts) if facts.kinds & 64 != 0)
             }
             ManaRestrictionView::Unrestricted => true,
             ManaRestrictionView::Unavailable => false,
