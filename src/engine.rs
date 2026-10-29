@@ -8754,6 +8754,7 @@ impl Game {
                 .collect::<Vec<_>>()
         });
         let events = dealt.as_deref().unwrap_or(events);
+        self.refresh_excess_threshold(events);
         let mut losses = [0i128; 2];
         let mut gains: Vec<LifeGainEvent> = Vec::new();
         let mut gain_indices: std::collections::BTreeMap<DamageSource, usize> =
