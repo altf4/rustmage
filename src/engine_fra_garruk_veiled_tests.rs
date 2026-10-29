@@ -169,3 +169,34 @@ fn veiled_plain_exile_and_reflexive_exile_are_distinct_replacement_choices() {
         }
     }
 }
+
+#[test]
+fn veiled_discard_draw_waits_for_replaced_miracle_draw_before_finishing() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = veiled_fixture(&mut g, player);
+        put(&mut g, player, "Lorehold, the Historian", Zone::Battlefield);
+        put(&mut g, player, "Bard, King of Dale", Zone::Battlefield);
+        put(&mut g, player, "Island", Zone::Library);
+        let miracle = put(&mut g, player, "Group Project", Zone::Library);
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 2, counter_payment: Counters::default() });
+        pay(&mut g);
+        for _ in 0..32 {
+            if matches!(g.state.pending, Pending::MiracleReveal { .. }) { break; }
+            act(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::MiracleReveal { player: actor } if actor == player));
+        assert!(g.state.resolving.is_some());
+        assert_eq!(g.observe(player).miracle.unwrap().object.card, miracle);
+        assert!(g.observe(player.other()).miracle.is_none());
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::DeclineMiracle);
+            settle(&mut g);
+            assert!(g.state.resolving.is_none());
+            assert_eq!(g.state.players[player.index()].cards_drawn_this_turn, 2);
+            assert_eq!(g.object_view(miracle).zone, Zone::Hand);
+            g.restore(&saved).unwrap();
+        }
+    }
+}

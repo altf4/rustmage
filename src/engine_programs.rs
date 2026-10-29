@@ -2492,6 +2492,7 @@ impl Game {
                 self.discard_batch_with_after(&discarded, None, Some(cause), after);
                 if self.state.entry_batch.is_some()
                     || self.state.resolving.as_ref().unwrap().choice.is_some()
+                    || self.miracle_choice_pending()
                 {
                     return;
                 }
