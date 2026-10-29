@@ -1,9 +1,11 @@
 # Mixed-zone cost draft
 
-This isolated candidate keeps Sphinx's Approach and Emrakul, the Exigent Doom
-gated. It has been formatted and its catalogue regenerated, but has not been
-compiled or tested. The Sphinx, Emrakul and mixed-zone test modules are linked
-under assurance for a later coordinated, guarded validation run.
+The shared draft was tested at commit `dc5cc7d0`: guarded clippy passed and the
+grouped test suite passed 2,762 tests. Its Sphinx, Emrakul and mixed-zone
+modules are linked under assurance. Sphinx's Approach has a conditional
+admission candidate with its trace recorded; Emrakul remains gated. These
+results do not establish the outcome of any later in-progress run or replace
+final validation and the required independent nonauthor reviews.
 
 Sphinx's optional resolution payment calls the shared atomic zone-cost planner
 for the spell and four named graveyard cards. The planner checks exact object
@@ -32,19 +34,23 @@ established those nested failures. The synthetic Sphinx redirect forces an
 instant card onto the battlefield solely to test plumbing. The separate Watery
 Grave fixture tests a real entry-life choice with a constructed replacement plan,
 not a supported redirect provider. Replacement ordering, source and controller
-changes, triggers, mana replay and transaction boundaries still require
-independent review and guarded end-to-end validation.
+changes, triggers, mana replay and transaction boundaries have focused test
+coverage but still require final independent review and validation of the
+published inputs.
 
 The candidate reconciles copy-aware card-only consumers through the earlier
 239f8bb5 draft and preserves a spell copy in exile until the next state-based
 check. A public-action copied-Sphinx test and synthetic transient-zone tests are
-linked but unbuilt. The battlefield-copy classification remains unresolved;
-copy privacy, replacement interaction and the broad consumer migration still
-need independent review and validation.
+linked and included in the grouped run. The battlefield-copy classification
+remains unresolved; final independent review of copy privacy, replacement
+interaction and the broad consumer migration is still required.
 
 Projected funding is not complete for every prevention or replacement path.
 In particular, repeatable non-tapping mana abilities whose sacrifice is
 prevented can create an unbounded search; restricted mana requires a sound
 purpose-aware termination argument. The experimental funding work and its
-remaining limits are recorded in `fra-emrakul-exigent-draft.md`. Neither card
-should be admitted on the strength of this draft alone.
+remaining limits are recorded in `fra-emrakul-exigent-draft.md`. The known
+repeatable prevented-sacrifice witness uses synthetic providers; absence of an
+identified real provider does not establish general termination. Admission
+requires the applicable final validation and independent reviews, and any
+supported path to a shared limitation must be addressed first.
