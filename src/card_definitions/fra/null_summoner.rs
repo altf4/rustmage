@@ -1,4 +1,4 @@
-// Full frozen Oracle and immutable upstream PR implementation reviewed; gated.
+// Full frozen Oracle and immutable upstream PR implementation reviewed.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 2),
     triggers: &[TriggeredAbility {

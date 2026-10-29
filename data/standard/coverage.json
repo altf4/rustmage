@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "bf09e2a937e9dbfcd098c8e4be87b12e6de336d8920cfe621d36337e024f7a3b",
+  "catalogue_version": "e3d58c2a8ded35906178d2904a406ebfdb43232b28f2dd3cc8745459a1fb1a0a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2924,
-  "implemented_total": 2930,
+  "implemented_standard_cards": 2925,
+  "implemented_total": 2931,
   "token_definitions": 146,
   "emblem_definitions": 6,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 277,
-      "gated": 8
+      "complete": 278,
+      "gated": 7
     },
     "frc": {
       "total": 6,
@@ -24011,8 +24011,8 @@
     {
       "name": "Null Summoner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/null_summoner.rs",
       "set": "fra"
     },
