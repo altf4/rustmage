@@ -45,6 +45,7 @@ pub(super) struct OutsideHandEvent {
     pool_version: u64,
     destination: OutsideEntryDestination,
     choices: Vec<OutsideEntryReplacement>,
+    applied: Vec<u64>,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -321,6 +322,7 @@ impl Game {
             pool_version: state.pool_versions[choice.owner.index()],
             destination: OutsideEntryDestination::Hand,
             choices: Vec::new(),
+            applied: Vec::new(),
         });
         true
     }
@@ -333,6 +335,7 @@ impl Game {
             .and_then(|s| s.pending_entry.as_ref())
             .map_or(0, |event| {
                 event.choices.capacity() * std::mem::size_of::<OutsideEntryReplacement>()
+                    + event.applied.capacity() * std::mem::size_of::<u64>()
             })
     }
 
@@ -352,7 +355,11 @@ impl Game {
             return false;
         };
         if !event.choices.is_empty()
+            || event.destination == OutsideEntryDestination::Prevent
             || choices.is_empty()
+            || choices
+                .iter()
+                .any(|effect| event.applied.contains(&effect.id))
             || choices
                 .iter()
                 .enumerate()
@@ -377,6 +384,7 @@ impl Game {
             return false;
         };
         event.destination = effect.destination;
+        event.applied.push(effect.id);
         event.choices.clear();
         true
     }

@@ -891,6 +891,10 @@ fn synthetic_outside_entry_replacement_choices_are_owned_and_transactional() {
                 destination: OutsideEntryDestination::Exile,
             },
         ];
+        let duplicate = vec![choices[0], choices[0]];
+        let before_offer = g.snapshot();
+        assert!(!g.offer_outside_entry_replacements(duplicate));
+        assert_eq!(g.snapshot(), before_offer);
         assert!(g.offer_outside_entry_replacements(choices));
         let waiting = g.snapshot();
         assert!(!g.commit_outside_hand());
@@ -899,6 +903,14 @@ fn synthetic_outside_entry_replacement_choices_are_owned_and_transactional() {
         for (effect, prevented) in [(11, true), (12, false)] {
             for _ in 0..2 {
                 assert!(g.choose_outside_entry_replacement(effect));
+                let after_choice = g.snapshot();
+                assert!(
+                    !g.offer_outside_entry_replacements(vec![OutsideEntryReplacement {
+                        id: effect,
+                        destination: OutsideEntryDestination::Hand,
+                    }])
+                );
+                assert_eq!(g.snapshot(), after_choice);
                 assert!(g.commit_outside_hand());
                 let state = g.state.outside_game.as_ref().unwrap();
                 assert!(state.pending_entry.is_none());
