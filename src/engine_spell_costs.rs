@@ -1,6 +1,74 @@
 //! Generic reductions and the total cost locked before mana abilities/payment.
 use super::*;
 impl Game {
+    /// Compute the wide pre-reduction generic increase from active sources.
+    pub(super) fn opponent_noncreature_spell_tax(&self, actor: Player, definition: Card) -> u64 {
+        if definition.kind_mask() & 1 != 0 {
+            return 0;
+        }
+        self.state.static_sources.iter().copied().filter(|&source| {
+            self.on_battlefield(source) && self.state.objects[source as usize].controller != actor
+        }).map(|source| {
+            self.state.objects[source as usize].card.static_ability_groups().iter()
+                .flat_map(|group| group.fragments.iter())
+                .filter_map(|fragment| {
+                    let crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(amount) = *fragment else { return None; };
+                    self.continuous_fragment_available(source, |f| matches!(f,
+                        crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(n) if *n == amount))
+                        .then_some(u64::from(amount))
+                }).fold(0u64, u64::saturating_add)
+        }).fold(0u64, u64::saturating_add)
+    }
+    /// Keep increases and all reductions wide until the final payable total.
+    pub(super) fn spell_total_with_reductions(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        definition: Card,
+        mana_value: u64,
+        extra_generic: u64,
+        discount: ManaCost,
+        extra_reduction: u64,
+    ) -> Option<ManaCost> {
+        let raw = u64::from(base.generic)
+            .checked_add(extra_generic)?
+            .checked_add(self.opponent_noncreature_spell_tax(actor, definition))?;
+        let colored = std::array::from_fn(|i| base.colored[i].saturating_sub(discount.colored[i]));
+        let excess = (0..6)
+            .map(|i| u64::from(discount.colored[i].saturating_sub(base.colored[i])))
+            .sum::<u64>();
+        let reductions = self
+            .spell_reduction_for_definition(actor, id, mana_value, definition)
+            .saturating_add(u64::from(discount.generic))
+            .saturating_add(extra_reduction)
+            .saturating_add(excess);
+        Some(ManaCost {
+            colored,
+            generic: u32::try_from(raw.saturating_sub(reductions)).ok()?,
+        })
+    }
+    pub(super) fn spell_total_for_definition(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        definition: Card,
+    ) -> Option<ManaCost> {
+        self.spell_total_with_reductions(
+            actor,
+            id,
+            base,
+            definition,
+            definition.fixed_mana_value(),
+            0,
+            ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            },
+            0,
+        )
+    }
     pub(super) fn spell_cost_option_available(
         &self,
         actor: Player,
@@ -26,6 +94,19 @@ impl Game {
                 && definition.cost_options().any(|cost| {
                     self.spell_can_fund(actor, card, Self::with_kicker_cost(cost, definition, true))
                 })
+        })
+    }
+    pub(super) fn announcement_optional_reduction(a: &Announcement) -> u64 {
+        let evidence = a.item.cast.is_some_and(|c| c.evidence == Some(true));
+        let bargain = a.item.cast.is_some_and(|c| c.bargain == Some(true));
+        u64::from(if evidence {
+            a.item.source_card.evidence_reduction()
+        } else {
+            0
+        }) + u64::from(if bargain {
+            a.item.source_card.bargain_reduction()
+        } else {
+            0
         })
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
@@ -96,16 +177,6 @@ impl Game {
             base.colored[2] = base.colored[2]
                 .checked_add(1)
                 .capacity("forage alternative mana cost exhausted");
-        }
-        if a.item.cast.is_some_and(|c| c.evidence == Some(true)) {
-            base.generic = base
-                .generic
-                .saturating_sub(a.item.source_card.evidence_reduction());
-        }
-        if a.item.cast.is_some_and(|c| c.bargain == Some(true)) {
-            base.generic = base
-                .generic
-                .saturating_sub(a.item.source_card.bargain_reduction());
         }
         Self::with_kicker_cost(
             Self::with_offspring_cost(
@@ -384,14 +455,12 @@ impl Game {
         }
         reduction
     }
-    pub(super) fn reduced_spell_cost(&self, actor: Player, id: CardId, base: ManaCost) -> ManaCost {
-        ManaCost {
-            generic: if base.generic == 0 {
-                0
-            } else {
-                base.generic.saturating_sub(self.spell_reduction(actor, id))
-            },
-            ..base
-        }
+    pub(super) fn reduced_spell_cost(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+    ) -> Option<ManaCost> {
+        self.spell_total_for_definition(actor, id, base, self.effective_spell_card(id))
     }
 }

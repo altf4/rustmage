@@ -19,18 +19,35 @@ impl Game {
         &self,
         actor: Player,
         card: CardId,
-        mut cost: ManaCost,
+        cost: ManaCost,
         sacrifice: Option<ObjectRef>,
     ) -> bool {
         if let Some(object) = sacrifice {
             if !self.additional_candidate(COST, actor, self.object_ref(card), object) {
                 return false;
             }
-            cost.generic = cost
-                .generic
-                .saturating_sub(self.state.objects[card as usize].card.bargain_reduction());
         }
-        let cost = self.reduced_spell_cost(actor, card, cost);
+        let definition = self.effective_spell_card(card);
+        let discount = if sacrifice.is_some() {
+            definition.bargain_reduction()
+        } else {
+            0
+        };
+        let Some(cost) = self.spell_total_with_reductions(
+            actor,
+            card,
+            cost,
+            definition,
+            definition.fixed_mana_value(),
+            0,
+            ManaCost {
+                colored: [0; 6],
+                generic: discount,
+            },
+            0,
+        ) else {
+            return false;
+        };
         self.can_fund_for(
             FundingGoal {
                 actor,

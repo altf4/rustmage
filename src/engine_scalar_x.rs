@@ -10,7 +10,13 @@ impl Game {
         base: ManaCost,
         x: u32,
     ) -> Option<ManaCost> {
-        self.scalar_x_total_for_definition(actor, id, base, x, self.effective_spell_card(id))
+        let extra = self
+            .state
+            .announcing
+            .as_ref()
+            .filter(|a| a.item.card == id && a.item.controller == actor)
+            .map_or(0, Self::announcement_optional_reduction);
+        self.scalar_x_total_with_extra(actor, id, base, x, self.effective_spell_card(id), extra)
     }
     pub(super) fn scalar_x_total_for_definition(
         &self,
@@ -20,13 +26,32 @@ impl Game {
         x: u32,
         card: Card,
     ) -> Option<ManaCost> {
-        let mana_value = card.fixed_mana_value() + u64::from(card.x_symbols()) * u64::from(x);
-        let raw = u64::from(base.generic) + u64::from(card.x_symbols()) * u64::from(x);
-        let discount = self.spell_reduction_for_definition(actor, id, mana_value, card);
-        Some(ManaCost {
-            colored: base.colored,
-            generic: u32::try_from(raw.saturating_sub(discount)).ok()?,
-        })
+        self.scalar_x_total_with_extra(actor, id, base, x, card, 0)
+    }
+    pub(super) fn scalar_x_total_with_extra(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        x: u32,
+        card: Card,
+        reduction: u64,
+    ) -> Option<ManaCost> {
+        let extra = u64::from(card.x_symbols()) * u64::from(x);
+        let mana_value = card.fixed_mana_value() + extra;
+        self.spell_total_with_reductions(
+            actor,
+            id,
+            base,
+            card,
+            mana_value,
+            extra,
+            ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            },
+            reduction,
+        )
     }
     pub(super) fn scalar_x_intervals(&self, actor: Player, id: CardId) -> Vec<XInterval> {
         self.scalar_x_intervals_for_definition(actor, id, self.effective_spell_card(id))

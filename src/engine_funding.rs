@@ -2634,7 +2634,9 @@ impl Game {
             .is_some_and(|c| c.method == CastMethod::Flashback)
             && let Some(spec) = a.item.source_card.flashback_additional()
         {
-            let cost = self.reduced_spell_cost(a.item.controller, a.item.card, cost);
+            let Some(cost) = self.reduced_spell_cost(a.item.controller, a.item.card, cost) else {
+                return false;
+            };
             let goal = FundingGoal {
                 actor: a.item.controller,
                 required: cost.colored,
@@ -2664,7 +2666,9 @@ impl Game {
             });
         }
         if a.graveyard_origin_counter_cost().is_some() {
-            let cost = self.reduced_spell_cost(a.item.controller, a.item.card, cost);
+            let Some(cost) = self.reduced_spell_cost(a.item.controller, a.item.card, cost) else {
+                return false;
+            };
             return self.creature_counter_fundable(
                 FundingGoal {
                     actor: a.item.controller,
@@ -2689,7 +2693,7 @@ impl Game {
             })
         {
             let definition = a.item.source_card;
-            let mut total = Self::with_kicker_cost(
+            let base = Self::with_kicker_cost(
                 Self::with_offspring_cost(
                     cost,
                     definition,
@@ -2698,15 +2702,41 @@ impl Game {
                 definition,
                 a.item.cast.is_some_and(|c| c.kicker == Some(true)),
             );
-            total.generic = total.generic.saturating_sub(
-                u32::try_from(self.spell_reduction_for_definition(
-                    a.item.controller,
-                    a.item.card,
-                    definition.fixed_mana_value(),
-                    definition,
-                ))
-                .unwrap_or(u32::MAX),
-            );
+            if definition.has_bargain() {
+                return match a.item.cast.and_then(|c| c.bargain) {
+                    Some(true) => self.bargain_cost_fundable(
+                        a.item.controller,
+                        a.item.card,
+                        base,
+                        a.additional,
+                    ),
+                    Some(false) => {
+                        self.bargain_cost_fundable(a.item.controller, a.item.card, base, None)
+                    }
+                    None => self.initial_bargain_fundable(a.item.controller, a.item.card, base),
+                };
+            }
+            if definition.collect_evidence_cost().is_some() {
+                return match a.item.cast.and_then(|c| c.evidence) {
+                    Some(collect) => {
+                        self.evidence_cast_fundable(a.item.controller, a.item.card, base, collect)
+                    }
+                    None => {
+                        self.evidence_cast_fundable(a.item.controller, a.item.card, base, false)
+                            || self.evidence_cast_fundable(
+                                a.item.controller,
+                                a.item.card,
+                                base,
+                                true,
+                            )
+                    }
+                };
+            }
+            let Some(total) =
+                self.spell_total_for_definition(a.item.controller, a.item.card, base, definition)
+            else {
+                return false;
+            };
             if definition.mana_additional_alternative().is_some()
                 && Some(cost) != a.fixed_alternative_cost()
             {

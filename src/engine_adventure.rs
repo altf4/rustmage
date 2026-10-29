@@ -189,24 +189,10 @@ impl Game {
                 .is_empty();
         }
         definition.cost_options().any(|cost| {
-            let reduction = self.spell_reduction_for_definition(
-                actor,
-                id,
-                definition.fixed_mana_value(),
-                definition,
-            );
-            self.spell_can_fund_total_for_definition(
-                actor,
-                id,
-                ManaCost {
-                    colored: cost.colored,
-                    generic: cost
-                        .generic
-                        .saturating_sub(u32::try_from(reduction).unwrap_or(u32::MAX)),
-                },
-                None,
-                definition,
-            )
+            self.spell_total_for_definition(actor, id, cost, definition)
+                .is_some_and(|total| {
+                    self.spell_can_fund_total_for_definition(actor, id, total, None, definition)
+                })
         })
     }
 }

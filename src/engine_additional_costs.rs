@@ -174,17 +174,8 @@ impl Game {
         definition: Card,
     ) -> bool {
         let skips_additional = definition.mana_alternative_replaces_additional(cost);
-        let cost = ManaCost {
-            generic: cost.generic.saturating_sub(
-                u32::try_from(self.spell_reduction_for_definition(
-                    actor,
-                    card,
-                    definition.fixed_mana_value(),
-                    definition,
-                ))
-                .unwrap_or(u32::MAX),
-            ),
-            ..cost
+        let Some(cost) = self.spell_total_for_definition(actor, card, cost, definition) else {
+            return false;
         };
         if skips_additional {
             return self.can_fund_for(

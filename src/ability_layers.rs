@@ -53,6 +53,8 @@ pub(crate) enum StaticAbilityFragment {
     AttackWithoutDefenderIfScried,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Increase opponents' noncreature spell costs by generic mana.
+    OpponentNoncreatureSpellTax(u32),
     /// Generic cost per creature declared attacking this source's controller.
     AttackControllerTax {
         amount: u32,

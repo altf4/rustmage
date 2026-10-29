@@ -37,7 +37,9 @@ impl Game {
         if !target_available(spec.paid_modes) {
             return false;
         }
-        let cost = self.reduced_spell_cost(actor, id, base);
+        let Some(cost) = self.reduced_spell_cost(actor, id, base) else {
+            return false;
+        };
         self.preview_optional_cast_costs(
             FundingGoal {
                 actor,

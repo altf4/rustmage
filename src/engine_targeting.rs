@@ -1905,27 +1905,32 @@ impl Game {
             let announcement = self.state.announcing.as_ref().unwrap();
             if announcement.item.kind == StackKind::Spell && announcement.total_cost.is_none() {
                 let base = Self::announcement_base_cost(announcement);
-                let total = if announcement.item.source_card.x_symbols() > 0 {
-                    self.scalar_x_total(
-                        announcement.item.controller,
-                        announcement.item.card,
-                        base,
-                        announcement.item.x.expect("X chosen"),
-                    )
-                    .expect("validated scalar cost")
-                } else {
-                    self.target_spell_cost(
-                        announcement.item.controller,
-                        announcement.item.card,
-                        base,
-                        &announcement.item.targets,
-                    )
-                };
                 let discount = announcement.harmonizer.flatten().map_or(0, |reference| {
                     harmonize::contribution(self, announcement.item.controller, reference)
                         .expect("chosen Harmonizer remains available before cost determination")
                 });
-                let total = harmonize::reduce(total, discount);
+                let extra =
+                    Self::announcement_optional_reduction(announcement) + u64::from(discount);
+                let total = if announcement.item.source_card.x_symbols() > 0 {
+                    self.scalar_x_total_with_extra(
+                        announcement.item.controller,
+                        announcement.item.card,
+                        base,
+                        announcement.item.x.expect("X chosen"),
+                        announcement.item.source_card,
+                        extra,
+                    )
+                    .expect("validated scalar cost")
+                } else {
+                    self.target_spell_cost_with_extra(
+                        announcement.item.controller,
+                        announcement.item.card,
+                        base,
+                        &announcement.item.targets,
+                        extra,
+                    )
+                    .expect("validated target spell cost")
+                };
                 let announcement = self.state.announcing.as_mut().unwrap();
                 announcement.harmonize_discount = discount;
                 announcement.total_cost = Some(total);

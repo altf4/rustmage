@@ -113,14 +113,30 @@ impl Game {
         &self,
         p: Player,
         id: CardId,
-        mut mana: ManaCost,
+        mana: ManaCost,
         collect: bool,
     ) -> bool {
         let card = self.state.objects[id as usize].card;
-        if collect {
-            mana.generic = mana.generic.saturating_sub(card.evidence_reduction());
-        }
-        let mana = self.reduced_spell_cost(p, id, mana);
+        let discount = if collect {
+            card.evidence_reduction()
+        } else {
+            0
+        };
+        let Some(mana) = self.spell_total_with_reductions(
+            p,
+            id,
+            mana,
+            card,
+            card.fixed_mana_value(),
+            0,
+            ManaCost {
+                colored: [0; 6],
+                generic: discount,
+            },
+            0,
+        ) else {
+            return false;
+        };
         let goal = FundingGoal {
             actor: p,
             required: mana.colored,

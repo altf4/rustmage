@@ -4484,7 +4484,8 @@ impl Game {
                                 }
                                 // Object-specific mana permissions cannot share the
                                 // printed-definition-only prefunding cache.
-                                if self.foreign_stash(actor, card)
+                                if self.opponent_noncreature_spell_tax(actor, self.effective_spell_card(card)) != 0
+                                    || self.foreign_stash(actor, card)
                                     || self.exile_cast_modifiers(actor, card).0
                                     || obj.card.has_convoke()
                                     || improvise::potential(self, obj.card)
@@ -4540,6 +4541,7 @@ impl Game {
                         }
                     }
                     if target_cost
+                        && self.opponent_noncreature_spell_tax(actor, self.effective_spell_card(card)) == 0
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.kicker_cost().is_none()
@@ -4559,7 +4561,7 @@ impl Game {
                                 let bound = target.map(|t| self.bind_target(t));
                                 let targets = bound.as_slice();
                                 for base in obj.card.cost_options() {
-                                    let total = self.target_spell_cost(actor, card, base, targets);
+                                    let Some(total) = self.target_spell_cost(actor, card, base, targets) else { continue; };
                                     payments(
                                         s.players[actor.index()].mana,
                                         total.colored,
@@ -4597,6 +4599,7 @@ impl Game {
                     }
                     if flashback
                         || exile
+                        || self.opponent_noncreature_spell_tax(actor, self.effective_spell_card(card)) != 0
                         || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.teamwork().is_some()

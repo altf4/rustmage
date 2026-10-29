@@ -30,7 +30,9 @@ impl Game {
         if normal_targets {
             return self.spell_can_fund(actor, id, base);
         }
-        let cost = self.reduced_spell_cost(actor, id, base);
+        let Some(cost) = self.reduced_spell_cost(actor, id, base) else {
+            return false;
+        };
         self.preview_optional_cast_costs(
             FundingGoal {
                 actor,
