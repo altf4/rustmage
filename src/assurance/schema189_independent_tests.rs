@@ -11,6 +11,8 @@ fn actual_outside_actions_remain_unrepresentable_after_resolution_and_restore() 
             mode: OutsideGameMode::CasualCollection,
             pools,
             choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
             known: [Vec::new(), Vec::new()],
         }));
         let id = put(&mut g, player, "Shock", Zone::Hand);

@@ -162,3 +162,14 @@ conservative exception, not a claimed trace audit: the linked tests and complete
 historical trace comparison have not run. General outside-to-hand replacement
 semantics and the missing pinned XMage class remain blockers; Extrapolate remains
 gated.
+
+## Owned outside-entry plan draft
+
+The isolated plan/commit foundation retains the selected pool slot (or virtual
+basic), owner, card and pool mutation version in owned state before committing.
+A stale slot, changed choice or version rejects without removing a card or
+changing public knowledge. Pool removal increments its owner's version; future
+pool mutations must do the same. The plan has no in-game ObjectRef and the
+current normal path commits it immediately. This is not a replacement-event
+scheduler or evidence that outside-to-hand replacements and observers work.
+Extrapolate remains gated pending those rules, validation and source provenance.

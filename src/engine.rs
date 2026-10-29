@@ -890,6 +890,8 @@ struct OutsideGameState {
     mode: OutsideGameMode,
     pools: [Vec<Card>; 2],
     choice: Option<outside_choices::Choice>,
+    pending_entry: Option<outside_choices::OutsideHandEvent>,
+    pool_versions: [u64; 2],
     known: [Vec<u16>; 2],
 }
 fn first_player() -> Player {
@@ -3224,6 +3226,8 @@ impl Game {
                         mode: value.mode,
                         pools: value.pools,
                         choice: None,
+                        pending_entry: None,
+                        pool_versions: [0; 2],
                         known: [Vec::new(), Vec::new()],
                     })
                 }),

@@ -99,6 +99,8 @@ fn outside_scenario(player: Player, cards: Vec<Card>) -> Game {
         mode: OutsideGameMode::CasualCollection,
         pools,
         choice: None,
+        pending_entry: None,
+        pool_versions: [0; 2],
         known: [Vec::new(), Vec::new()],
     }));
     g
@@ -719,6 +721,89 @@ fn outside_hand_admission_replays_each_opponent_choice_and_preserves_public_know
             }
             act(&mut raw, action);
             assert_eq!(raw.snapshot(), after);
+        }
+    }
+}
+
+#[test]
+fn planned_outside_entry_validates_exact_slot_and_replays() {
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let mut g = outside_scenario(owner, vec![shock, bear, shock]);
+        cast_extrapolate(&mut g, owner);
+        act(&mut g, Action::ChooseOutsideCard { index: 2 });
+        act(&mut g, Action::ChooseOutsideCard { index: 1 });
+        assert!(g.plan_outside_hand(0));
+        let planned = g.snapshot();
+        assert!(
+            g.observe(owner.other())
+                .outside_choice
+                .as_ref()
+                .unwrap()
+                .revealed
+                .is_some()
+        );
+        for _ in 0..2 {
+            assert!(g.commit_outside_hand());
+            let outside = g.state.outside_game.as_ref().unwrap();
+            assert_eq!(outside.pools[owner.index()], vec![shock, bear]);
+            assert_eq!(outside.pool_versions[owner.index()], 1);
+            assert!(outside.pending_entry.is_none());
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.zone == Zone::Hand && o.owner == owner && o.card == shock)
+                    .count(),
+                1
+            );
+            assert_eq!(
+                g.observe(owner.other()).known_outside.unwrap()[owner.index()],
+                vec![bear]
+            );
+            g.restore(&planned).unwrap();
+        }
+        // A changed pool generation invalidates the original slot even if an
+        // equal-named duplicate occupies the same numeric index.
+        g.state.outside_game.as_mut().unwrap().pool_versions[owner.index()] += 1;
+        let stale = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), stale);
+        g.restore(&planned).unwrap();
+        // Changing the slot contents is rejected before removing anything.
+        g.state.outside_game.as_mut().unwrap().pools[owner.index()][2] = Card::Forest;
+        let changed = g.snapshot();
+        assert!(!g.commit_outside_hand());
+        assert_eq!(g.snapshot(), changed);
+    }
+}
+
+#[test]
+fn planned_virtual_basic_entry_does_not_consume_outside_pool() {
+    for owner in [Player::P0, Player::P1] {
+        let shock = Card::from_name("Shock").unwrap();
+        let mut g = outside_scenario(owner, vec![shock]);
+        g.state.outside_game.as_mut().unwrap().mode = OutsideGameMode::LimitedSideboard;
+        cast_extrapolate(&mut g, owner);
+        act(&mut g, Action::ChooseOutsideCard { index: 0 });
+        act(&mut g, Action::ChooseOutsideBasic { card: Card::Forest });
+        assert!(g.plan_outside_hand(1));
+        let planned = g.snapshot();
+        for _ in 0..2 {
+            assert!(g.commit_outside_hand());
+            let state = g.state.outside_game.as_ref().unwrap();
+            assert_eq!(state.pools[owner.index()], vec![shock]);
+            assert_eq!(state.pool_versions[owner.index()], 0);
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.owner == owner && o.zone == Zone::Hand && o.card == Card::Forest)
+                    .count(),
+                1
+            );
+            g.restore(&planned).unwrap();
         }
     }
 }

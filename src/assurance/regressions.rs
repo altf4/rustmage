@@ -974,7 +974,7 @@ fn schema190_packet_supported(item: &SpellView) -> bool {
 /// retained packets by type. Rollback snapshots retain independent hidden state.
 fn prior_schema190_state_supported(state: &State) -> bool {
     if state.players.iter().any(|player| player.other_player_counters.is_some())
-        || state.outside_game.as_ref().is_some_and(|outside| outside.pools.iter().flatten().copied().any(schema190_new_card) || outside.choice.is_some())
+        || state.outside_game.as_ref().is_some_and(|outside| outside.pools.iter().flatten().copied().any(schema190_new_card) || outside.choice.is_some() || outside.pending_entry.is_some())
         || state.resolving.is_some() || state.announcing.is_some()
         || state.mana_announcement_stack.is_some() || state.replacements.is_some()
         || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
@@ -6504,6 +6504,8 @@ fn outside_projection_rejects_hidden_pools_nested_packets_and_rollback() {
             mode: OutsideGameMode::LimitedSideboard,
             pools: [Vec::new(), Vec::new()],
             choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
             known: [Vec::new(), Vec::new()],
         }));
         assert!(!prior_outside_state_supported(&g.state));
@@ -6542,6 +6544,8 @@ fn outside_projection_checks_actual_private_and_public_views_for_both_players() 
             mode: OutsideGameMode::ConstructedSideboard,
             pools,
             choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
             known: [Vec::new(), Vec::new()],
         }));
         assert!(!prior_outside_state_supported(&g.state));

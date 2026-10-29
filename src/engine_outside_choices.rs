@@ -15,10 +15,11 @@ pub(super) struct Choice {
 /// Frozen pre-event card facts. This has no `ObjectRef` or in-game origin:
 /// the physical outside entry acquires an object identity only on admission.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-struct OutsideHandEvent {
+pub(super) struct OutsideHandEvent {
     owner: Player,
     selected: Selection,
     card: Card,
+    pool_version: u64,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -117,6 +118,8 @@ impl Game {
                 mode: OutsideGameMode::CasualCollection,
                 pools: [Vec::new(), Vec::new()],
                 choice: None,
+                pending_entry: None,
+                pool_versions: [0; 2],
                 known: [Vec::new(), Vec::new()],
             })
         });
@@ -239,21 +242,94 @@ impl Game {
         self.state.outside_game.as_mut().unwrap().choice = None;
         self.run_program();
     }
-    pub(super) fn choose_outside_revealed(&mut self, index: u8) {
-        let state = self.state.outside_game.as_ref().unwrap();
-        let choice = state.choice.as_ref().unwrap();
-        let selected = choice.pair.unwrap()[usize::from(index)];
-        let event = OutsideHandEvent {
+    /// Freeze the physical slot and pool version without consuming the card.
+    /// The choice stays owned until commitment; this is not a zone-change event.
+    pub(super) fn plan_outside_hand(&mut self, index: u8) -> bool {
+        let Some(state) = self.state.outside_game.as_mut() else {
+            return false;
+        };
+        let Some(choice) = state.choice.as_ref() else {
+            return false;
+        };
+        let Some(selected) = choice
+            .pair
+            .and_then(|pair| pair.get(usize::from(index)).copied())
+        else {
+            return false;
+        };
+        if state.pending_entry.is_some() {
+            return false;
+        }
+        let card = match selected {
+            Selection::Pool(slot) => match state.pools[choice.owner.index()].get(usize::from(slot))
+            {
+                Some(&card) => card,
+                None => return false,
+            },
+            Selection::Basic(card) if state.mode == OutsideGameMode::LimitedSideboard => card,
+            Selection::Basic(_) => return false,
+        };
+        state.pending_entry = Some(OutsideHandEvent {
             owner: choice.owner,
             selected,
-            card: state.card(choice.owner, selected),
-        };
-        self.commit_outside_hand(event);
+            card,
+            pool_version: state.pool_versions[choice.owner.index()],
+        });
+        true
+    }
+
+    pub(super) fn choose_outside_revealed(&mut self, index: u8) {
+        assert!(self.plan_outside_hand(index), "validated outside selection");
+        assert!(
+            self.commit_outside_hand(),
+            "outside selection must remain valid"
+        );
         self.run_program();
     }
-    fn commit_outside_hand(&mut self, event: OutsideHandEvent) {
-        let state = self.state.outside_game.as_mut().unwrap();
+    /// Commit only if the selected slot and owned choice have not changed.
+    /// False leaves the plan, pool, public knowledge and objects unchanged.
+    pub(super) fn commit_outside_hand(&mut self) -> bool {
+        let Some(state) = self.state.outside_game.as_mut() else {
+            return false;
+        };
+        let Some(event) = state.pending_entry else {
+            return false;
+        };
+        let Some(choice) = state.choice.as_ref() else {
+            return false;
+        };
+        if choice.owner != event.owner
+            || !choice
+                .pair
+                .is_some_and(|pair| pair.contains(&event.selected))
+            || state.pool_versions[event.owner.index()] != event.pool_version
+        {
+            return false;
+        }
+        match event.selected {
+            Selection::Pool(slot)
+                if state.pools[event.owner.index()].get(usize::from(slot)) != Some(&event.card) =>
+            {
+                return false;
+            }
+            Selection::Basic(card)
+                if state.mode != OutsideGameMode::LimitedSideboard || card != event.card =>
+            {
+                return false;
+            }
+            _ => {}
+        }
+        let next_version = match event.selected {
+            Selection::Pool(_) => Some(
+                state.pool_versions[event.owner.index()]
+                    .checked_add(1)
+                    .capacity("outside pool version exhausted"),
+            ),
+            Selection::Basic(_) => None,
+        };
+        let id = CardId::try_from(self.state.objects.len()).capacity("object slots exhausted");
         state.choice = None;
+        state.pending_entry = None;
         let card = match event.selected {
             Selection::Pool(index) => {
                 let known = &mut state.known[event.owner.index()];
@@ -263,15 +339,11 @@ impl Game {
                         *entry -= 1;
                     }
                 }
+                state.pool_versions[event.owner.index()] = next_version.unwrap();
                 state.pools[event.owner.index()].remove(usize::from(index))
             }
             Selection::Basic(card) => card,
         };
-        assert_eq!(
-            card, event.card,
-            "outside entry changed during frozen event"
-        );
-        let id = CardId::try_from(self.state.objects.len()).capacity("object slots exhausted");
         self.state.objects.push(Object {
             card,
             copy_kind: CopyKind::None,
@@ -297,5 +369,6 @@ impl Game {
             attached_to: None,
         });
         self.state.known_hand.push(self.object_ref(id));
+        true
     }
 }
