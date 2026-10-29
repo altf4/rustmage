@@ -681,8 +681,8 @@ impl Game {
         self.record_cast_mana_activation(item, payment, &counter_payment);
         self.spend_mana_for(item.controller, payment, self.purpose_for_item(item));
         self.lose_life(item.controller, i128::from(cost.life));
-        let object = &mut self.state.objects[item.card as usize];
-        if object.generation != item.object.generation || object.zone != definition.source_zone() {
+        let object = &mut self.state.objects[source.id as usize];
+        if object.generation != source.object.generation || object.zone != definition.source_zone() {
             assert!(
                 !cost.tap
                     && !cost.sacrifice
@@ -710,13 +710,13 @@ impl Game {
         });
         if item.self_granted_activation.is_none() && !external_planeswalker_grant {
             if let Some(slot) = item.borrowed_slot {
-                self.record_borrowed_use(item.object, slot, definition.exhaust);
+                self.record_borrowed_use(source.object, slot, definition.exhaust);
             } else {
                 self.record_copy_activation_use(item, ability);
             }
             self.record_power_up_use(item, ability);
         }
-        self.pay_counters(item.card, &counter_payment);
+        self.pay_counters(source.id, &counter_payment);
         if let Some(kind) = definition.source_counter_cost() {
             item.source_counter_payment = Some(SourceCounterPaymentView {
                 kind,
@@ -725,15 +725,15 @@ impl Game {
             });
         }
         if let Some(change) = cost.loyalty {
-            self.state.objects[item.card as usize].loyalty_activated_this_turn = true;
+            self.state.objects[source.id as usize].loyalty_activated_this_turn = true;
             if change < 0 {
                 self.pay_counters(
-                    item.card,
+                    source.id,
                     &Counters::of(CounterKind::Loyalty, u64::from(change.unsigned_abs())),
                 );
             } else if change > 0 {
                 self.activation_cost_counters(
-                    item.object,
+                    source.object,
                     CounterKind::Loyalty,
                     change as u64,
                     item.controller,
@@ -743,9 +743,9 @@ impl Game {
         // Capture the tap event before a subsequent sacrifice/discard/exile
         // changes the source incarnation. All other paid source costs are set.
         if cost.tap {
-            self.tap_objects(&[item.card]);
+            self.tap_objects(&[source.id]);
             if let Some(grant) = &item.attachment_trigger
-                && item.source_card.grants_activation(ability)
+                && source.card.grants_activation(ability)
             {
                 self.tap_objects(&[grant.grantor.card]);
             }
@@ -756,8 +756,8 @@ impl Game {
         else {
             unreachable!()
         };
-        if let Some((kind, amount)) = item.source_card.activation_put_counter(definition_index) {
-            self.activation_cost_counters(item.object, kind, amount, item.controller);
+        if let Some((kind, amount)) = source.card.activation_put_counter(definition_index) {
+            self.activation_cost_counters(source.object, kind, amount, item.controller);
         }
         self.refresh_local_source_counter_quantities(item);
         // Costs and real mana activations may briefly reach the threshold before
@@ -766,18 +766,18 @@ impl Game {
         if cost.exile_self || cost.discard || cost.sacrifice {
             // The local announcement is temporarily outside State while costs
             // commit. Freeze its post-payment source facts before departure too.
-            let source = self.object_view(item.card);
+            let source = self.object_view(source.id);
             item.source.as_mut().expect("activated ability source exists").facts = DamageFacts::from_view(&source);
             item.source_keywords = source.keywords;
             item.source_tapped = source.tapped;
             item.source_attachment = source.attached_to;
         }
         if cost.exile_self {
-            self.move_object(item.card, Zone::Exile);
+            self.move_object(source.id, Zone::Exile);
         } else if cost.discard {
-            self.discard_batch(&[item.card], definition.cycling.then_some(item.object));
+            self.discard_batch(&[source.id], definition.cycling.then_some(source.object));
         } else if cost.sacrifice {
-            self.sacrifice_batch(&[(item.controller, item.card)]);
+            self.sacrifice_batch(&[(item.controller, source.id)]);
         }
     }
 }
