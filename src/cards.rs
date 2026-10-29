@@ -4184,9 +4184,6 @@ fn printed_subtype(type_line: &str, subtype: &str) -> bool {
 pub type Mana = [u32; 6];
 
 impl Card {
-    /// Reserved non-catalogue sentinel for an inherent source-less rule.
-    pub(crate) const SOURCELESS: Self = Self(u16::MAX);
-
     #[cfg(test)]
     pub(crate) const fn test_index(index: u16) -> Self {
         Self(index)
