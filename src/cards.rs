@@ -1575,6 +1575,8 @@ pub(crate) enum Instruction {
     DrawMoved,
     GainLifeMoved,
     CreateEmblem(Card),
+    /// The controller’s next committed spell cast this turn cannot be countered.
+    GrantNextSpellUncounterable,
     LoseGainedLife(PlayerSet),
     Connive {
         subject: Subject,

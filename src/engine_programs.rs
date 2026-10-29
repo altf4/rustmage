@@ -1373,6 +1373,7 @@ impl Game {
         // manual direct-payment insertion. The physical front may differ.
         let card = stack.map_or(card, |i| self.state.stack[i].source_card);
         self.consume_resolution_cast_quota(caster, stack);
+        self.consume_next_spell_uncounterable(caster, stack);
         self.consume_turn_cast_grants(caster, card);
         let first_trigger = self.state.pending_triggers.len();
         let spell_owner =
@@ -4944,6 +4945,7 @@ impl Game {
                     }
                 }
                 Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),
+                Instruction::GrantNextSpellUncounterable => self.grant_next_spell_uncounterable(item.controller),
                 Instruction::EndTurn => {
                     self.end_turn_effect();
                     return;

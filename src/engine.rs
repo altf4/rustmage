@@ -2092,6 +2092,9 @@ struct State {
     used_free_hand_permissions: Option<SharedVec<ObjectRef>>,
     graveyard_cast_permissions: cast_permissions::Rows,
     turn_cast_grants: Option<Box<[PlayerCastGrantsView; 2]>>,
+    /// Exact stack item IDs protected by resolved next-spell effects.
+    #[allow(clippy::box_collection)]
+    uncounterable_spell_ids: Option<Box<Vec<u64>>>,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
     miracle: Option<Box<miracle::MiracleState>>,
@@ -2687,6 +2690,9 @@ pub struct Observation {
     pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
+    /// Public IDs of spells protected by next-spell effects.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub uncounterable_spell_ids: Vec<u64>,
     pub resolving: Option<SpellView>,
     pub retarget: Option<RetargetView>,
     pub target_amount: Option<TargetAmountChoiceView>,
@@ -2952,6 +2958,7 @@ impl Game {
                 used_free_hand_permissions: None,
                 graveyard_cast_permissions: None,
                 turn_cast_grants: None,
+                uncounterable_spell_ids: None,
                 graveyard_type_uses: None,
                 resolution_free_casts: None,
                 miracle: None,
@@ -7675,6 +7682,7 @@ impl Game {
         let expired_animations = self.expire_animations();
         self.expire_graveyard_cast_permissions();
         self.state.turn_cast_grants = None;
+        self.prune_uncounterable_spell_ids();
         self.expire_keyword_effects();
         if let Some(roles) = &mut self.state.roles {
             roles.toughness_combat_damage = [false; 2];
@@ -8600,6 +8608,7 @@ impl Game {
                 })
                 .unwrap_or_default(),
             stack: s.stack.clone(),
+            uncounterable_spell_ids: self.uncounterable_spell_ids_view(),
             retarget: self.retarget_view(),
             target_amount: self.target_amount_choice(),
             delayed_spell_copies: self.delayed_spell_copy_view(),
@@ -9000,6 +9009,7 @@ impl Game {
             + s.turn_cast_grants
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<[PlayerCastGrantsView; 2]>())
+            + s.uncounterable_spell_ids.as_ref().map_or(0, |ids| std::mem::size_of::<Vec<u64>>() + ids.len() * std::mem::size_of::<u64>())
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
             + s.resolution_free_casts.as_ref().map_or(0, |f| {
                 std::mem::size_of::<ResolutionFreeCasts>()
