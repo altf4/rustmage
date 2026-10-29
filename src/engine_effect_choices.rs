@@ -96,6 +96,16 @@ impl Game {
         player: Player,
         object: ObjectRef,
     ) -> bool {
+        self.effect_choice_candidate_inner(choice, player, object, true)
+    }
+
+    fn effect_choice_candidate_inner(
+        &self,
+        choice: &EffectChoice,
+        player: Player,
+        object: ObjectRef,
+        enforce_sacrifice_prohibition: bool,
+    ) -> bool {
         if choice.kind == EffectChoiceKind::RemoveCreatureCounters(1) {
             return self.resolution_counter_candidate(player, object)
                 && self.counter_amounts(object.card).has_any();
@@ -247,7 +257,8 @@ impl Game {
                 | EffectChoiceKind::SacrificeGreatestManaValue
                 | EffectChoiceKind::SacrificeDifferentNames(_)
                 | EffectChoiceKind::SacrificeOrDiscard { .. }
-        ) && self.sacrifice_prohibited(object.card)
+        ) && enforce_sacrifice_prohibition
+            && self.sacrifice_prohibited(object.card)
         {
             return false;
         }
@@ -840,10 +851,13 @@ impl Game {
                         o.zone == Zone::Battlefield
                             && o.controller == player
                             && if kind == EffectChoiceKind::SacrificeGreatestManaValue {
-                                self.effect_choice_candidate(
+                                // Greatest value describes the controlled set, not
+                                // only the subset currently able to be sacrificed.
+                                self.effect_choice_candidate_inner(
                                     &choice,
                                     player,
                                     self.object_ref(*id as CardId),
+                                    false,
                                 )
                             } else if kind == EffectChoiceKind::ExileGreatestManaValue {
                                 self.current_kinds(*id as CardId) & 65 != 0

@@ -7843,3 +7843,64 @@ mod engine_fra_karn_entry_review_tests;
 
 #[path = "engine_fra_frostbite_source_tests.rs"]
 mod engine_fra_frostbite_source_tests;
+
+#[test]
+fn break_under_pressure_compares_prohibited_greatest_before_sacrifice_choices() {
+    use super::ability_world::TEST_SACRIFICE_PROHIBITED_OBJECT;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_SACRIFICE_PROHIBITED_OBJECT.with(|slot| slot.set(None));
+        }
+    }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        for tied in [false, true] {
+            let mut game = scenario(player);
+            let lower = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+            let protected = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+            let eligible =
+                tied.then(|| put(&mut game, player.other(), "Hill Giant", Zone::Battlefield));
+            let spell = put(&mut game, player, "Break Under Pressure", Zone::Hand);
+            let life = game.state.players[player.index()].life;
+            cast(&mut game, spell, Some(Target::Player(player.other())));
+            TEST_SACRIFICE_PROHIBITED_OBJECT
+                .with(|slot| slot.set(Some(game.object_ref(protected))));
+            if let Some(eligible) = eligible {
+                for _ in 0..32 {
+                    if matches!(game.state.pending, Pending::EffectChoice { .. }) {
+                        break;
+                    }
+                    act(&mut game, Action::Pass);
+                }
+                assert_eq!(game.actor(), Some(player.other()));
+                let lower_ref = game.object_ref(lower);
+                let protected_ref = game.object_ref(protected);
+                let eligible_ref = game.object_ref(eligible);
+                reject(&mut game, Action::Sacrifice { object: lower_ref });
+                reject(
+                    &mut game,
+                    Action::Sacrifice {
+                        object: protected_ref,
+                    },
+                );
+                act(
+                    &mut game,
+                    Action::Sacrifice {
+                        object: eligible_ref,
+                    },
+                );
+                settle(&mut game);
+                assert_eq!(game.object_view(eligible).zone, Zone::Graveyard);
+            } else {
+                // No eligible greatest permanent: complete the instruction and
+                // its life gain without offering a lower-value sacrifice.
+                settle(&mut game);
+            }
+            assert_eq!(game.object_view(lower).zone, Zone::Battlefield);
+            assert_eq!(game.object_view(protected).zone, Zone::Battlefield);
+            assert_eq!(game.state.players[player.index()].life, life + 2);
+            TEST_SACRIFICE_PROHIBITED_OBJECT.with(|slot| slot.set(None));
+        }
+    }
+}

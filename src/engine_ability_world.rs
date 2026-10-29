@@ -6,6 +6,8 @@ use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 
 #[cfg(test)]
 thread_local! {
+    /// Synthetic selective protection; no authored provider uses this fixture.
+    pub(super) static TEST_SACRIFICE_PROHIBITED_OBJECT: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     /// Test-only provider identity; the query still uses live control and ability layers.
     pub(super) static TEST_SACRIFICE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_EXILE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
@@ -365,6 +367,11 @@ pub(super) trait CharacteristicWorld {
     fn sacrifice_prohibited(&self, id: CardId) -> bool {
         let target = self.object(id);
         if target.zone != Zone::Battlefield {
+            return true;
+        }
+        #[cfg(test)]
+        if TEST_SACRIFICE_PROHIBITED_OBJECT.with(|object| object.get() == Some(self.reference(id)))
+        {
             return true;
         }
         let query = characteristic_query::CharacteristicQuery::in_world(self);
