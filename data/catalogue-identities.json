@@ -5466,7 +5466,8 @@
     2,
     2,
     4,
-    2
+    2,
+    8
   ],
   "aliases": [
     [
@@ -123456,11 +123457,16 @@
         0,
         0,
         0,
-        0,
+        2,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Pyre Rhymer",
+        "mana_cost": "{1}{R}{R}",
+        "type_line": "Creature — Elemental Sorcerer"
+      }
     },
     {
       "index": 3293,
@@ -185104,6 +185110,33 @@
         0
       ],
       "generic": 2
+    },
+    {
+      "index": 5461,
+      "module": "card_5461",
+      "path": "synthetic/prepare_pyre_rhymer_molten_tide.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Molten Tide",
+      "oracle_id": "8940f503-fc6d-4fae-be74-22c660cae1a7",
+      "facts_sha256": "45655f722d7699e50271dd6a90cccca99d0d56d5931e0a40cbc0eb1e5d0724fc",
+      "mana_cost": "{R}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }
