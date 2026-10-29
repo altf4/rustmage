@@ -14,7 +14,8 @@ assign the next schema version and reject prior-schema projection for every
 observation, historical action, active owned continuation, and rollback checkpoint
 containing a nonempty budget. An empty/absent field retains the previous shape.
 The draft tests are unlinked and unbuilt, and exercise a synthetic permission
-within an actual Chandra continuation. The checkpoint rollback test is synthetic;
-a real interrupted announcement with additional costs and mana replay remains
+within an actual Chandra continuation. The tests include a synthetic checkpoint and an actual interrupted additional-cost
+payment caused by an opposing entry choice. The latter does not exercise mana
+replay; a case with irreversible or selectively reversible mana events remains
 necessary. No Uldaros behavior is admitted by this change. Its target selection,
 exile replacements and shared copied-card lifecycle remain separate prerequisites.

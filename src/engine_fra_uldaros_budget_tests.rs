@@ -212,3 +212,143 @@ fn budget_pending_announcement_restores_on_failed_transaction() {
         );
     }
 }
+
+#[test]
+fn budget_cast_card_copy_consumes_once_on_actual_commit() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        budget_offer(&mut g, player, &[], 6);
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let copy = g.allocate_card_copy(bear, player);
+        g.state
+            .resolution_free_casts
+            .as_mut()
+            .unwrap()
+            .remaining
+            .push(copy);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(
+                &mut g,
+                Action::CastExiledDuringResolution {
+                    object: copy,
+                    face: CastFace::Normal,
+                },
+            );
+            pay(&mut g);
+            assert_eq!(
+                g.state
+                    .resolution_free_casts
+                    .as_ref()
+                    .unwrap()
+                    .remaining_mana_value,
+                Some(4)
+            );
+            assert!(!g.state.stack.last().unwrap().is_copy);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn budget_real_interrupted_payment_rolls_back_after_foreign_entry_choice() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let silver = put(
+            &mut g,
+            player,
+            "Silverquill, the Disputant",
+            Zone::Battlefield,
+        );
+        g.state.objects[silver as usize].growth.power = -1;
+        let enemy = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let aura = put(
+            &mut g,
+            player.other(),
+            "Witness Protection",
+            Zone::Battlefield,
+        );
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(enemy));
+        let prison = put(&mut g, player, "Banishing Light", Zone::Hand);
+        super::super::big_helpers::cast(&mut g, prison, None, &[]);
+        for _ in 0..40 {
+            if g.state.pending != Pending::Priority {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(aura),
+            },
+        );
+        super::super::big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(aura).zone, Zone::Exile);
+        let refs = budget_offer(&mut g, player, &["Candy Grapple"], 6);
+        let before = g.snapshot();
+        act(
+            &mut g,
+            Action::CastExiledDuringResolution {
+                object: refs[0],
+                face: CastFace::Normal,
+            },
+        );
+        assert_eq!(
+            g.state
+                .resolution_free_casts
+                .as_ref()
+                .unwrap()
+                .remaining_mana_value,
+            Some(6)
+        );
+        let sacrifice = g.object_ref(prison);
+        act(
+            &mut g,
+            Action::ChooseBargain {
+                sacrifice: Some(sacrifice),
+            },
+        );
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        pay(&mut g);
+        let clause = g
+            .observe(player)
+            .cast_costs
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| row.clause == CastCostClause::Additional && !row.paid)
+            .unwrap();
+        act(
+            &mut g,
+            Action::ChooseCastCost {
+                clause: clause as u16,
+            },
+        );
+        assert_eq!(g.actor(), Some(player.other()));
+        let attachment = g.object_ref(silver);
+        act(&mut g, Action::ChooseAuraAttachment { object: attachment });
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(
+            g.state
+                .resolution_free_casts
+                .as_ref()
+                .unwrap()
+                .remaining_mana_value,
+            Some(6)
+        );
+        assert!(
+            g.legal_actions()
+                .contains(&Action::CastExiledDuringResolution {
+                    object: refs[0],
+                    face: CastFace::Normal
+                })
+        );
+    }
+}
