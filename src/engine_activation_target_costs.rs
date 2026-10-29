@@ -37,7 +37,9 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return base;
         };
-        let Some(source) = item.source else { return base; };
+        let Some(source) = item.source else {
+            return base;
+        };
         if let Some(rule) = source.card.activation_target_reduction(ability)
             && item.targets.iter().any(|b| {
                 self.same_target_object(*b) && self.item_target_matches(item, rule.rule, b.target)
@@ -121,10 +123,16 @@ impl Game {
                 reserve: None,
                 source: (!free).then(|| {
                     (
-                        a.item.source.expect("cost announcement has object source").object,
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .object,
                         ability,
                         a.counter_payment.clone(),
-                        a.item.source.expect("cost announcement has object source").card,
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
                         a.item.borrowed_slot,
                     )
                 }),
@@ -150,14 +158,19 @@ impl Game {
         }
         let fund_target = |target| {
             let apply = |base| {
-                test(self.activation_target_total(
-                    a.item.controller,
-                    a.item.target_source(),
-                    a.item.source.expect("cost announcement has object source").card,
-                    ability,
-                    target,
-                    base,
-                ))
+                test(
+                    self.activation_target_total(
+                        a.item.controller,
+                        a.item.target_source(),
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
+                        ability,
+                        target,
+                        base,
+                    ),
+                )
             };
             if let Some(base) = a.cost {
                 apply(base)

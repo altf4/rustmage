@@ -1625,7 +1625,10 @@ fn msh_c_modal_faces_prowess_transformation_and_attached_controller_upkeep() {
             .state
             .ordering_triggers
             .iter()
-            .find(|t| t.source.is_some_and(|identity| identity.id == monica) && t.kind == StackKind::TriggeredAbility { ability: 0 })
+            .find(|t| {
+                t.source.is_some_and(|identity| identity.id == monica)
+                    && t.kind == StackKind::TriggeredAbility { ability: 0 }
+            })
             .unwrap()
             .id;
         act(&mut g, Action::PutTrigger { id: first });

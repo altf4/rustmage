@@ -220,10 +220,11 @@ fn seasoned_miracle_interrupts_draw_before_discard_and_snapshot_replays() {
             assert_eq!(g.state.players[player.index()].cards_drawn_this_turn, 2);
             assert_eq!(g.object_view(miracle).zone, Zone::Hand);
             assert!(
-                g.state
-                    .pending_triggers
-                    .iter()
-                    .all(|item| item.source.expect("object-backed packet").id != source)
+                g.state.pending_triggers.iter().all(|item| item
+                    .source
+                    .expect("object-backed packet")
+                    .id
+                    != source)
             );
             g.restore(&saved).unwrap();
             assert_eq!(g.snapshot(), saved);

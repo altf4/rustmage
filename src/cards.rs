@@ -1212,7 +1212,10 @@ pub(crate) enum Instruction {
     },
     CounterRelatedUnlessPayLife(u32),
     /// Ask the triggering opponent to pay by getting poison counters.
-    MayPayWardPoison { amount: u16, skip: usize },
+    MayPayWardPoison {
+        amount: u16,
+        skip: usize,
+    },
     PayWardPoison(u16),
     /// One captured ward payer may discard a card or pay this mana cost.
     CounterRelatedUnlessDiscardOrPay(ManaCost),
@@ -1727,7 +1730,12 @@ pub(crate) enum Instruction {
     ResolveRadiation,
     /// Event-local self-replacements belong to this resolving instruction.
     #[allow(dead_code, reason = "Gated typed proliferate foundation")]
-    PutPlayerCountersWithSelf { players: PlayerSet, kind: PlayerCounterKind, amount: u64, effects: &'static [SelfPlayerCounterTemplate] },
+    PutPlayerCountersWithSelf {
+        players: PlayerSet,
+        kind: PlayerCounterKind,
+        amount: u64,
+        effects: &'static [SelfPlayerCounterTemplate],
+    },
     /// Mill the specified number, then queue a reflexive ability only if all were milled.
     MillThenReflexive {
         amount: u16,
@@ -2737,7 +2745,11 @@ pub(crate) enum ReplacementSpec {
     },
     /// Replace a proliferate event by a number of events for the related player.
     #[allow(dead_code, reason = "Gated typed proliferate foundation")]
-    Proliferate { relation: CastRelation, factor: u32, add: u32 },
+    Proliferate {
+        relation: CastRelation,
+        factor: u32,
+        add: u32,
+    },
     /// Replace counters placed on a player related to the source controller.
     #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     PlayerCounters {
@@ -2779,10 +2791,24 @@ pub(crate) struct SelfPlayerCounterTemplate {
 
 /// Player counters currently represented by the game state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
-pub enum PlayerCounterKind { Poison, Energy, Experience, Rad, Ticket }
+pub enum PlayerCounterKind {
+    Poison,
+    Energy,
+    Experience,
+    Rad,
+    Ticket,
+}
 impl PlayerCounterKind {
-    pub const ALL: [Self; 5] = [Self::Poison, Self::Energy, Self::Experience, Self::Rad, Self::Ticket];
-    pub(crate) fn index(self) -> usize { self as usize }
+    pub const ALL: [Self; 5] = [
+        Self::Poison,
+        Self::Energy,
+        Self::Experience,
+        Self::Rad,
+        Self::Ticket,
+    ];
+    pub(crate) fn index(self) -> usize {
+        self as usize
+    }
 }
 
 /// Card-type bit reserved for battles.
@@ -4293,7 +4319,9 @@ impl Card {
     }
     pub(crate) fn replacement_effects(self) -> &'static [ReplacementSpec] {
         #[cfg(test)]
-        if let Some((_, replacements)) = test_counter_providers::provider(self) { return replacements; }
+        if let Some((_, replacements)) = test_counter_providers::provider(self) {
+            return replacements;
+        }
         generated::replacement_effects(self)
     }
     pub fn colors(self) -> u8 {
@@ -4488,7 +4516,9 @@ impl Card {
     }
     pub(crate) fn static_ability_groups(self) -> &'static [StaticAbilityGroup] {
         #[cfg(test)]
-        if let Some((groups, _)) = test_counter_providers::provider(self) { return groups; }
+        if let Some((groups, _)) = test_counter_providers::provider(self) {
+            return groups;
+        }
         authored::rules(self).map_or_else(
             || {
                 let groups = generated::static_ability_groups(self);

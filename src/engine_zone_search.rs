@@ -37,7 +37,9 @@ impl Game {
         counter: CounterKind,
         haste_at: Option<u32>,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let x = item.x.unwrap_or(0);
         self.state
             .linked_choices

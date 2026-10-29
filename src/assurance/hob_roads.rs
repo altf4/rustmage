@@ -373,7 +373,17 @@ fn hob_roads_old_incarnation_link_survives_reentry_and_queued_chapter() {
             matches!(g.state.pending, Pending::LinkedExile { .. })
         });
         assert_eq!(g.actor(), Some(p));
-        assert_eq!(g.state.resolving.as_ref().unwrap().item.source.unwrap().object, old_source);
+        assert_eq!(
+            g.state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .item
+                .source
+                .unwrap()
+                .object,
+            old_source
+        );
         reject(&mut g, Action::ChooseLinkedExile { object: new_link });
         contracts::branch_contract(g.clone());
         act(&mut g, Action::ChooseLinkedExile { object: old_link });

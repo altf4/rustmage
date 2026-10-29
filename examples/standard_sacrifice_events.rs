@@ -145,7 +145,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(p, action.clone())?;
@@ -172,7 +175,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if i == 6 {
                         assert_eq!(s.controller, after.active);
                         assert!(
-                            toll_events.insert((after.turn, s.source().expect("example expects an object-backed packet").object.card, s.source().expect("example expects an object-backed packet").object.generation)),
+                            toll_events.insert((
+                                after.turn,
+                                s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                                    .card,
+                                s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                                    .generation
+                            )),
                             "duplicate Tolls trigger this turn"
                         );
                     }

@@ -120,7 +120,9 @@ impl Game {
         keywords: Keywords,
         ability: Option<u16>,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if !self.on_battlefield(source.id)
             || self.object_ref(source.id) != source.object
             || !self.has_subtype(source.id, required)

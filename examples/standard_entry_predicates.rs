@@ -172,8 +172,22 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             b.players[s.controller.other().index()].life - 1
         ),
         2 => {
-            if live(s.source().expect("example expects an object-backed packet").object) {
-                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 0, Keywords::FLYING, 0);
+            if live(
+                s.source()
+                    .expect("example expects an object-backed packet")
+                    .object,
+            ) {
+                bump(
+                    l,
+                    s.source()
+                        .expect("example expects an object-backed packet")
+                        .object,
+                    a.turn,
+                    0,
+                    0,
+                    Keywords::FLYING,
+                    0,
+                );
             }
         }
         3 => {
@@ -195,13 +209,41 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
             );
         }
         5 => {
-            if live(s.source().expect("example expects an object-backed packet").object) {
-                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 0, 0, Keywords::NONE, 1);
+            if live(
+                s.source()
+                    .expect("example expects an object-backed packet")
+                    .object,
+            ) {
+                bump(
+                    l,
+                    s.source()
+                        .expect("example expects an object-backed packet")
+                        .object,
+                    a.turn,
+                    0,
+                    0,
+                    Keywords::NONE,
+                    1,
+                );
             }
         }
         7 => {
-            if live(s.source().expect("example expects an object-backed packet").object) {
-                bump(l, s.source().expect("example expects an object-backed packet").object, a.turn, 2, 0, Keywords::NONE, 0);
+            if live(
+                s.source()
+                    .expect("example expects an object-backed packet")
+                    .object,
+            ) {
+                bump(
+                    l,
+                    s.source()
+                        .expect("example expects an object-backed packet")
+                        .object,
+                    a.turn,
+                    2,
+                    0,
+                    Keywords::NONE,
+                    0,
+                );
             }
         }
         _ => unreachable!(),
@@ -355,9 +397,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 } else if let StackKind::TriggeredAbility { ability } = item.kind {
                     let i = item.source().and_then(|source| index(source.card)).unwrap();
-                    let count = debt.get_mut(&(item.source().expect("example expects an object-backed packet").object, ability)).unwrap_or_else(|| {
-                        panic!("unexpected trigger {} seed{seed}", item.source().expect("example expects an object-backed packet").card.name())
-                    });
+                    let count = debt
+                        .get_mut(&(
+                            item.source()
+                                .expect("example expects an object-backed packet")
+                                .object,
+                            ability,
+                        ))
+                        .unwrap_or_else(|| {
+                            panic!(
+                                "unexpected trigger {} seed{seed}",
+                                item.source()
+                                    .expect("example expects an object-backed packet")
+                                    .card
+                                    .name()
+                            )
+                        });
                     assert!(*count > 0);
                     *count -= 1;
                     triggers[i] += 1;

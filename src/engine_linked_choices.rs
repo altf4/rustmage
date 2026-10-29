@@ -437,7 +437,9 @@ impl Game {
         }
     }
     pub(super) fn play_hideaway_if_coven(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let mut powers: Vec<_> = self
             .state
             .objects
@@ -492,7 +494,15 @@ impl Game {
         };
     }
     pub(super) fn remember_linked_exile(&mut self, selected: &[CardId]) {
-        let Some(source) = self.state.resolving.as_ref().and_then(|r| r.item.source).map(|s| s.object) else { return; };
+        let Some(source) = self
+            .state
+            .resolving
+            .as_ref()
+            .and_then(|r| r.item.source)
+            .map(|s| s.object)
+        else {
+            return;
+        };
         for &id in selected {
             if self.state.objects[id as usize].zone == Zone::Exile {
                 let exiled = self.object_ref(id);
@@ -546,7 +556,15 @@ impl Game {
             })
     }
     pub(super) fn choose_linked_exile(&mut self, object: ObjectRef) {
-        let Some(source) = self.state.resolving.as_ref().and_then(|r| r.item.source).map(|s| s.object) else { return; };
+        let Some(source) = self
+            .state
+            .resolving
+            .as_ref()
+            .and_then(|r| r.item.source)
+            .map(|s| s.object)
+        else {
+            return;
+        };
         assert!(self.linked_exile_candidates(source).contains(&object));
         let movement = self.entry_move(object.card, Zone::Hand, false);
         self.stage_entries(vec![movement], None);
@@ -583,17 +601,20 @@ impl Game {
                 .iter()
                 .chain(&self.state.pending_triggers)
                 .chain(&self.state.ordering_triggers)
-                .any(|item| item.source.is_some_and(|identity| identity.object == source))
-                || self
-                    .state
-                    .resolving
-                    .as_ref()
-                    .is_some_and(|r| r.item.source.is_some_and(|identity| identity.object == source))
-                || self
-                    .state
-                    .announcing
-                    .as_ref()
-                    .is_some_and(|a| a.item.source.is_some_and(|identity| identity.object == source))
+                .any(|item| {
+                    item.source
+                        .is_some_and(|identity| identity.object == source)
+                })
+                || self.state.resolving.as_ref().is_some_and(|r| {
+                    r.item
+                        .source
+                        .is_some_and(|identity| identity.object == source)
+                })
+                || self.state.announcing.as_ref().is_some_and(|a| {
+                    a.item
+                        .source
+                        .is_some_and(|identity| identity.object == source)
+                })
         };
         data.hideaway_controllers.retain(|&(source, _)| {
             let o = &objects[source.card as usize];

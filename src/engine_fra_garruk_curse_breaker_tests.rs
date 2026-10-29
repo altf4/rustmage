@@ -131,7 +131,8 @@ fn garruk_curse_group_attack_survives_source_and_preserves_exact_attackers() {
             .chain(g.state.pending_triggers.iter())
             .chain(g.state.ordering_triggers.iter())
             .filter(|item| {
-                item.source.is_some_and(|identity| identity.id == source) && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                item.source.is_some_and(|identity| identity.id == source)
+                    && matches!(item.kind, StackKind::TriggeredAbility { .. })
             })
             .count();
         assert_eq!(count, 1);

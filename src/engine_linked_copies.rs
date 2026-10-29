@@ -8,7 +8,9 @@ pub(super) struct LinkedCopyCapture {
 impl Game {
     pub(super) fn exile_and_capture_attached_copy(&mut self, item: &SpellView) {
         self.state.resolving.as_mut().unwrap().linked_copy = None;
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if !self.on_battlefield(source.object.card)
             || self.object_ref(source.object.card) != source.object
         {

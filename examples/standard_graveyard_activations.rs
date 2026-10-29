@@ -141,10 +141,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 };
                 if let Some(new) = after.objects.iter().find(|o| o.id == old.id)
                     && new.zone == Zone::Exile
-                    && after
-                        .stack
-                        .iter()
-                        .any(|s| s.source().expect("example expects an object-backed packet").object == old.reference && grave_ability(s) == Some(i))
+                    && after.stack.iter().any(|s| {
+                        s.source()
+                            .expect("example expects an object-backed packet")
+                            .object
+                            == old.reference
+                            && grave_ability(s) == Some(i)
+                    })
                 {
                     commits[i] += 1;
                     assert_ne!(new.reference, old.reference);
@@ -164,7 +167,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && !live(&after, s.id)
                 {
                     resolutions[i] += 1;
-                    let source = after.objects.iter().find(|o| o.id == s.source().expect("example expects an object-backed packet").id).unwrap();
+                    let source = after
+                        .objects
+                        .iter()
+                        .find(|o| {
+                            o.id == s
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                        })
+                        .unwrap();
                     assert_eq!(source.zone, Zone::Exile);
                     checks += 1;
                 }

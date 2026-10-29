@@ -51,7 +51,9 @@ impl Game {
     }
 
     pub(super) fn grant_cast_creature_keywords(&mut self, item: &SpellView, keywords: Keywords) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let Some(event) = &item.cast_creature_subjects else {
             return;
         };

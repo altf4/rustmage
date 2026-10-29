@@ -119,11 +119,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         if i == 4 {
                             crab_turns[usize::from(o.owner != after.active)] += 1;
                         }
-                        if !before
-                            .stack
-                            .iter()
-                            .any(|s| s.kind == StackKind::Spell && s.source().expect("example expects an object-backed packet").id == o.id)
-                        {
+                        if !before.stack.iter().any(|s| {
+                            s.kind == StackKind::Spell
+                                && s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .id
+                                    == o.id
+                        }) {
                             noncast += 1;
                         }
                     }

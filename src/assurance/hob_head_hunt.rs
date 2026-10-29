@@ -75,7 +75,10 @@ fn hob_hunt_flash_paid_body_real_death_defers_token_and_source_removal_keeps_pac
         packet(&mut g);
         assert_eq!(g.object_view(v).zone, Zone::Exile);
         assert!(wolves(&g, p).is_empty());
-        assert_eq!(g.state.stack.last().unwrap().source.unwrap().object, g.object_ref(s));
+        assert_eq!(
+            g.state.stack.last().unwrap().source.unwrap().object,
+            g.object_ref(s)
+        );
         g.move_object(s, Zone::Hand);
         finish(&mut g);
         let w = wolves(&g, p);
@@ -170,7 +173,10 @@ fn hob_hunt_multiple_replacements_are_distinct_owned_choices_only_selected_head_
             act(&mut g, Action::ChooseZoneReplacement { effect });
             packet(&mut g);
             assert_eq!(g.state.stack.len(), 1);
-            assert_eq!(g.state.stack[0].source.unwrap().object, g.object_ref(chosen));
+            assert_eq!(
+                g.state.stack[0].source.unwrap().object,
+                g.object_ref(chosen)
+            );
             finish(&mut g);
             assert_eq!(wolves(&g, p).len(), 1);
         }

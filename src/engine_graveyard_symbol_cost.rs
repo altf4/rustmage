@@ -100,7 +100,10 @@ impl Game {
                 self.funding_goal(a),
                 self.purpose_for_item(&a.item),
                 a.additional_cost().unwrap(),
-                a.item.source.expect("cost announcement has object source").object,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
                 selected,
             )
     }

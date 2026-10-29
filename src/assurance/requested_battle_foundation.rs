@@ -306,7 +306,8 @@ fn greatwurm_cast_removes_last_defense_and_defeat_waits_until_payment_finishes()
                 .iter()
                 .chain(&g.state.ordering_triggers)
                 .chain(&g.state.stack)
-                .any(|item| item.kind == StackKind::SiegeDefeat && item.source.unwrap().object == object)
+                .any(|item| item.kind == StackKind::SiegeDefeat
+                    && item.source.unwrap().object == object)
         );
     }
 }

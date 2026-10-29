@@ -156,8 +156,17 @@ impl Game {
     }
     pub(super) fn evidence_intent_fundable(&self, collect: bool) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        a.cost_options()
-            .any(|c| self.evidence_cast_fundable(a.item.controller, a.item.source.expect("cost announcement has object source").id, c, collect))
+        a.cost_options().any(|c| {
+            self.evidence_cast_fundable(
+                a.item.controller,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id,
+                c,
+                collect,
+            )
+        })
     }
     fn evidence_selection(&self) -> &EvidenceSelection {
         self.state

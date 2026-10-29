@@ -172,19 +172,24 @@ fn classify(s: &SpellView) -> Option<usize> {
         | StackKind::DelayedSacrifice
         | StackKind::DelayedWarpExile
         | StackKind::DelayedManifestDread
-        | StackKind::SiegeDefeat | StackKind::InherentRule { .. } => {
+        | StackKind::SiegeDefeat
+        | StackKind::InherentRule { .. } => {
             panic!("no delayed producer in this fixture")
         }
         StackKind::TriggeredAbility { .. } => s.source().and_then(|source| index(source.card)),
-        StackKind::ActivatedAbility { .. } => match s.source().and_then(|source| index(source.card)) {
-            Some(1) => Some(8),
-            Some(5) => Some(9),
-            _ => s
-                .source().expect("example expects an object-backed packet").card
-                .token_info()
-                .filter(|t| t.subtypes == "Mutagen")
-                .map(|_| 10),
-        },
+        StackKind::ActivatedAbility { .. } => {
+            match s.source().and_then(|source| index(source.card)) {
+                Some(1) => Some(8),
+                Some(5) => Some(9),
+                _ => s
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .card
+                    .token_info()
+                    .filter(|t| t.subtypes == "Mutagen")
+                    .map(|_| 10),
+            }
+        }
         _ => None,
     }
 }
@@ -221,7 +226,12 @@ fn verify(i: usize, root: &SpellView, b: &Observation, a: &Observation, l: &mut 
             assert_eq!(count(a), count(b) + 1);
         }
         1 => {
-            if let Some(old) = exact(b, root.source().expect("example expects an object-backed packet").object) {
+            if let Some(old) = exact(
+                b,
+                root.source()
+                    .expect("example expects an object-backed packet")
+                    .object,
+            ) {
                 assert!(!exact(a, old.reference).unwrap().tapped);
             }
         }
@@ -407,7 +417,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if let Action::ChooseMode { mode } = action {
                 let root = before.announcing.as_ref().unwrap();
-                assert_eq!(root.source().expect("example expects an object-backed packet").card.name(), NAMES[2]);
+                assert_eq!(
+                    root.source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        .name(),
+                    NAMES[2]
+                );
                 assert!(g.observe(actor.other()).mode_choices.is_empty());
                 modes[mode as usize] += 1;
             }

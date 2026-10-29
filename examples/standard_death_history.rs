@@ -129,10 +129,10 @@ fn main() {
             let actions = g.legal_actions();
             let a = actions[choose(&g, &before, &actions, seed)].clone();
             if before.decision == "pay_costs"
-                && before
-                    .announcing
-                    .as_ref()
-                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Dreaded Bat-Cloud"))
+                && before.announcing.as_ref().is_some_and(|s| {
+                    s.source()
+                        .is_some_and(|source| source.card.name() == "Dreaded Bat-Cloud")
+                })
             {
                 let request = before.payment_request.as_ref().unwrap();
                 assert_eq!(request.generic, if deaths > 0 { 1 } else { 4 });

@@ -106,11 +106,18 @@ impl Game {
         match value {
             StatValue::SourceHasNotDealtCombatDamage => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
-                .map_or(0, |(_, object)| i128::from(!object.dealt_combat_damage_this_incarnation)),
+                .map_or(0, |(_, object)| {
+                    i128::from(!object.dealt_combat_damage_this_incarnation)
+                }),
             StatValue::DistinctControlledPlaneswalkerTypes => {
                 let mut distinct = std::collections::BTreeSet::new();
                 for (id, object) in objects() {
-                    if object.zone != Zone::Battlefield || object.controller != owner || kinds(id, object) & 64 == 0 { continue; }
+                    if object.zone != Zone::Battlefield
+                        || object.controller != owner
+                        || kinds(id, object) & 64 == 0
+                    {
+                        continue;
+                    }
                     let live = subtypes(id);
                     for &subtype in subtypes::PLANESWALKER_TYPES {
                         if live.has(object.card, subtype) {

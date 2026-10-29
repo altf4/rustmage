@@ -44,10 +44,7 @@ impl Game {
                 Some(SpellCharacteristicsView {
                     id: s.id,
                     object: source.object,
-                    physical_card: s
-                        .cast
-                        .and_then(|c| c.physical_card)
-                        .unwrap_or(source.card),
+                    physical_card: s.cast.and_then(|c| c.physical_card).unwrap_or(source.card),
                     face: s.cast.map_or(CastFace::Normal, |c| c.face),
                     name: info.name,
                     mana_cost: info.mana_cost,
@@ -97,7 +94,9 @@ impl Game {
         event
     }
     pub(super) fn finish_adventure(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if self.state.objects[source.id as usize].zone != Zone::Stack
             || self.object_ref(source.id) != source.object
         {
@@ -118,7 +117,9 @@ impl Game {
         }
     }
     pub(super) fn finish_omen(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if self.state.objects[source.id as usize].zone != Zone::Stack
             || self.object_ref(source.id) != source.object
         {
@@ -144,7 +145,12 @@ impl Game {
             .stack
             .iter()
             .chain(self.state.resolving.iter().map(|r| &r.item))
-            .find_map(|s| (s.kind == StackKind::Spell).then_some(s.source).flatten().filter(|source| source.id == id))
+            .find_map(|s| {
+                (s.kind == StackKind::Spell)
+                    .then_some(s.source)
+                    .flatten()
+                    .filter(|source| source.id == id)
+            })
             .map_or(self.state.objects[id as usize].card, |source| source.card)
     }
     pub(super) fn alternate_cast_available(

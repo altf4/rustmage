@@ -144,7 +144,13 @@ fn icy_copied_spells_legal_alternatives_and_departure() {
             },
         );
         pay(&mut g);
-        let victim = g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == bear)).unwrap().id;
+        let victim = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.source.is_some_and(|source| source.id == bear))
+            .unwrap()
+            .id;
         assert!(g.counter_stack_item(victim, false));
         settle(&mut g);
         assert_eq!(g.object_view(icy).zone, Zone::Graveyard);

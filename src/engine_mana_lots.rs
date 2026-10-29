@@ -525,7 +525,8 @@ impl Game {
             .mana_quality(production, source.id)
             .unwrap_or(Quality::ORDINARY);
         if self.object_ref(source.id) != source.object {
-            quality.treasure_source = source.facts
+            quality.treasure_source = source
+                .facts
                 .granted_subtypes
                 .has(source.facts.card, "Treasure");
         }
@@ -537,8 +538,11 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return;
         };
-        let Some(source) = item.source else { return; };
-        let quality = source.card
+        let Some(source) = item.source else {
+            return;
+        };
+        let quality = source
+            .card
             .activation(ability)
             .mana_production()
             .and_then(|production| self.mana_quality(production, source.object.card))
@@ -751,7 +755,9 @@ impl Game {
         self.apply_transaction(actor, choice.action)
     }
     pub(super) fn purpose_for_item(&self, item: &SpellView) -> Purpose {
-        let Some(identity) = item.source else { return Purpose::Other; };
+        let Some(identity) = item.source else {
+            return Purpose::Other;
+        };
         if item.kind == StackKind::Spell {
             let mut source = Source::printed(identity.card);
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
@@ -764,7 +770,8 @@ impl Game {
                         .is_some_and(|object| object.owner == c.caster)
             });
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
-            source.linked_mana_source = self.threshold_linked_source(item.source.expect("object-backed packet").id);
+            source.linked_mana_source =
+                self.threshold_linked_source(item.source.expect("object-backed packet").id);
             Purpose::Spell(source)
         } else if let StackKind::ActivatedAbility { ability } = item.kind {
             let source = if self
@@ -772,7 +779,8 @@ impl Game {
                 .objects
                 .get(identity.object.card as usize)
                 .is_some_and(|o| {
-                    o.zone != Zone::Outside && self.object_ref(identity.object.card) == identity.object
+                    o.zone != Zone::Outside
+                        && self.object_ref(identity.object.card) == identity.object
                 }) {
                 Source::in_world(self, identity.object.card)
             } else {
@@ -796,18 +804,34 @@ impl Game {
                 .state
                 .announcing
                 .as_ref()
-                .filter(|a| a.item.source.expect("cost announcement has object source").id == card)
+                .filter(|a| {
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .id
+                        == card
+                })
                 .and_then(|a| a.item.cast.map(|cast| cast.origin))
                 .unwrap_or(self.state.objects[card as usize].zone)
                 == Zone::Hand;
         source.spend_any_mana = self.exile_cast_modifiers(actor, card).0
             || self.state.announcing.as_ref().is_some_and(|a| {
-                a.item.source.expect("cost announcement has object source").id == card && a.item.cast.is_some_and(|c| c.spend_any_mana)
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id
+                    == card
+                    && a.item.cast.is_some_and(|c| c.spend_any_mana)
             });
         source.linked_mana_source = self.threshold_linked_source(card);
         source.foreign_stash = self.foreign_stash(actor, card)
             || self.state.announcing.as_ref().is_some_and(|a| {
-                a.item.source.expect("cost announcement has object source").id == card && a.item.cast.is_some_and(|c| c.stash_origin)
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id
+                    == card
+                    && a.item.cast.is_some_and(|c| c.stash_origin)
             });
         Purpose::Spell(source)
     }
@@ -1043,8 +1067,9 @@ impl Game {
                         .map(|frame| &frame.announcement.item),
                 )
                 .find(|item| {
-                    item.source.is_some_and(|identity| identity.object == *source && identity.card == *definition)
-                        && item.controller == goal.actor
+                    item.source.is_some_and(|identity| {
+                        identity.object == *source && identity.card == *definition
+                    }) && item.controller == goal.actor
                         && item.kind == StackKind::ActivatedAbility { ability: *ability }
                         && item.borrowed_slot == *slot
                 })

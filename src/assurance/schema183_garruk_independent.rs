@@ -58,8 +58,10 @@ fn schema183_rejects_real_delayed_trigger_after_registry_expires() {
                 .iter()
                 .chain(&g.state.pending_triggers)
                 .chain(&g.state.ordering_triggers)
-                .any(|item| item.source.expect("object-backed packet").card == garruk
-                    && matches!(item.kind, StackKind::TriggeredAbility { .. }))
+                .any(
+                    |item| item.source.expect("object-backed packet").card == garruk
+                        && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                )
         );
         // Force the deadline boundary while the already-created trigger remains
         // pending, to audit owned continuation independently from the registry.

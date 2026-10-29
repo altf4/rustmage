@@ -70,7 +70,11 @@ fn count(obs: &Observation, p: Player, filter: impl Fn(&rustmage::ObjectView) ->
 }
 fn creation(obs: &Observation, item: &SpellView) -> Option<(u128, &'static str, i128, i128)> {
     let p = item.controller;
-    let n = item.source().expect("example expects an object-backed packet").card.name();
+    let n = item
+        .source()
+        .expect("example expects an object-backed packet")
+        .card
+        .name();
     let bf = |o: &rustmage::ObjectView| o.zone == Zone::Battlefield;
     match (n, item.kind) {
         ("Ajani, Caller of the Pride", StackKind::ActivatedAbility { ability: 2 }) => {
@@ -171,7 +175,10 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         created.len() as u128,
         amount,
         "{} {:?}",
-        item.source().expect("example expects an object-backed packet").card.name(),
+        item.source()
+            .expect("example expects an object-backed packet")
+            .card
+            .name(),
         item.kind
     );
     for o in &created {
@@ -305,7 +312,13 @@ fn main() {
                 if n > 0 {
                     checks += n;
                     batches += 1;
-                    seen.insert((item.source().expect("example expects an object-backed packet").card.name(), format!("{:?}", item.kind)));
+                    seen.insert((
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                        format!("{:?}", item.kind),
+                    ));
                 }
             }
             decisions += 1;

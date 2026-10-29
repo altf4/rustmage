@@ -48,7 +48,11 @@ impl Game {
     }
     pub(super) fn suspect_subject(&mut self, item: &SpellView, subject: Subject) {
         let objects: Vec<_> = match subject {
-            Subject::Source => item.source.map(|source| source.object).into_iter().collect(),
+            Subject::Source => item
+                .source
+                .map(|source| source.object)
+                .into_iter()
+                .collect(),
             Subject::Entering => self
                 .entering_subject(item)
                 .map(|id| self.object_ref(id))
@@ -88,7 +92,9 @@ impl Game {
             .filter(|r| {
                 self.on_battlefield(r.card)
                     && self.object_ref(r.card) == *r
-                    && item.source.is_some_and(|source| self.creature_matches(filter, item.controller, source.object, r.card))
+                    && item.source.is_some_and(|source| {
+                        self.creature_matches(filter, item.controller, source.object, r.card)
+                    })
             })
             .collect();
         for object in objects {

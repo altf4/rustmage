@@ -33,7 +33,12 @@ fn spell(g: &mut Game, owner: Player, name: &str) -> (CardId, u64) {
     );
     (
         card,
-        g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == card)).unwrap().id,
+        g.state
+            .stack
+            .iter()
+            .find(|s| s.source.is_some_and(|source| source.id == card))
+            .unwrap()
+            .id,
     )
 }
 fn decree(g: &mut Game, p: Player, target: u64) -> CardId {
@@ -269,10 +274,9 @@ fn hob_decree_copied_permanent_spell_counter_creates_no_card_permission() {
         );
         pay(&mut g);
         until(&mut g, |g| {
-            g.state
-                .stack
-                .iter()
-                .any(|s| s.is_copy && s.source.unwrap().card == Card::from_name("Bear Cub").unwrap())
+            g.state.stack.iter().any(|s| {
+                s.is_copy && s.source.unwrap().card == Card::from_name("Bear Cub").unwrap()
+            })
         });
         let copied = g
             .state

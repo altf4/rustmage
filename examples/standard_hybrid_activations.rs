@@ -193,7 +193,9 @@ fn main() {
             }
             if let Some(root) = before.announcing.as_ref()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && root.source().is_some_and(|source| NEW.contains(&source.card.name()))
+                && root
+                    .source()
+                    .is_some_and(|source| NEW.contains(&source.card.name()))
                 && let Action::PayCosts { payment } = a
             {
                 let request = before.payment_request.as_ref().unwrap();
@@ -213,7 +215,15 @@ fn main() {
                         .zip(cost.colored)
                         .all(|(paid, required)| paid >= required)
                 );
-                routes.insert((root.source().expect("example expects an object-backed packet").card.name(), ability, cost.colored, cost.generic));
+                routes.insert((
+                    root.source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        .name(),
+                    ability,
+                    cost.colored,
+                    cost.generic,
+                ));
                 payments += 1;
             }
             let saved = g.snapshot();
@@ -256,12 +266,21 @@ fn main() {
             }
             if let Some(root) = before.stack.last()
                 && let StackKind::ActivatedAbility { ability } = root.kind
-                && root.source().is_some_and(|source| NEW.contains(&source.card.name()))
+                && root
+                    .source()
+                    .is_some_and(|source| NEW.contains(&source.card.name()))
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()
             {
-                let target = if root.source().is_some_and(|source| source.card.name() == "Cindering Cutthroat") {
-                    Some(root.source().expect("example expects an object-backed packet").object)
+                let target = if root
+                    .source()
+                    .is_some_and(|source| source.card.name() == "Cindering Cutthroat")
+                {
+                    Some(
+                        root.source()
+                            .expect("example expects an object-backed packet")
+                            .object,
+                    )
                 } else {
                     root.targets.first().and_then(|t| t.object)
                 };
@@ -271,7 +290,13 @@ fn main() {
                         .iter()
                         .find(|b| b.reference == reference && b.zone == Zone::Battlefield)
                 {
-                    let keyword = match (root.source().expect("example expects an object-backed packet").card.name(), ability) {
+                    let keyword = match (
+                        root.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                        ability,
+                    ) {
                         ("Cindering Cutthroat", 0) => Keywords::MENACE,
                         ("Hovel Hurler", 0) => Keywords::FLYING,
                         ("Trostani, Three Whispers", 0) => Keywords::DEATHTOUCH,
@@ -280,7 +305,10 @@ fn main() {
                         _ => unreachable!(),
                     };
                     assert!(object.keywords.contains(keyword));
-                    if root.source().is_some_and(|source| source.card.name() == "Hovel Hurler") {
+                    if root
+                        .source()
+                        .is_some_and(|source| source.card.name() == "Hovel Hurler")
+                    {
                         let old = before
                             .objects
                             .iter()
@@ -289,7 +317,13 @@ fn main() {
                         assert_eq!(object.power, old.power + 1);
                         assert_eq!(object.toughness, old.toughness);
                     }
-                    abilities.insert((root.source().expect("example expects an object-backed packet").card.name(), ability));
+                    abilities.insert((
+                        root.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                        ability,
+                    ));
                     body_checks += 1;
                 }
             }

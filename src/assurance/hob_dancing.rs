@@ -186,7 +186,8 @@ fn dancing_reduced_and_free_costs_keep_printed_spell_mana_value() {
                 g.state
                     .stack
                     .iter()
-                    .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == spell))
+                    .find(|s| s.kind == StackKind::Spell
+                        && s.source.is_some_and(|source| source.id == spell))
                     .unwrap()
                     .mana_value(),
                 value
@@ -214,7 +215,8 @@ fn dancing_chosen_x_countered_spell_frozen_event_departure_stale_and_owned_resto
             g.state
                 .stack
                 .iter()
-                .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == spell))
+                .find(|s| s.kind == StackKind::Spell
+                    && s.source.is_some_and(|source| source.id == spell))
                 .unwrap()
                 .mana_value(),
             4

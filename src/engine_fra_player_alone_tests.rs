@@ -40,7 +40,8 @@ fn jiang_requires_one_attacker_and_a_player_defender() {
                 .iter()
                 .chain(game.state.pending_triggers.iter())
                 .filter(|item| {
-                    item.source.is_some_and(|source| source.id == jiang) && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.is_some_and(|source| source.id == jiang)
+                        && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 })
                 .count();
             assert_eq!(queued, usize::from(case == 0));

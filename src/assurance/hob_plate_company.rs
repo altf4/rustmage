@@ -308,7 +308,8 @@ fn hob_plate_company_plate_token_replacements_and_departed_source_still_amass() 
             let source = plate(&mut g, p, false);
             until(&mut g, |g| {
                 g.state.stack.iter().any(|s| {
-                    s.source.is_some_and(|identity| identity.id == source) && matches!(s.kind, StackKind::TriggeredAbility { .. })
+                    s.source.is_some_and(|identity| identity.id == source)
+                        && matches!(s.kind, StackKind::TriggeredAbility { .. })
                 })
             });
             g.move_object(source, Zone::Hand);
@@ -550,10 +551,10 @@ fn hob_plate_company_plate_copied_trigger_chooses_its_own_army_then_original_rec
         g.set_counters(b, Counters::of(CounterKind::PlusOne, 1));
         let source = plate(&mut g, p, true);
         until(&mut g, |g| {
-            g.state
-                .stack
-                .iter()
-                .any(|s| s.source.is_some_and(|identity| identity.id == source) && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+            g.state.stack.iter().any(|s| {
+                s.source.is_some_and(|identity| identity.id == source)
+                    && matches!(s.kind, StackKind::TriggeredAbility { .. })
+            })
         });
         let original = g.state.stack.last().unwrap().id;
         g.state.players[p.index()].mana = [0; 6];

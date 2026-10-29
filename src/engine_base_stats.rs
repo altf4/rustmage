@@ -64,7 +64,9 @@ impl Game {
         }
     }
     pub(super) fn set_base_stats_from_source(&mut self, item: &SpellView, subject: Subject) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let stats = if self.on_battlefield(source.object.card)
             && self.object_ref(source.object.card) == source.object
         {
@@ -214,7 +216,9 @@ impl Game {
         power: Option<i128>,
         toughness: Option<i128>,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let recipients: Vec<_> = match subject {
             Subject::Source => (self.on_battlefield(source.id)
                 && self.object_ref(source.id) == source.object)

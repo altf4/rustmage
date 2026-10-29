@@ -63,7 +63,9 @@ impl Game {
                 .into_iter()
                 .collect(),
             Subject::Source => {
-                let Some(source) = item.source else { return; };
+                let Some(source) = item.source else {
+                    return;
+                };
                 if !source.facts.battlefield {
                     return;
                 }

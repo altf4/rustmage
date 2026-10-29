@@ -59,7 +59,9 @@ fn type_slot_facts_supported(facts: &DamageFacts) -> bool {
 /// Inspect all packet fields carrying card definitions, recipes or LKI subtype
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn type_slot_packet_supported(item: &SpellView) -> bool {
-    let Some(source) = item.source else { return false; };
+    let Some(source) = item.source else {
+        return false;
+    };
     if !serde_json::to_string(item).is_ok_and(|json| project_before_type_slots(&json).is_ok())
         || type_slot_new_card(source.card)
         || !type_slot_facts_supported(&source.facts)

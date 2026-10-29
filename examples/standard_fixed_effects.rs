@@ -81,7 +81,9 @@ fn check(o: &Observation) -> u64 {
 fn classify(s: &SpellView) -> Option<usize> {
     if matches!(s.kind, StackKind::ActivatedAbility { .. }) {
         return s
-            .source().expect("example expects an object-backed packet").card
+            .source()
+            .expect("example expects an object-backed packet")
+            .card
             .token_info()
             .filter(|t| t.subtypes == "Clue")
             .map(|_| 12);
@@ -194,7 +196,10 @@ fn verify(i: usize, root: &SpellView, b: &Observation, a: &Observation) {
         [a.players[0].life, a.players[1].life],
         life,
         "{} effect {i}",
-        root.source().expect("example expects an object-backed packet").card.name()
+        root.source()
+            .expect("example expects an object-backed packet")
+            .card
+            .name()
     );
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -377,7 +382,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if let Action::ChooseMode { mode } = action {
                 assert_eq!(
-                    before.announcing.as_ref().unwrap().source().expect("example expects an object-backed packet").card.name(),
+                    before
+                        .announcing
+                        .as_ref()
+                        .unwrap()
+                        .source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        .name(),
                     NAMES[6]
                 );
                 assert!(g.observe(actor.other()).mode_choices.is_empty());
@@ -385,10 +397,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before
-                    .stack
-                    .iter()
-                    .any(|s| s.source().and_then(|source| index(source.card)).is_some() || classify(s) == Some(12));
+                || before.stack.iter().any(|s| {
+                    s.source().and_then(|source| index(source.card)).is_some()
+                        || classify(s) == Some(12)
+                });
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(actor, action.clone())?;

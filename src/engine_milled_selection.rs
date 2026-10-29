@@ -210,9 +210,10 @@ impl Game {
         // A public replacement destination can be the stack. Removing its spell
         // packet is movement, not a counter event. Hidden destinations never enter
         // this continuation and no old-generation object can be recovered.
-        self.state
-            .stack
-            .retain(|item| item.source.is_none_or(|source| !selected.contains(&source.object)));
+        self.state.stack.retain(|item| {
+            item.source
+                .is_none_or(|source| !selected.contains(&source.object))
+        });
         let destination = match destination {
             MilledDestination::PlayPermission { .. } => {
                 unreachable!("handled permission without movement")

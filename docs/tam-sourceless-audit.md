@@ -1,45 +1,9 @@
-# Tam draft: source-less radiation audit (unvalidated)
+# Radiation source-less stack audit
 
-This is an isolated draft and not an admission claim. Radiation is an inherent
-player-triggered ability with no object or card as source. The prototype uses
-sentinels internally and serializes source fields as null; it remains gated.
+Radiation is an inherent player-triggered ability with no card or object as its source. Its owned stack packet stores `None` in `SpellView::source()` and records the affected player in `StackKind::InherentRule`. It does not expose a fabricated card or object identity. See [the source migration](tam-typed-source-migration.md) for the Rust and schema 190 API changes.
 
-## Reached paths
+At the active player's precombat main phase, a player with rad counters gets the source-less trigger. Its fixed target-free program checks the current rad count on resolution. It mills that many cards and counts nonland cards actually milled to public zones, including exile under a replacement; it then causes that much life loss and removes that many rad counters. Stack copies retain the affected player. Countering the ability prevents its resolution.
 
-* `begin_step(Main1)` queues an `InherentRule::Radiation` packet only if the active
-  player has rad counters; ordinary APNAP ordering and announcement operate on
-  its fixed target-free program. `resolve_top` rechecks the affected player and
-  executes only `ResolveRadiation`.
-* `target_spec`, `modes`, and announcement cost/mana-choice methods explicitly
-  handle `InherentRule`, with no immutable source-card lookup. Stack ability
-  copy preserves kind, affected player, source marker and program; explicit
-  countering removes a nonspell stack item. Spell-only filters short-circuit
-  before source-card metadata; ability-source-kind matching uses a bounded
-  lookup and zero source facts.
-* `mill_radiation` uses actual zone-change events, and the action checkpoint
-  suspends competing zone replacements before committing the mill batch. The
-  pending trigger, replacement choices, copies and rollback snapshots are owned.
-  The isolated radiation tests cover both players, current counters, source-less
-  wire fields, copied/countered triggers, APNAP ordering and competing choices.
-* Generic source-capture passes that run during milling either match exact real
-  object references first, check `TriggeredAbility` before definition access,
-  or use bounds-checked battlefield lookup. Source-specific instructions such as
-  grant-self ability, temporary trigger creation and source-return never occur
-  in the fixed `ResolveRadiation` program.
+Milling uses a simultaneous zone-change batch and replacement planning. The pending trigger, replacement choices, copies and rollback snapshots are owned. Linked rules tests cover both seats, source-less observations, copied and countered triggers, current counters, public-zone replacements, ordering and snapshot replay. Player-counter and proliferate tests cover separate choices, replacement ordering and mixed permanent/player batches.
 
-## Blockers
-
-* The public Rust `SpellView` fields still expose the `CardId::MAX` object and
-  `Card::SOURCELESS` sentinel, even though serialization emits null and the
-  `source_identity()` accessor returns `None`. A caller using the historically
-  public source card's normal `Card` metadata methods can index the catalogue
-  with the sentinel and panic. The object ID is similarly not a real object.
-  Replace public identity with an optional or typed representation and migrate
-  all consumers before declaring this feature safe for the in-process API.
-* The full source-field scan contains hundreds of direct accesses. Reached-path
-  checks above are not a substitute for exhaustive migration to typed sources;
-  adding any new source-less program or copying one into a new execution path
-  must not silently inherit a physical-source assumption.
-* New tests and schema guard are isolated and unbuilt; the latter must be merged
-  with concurrently developed schema changes. APNAP player-counter split and
-  replacement behavior also needs independent review and guarded validation.
+Source-specific instruction executors still require a real object source. The radiation program does not use those operations; future inherent programs must audit their own paths and must not manufacture a source to satisfy a physical-source requirement. Tam is an admitted candidate after the linked branch and interaction tests; final published PR review and set-wide acceptance remain open.

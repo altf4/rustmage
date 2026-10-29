@@ -25,12 +25,23 @@ fn ingris_jiang_and_tetsuko_keep_distinct_attack_and_block_events() {
                 .state
                 .ordering_triggers
                 .iter()
-                .find(|item| item.source.is_some_and(|source| source.id == selected_first))
+                .find(|item| {
+                    item.source
+                        .is_some_and(|source| source.id == selected_first)
+                })
                 .unwrap()
                 .id;
-            let second = if selected_first == ingris { jiang } else { ingris };
-            assert!(g.state.ordering_triggers.iter().any(|item|
-                item.source.is_some_and(|source| source.id == second)));
+            let second = if selected_first == ingris {
+                jiang
+            } else {
+                ingris
+            };
+            assert!(
+                g.state
+                    .ordering_triggers
+                    .iter()
+                    .any(|item| item.source.is_some_and(|source| source.id == second))
+            );
             act(&mut g, Action::PutTrigger { id: first });
             for _ in 0..96 {
                 if g.state.pending == Pending::Blockers {
@@ -60,8 +71,10 @@ fn ingris_jiang_and_tetsuko_keep_distinct_attack_and_block_events() {
                     .stack
                     .iter()
                     .chain(g.state.pending_triggers.iter())
-                    .any(|item| item.source.is_some_and(|source| source.id == tetsuko)
-                        && matches!(item.kind, StackKind::TriggeredAbility { .. }))
+                    .any(
+                        |item| item.source.is_some_and(|source| source.id == tetsuko)
+                            && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    )
             );
             let old_blocker = g.object_ref(blocker);
             g.change_controller(old_blocker, p);

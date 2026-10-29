@@ -1949,16 +1949,21 @@ mod tests {
             assert!(game.turn_manifest_face_up(permanent));
             let triggers = &game.state.pending_triggers;
             assert_eq!(triggers.len(), 3);
-            assert!(triggers.iter().any(|trigger| trigger.source.unwrap().object == permanent
-                && trigger.kind == StackKind::TriggeredAbility { ability: 1 }));
-            assert!(triggers.iter().any(|trigger| trigger.source.unwrap().object == permanent
-                && trigger.kind == StackKind::TriggeredAbility { ability: 2 }));
             assert!(
                 triggers
                     .iter()
-                    .any(|trigger| trigger.source.unwrap().object == game.object_ref(observer)
+                    .any(|trigger| trigger.source.unwrap().object == permanent
+                        && trigger.kind == StackKind::TriggeredAbility { ability: 1 })
+            );
+            assert!(
+                triggers
+                    .iter()
+                    .any(|trigger| trigger.source.unwrap().object == permanent
                         && trigger.kind == StackKind::TriggeredAbility { ability: 2 })
             );
+            assert!(triggers.iter().any(|trigger| trigger.source.unwrap().object
+                == game.object_ref(observer)
+                && trigger.kind == StackKind::TriggeredAbility { ability: 2 }));
             assert!(triggers.iter().all(|trigger| {
                 trigger
                     .event_object

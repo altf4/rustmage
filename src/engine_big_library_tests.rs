@@ -396,7 +396,12 @@ fn big_font_chooses_token_on_resolution_and_pays_three_distinct_token_names_atom
         ] {
             g.state.objects[font as usize].tapped = false;
             activate(&mut g, font, 0, None);
-            assert!(g.state.stack.iter().any(|s| s.source.is_some_and(|source| source.id == font)));
+            assert!(
+                g.state
+                    .stack
+                    .iter()
+                    .any(|s| s.source.is_some_and(|source| source.id == font))
+            );
             until(&mut g, |g| {
                 matches!(g.state.pending, Pending::TokenChoice { .. })
             });

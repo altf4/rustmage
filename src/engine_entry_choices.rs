@@ -85,8 +85,16 @@ impl Game {
     pub(super) fn choose_entry_value(&mut self, value: EntryChoiceValue) {
         if matches!(self.state.pending, Pending::LandCardName { .. }) {
             assert!(EntryChoiceKind::LandCardName.matches(value));
-            let source = self.state.resolving.as_ref().and_then(|r| r.item.source).map(|s| s.object);
-            if let Some(source) = source && self.on_battlefield(source.card) && self.object_ref(source.card) == source {
+            let source = self
+                .state
+                .resolving
+                .as_ref()
+                .and_then(|r| r.item.source)
+                .map(|s| s.object);
+            if let Some(source) = source
+                && self.on_battlefield(source.card)
+                && self.object_ref(source.card) == source
+            {
                 self.set_entry_value(source, value);
             }
             self.run_program();

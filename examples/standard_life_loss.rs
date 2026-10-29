@@ -207,11 +207,17 @@ fn main() {
             }
             for item in before.stack.iter().filter(|s| {
                 matches!(s.kind, StackKind::TriggeredAbility { .. })
-                    && s.source().is_some_and(|source| NEW.contains(&source.card.name()))
+                    && s.source()
+                        .is_some_and(|source| NEW.contains(&source.card.name()))
             }) {
                 assert!(before.players[item.controller.other().index()].life_lost_this_turn > 0);
                 if after.stack.iter().all(|s| s.id != item.id) {
-                    triggers.insert(item.source().expect("example expects an object-backed packet").card.name());
+                    triggers.insert(
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                    );
                 }
             }
             max_bytes = max_bytes.max(g.state_bytes());

@@ -92,8 +92,15 @@ fn face_yourself_copying_a_copy_retains_both_sacrifice_abilities() {
             .unwrap();
         assert!(g.keywords(inherited).contains(Keywords::HASTE));
         g.begin_step(Step::End);
-        assert_eq!(g.state.pending_triggers.iter().filter(|s|
-            s.source.unwrap().object == g.object_ref(inherited) && s.kind == StackKind::CopyEndStepConditionalSacrifice).count(), 2);
+        assert_eq!(
+            g.state
+                .pending_triggers
+                .iter()
+                .filter(|s| s.source.unwrap().object == g.object_ref(inherited)
+                    && s.kind == StackKind::CopyEndStepConditionalSacrifice)
+                .count(),
+            2
+        );
         face_finish_end_step(&mut g);
         assert!(!g.on_battlefield(inherited));
     }
@@ -115,8 +122,13 @@ fn face_yourself_condition_uses_controller_at_trigger_not_token_creator() {
         g.state.objects[walker as usize].counters.loyalty = 3;
         g.change_controller(g.object_ref(token), p.other());
         g.begin_step(Step::End);
-        assert!(!g.state.pending_triggers.iter().any(|s| s.source.unwrap().object == g.object_ref(token)
-            && s.kind == StackKind::CopyEndStepConditionalSacrifice));
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .any(|s| s.source.unwrap().object == g.object_ref(token)
+                    && s.kind == StackKind::CopyEndStepConditionalSacrifice)
+        );
         g.move_object(walker, Zone::Graveyard);
         settle(&mut g);
         assert!(g.on_battlefield(token));
@@ -139,9 +151,18 @@ fn face_yourself_losing_abilities_before_or_after_trigger() {
             let aura = put(&mut g, p, "Infinite Coursework", Zone::Battlefield);
             g.state.objects[aura as usize].attached_to = Some(g.object_ref(token));
             assert!(!g.printed_abilities_available(token));
-            if before_step { g.begin_step(Step::End); }
-            let count = g.state.pending_triggers.iter().filter(|s|
-                s.source.unwrap().object == g.object_ref(token) && s.kind == StackKind::CopyEndStepConditionalSacrifice).count();
+            if before_step {
+                g.begin_step(Step::End);
+            }
+            let count = g
+                .state
+                .pending_triggers
+                .iter()
+                .filter(|s| {
+                    s.source.unwrap().object == g.object_ref(token)
+                        && s.kind == StackKind::CopyEndStepConditionalSacrifice
+                })
+                .count();
             assert_eq!(count, usize::from(!before_step));
             face_finish_end_step(&mut g);
             assert_eq!(g.on_battlefield(token), before_step);

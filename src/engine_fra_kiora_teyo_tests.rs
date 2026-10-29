@@ -30,14 +30,17 @@ fn fra_kiora_entry_trigger_keeps_its_controller_after_source_moves_or_changes_co
             cast(&mut g, source, None);
             for _ in 0..24 {
                 if g.state.stack.iter().any(|item| {
-                    item.source.is_some_and(|identity| identity.id == source) && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    item.source.is_some_and(|identity| identity.id == source)
+                        && matches!(item.kind, StackKind::TriggeredAbility { .. })
                 }) {
                     break;
                 }
                 act(&mut g, Action::Pass);
             }
-            assert!(g.state.stack.iter().any(|item| item.source.is_some_and(|identity| identity.id == source)
-                && matches!(item.kind, StackKind::TriggeredAbility { .. })));
+            assert!(g.state.stack.iter().any(|item| {
+                item.source.is_some_and(|identity| identity.id == source)
+                    && matches!(item.kind, StackKind::TriggeredAbility { .. })
+            }));
             super::super::contracts::branch_contract(g.clone());
             if change_control {
                 g.change_controller(g.object_ref(source), p.other());

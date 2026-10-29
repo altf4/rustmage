@@ -27,15 +27,18 @@ impl Game {
         match subject {
             Subject::Source => {
                 let source = item.source?;
-                Some(if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
-                    self.copiable_recipe(source.object)
-                } else {
-                    item.source_copy_recipe
-                        .as_deref()
-                        .copied()
-                        .unwrap_or_else(|| CopyRecipe::new(source.card))
-                })
-            },
+                Some(
+                    if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object
+                    {
+                        self.copiable_recipe(source.object)
+                    } else {
+                        item.source_copy_recipe
+                            .as_deref()
+                            .copied()
+                            .unwrap_or_else(|| CopyRecipe::new(source.card))
+                    },
+                )
+            }
             Subject::Targets => item.targets.iter().find_map(|bound| {
                 if self.same_target_object(*bound)
                     && let Target::Card(id) = bound.target
@@ -102,7 +105,9 @@ impl Game {
         self.try_sacrifice_exact_source(item);
     }
     pub(super) fn try_sacrifice_exact_source(&mut self, item: &SpellView) -> bool {
-        let Some(source) = item.source else { return false; };
+        let Some(source) = item.source else {
+            return false;
+        };
         if !self.on_battlefield(source.id)
             || self.object_ref(source.id) != source.object
             || self.state.objects[source.id as usize].controller != item.controller

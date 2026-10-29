@@ -81,7 +81,12 @@ fn countered_loyalty_still_qualifies_attack_on_planeswalker() {
         act(&mut g, attack);
         act(&mut g, Action::FinishAttackers);
         select_kiora_target(&mut g, attacker);
-        assert!(g.state.stack.iter().any(|item| item.source.is_some_and(|source| source.id == kiora)));
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .any(|item| item.source.is_some_and(|source| source.id == kiora))
+        );
         settle(&mut g);
         assert!(!g.object_view(attacker).tapped);
         assert!(g.keywords(attacker).contains(Keywords::CANT_BE_BLOCKED));

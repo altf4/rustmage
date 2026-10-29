@@ -125,7 +125,9 @@ impl Game {
         {
             if let Some(q) = &mut p.source_quantity_lki
                 && q.creature_comparison.is_some()
-                && let Some((_, stats, _, _)) = facts.iter().find(|(r, _, _, _)| p.source.is_some_and(|source| *r == source.object))
+                && let Some((_, stats, _, _)) = facts
+                    .iter()
+                    .find(|(r, _, _, _)| p.source.is_some_and(|source| *r == source.object))
             {
                 q.creature_comparison = Some(*stats);
             }
@@ -264,7 +266,9 @@ impl Game {
             .as_ref()
             .and_then(|q| q.creature_comparison)
             .expect("source comparison facts");
-        let Some(identity) = p.source else { return false; };
+        let Some(identity) = p.source else {
+            return false;
+        };
         self.comparison_facts(e.object, entrant)
             .greater_than(self.comparison_facts(identity.object, source))
     }

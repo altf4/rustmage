@@ -70,20 +70,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 before
                                     .stack
                                     .iter()
-                                    .find(|v| v.source().is_some_and(|source| source.id == id) && v.kind == StackKind::Spell)
+                                    .find(|v| {
+                                        v.source().is_some_and(|source| source.id == id)
+                                            && v.kind == StackKind::Spell
+                                    })
                                     .map(|v| v.id)
                             } else {
                                 None
                             }
                         }),
-                        usize::from(s.source().is_some_and(|source| source.card.name() == "Spell Pierce")),
+                        usize::from(
+                            s.source()
+                                .is_some_and(|source| source.card.name() == "Spell Pierce"),
+                        ),
                     )
                 };
                 if let Some(victim) = victim
-                    && before
-                        .stack
-                        .iter()
-                        .any(|v| v.id == victim && v.source().is_some_and(|source| source.card.cannot_be_countered()))
+                    && before.stack.iter().any(|v| {
+                        v.id == victim
+                            && v.source()
+                                .is_some_and(|source| source.card.cannot_be_countered())
+                    })
                 {
                     attempts.push((s.id, victim, kind));
                 }

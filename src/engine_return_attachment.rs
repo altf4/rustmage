@@ -40,7 +40,9 @@ impl Game {
         group: u16,
         subtype: Option<&'static str>,
     ) -> bool {
-        let Some(source) = item.source else { return false; };
+        let Some(source) = item.source else {
+            return false;
+        };
         let recipient = item
             .targets
             .iter()
@@ -88,7 +90,9 @@ impl Game {
             }
             return false;
         }
-        let Some(source) = item.source else { return false; };
+        let Some(source) = item.source else {
+            return false;
+        };
         self.state.resolving.as_mut().unwrap().return_attachment =
             Some(Box::new(ReturnAttachment {
                 origin: source.object,
@@ -104,7 +108,9 @@ impl Game {
         self.advance_return_attachment()
     }
     pub(super) fn return_source_with_equipment(&mut self, item: &SpellView, counter: CounterKind) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if self.object_ref(source.id) != source.object
             || self.state.objects[source.id as usize].zone != Zone::Graveyard
         {

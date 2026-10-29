@@ -879,13 +879,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if matches!(item.kind, StackKind::ActivatedAbility { .. })
                     && !progress[actor.index()].extra
                     && (item.source().is_some_and(|source| source.card == focal)
-                        || (i == 3 && item.source().is_some_and(|source| source.card.has_subtype("Food"))))
+                        || (i == 3
+                            && item
+                                .source()
+                                .is_some_and(|source| source.card.has_subtype("Food"))))
                 {
                     progress[actor.index()].activation = Some(flight());
                 }
                 if i == 16
                     && item.kind == StackKind::Spell
-                    && item.source().expect("example expects an object-backed packet").card == Card::from_name("Bygone Colossus").unwrap()
+                    && item
+                        .source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        == Card::from_name("Bygone Colossus").unwrap()
                     && progress[actor.index()].main_verified
                 {
                     assert!(item.mana_value() >= 5);
@@ -904,7 +911,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Action::PayCosts { .. } = action
                 && let Some(item) = &o.announcing
                 && item.kind == StackKind::Spell
-                && item.source().expect("example expects an object-backed packet").card == focal.adventure_spell().unwrap()
+                && item
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .card
+                    == focal.adventure_spell().unwrap()
             {
                 let cast = item.cast.unwrap();
                 assert_eq!(cast.face, rustmage::CastFace::Adventure);
@@ -924,14 +935,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert!(!traits.type_line.contains("Creature"));
                 assert!(!traits.type_line.contains("Land"));
                 if progress[actor.index()].normal {
-                    progress[actor.index()].second_id = Some(item.source().expect("example expects an object-backed packet").id);
+                    progress[actor.index()].second_id = Some(
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .id,
+                    );
                     progress[actor.index()].second_effect = Some(Flight {
                         before: o.clone(),
                         targets: item.targets.clone(),
                         scry: 0,
                     });
                 } else {
-                    progress[actor.index()].inset = Some(item.source().expect("example expects an object-backed packet").id);
+                    progress[actor.index()].inset = Some(
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .id,
+                    );
                     progress[actor.index()].first_effect = Some(Flight {
                         before: o.clone(),
                         targets: item.targets.clone(),

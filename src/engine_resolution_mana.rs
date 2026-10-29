@@ -34,17 +34,20 @@ impl Game {
         };
         let victim = &self.state.stack[index];
         if victim.kind == StackKind::Spell {
-            let Some(source) = victim.source else { return false; };
-            if self.state.uncounterable_spell_ids.as_deref().is_some_and(|ids| ids.contains(&victim.id))
+            let Some(source) = victim.source else {
+                return false;
+            };
+            if self
+                .state
+                .uncounterable_spell_ids
+                .as_deref()
+                .is_some_and(|ids| ids.contains(&victim.id))
                 || source.card.cannot_be_countered()
                 || self.controlled_spells_uncounterable(victim.controller, source.card)
             {
                 return false;
             }
-            self.move_object(
-                source.id,
-                if exile { Zone::Exile } else { Zone::Graveyard },
-            );
+            self.move_object(source.id, if exile { Zone::Exile } else { Zone::Graveyard });
         } else {
             self.state.stack.remove(index);
         }
@@ -56,10 +59,13 @@ impl Game {
             let Some(victim) = self.bound_stack_item(bound).cloned() else {
                 continue;
             };
-            let Some(source) = victim.source else { continue; };
-            let permanent = victim.kind == StackKind::Spell && PermanentType::ALL
-                .into_iter()
-                .any(|kind| source.card.kind_mask() & kind.mask() != 0);
+            let Some(source) = victim.source else {
+                continue;
+            };
+            let permanent = victim.kind == StackKind::Spell
+                && PermanentType::ALL
+                    .into_iter()
+                    .any(|kind| source.card.kind_mask() & kind.mask() != 0);
             if self.counter_stack_item(victim.id, permanent) && permanent && !victim.is_copy {
                 let after = self.object_ref(source.id);
                 if after != source.object

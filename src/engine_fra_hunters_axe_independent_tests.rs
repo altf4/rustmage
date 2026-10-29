@@ -57,8 +57,10 @@ fn axe_queued_trigger_keeps_controller_after_loss_of_ability_and_control() {
                     .pending_triggers
                     .iter()
                     .chain(g.state.stack.iter())
-                    .any(|item| item.source.is_some_and(|source| source.object == reference)
-                        && matches!(item.kind, StackKind::TriggeredAbility { .. }))
+                    .any(
+                        |item| item.source.is_some_and(|source| source.object == reference)
+                            && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                    )
             );
             let blank = put(&mut g, p.other(), "Fresh Start", Zone::Battlefield);
             g.state.objects[blank as usize].attached_to = Some(reference);

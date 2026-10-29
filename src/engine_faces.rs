@@ -56,7 +56,9 @@ impl Game {
                 .program()
                 .is_some_and(|(_, program)| program.contains(&Instruction::TransformSource))
         {
-            item.source_transform = item.source.map(|source| self.transform_serial(source.object));
+            item.source_transform = item
+                .source
+                .map(|source| self.transform_serial(source.object));
         }
     }
     pub(super) fn transform_serial(&self, object: ObjectRef) -> u64 {
@@ -100,7 +102,9 @@ impl Game {
         item: &SpellView,
         counter: CounterKind,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if item.is_copy
             || self.object_ref(source.id) != source.object
             || self.state.objects[source.id as usize].zone != Zone::Stack
@@ -133,7 +137,9 @@ impl Game {
         self.stage_entries(vec![movement], None);
     }
     pub(super) fn transform_source(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if !self.on_battlefield(source.id)
             || self.object_ref(source.id) != source.object
             || item.source_transform != Some(self.transform_serial(source.object))

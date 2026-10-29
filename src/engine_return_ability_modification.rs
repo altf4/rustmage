@@ -26,7 +26,9 @@ impl std::hash::Hash for ResolvedAbilityModificationView {
 }
 impl Game {
     pub(super) fn return_source_blank_with_haste(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let Some(movement) = item.source_move.as_ref().filter(|m| {
             m.before == source.object
                 && m.origin == Zone::Battlefield

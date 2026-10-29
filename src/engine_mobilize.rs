@@ -162,7 +162,9 @@ impl Game {
         let f = self.state.mobilize.take().unwrap();
         assert_eq!(f.amount, f.defenders.len());
         let item = self.state.resolving.as_ref().unwrap().item.clone();
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         assert!(
             f.defenders
                 .iter()
@@ -196,7 +198,9 @@ impl Game {
         batches.push(batch);
     }
     pub(super) fn finish_temporary_copy(&mut self, item: &SpellView, tokens: Vec<ObjectRef>) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let ids = tokens.iter().map(|r| r.card).collect::<Vec<_>>();
         self.grant_keyword_effects(&ids, source.object, Keywords::HASTE);
         let id = self.next_stack_id();
@@ -232,7 +236,12 @@ impl Game {
             let card = b.view.source_card;
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
-            source: Some(StackSourceView { id: source.card, object: source, card, facts: b.facts }),
+                source: Some(StackSourceView {
+                    id: source.card,
+                    object: source,
+                    card,
+                    facts: b.facts,
+                }),
                 source_less_rule: None,
                 additional_triggers: 0,
                 source_move: None,
@@ -290,7 +299,6 @@ impl Game {
                 manifest_event: None,
                 sacrificed_toughness: None,
                 sacrificed_power: None,
-
 
                 targets: Vec::new(),
                 mode: None,

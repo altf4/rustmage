@@ -313,7 +313,9 @@ impl Tracker {
             if !self.seen_packets.insert(s.id) {
                 continue;
             }
-            let Some(source) = s.source() else { continue; };
+            let Some(source) = s.source() else {
+                continue;
+            };
             if s.kind == StackKind::Spell && !s.is_copy && s.cast.is_some() {
                 self.cards.insert(source.card.name().into());
                 self.colors |= source.card.colors();
@@ -368,15 +370,17 @@ impl Tracker {
             matches!(_action, Action::Pass)
                 .then(|| _before.stack.last())
                 .flatten()
-        }) && packet.source().is_some_and(|source| matches!(
-            source.card.name(),
-            "Campus Crier"
-                | "Repurposed Enforcer"
-                | "Theorist's Proxy"
-                | "Avatar of Burgeoning Echoes"
-                | "Arcane Amphisbaena"
-                | "Fatehold Charm"
-        )) {
+        }) && packet.source().is_some_and(|source| {
+            matches!(
+                source.card.name(),
+                "Campus Crier"
+                    | "Repurposed Enforcer"
+                    | "Theorist's Proxy"
+                    | "Avatar of Burgeoning Echoes"
+                    | "Arcane Amphisbaena"
+                    | "Fatehold Charm"
+            )
+        }) {
             for object in &after.objects {
                 if object.zone != Zone::Battlefield
                     || object.controller != packet.controller

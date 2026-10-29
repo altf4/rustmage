@@ -86,7 +86,12 @@ impl Game {
             let view = d.view;
             let id = self.next_stack_id();
             self.state.pending_triggers.push(SpellView {
-            source: Some(StackSourceView { id: view.source.card, object: view.source, card: view.source_card, facts: d.facts }),
+                source: Some(StackSourceView {
+                    id: view.source.card,
+                    object: view.source,
+                    card: view.source_card,
+                    facts: d.facts,
+                }),
                 source_less_rule: None,
                 additional_triggers: 0,
                 source_move: None,
@@ -144,7 +149,6 @@ impl Game {
                 manifest_event: None,
                 sacrificed_toughness: None,
                 sacrificed_power: None,
-
 
                 targets: Vec::new(),
                 mode: None,

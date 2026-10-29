@@ -101,12 +101,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert!(g.observe(actor.other()).additional_cost.is_none());
                 checks += 1;
                 if seed % 2 == 0
-                    && before
+                    && before.announcing.as_ref().is_some_and(|s| {
+                        s.source()
+                            .is_some_and(|source| source.card.name() == "Kingpin's Enforcers")
+                    })
+                {
+                    let source = before
                         .announcing
                         .as_ref()
-                        .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Kingpin's Enforcers"))
-                {
-                    let source = before.announcing.as_ref().unwrap().source().expect("activation has source").object;
+                        .unwrap()
+                        .source()
+                        .expect("activation has source")
+                        .object;
                     if cost.candidates.contains(&source) {
                         action = Action::ChooseAdditionalCost { object: source };
                     }
@@ -139,7 +145,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let i = external(root).unwrap();
                 uses[i] += 1;
                 commits += 1;
-                self_sacrifices += usize::from(selected == root.source().expect("example expects an object-backed packet").object);
+                self_sacrifices += usize::from(
+                    selected
+                        == root
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .object,
+                );
                 assert!(
                     !after
                         .objects
@@ -157,10 +169,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 }
                 if [0, 2, 3, 7, 8, 11].contains(&i)
-                    && let Some(o) = after
-                        .objects
-                        .iter()
-                        .find(|o| o.reference == root.source().expect("example expects an object-backed packet").object && o.zone == Zone::Battlefield)
+                    && let Some(o) = after.objects.iter().find(|o| {
+                        o.reference
+                            == root
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .object
+                            && o.zone == Zone::Battlefield
+                    })
                 {
                     assert!(o.tapped);
                 }

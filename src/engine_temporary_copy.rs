@@ -136,7 +136,10 @@ impl Game {
                     .flatten()
             })
         };
-        let Some(recipient) = spec.recipient_group.map_or(item.source.map(|source| source.object), selected) else {
+        let Some(recipient) = spec
+            .recipient_group
+            .map_or(item.source.map(|source| source.object), selected)
+        else {
             return;
         };
         if !self.on_battlefield(recipient.card) || self.object_ref(recipient.card) != recipient {
@@ -595,7 +598,9 @@ impl Game {
         }
     }
     pub(super) fn record_copy_activation_use(&mut self, item: &SpellView, ability: u16) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let bit = 1u64 << ability;
         if self.copy_ability_origin(source.object) == item.source_ability_origin {
             self.state.objects[source.id as usize].used_abilities |= bit;

@@ -35,7 +35,8 @@ fn copied_delayed_attack_trigger_preserves_exact_attacker_subjects() {
             .stack
             .iter()
             .find(|item| {
-                item.source.is_some_and(|identity| identity.id == source) && matches!(item.kind, StackKind::TriggeredAbility { .. })
+                item.source.is_some_and(|identity| identity.id == source)
+                    && matches!(item.kind, StackKind::TriggeredAbility { .. })
             })
             .unwrap()
             .clone();

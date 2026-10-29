@@ -49,7 +49,12 @@ fn machinations_allows_real_way_loyalty_grant_over_opponents_spell() {
                 before_loyalty + 1
             );
             assert_eq!(g.state.players[player.index()].mana[3], before_red);
-            assert!(g.state.stack.iter().any(|item| item.source.is_some_and(|source| source.id == shock)));
+            assert!(
+                g.state
+                    .stack
+                    .iter()
+                    .any(|item| item.source.is_some_and(|source| source.id == shock))
+            );
             reject(&mut g, grant.clone());
             settle(&mut g);
             assert_eq!(g.state.players[player.index()].mana[3], before_red + 1);

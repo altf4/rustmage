@@ -85,7 +85,9 @@ impl Game {
         }]);
     }
     pub(super) fn source_fight(&mut self, item: &SpellView) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if !self.on_battlefield(source.id)
             || self.object_ref(source.id) != source.object
             || self.current_kinds(source.id) & 1 == 0

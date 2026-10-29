@@ -343,7 +343,8 @@ impl Tracker {
                     self.cards.insert(source.card.name().into());
                     self.colors |= source.card.colors();
                     self.hit("actual_cast", s.id.to_string());
-                    if s.source().is_some_and(|source| source.card.name() == "Witherbloom, the Balancer")
+                    if s.source()
+                        .is_some_and(|source| source.card.name() == "Witherbloom, the Balancer")
                         && cast.method == CastMethod::Normal
                         && cast.mana_spent() < 8
                         && before.objects.iter().any(|o| {
@@ -368,8 +369,18 @@ impl Tracker {
                     }
                     if cast.origin == Zone::Exile
                         && self.prepared_copies.iter().any(|copy| {
-                            copy.card == s.source().expect("example expects an object-backed packet").object.card
-                                && copy.generation.checked_add(1) == Some(s.source().expect("example expects an object-backed packet").object.generation)
+                            copy.card
+                                == s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                                    .card
+                                && copy.generation.checked_add(1)
+                                    == Some(
+                                        s.source()
+                                            .expect("example expects an object-backed packet")
+                                            .object
+                                            .generation,
+                                    )
                         })
                     {
                         self.hit("prepared_spell_cast", s.id.to_string());
@@ -381,7 +392,9 @@ impl Tracker {
                         && cast.origin == Zone::Exile
                         && before.resolving.as_ref().is_some_and(|packet| {
                             matches!(packet.kind, StackKind::TriggeredAbility { .. })
-                                && packet.source().is_some_and(|other| other.card == source.card)
+                                && packet
+                                    .source()
+                                    .is_some_and(|other| other.card == source.card)
                         })
                         && before.cascade.is_none()
                         && [
@@ -397,7 +410,9 @@ impl Tracker {
                     }
                 } else if s.is_copy {
                     self.hit("uncast_copy", s.id.to_string());
-                    if s.source().is_some_and(|source| source.card.name() == "Lumaret's Favor") {
+                    if s.source()
+                        .is_some_and(|source| source.card.name() == "Lumaret's Favor")
+                    {
                         self.hit("infusion_copy", s.id.to_string());
                     }
                     if let Some(cause) = self.copy_causes.get(&s.id).copied().or(immediate_cause) {
@@ -406,7 +421,8 @@ impl Tracker {
                 }
             }
             if s.kind == (StackKind::ActivatedAbility { ability: 1 })
-                && s.source().is_some_and(|source| source.card.name() == "Page, Loose Leaf")
+                && s.source()
+                    .is_some_and(|source| source.card.name() == "Page, Loose Leaf")
             {
                 self.hit("grandeur_paid", s.id.to_string());
             }
@@ -482,7 +498,9 @@ impl Tracker {
         }
         let mill_packet = before.resolving.as_ref().or_else(|| before.stack.last());
         if mill_packet.is_some_and(|packet| {
-            packet.source().is_some_and(|source| source.card.name() == "Exhibition Tidecaller")
+            packet
+                .source()
+                .is_some_and(|source| source.card.name() == "Exhibition Tidecaller")
                 && matches!(packet.kind, StackKind::TriggeredAbility { .. })
         }) && [Player::P0, Player::P1].into_iter().any(|player| {
             after.players[player.index()].library_count

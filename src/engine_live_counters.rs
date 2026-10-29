@@ -129,7 +129,9 @@ impl Game {
         kind: CounterKind,
         amount: AmountValue,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return;
         }

@@ -276,7 +276,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     assert_eq!(
                         ann.mana_value(),
-                        printed_mana_value(ann.source().expect("example expects an object-backed packet").card) + u64::from(ann.x.unwrap())
+                        printed_mana_value(
+                            ann.source()
+                                .expect("example expects an object-backed packet")
+                                .card
+                        ) + u64::from(ann.x.unwrap())
                     );
                 }
             }
@@ -424,16 +428,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     10 | 11 => {
-                        let v = after.objects.iter().find(|v| v.id == s.source().expect("example expects an object-backed packet").id).unwrap();
+                        let v = after
+                            .objects
+                            .iter()
+                            .find(|v| {
+                                v.id == s
+                                    .source()
+                                    .expect("example expects an object-backed packet")
+                                    .id
+                            })
+                            .unwrap();
                         assert_eq!(v.zone, Zone::Battlefield);
                         assert_eq!(v.counters.plus_one, u64::from(x));
-                        for t in after
-                            .waiting_triggers
-                            .iter()
-                            .filter(|t| t.source().expect("trigger has source").object.card == s.source().expect("example expects an object-backed packet").id)
-                        {
+                        for t in after.waiting_triggers.iter().filter(|t| {
+                            t.source().expect("trigger has source").object.card
+                                == s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .id
+                        }) {
                             assert_eq!(t.x, Some(x));
-                            assert_eq!(t.mana_value(), printed_mana_value(s.source().expect("example expects an object-backed packet").card));
+                            assert_eq!(
+                                t.mana_value(),
+                                printed_mana_value(
+                                    s.source()
+                                        .expect("example expects an object-backed packet")
+                                        .card
+                                )
+                            );
                         }
                     }
                     _ => unreachable!(),

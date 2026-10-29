@@ -22,7 +22,9 @@ impl Game {
         ability: u16,
         timestamp: u64,
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let granting_card = item.trigger_definition();
         assert!(
             granting_card.triggers()[usize::from(ability)]
@@ -58,15 +60,17 @@ impl Game {
         let rows = rows.to_vec();
         let event = stack.and_then(|index| {
             let item = &self.state.stack[index];
-            item.cast.zip(item.source).map(|(cast, source)| CastPaymentEvent {
-                mana_value: item.mana_value(),
-                stack_id: item.id,
-                object: source.object,
-                card: source.card,
-                controller: item.controller,
-                payment: cast.payment,
-                treasure_mana_spent: cast.treasure_mana_spent,
-            })
+            item.cast
+                .zip(item.source)
+                .map(|(cast, source)| CastPaymentEvent {
+                    mana_value: item.mana_value(),
+                    stack_id: item.id,
+                    object: source.object,
+                    card: source.card,
+                    controller: item.controller,
+                    payment: cast.payment,
+                    treasure_mana_spent: cast.treasure_mana_spent,
+                })
         });
         for grant in rows {
             if !(grant.permanent || grant.expires_turn == self.state.turn)
@@ -103,7 +107,12 @@ impl Game {
                 || (ability.condition.requires_opponents_turn()
                     && self.state.active == source.controller)
                 || !self.cast_filter_matches_value(
-                    stack.and_then(|i| self.state.stack[i].source.and_then(|source| self.state.objects.get(source.id as usize)).map(|object| object.owner)),
+                    stack.and_then(|i| {
+                        self.state.stack[i]
+                            .source
+                            .and_then(|source| self.state.objects.get(source.id as usize))
+                            .map(|object| object.owner)
+                    }),
                     filter,
                     card,
                     event.map_or_else(|| card.fixed_mana_value(), |e| e.mana_value),
@@ -151,7 +160,9 @@ impl Game {
         ability: u16,
         ids: &[CardId],
     ) {
-        let Some(source) = item.source else { return; };
+        let Some(source) = item.source else {
+            return;
+        };
         let granting_card = item.trigger_definition();
         assert!(
             granting_card.triggers()[usize::from(ability)]

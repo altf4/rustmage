@@ -371,7 +371,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| s.source().and_then(|source| index(source.card)).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(p, action.clone())?;
