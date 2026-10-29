@@ -118,7 +118,6 @@ impl Game {
         let Some(link) = &item.return_link else {
             return;
         };
-        let Some(source) = item.source else { return; };
         if self
             .state
             .objects
@@ -270,6 +269,7 @@ impl Game {
         let Some(link) = &item.return_link else {
             return;
         };
+        let Some(source) = item.source else { return; };
         let mut link = (**link).clone();
         match kind {
             ReturnKind::Revival => {
