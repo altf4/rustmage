@@ -1,0 +1,208 @@
+//! Owned, private outside-game selection; the outside pool is not a game zone.
+use super::*;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum Selection { Pool(u16), Basic(Card) }
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct Choice {
+    owner: Player,
+    first: Option<Selection>,
+    pair: Option<[Selection; 2]>,
+}
+/// Frozen pre-event card facts. This has no `ObjectRef` or in-game origin:
+/// the physical outside entry acquires an object identity only on admission.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct OutsideHandEvent {
+    owner: Player,
+    selected: Selection,
+    card: Card,
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct OutsideChoiceView {
+    pub owner: Player,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pool: Option<Vec<Card>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first: Option<Selection>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revealed: Option<[Card; 2]>,
+}
+// Count names rather than testing every pair. Large casual collections may
+// contain many duplicates, and action enumeration must not become quadratic.
+struct NameIndex {
+    total: usize,
+    single: std::collections::HashMap<&'static str, usize>,
+    pairs: std::collections::HashMap<(&'static str, &'static str), usize>,
+}
+impl NameIndex {
+    fn keys(card: Card) -> Vec<&'static str> {
+        let mut names: Vec<_> = outside_names::names(card).expect("validated outside card")
+            .iter().map(|name| crate::card_names::comparison_key(name)).collect();
+        names.sort_unstable();
+        names.dedup();
+        names
+    }
+    fn new(state: &OutsideGameState, owner: Player, candidates: &[Selection]) -> Self {
+        let mut result = Self { total: candidates.len(), single: Default::default(), pairs: Default::default() };
+        for &candidate in candidates {
+            let names = Self::keys(state.card(owner, candidate));
+            for &name in &names { *result.single.entry(name).or_default() += 1; }
+            if names.len() == 2 { *result.pairs.entry((names[0], names[1])).or_default() += 1; }
+        }
+        result
+    }
+    fn has_distinct(&self, card: Card) -> bool {
+        let names = Self::keys(card);
+        let mut overlapping = names.iter().map(|n| self.single.get(n).copied().unwrap_or(0)).sum::<usize>();
+        if names.len() == 2 {
+            overlapping -= self.pairs.get(&(names[0], names[1])).copied().unwrap_or(0);
+        }
+        overlapping < self.total
+    }
+}
+impl OutsideGameState {
+    fn card(&self, owner: Player, selection: Selection) -> Card {
+        match selection {
+            Selection::Pool(index) => self.pools[owner.index()][usize::from(index)],
+            Selection::Basic(card) => card,
+        }
+    }
+    fn candidates(&self, owner: Player) -> Vec<Selection> {
+        let mut result: Vec<_> = (0..self.pools[owner.index()].len()).map(|i|
+            Selection::Pool(u16::try_from(i).expect("pool bound"))).collect();
+        if self.mode == OutsideGameMode::LimitedSideboard {
+            result.extend([Card::Plains, Card::Island, Card::Swamp, Card::Mountain, Card::Forest]
+                .into_iter().map(Selection::Basic));
+        }
+        result
+    }
+    fn distinct(&self, owner: Player, a: Selection, b: Selection) -> bool {
+        a != b && outside_names::different(self.card(owner, a), self.card(owner, b)) == Some(true)
+    }
+}
+impl Game {
+    pub(super) fn start_outside_choice(&mut self, owner: Player) -> bool {
+        // Always offer a private decline, even with no valid pair: skipping
+        // this decision would disclose information about the hidden pool.
+        let state = self.state.outside_game.get_or_insert_with(|| Box::new(OutsideGameState {
+            mode: OutsideGameMode::CasualCollection, pools: [Vec::new(), Vec::new()],
+            choice: None, known: [Vec::new(), Vec::new()],
+        }));
+        state.choice = Some(Choice { owner, first: None, pair: None });
+        self.state.pending = Pending::OutsideGameChoice { player: owner };
+        true
+    }
+    pub(super) fn visit_outside_choices(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let state = self.state.outside_game.as_ref().unwrap();
+        let choice = state.choice.as_ref().unwrap();
+        if choice.pair.is_some() {
+            return emit(Action::ChooseOutsideRevealed { index: 0 })
+                || emit(Action::ChooseOutsideRevealed { index: 1 });
+        }
+        if emit(Action::DeclineOutsideCards) { return true; }
+        // CR 723.4 hides outside cards from a player's controller. Wizards'
+        // Mindslaver release note says that controller cannot have the player
+        // choose cards outside the game; do not expose candidate IDs or names.
+        if self.decision_controller(choice.owner) != choice.owner { return false; }
+        if choice.first.is_some() && emit(Action::CancelOutsideCard) { return true; }
+        let candidates = state.candidates(choice.owner);
+        let names = NameIndex::new(state, choice.owner, &candidates);
+        for &candidate in &candidates {
+            let legal = if let Some(first) = choice.first {
+                state.distinct(choice.owner, first, candidate)
+            } else {
+                names.has_distinct(state.card(choice.owner, candidate))
+            };
+            let action = match candidate {
+                Selection::Pool(index) => Action::ChooseOutsideCard { index },
+                Selection::Basic(card) => Action::ChooseOutsideBasic { card },
+            };
+            if legal && emit(action) { return true; }
+        }
+        false
+    }
+    pub(super) fn outside_choice_view(&self, viewer: Player) -> Option<OutsideChoiceView> {
+        let state = self.state.outside_game.as_ref()?;
+        let choice = state.choice.as_ref()?;
+        let private = viewer == choice.owner;
+        Some(OutsideChoiceView { owner: choice.owner,
+            pool: private.then(|| state.pools[choice.owner.index()].clone()),
+            first: if private { choice.first } else { None },
+            revealed: choice.pair.map(|p| [state.card(choice.owner, p[0]), state.card(choice.owner, p[1])]),
+        })
+    }
+    pub(super) fn owned_outside_view(&self, viewer: Player) -> Option<[Option<Vec<Card>>; 2]> {
+        let state = self.state.outside_game.as_ref()?;
+        let visible = std::array::from_fn(|i| {
+            let owner = if i == 0 { Player::P0 } else { Player::P1 };
+            (viewer == owner && !state.pools[i].is_empty())
+                .then(|| state.pools[i].clone())
+        });
+        visible.iter().any(Option::is_some).then_some(visible)
+    }
+    pub(super) fn sideboard_counts_view(&self) -> Option<[usize; 2]> {
+        let state = self.state.outside_game.as_ref()?;
+        (state.mode != OutsideGameMode::CasualCollection)
+            .then(|| std::array::from_fn(|p| state.pools[p].len()))
+    }
+    pub(super) fn known_outside_view(&self) -> Option<[Vec<Card>; 2]> {
+        let state = self.state.outside_game.as_ref()?;
+        state.known.iter().any(|v| !v.is_empty()).then(|| std::array::from_fn(|p|
+            state.known[p].iter().map(|i| state.pools[p][usize::from(*i)]).collect()))
+    }
+    pub(super) fn choose_outside_card(&mut self, selected: Selection) {
+        let state = self.state.outside_game.as_mut().unwrap();
+        let choice = state.choice.as_mut().unwrap();
+        if let Some(first) = choice.first {
+            choice.pair = Some([first, selected]);
+            for entry in [first, selected] {
+                if let Selection::Pool(index) = entry {
+                    let known = &mut state.known[choice.owner.index()];
+                    if !known.contains(&index) { known.push(index); }
+                }
+            }
+            self.state.pending = Pending::OutsideGameChoice { player: choice.owner.other() };
+        } else { choice.first = Some(selected); }
+    }
+    pub(super) fn cancel_outside_card(&mut self) {
+        self.state.outside_game.as_mut().unwrap().choice.as_mut().unwrap().first = None;
+    }
+    pub(super) fn decline_outside_cards(&mut self) {
+        self.state.outside_game.as_mut().unwrap().choice = None;
+        self.run_program();
+    }
+    pub(super) fn choose_outside_revealed(&mut self, index: u8) {
+        let state = self.state.outside_game.as_ref().unwrap();
+        let choice = state.choice.as_ref().unwrap();
+        let selected = choice.pair.unwrap()[usize::from(index)];
+        let event = OutsideHandEvent { owner: choice.owner, selected, card: state.card(choice.owner, selected) };
+        self.commit_outside_hand(event);
+        self.run_program();
+    }
+    fn commit_outside_hand(&mut self, event: OutsideHandEvent) {
+        let state = self.state.outside_game.as_mut().unwrap();
+        state.choice = None;
+        let card = match event.selected {
+            Selection::Pool(index) => {
+                let known = &mut state.known[event.owner.index()];
+                known.retain(|&entry| entry != index);
+                for entry in known { if *entry > index { *entry -= 1; } }
+                state.pools[event.owner.index()].remove(usize::from(index))
+            },
+            Selection::Basic(card) => card,
+        };
+        assert_eq!(card, event.card, "outside entry changed during frozen event");
+        let id = CardId::try_from(self.state.objects.len()).capacity("object slots exhausted");
+        self.state.objects.push(Object {
+            card, copy_kind: CopyKind::None, owner: event.owner, controller: event.owner,
+            zone: Zone::Hand, generation: 0, tapped: false, summoning_sick: false,
+            flashback: false, cast_for_warp: false, damage: 0, damaged_this_turn: false,
+            dealt_damage_this_turn: false, dealt_combat_damage_this_incarnation: false,
+            deathtouch_since_sba: false, growth: Stats::default(), gained_keywords: Keywords::NONE,
+            counters: InitialCounters::default(), used_abilities: 0, loyalty_activated_this_turn: false,
+            class_level: 1, attached_to: None,
+        });
+        self.state.known_hand.push(self.object_ref(id));
+    }
+}

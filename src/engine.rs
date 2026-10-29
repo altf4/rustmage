@@ -402,6 +402,10 @@ impl Player {
     }
 }
 
+#[path = "engine_outside_choices.rs"]
+mod outside_choices;
+#[path = "engine_outside_names.rs"]
+mod outside_names;
 #[path = "engine_ability_resolutions.rs"]
 mod ability_resolutions;
 #[path = "engine_big_core.rs"]
@@ -766,6 +770,11 @@ define_actions! {
     PutTrigger {
         id: u64,
     },
+    ChooseOutsideCard { index: u16 },
+    ChooseOutsideBasic { card: Card },
+    CancelOutsideCard,
+    DeclineOutsideCards,
+    ChooseOutsideRevealed { index: u8 },
     ChooseSearch {
         card: CardId,
     },
@@ -850,6 +859,25 @@ pub struct Config {
     pub starting_player: Player,
     #[serde(default)]
     pub deck_rules: DeckRules,
+}
+/// Explicit owned cards available to outside-game effects.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum OutsideGameMode {
+    ConstructedSideboard,
+    LimitedSideboard,
+    CasualCollection,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct OutsideGameConfig {
+    pub mode: OutsideGameMode,
+    pub pools: [Vec<Card>; 2],
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct OutsideGameState {
+    mode: OutsideGameMode,
+    pools: [Vec<Card>; 2],
+    choice: Option<outside_choices::Choice>,
+    known: [Vec<u16>; 2],
 }
 fn first_player() -> Player {
     Player::P0
@@ -1976,6 +2004,7 @@ enum Pending {
         player: Player,
         remaining: usize,
     },
+    OutsideGameChoice { player: Player },
     Attackers,
     Blockers,
     Damage,
@@ -2002,6 +2031,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    outside_game: Option<Box<OutsideGameState>>,
     library_top: Option<Box<library_top::LibraryTopState>>,
     cast_rollback: Option<Box<cast_rollback::CastRollback>>,
     paradigm: Option<Box<paradigm::ParadigmState>>,
@@ -2581,6 +2611,15 @@ pub struct KeywordChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub outside_choice: Option<outside_choices::OutsideChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owned_outside: Option<[Option<Vec<Card>>; 2]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub known_outside: Option<[Vec<Card>; 2]>,
+    /// Tournament players may count their opponents' physical sideboards.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sideboard_counts: Option<[usize; 2]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub keyword_choice: Option<KeywordChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_counter_removal: Option<TargetCounterRemovalView>,
@@ -2803,6 +2842,54 @@ pub struct Observation {
 
 impl Game {
     pub fn new(config: Config) -> Result<Self, Error> {
+        Self::new_inner(config, None)
+    }
+
+    pub fn new_with_outside(config: Config, outside: OutsideGameConfig) -> Result<Self, Error> {
+        if outside.mode == OutsideGameMode::ConstructedSideboard && config.deck_rules == DeckRules::Freeform {
+            return Err(Error::InvalidDeck("constructed sideboards require constructed rules".into()));
+        }
+        if outside.mode == OutsideGameMode::LimitedSideboard && config.deck_rules != DeckRules::Freeform {
+            return Err(Error::InvalidDeck("limited sideboards require Freeform deck rules".into()));
+        }
+        for (deck, pool) in config.decks.iter().zip(&outside.pools) {
+            if outside.mode == OutsideGameMode::LimitedSideboard && deck.len() < 40 {
+                return Err(Error::InvalidDeck("limited needs at least 40 cards".into()));
+            }
+            if pool.len() > 65_535 || (outside.mode == OutsideGameMode::ConstructedSideboard && pool.len() > 15) {
+                return Err(Error::InvalidDeck("outside-game pool exceeds its mode's limit".into()));
+            }
+            for &card in pool {
+                if card.is_token() || card.is_emblem() || card.inset_parent().is_some() || card.face_parent().is_some() || !card.is_supported() || outside_names::names(card).is_none() {
+                    return Err(Error::InvalidDeck("outside-game pool requires supported physical front cards".into()));
+                }
+                if outside.mode == OutsideGameMode::ConstructedSideboard
+                    && config.deck_rules == DeckRules::Standard && !card.is_standard_legal() {
+                    return Err(Error::InvalidDeck(format!("not Standard legal in this catalogue: {}", card.name())));
+                }
+            }
+            if outside.mode == OutsideGameMode::ConstructedSideboard {
+                let mut counts = std::collections::HashMap::<&str, (usize, u8)>::new();
+                for &card in deck.iter().chain(pool) {
+                    if let Some(limit) = card.info().deck_limit {
+                        let names = outside_names::names(card).ok_or_else(|| Error::InvalidDeck(
+                            format!("missing structured Oracle names for {}", card.name())))?;
+                        for name in names {
+                            let entry = counts.entry(crate::card_names::comparison_key(name)).or_insert((0, limit));
+                            entry.0 += 1;
+                            entry.1 = entry.1.min(limit);
+                            if entry.0 > usize::from(entry.1) {
+                                return Err(Error::InvalidDeck(format!("more than {} {} across deck and sideboard", entry.1, name)));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Self::new_inner(config, Some(outside))
+    }
+
+    fn new_inner(config: Config, outside: Option<OutsideGameConfig>) -> Result<Self, Error> {
         for deck in &config.decks {
             // Explicit representation bound, never silent truncation.
             if deck.len() < 7 || deck.len() > 65_535 {
@@ -2937,6 +3024,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                outside_game: outside.map(|value| Box::new(OutsideGameState { mode: value.mode, pools: value.pools, choice: None, known: [Vec::new(), Vec::new()] })),
                 library_top: None,
                 cast_rollback: None,
                 paradigm: None,
@@ -3198,7 +3286,8 @@ impl Game {
             | Pending::ForageMethod { player }
             | Pending::Forage { player }
             | Pending::EffectOptional { player, .. }
-            | Pending::EffectDiscard { player, .. } => Some(player),
+            | Pending::EffectDiscard { player, .. }
+            | Pending::OutsideGameChoice { player } => Some(player),
             Pending::Attackers | Pending::Damage | Pending::Discard => Some(self.state.active),
             Pending::Blockers => Some(self.state.active.other()),
             Pending::Terminal => None,
@@ -3555,6 +3644,9 @@ impl Game {
         type SpellFundingCacheEntry = (Mana, u32, Card, bool, bool);
         let mut spell_funding_cache: [Option<SpellFundingCacheEntry>; 8] = [None; 8];
         match s.pending {
+            Pending::OutsideGameChoice { .. } => {
+                if self.visit_outside_choices(&mut emit) { return true; }
+            }
             Pending::TargetCounterRemoval { .. } => {
                 let choice = s
                     .resolving
@@ -5353,6 +5445,11 @@ impl Game {
             self.consume_graveyard_type(*permission, *permanent_type);
         }
         match action {
+            Action::ChooseOutsideCard { index } => self.choose_outside_card(outside_choices::Selection::Pool(index)),
+            Action::ChooseOutsideBasic { card } => self.choose_outside_card(outside_choices::Selection::Basic(card)),
+            Action::CancelOutsideCard => self.cancel_outside_card(),
+            Action::DeclineOutsideCards => self.decline_outside_cards(),
+            Action::ChooseOutsideRevealed { index } => self.choose_outside_revealed(index),
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
@@ -8277,6 +8374,10 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            outside_choice: self.outside_choice_view(viewer),
+            owned_outside: self.owned_outside_view(viewer),
+            known_outside: self.known_outside_view(),
+            sideboard_counts: self.sideboard_counts_view(),
             keyword_choice: match &s.pending {
                 Pending::KeywordChoice {
                     player,
@@ -8605,6 +8706,7 @@ impl Game {
                     }
                 }
                 Pending::EffectDiscard { .. } => "effect_discard",
+                Pending::OutsideGameChoice { .. } => "outside_game_choice",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
@@ -9112,6 +9214,9 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + s.outside_game.as_ref().map_or(0, |v| std::mem::size_of::<OutsideGameState>()
+                + v.pools.iter().map(|p| p.capacity() * std::mem::size_of::<Card>()).sum::<usize>()
+                + v.known.iter().map(|p| p.capacity() * std::mem::size_of::<u16>()).sum::<usize>())
             + s.player_control.as_ref().map_or(0, |_| {
                 std::mem::size_of::<player_control::PlayerControlState>()
             })

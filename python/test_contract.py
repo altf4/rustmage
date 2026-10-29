@@ -50,6 +50,30 @@ class BindingContractTests(unittest.TestCase):
         self.assertEqual(after["actor"], "P1")
         self.assertGreater(after["revision"], before["revision"])
 
+    def test_outside_constructor_round_trip_and_invalid_envelopes(self):
+        outside = {"mode": "ConstructedSideboard", "pools": [["Shock"], []]}
+        with game(outside=outside) as handle:
+            self.assertIn("Shock", json.dumps(handle.observe("P0")))
+            self.assertNotIn("Shock", json.dumps(handle.observe("P1")))
+            checkpoint = handle.snapshot()
+            branch = handle.clone()
+            self.addCleanup(branch.close)
+            before = state(branch.observe("P0"))
+            handle.restore(checkpoint)
+            self.assertEqual(state(handle.observe("P0")), before)
+            native = handle._lib
+            envelope = dict(config=dict(decks=DECKS, seed=1), outside=outside)
+            for value in (b"{}", b"{", b"\xff", json.dumps({**envelope, "extra": True}).encode(),
+                          json.dumps({**envelope, "outside": {"mode": "bad", "pools": [[], []]}}).encode()):
+                with self.subTest(value=value):
+                    error = ctypes.c_void_p()
+                    pointer = native.rm_new_with_outside(value, ctypes.byref(error))
+                    self.assertFalse(pointer)
+                    self.assertTrue(error.value)
+                    self.assertTrue(handle._take_string(error.value))
+            self.assertFalse(native.rm_new_with_outside(b"{}", None))
+            self.assertEqual(state(handle.observe("P0")), before)
+
     def test_native_malformed_inputs_are_errors_and_preserve_live_handle(self):
         with game() as handle:
             native = handle._lib
