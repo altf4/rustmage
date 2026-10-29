@@ -1644,8 +1644,14 @@ fn lute_spell_mana_does_not_fund_emrakul_hand_activation() {
             reserve: None,
             source: Some((g.object_ref(source), 0, Counters::default(), emrakul, None)),
         };
+        let announcement = Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
         let world = FundingState::from_game(&g, &goal);
         assert!(world.fixed_spell_only_activation_cannot_pay(&goal));
+        assert!(!g.legal_actions().contains(&announcement));
         let before = g.snapshot();
         assert!(!g.can_fund(goal.clone()));
         assert_eq!(g.snapshot(), before);
@@ -1668,6 +1674,7 @@ fn lute_spell_mana_does_not_fund_emrakul_hand_activation() {
         let world = FundingState::from_game(&g, &goal);
         assert!(!world.fixed_spell_only_activation_cannot_pay(&goal));
         assert!(g.can_fund(goal));
+        assert!(g.legal_actions().contains(&announcement));
         assert!(!g.object_view(forest).tapped);
     }
 }
