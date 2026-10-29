@@ -70,6 +70,7 @@ fn torch_mana_and_damage_modes_obey_loyalty_and_targets() {
         let mut g = scenario(player);
         let chandra = put(&mut g, player, "Chandra, Torch of Defiance", Zone::Battlefield);
         g.state.objects[chandra as usize].counters.loyalty = 4;
+        g.state.players[player.index()].mana = [0; 6];
         torch_activate(&mut g, chandra, 1);
         g.resolve_top();
         assert_eq!(g.state.players[player.index()].mana[3], 2);
