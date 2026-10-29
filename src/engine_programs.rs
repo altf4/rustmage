@@ -1653,16 +1653,40 @@ impl Game {
         self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
         let delayed = self.state.delayed_opponent_attack_until_next_turn.as_deref()
-            .into_iter().flatten().filter(|item| item.controller == actor).cloned().collect::<Vec<_>>();
+            .into_iter().flatten().cloned().collect::<Vec<_>>();
         for mut packet in delayed {
-            let attackers = declared.iter().filter(|attack| attack.defender == Some(CombatDefender::Player(actor.other())))
-                .map(|attack| self.object_ref(attack.card)).collect::<Vec<_>>();
-            if let Some((&first, rest)) = attackers.split_first() {
-                packet.id = self.next_stack_id();
-                packet.reflexive_subject = Some(Box::new(ReflexiveSubjectView {
-                    object: first, additional_objects: rest.to_vec(),
-                }));
-                self.state.pending_triggers.push(packet);
+            let StackKind::TriggeredAbility { ability } = packet.kind else { continue; };
+            let each_defender = matches!(packet.trigger_definition().triggers()[ability as usize].program.first(),
+                Some(Instruction::WeakenDeclaredAttacker(_)));
+            if each_defender {
+                if actor == packet.controller { continue; }
+                for attack in declared {
+                    let defended = match attack.defender {
+                        Some(CombatDefender::Player(player)) => player == packet.controller,
+                        Some(CombatDefender::Planeswalker(object)) => self.on_battlefield(object.card)
+                            && self.object_ref(object.card) == object
+                            && self.state.objects[object.card as usize].controller == packet.controller,
+                        _ => false,
+                    };
+                    if defended {
+                        let mut trigger = packet.clone();
+                        trigger.id = self.next_stack_id();
+                        trigger.reflexive_subject = Some(Box::new(ReflexiveSubjectView {
+                            object: self.object_ref(attack.card), additional_objects: Vec::new(),
+                        }));
+                        self.state.pending_triggers.push(trigger);
+                    }
+                }
+            } else if packet.controller == actor {
+                let attackers = declared.iter().filter(|attack| attack.defender == Some(CombatDefender::Player(actor.other())))
+                    .map(|attack| self.object_ref(attack.card)).collect::<Vec<_>>();
+                if let Some((&first, rest)) = attackers.split_first() {
+                    packet.id = self.next_stack_id();
+                    packet.reflexive_subject = Some(Box::new(ReflexiveSubjectView {
+                        object: first, additional_objects: rest.to_vec(),
+                    }));
+                    self.state.pending_triggers.push(packet);
+                }
             }
         }
         if !declared.is_empty() {
@@ -2595,6 +2619,23 @@ impl Game {
                         .map(|reference| reference.card).collect();
                     for &id in &ids { self.state.objects[id as usize].growth += Stats { power: i128::from(power), toughness: i128::from(toughness) }; }
                     self.grant_keyword_effects(&ids, item.object, keywords);
+                }
+                Instruction::WeakenDeclaredAttacker(power) => {
+                    if let Some(subject) = &item.reflexive_subject
+                        && self.on_battlefield(subject.object.card)
+                        && self.object_ref(subject.object.card) == subject.object
+                    {
+                        self.state.objects[subject.object.card as usize].growth += Stats {
+                            power: i128::from(power), toughness: 0,
+                        };
+                    }
+                }
+                Instruction::ExileOpponentLibrariesExceptBottom => {
+                    let library = &self.state.players[item.controller.other().index()].library;
+                    let ids = library.iter().skip(1).copied().collect::<Vec<_>>();
+                    let before = self.death_trigger_sources();
+                    let events = self.move_objects_raw(&ids, Zone::Exile);
+                    self.finish_zone_events(&events, &before);
                 }
                 Instruction::ScheduleAttackTriggerThisTurn { ability } => {
                     let mut delayed = item.clone();

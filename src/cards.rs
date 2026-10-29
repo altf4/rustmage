@@ -1107,6 +1107,8 @@ pub(crate) enum Instruction {
     ScheduleOpponentAttackUntilNextTurn { ability: u16 },
     /// Apply one temporary bonus to the exact attackers captured by that event.
     GrowDeclaredAttackers { power: i32, toughness: i32, keywords: Keywords },
+    WeakenDeclaredAttacker(i32),
+    ExileOpponentLibrariesExceptBottom,
     ScheduleAttackTriggerThisTurn {
         ability: u16,
     },
