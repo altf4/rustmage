@@ -1431,3 +1431,76 @@ fn ordinary_mana_can_fuel_blue_converter_alongside_artifact_only_mana() {
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }
+
+#[test]
+fn standalone_spell_only_key_preserves_qualities_substitution_and_exact_pool() {
+    use crate::cards::ManaRetention;
+    use mana_lots::{Lot, ManaRestrictionView, ManaSpellBonusView, Quality};
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Hand);
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 1, 0, 0, 0, 0],
+            generic: 1,
+            reserve: None,
+            source: None,
+        };
+        let mut facts = mana_lots::Source::in_world(&g, artifact);
+        facts.spend_any_mana = true;
+        let purpose = mana_lots::Purpose::Spell(facts);
+        let mut world = FundingState::from_game(&g, &goal);
+        world.set_purpose(purpose);
+        world.mana = [0, 0, 0, 0, 8, 0];
+        let plain = Quality {
+            restriction: ManaRestrictionView::ArtifactSpell,
+            spell_bonus: ManaSpellBonusView::None,
+            retention: ManaRetention::Step,
+            copy_source: None,
+            treasure_source: false,
+        };
+        let bonus = Quality {
+            spell_bonus: ManaSpellBonusView::CopyRedInstantSorcery,
+            ..plain
+        };
+        world.lots = vec![
+            Lot {
+                quality: plain,
+                amounts: [0, 0, 0, 0, 4, 0],
+            },
+            Lot {
+                quality: bonus,
+                amounts: [0, 0, 0, 0, 4, 0],
+            },
+        ];
+        let key = world.key(&goal);
+        assert_eq!(key.mana[4], 4);
+        assert_eq!(key.lots.len(), 2);
+        assert_eq!(key.lots[0].quality, plain);
+        assert_eq!(key.lots[1].quality, bonus);
+        assert_eq!(key.lots[0].amounts[4], 2);
+        assert_eq!(key.lots[1].amounts[4], 2);
+        assert_eq!(world.mana[4], 8);
+        assert_eq!(world.lots[0].amounts[4], 4);
+        assert!(world.reachable(&goal, &mut HashSet::new()));
+        let adjusted = cast_origins::payment_goal(&world, &goal, purpose);
+        assert_eq!(adjusted.required, [0; 6]);
+        assert_eq!(adjusted.generic, 2);
+        let mut witnessed = false;
+        funding_payments(
+            mana_lots::available(world.mana, &world.lots, purpose),
+            adjusted.required,
+            adjusted.generic,
+            |payment| {
+                if payment[4] == 2 {
+                    witnessed = true;
+                    assert_eq!(world.mana[4] - u128::from(payment[4]), 6);
+                }
+            },
+        );
+        assert!(witnessed);
+        facts.spend_any_mana = false;
+        world.set_purpose(mana_lots::Purpose::Spell(facts));
+        assert!(!world.reachable(&goal, &mut HashSet::new()));
+    }
+}
