@@ -5463,6 +5463,7 @@
     16,
     2,
     17,
+    2,
     2
   ],
   "aliases": [
@@ -61208,13 +61209,18 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Diviner of Victory",
+        "mana_cost": "{U}",
+        "type_line": "Creature — Dwarf Wizard"
+      }
     },
     {
       "index": 1111,
@@ -185005,6 +185011,33 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5458,
+      "module": "card_5458",
+      "path": "synthetic/prepare_diviner_of_victory_unwind_history.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Unwind History",
+      "oracle_id": "e7b78acd-5288-4528-97a8-a5b43de90bf5",
+      "facts_sha256": "7153921f2dc6a70f04934dc30d8755f0e610d022357db0eed0842f9879ce7319",
+      "mana_cost": "{1}{U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
     }
   ]
 }
