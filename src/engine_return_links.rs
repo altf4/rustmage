@@ -14,6 +14,9 @@ pub struct ReturnCardView {
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ReturnLinkView {
+    /// Exile this exact returned permanent at the next end step.
+    #[serde(skip_serializing_if = "is_false")]
+    pub exile_after: bool,
     /// The first card retains the legacy singleton shape; companions share ONE trigger.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(
@@ -103,6 +106,7 @@ impl Game {
     pub(super) fn capture_return_death(&mut self, event: &ZoneChange) {
         self.state.pending_triggers.last_mut().unwrap().return_link =
             Some(Box::new(ReturnLinkView {
+                exile_after: false,
                 additional_returning: None,
                 object: event.after,
                 zone: Zone::Graveyard,
@@ -148,6 +152,31 @@ impl Game {
                 item: item.clone(),
             });
     }
+    pub(super) fn exile_small_return_until_end_step(&mut self, item: &SpellView) {
+        let target = item.targets.iter().find_map(|bound| match bound.target {
+            Target::Card(id) if self.same_target_object(*bound) && self.on_battlefield(id) => Some(id),
+            _ => None,
+        });
+        let Some(id) = target else { return };
+        let small = ability_world::CharacteristicWorld::mana_value(self, id) <= 3;
+        let events = self.move_objects_raw(&[id], Zone::Exile);
+        let returning = events.iter().filter_map(|event| {
+            (small && event.moved && event.destination == Zone::Exile && !event.before.is_token())
+                .then_some(ReturnLinkView {
+                    exile_after: true, additional_returning: None, object: event.after,
+                    zone: Zone::Exile, controller: item.controller, counter: None, tapped: true,
+                })
+        }).collect();
+        self.state.resolving.as_mut().unwrap().immediate_blink_return = Some(Box::new(returning));
+        self.finish_zone_events(&events, &[]);
+    }
+    /// Register only an actually successful return, after its replacement choices.
+    pub(super) fn register_delayed_return_exile(&mut self, item: &SpellView, object: ObjectRef) {
+        self.register_delayed_return(item, ReturnLinkView {
+            exile_after: true, additional_returning: None, object, zone: Zone::Battlefield,
+            controller: item.controller, counter: None, tapped: false,
+        });
+    }
     /// Exile as one movement batch, then return only the resulting exact physical cards.
     /// Entry counters join the existing replacement event before battlefield entry.
     pub(super) fn blink_immediately(
@@ -172,6 +201,7 @@ impl Game {
             .filter_map(|event| {
                 (event.moved && event.destination == Zone::Exile && !event.before.is_token())
                     .then_some(ReturnLinkView {
+                        exile_after: false,
                         additional_returning: None,
                         object: event.after,
                         zone: Zone::Exile,
@@ -212,6 +242,9 @@ impl Game {
                 let mut movement = self.entry_move(row.object.card, Zone::Battlefield, row.tapped);
                 movement.controller = row.controller;
                 movement.effect_counter = row.counter;
+                if row.exile_after {
+                    movement.delayed_return_exile = self.state.resolving.as_ref().map(|r| Box::new(r.item.clone()));
+                }
                 Some(movement)
             })
             .collect();
@@ -252,6 +285,7 @@ impl Game {
             self.register_delayed_return(
                 item,
                 ReturnLinkView {
+                    exile_after: false,
                     object: first.object,
                     zone: first.zone,
                     controller: first.controller,
@@ -329,6 +363,12 @@ impl Game {
         let Some(link) = &item.return_link else {
             return;
         };
+        if link.exile_after {
+            if self.on_battlefield(link.object.card) && self.object_ref(link.object.card) == link.object {
+                self.move_object(link.object.card, Zone::Exile);
+            }
+            return;
+        }
         // Validate every exact incarnation independently, then stage one entry
         // batch. No priority, ETB collection or partial entry precedes companions.
         let cards = std::iter::once(link.card()).chain(

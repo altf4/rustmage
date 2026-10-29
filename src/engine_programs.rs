@@ -706,6 +706,7 @@ impl Game {
                         }) {
                             self.state.pending_triggers.last_mut().unwrap().return_link =
                                 Some(Box::new(ReturnLinkView {
+                                    exile_after: false,
                                     additional_returning: None,
                                     object: event.after,
                                     zone: Zone::Graveyard,
@@ -3242,6 +3243,9 @@ impl Game {
                     if item.is_copy || !item.cast.is_some_and(|cast| cast.origin != Zone::Hand) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
+                }
+                Instruction::ExileSmallReturnUntilEndStep => {
+                    self.exile_small_return_until_end_step(&item);
                 }
                 Instruction::BlinkUntilEndStep { under_owner } => {
                     self.blink_until_end_step(&item, under_owner)

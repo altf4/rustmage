@@ -63,6 +63,7 @@ impl Game {
             item.id = self.next_stack_id();
             item.kind = StackKind::DelayedReturn;
             item.return_link = Some(Box::new(ReturnLinkView {
+                exile_after: false,
                 additional_returning: None,
                 object: event.after,
                 zone: event.destination,

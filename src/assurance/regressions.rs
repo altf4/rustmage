@@ -1910,7 +1910,7 @@ fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
                 g.register_earthbend_return(&packet);
                 assert!(g.state.earthbend_returns.is_some());
             } else {
-                let link = return_links::ReturnLinkView { additional_returning: None, object: reference,
+                let link = return_links::ReturnLinkView { exile_after: false, additional_returning: None, object: reference,
                     zone: Zone::Graveyard, controller: player, counter: None, tapped: false };
                 let view = return_links::DelayedReturnView { id: 1, source: reference,
                     source_card: packet.source_card, controller: player, returning: link };

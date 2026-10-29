@@ -4,6 +4,7 @@ use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryMove {
+    pub delayed_return_exile: Option<Box<SpellView>>,
     pub choice: Option<EntryChoiceValue>,
     pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
@@ -109,6 +110,7 @@ impl EntryMove {
     }
     pub(super) fn from_view(before: ObjectView, destination: Zone, tapped: bool) -> Self {
         EntryMove {
+            delayed_return_exile: None,
             choice: None,
             gift: None,
             manifest_original: None,
@@ -162,7 +164,8 @@ impl EntryBatch {
                 .moves
                 .iter()
                 .map(|m| {
-                    m.counters.owned_bytes()
+                    m.delayed_return_exile.as_ref().map_or(0, |item| std::mem::size_of::<SpellView>() + item.owned_bytes())
+                        + m.counters.owned_bytes()
                         + m.before.counters.owned_bytes()
                         + m.before.temporary_copy_bytes()
                         + m.source_before.as_ref().map_or(0, |v| {
@@ -728,6 +731,9 @@ impl Game {
                 },
             );
             if event.moved && event.destination == Zone::Battlefield {
+                if let Some(item) = &movement.delayed_return_exile {
+                    self.register_delayed_return_exile(item, event.after);
+                }
                 if let Some(protector) = movement.battle_protector {
                     self.set_battle_protector(event.after, protector);
                 } else if before_battle {

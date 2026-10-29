@@ -1117,6 +1117,9 @@ pub(crate) enum Instruction {
     IfCastFromNonHand {
         skip: usize,
     },
+    /// Exile a target; return small physical cards tapped under your control,
+    /// then exile the returned incarnation at the next end step.
+    ExileSmallReturnUntilEndStep,
     BlinkUntilEndStep {
         under_owner: bool,
     },
