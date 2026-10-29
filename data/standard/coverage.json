@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "02e92a618733ec514c7615b00c292911c3ce5924785b97abbcec67cc346ec84b",
+  "catalogue_version": "2a3ea48843328f40906fc5fb39d8160db0553a1e12b0b1aa4796a894a4e131e3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2786,
-  "implemented_total": 2792,
+  "implemented_standard_cards": 2791,
+  "implemented_total": 2797,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 139,
-      "gated": 146
+      "complete": 144,
+      "gated": 141
     },
     "frc": {
       "total": 6,
@@ -20995,8 +20995,8 @@
     {
       "name": "Mabel, Bitter Recluse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/mabel_bitter_recluse.rs",
       "set": "fra"
     },
@@ -21587,8 +21587,8 @@
     {
       "name": "Marwyn, the Preserver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/marwyn_the_preserver.rs",
       "set": "fra"
     },
@@ -35443,8 +35443,8 @@
     {
       "name": "Tetsuko Umezawa, Fugitive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/tetsuko_umezawa_fugitive.rs",
       "set": "fra"
     },
@@ -39779,8 +39779,8 @@
     {
       "name": "Vraska, the Cutting Glare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/vraska_the_cutting_glare.rs",
       "set": "fra"
     },
@@ -40083,8 +40083,8 @@
     {
       "name": "Warrior's Blades",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/warrior_s_blades.rs",
       "set": "fra"
     },

@@ -3,11 +3,14 @@ use super::*;
 
 fn wait_for_choice(g: &mut Game) {
     for _ in 0..32 {
-        if matches!(g.state.pending, Pending::EffectLibrary { .. }) {
-            return;
+        match g.state.pending {
+            Pending::EffectLibrary { .. } => return,
+            Pending::Priority => act(g, Action::Pass),
+            Pending::OrderTriggers { .. } => {
+                choose(g, |action| matches!(action, Action::PutTrigger { .. }));
+            }
+            ref other => panic!("unexpected pending choice: {other:?}"),
         }
-        assert_eq!(g.state.pending, Pending::Priority);
-        act(g, Action::Pass);
     }
     panic!("expected a library choice");
 }
@@ -37,7 +40,9 @@ fn thopters(g: &Game, p: Player) -> usize {
     g.state
         .objects
         .iter()
-        .filter(|o| o.zone == Zone::Battlefield && o.controller == p && o.card == Card(5266))
+        .filter(|o| {
+            o.zone == Zone::Battlefield && o.controller == p && o.card == Card::test_index(5266)
+        })
         .count()
 }
 
@@ -83,9 +88,11 @@ fn fra_saheeli_scry_and_surveil_trigger_only_once_per_turn() {
         arrange(&mut g, LibraryDestination::Top);
         settle(&mut g);
         assert_eq!(thopters(&g, p), 1);
+        // Cleanup advances to the opponent's upkeep and empties mana.
         g.finish_cleanup();
-        g.state.turn += 1;
-        g.begin_turn();
+        assert_eq!(g.state.active, p.other());
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 1];
+        act(&mut g, Action::Pass); // Opponent passes priority to the scrying player.
         scry(&mut g, p);
         wait_for_choice(&mut g);
         arrange(&mut g, LibraryDestination::Top);
@@ -133,6 +140,10 @@ fn fra_scry_or_surveil_positive_on_empty_library_still_triggers() {
             g.state.players[p.index()].library.clear();
             g.state.pending = Pending::Priority;
             g.run_program();
+            // Direct interpreter invocation bypasses the public action wrapper,
+            // which normally moves queued triggers onto the stack.
+            assert_eq!(g.state.pending_triggers.len(), 1);
+            g.prepare_triggers();
             settle(&mut g);
             assert_eq!(g.counter_count(denz, CounterKind::PlusOne), 1);
         }
@@ -313,7 +324,38 @@ fn fra_surveil_shuffle_replacement_preserves_selected_position_and_all_cards() {
                 },
             );
             if competing {
+                // Replacement ordering is chosen before the simultaneous move;
+                // all cards must remain represented in the library meanwhile.
+                assert!(matches!(g.state.pending, Pending::ZoneReplacement { .. }));
+                assert_eq!(g.state.players[p.index()].library, original);
+                for viewer in [p, p.other()] {
+                    assert_eq!(
+                        g.observe(viewer).players[p.index()].library_count,
+                        original.len()
+                    );
+                }
+                for card in &original {
+                    assert_eq!(g.state.objects[*card as usize].zone, Zone::Library);
+                    assert_eq!(
+                        g.state.players[p.index()]
+                            .library
+                            .iter()
+                            .filter(|id| *id == card)
+                            .count(),
+                        1
+                    );
+                }
+                let checkpoint = g.snapshot();
                 super::super::contracts::branch_contract(g.clone());
+                g.restore(&checkpoint).unwrap();
+                assert!(matches!(g.state.pending, Pending::ZoneReplacement { .. }));
+                assert_eq!(g.state.players[p.index()].library, original);
+                for viewer in [p, p.other()] {
+                    assert_eq!(
+                        g.observe(viewer).players[p.index()].library_count,
+                        original.len()
+                    );
+                }
                 choose(&mut g, |action| {
                     matches!(
                         action,
@@ -364,8 +406,6 @@ fn fra_scry_turn_fact_and_proctor_graveyard_activation() {
         arrange(&mut g, LibraryDestination::Top);
         settle(&mut g);
         g.finish_cleanup();
-        g.state.turn += 1;
-        g.begin_turn();
         assert!(!g.observe(p.other()).players[p.index()].scried_or_surveilled_this_turn);
     }
 }
@@ -446,8 +486,6 @@ fn fra_phantasm_can_attack_after_its_controller_surveils() {
         g.state.objects[source as usize].summoning_sick = false;
         assert!(g.can_declare_attacker(p, source));
         g.finish_cleanup();
-        g.state.turn += 1;
-        g.begin_turn();
         assert!(!g.can_declare_attacker(p, source));
     }
 }

@@ -46,9 +46,21 @@ fn fra_peer_review_faces_are_independent_and_pay_both_hybrid_colors() {
     for p in [Player::P0, Player::P1] {
         for blue in [false, true] {
             for (name, face, size) in [
-                ("Fatehold Chronologist // Peer Review", Card(5444), (1, 2)),
-                ("Semester Foreseer // Peer Review", Card(5445), (3, 4)),
-                ("Prudent Fateseer // Peer Review", Card(5446), (1, 4)),
+                (
+                    "Fatehold Chronologist // Peer Review",
+                    Card::test_index(5444),
+                    (1, 2),
+                ),
+                (
+                    "Semester Foreseer // Peer Review",
+                    Card::test_index(5445),
+                    (3, 4),
+                ),
+                (
+                    "Prudent Fateseer // Peer Review",
+                    Card::test_index(5446),
+                    (1, 4),
+                ),
             ] {
                 let mut g = scenario(p);
                 let source = put(&mut g, p, name, Zone::Hand);
@@ -89,14 +101,20 @@ fn fra_peer_review_faces_are_independent_and_pay_both_hybrid_colors() {
                     .iter()
                     .enumerate()
                     .filter(|(_, o)| {
-                        o.zone == Zone::Battlefield && o.controller == p && o.card == Card(5298)
+                        o.zone == Zone::Battlefield
+                            && o.controller == p
+                            && o.card == Card::test_index(5298)
                     })
                     .map(|(id, _)| id as CardId)
                     .collect();
                 assert_eq!(cadets.len(), 1);
                 assert_eq!(
                     stats(&g, cadets[0]),
-                    if face == Card(5446) { (3, 2) } else { (2, 2) }
+                    if face == Card::test_index(5446) {
+                        (3, 2)
+                    } else {
+                        (2, 2)
+                    }
                 );
                 assert!(g.observe(p.other()).players[p.index()].scried_or_surveilled_this_turn);
             }
@@ -235,6 +253,216 @@ fn fra_peer_copy_follows_control_and_is_removed_when_source_leaves() {
             .unwrap()
             .spell_copy;
         assert_ne!(copy, next);
-        assert_eq!(g.state.objects[next.card as usize].card, Card(5444));
+        assert_eq!(
+            g.state.objects[next.card as usize].card,
+            Card::test_index(5444)
+        );
+    }
+}
+
+#[test]
+fn fra_peer_countered_copy_stays_unprepared_and_source_departure_does_not_stop_copy() {
+    for p in [Player::P0, Player::P1] {
+        for countered in [false, true] {
+            let mut g = scenario(p);
+            let source = put(
+                &mut g,
+                p,
+                "Fatehold Chronologist // Peer Review",
+                Zone::Hand,
+            );
+            announce_peer(&mut g, Action::AnnounceCast { card: source });
+            finish_peer(&mut g);
+            let permanent = g.object_ref(source);
+            let copy = g
+                .state
+                .preparations
+                .as_ref()
+                .unwrap()
+                .iter()
+                .find(|r| r.permanent == permanent)
+                .unwrap()
+                .spell_copy;
+            let before = g
+                .state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.card == Card::test_index(5298))
+                .count();
+            let negate = put(&mut g, p.other(), "Negate", Zone::Hand);
+            announce_peer(&mut g, Action::AnnounceExile { card: copy.card });
+            assert!(!g.is_prepared(permanent));
+            g.move_object(source, Zone::Graveyard);
+            if countered {
+                act(&mut g, Action::Pass);
+                cast(&mut g, negate, Some(Target::Spell(copy.card)));
+            }
+            let saved = g.snapshot();
+            super::super::contracts::branch_contract(g.clone());
+            for replay in 0..2 {
+                if replay == 1 {
+                    g.restore(&saved).unwrap();
+                }
+                finish_peer(&mut g);
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+                assert_eq!(g.object_view(copy.card).zone, Zone::Outside);
+                let after = g
+                    .state
+                    .objects
+                    .iter()
+                    .filter(|o| o.zone == Zone::Battlefield && o.card == Card::test_index(5298))
+                    .count();
+                assert_eq!(after - before, usize::from(!countered));
+            }
+        }
+    }
+}
+
+#[test]
+fn fra_peer_reprepares_and_retains_designation_after_losing_abilities() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(
+            &mut g,
+            p,
+            "Fatehold Chronologist // Peer Review",
+            Zone::Hand,
+        );
+        announce_peer(&mut g, Action::AnnounceCast { card: source });
+        finish_peer(&mut g);
+        let permanent = g.object_ref(source);
+        let first = g
+            .state
+            .preparations
+            .as_ref()
+            .unwrap()
+            .iter()
+            .find(|r| r.permanent == permanent)
+            .unwrap()
+            .spell_copy;
+        let aura = put(&mut g, p.other(), "Witness Protection", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(permanent);
+        assert!(!g.printed_abilities_available(source));
+        assert!(g.is_prepared(permanent));
+        assert!(g.can_cast_prepared(p, first.card));
+        announce_peer(&mut g, Action::AnnounceExile { card: first.card });
+        finish_peer(&mut g);
+        assert!(!g.is_prepared(permanent));
+        g.move_object(aura, Zone::Graveyard);
+        g.prepare_permanent(permanent);
+        assert!(g.is_prepared(permanent));
+        let second = g
+            .state
+            .preparations
+            .as_ref()
+            .unwrap()
+            .iter()
+            .find(|r| r.permanent == permanent)
+            .unwrap()
+            .spell_copy;
+        assert_ne!(first, second);
+        assert_eq!(
+            g.state.objects[second.card as usize].card,
+            Card::test_index(5444)
+        );
+        super::super::contracts::branch_contract(g.clone());
+        announce_peer(&mut g, Action::AnnounceExile { card: second.card });
+        finish_peer(&mut g);
+        assert!(!g.is_prepared(permanent));
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield
+                    && o.card == Card::test_index(5298)
+                    && o.controller == p)
+                .count(),
+            2
+        );
+    }
+}
+
+#[test]
+fn fra_peer_new_preparation_uses_copied_creatures_face() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(
+            &mut g,
+            p,
+            "Fatehold Chronologist // Peer Review",
+            Zone::Hand,
+        );
+        announce_peer(&mut g, Action::AnnounceCast { card: source });
+        finish_peer(&mut g);
+        let permanent = g.object_ref(source);
+        let first = g
+            .state
+            .preparations
+            .as_ref()
+            .unwrap()
+            .iter()
+            .find(|r| r.permanent == permanent)
+            .unwrap()
+            .spell_copy;
+        g.apply_temporary_copy(
+            permanent,
+            CopyRecipe::new(Card::from_name("Semester Foreseer // Peer Review").unwrap()),
+            CopyDeadline::EndOfTurn,
+        );
+        assert_eq!(
+            g.state.objects[first.card as usize].card,
+            Card::test_index(5444)
+        );
+        announce_peer(&mut g, Action::AnnounceExile { card: first.card });
+        finish_peer(&mut g);
+        g.prepare_permanent(permanent);
+        let second = g
+            .state
+            .preparations
+            .as_ref()
+            .unwrap()
+            .iter()
+            .find(|r| r.permanent == permanent)
+            .unwrap()
+            .spell_copy;
+        assert_eq!(
+            g.state.objects[second.card as usize].card,
+            Card::test_index(5445)
+        );
+        super::super::contracts::branch_contract(g.clone());
+        announce_peer(&mut g, Action::AnnounceExile { card: second.card });
+        finish_peer(&mut g);
+        assert!(!g.is_prepared(permanent));
+    }
+}
+
+#[test]
+fn fra_semester_entry_surveil_can_move_top_card_to_graveyard() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let top = put(&mut g, p, "Island", Zone::Library);
+        let source = put(&mut g, p, "Semester Foreseer // Peer Review", Zone::Hand);
+        announce_peer(&mut g, Action::AnnounceCast { card: source });
+        for _ in 0..48 {
+            if matches!(g.state.pending, Pending::EffectLibrary { .. }) {
+                break;
+            }
+            choose(&mut g, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
+        }
+        assert!(matches!(g.state.pending, Pending::EffectLibrary { .. }));
+        super::super::contracts::branch_contract(g.clone());
+        act(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: top,
+                destination: LibraryDestination::Graveyard,
+            },
+        );
+        finish_peer(&mut g);
+        assert_eq!(g.object_view(top).zone, Zone::Graveyard);
+        assert!(g.is_prepared(g.object_ref(source)));
+        assert!(g.observe(p.other()).players[p.index()].scried_or_surveilled_this_turn);
     }
 }

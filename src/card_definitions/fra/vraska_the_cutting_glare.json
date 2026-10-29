@@ -3,7 +3,7 @@
   "catalogue_id": 4947,
   "oracle_id": "580de511-863c-4b7a-9d2e-fcdf6e12d54b",
   "facts_sha256": "f070776fd3e8adc13ba477d38cc71efa6df92e0d3aa2b6350e342ceb4d3dbffd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "32dbc0a88024496c40d6889fa93d17a220a2d01c10e7d260ffb498f33fda62b7"
@@ -23,5 +23,6 @@
       "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
       "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

@@ -3,7 +3,7 @@
   "catalogue_id": 4985,
   "oracle_id": "f47419a5-b975-4934-a987-ea064a0c7c1a",
   "facts_sha256": "a960ca403f42ad9ea05f7dae2517d21b3b334e9c55199bde2c2ef5399d3d58f4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "08d269ab2d94cc4e73840f9f33700b2a98a6b337a8d9b4e933e2ab61c2199b35"
@@ -33,5 +33,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
       "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

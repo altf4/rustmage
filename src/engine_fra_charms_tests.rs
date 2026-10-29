@@ -7220,3 +7220,12 @@ mod second_followup;
 mod scry_events;
 #[path = "engine_fra_tax_tests.rs"]
 mod fra_tax_tests;
+
+#[path = "engine_fra_third_followup_tests.rs"]
+mod third_followup;
+
+#[path = "engine_fra_fourth_followup_tests.rs"]
+mod fourth_followup;
+
+#[path = "engine_fra_peer_review_tests.rs"]
+mod peer_review_tests;

@@ -759,7 +759,9 @@ impl Game {
                     TriggerCondition::SelfGiftEnters => same && event.gift.is_some(),
                     TriggerCondition::SelfBargained => same && event.bargained,
                     TriggerCondition::SelfEvidence => same && event.evidence_collected,
-                    TriggerCondition::EvidenceCollected | TriggerCondition::Chapter { .. } => false,
+                    TriggerCondition::EvidenceCollected
+                    | TriggerCondition::ScryOrSurveil
+                    | TriggerCondition::Chapter { .. } => false,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
