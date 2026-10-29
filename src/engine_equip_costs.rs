@@ -78,7 +78,7 @@ impl Game {
             !item.is_copy
                 && self.first_equip_zero_available(
                     item.controller,
-                    item.source_card.activation(ability),
+                    item.source.expect("activated ability has source").card.activation(ability),
                 )
         } else {
             false
