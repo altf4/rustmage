@@ -67,3 +67,138 @@ fn cast_uldaros_resolves_selected_types_and_excludes_departed_target() {
         }
     }
 }
+
+// Start the printed entry trigger through normal cast and target actions.
+fn uldaros_trigger(game: &mut Game, player: Player, targets: &[(CardId, u16)]) -> CardId {
+    let source = put(game, player, "Shock", Zone::Hand);
+    game.state.objects[source as usize].card = Card::test_index(4739);
+    act(game, Action::AnnounceCast { card: source });
+    pay(game);
+    for _ in 0..40 {
+        if matches!(game.state.pending, Pending::Targets { .. }) { break; }
+        act(game, Action::Pass);
+    }
+    for &(id, type_mask) in targets {
+        act(game, Action::ChooseTargetCardType { target: Target::Card(id), type_mask });
+    }
+    act(game, Action::FinishTargets);
+    source
+}
+
+#[test]
+fn uldaros_copies_cast_for_free_consume_budget_and_replay_observations() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let creature = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+        let artifact = put(&mut game, player, "Gilded Lotus", Zone::Graveyard);
+        let foreign = put(&mut game, player.other(), "Shock", Zone::Graveyard);
+        let source = put(&mut game, player, "Shock", Zone::Hand);
+        game.state.objects[source as usize].card = Card::test_index(4739);
+        act(&mut game, Action::AnnounceCast { card: source });
+        pay(&mut game);
+        for _ in 0..40 {
+            if matches!(game.state.pending, Pending::Targets { .. }) { break; }
+            act(&mut game, Action::Pass);
+        }
+        assert!(!game.legal_actions().contains(&Action::ChooseTargetCardType {
+            target: Target::Card(foreign), type_mask: 8,
+        }));
+        for (id, type_mask) in [(creature, 1), (artifact, 16)] {
+            act(&mut game, Action::ChooseTargetCardType { target: Target::Card(id), type_mask });
+        }
+        act(&mut game, Action::FinishTargets);
+        game.resolve_top();
+        let copies = game.state.resolution_free_casts.as_ref().unwrap().remaining.clone();
+        let bear = copies.iter().copied().find(|reference|
+            game.state.objects[reference.card as usize].card.identity() == "Bear Cub").unwrap();
+        let lotus = copies.iter().copied().find(|reference|
+            game.state.objects[reference.card as usize].card.identity() == "Gilded Lotus").unwrap();
+        let views = [player, player.other()].map(|viewer| serde_json::to_string(&game.observe(viewer)).unwrap());
+        let checkpoint = game.snapshot();
+        for _ in 0..2 {
+            assert_eq!([player, player.other()].map(|viewer| serde_json::to_string(&game.observe(viewer)).unwrap()), views);
+            let cast = Action::CastExiledDuringResolution { object: bear, face: CastFace::Normal };
+            assert!(game.legal_actions().contains(&cast));
+            act(&mut game, cast);
+            pay(&mut game);
+            assert_eq!(game.state.resolution_free_casts.as_ref().unwrap().remaining_mana_value, Some(4));
+            assert!(!game.legal_actions().contains(&Action::CastExiledDuringResolution {
+                object: lotus, face: CastFace::Normal,
+            }));
+            act(&mut game, Action::FinishResolutionCasts);
+            game.resolve_top();
+            assert_eq!(game.state.objects[bear.card as usize].zone, Zone::Battlefield);
+            assert!(game.state.objects[bear.card as usize].is_token());
+            game.restore(&checkpoint).unwrap();
+        }
+    }
+}
+
+#[test]
+fn uldaros_all_targets_illegal_fizzles_even_when_source_left() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let target = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+        let source = uldaros_trigger(&mut game, player, &[(target, 1)]);
+        game.move_object(source, Zone::Graveyard);
+        game.move_object(target, Zone::Hand);
+        let saved = game.snapshot();
+        for _ in 0..2 {
+            game.resolve_top();
+            assert_eq!(game.state.objects[target as usize].zone, Zone::Hand);
+            assert!(game.state.resolution_free_casts.is_none());
+            game.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn copied_uldaros_trigger_survives_source_departure() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let target = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+        let source = uldaros_trigger(&mut game, player, &[(target, 1)]);
+        let original = game.state.stack.last().unwrap().clone();
+        let mut copier = original.clone();
+        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        assert!(game.copy_target_ability(&copier, 0));
+        act(&mut game, Action::FinishStackTargets);
+        game.move_object(source, Zone::Graveyard);
+        let saved = game.snapshot();
+        for _ in 0..2 {
+            game.resolve_top();
+            assert_eq!(game.state.objects[target as usize].zone, Zone::Exile);
+            assert_eq!(game.state.resolution_free_casts.as_ref().unwrap().player, player);
+            act(&mut game, Action::FinishResolutionCasts);
+            game.resolve_top();
+            assert!(game.state.resolution_free_casts.is_none());
+            game.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn uldaros_retains_declared_type_slot_when_multitype_card_changes() {
+    for player in [Player::P0, Player::P1] {
+        for slot in [1, 16] {
+            let mut game = scenario(player);
+            let target = put(&mut game, player, "Solemn Simulacrum", Zone::Graveyard);
+            uldaros_trigger(&mut game, player, &[(target, slot)]);
+            // Synthetic characteristic change: no supported effect changes a
+            // graveyard card's type in this checkout. Keep the same incarnation.
+            game.state.objects[target as usize].card = Card::from_name("Bear Cub").unwrap();
+            let saved = game.snapshot();
+            for _ in 0..2 {
+                game.resolve_top();
+                if slot == 1 {
+                    assert_eq!(game.state.objects[target as usize].zone, Zone::Exile);
+                    assert_eq!(game.state.resolution_free_casts.as_ref().unwrap().remaining.len(), 1);
+                } else {
+                    assert_eq!(game.state.objects[target as usize].zone, Zone::Graveyard);
+                    assert!(game.state.resolution_free_casts.is_none());
+                }
+                game.restore(&saved).unwrap();
+            }
+        }
+    }
+}
