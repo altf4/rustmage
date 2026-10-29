@@ -65,7 +65,7 @@ impl Game {
     pub(super) fn blight_intent_fundable(&self, pay: bool) -> bool {
         let mut a = self.state.announcing.as_ref().unwrap().clone();
         a.item.cast.as_mut().unwrap().blight = Some(pay);
-        a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+        a.initialize_cast_costs(improvise::potential(self, a.item.source.expect("cost announcement has object source").card));
         let available = a.item.modes().is_some_and(|modes| {
             modes.iter().enumerate().any(|(i, m)| {
                 self.blight_mode_allowed(&a.item, i)
