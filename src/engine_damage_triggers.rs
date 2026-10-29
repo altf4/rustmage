@@ -71,7 +71,7 @@ impl Game {
         subject: DamageSubject,
     ) -> bool {
         match subject {
-            DamageSubject::AnyNoncombatSources => true,
+            DamageSubject::AnySources | DamageSubject::AnyNoncombatSources => true,
             DamageSubject::ControlledNoncombatSources => dealer.controller == source.controller,
             DamageSubject::Source => dealer.reference == source.reference,
             DamageSubject::Attached => {

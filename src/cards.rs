@@ -1478,6 +1478,8 @@ pub(crate) enum Instruction {
     ModalOncePerTurn(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.
     LoseGame(PlayerSet),
+    /// Win if the resolving controller has no cards in their library.
+    WinIfLibraryEmpty,
     WinIfDistinctSubtypeNames {
         subtype: &'static str,
         minimum: u16,
@@ -3301,6 +3303,8 @@ pub(crate) enum DamageQualification {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum DamageSubject {
+    /// Damage from any source, combat or noncombat.
+    AnySources,
     AnyNoncombatSources,
     ControlledNoncombatSources,
     Source,

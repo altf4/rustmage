@@ -4950,6 +4950,15 @@ impl Game {
                     self.end_turn_effect();
                     return;
                 }
+                Instruction::WinIfLibraryEmpty => {
+                    if self.state.players[item.controller.index()].library.is_empty() {
+                        self.try_win_game(item.controller);
+                        if self.state.outcome.is_some() {
+                            self.state.resolving = None;
+                            return;
+                        }
+                    }
+                }
                 Instruction::WinIfDistinctSubtypeNames { subtype, minimum } => {
                     if self.distinct_subtype_names(item.controller, subtype) >= usize::from(minimum)
                     {
