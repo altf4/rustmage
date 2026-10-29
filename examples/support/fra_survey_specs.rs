@@ -1,6 +1,12 @@
 // Optional, deterministic survey prioritizing uncast physical fronts from CI 40949901439.
 // These are deck membership witnesses; actual plays are reported by the runner.
-pub(super) const SPECS: &[(&str, [&str; 2], &[&str], &[&str])] = &[
+type SurveySpec = (
+    &'static str,
+    [&'static str; 2],
+    &'static [&'static str],
+    &'static [&'static str],
+);
+pub(super) const SPECS: &[SurveySpec] = &[
     (
         "Survey UW",
         ["Island", "Plains"],
