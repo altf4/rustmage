@@ -1,11 +1,19 @@
 use super::*;
 
+// Keep the catalogue gated while using checked actions against authored rules.
+fn pyre_fixture(g: &mut Game, player: Player, zone: Zone) -> CardId {
+    let id = put(g, player, "Bear Cub", zone);
+    g.state.objects[id as usize].card = Card::from_name("Pyre Rhymer // Molten Tide").unwrap();
+    if zone == Zone::Battlefield { g.register_battlefield_sources(id); }
+    id
+}
+
 // Draft-only front face coverage: Molten Tide remains unsupported and gated.
 #[test]
 fn pyre_rhymer_casts_as_three_three_and_enters_prepared() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
-        let source = put(&mut g, player, "Pyre Rhymer // Molten Tide", Zone::Hand);
+        let source = pyre_fixture(&mut g, player, Zone::Hand);
         g.state.players[player.index()].mana = [0, 0, 0, 2, 0, 1];
         let saved = g.snapshot();
         for _ in 0..2 {
@@ -28,7 +36,7 @@ fn pyre_rhymer_casts_as_three_three_and_enters_prepared() {
 fn pyre_rhymer_prowess_responds_only_to_own_noncreature_cast() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
-        let source = put(&mut g, player, "Pyre Rhymer // Molten Tide", Zone::Battlefield);
+        let source = pyre_fixture(&mut g, player, Zone::Battlefield);
         let creature = put(&mut g, player, "Bear Cub", Zone::Hand);
         cast(&mut g, creature, None);
         settle(&mut g);
@@ -43,7 +51,7 @@ fn pyre_rhymer_prowess_responds_only_to_own_noncreature_cast() {
 }
 
 fn grant_molten_tide(g: &mut Game, player: Player) {
-    let source = put(g, player, "Pyre Rhymer // Molten Tide", Zone::Battlefield);
+    let source = pyre_fixture(g, player, Zone::Battlefield);
     let reference = g.object_ref(source);
     g.prepare_permanent(reference);
     let copy = g.state.preparations.as_ref().unwrap().iter()
@@ -158,7 +166,7 @@ fn molten_tide_counts_mountain_sacrificed_for_mana() {
 fn copied_molten_tide_creates_a_separate_trigger_for_its_controller() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
-        let source = put(&mut g, player, "Pyre Rhymer // Molten Tide", Zone::Battlefield);
+        let source = pyre_fixture(&mut g, player, Zone::Battlefield);
         let reference = g.object_ref(source);
         g.prepare_permanent(reference);
         let copy = g.state.preparations.as_ref().unwrap().iter().find(|row| row.permanent == reference).unwrap().spell_copy;
