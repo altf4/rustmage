@@ -833,6 +833,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
+                    | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledEquippedCreatureAttacks
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
@@ -1771,6 +1772,34 @@ impl Game {
                         && self.step_guard(guard, actor, source.reference, source.tapped)
                     {
                         self.queue_trigger(&source, index);
+                    }
+                }
+            }
+        }
+    }
+
+    /// Completed declaration; one historical event per distinct blocking creature.
+    pub(super) fn opponent_blocker_triggers(&mut self, actor: Player, declared: &[CardId]) {
+        let sources: Vec<_> = self.state.attack_sources.iter().copied().filter(|&id| {
+            self.on_battlefield(id) && self.state.objects[id as usize].controller != actor
+        }).map(|id| self.object_view(id)).collect();
+        let mut seen = Vec::new();
+        for &blocker in declared {
+            if seen.contains(&blocker) { continue; }
+            seen.push(blocker);
+            if !self.on_battlefield(blocker) || !self.is_creature(blocker)
+                || self.state.objects[blocker as usize].controller != actor { continue; }
+            let stats = self.stats(blocker);
+            if stats.power > 1 && stats.toughness > 1 { continue; }
+            let object = self.object_ref(blocker);
+            for source in &sources {
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    if ability.condition.event() == TriggerCondition::OpponentCreatureBlocksSmall
+                        && self.queue_trigger(source, index)
+                    {
+                        self.state.pending_triggers.last_mut().unwrap().event_object = Some(Box::new(EventObjectView {
+                            object, facts: EventObjectFacts::Controller(actor), conniver_creature: None, subtype_lki: None,
+                        }));
                     }
                 }
             }
@@ -4229,6 +4258,9 @@ impl Game {
                 }
                 Instruction::EventObjectDamagePlayers(players, amount) => {
                     self.event_object_damage_players(&item, players, amount);
+                }
+                Instruction::DamageEventObjectController(amount) => {
+                    self.damage_event_object_controller(&item, amount);
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::AnimateSourceWithAbilityIfNoncreature { spec, kind } => {

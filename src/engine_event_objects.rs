@@ -369,4 +369,16 @@ impl Game {
             .collect();
         self.apply_damage_batch(&events);
     }
+    pub(super) fn damage_event_object_controller(&mut self, item: &SpellView, amount: i32) {
+        let event = item.event_object.as_ref().expect("blocker event object");
+        let EventObjectFacts::Controller(saved) = event.facts else { unreachable!("blocker controller facts") };
+        let controller = if self.on_battlefield(event.object.card) && self.object_ref(event.object.card) == event.object {
+            self.state.objects[event.object.card as usize].controller
+        } else { saved };
+        self.apply_damage_batch(&[DamageEvent {
+            source: self.program_damage_source(item), target: Target::Player(controller),
+            amount: i128::from(amount), combat: false, preventable: true,
+        }]);
+    }
+
 }

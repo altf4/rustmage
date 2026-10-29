@@ -6105,11 +6105,13 @@ impl Game {
                 self.state.selected_blocks.push((blocker, attacker))
             }
             Action::FinishBlockers => {
+                let declared: Vec<CardId> = self.state.selected_blocks.iter().map(|&(blocker, _)| blocker).collect();
                 self.state
                     .blocking
                     .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
                 self.state.blocks.append(&mut self.state.selected_blocks);
                 self.attachment_block_triggers(actor);
+                self.opponent_blocker_triggers(actor, &declared);
                 for attacker in &mut self.state.attackers {
                     attacker.blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
                 }

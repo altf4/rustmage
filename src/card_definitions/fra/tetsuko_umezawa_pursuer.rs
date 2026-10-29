@@ -1,16 +1,11 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed rules from pinned Oracle and XMage; gated pending validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 4),
     keywords: Keywords::DOUBLE_STRIKE,
+    static_groups: &[StaticAbilityGroup { line: 0, first_layer: AbilityLayer::Ability, fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::DOUBLE_STRIKE)] }],
+    triggers: &[
+        TriggeredAbility { condition: TriggerCondition::SpellCast { relation: CastRelation::You, filter: CastFilter::Noncreature, ordinal: None }, targets: TargetPlan::NONE, program: &[Instruction::Grow { subject: Subject::Source, power: 1, toughness: 1 }] },
+        TriggeredAbility { condition: TriggerCondition::OpponentCreatureBlocksSmall, targets: TargetPlan::NONE, program: &[Instruction::DamageEventObjectController(1)] },
+    ],
     ..CardRules::EMPTY
 };

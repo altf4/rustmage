@@ -1833,6 +1833,8 @@ pub(crate) enum Instruction {
     DamagePlayers(PlayerSet, i32),
     /// A bound untargeted event object, independently of the ability source.
     EventObjectDamagePlayers(PlayerSet, i32),
+    /// The resolving ability’s source damages the current or last-known controller of its event object.
+    DamageEventObjectController(i32),
     DamagePlayersScaled(PlayerSet, AmountValue),
     CreateTokensFor {
         players: PlayerSet,
@@ -3585,6 +3587,8 @@ pub(crate) enum TriggerCondition {
     /// One event for each creature declared attacking by the source controller.
     ControlledCreatureAttacks,
     ControlledCreatureAttacksPlayerAlone,
+    /// Once per opponent-controlled blocker meeting either stat ceiling.
+    OpponentCreatureBlocksSmall,
     ControlledEquippedCreatureAttacks,
     EquippedAttacks,
     /// Attachment recipient was the sole creature declared in this attack event.
