@@ -1052,15 +1052,34 @@ impl Game {
         if let EffectChoiceKind::ExileSourceAndNamed { amount, .. } = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             let selected = &choice.selected[item.controller.index()];
-            assert_eq!(selected.len(), usize::from(amount));
-            assert!(selected.iter().all(|&r| self.effect_choice_candidate(&EffectChoice {
-                selected: std::array::from_fn(|_| Vec::new()), ..choice.clone()
-            }, item.controller, r)));
-            let mut ids = Vec::with_capacity(selected.len() + 1);
-            ids.push(item.card);
-            ids.extend(selected.iter().map(|r| r.card));
-            let events = self.move_objects_raw(&ids, Zone::Exile);
-            self.finish_zone_events(&events, &[]);
+            // Validate every component before committing any movement. An
+            // interrupted/replayed choice must not partially pay a stale cost.
+            let source_valid = self.object_ref(item.card) == item.object
+                && self.state.objects[item.card as usize].zone == Zone::Stack;
+            let eligible = EffectChoice { selected: std::array::from_fn(|_| Vec::new()), ..choice.clone() };
+            let unique = selected.iter().enumerate().all(|(i, r)| !selected[..i].contains(r));
+            if !source_valid || selected.len() != usize::from(amount) || !unique
+                || !selected.iter().all(|&r| self.effect_choice_candidate(&eligible, item.controller, r))
+            {
+                self.state.resolving.as_mut().unwrap().pc = choice.skip_to.expect("optional resolution cost");
+                return false;
+            }
+            let failure_pc = choice.skip_to.expect("optional resolution cost");
+            let checkpoint = self.atomic_zone_cost_checkpoint(Some(failure_pc));
+            let mut moves = Vec::with_capacity(selected.len() + 1);
+            moves.push((item.object, Zone::Exile));
+            moves.extend(selected.iter().map(|&reference| (reference, Zone::Exile)));
+            let Some(plans) = self.plan_atomic_zone_cost(&moves) else {
+                self.state.resolving.as_mut().unwrap().pc = failure_pc;
+                return false;
+            };
+            if plans.iter().any(|(_, plan)| !plan.prevented && plan.destination == Zone::Battlefield) {
+                self.stage_atomic_zone_cost(plans, checkpoint);
+            } else if let Some(events) = self.commit_atomic_zone_cost(plans) {
+                self.finish_zone_events(&events, &[]);
+            } else {
+                self.state.resolving.as_mut().unwrap().pc = failure_pc;
+            }
         } else if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             // The owned selection seat is the amassing player. The resolving

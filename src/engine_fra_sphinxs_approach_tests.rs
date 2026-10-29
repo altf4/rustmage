@@ -114,3 +114,47 @@ fn approach_spell_copy_can_choose_the_resolution_payment_independently() {
         assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
     }
 }
+
+#[test]
+fn approach_revalidates_every_component_before_any_exile() {
+    for p in [Player::P0, Player::P1] {
+        for lost in 0..5 {
+            let mut g = scenario(p);
+            let cards: Vec<_> = (0..4).map(|_| put(&mut g, p, "Sphinx's Approach", Zone::Graveyard)).collect();
+            let spell = put(&mut g, p, "Sphinx's Approach", Zone::Hand);
+            cast(&mut g, spell, None);
+            approach_until_choice(&mut g);
+            for &id in &cards[..3] {
+                let object = g.object_ref(id);
+                act(&mut g, Action::SelectResolutionExile { object });
+            }
+            let checkpoint = g.snapshot();
+            // Model an interrupted continuation whose old selected incarnation
+            // became invalid before commitment; such changes require a nested
+            // continuation, not ordinary priority between these selections.
+            let stale = if lost < 4 { cards[lost] } else { spell };
+            if lost == 3 {
+                // Select the fourth object, but construct its continuation with
+                // the stale exact reference before asking the commit helper.
+                let reference = g.object_ref(cards[3]);
+                g.state.resolving.as_mut().unwrap().choice.as_mut().unwrap().selected[p.index()].push(reference);
+                g.move_object(stale, Zone::Hand);
+                assert!(!g.advance_effect_choice());
+                g.run_program();
+            } else {
+                g.move_object(stale, Zone::Hand);
+                let object = g.object_ref(cards[3]);
+                act(&mut g, Action::SelectResolutionExile { object });
+            }
+            settle(&mut g);
+            for &id in &cards {
+                assert_ne!(g.object_view(id).zone, Zone::Exile);
+            }
+            assert_ne!(g.object_view(spell).zone, Zone::Exile);
+            g.restore(&checkpoint).unwrap();
+            assert_eq!(g.snapshot(), checkpoint);
+            for &id in &cards { assert_eq!(g.object_view(id).zone, Zone::Graveyard); }
+            assert_eq!(g.object_view(spell).zone, Zone::Stack);
+        }
+    }
+}

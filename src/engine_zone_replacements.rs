@@ -144,6 +144,7 @@ impl ZoneState {
 }
 #[cfg(test)]
 thread_local! {
+    pub(super) static TEST_REDIRECT_EXILE_TO_BATTLEFIELD: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_PREVENT_ZONE_MOVE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_PREVENT_PROVIDER: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
 }
@@ -325,7 +326,11 @@ impl Game {
                 reflexive: None,
             };
         }
-        if !rules.prevent && requested != Zone::Graveyard
+        #[cfg(test)]
+        let test_redirect = requested == Zone::Exile && TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|target| target.get() == Some(before.reference));
+        #[cfg(not(test))]
+        let test_redirect = false;
+        if !rules.prevent && !test_redirect && requested != Zone::Graveyard
             && !(before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback)
         {
             return Plan {
@@ -337,6 +342,7 @@ impl Game {
         }
         let mut choices = Vec::new();
         if rules.prevent { choices.push(ZoneReplacementKind::Prevent); }
+        if test_redirect { choices.push(ZoneReplacementKind::Battlefield); }
         if before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback
             || rules.exile_spell
             || self.death_exile_destination(before, requested) != requested
