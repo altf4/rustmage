@@ -11,6 +11,7 @@ fn context(game: &Game, actor: Player, source: CardId, kind: EffectChoiceKind) -
     CostContext {
         actor,
         source: game.object_ref(source),
+        source_counter_reservation: Counters::default(),
         clauses: vec![CastCostRow {
             clause: CastCostClause::Additional,
             paid: false,
@@ -359,5 +360,31 @@ fn group_cost_handles_graveyard_prefixes_and_activation_source_reservation() {
             &[]
         ));
         assert_eq!(game.snapshot(), before);
+    }
+}
+
+#[test]
+fn creature_counter_selection_preserves_reserved_loyalty_payment() {
+    for actor in [Player::P0, Player::P1] {
+        let mut game = setup(actor);
+        let source = named(&mut game, actor, "Silence the Echo", Zone::Battlefield);
+        let mut context = context(&game, actor, source, EffectChoiceKind::RemoveCreatureCounters(1));
+        game.state.objects[source as usize].card = Card::from_name("Bear Cub").unwrap();
+        game.state.objects[source as usize].counters.loyalty = 1;
+        context.source_counter_reservation = Counters::of(CounterKind::Loyalty, 1);
+        context.counters = vec![(game.object_ref(source), CounterKind::Loyalty)];
+        let run = |g: &Game, c: CostContext| {
+            let mut world = FundingState::from_game(g, &goal(actor));
+            world.install_cost_context(Some(Box::new(c)));
+            world.cost_completion()
+        };
+        assert!(!run(&game, context.clone()));
+        game.state.objects[source as usize].counters.loyalty = 2;
+        assert!(run(&game, context.clone()));
+        game.state.objects[source as usize].counters.loyalty = 1;
+        let other = named(&mut game, actor, "Bear Cub", Zone::Battlefield);
+        game.state.objects[other as usize].counters.plus_one = 1;
+        context.counters = vec![(game.object_ref(other), CounterKind::PlusOne)];
+        assert!(run(&game, context));
     }
 }

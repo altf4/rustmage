@@ -6,6 +6,7 @@ use ability_world::CharacteristicWorld;
 pub(super) struct CostContext {
     actor: Player,
     source: ObjectRef,
+    source_counter_reservation: Counters,
     clauses: Vec<CastCostRow>,
     active: Option<u16>,
     casualty: Vec<CasualtyDeclaration>,
@@ -35,7 +36,17 @@ impl CostContext {
             selected = e.selected.clone();
             exact = e.complete;
         }
+        let mut source_counter_reservation = Counters::default();
+        if let StackKind::ActivatedAbility { ability } = a.item.kind
+            && a.activation_cost_route != ActivationCostRoute::FirstEquipZero
+        {
+            source_counter_reservation = a.counter_payment.clone();
+            if let Some(change) = a.item.source_card.activation(ability).cost.loyalty.filter(|change| *change < 0) {
+                source_counter_reservation.add(CounterKind::Loyalty, u64::from(change.unsigned_abs()));
+            }
+        }
         Some(Box::new(Self {
+            source_counter_reservation,
             teammates: c.teammates.clone(),
             teamwork_exact: false,
             actor: a.item.controller,
@@ -1108,7 +1119,9 @@ impl FundingState<'_> {
                 return false;
             }
         }
-        if c.counters.len() > usize::from(amount) {
+        if c.counters.len() > usize::from(amount)
+            || (!c.source_counter_reservation.is_empty()
+                && !CharacteristicWorld::counter_amounts(&next, c.source.card).contains(&c.source_counter_reservation)) {
             return false;
         }
         fn fill(
@@ -1117,6 +1130,8 @@ impl FundingState<'_> {
             later: &CostContext,
             remaining: &[usize],
             first: usize,
+            source: ObjectRef,
+            reservation: &Counters,
         ) -> bool {
             if left == 0 {
                 return w.complete_cost_rows(later, remaining);
@@ -1133,7 +1148,8 @@ impl FundingState<'_> {
                     if !next.remove_creature_counter(w.reference(resource.id), kind) {
                         continue;
                     }
-                    if fill(&next, left - 1, later, remaining, index) {
+                    if !reservation.is_empty() && !CharacteristicWorld::counter_amounts(&next, source.card).contains(reservation) { continue; }
+                    if fill(&next, left - 1, later, remaining, index, source, reservation) {
                         return true;
                     }
                 }
@@ -1146,6 +1162,8 @@ impl FundingState<'_> {
             later,
             remaining,
             0,
+            c.source,
+            &c.source_counter_reservation,
         )
     }
 }
@@ -1338,6 +1356,7 @@ impl Game {
                 teamwork_exact: false,
                 actor: goal.actor,
                 mana: None,
+                source_counter_reservation: Counters::default(),
                 source: ObjectRef {
                     card: 0,
                     generation: 0,
@@ -1501,6 +1520,7 @@ impl Game {
                             generic: attempt.generic,
                         }),
                     source,
+                    source_counter_reservation: Counters::default(),
                     clauses,
                     active: None,
                     casualty: casualty.to_vec(),
@@ -1542,6 +1562,7 @@ impl Game {
         world.install_cost_context(Some(Box::new(CostContext {
             actor: goal.actor,
             source,
+            source_counter_reservation: Counters::default(),
             clauses: vec![
                 CastCostRow {
                     clause: CastCostClause::Additional,

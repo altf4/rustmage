@@ -437,6 +437,9 @@ fn source_obligations(
             goal.actor,
             true,
         ) && amounts.contains(counters)
+            && amounts.get(CounterKind::Loyalty).saturating_sub(counters.get(CounterKind::Loyalty))
+                >= ability.cost.loyalty.filter(|change| *change < 0)
+                    .map_or(0, |change| u64::from(change.unsigned_abs()))
     } else {
         // The activated ability already exists independently of its source.
         // Only unpaid costs that use that incarnation require it to remain.
@@ -3590,6 +3593,7 @@ impl FundingState<'_> {
     }
     fn creature_counter_payment_possible(
         &self,
+        goal: &FundingGoal,
         amount: u16,
         selected: &[(ObjectRef, CounterKind)],
     ) -> bool {
@@ -3602,6 +3606,16 @@ impl FundingState<'_> {
                 return false;
             }
         }
+        if !after.obligations(goal) { return false; }
+        let reserved = goal.source.as_ref().map_or(0u128, |(source, index, selected, definition, _)| {
+            let object = after.object(source.card);
+            if object.zone != Zone::Battlefield || object.controller != after.actor || after.kinds(&Resource {
+                id: source.card, object: object.clone(), attacking: false,
+            }) & 1 == 0 { return 0; }
+            let loyalty = definition.activation(*index).cost.loyalty.filter(|change| *change < 0)
+                .map_or(0, |change| u64::from(change.unsigned_abs()));
+            selected.total() + u128::from(loyalty)
+        });
         let available = after
             .resources
             .iter()
@@ -3612,7 +3626,7 @@ impl FundingState<'_> {
             })
             .map(|r| ability_world::CharacteristicWorld::counter_amounts(&after, r.id).total())
             .sum::<u128>();
-        available >= u128::from(amount) - selected.len() as u128
+        available.saturating_sub(reserved) >= u128::from(amount) - selected.len() as u128
     }
     fn fund_creature_counter_cost(
         &self,
@@ -3633,7 +3647,7 @@ impl FundingState<'_> {
             mana_lots::available(self.mana, &self.lots, purpose),
             adjusted.required,
             adjusted.generic,
-        ) && self.creature_counter_payment_possible(amount, selected)
+        ) && self.creature_counter_payment_possible(goal, amount, selected)
         {
             return true;
         }

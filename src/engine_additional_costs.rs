@@ -571,6 +571,15 @@ impl Game {
         };
         self.resume_cast_cost_selection();
     }
+    pub(super) fn pay_selected_creature_counters(&mut self, item: &mut SpellView, selected: &[(ObjectRef, CounterKind)]) {
+        for &(object, kind) in selected {
+            self.pay_counters(object.card, &Counters::of(kind, 1));
+            if matches!(item.kind, StackKind::ActivatedAbility { .. }) && kind == CounterKind::Loyalty {
+                item.loyalty_counters_paid = item.loyalty_counters_paid.checked_add(1)
+                    .capacity("loyalty activation counter payment exhausted");
+            }
+        }
+    }
     pub(super) fn pay_additional_cost(&mut self, a: &mut Announcement) {
         let Some(spec) = a.additional_cost() else {
             return;
@@ -610,9 +619,7 @@ impl Game {
         if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
             let selected = a.creature_counter_cost.as_ref().unwrap();
             assert_eq!(selected.len(), usize::from(amount));
-            for &(r, kind) in selected.iter() {
-                self.pay_counters(r.card, &Counters::of(kind, 1));
-            }
+            self.pay_selected_creature_counters(&mut a.item, selected);
             a.additional_paid = true;
             return;
         }

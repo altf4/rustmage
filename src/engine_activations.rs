@@ -275,7 +275,11 @@ impl Game {
             return false;
         }
         if let Some((kind, amount)) = ability.cost.remove {
-            let count = counters.available(kind);
+            let loyalty_reserve = ability.cost.loyalty.filter(|change| *change < 0)
+                .map_or(0, |change| u64::from(change.unsigned_abs()));
+            let count = counters.available(kind).saturating_sub(if kind.is_none() || kind == Some(CounterKind::Loyalty) {
+                u128::from(loyalty_reserve)
+            } else { 0 });
             if count < u128::from(amount) {
                 return false;
             }
@@ -717,8 +721,9 @@ impl Game {
             self.record_power_up_use(item, ability);
         }
         if let Some(change) = cost.loyalty {
-            item.loyalty_counters_paid = counter_payment.get(CounterKind::Loyalty)
-                .checked_add(if change < 0 { u64::from(change.unsigned_abs()) } else { 0 })
+            item.loyalty_counters_paid = item.loyalty_counters_paid
+                .checked_add(counter_payment.get(CounterKind::Loyalty))
+                .and_then(|paid| paid.checked_add(if change < 0 { u64::from(change.unsigned_abs()) } else { 0 }))
                 .capacity("loyalty activation counter payment exhausted");
         }
         self.pay_counters(item.card, &counter_payment);
@@ -793,7 +798,11 @@ pub(super) fn counter_payments<'a>(
     available: impl Into<CounterAmounts<'a>>,
     mut emit: impl FnMut(Counters) -> bool,
 ) -> bool {
-    let available = available.into();
+    let mut available = available.into();
+    let reserve = cost.loyalty.filter(|change| *change < 0)
+        .map_or(0, |change| u64::from(change.unsigned_abs()));
+    let Some(remaining) = available.hot.loyalty.checked_sub(reserve) else { return false; };
+    available.hot.loyalty = remaining;
     let Some((kind, amount)) = cost.remove else {
         return emit(Counters::default());
     };

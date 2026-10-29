@@ -113,3 +113,79 @@ fn mind_sculptor_counts_actual_additional_loyalty_counter_payment() {
         assert!(g.state.pending_triggers.iter().any(|packet| packet.card == way));
     }
 }
+
+#[test]
+fn mind_sculptor_counts_external_creature_loyalty_cost_and_preserves_source_payment() {
+    for actor in [Player::P0, Player::P1] {
+        let mut g = scenario(actor);
+        let way = put(&mut g, actor, "Way of the Mind Sculptor", Zone::Battlefield);
+        let walker = mind_jace(&mut g, actor);
+        g.state.objects[walker as usize].counters.loyalty = 3;
+        let mut item = g.activation_item(actor, walker, 0);
+        g.animate_source(&item, AnimationSpec { artifact: false, creature_types: AnimationCreatureTypes::Unchanged,
+            base: Some((3, 3)), keywords: Keywords::NONE, duration: AnimationDuration::EndOfTurn });
+        assert!(g.is_creature(walker));
+        assert_ne!(g.current_kinds(walker) & 64, 0);
+        let reference = g.object_ref(walker);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.pay_selected_creature_counters(&mut item, &[(reference, CounterKind::Loyalty)]);
+            let definition = *Card::JacePlaneswalkerToken.activation(0);
+            g.pay_activation_definition(&mut item, [0; 6], Counters::default(), 0, &definition);
+            assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 1);
+            assert_eq!(item.loyalty_counters_paid, 2);
+            g.committed_activation_observers(&item);
+            assert!(g.state.pending_triggers.iter().any(|packet| packet.card == way));
+            g.restore(&saved).unwrap();
+            item.loyalty_counters_paid = 0;
+        }
+    }
+}
+
+#[test]
+fn combined_loyalty_and_source_counter_costs_never_offer_overcommitted_payments() {
+    let mut cost = ActivationCost::ZERO;
+    cost.loyalty = Some(-1);
+    cost.remove = Some((Some(CounterKind::Loyalty), 1));
+    let mut counters = Counters::default();
+    counters.loyalty = 1;
+    let mut emitted = Vec::new();
+    activations::counter_payments(cost, &counters, |payment| { emitted.push(payment); false });
+    assert!(emitted.is_empty());
+    counters.loyalty = 2;
+    activations::counter_payments(cost, &counters, |payment| { emitted.push(payment); false });
+    assert_eq!(emitted, vec![Counters::of(CounterKind::Loyalty, 1)]);
+    cost.remove = Some((None, 1));
+    counters.loyalty = 1;
+    counters.plus_one = 1;
+    emitted.clear();
+    activations::counter_payments(cost, &counters, |payment| { emitted.push(payment); false });
+    assert_eq!(emitted, vec![Counters::of(CounterKind::PlusOne, 1)]);
+}
+
+#[test]
+fn copied_mind_sculptor_observes_loyalty_only_while_ability_survives() {
+    for actor in [Player::P0, Player::P1] {
+        for blank in [false, true] {
+            let mut g = scenario(actor);
+            let source = put(&mut g, actor, "Bear Cub", Zone::Battlefield);
+            g.apply_temporary_copy(g.object_ref(source), CopyRecipe::new(Card::from_name("Way of the Mind Sculptor").unwrap()), CopyDeadline::EndOfTurn);
+            let walker = mind_jace(&mut g, actor);
+            g.state.objects[walker as usize].counters.loyalty = 5;
+            if blank {
+                let animation_item = g.activation_item(actor, walker, 0);
+                let mut animation_item = animation_item;
+                animation_item.object = g.object_ref(source);
+                g.animate_source(&animation_item, AnimationSpec { artifact: false, creature_types: AnimationCreatureTypes::Unchanged,
+                    base: Some((3, 3)), keywords: Keywords::NONE, duration: AnimationDuration::EndOfTurn });
+                let aura = put(&mut g, actor.other(), "Fresh Start", Zone::Battlefield);
+                g.state.objects[aura as usize].attached_to = Some(g.object_ref(source));
+            }
+            act(&mut g, Action::AnnounceActivate { card: walker, ability: 1, counter_payment: Counters::default() });
+            pay(&mut g);
+            let triggers = g.state.stack.iter().chain(g.state.pending_triggers.iter()).chain(g.state.ordering_triggers.iter())
+                .filter(|packet| packet.card == source && matches!(packet.kind, StackKind::TriggeredAbility { .. })).count();
+            assert_eq!(triggers, usize::from(!blank));
+        }
+    }
+}
