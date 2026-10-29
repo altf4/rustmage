@@ -40,6 +40,10 @@ fn ajani_pridemate_token_tracks_controller_life_gain() {
         for _ in 0..2 {
             g.gain_life(player, 1);
             g.prepare_triggers();
+            // Ajani and the Pridemate both trigger on the same life gain.
+            while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+                choose(&mut g, |action| matches!(action, Action::PutTrigger { .. }));
+            }
             settle(&mut g);
             assert_eq!(g.counter_count(token, CounterKind::PlusOne), 1);
             assert_eq!(g.counter_count(ajani, CounterKind::Loyalty), 2);
