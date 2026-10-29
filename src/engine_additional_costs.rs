@@ -581,7 +581,7 @@ impl Game {
             && self.on_battlefield(a.item.object.card)
             && self.object_ref(a.item.object.card) == a.item.object
         {
-            a.item.source_facts = DamageFacts::from_view(&self.object_view(a.item.object.card));
+            a.item.source.as_mut().expect("activated ability source exists").facts = DamageFacts::from_view(&self.object_view(a.item.object.card));
         }
         if let EffectChoiceKind::ExileGraveyardSymbols { color, minimum } = spec.kind {
             let group = a.additional_group.as_deref().unwrap();

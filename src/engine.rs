@@ -1408,12 +1408,12 @@ impl SpellView {
         self.attachment_trigger
             .as_ref()
             .filter(|event| event.granted)
-            .map_or(self.source_card, |event| event.granting_card)
+            .map_or(self.source.expect("object-backed stack kind").card, |event| event.granting_card)
     }
 
     pub(crate) fn modes(&self) -> Option<&'static [SpellMode]> {
         match self.kind {
-            StackKind::Spell => match self.source_card.effect() {
+            StackKind::Spell => match self.source.expect("object-backed stack kind").card.effect() {
                 Effect::Modal(modes) => Some(modes),
                 _ => None,
             },
@@ -1431,7 +1431,7 @@ impl SpellView {
                 _ => None,
             },
             StackKind::ActivatedAbility { ability } => {
-                match self.source_card.activation(ability).program.first() {
+                match self.source.expect("object-backed stack kind").card.activation(ability).program.first() {
                     Some(Instruction::Modal(modes)) => Some(modes),
                     _ => None,
                 }
@@ -1506,7 +1506,7 @@ impl SpellView {
                         };
                         spec.rule = TargetRule::GraveCreaturePower {
                             excluded_subtype,
-                            maximum: Some(self.source_facts.power),
+                            maximum: Some(self.source.expect("object-backed stack kind").facts.power),
                         };
                         TargetPlan::Single(spec)
                     }
@@ -1534,25 +1534,25 @@ impl SpellView {
                 Some((targets, a.program))
             }
             StackKind::ActivatedAbility { ability } => {
-                let a = &self.source_card.activation(ability);
+                let a = &self.source.expect("object-backed stack kind").card.activation(ability);
                 Some((a.targets, a.program))
             }
             StackKind::Spell => self
-                .source_card
+                .source.expect("spell has a source").card
                 .spell_program(self.mode)
                 .map(|(plan, program)| {
                     let promised = self
                         .cast
                         .is_some_and(|c| matches!(c.gift, Some(GiftDeclaration::Promised { .. })));
                     let plan = if promised {
-                        self.source_card
+                        self.source.expect("object-backed stack kind").card
                             .gift()
                             .map_or(plan, |gift| gift.promised_targets)
                     } else {
                         plan
                     };
                     let plan = if self.cast.is_some_and(|c| c.teamwork == Some(true)) {
-                        self.source_card
+                        self.source.expect("object-backed stack kind").card
                             .teamwork()
                             .and_then(|s| s.paid_targets)
                             .unwrap_or(plan)
@@ -1560,7 +1560,7 @@ impl SpellView {
                         plan
                     };
                     let plan = if self.cast.is_some_and(|c| c.kicker == Some(true)) {
-                        self.source_card.kicked_targets().unwrap_or(plan)
+                        self.source.expect("object-backed stack kind").card.kicked_targets().unwrap_or(plan)
                     } else {
                         plan
                     };
@@ -5738,10 +5738,10 @@ impl Game {
                     Some(self.state.objects[card as usize].card);
                 item.set_source_definition(definition);
                 item.source_keywords = definition.info().keywords;
-                item.source_facts.card = definition;
-                item.source_facts.colors = definition.colors();
-                item.source_facts.kinds = definition.kind_mask();
-                item.source_facts.power = 0;
+                item.source.as_mut().expect("spell source exists").facts.card = definition;
+                item.source.as_mut().expect("spell source exists").facts.colors = definition.colors();
+                item.source.as_mut().expect("spell source exists").facts.kinds = definition.kind_mask();
+                item.source.as_mut().expect("spell source exists").facts.power = 0;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceSneak { card, permission } => {
