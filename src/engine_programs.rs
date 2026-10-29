@@ -1656,8 +1656,10 @@ impl Game {
             .into_iter().flatten().cloned().collect::<Vec<_>>();
         for mut packet in delayed {
             let StackKind::TriggeredAbility { ability } = packet.kind else { continue; };
-            let each_defender = matches!(packet.trigger_definition().triggers()[ability as usize].program.first(),
-                Some(Instruction::WeakenDeclaredAttacker(_)));
+            let Some(trigger) = packet.trigger_definition().triggers().get(usize::from(ability)) else {
+                continue;
+            };
+            let each_defender = matches!(trigger.program.first(), Some(Instruction::WeakenDeclaredAttacker(_)));
             if each_defender {
                 if actor == packet.controller { continue; }
                 for attack in declared {
