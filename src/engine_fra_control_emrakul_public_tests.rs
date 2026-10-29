@@ -203,6 +203,15 @@ fn copied_civil_war_ability_enforces_total_mana_value_on_new_targets() {
             act(&mut g, Action::FinishTargets);
         }
         let original = g.state.stack.last().unwrap().id;
+        // Echo copies only abilities from creature sources. Puppet Crafting
+        // makes the Saga a creature while its chapter ability stays on the stack.
+        let puppet = put(&mut g, player, "Puppet Crafting", Zone::Hand);
+        cast(&mut g, puppet, Some(Target::Card(saga)));
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        assert_eq!(g.object_view(puppet).zone, Zone::Battlefield);
+        assert_ne!(g.current_kinds(saga) & 1, 0);
+        assert_eq!(g.state.stack.last().unwrap().id, original);
         act(
             &mut g,
             Action::AnnounceActivate {
