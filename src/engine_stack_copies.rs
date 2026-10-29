@@ -73,16 +73,16 @@ impl Game {
             TargetRule::YourSpellKinds { kinds } => {
                 item.kind == StackKind::Spell
                     && item.controller == controller
-                    && item.source_card.kind_mask() & u16::from(kinds) != 0
+                    && item.source.expect("spell source exists").card.kind_mask() & u16::from(kinds) != 0
             }
             TargetRule::CreatureOrLegendarySpell => {
                 item.kind == StackKind::Spell
-                    && (item.source_card.kind_mask() & 1 != 0 || item.source_card.is_legendary())
+                    && (item.source.expect("spell source exists").card.kind_mask() & 1 != 0 || item.source.expect("spell source exists").card.is_legendary())
             }
             TargetRule::SpellKinds { kinds, excluded } => {
                 item.kind == StackKind::Spell
-                    && (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
-                    && item.source_card.kind_mask() & u16::from(excluded) == 0
+                    && (kinds == 0 || item.source.expect("spell source exists").card.kind_mask() & u16::from(kinds) != 0)
+                    && item.source.expect("spell source exists").card.kind_mask() & u16::from(excluded) == 0
             }
             TargetRule::SpellCharacteristics {
                 colors,
@@ -90,7 +90,7 @@ impl Game {
                 max_mana,
             } => {
                 item.kind == StackKind::Spell
-                    && (colors == 0 || item.source_card.colors() & colors != 0)
+                    && (colors == 0 || item.source.expect("spell source exists").card.colors() & colors != 0)
                     && (min_mana..=max_mana).contains(&item.mana_value())
             }
             _ => false,
@@ -101,7 +101,7 @@ impl Game {
             .state
             .stack
             .iter()
-            .find(|s| s.kind == StackKind::Spell && s.card == card)
+            .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == card))
             .cloned()
         else {
             return;
@@ -125,8 +125,7 @@ impl Game {
             Target::Stack(id) => item.id == id,
             Target::Spell(card) => {
                 item.kind == StackKind::Spell
-                    && item.card == card
-                    && Some(item.object) == bound.object
+                    && item.source.is_some_and(|source| source.id == card && Some(source.object) == bound.object)
             }
             _ => false,
         })
@@ -155,11 +154,12 @@ impl Game {
             && r.victim.is_none()
             && r.item.is_copy
             && r.item.kind == StackKind::Spell
-            && self.object_ref(r.item.card) == r.item.object
-            && self.state.objects[r.item.card as usize].zone == Zone::Stack
+            && let Some(source) = r.item.source
+            && self.object_ref(source.id) == source.object
+            && self.state.objects[source.id as usize].zone == Zone::Stack
             && !self.state.stack.iter().any(|s| s.id == r.item.id)
         {
-            self.move_object(r.item.card, Zone::Exile);
+            self.move_object(source.id, Zone::Exile);
         }
         self.release_stack_copy_state();
     }
@@ -470,8 +470,9 @@ impl Game {
     /// Codie's trigger refers to the actual spell, not its last known copy.
     pub(super) fn copy_captured_prepared_spell(&mut self, item: &SpellView) -> bool {
         let Some(event) = &item.copy_event else { return false };
+        let Some(expected_source) = event.spell.source else { return false; };
         if !self.state.stack.iter().any(|spell| spell.id == event.spell.id
-            && spell.object == event.spell.object && spell.kind == StackKind::Spell) {
+            && spell.source.is_some_and(|source| source.object == expected_source.object) && spell.kind == StackKind::Spell) {
             return false;
         }
         self.copy_captured_spell(item)
@@ -532,7 +533,7 @@ impl Game {
     pub(super) fn capture_delayed_copy_source_departure(&mut self, before: &ObjectView) {
         if let Some(state) = &mut self.state.stack_copy_data {
             for item in &mut state.delayed {
-                if item.object == before.reference && delayed_copy_reads_source_power(item) {
+                if item.source.is_some_and(|source| source.object == before.reference) && delayed_copy_reads_source_power(item) {
                     item.source.as_mut().expect("delayed source exists").facts = DamageFacts::from_view(before);
                     item.source_keywords = before.keywords;
                     item.source_tapped = before.tapped;
