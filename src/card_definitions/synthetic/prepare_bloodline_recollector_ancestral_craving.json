@@ -1,0 +1,13 @@
+{
+  "name": "Ancestral Craving",
+  "catalogue_id": 5459,
+  "oracle_id": "c8e9a7e1-28ae-40e3-8715-1bb0aa2057c7",
+  "facts_sha256": "66452cba415f4d938b929ed5fdcc7b40384b4e85b797140434071d488a7e04eb",
+  "complete": false,
+  "physical_metadata_sha256": "1e8d37724d8fdc9140576498f6af021806a685880b37e596a33b494ba67df9f3",
+  "oracle_face": {
+    "oracle_id": "c8e9a7e1-28ae-40e3-8715-1bb0aa2057c7",
+    "index": 1,
+    "sha256": "877e5eeff7498374ce099776b2710f976ca7d660a2eca590803abc5295f9e23d"
+  }
+}

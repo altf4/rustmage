@@ -5464,7 +5464,8 @@
     2,
     17,
     2,
-    2
+    2,
+    4
   ],
   "aliases": [
     [
@@ -42612,12 +42613,17 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Bloodline Recollector",
+        "mana_cost": "{1}{B}",
+        "type_line": "Creature — Vampire Warlock"
+      }
     },
     {
       "index": 460,
@@ -185038,6 +185044,33 @@
         0
       ],
       "generic": 1
+    },
+    {
+      "index": 5459,
+      "module": "card_5459",
+      "path": "synthetic/prepare_bloodline_recollector_ancestral_craving.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Ancestral Craving",
+      "oracle_id": "c8e9a7e1-28ae-40e3-8715-1bb0aa2057c7",
+      "facts_sha256": "66452cba415f4d938b929ed5fdcc7b40384b4e85b797140434071d488a7e04eb",
+      "mana_cost": "{B}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }
