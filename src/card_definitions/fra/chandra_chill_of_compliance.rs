@@ -26,7 +26,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             })),
             program: &[Instruction::SourceCounterCost { kind: CounterKind::Loyalty }, Instruction::Tap,
                 Instruction::PutCountersScaled { subject: Subject::Targets, kind: CounterKind::Stun,
-                    amount: AmountValue::PaidSourceCounterQuantity(CounterKind::Loyalty) }],
+                    amount: AmountValue::ChosenX }],
             sorcery: true, once_per_turn: false },
         ActivatedAbility { exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Battlefield,
             cycling: false, cost: loyalty(-6), targets: TargetPlan::NONE,
