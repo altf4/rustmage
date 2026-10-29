@@ -7089,3 +7089,60 @@ fn schema191_accepts_ceased_copy_slots_and_passive_zone_registry() {
         }
     }
 }
+
+#[test]
+fn schema191_distinguishes_passive_real_zone_reveals_from_new_cards() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        // The real provider registers passive zone state on entry.
+        let provider = put(&mut game, player, "Rest in Peace", Zone::Battlefield);
+        assert!(game.state.zone_rules.is_some());
+        assert!(prior_schema191_state_supported(&game.state));
+        game.move_object(provider, Zone::Graveyard);
+        // Progenitus's own replacement creates an actual reveal and shuffle.
+        let progenitus = put(&mut game, player, "Progenitus", Zone::Battlefield);
+        game.move_object(progenitus, Zone::Graveyard);
+        assert!(
+            game.zone_reveals()
+                .iter()
+                .any(|r| r.card.identity() == "Progenitus")
+        );
+        assert!(prior_schema191_state_supported(&game.state));
+        let before = game.snapshot();
+        for viewer in [player, player.other()] {
+            let wire = serde_json::to_string(&game.observe(viewer)).unwrap();
+            assert_eq!(project_prior_schema191(&wire).unwrap(), wire);
+        }
+        // The new identity exists only in an owned reveal registry, never in
+        // any object, recipe, stack packet or outside-game pool.
+        game.record_zone_reveal(Card::test_index(4016), player, Zone::Hand);
+        assert!(!prior_schema191_state_supported(&game.state));
+        game.restore(&before).unwrap();
+        assert!(prior_schema191_state_supported(&game.state));
+    }
+}
+
+#[test]
+fn schema191_checks_card_copy_free_slot_and_rejects_unowned_outside_copy() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let copy = game.allocate_card_copy(Card::from_name("Bear Cub").unwrap(), player);
+        // A live card copy remains conservatively rejected because its
+        // pre-SBA zone behavior differs in schema 191.
+        assert!(!prior_schema191_state_supported(&game.state));
+        game.cease_card_copy(copy);
+        assert!(game.state.free_tokens.contains(&copy.card));
+        assert!(prior_schema191_state_supported(&game.state));
+        let saved = game.snapshot();
+        // Malformed or in-flight Outside copy: absence from the free list
+        // means it cannot be treated as an inert recycled slot.
+        game.state.free_tokens.retain(|&id| id != copy.card);
+        assert!(!prior_schema191_state_supported(&game.state));
+        game.restore(&saved).unwrap();
+        assert!(prior_schema191_state_supported(&game.state));
+        for viewer in [player, player.other()] {
+            let wire = serde_json::to_string(&game.observe(viewer)).unwrap();
+            assert_eq!(project_prior_schema191(&wire).unwrap(), wire);
+        }
+    }
+}
