@@ -10,14 +10,47 @@ fn schema189_packet(packet: &SpellView) -> String {
     let event = shallow.copy_event.take();
     let json = serde_json::to_string(&shallow).unwrap();
     let prefix = format!("{{\"source\":{},", serde_json::to_string(&source).unwrap());
-    let rest = json.strip_prefix(&prefix).expect("source is the first packet field");
+    let rest = json
+        .strip_prefix(&prefix)
+        .expect("source is the first packet field");
     let mut old = format!("{{{rest}");
-    let anchor = if shallow.split_second { "\"split_second\":" } else { "\"source_keywords\":" };
-    old = old.replacen(anchor, &format!("\"source_card\":{},{}", serde_json::to_string(&source.card).unwrap(), anchor), 1);
-    old = old.replacen("\"related_stack\":", &format!("\"source_facts\":{},\"related_stack\":", serde_json::to_string(&source.facts).unwrap()), 1);
-    old = old.replacen("\"targets\":", &format!("\"card\":{},\"object\":{},\"targets\":", source.id, serde_json::to_string(&source.object).unwrap()), 1);
+    let anchor = if shallow.split_second {
+        "\"split_second\":"
+    } else {
+        "\"source_keywords\":"
+    };
+    old = old.replacen(
+        anchor,
+        &format!(
+            "\"source_card\":{},{}",
+            serde_json::to_string(&source.card).unwrap(),
+            anchor
+        ),
+        1,
+    );
+    old = old.replacen(
+        "\"related_stack\":",
+        &format!(
+            "\"source_facts\":{},\"related_stack\":",
+            serde_json::to_string(&source.facts).unwrap()
+        ),
+        1,
+    );
+    old = old.replacen(
+        "\"targets\":",
+        &format!(
+            "\"card\":{},\"object\":{},\"targets\":",
+            source.id,
+            serde_json::to_string(&source.object).unwrap()
+        ),
+        1,
+    );
     if let Some(event) = event {
-        let copy = format!("\"copy_event\":{{\"spell\":{},\"amount\":{}}}", schema189_packet(&event.spell), event.amount);
+        let copy = format!(
+            "\"copy_event\":{{\"spell\":{},\"amount\":{}}}",
+            schema189_packet(&event.spell),
+            event.amount
+        );
         old = old.replacen("\"copy_event\":null", &copy, 1);
     }
     old
@@ -38,9 +71,15 @@ fn actual_packets_project_to_schema189_bytes_with_optional_and_nested_fields() {
             outer.source_transform = Some(4);
             outer.reflexive_target_limit = Some(3);
             outer.split_second = split;
-            outer.copy_event = Some(Box::new(stack_copies::CopyEvent { spell: inner, amount: 2 }));
+            outer.copy_event = Some(Box::new(stack_copies::CopyEvent {
+                spell: inner,
+                amount: 2,
+            }));
             let raw = serde_json::to_string(&outer).unwrap();
-            assert_eq!(project_prior_schema190(&raw).unwrap(), schema189_packet(&outer));
+            assert_eq!(
+                project_prior_schema190(&raw).unwrap(),
+                schema189_packet(&outer)
+            );
             g.state.stack.push(outer);
             let saved = g.snapshot();
             assert!(prior_schema190_state_supported(&g.state));
@@ -48,7 +87,10 @@ fn actual_packets_project_to_schema189_bytes_with_optional_and_nested_fields() {
                 let view = g.observe(viewer);
                 let packet = view.stack.last().unwrap();
                 let actual = serde_json::to_string(packet).unwrap();
-                assert_eq!(project_prior_schema190(&actual).unwrap(), schema189_packet(packet));
+                assert_eq!(
+                    project_prior_schema190(&actual).unwrap(),
+                    schema189_packet(packet)
+                );
             }
             g.begin_attack_rollback(player);
             g.state.stack.clear();
@@ -62,7 +104,10 @@ fn actual_packets_project_to_schema189_bytes_with_optional_and_nested_fields() {
             for viewer in [Player::P0, Player::P1] {
                 let view = g.observe(viewer);
                 let packet = view.stack.last().unwrap();
-                assert_eq!(project_prior_schema190(&serde_json::to_string(packet).unwrap()).unwrap(), schema189_packet(packet));
+                assert_eq!(
+                    project_prior_schema190(&serde_json::to_string(packet).unwrap()).unwrap(),
+                    schema189_packet(packet)
+                );
             }
         }
     }

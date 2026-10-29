@@ -6525,3 +6525,6 @@ fn schema190_preserves_older_revisions_and_audits_owned_state() {
         assert_eq!(project_prior_schema190(&json).unwrap(), json);
     }
 }
+
+#[path = "schema190_packet_independent.rs"]
+mod schema190_packet_independent;
