@@ -1,16 +1,14 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete pinned front-face rules; gated pending validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InterveningIf {
+            event: &TriggerCondition::AtStep { step: TriggerStep::End, relation: CastRelation::Any, guard: StepGuard::Always },
+            guard: StepGuard::Expression { value: StatValue::CreaturesDiedThisTurn, minimum: Some(3), maximum: None },
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::PrepareSource],
+    }],
+    extras: &CardExtras { prepared_spell: Some(Card(5459)), ..CardExtras::EMPTY },
     ..CardRules::EMPTY
 };
