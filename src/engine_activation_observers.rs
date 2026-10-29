@@ -57,9 +57,10 @@ impl Game {
         }
     }
     pub(super) fn committed_activation_observers(&mut self, item: &SpellView) {
+        let Some(identity) = item.source else { return; };
         if let StackKind::ActivatedAbility { ability } = item.kind
             && !item.is_copy
-            && item.source_card.activation(ability).cost.loyalty.is_some()
+            && identity.card.activation(ability).cost.loyalty.is_some()
             && !self.state.cast_rollback.as_ref().is_some_and(|r| r.replay.is_some())
         {
             self.state.players[item.controller.index()].loyalty_ability_activated_this_turn = true;
@@ -75,16 +76,16 @@ impl Game {
         }
         // Borrowing changes the ability definition, not the actual activating object.
         // A creature CARD cycling from hand is not a creature permanent.
-        let creature = if self.on_battlefield(item.object.card)
-            && self.object_ref(item.object.card) == item.object
+        let creature = if self.on_battlefield(identity.object.card)
+            && self.object_ref(identity.object.card) == identity.object
         {
-            self.is_creature(item.object.card)
+            self.is_creature(identity.object.card)
         } else {
-            item.source_card.activation(ability).source_zone() == Zone::Battlefield
-                && item.source_facts.is_creature()
+            identity.card.activation(ability).source_zone() == Zone::Battlefield
+                && identity.facts.is_creature()
         };
         self.creature_ability_activated(item.controller, creature);
-        if item.source_card.activation(ability).cost.loyalty.is_some()
+        if identity.card.activation(ability).cost.loyalty.is_some()
             && !self
                 .state
                 .cast_rollback
@@ -116,6 +117,7 @@ impl Game {
         let StackKind::TriggeredAbility { ability } = item.kind else {
             return;
         };
+        let Some(identity) = item.source else { return; };
         let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
         if matches!(
             condition.event(),
@@ -123,7 +125,7 @@ impl Game {
         ) && condition.once_per_turn()
         {
             let used = TriggerUse {
-                source: item.object,
+                source: identity.object,
                 ability,
                 origin: item.source_ability_origin,
             };
