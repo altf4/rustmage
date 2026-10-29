@@ -5467,7 +5467,9 @@
     2,
     4,
     2,
-    8
+    8,
+    1,
+    0
   ],
   "aliases": [
     [
@@ -5641,6 +5643,10 @@
     [
       "@emblem/775571b10b62868058a6d841",
       5333
+    ],
+    [
+      "@emblem/fra-ajani-resolute",
+      5463
     ],
     [
       "@emblem/kaito_cunning_infiltrator",
@@ -6309,6 +6315,10 @@
     [
       "@token/fc4d98b9982bc99c31b60b7c",
       5332
+    ],
+    [
+      "@token/fra-ajani-pridemate",
+      5462
     ],
     [
       "@token/fra-blue-angel",
@@ -28947,6 +28957,12 @@
       "name": "Angel Token",
       "subtypes": "Angel",
       "colors": 2
+    },
+    {
+      "factory_identity": "@token/fra-ajani-pridemate",
+      "name": "Ajani's Pridemate",
+      "subtypes": "Cat Soldier",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -28958,6 +28974,9 @@
     },
     {
       "oracle_text": "Whenever a player casts a spell, you create a 2/1 blue Ninja creature token."
+    },
+    {
+      "oracle_text": "Creatures you control get +2/+2."
     }
   ],
   "creature_types": [
@@ -185133,6 +185152,60 @@
         0,
         0,
         1,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5462,
+      "module": "card_5462",
+      "path": "synthetic/token_fra_ajani_pridemate.rs",
+      "category": "token",
+      "name": "@token/fra-ajani-pridemate",
+      "type_line": "Creature — Cat Soldier",
+      "kind": 1,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5463,
+      "module": "card_5463",
+      "path": "synthetic/emblem_fra_ajani_resolute.rs",
+      "category": "emblem",
+      "name": "@emblem/fra-ajani-resolute",
+      "type_line": "",
+      "kind": 0,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
         0,
         0
       ],
