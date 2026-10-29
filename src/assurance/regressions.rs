@@ -357,6 +357,151 @@ fn prior_schema178_history_projection_checks_both_views_and_hidden_owned_objects
     }
 }
 
+/// Schema 179 adds a copiable conditional sacrifice ability. A zero field is
+/// byte-projectable; a live ability or its stack packet has no old meaning.
+fn project_prior_schema179_copy_abilities(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::Array(rows) => for row in rows { check(row)?; },
+            serde_json::Value::Object(map) => for (key, value) in map {
+                if key == "conditional_sacrifice_abilities" && value.as_u64() != Some(0) {
+                    return Err("conditional copy ability has no prior-schema representation".into());
+                }
+                if key == "CopyEndStepConditionalSacrifice" {
+                    return Err("conditional copy trigger has no prior-schema representation".into());
+                }
+                check(value)?;
+            },
+            serde_json::Value::String(value) if value == "CopyEndStepConditionalSacrifice" => {
+                return Err("conditional copy trigger has no prior-schema representation".into());
+            }
+            _ => (),
+        }
+        Ok(())
+    }
+    let parsed: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&parsed)?;
+    // Preserve the exact compact serde bytes, including key order and escaped text.
+    let bytes = input.as_bytes();
+    let mut result = String::with_capacity(input.len());
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] != b'"' {
+            let ch = input[i..].chars().next().unwrap();
+            result.push(ch);
+            i += ch.len_utf8();
+            continue;
+        }
+        let start = i;
+        i += 1;
+        while i < bytes.len() {
+            if bytes[i] == b'\\' { i += 2; }
+            else if bytes[i] == b'"' { i += 1; break; }
+            else { i += 1; }
+        }
+        let key = &input[start..i];
+        if key == "\"conditional_sacrifice_abilities\"" && input[i..].starts_with(":0") {
+            i += 2;
+            if bytes.get(i) == Some(&b',') { i += 1; }
+            else if bytes.get(i) == Some(&b'}') { if result.ends_with(',') { result.pop(); } }
+            else { return Err("unexpected schema-179 field encoding".into()); }
+        } else { result.push_str(key); }
+    }
+    Ok(result)
+}
+
+/// Audit accessible copy recipes and spell packets explicitly. Opaque suspended
+/// continuations can retain private recipes; reject them rather than guessing.
+fn prior_schema179_copy_owned_state_supported(game: &Game) -> bool {
+    let state = &game.state;
+    if state.cast_rollback.is_some() || state.replacements.is_some()
+        || state.entry_batch.is_some() || state.zone_rules.is_some()
+        || state.linked_choices.is_some() || state.stack_copy_data.is_some()
+        || state.delayed_returns.is_some() || state.earthbend_returns.is_some()
+        || state.manifest.is_some() || state.resolving.is_some()
+        || state.announcing.is_some() || state.mana_announcement_stack.is_some()
+    {
+        return false;
+    }
+    let safe = |recipe: &CopyRecipe| recipe.exceptions.conditional_sacrifice_abilities == 0;
+    if state.copy_recipes.as_ref().is_some_and(|rows| rows.iter().any(|row| !safe(&row.recipe)))
+        || state.temporary_copies.as_ref().is_some_and(|rows| rows.iter().any(|row| {
+            row.original_recipe.as_ref().is_some_and(|recipe| !safe(recipe))
+                || row.layers.iter().any(|layer| !safe(&layer.value.recipe))
+        }))
+    {
+        return false;
+    }
+    // SpellView serialization retains nested copy events, LKI recipes and kind.
+    // Its skipped fields are unrelated trigger-count/target witnesses.
+    state.stack.iter().chain(&state.pending_triggers).chain(&state.ordering_triggers)
+        .chain(state.delayed_artifact_copies.as_deref().into_iter().flatten())
+        .chain(state.delayed_attack_this_turn.as_deref().into_iter().flatten())
+        .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
+        .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
+        .all(|item| serde_json::to_string(item).is_ok_and(|json| project_prior_schema179_copy_abilities(&json).is_ok()))
+}
+
+#[test]
+fn prior_schema179_projection_preserves_bytes_and_rejects_new_semantics() {
+    let input = r#"[{"text":"escaped \"conditional_sacrifice_abilities\":0,","recipe":{"conditional_sacrifice_abilities":0,"other":1}},{"conditional_sacrifice_abilities":0}]"#;
+    let out = project_prior_schema179_copy_abilities(input).unwrap();
+    assert_eq!(out, r#"[{"text":"escaped \"conditional_sacrifice_abilities\":0,","recipe":{"other":1}},{}]"#);
+    for input in [
+        r#"[{"conditional_sacrifice_abilities":1}]"#,
+        r#"[{"conditional_sacrifice_abilities":null}]"#,
+        r#"[{"conditional_sacrifice_abilities":false}]"#,
+        r#"[{"kind":"CopyEndStepConditionalSacrifice"}]"#,
+        r#"[{"kind":{"CopyEndStepConditionalSacrifice":{}}}]"#,
+    ] { assert!(project_prior_schema179_copy_abilities(input).is_err(), "{input}"); }
+}
+
+#[test]
+fn prior_schema179_projection_detects_hidden_recipes_rollback_and_trigger_packets() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let hidden = put(&mut g, player, "Bear Cub", Zone::Hand);
+        let reference = g.object_ref(hidden);
+        let zero = CopyRecipe::new(g.state.objects[hidden as usize].card);
+        g.set_copy_recipe(reference, zero);
+        let views = serde_json::to_string(&[g.observe(player), g.observe(player.other())]).unwrap();
+        assert!(prior_schema179_copy_owned_state_supported(&g));
+        assert!(project_prior_schema179_copy_abilities(&views).is_ok());
+        let active = zero.with_exceptions(CopyExceptions { conditional_sacrifice_abilities: 1, ..CopyExceptions::NONE });
+        g.set_copy_recipe(reference, active);
+        assert!(!prior_schema179_copy_owned_state_supported(&g));
+        // Checkpoint retains the hidden recipe even after the live row is removed.
+        g.begin_attack_rollback(player);
+        g.clear_copy_recipe(reference);
+        assert!(!prior_schema179_copy_owned_state_supported(&g));
+        g.state.cast_rollback = None;
+        assert!(prior_schema179_copy_owned_state_supported(&g));
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let source_ref = g.object_ref(source);
+        g.set_copy_recipe(source_ref, zero);
+        let actual = serde_json::to_string(&[g.observe(player), g.observe(player.other())]).unwrap();
+        assert!(actual.contains("\"conditional_sacrifice_abilities\":0"));
+        let old = project_prior_schema179_copy_abilities(&actual).unwrap();
+        assert!(!old.contains("\"conditional_sacrifice_abilities\":"));
+        assert!(prior_schema179_copy_owned_state_supported(&g));
+        let mut packet = g.activation_item(player, source, 0);
+        packet.source_copy_recipe = Some(Box::new(active));
+        g.state.pending_triggers.push(packet.clone());
+        assert!(!prior_schema179_copy_owned_state_supported(&g));
+        g.state.pending_triggers.clear();
+        packet.source_copy_recipe = None;
+        packet.kind = StackKind::CopyEndStepConditionalSacrifice;
+        assert!(project_prior_schema179_copy_abilities(&serde_json::to_string(&packet).unwrap()).is_err());
+        g.state.pending_triggers.push(packet);
+        assert!(!prior_schema179_copy_owned_state_supported(&g));
+        g.state.pending_triggers.clear();
+        // A newer ordinary copy can hide an older incompatible copy layer.
+        g.apply_temporary_copy(source_ref, active, CopyDeadline::EndOfTurn);
+        g.apply_temporary_copy(source_ref, zero, CopyDeadline::EndOfTurn);
+        assert!(!prior_schema179_copy_owned_state_supported(&g));
+    }
+}
+
 /// Recording-only projection to the schema preceding behold and universal
 /// basic-land mana. Reject cases whose old wire representation cannot preserve
 /// the observed ability identity or land-subtype semantics.
@@ -886,7 +1031,17 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 178) {
+    if schema_projection.is_some_and(|schema| schema < 179) {
+        if !prior_schema179_copy_owned_state_supported(&g) {
+            projection_error = Some("owned conditional copy ability has no prior-schema representation".to_owned());
+        } else {
+            match project_prior_schema179_copy_abilities(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 178) {
         if !prior_split_second_owned_state_supported(&g) {
             projection_error = Some(
                 "split-second or combat restriction provider has no prior-schema representation"
