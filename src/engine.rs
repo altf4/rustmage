@@ -1129,7 +1129,7 @@ pub struct SpellView {
     /// Present only for an inherent rule ability; its legacy source fields are
     /// not authoritative. This field is owned by stack copies and snapshots.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_less_rule: Option<SourceLessRule>,
+    pub(crate) source_less_rule: Option<SourceLessRule>,
     // Number of additional instances, zero for ordinary/published packets.
     // Frozen mana-event packets and typed snapshots retain this owned witness;
     // the JSON control plane restores opaque snapshot handles, never packets.
@@ -1197,7 +1197,7 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_transform: Option<u64>,
     #[serde(serialize_with = "serialize_stack_source_card")]
-    pub source_card: Card,
+    pub(crate) source_card: Card,
     /// Current split second on a spell, computed for public views.
     #[serde(skip_serializing_if = "is_false")]
     pub split_second: bool,
@@ -1228,12 +1228,12 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_power: Option<Box<i128>>,
     #[serde(serialize_with = "serialize_stack_source_facts")]
-    pub source_facts: DamageFacts,
+    pub(crate) source_facts: DamageFacts,
     pub related_stack: Option<StackLink>,
     #[serde(serialize_with = "serialize_stack_source_id")]
-    pub card: CardId,
+    pub(crate) card: CardId,
     #[serde(serialize_with = "serialize_stack_source_ref")]
-    pub object: ObjectRef,
+    pub(crate) object: ObjectRef,
     pub targets: Vec<BoundTarget>,
     pub mode: Option<u16>,
     pub controller: Player,
@@ -1392,6 +1392,11 @@ impl SpellView {
         self.source_move
             .as_ref()
             .map_or(self.object, |event| event.after)
+    }
+
+    /// The inherent rule responsible for a source-less ability, if any.
+    pub fn source_less_rule(&self) -> Option<SourceLessRule> {
+        self.source_less_rule
     }
 
     /// Return real source data, or None for an inherent player ability.

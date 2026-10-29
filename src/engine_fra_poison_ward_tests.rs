@@ -484,6 +484,11 @@ fn sourceless_stack_identity_survives_copy_and_snapshot() {
         let source = put(&mut game, player, "Bear Cub", Zone::Battlefield);
         let mut packet = game.activation_item(player, source, 0);
         assert_eq!(packet.source_identity(), Some((game.object_ref(source), Card::from_name("Bear Cub").unwrap())));
+        let typed = packet.source().unwrap();
+        assert_eq!(typed.id, source);
+        assert_eq!(typed.object, game.object_ref(source));
+        assert_eq!(typed.card.name(), "Bear Cub");
+        assert_eq!(packet.source_less_rule(), None);
         packet.source_less_rule = Some(SourceLessRule::Radiation);
         packet.source_card = Card::SOURCELESS;
         packet.card = CardId::MAX;
@@ -495,6 +500,7 @@ fn sourceless_stack_identity_survives_copy_and_snapshot() {
         }
         assert_eq!(packet.source_identity(), None);
         assert_eq!(packet.source(), None);
+        assert_eq!(packet.source_less_rule(), Some(SourceLessRule::Radiation));
         assert_eq!(packet.mana_value(), 0);
         assert!(!game.stack_target_rule_matches(
             TargetRule::YourAbilityFromSourceKinds { kinds: 1 }, &packet, player,
