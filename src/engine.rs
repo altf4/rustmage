@@ -742,6 +742,8 @@ define_actions! {
     ChooseTarget {
         target: Target,
     },
+    /// Select one target and its chosen distinct card-type bit.
+    ChooseTargetCardType { target: Target, type_mask: u16 },
     FinishTargets,
     Attack {
         card: CardId,
@@ -1127,6 +1129,10 @@ pub struct SpellView {
     #[serde(skip)]
     #[allow(clippy::box_collection)]
     pub(crate) target_kinds_lki: Option<Box<Vec<(ObjectRef, u16)>>>,
+    /// Public type-slot choices retained by copied and retargeted abilities.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub target_type_slots: Option<Box<Vec<u16>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<Box<GiftContext>>,
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
@@ -1305,9 +1311,10 @@ impl SpellView {
                 std::mem::size_of::<Vec<SourceCounterQuantityView>>()
                     + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
             })
+            + self.target_type_slots.as_ref().map_or(0, |v| v.capacity() * std::mem::size_of::<u16>())
             + self.target_kinds_lki.as_ref().map_or(0, |v| {
                 std::mem::size_of::<Vec<(ObjectRef, u16)>>()
-                    + v.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                    + v.len() * std::mem::size_of::<u16>()
             })
             + self.target_controller_lki.as_ref().map_or(0, |v| {
                 std::mem::size_of::<Vec<(ObjectRef, Player)>>()
@@ -5276,6 +5283,26 @@ impl Game {
                         &announcement.item,
                         announcement.spec.rule,
                         |target| {
+                            if matches!(announcement.spec.rule, TargetRule::Grouped {
+                                constraint: TargetGroupConstraint::DistinctCardTypeSlots, ..
+                            }) {
+                                let Target::Card(id) = target else { return false; };
+                                if announcement.item.targets.iter().any(|bound| bound.group == announcement.group && bound.target == target) {
+                                    return false;
+                                }
+                                let used = announcement.item.target_type_slots.as_ref().map_or(0, |slots|
+                                    slots.iter().fold(0u16, |mask, kind| mask | *kind));
+                                if !self.announcement_target_fundable(announcement, None, None, None, Some(target), false) {
+                                    return false;
+                                }
+                                let mut available = self.current_kinds(id) & !used;
+                                while available != 0 {
+                                    let kind = 1u16 << available.trailing_zeros();
+                                    available &= !kind;
+                                    if emit(Action::ChooseTargetCardType { target, type_mask: kind }) { return true; }
+                                }
+                                return false;
+                            }
                             self.target_group_compatible(
                                 announcement.spec.rule,
                                 announcement.group,
@@ -6297,6 +6324,18 @@ impl Game {
             Action::AllocateTargetAmount { amount } => self.choose_target_amount(amount),
             Action::SetStackTarget { index, target } => self.set_stack_target(index, target),
             Action::RestoreStackTarget { index } => self.restore_stack_target(index),
+            Action::ChooseTargetCardType { target, type_mask } => {
+                let mut bound = self.bind_target(target);
+                let item = self.state.announcing.as_ref().unwrap().item.clone();
+                self.target_becomes_bound(&item, bound);
+                let announcement = self.state.announcing.as_mut().unwrap();
+                bound.group = announcement.group;
+                announcement.item.target_type_slots.get_or_insert_default().push(type_mask);
+                announcement.item.targets.push(bound);
+                if announcement.item.targets.iter().filter(|bound| bound.group == announcement.group).count() == announcement.spec.max {
+                    self.finish_target_group();
+                }
+            }
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
                 let item = self.state.announcing.as_ref().unwrap().item.clone();
@@ -8993,6 +9032,7 @@ impl Game {
                 let mut item = self.spell_with_current_abilities(&announcement.item);
                 if !owns_choice {
                     item.targets.clear();
+                    item.target_type_slots = None;
                 }
                 item
             }),
@@ -9295,7 +9335,7 @@ impl Game {
                 .map_or(0, |_| std::mem::size_of::<[u64; 2]>())
             + s.combat_defender_types.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<(ObjectRef, u16)>>()
-                    + rows.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                    + rows.len() * std::mem::size_of::<u16>()
             })
             + s.battle_combat_types.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<(ObjectRef, bool)>>()

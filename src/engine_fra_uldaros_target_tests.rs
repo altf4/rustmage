@@ -54,3 +54,88 @@ fn graveyard_type_slots_allow_reassignment_but_reject_duplicates_and_collisions(
         ));
     }
 }
+
+#[test]
+fn uldaros_actual_target_actions_freeze_explicit_slots_and_restore() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let dual = put(&mut g, player, "Solemn Simulacrum", Zone::Graveyard);
+        let creature = put(&mut g, player, "Bear Cub", Zone::Graveyard);
+        let artifact = put(&mut g, player, "Gilded Lotus", Zone::Graveyard);
+        let replacement = put(&mut g, player, "Bear Cub", Zone::Graveyard);
+        let foreign = put(&mut g, player.other(), "Shock", Zone::Graveyard);
+        let land = put(&mut g, player, "Forest", Zone::Graveyard);
+        let source = put(&mut g, player, "Shock", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Uldaros Theorix").unwrap();
+        act(&mut g, Action::AnnounceCast { card: source });
+        pay(&mut g);
+        for _ in 0..40 {
+            if matches!(g.state.pending, Pending::Targets { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        let typed = |id, type_mask| Action::ChooseTargetCardType {
+            target: Target::Card(id),
+            type_mask,
+        };
+        assert!(g.legal_actions().contains(&typed(dual, 1)));
+        assert!(g.legal_actions().contains(&typed(dual, 16)));
+        assert!(!g.legal_actions().contains(&typed(land, 2)));
+        assert!(!g.legal_actions().contains(&typed(foreign, 8)));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, typed(dual, 16));
+            assert!(!g.legal_actions().contains(&typed(dual, 1)));
+            assert!(!g.legal_actions().contains(&typed(artifact, 16)));
+            assert!(g.legal_actions().contains(&typed(creature, 1)));
+            act(&mut g, typed(creature, 1));
+            act(&mut g, Action::FinishTargets);
+            let item = g.state.stack.last().unwrap();
+            let slots = item.target_type_slots.as_ref().unwrap();
+            assert_eq!(slots.len(), 2);
+            for (target, slot) in item.targets.iter().zip(slots.iter()) {
+                match target.target {
+                    Target::Card(id) if id == dual => assert_eq!(*slot, 16),
+                    Target::Card(id) if id == creature => assert_eq!(*slot, 1),
+                    _ => panic!("unexpected target"),
+                }
+            }
+            let template = item.clone();
+            let creature_index = template
+                .targets
+                .iter()
+                .position(|target| target.target == Target::Card(creature))
+                .unwrap();
+            g.move_object(dual, Zone::Exile);
+            let mut copier = template.clone();
+            copier.targets = vec![BoundTarget {
+                group: 0,
+                target: Target::Stack(template.id),
+                object: None,
+            }];
+            assert!(g.copy_target_ability(&copier, 0));
+            let changed = Action::SetStackTarget {
+                index: creature_index as u32,
+                target: Target::Card(replacement),
+            };
+            assert!(g.legal_actions().contains(&changed));
+            act(&mut g, changed);
+            assert!(g.legal_actions().contains(&Action::FinishStackTargets));
+            act(&mut g, Action::FinishStackTargets);
+            let copy = g.state.stack.last().unwrap();
+            assert_eq!(copy.target_type_slots, template.target_type_slots);
+            assert!(
+                copy.targets
+                    .iter()
+                    .any(|target| target.target == Target::Card(dual))
+            );
+            assert!(
+                copy.targets
+                    .iter()
+                    .any(|target| target.target == Target::Card(replacement))
+            );
+            g.restore(&saved).unwrap();
+        }
+    }
+}

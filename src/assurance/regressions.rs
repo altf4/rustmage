@@ -6114,3 +6114,6 @@ fn schema189_budget_projection_rejects_public_hidden_and_rollback_state() {
         }
     }
 }
+
+#[path = "uldaros_schema_candidate.rs"]
+mod uldaros_schema_candidate;

@@ -148,6 +148,7 @@ impl Game {
         delayed.cast = None;
         delayed.is_copy = false;
         delayed.targets.clear();
+        delayed.target_type_slots = None;
         self.state
             .stack_copy_data
             .get_or_insert_with(Default::default)
@@ -235,6 +236,7 @@ impl Game {
                 trigger.target_kinds_lki = None;
                 trigger.is_copy = false;
                 trigger.targets.clear();
+                trigger.target_type_slots = None;
                 trigger.controller = source.controller;
                 trigger.copy_event = Some(Box::new(CopyEvent {
                     spell: spell.clone(),
@@ -623,11 +625,17 @@ impl Game {
         let bound = item.targets[index];
         let plan = self.target_spec(item);
         let spec = plan.group(bound.group).unwrap();
+        if matches!(spec.rule, TargetRule::Grouped {
+            constraint: TargetGroupConstraint::DistinctCardTypeSlots, ..
+        }) {
+            let Some(slot) = item.target_type_slots.as_ref().and_then(|slots| slots.get(index)) else { return false; };
+            return matches!(bound.target, Target::Card(id)
+                if self.same_target_object(bound) && self.current_kinds(id) & *slot != 0);
+        }
         if matches!(
             spec.rule,
             TargetRule::Grouped {
                 constraint: TargetGroupConstraint::SameGraveyard
-                    | TargetGroupConstraint::DistinctCardTypeSlots
                     | TargetGroupConstraint::SharedCardType
                     | TargetGroupConstraint::OtherThanGroup(_),
                 ..

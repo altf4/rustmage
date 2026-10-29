@@ -778,6 +778,14 @@ impl Game {
         bound: BoundTarget,
         plan: TargetPlan,
     ) -> bool {
+        if plan.group(bound.group).is_some_and(|g| matches!(g.rule,
+            TargetRule::Grouped { constraint: TargetGroupConstraint::DistinctCardTypeSlots, .. }))
+        {
+            let Some(index) = item.targets.iter().position(|target| *target == bound) else { return false; };
+            let Some(slot) = item.target_type_slots.as_ref().and_then(|slots| slots.get(index)) else { return false; };
+            return matches!(bound.target, Target::Card(id)
+                if self.same_target_object(bound) && self.current_kinds(id) & *slot != 0);
+        }
         if plan.group(bound.group).is_some_and(|g| {
             matches!(
                 g.rule,
@@ -1676,6 +1684,7 @@ impl Game {
             self_granted_activation: None,
             target_controller_lki: None,
             target_kinds_lki: None,
+            target_type_slots: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
@@ -2029,10 +2038,14 @@ impl Game {
         {
             self.tap_objects(&frame.objects().iter().map(|s| s.card).collect::<Vec<_>>());
         }
-        announcement
-            .item
-            .targets
-            .sort_by_key(|bound| (bound.group, bound.target));
+        if let Some(slots) = &mut announcement.item.target_type_slots {
+            let mut rows: Vec<_> = announcement.item.targets.iter().copied().zip(slots.iter().copied()).collect();
+            rows.sort_by_key(|(bound, _)| (bound.group, bound.target));
+            announcement.item.targets = rows.iter().map(|(bound, _)| *bound).collect();
+            **slots = rows.into_iter().map(|(_, slot)| slot).collect();
+        } else {
+            announcement.item.targets.sort_by_key(|bound| (bound.group, bound.target));
+        }
         // External discard precedes source sacrifice so it captures battlefield
         // observers. External sacrifice follows source tap/mana costs: the chosen
         // object may itself be this ability's source. No priority is granted.

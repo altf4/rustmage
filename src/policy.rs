@@ -458,7 +458,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     })
                 })
                 .unwrap_or(0),
-            Action::ChooseTarget { target } => {
+            Action::ChooseTarget { target } | Action::ChooseTargetCardType { target, .. } => {
                 let item = observation.announcing.as_ref().unwrap();
                 if item.kind == StackKind::Spell && item.source_card.aura().is_some() {
                     return aura_score(item.source_card, *target);

@@ -134,6 +134,7 @@ impl Game {
             trigger.kind = StackKind::CasualtyCopy;
             trigger.mode = None;
             trigger.targets.clear();
+            trigger.target_type_slots = None;
             trigger.cast = None;
             trigger.is_copy = false;
             trigger.cast_event = None;
