@@ -174,3 +174,112 @@ fn fra_proft_payment_is_optional_and_draws_after_scry() {
         }
     }
 }
+
+#[test]
+fn fra_surveil_creatures_enter_graveyard_as_one_batch() {
+    for p in [Player::P0, Player::P1] {
+        for replacement in [false, true] {
+            let mut g = scenario(p);
+            let plan = put(&mut g, p, "Robot Domination", Zone::Battlefield);
+            if replacement {
+                put(&mut g, p, "Rest in Peace", Zone::Battlefield);
+            }
+            let first = put(&mut g, p, "Bear Cub", Zone::Library);
+            let second = put(&mut g, p, "Bear Cub", Zone::Library);
+            surveil(&mut g, p);
+            wait_for_choice(&mut g);
+            arrange(&mut g, LibraryDestination::Graveyard);
+            settle(&mut g);
+            let destination = if replacement {
+                Zone::Exile
+            } else {
+                Zone::Graveyard
+            };
+            assert_eq!(g.state.objects[first as usize].zone, destination);
+            assert_eq!(g.state.objects[second as usize].zone, destination);
+            assert_eq!(
+                g.counter_count(plan, CounterKind::Plan),
+                u64::from(!replacement)
+            );
+            assert_eq!(
+                g.state.players[p.index()].life,
+                if replacement { 20 } else { 19 }
+            );
+        }
+    }
+}
+
+#[test]
+fn fra_proft_trigger_can_be_paid_after_source_leaves() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let proft = put(&mut g, p, "Proft, Consulting Detective", Zone::Battlefield);
+        scry(&mut g, p);
+        wait_for_choice(&mut g);
+        arrange(&mut g, LibraryDestination::Top);
+        g.move_object(proft, Zone::Exile);
+        let hand = g.hand_count(p);
+        for _ in 0..32 {
+            if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::ResolutionMana { .. }));
+        choose(&mut g, |a| matches!(a, Action::PayResolutionMana { .. }));
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), hand + 1);
+        assert_eq!(g.state.objects[proft as usize].zone, Zone::Exile);
+        assert_eq!(g.counter_count(proft, CounterKind::PlusOne), 0);
+    }
+}
+
+#[test]
+fn fra_saheeli_reentry_is_a_new_once_per_turn_ability() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Saheeli, Consul of Oversight", Zone::Battlefield);
+        scry(&mut g, p);
+        wait_for_choice(&mut g);
+        arrange(&mut g, LibraryDestination::Top);
+        settle(&mut g);
+        assert_eq!(thopters(&g, p), 1);
+        g.move_object(source, Zone::Exile);
+        g.move_object(source, Zone::Battlefield);
+        surveil(&mut g, p);
+        wait_for_choice(&mut g);
+        arrange(&mut g, LibraryDestination::Top);
+        settle(&mut g);
+        assert_eq!(thopters(&g, p), 2);
+    }
+}
+
+#[test]
+fn fra_confidant_surveil_returns_only_a_card_that_reached_graveyard() {
+    for p in [Player::P0, Player::P1] {
+        for replacement in [false, true] {
+            let mut g = scenario(p);
+            if replacement {
+                put(&mut g, p, "Rest in Peace", Zone::Battlefield);
+            }
+            let card = put(&mut g, p, "Bear Cub", Zone::Library);
+            g.state.players[p.index()].life_gained_this_turn = 2;
+            scry(&mut g, p);
+            wait_for_choice(&mut g);
+            // Exercise Confidant's full typed instruction through the interpreter.
+            let resolution = g.state.resolving.as_mut().unwrap();
+            resolution.library = None;
+            resolution.program = &[Instruction::SurveilOneReturnByLifeGained];
+            resolution.pc = 0;
+            g.state.pending = Pending::Priority;
+            g.run_program();
+            assert!(matches!(g.state.pending, Pending::EffectLibrary { .. }));
+            arrange(&mut g, LibraryDestination::Graveyard);
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[card as usize].zone,
+                if replacement { Zone::Exile } else { Zone::Hand }
+            );
+        }
+    }
+}

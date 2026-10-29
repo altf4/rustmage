@@ -130,9 +130,14 @@ impl Game {
         self.forget_library_top(player);
         // No zone changes or observable partial rearrangement occur while choosing.
         // Remove the looked-at suffix once, then preserve the untouched middle.
+        // Surveilled cards enter the graveyard as one simultaneous event.
+        // Freeze replacement plans before committing any member of the batch,
+        // then dispatch batch observers exactly once using actual destinations.
+        let events = self.move_objects_raw(&choice.graveyard, Zone::Graveyard);
+        self.finish_zone_events(&events, &[]);
         let mut return_cards = Vec::new();
-        for &card in &choice.graveyard {
-            let event = self.move_object(card, Zone::Graveyard);
+        for event in &events {
+            let card = event.before.reference.card;
             if choice.return_within_life_gained
                 && event.moved
                 && event.destination == Zone::Graveyard
