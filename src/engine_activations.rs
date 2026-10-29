@@ -91,7 +91,7 @@ impl Game {
     pub(super) fn item_activation_discount(&self, item: &SpellView) -> u32 {
         match item.kind {
             StackKind::ActivatedAbility { ability } => {
-                self.activation_generic_discount(item.card, item.source_card, ability)
+                item.source.map_or(0, |source| self.activation_generic_discount(source.id, source.card, ability))
             }
             _ => 0,
         }
@@ -657,7 +657,8 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             unreachable!()
         };
-        let mut definition = *item.source_card.activation(ability);
+        let source = item.source.expect("activated ability has an object source");
+        let mut definition = *source.card.activation(ability);
         if route == ActivationCostRoute::FirstEquipZero {
             assert!(definition.is_equip());
             assert_eq!(counter_payment, Counters::default());
