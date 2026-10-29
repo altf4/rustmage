@@ -152,14 +152,15 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
     pub(super) fn program_damage_source(&self, item: &SpellView) -> DamageSource {
-        if self.object_ref(item.card) == item.object {
-            self.damage_source(item.card)
+        let source = item.source.expect("damage instruction requires a source");
+        if self.object_ref(source.id) == source.object {
+            self.damage_source(source.id)
         } else {
             DamageSource {
-                facts: item.source_facts,
-                object: item.card,
-                reference: item.object,
-                controller: item.source_facts.controller,
+                facts: source.facts,
+                object: source.id,
+                reference: source.object,
+                controller: source.facts.controller,
                 keywords: item.source_keywords,
             }
         }
