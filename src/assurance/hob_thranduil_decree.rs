@@ -33,7 +33,7 @@ fn spell(g: &mut Game, owner: Player, name: &str) -> (CardId, u64) {
     );
     (
         card,
-        g.state.stack.iter().find(|s| s.card == card).unwrap().id,
+        g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == card)).unwrap().id,
     )
 }
 fn decree(g: &mut Game, p: Player, target: u64) -> CardId {
@@ -42,7 +42,7 @@ fn decree(g: &mut Game, p: Player, target: u64) -> CardId {
     g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 4];
     let victim = g.state.stack.iter().find(|s| s.id == target).unwrap();
     let target = if victim.kind == StackKind::Spell && !victim.is_copy {
-        Target::Spell(victim.card)
+        Target::Spell(victim.source.unwrap().id)
     } else {
         Target::Stack(target)
     };

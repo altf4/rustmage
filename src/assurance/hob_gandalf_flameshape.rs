@@ -369,7 +369,7 @@ fn hob_flameshape_actual_adventure_cast_triggers_front_and_countered_adventure_e
         g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
         act(&mut g, Action::AnnounceAdventure { card: id });
         pay(&mut g);
-        let spell = g.state.stack.iter().find(|s| s.card == id).unwrap().id;
+        let spell = g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == id)).unwrap().id;
         g.counter_stack_item(spell, false);
         finish(&mut g);
         assert_eq!(stats(&g, s), (3, 4));

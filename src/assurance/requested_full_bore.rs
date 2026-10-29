@@ -112,7 +112,7 @@ fn copy_of_warp_spell_resolves_as_token_without_warp_cast_marker() {
         assert!(!g.copy_captured_spell(&copy_effect));
         let copy = g.state.stack.last().unwrap();
         assert!(copy.is_copy);
-        let token = copy.card;
+        let token = copy.source.unwrap().id;
         big_helpers::settle(&mut g);
         assert_eq!(g.object_view(token).zone, Zone::Battlefield);
         assert!(g.state.objects[token as usize].is_token());

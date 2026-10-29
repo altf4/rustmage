@@ -135,7 +135,7 @@ fn hob_bilbo_paid_artifact_or_instant_one_cast_and_exile_only_spells() {
                 }
                 reject(&mut g, Action::PayCosts { payment: [0; 6] });
                 pay(&mut g);
-                let spell = g.state.stack.iter().find(|s| s.card == id).unwrap();
+                let spell = g.state.stack.iter().find(|s| s.source.is_some_and(|source| source.id == id)).unwrap();
                 assert_eq!(spell.cast.unwrap().origin, Zone::Graveyard);
                 assert_eq!(spell.cast.unwrap().method, CastMethod::Normal);
                 assert_eq!(spell.cast.unwrap().exile_on_graveyard, !artifact);

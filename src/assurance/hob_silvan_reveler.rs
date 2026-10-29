@@ -101,7 +101,7 @@ fn silvan_paid_body_private_draw_mandatory_discard_exact_land_automatic_tapped()
         assert_eq!(g.object_view(unrelated).zone, Zone::Graveyard);
         assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 1);
         assert!(g.observe(p).effect_choice.is_none());
-        assert!(!g.state.stack.iter().any(|s| s.card == source));
+        assert!(!g.state.stack.iter().any(|s| s.source.is_some_and(|source| source.id == source)));
     }
 }
 #[test]
@@ -356,7 +356,7 @@ fn silvan_landfall_token_land_and_multiple_lands_make_distinct_exact_triggers() 
         assert_eq!(token.len(), 2);
         g.prepare_triggers();
         until(&mut g, |g| g.state.stack.len() == 2);
-        assert!(g.state.stack.iter().all(|s| s.object == old));
+        assert!(g.state.stack.iter().all(|s| s.source.is_some_and(|source| source.object == old)));
         payment(&mut g);
         pay_return(&mut g, p);
         assert_eq!(g.object_view(source).zone, Zone::Hand);
