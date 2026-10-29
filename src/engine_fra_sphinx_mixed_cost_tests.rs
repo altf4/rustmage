@@ -164,7 +164,7 @@ fn sphinx_prohibition_revalidates_the_whole_payment_before_any_exile() {
             act(&mut g, Action::SelectResolutionExile { object: last });
             assert!(cards.iter().all(|&id| g.object_view(id).zone == Zone::Graveyard));
             assert_ne!(g.object_view(source).zone, Zone::Exile);
-            assert!(!matches!(g.state.pending, Pending::Search { .. }));
+            assert!(!matches!(g.state.pending, Pending::EffectSearch { .. }));
             g.restore(&saved).unwrap();
         }
         TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
