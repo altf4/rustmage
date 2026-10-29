@@ -2441,3 +2441,87 @@ fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
         }
     }
 }
+
+#[test]
+fn schema182_preserves_existing_activated_grant_wire_bytes() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let giver = put(&mut g, player, "Way of the Healer", Zone::Battlefield);
+        let walker = put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 5;
+        for viewer in [Player::P0, Player::P1] {
+            let view = g.observe(viewer);
+            let walker_view = view.objects.iter().find(|object| object.id == walker).unwrap();
+            let grant = walker_view.abilities.as_ref().unwrap().grants.iter()
+                .find(|grant| grant.grantor == g.object_ref(giver)).unwrap();
+            assert_eq!(grant.ability, Some(0));
+            assert_eq!(grant.static_rule, None);
+            let encoded = serde_json::to_string(grant).unwrap();
+            #[derive(serde::Serialize)]
+            struct PriorGrant {
+                grantor: ObjectRef,
+                granting_card: Card,
+                ability: u16,
+                grantor_controller: Player,
+                timestamp: u64,
+            }
+            let prior = PriorGrant { grantor: grant.grantor, granting_card: grant.granting_card,
+                ability: 0, grantor_controller: grant.grantor_controller, timestamp: grant.timestamp };
+            assert_eq!(encoded, serde_json::to_string(&prior).unwrap());
+            let observation = serde_json::to_string(&view).unwrap();
+            assert_eq!(project_prior_schema182(&observation).unwrap(), observation);
+        }
+    }
+}
+
+#[test]
+fn schema182_rejects_hidden_face_and_nested_packet_with_rollback() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let id = put(&mut g, player, "Bear Cub", Zone::Hand);
+        let object = g.object_ref(id);
+        let bear = Card::from_name("Bear Cub").unwrap();
+        let tomik = Card::from_name("Tomik, Orzhov Lawmage").unwrap();
+        let ordinary = CopyRecipe::new(bear);
+        let hidden = ordinary.with_faces(copies::CopyFaces::Double {
+            physical_front: bear, front: bear, back: tomik, back_up: false,
+        });
+        g.set_copy_recipe(object, hidden);
+        assert!(!prior_schema182_state_supported(&g.state));
+        g.begin_attack_rollback(player);
+        g.set_copy_recipe(object, ordinary);
+        assert!(!prior_schema182_state_supported(&g.state));
+        g.state.cast_rollback = None;
+        assert!(prior_schema182_state_supported(&g.state));
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let mut inner = g.activation_item(player, source, 0);
+        inner.source_copy_recipe = Some(Box::new(hidden));
+        let mut outer = g.activation_item(player, source, 0);
+        outer.copy_event = Some(Box::new(stack_copies::CopyEvent { spell: inner, amount: 1 }));
+        g.state.pending_triggers.push(outer);
+        assert!(!prior_schema182_state_supported(&g.state));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.state.pending_triggers.clear();
+            assert!(prior_schema182_state_supported(&g.state));
+            g.restore(&saved).unwrap();
+            assert!(!prior_schema182_state_supported(&g.state));
+        }
+    }
+}
+
+#[test]
+fn schema182_rejects_real_static_grant_nested_in_packet_json() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        put(&mut g, player, "Tomik, Orzhov Lawmage", Zone::Battlefield);
+        let walker = put(&mut g, player, "Ajani, Caller of the Pride", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 5;
+        for viewer in [Player::P0, Player::P1] {
+            let view = g.observe(viewer);
+            let walker_view = view.objects.iter().find(|object| object.id == walker).unwrap();
+            let nested = serde_json::json!({"copy_event": {"spell": {"source_view": walker_view}}});
+            assert!(project_prior_schema182(&nested.to_string()).is_err());
+        }
+    }
+}
