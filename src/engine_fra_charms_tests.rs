@@ -7498,3 +7498,27 @@ mod engine_fra_liliana_repentant_tests;
 
 #[path = "engine_fra_liliana_independent_tests.rs"]
 mod engine_fra_liliana_independent_tests;
+
+#[path = "engine_fra_diviner_tests.rs"]
+mod engine_fra_diviner_tests;
+
+#[path = "engine_fra_diviner_independent_tests.rs"]
+mod engine_fra_diviner_independent_tests;
+
+#[path = "engine_fra_bloodline_tests.rs"]
+mod engine_fra_bloodline_tests;
+
+#[path = "engine_fra_bloodline_independent_tests.rs"]
+mod engine_fra_bloodline_independent_tests;
+
+#[path = "engine_fra_fblthp_domain_independent_tests.rs"]
+mod engine_fra_fblthp_domain_independent_tests;
+
+#[path = "engine_fra_six_candidate_adversarial_tests.rs"]
+mod engine_fra_six_candidate_adversarial_tests;
+
+#[path = "engine_fra_five_candidates_independent_tests.rs"]
+mod engine_fra_five_candidates_independent_tests;
+
+#[path = "engine_fra_way_independent_tests.rs"]
+mod engine_fra_way_independent_tests;

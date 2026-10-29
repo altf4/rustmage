@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "89bf5183a6268e7f85ae509574cf13366b88cd88002cff30427545b5c0ba12bd",
+  "catalogue_version": "3f4e7c9ba9e68248b59b0e7a6bc21e385dc8fb99ca82d2d5da184a898f463ef1",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2874,
-  "implemented_total": 2880,
+  "implemented_standard_cards": 2876,
+  "implemented_total": 2882,
   "token_definitions": 144,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 227,
-      "gated": 58
+      "complete": 229,
+      "gated": 56
     },
     "frc": {
       "total": 6,
@@ -20259,8 +20259,8 @@
     {
       "name": "Liliana the Repentant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/liliana_the_repentant.rs",
       "set": "fra"
     },
@@ -20947,8 +20947,8 @@
     {
       "name": "Lyra, Tolarian Archangel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/lyra_tolarian_archangel.rs",
       "set": "fra"
     },

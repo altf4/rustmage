@@ -49121,8 +49121,26 @@ pub(super) mod card_5457 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/token_fra_blue_angel.rs");
 }
+pub(super) mod card_5458 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_diviner_of_victory_unwind_history.rs");
+}
+pub(super) mod card_5459 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/prepare_bloodline_recollector_ancestral_craving.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5458] = [
+pub(super) static RULES: [&CardRules; 5460] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54581,6 +54599,8 @@ pub(super) static RULES: [&CardRules; 5458] = [
     &card_5455::RULES,
     &card_5456::RULES,
     &card_5457::RULES,
+    &card_5458::RULES,
+    &card_5459::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

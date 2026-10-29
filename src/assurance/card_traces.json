@@ -11191,6 +11191,14 @@
     "journal": "97f197e40a843eee",
     "observations": "40bbb43534156650"
   },
+  "Liliana the Repentant": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "05d514ca135c45ff"
+  },
   "Liliana, Dreadhorde General": {
     "root": "main",
     "status": "completed",
@@ -11622,6 +11630,14 @@
     "zone": "Battlefield",
     "journal": "3ad6d4893695dc9c",
     "observations": "136fce851515d762"
+  },
+  "Lyra, Tolarian Archangel": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3fba902266e1c58c",
+    "observations": "a619bb3f7a68c9a7"
   },
   "Lys Alana Informant": {
     "root": "main",
