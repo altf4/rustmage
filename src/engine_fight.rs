@@ -65,9 +65,10 @@ impl Game {
         }]);
     }
     pub(super) fn source_fight(&mut self, item: &SpellView) {
-        if !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
-            || self.current_kinds(item.card) & 1 == 0
+        let Some(source) = item.source else { return; };
+        if !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
+            || self.current_kinds(source.id) & 1 == 0
         {
             return;
         }
@@ -83,7 +84,7 @@ impl Game {
             }
         });
         if let Some(target) = target {
-            self.creatures_deal_power_damage(item.card, target, true, 1);
+            self.creatures_deal_power_damage(source.id, target, true, 1);
         }
     }
     pub(super) fn attached_fight(&mut self, item: &SpellView) {
