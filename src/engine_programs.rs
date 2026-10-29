@@ -4045,6 +4045,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CreateTokenIfControllerSacrificed(token) => {
+                    if self.state.resolving.as_ref().unwrap().moved_count == Some(1) {
+                        self.create_tokens(item.controller, token, 1, false);
+                    }
+                }
                 Instruction::ChooseObjects {
                     kind,
                     players,

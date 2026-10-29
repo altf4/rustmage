@@ -1751,6 +1751,7 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         skip: usize,
     },
+    CreateTokenIfControllerSacrificed(Card),
     ChooseObjects {
         kind: EffectChoiceKind,
         players: PlayerSet,
