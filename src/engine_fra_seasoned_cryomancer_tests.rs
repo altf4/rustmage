@@ -174,3 +174,67 @@ fn seasoned_target_leaving_after_trigger_is_announced_cannot_receive_stun() {
         }
     }
 }
+
+#[test]
+fn seasoned_short_library_discards_the_only_card_actually_drawn() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = cryomancer(&mut g, player, Zone::Hand);
+        g.state.players[player.index()].library.clear();
+        let only = put(&mut g, player, "Forest", Zone::Library);
+        cryomancer_until_discard(&mut g, source);
+        assert_eq!(g.state.players[player.index()].cards_drawn_this_turn, 1);
+        assert!(g.state.players[player.index()].attempted_empty_draw);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, Action::Discard { card: only });
+            assert_eq!(g.object_view(only).zone, Zone::Graveyard);
+            assert!(!g.state.pending_triggers.iter().any(|item| item.card == source));
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn seasoned_copied_reflexive_preserves_target_limit_and_resolves_twice() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = cryomancer(&mut g, player, Zone::Hand);
+        let shock = put(&mut g, player, "Shock", Zone::Hand);
+        let land = put(&mut g, player, "Forest", Zone::Hand);
+        let victim = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        cryomancer_until_discard(&mut g, source);
+        act(&mut g, Action::Discard { card: shock });
+        act(&mut g, Action::Discard { card: land });
+        for _ in 0..48 {
+            g.prepare_triggers();
+            if g.legal_actions().contains(&Action::ChooseTarget { target: Target::Card(victim) }) { break; }
+            choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+        }
+        act(&mut g, Action::ChooseTarget { target: Target::Card(victim) });
+        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        let original = g.state.stack.last().unwrap().clone();
+        assert_eq!(original.x, Some(1));
+        let mut copier = original.clone();
+        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        g.state.resolving = Some(Resolution {
+            chosen_creature_type: None, target_counter_removal: None, linked_copy: None,
+            cascade: None, target_card_facts: None, immediate_blink_return: None,
+            connive: None, explore: None, evidence: None, item: copier.clone(),
+            mana_payment: None, forage: None, target_library: None, program: &[], pc: 0,
+            target_group: 0, moved_count: None, remembered_draws: None, sacrificed_power: None,
+            discard_after: None, optional_wheel: None, discards: [0; 2],
+            selected_discards: [Vec::new(), Vec::new()], milled: Vec::new(),
+            milled_selection: None, library: None, selection: None, return_attachment: None,
+            search: None, search_result: None, optional_searches: None, choice: None,
+        });
+        assert!(g.copy_target_ability(&copier, 0));
+        act(&mut g, Action::FinishStackTargets);
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert_eq!(g.counter_count(victim, CounterKind::Stun), 2);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
