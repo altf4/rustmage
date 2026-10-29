@@ -130,7 +130,7 @@ pub fn missing_pool_members() -> Result<Vec<String>, String> {
     }
     Ok(missing)
 }
-fn decks() -> Result<(Vec<Deck>, usize), String> {
+fn decks(require_complete: bool) -> Result<(Vec<Deck>, usize), String> {
     let source: serde_json::Value = serde_json::from_str(include_str!("../../data/sets/fra.json"))
         .map_err(|e| e.to_string())?;
     let members: BTreeSet<&str> = source["cards"]
@@ -143,7 +143,7 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
         return Err(format!("FRA denominator changed: {}", members.len()));
     }
     let missing = missing_pool_members()?;
-    if !missing.is_empty() {
+    if require_complete && !missing.is_empty() {
         return Err(format!(
             "FRA full-pool gate: {} unsupported or missing identities: {}",
             missing.len(),
@@ -424,7 +424,22 @@ pub fn run(
     mode: Mode,
     trace_dir: Option<&Path>,
 ) -> Result<Report, String> {
-    let (decks, pool_members) = decks()?;
+    run_inner(cases, mode, trace_dir, true)
+}
+
+// Bounded in-tree assurance only; it is never full-set acceptance.
+#[cfg(test)]
+pub fn run_admitted_smoke(cases: &[(usize, u64, Player, bool)]) -> Result<Report, String> {
+    run_inner(cases, Mode::Verify, None, false)
+}
+
+fn run_inner(
+    cases: &[(usize, u64, Player, bool)],
+    mode: Mode,
+    trace_dir: Option<&Path>,
+    require_complete: bool,
+) -> Result<Report, String> {
+    let (decks, pool_members) = decks(require_complete)?;
     let pairings = [(0, 1), (2, 3), (4, 1), (1, 2), (3, 4), (5, 2)];
     let started = Instant::now();
     let mut games = Vec::new();
@@ -611,7 +626,11 @@ pub fn run(
     }
     let seconds = started.elapsed().as_secs_f64();
     Ok(Report {
-        workload: "FRA_ARCHETYPES_V1",
+        workload: if require_complete {
+            "FRA_ARCHETYPES_V1"
+        } else {
+            "FRA_ADMITTED_SMOKE_ONLY"
+        },
         catalogue: CATALOGUE_VERSION,
         mode: if mode.verifies() {
             "verification"
