@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8f025ecece92c850df2beb0eaffbf642d9e307b7491591b1bc1321c91cf7df60",
+  "catalogue_version": "1d5123811a4d748c0f3624462fa1288cbe8f9887f328fc1ec972ebd3046acb74",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2773,
-  "implemented_total": 2779,
+  "implemented_standard_cards": 2775,
+  "implemented_total": 2781,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 126,
-      "gated": 159
+      "complete": 128,
+      "gated": 157
     },
     "frc": {
       "total": 6,
@@ -13643,8 +13643,8 @@
     {
       "name": "Gardenize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/gardenize.rs",
       "set": "fra"
     },
@@ -21651,8 +21651,8 @@
     {
       "name": "Master of Barbs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/master_of_barbs.rs",
       "set": "fra"
     },

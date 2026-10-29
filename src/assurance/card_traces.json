@@ -7327,6 +7327,14 @@
     "journal": "499690b837b74813",
     "observations": "6957884443f629e6"
   },
+  "Gardenize": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "bc95b85ffa280724",
+    "observations": "6914bab5ff58dcb7"
+  },
   "Gargantuan Leech": {
     "root": "main",
     "status": "completed",
@@ -11614,6 +11622,14 @@
     "zone": "Battlefield",
     "journal": "db7b0f4bd7e53672",
     "observations": "1cb06ddaa2fe0e12"
+  },
+  "Master of Barbs": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "e877636026cfc884"
   },
   "Master's Councillors": {
     "root": "main",
