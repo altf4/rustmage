@@ -2246,7 +2246,10 @@ impl Game {
     ) -> impl Iterator<Item = Player> + use<> {
         let controller = item.controller;
         let players = match set {
-            PlayerSet::SourceOwner => [Some(self.state.objects[item.card as usize].owner), None],
+            PlayerSet::SourceOwner => [
+                item.source().and_then(|source| self.state.objects.get(source.id as usize).map(|object| object.owner)),
+                None,
+            ],
             PlayerSet::TargetController => [
                 self.state.resolving.as_ref().and_then(|r| {
                     r.target_card_facts
