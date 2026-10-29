@@ -101,7 +101,7 @@ fn counter_original(g: &mut Game, id: CardId) {
         .state
         .stack
         .iter()
-        .find(|i| i.card == id && i.kind == StackKind::Spell)
+        .find(|i| i.source.is_some_and(|identity| identity.id == id) && i.kind == StackKind::Spell)
         .unwrap()
         .id;
     assert!(g.counter_stack_item(stack_id, false));

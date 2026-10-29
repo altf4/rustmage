@@ -130,8 +130,8 @@ fn sos_evidence_funding_returned_courtyard_uses_projected_chosen_type_quality() 
         });
         let ring = put(&mut g, p, "Lotus Ring", Zone::Battlefield);
         let mut animation = g.activation_item(p, ring, 0);
-        animation.card = prison;
-        animation.object = g.object_ref(prison);
+        animation.source.as_mut().unwrap().id = prison;
+        animation.source.as_mut().unwrap().object = g.object_ref(prison);
         g.animate_source(
             &animation,
             crate::cards::AnimationSpec {

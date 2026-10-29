@@ -178,7 +178,7 @@ fn sos_review_mica_copy_of_flashed_back_antiquities_has_no_cast_origin_bonus() {
             })
             .unwrap();
         let copy_id = copied.id;
-        let copy_card = copied.card;
+        let copy_card = copied.source.unwrap().id;
         assert_eq!(copied.cast.as_ref().unwrap().origin, Zone::Graveyard);
         assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
         for _ in 0..10 {

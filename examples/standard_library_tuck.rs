@@ -447,7 +447,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 &before,
                                 &after,
                                 r,
-                                resolving.unwrap().object,
+                                resolving.unwrap().source().expect("resolving packet has source").object,
                                 LibraryDestination::Bottom,
                             );
                             if i == 4 {

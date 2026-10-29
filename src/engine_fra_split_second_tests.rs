@@ -91,7 +91,7 @@ fn resolving_split_second_spell_still_blocks_its_own_free_casts() {
         assert!(matches!(g.state.pending, Pending::ResolutionCasts { .. }));
         assert_eq!(g.object_view(library_spell).zone, Zone::Exile);
         let resolving = g.observe(p).resolving.unwrap();
-        assert_eq!(resolving.card, capstone);
+        assert_eq!(resolving.source.unwrap().id, capstone);
         assert!(resolving.split_second);
         assert!(resolving.source_keywords.contains(Keywords::SPLIT_SECOND));
         assert!(g.nonmana_actions_prohibited());

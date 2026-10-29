@@ -834,7 +834,7 @@ fn sos_jadzi_x_counts_all_own_fractals_and_two_x_symbols_are_paid() {
                 .as_ref()
                 .unwrap()
                 .iter()
-                .find(|r| r.permanent.card == source)
+                .find(|r| r.permanent.source.is_some_and(|identity| identity.id == source))
                 .unwrap()
                 .spell_copy
                 .card;
@@ -1261,10 +1261,10 @@ fn sos_matterbending_optional_other_bounce_and_frozen_triggering_x() {
             act(&mut g, Action::AnnounceCast { card: spell });
             act(&mut g, Action::ChooseX { value: x });
             pay(&mut g);
-            let packet = g.state.stack.iter().find(|t| t.card == source).unwrap();
+            let packet = g.state.stack.iter().find(|t| t.source.is_some_and(|identity| identity.id == source)).unwrap();
             assert_eq!(packet.x, Some(x));
             assert_eq!(g.item_amount(AmountValue::ChosenX, packet), u128::from(x));
-            let id = g.state.stack.iter().find(|t| t.card == spell).unwrap().id;
+            let id = g.state.stack.iter().find(|t| t.source.is_some_and(|identity| identity.id == spell)).unwrap().id;
             assert!(g.counter_stack_item(id, false));
             big_helpers::settle(&mut g);
             assert!(g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
@@ -1278,7 +1278,7 @@ fn sos_matterbending_optional_other_bounce_and_frozen_triggering_x() {
         }
         let regular = put(&mut g, p, "Divination", Zone::Hand);
         cast(&mut g, regular, None);
-        assert!(!g.state.pending_triggers.iter().any(|t| t.card == source));
+        assert!(!g.state.pending_triggers.iter().any(|t| t.source.is_some_and(|identity| identity.id == source)));
         settle(&mut g);
     }
 }
@@ -1440,7 +1440,7 @@ fn sos_spiritcall_batches_noncreature_tokens_and_observes_its_own_copy_entry() {
             g.state
                 .pending_triggers
                 .iter()
-                .filter(|t| t.card == source)
+                .filter(|t| t.source.is_some_and(|identity| identity.id == source))
                 .count(),
             1
         );
@@ -1455,7 +1455,7 @@ fn sos_spiritcall_batches_noncreature_tokens_and_observes_its_own_copy_entry() {
             g.state
                 .pending_triggers
                 .iter()
-                .filter(|t| t.card == source)
+                .filter(|t| t.source.is_some_and(|identity| identity.id == source))
                 .count(),
             2
         );
@@ -1478,7 +1478,7 @@ fn sos_spiritcall_batches_noncreature_tokens_and_observes_its_own_copy_entry() {
             g.state
                 .pending_triggers
                 .iter()
-                .filter(|t| t.card == source)
+                .filter(|t| t.source.is_some_and(|identity| identity.id == source))
                 .count(),
             1
         );
@@ -1500,7 +1500,7 @@ fn sos_spiritcall_batches_noncreature_tokens_and_observes_its_own_copy_entry() {
             g.state
                 .pending_triggers
                 .iter()
-                .filter(|t| t.card == source)
+                .filter(|t| t.source.is_some_and(|identity| identity.id == source))
                 .count(),
             1
         );

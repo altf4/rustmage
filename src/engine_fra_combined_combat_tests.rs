@@ -28,11 +28,9 @@ fn ingris_jiang_and_tetsuko_keep_distinct_attack_and_block_events() {
                 .find(|item| item.source.is_some_and(|source| source.id == selected_first))
                 .unwrap()
                 .id;
-            assert!(g.state.ordering_triggers.iter().any(|item| item.source.is_some_and(|source| source.id == if) selected_first == ingris {
-                    jiang
-                } else {
-                    ingris
-                }));
+            let second = if selected_first == ingris { jiang } else { ingris };
+            assert!(g.state.ordering_triggers.iter().any(|item|
+                item.source.is_some_and(|source| source.id == second)));
             act(&mut g, Action::PutTrigger { id: first });
             for _ in 0..96 {
                 if g.state.pending == Pending::Blockers {

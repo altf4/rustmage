@@ -94,7 +94,7 @@ fn hob_gandalf_paid_body_and_noncreature_cast_trigger_is_temporary() {
         let pick = put(&mut g, p, "Goldvein Pick", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
         cast(&mut g, pick, None);
-        let spell = g.state.stack.iter().find(|v| v.card == pick).unwrap().id;
+        let spell = g.state.stack.iter().find(|v| v.source.is_some_and(|identity| identity.id == pick)).unwrap().id;
         g.counter_stack_item(spell, false);
         finish(&mut g);
         assert_eq!(stats(&g, s), (3, 4));
