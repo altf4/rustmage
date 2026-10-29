@@ -6,22 +6,17 @@ impl Game {
     /// into its copiable values or ability packet. The spell may currently be
     /// resolving; it remains on the stack until its resolution finishes.
     pub(super) fn spell_has_split_second(&self, spell: &SpellView) -> bool {
-        if spell.kind != StackKind::Spell {
-            return false;
-        }
-        if spell.source_keywords.contains(Keywords::SPLIT_SECOND) {
-            return true;
-        }
-        if spell.source_facts.kinds & (4 | 8) == 0 {
-            return false;
-        }
-        self.state.static_sources.iter().copied().any(|id| {
-            let source = &self.state.objects[id as usize];
-            self.on_battlefield(id) && source.controller == spell.controller
-                && source.card.static_ability_groups().iter().any(|g| g.fragments.iter().any(|f| matches!(f, crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond)))
-                && self.continuous_fragment_available(id, |f| matches!(f, crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond))
-        })
+        spell.kind == StackKind::Spell
+            && self
+                .state
+                .objects
+                .get(spell.card as usize)
+                .is_some_and(|object| {
+                    object.zone == Zone::Stack && object.generation == spell.object.generation
+                })
+            && self.keywords(spell.card).contains(Keywords::SPLIT_SECOND)
     }
+
     pub(super) fn spell_with_current_abilities(&self, item: &SpellView) -> SpellView {
         let mut view = item.clone();
         view.split_second = self.spell_has_split_second(item);

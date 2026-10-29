@@ -509,6 +509,37 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         (stats, keywords)
     }
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
+        let base = self.base_keywords(id);
+        let target = self.object(id);
+        if target.zone != Zone::Stack || self.kinds(id) & (4 | 8) == 0 {
+            return base;
+        }
+        let grant = self.static_sources().iter().copied().any(|source| {
+            let object = self.object(source);
+            object.zone == Zone::Battlefield
+                && object.controller == target.controller
+                && object.card.static_ability_groups().iter().any(|g| {
+                    g.fragments.iter().any(|f| {
+                        matches!(
+                            f,
+                            StaticAbilityFragment::ControlledInstantSorcerySplitSecond
+                        )
+                    })
+                })
+                && self.continuous_fragment_available(source, |f| {
+                    matches!(
+                        f,
+                        StaticAbilityFragment::ControlledInstantSorcerySplitSecond
+                    )
+                })
+        });
+        if grant {
+            base.union(Keywords::SPLIT_SECOND)
+        } else {
+            base
+        }
+    }
+    fn base_keywords(&self, id: CardId) -> Keywords {
         if (matches!(self.object(id).zone, Zone::Battlefield | Zone::Stack)
             || self
                 .counter_amounts(id)
@@ -1050,29 +1081,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             power_above_base: obj.zone == Zone::Battlefield
                 && self.is_creature(id)
                 && stats.power > base.power,
-            keywords: {
-                let base = if inset {
-                    definition.info().keywords
-                } else {
-                    self.keywords(id)
-                };
-                let spell = self
-                    .game
-                    .state
-                    .stack
-                    .iter()
-                    .chain(self.game.state.resolving.iter().map(|r| &r.item))
-                    .find(|item| {
-                        item.kind == StackKind::Spell && item.object == self.object_ref(id)
-                    });
-                if obj.zone == Zone::Stack
-                    && spell.is_some_and(|item| self.game.spell_has_split_second(item))
-                {
-                    base.union(Keywords::SPLIT_SECOND)
-                } else {
-                    base
-                }
-            },
+            keywords: self.keywords(id),
             copy_recipe: self.stored_recipe(id),
             temporary_copy: if obj.zone == Zone::Battlefield {
                 self.world

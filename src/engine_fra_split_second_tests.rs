@@ -36,6 +36,8 @@ fn samut_grant_is_visible_and_tracks_spell_copy_controller_and_source() {
             );
             assert!(!visible(&g, viewer, copy_id));
         }
+        assert!(g.keywords(shock).contains(Keywords::SPLIT_SECOND));
+        assert!(!g.keywords(copy_card).contains(Keywords::SPLIT_SECOND));
         assert!(
             g.object_view(shock)
                 .keywords
@@ -50,6 +52,7 @@ fn samut_grant_is_visible_and_tracks_spell_copy_controller_and_source() {
         let aura = put(&mut g, p.other(), "Fresh Start", Zone::Battlefield);
         g.state.objects[aura as usize].attached_to = Some(g.object_ref(provider));
         assert!(!visible(&g, p, original.id));
+        assert!(!g.keywords(shock).contains(Keywords::SPLIT_SECOND));
         assert!(!g.nonmana_actions_prohibited());
         g.move_object(aura, Zone::Graveyard);
         assert!(visible(&g, p, original.id));
@@ -98,5 +101,7 @@ fn resolving_split_second_spell_still_blocks_its_own_free_casts() {
         g.move_object(provider, Zone::Graveyard);
         assert!(!g.nonmana_actions_prohibited());
         assert!(g.legal_actions().iter().any(|a| matches!(a, Action::CastExiledDuringResolution { object, .. } if object.card == library_spell)));
+        g.move_object(capstone, Zone::Exile);
+        assert!(!g.observe(p).resolving.unwrap().split_second);
     }
 }
