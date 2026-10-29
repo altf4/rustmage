@@ -1585,7 +1585,7 @@ fn sos_wildgrowth_incoming_controller_places_counters_after_spell_control_change
             .state
             .stack
             .iter_mut()
-            .find(|s| s.source.is_some_and(|source| source.id == source) && s.kind == StackKind::Spell)
+            .find(|s| s.source.is_some_and(|identity| identity.id == source) && s.kind == StackKind::Spell)
             .unwrap();
         spell.controller = p.other();
         g.state.objects[source as usize].controller = p.other();

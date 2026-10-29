@@ -103,7 +103,7 @@ fn hob_inherited_draw_discovery_own_artifacts_tokens_and_departed_observer() {
             if g.state
                 .stack
                 .iter()
-                .any(|s| s.source.is_some_and(|source| source.id == source) && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+                .any(|s| s.source.is_some_and(|identity| identity.id == source) && matches!(s.kind, StackKind::TriggeredAbility { .. }))
             {
                 break;
             }
@@ -113,7 +113,7 @@ fn hob_inherited_draw_discovery_own_artifacts_tokens_and_departed_observer() {
             g.state
                 .stack
                 .iter()
-                .any(|s| s.source.is_some_and(|source| source.id == source) && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+                .any(|s| s.source.is_some_and(|identity| identity.id == source) && matches!(s.kind, StackKind::TriggeredAbility { .. }))
         );
         g.move_object(source, Zone::Graveyard);
         g.give_priority();

@@ -101,7 +101,7 @@ fn silvan_paid_body_private_draw_mandatory_discard_exact_land_automatic_tapped()
         assert_eq!(g.object_view(unrelated).zone, Zone::Graveyard);
         assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 1);
         assert!(g.observe(p).effect_choice.is_none());
-        assert!(!g.state.stack.iter().any(|s| s.source.is_some_and(|source| source.id == source)));
+        assert!(!g.state.stack.iter().any(|s| s.source.is_some_and(|identity| identity.id == source)));
     }
 }
 #[test]
