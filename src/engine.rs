@@ -935,6 +935,7 @@ struct PlayerState {
     equip_activated_this_turn: bool,
     cards_drawn_this_turn: u64,
     scried_or_surveilled_this_turn: bool,
+    loyalty_ability_activated_this_turn: bool,
     noncombat_damage_this_turn: bool,
     noncombat_damage_last_turn: bool,
     drew_in_own_draw_step: bool,
@@ -2313,6 +2314,7 @@ pub struct PlayerView {
     pub cards_drawn_this_turn: u64,
     /// Whether this player completed a positive scry or surveil this turn.
     pub scried_or_surveilled_this_turn: bool,
+    pub loyalty_ability_activated_this_turn: bool,
     pub noncombat_damage_this_turn: bool,
     pub noncombat_damage_last_turn: bool,
     pub cards_discarded_this_turn: u64,
@@ -2819,6 +2821,7 @@ impl Game {
             equip_activated_this_turn: false,
             cards_drawn_this_turn: 0,
             scried_or_surveilled_this_turn: false,
+            loyalty_ability_activated_this_turn: false,
             noncombat_damage_this_turn: false,
             noncombat_damage_last_turn: false,
             drew_in_own_draw_step: false,
@@ -7501,6 +7504,7 @@ impl Game {
             player.equip_activated_this_turn = false;
             player.cards_drawn_this_turn = 0;
             player.scried_or_surveilled_this_turn = false;
+            player.loyalty_ability_activated_this_turn = false;
             player.noncombat_damage_last_turn = player.noncombat_damage_this_turn;
             player.noncombat_damage_this_turn = false;
             player.cards_discarded_this_turn = 0;
@@ -8434,6 +8438,7 @@ impl Game {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 scried_or_surveilled_this_turn: s.players[i].scried_or_surveilled_this_turn,
+                loyalty_ability_activated_this_turn: s.players[i].loyalty_ability_activated_this_turn,
                 noncombat_damage_this_turn: s.players[i].noncombat_damage_this_turn,
                 noncombat_damage_last_turn: s.players[i].noncombat_damage_last_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,

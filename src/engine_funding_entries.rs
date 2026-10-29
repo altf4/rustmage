@@ -293,6 +293,7 @@ impl FundingState<'_> {
             StepGuard::YourTurn => self.active == player,
             StepGuard::GainedLife => self.gained_life(player),
             StepGuard::ScriedOrSurveilledThisTurn => state.scried_or_surveilled_this_turn,
+            StepGuard::LoyaltyAbilityActivatedThisTurn => state.loyalty_ability_activated_this_turn,
             StepGuard::OpponentNoncombatDamageLastTurn => {
                 self.game.state.players[player.other().index()].noncombat_damage_last_turn
             }

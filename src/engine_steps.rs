@@ -292,6 +292,7 @@ impl Game {
             }
             StepGuard::GainedLife => return p.life_gained_this_turn > 0,
             StepGuard::ScriedOrSurveilledThisTurn => return p.scried_or_surveilled_this_turn,
+            StepGuard::LoyaltyAbilityActivatedThisTurn => return p.loyalty_ability_activated_this_turn,
             StepGuard::OpponentNoncombatDamageLastTurn => {
                 return self.state.players[player.other().index()].noncombat_damage_last_turn;
             }

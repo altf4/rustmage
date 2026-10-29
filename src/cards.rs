@@ -3260,6 +3260,7 @@ pub(crate) enum StepGuard {
     OpponentLostLife,
     GainedLife,
     ScriedOrSurveilledThisTurn,
+    LoyaltyAbilityActivatedThisTurn,
     OpponentNoncombatDamageLastTurn,
     GainedAndLostLife,
     SourceTapped,
