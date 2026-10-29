@@ -44,6 +44,48 @@ fn sphinx_competing_exile_replacements_replay_atomically() {
         let last = g.object_ref(cards[3]);
         act(&mut g, Action::SelectResolutionExile { object: last });
         assert!(matches!(g.state.pending, Pending::ZoneReplacement { player: p } if p == player));
+        let owner_view = g.observe(player);
+        let choice = owner_view.zone_replacement_choice.as_ref().unwrap();
+        assert_eq!(choice.card, Card::test_index(4016));
+        assert_eq!(choice.owner, player);
+        assert_eq!(choice.from, Zone::Graveyard);
+        assert_eq!(
+            choice.choices,
+            vec![
+                ZoneReplacementKind::Prevent,
+                ZoneReplacementKind::Battlefield
+            ]
+        );
+        for effect in [
+            ZoneReplacementKind::Prevent,
+            ZoneReplacementKind::Battlefield,
+        ] {
+            assert!(
+                owner_view
+                    .actions
+                    .contains(&Action::ChooseZoneReplacement { effect })
+            );
+        }
+        let opponent_view = g.observe(player.other());
+        assert!(opponent_view.zone_replacement_choice.is_none());
+        assert!(opponent_view.actions.is_empty());
+        for observed in [&owner_view, &opponent_view] {
+            assert_eq!(observed.actor, Some(player));
+            assert!(
+                observed
+                    .objects
+                    .iter()
+                    .any(|object| object.id == source && object.zone == Zone::Stack)
+            );
+            for &id in &cards {
+                assert!(
+                    observed
+                        .objects
+                        .iter()
+                        .any(|object| object.id == id && object.zone == Zone::Graveyard)
+                );
+            }
+        }
         let pending = g.snapshot();
         let view = |game: &Game, p| {
             let mut value = serde_json::to_value(game.observe(p)).unwrap();
