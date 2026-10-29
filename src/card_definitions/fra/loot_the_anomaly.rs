@@ -1,4 +1,4 @@
-// Complete Oracle and release-note draft; pinned XMage implementation unavailable.
+// Authored from pinned Oracle and official release notes; pinned XMage class unavailable.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(-2, 4),
     static_groups: &[StaticAbilityGroup {

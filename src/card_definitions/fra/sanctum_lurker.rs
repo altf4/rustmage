@@ -1,4 +1,4 @@
-// Complete Oracle and official release-note draft; XMage class unavailable. Gated.
+// Authored from pinned Oracle and official release notes; pinned XMage class unavailable.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(3, 2),
     triggers: &[TriggeredAbility {

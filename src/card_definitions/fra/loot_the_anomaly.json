@@ -3,12 +3,32 @@
   "catalogue_id": 2550,
   "oracle_id": "e0142e7d-7b0b-4290-a56c-5fa950fdccf8",
   "facts_sha256": "e28da423e3e7fd263ca40162342519e9634ef0458052c280a2b5b93c39185659",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f6da7e624bc1776a7ebf273b2b3f47f4454f9b36772a0b4ee7ce775a37cdc483"
   },
   "physical_metadata_sha256": "8087a0ced6cb42b605f08ecda1afd1d69214152d8685c10160f99ff977e65aec",
-  "source_note": "Full Oracle text and official Reality Fracture release notes reviewed; pinned XMage implementation is unavailable. Definition remains gated.",
-  "oracle_rulings": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes"
+  "source_note": "Full pinned Oracle and official release notes reviewed. The pinned XMage inventory contains no implementation for this card; related generic XMage helpers are recorded separately and are not a card implementation.",
+  "oracle_rulings": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "e0142e7d-7b0b-4290-a56c-5fa950fdccf8",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7"
+  },
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    }
+  ],
+  "rules_tests": "src/engine_fra_loot_anomaly_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_fra_loot_anomaly_independent_tests.rs"
+  ]
 }

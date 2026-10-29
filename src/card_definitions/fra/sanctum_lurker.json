@@ -3,17 +3,43 @@
   "catalogue_id": 3673,
   "oracle_id": "3ebd64d2-c178-45a2-a51f-9869754baa0f",
   "facts_sha256": "5cef8228a19941cb941474bd7dfbc1a7dd5fd3d96447581519fd05d4a7104da7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "607e38f56977872c46c9368908971b76d585e7a0b8520b37cdd613b503f7a1c5"
   },
   "physical_metadata_sha256": "3e8bccfc70bd6733293a9b42099a1c98556b3c74e563ba7ee1d6aad8721548c9",
-  "source_note": "Complete pinned Oracle and official release notes reviewed; pinned XMage class unavailable. Remains gated.",
+  "source_note": "Full pinned Oracle and official release notes reviewed. The pinned XMage inventory contains no implementation for this card; related generic XMage helpers are recorded separately and are not a card implementation.",
   "oracle_rulings": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes",
   "rules_tests": "src/engine_fra_sanctum_lurker_tests.rs",
   "additional_rules_tests": [
     "src/engine_fra_sanctum_lurker_independent_tests.rs",
     "src/engine_fra_sanctum_additional_review_tests.rs"
+  ],
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "3ebd64d2-c178-45a2-a51f-9869754baa0f",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7"
+  },
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+      "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
   ]
 }
