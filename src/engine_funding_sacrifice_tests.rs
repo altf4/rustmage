@@ -977,7 +977,7 @@ fn simultaneous_sacrifices_freeze_animated_type_before_provider_leaves() {
 }
 
 #[test]
-fn restricted_repeatable_mana_produces_distinct_but_unpayable_projected_states() {
+fn spell_only_mana_normalizes_unusable_search_keys_without_mutating_pools() {
     use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
     struct Reset;
     impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
@@ -1000,8 +1000,30 @@ fn restricted_repeatable_mana_produces_distinct_but_unpayable_projected_states()
             world = next.unwrap();
             assert_eq!(world.mana[4], amount);
             assert_eq!(mana_lots::available(world.mana, &world.lots, mana_lots::Purpose::Other)[4], 0);
-            assert!(old_key != world.key(&goal));
+            if amount > 1 { assert!(old_key == world.key(&goal)); }
         }
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn spell_only_repeat_mana_cannot_pay_other_or_fuel_a_converter_but_can_pay_artifact_spell() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset { fn drop(&mut self) { TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None)); } }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        g.state.players[player.index()].mana = [0; 6];
+        named(&mut g, player, "Barrels of Blasting Jelly", Zone::Battlefield);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(id))));
+        let goal = FundingGoal { actor: player, required: [0, 0, 0, 0, 1, 0], generic: 0, reserve: None, source: None };
+        assert!(!g.can_fund_for(goal.clone(), mana_lots::Purpose::Other));
+        let artifact = mana_lots::Source::in_world(&g, id);
+        assert!(g.can_fund_for(goal, mana_lots::Purpose::Spell(artifact)));
         TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
     }
 }

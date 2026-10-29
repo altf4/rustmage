@@ -1769,6 +1769,30 @@ impl<'g> FundingState<'g> {
                 (r.owned, r.controlled, r.identity, r.attached),
             )
         });
+        // This deliberately narrow equivalence applies only to a standalone
+        // non-cast payment with no nested or projected continuation. Spell-only
+        // lots cannot fund this goal or any mana activation, so their amounts
+        // cannot change any future choice. Normalize only the search key; owned
+        // pools, payment allocations and observable mana remain exact.
+        let inert_spell_lots = matches!(self.purpose, mana_lots::Purpose::Other)
+            && self.continuation.is_none() && self.cast_costs.is_none()
+            && self.entry_projection.is_none() && self.game.state.exile_links.is_empty()
+            && goal.source.is_none() && goal.reserve.is_none()
+            && self.cost_group.is_none() && self.sacrifice_group.is_empty()
+            && self.required_face_up.is_none() && !self.convoke;
+        let mut key_mana = self.mana;
+        let key_lots = self.lots.iter().filter_map(|lot| {
+            let inert = inert_spell_lots && matches!(lot.quality.restriction,
+                mana_lots::ManaRestrictionView::ArtifactSpell
+                    | mana_lots::ManaRestrictionView::InstantSorcery
+                    | mana_lots::ManaRestrictionView::NoncreatureSpell
+                    | mana_lots::ManaRestrictionView::PlaneswalkerSpell
+                    | mana_lots::ManaRestrictionView::SpellSubtype(_));
+            if inert {
+                for (pool, amount) in key_mana.iter_mut().zip(lot.amounts) { *pool -= amount; }
+                None
+            } else { Some(lot.clone()) }
+        }).collect();
         FundingKey {
             enduring_story: self.enduring_story,
             payment_departures: self.payment_departures.clone(),
@@ -1814,8 +1838,8 @@ impl<'g> FundingState<'g> {
                 .graveyard_borrowing
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.to_vec()),
-            mana: self.mana,
-            lots: self.lots.clone(),
+            mana: key_mana,
+            lots: key_lots,
             life: self.life,
             life_lost: self.life_lost,
             resources,
