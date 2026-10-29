@@ -9,5 +9,30 @@
     "oracle_id": "8940f503-fc6d-4fae-be74-22c660cae1a7",
     "index": 1,
     "sha256": "03edfb6f888fca0634f8d4e8cacd9c7665a6b0c628ff90c3f0869f50879c5da3"
-  }
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PyreRhymer.java",
+  "java_sha256": "959cc205bbf6413a0b7a31f74460e2b84db0589e1b981435d5bacf80d3f7801e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/DelayedTriggeredManaAbility.java",
+      "sha256": "3784509b531fc79c6fa7c95aff163ea997a88a274ab1c2db18250ec522161778"
+    }
+  ]
 }
