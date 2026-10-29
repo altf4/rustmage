@@ -544,7 +544,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             {
                 if a.source().is_some_and(|source| source.card.name() == NAMES[i]) && a.kind == StackKind::Spell {
                     s.paid = true;
-                    s.source = Some(a.card);
+                    s.source = a.source().map(|source| source.id);
                     s.library = o.players[p.index()].library_count;
                     s.baseline = objects
                         .iter()

@@ -340,7 +340,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && !s.paid
                 {
                     s.paid = true;
-                    s.source = Some(a.card);
+                    s.source = a.source().map(|source| source.id);
                     casts[i][p.index()] += 1;
                 }
                 if a.kind == StackKind::Spell

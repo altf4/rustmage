@@ -391,7 +391,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         let other = g.observe(actor.other());
                         let public = packets(&other).find(|s| s.id == packet.id).unwrap();
                         assert_eq!(public.attachment_trigger, packet.attachment_trigger);
-                        assert_eq!(public.object, packet.source().expect("example expects an object-backed packet").object);
+                        assert_eq!(public.source().expect("trigger has source").object, packet.source().expect("example expects an object-backed packet").object);
                     }
                 }
             }
