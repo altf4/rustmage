@@ -97,7 +97,7 @@ impl Game {
         let giver = self.state.objects[grantor.card as usize].card;
         let actor = self.state.objects[source.card as usize].controller;
         let mut item = self.activation_item(actor, source.card, ability);
-        item.source_card = giver;
+        item.set_source_definition(giver);
         item.source_ability_origin = self.copied_grant_origin(grantor);
         item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
             grantor,
@@ -257,7 +257,7 @@ impl Game {
         let giver = self.state.objects[grantor.card as usize].card;
         let actor = self.state.objects[recipient.card as usize].controller;
         let mut item = self.activation_item(actor, recipient.card, ability);
-        item.source_card = giver;
+        item.set_source_definition(giver);
         item.source_ability_origin = self.copied_grant_origin(grantor);
         item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
             grantor,

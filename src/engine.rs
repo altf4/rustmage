@@ -1409,6 +1409,12 @@ impl SpellView {
         })
     }
 
+    /// Change the definition of a physical-source packet during face or grant selection.
+    pub(crate) fn set_source_definition(&mut self, definition: Card) {
+        assert!(self.source_less_rule.is_none(), "inherent rules have no source definition");
+        self.source_card = definition;
+    }
+
     /// Source identity for consumers that can also encounter inherent rules.
     pub fn source_identity(&self) -> Option<(ObjectRef, Card)> {
         self.source().map(|source| (source.object, source.card))
@@ -5756,7 +5762,7 @@ impl Game {
                 };
                 item.cast.as_mut().unwrap().physical_card =
                     Some(self.state.objects[card as usize].card);
-                item.source_card = definition;
+                item.set_source_definition(definition);
                 item.source_keywords = definition.info().keywords;
                 item.source_facts.card = definition;
                 item.source_facts.colors = definition.colors();

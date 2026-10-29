@@ -216,7 +216,7 @@ impl Game {
         let cast = item.cast.as_mut().unwrap();
         cast.face = face;
         cast.physical_card = Some(physical);
-        item.source_card = definition;
+        item.set_source_definition(definition);
         item.source_keywords = definition.info().keywords;
         item.source_facts.card = definition;
         item.source_facts.colors = definition.colors();

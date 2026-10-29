@@ -317,7 +317,7 @@ impl Game {
         self.refresh_graveyard_borrowing();
         let descriptor = self.borrowed_descriptor(card, exiled, index);
         let mut item = self.activation_item(actor, card, index);
-        item.source_card = descriptor.definition;
+        item.set_source_definition(descriptor.definition);
         item.source_counter_lki =
             card_quantities::counter_quantity_facts(descriptor.rules().program, |kind| {
                 self.source_counter_quantity_live(item.object, kind)
