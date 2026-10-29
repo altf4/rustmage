@@ -1121,6 +1121,53 @@ fn prior_schema190_state_supported(state: &State) -> bool {
         .all(schema190_packet_supported)
 }
 
+/// Outside-entry replacement choices and continuations have no schema-191
+/// representation. Keep all outside-owned states conservative until their
+/// complete future behavior has an equivalent old-contract proof.
+fn prior_schema192_state_supported(state: &State) -> bool {
+    state.outside_game.is_none()
+        && !matches!(state.pending, Pending::OutsideEntryReplacement { .. })
+        && !state
+            .cast_rollback
+            .as_ref()
+            .is_some_and(|rollback| !prior_schema192_state_supported(&rollback.before))
+}
+
+fn project_prior_schema192(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::String(text)
+                if text == "outside_entry_replacement"
+                    || text == "ChooseOutsideEntryReplacement" =>
+            {
+                Err("outside-entry replacement has no schema 191 representation".into())
+            }
+            serde_json::Value::Array(rows) => {
+                for row in rows {
+                    check(row)?;
+                }
+                Ok(())
+            }
+            serde_json::Value::Object(fields) => {
+                for (key, value) in fields {
+                    if key == "outside_entry_replacement" || key == "ChooseOutsideEntryReplacement"
+                    {
+                        return Err(
+                            "outside-entry replacement has no schema 191 representation".into()
+                        );
+                    }
+                    check(value)?;
+                }
+                Ok(())
+            }
+            _ => Ok(()),
+        }
+    }
+    let value: serde_json::Value = serde_json::from_str(input).map_err(|e| e.to_string())?;
+    check(&value)?;
+    Ok(input.to_owned())
+}
+
 /// Reject wire data introduced after published schema 190 without altering old bytes.
 fn project_prior_schema191(input: &str) -> Result<String, String> {
     fn check(v: &serde_json::Value) -> Result<(), String> {
@@ -5806,7 +5853,18 @@ fn trace_candidate_with_prepared_observation_audit(
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 191) {
+    if schema_projection.is_some_and(|schema| schema < 192) {
+        if !prior_schema192_state_supported(&g.state) {
+            projection_error =
+                Some("owned outside-entry rules cannot be projected to schema 191".to_owned());
+        } else {
+            match project_prior_schema192(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 191) {
         if !prior_schema191_state_supported(&g.state)
             && !(observation_only
                 && schema_projection == Some(190)
@@ -7409,5 +7467,34 @@ fn prior_schema191_rejects_retained_outside_identity_counters() {
         assert!(!prior_schema191_state_supported(&g.state));
         g.restore(&before).unwrap();
         assert!(prior_schema191_state_supported(&g.state));
+    }
+}
+
+#[test]
+fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
+    assert_eq!(
+        project_prior_schema192(r#"[{"decision":"priority"}]"#).unwrap(),
+        r#"[{"decision":"priority"}]"#
+    );
+    for json in [
+        r#"{"decision":"outside_entry_replacement"}"#,
+        r#"{"actions":[{"ChooseOutsideEntryReplacement":{"ability":0}}]}"#,
+        r#"{"outside_entry_replacement":{}}"#,
+    ] {
+        assert!(project_prior_schema192(json).is_err());
+    }
+    for owner in [Player::P0, Player::P1] {
+        let mut game = scenario(owner);
+        assert!(prior_schema192_state_supported(&game.state));
+        game.state.outside_game = Some(Box::new(OutsideGameState {
+            mode: OutsideGameMode::CasualCollection,
+            pools: [Vec::new(), Vec::new()],
+            choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
+            next_choice_id: 0,
+            known: [Vec::new(), Vec::new()],
+        }));
+        assert!(!prior_schema192_state_supported(&game.state));
     }
 }

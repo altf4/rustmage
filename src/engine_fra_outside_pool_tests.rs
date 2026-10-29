@@ -975,6 +975,20 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
         let exile = Action::ChooseOutsideEntryReplacement { source, ability: 1 };
         assert!(game.legal_actions().contains(&prevent));
         assert!(game.legal_actions().contains(&exile));
+        // A player controlling the affected player makes the replacement
+        // decision; provider information remains visible to both of them.
+        game.state.active = owner;
+        game.schedule_player_control(owner, owner.other());
+        game.begin_player_control_turn();
+        assert!(game.observe(owner).outside_entry_replacement.is_some());
+        assert!(game.observe(owner).actions.is_empty());
+        assert!(
+            game.observe(owner.other())
+                .outside_entry_replacement
+                .is_some()
+        );
+        assert!(game.observe(owner.other()).actions.contains(&prevent));
+        game.restore(&before).unwrap();
         assert!(game.apply(owner.other(), prevent).is_err());
         assert!(
             game.apply(

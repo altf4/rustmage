@@ -417,6 +417,7 @@ mod big_core;
 mod borrowed_activations;
 #[path = "engine_outside_choices.rs"]
 mod outside_choices;
+pub use outside_choices::OutsideEntryReplacementView;
 #[path = "engine_outside_names.rs"]
 mod outside_names;
 use borrowed_activations::Descriptor as BorrowedDescriptor;
@@ -2786,7 +2787,7 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_choice: Option<outside_choices::OutsideChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub outside_entry_replacement: Option<outside_choices::OutsideEntryReplacementView>,
+    pub outside_entry_replacement: Option<OutsideEntryReplacementView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owned_outside: Option<[Option<Vec<Card>>; 2]>,
     #[serde(skip_serializing_if = "Option::is_none")]

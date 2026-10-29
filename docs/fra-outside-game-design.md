@@ -181,3 +181,24 @@ is only a narrow transaction fixture: it exposes no public replacement decision,
 has no production replacement providers, does not dispatch outside-entry
 observers, and does not model repeated or self-replacement ordering. Those must
 be implemented and reviewed before treating this as general replacement support.
+
+## Isolated scheduler limitations
+
+The experimental outside-entry scheduler carries a physical choice identity,
+not an in-game origin. Its provider lookup currently visits battlefield static
+sources only. An incoming card's own applicable replacement effect cannot be
+found there; it requires a separately owned, typed self-replacement attached to
+the incoming event, applied before other applicable replacements and tracked
+across suspension and replay. No such printed provider has been identified in
+the current catalogue. Do not mark the general rule complete or enable a card
+whose admission depends on this path.
+
+A redirected outside-to-exile admission likewise needs a typed admission event
+and destination-specific observer dispatch. It must not masquerade as a zone
+change from `Zone::Outside`: that internal staging value is not a game zone.
+The experimental exile history update is provisional until an authoritative
+rules analysis and observer tests establish its exact semantics. Existing
+return-to-hand and zone-change observers do not constitute this event model.
+The experimental schema 192 guard conservatively rejects all states retaining
+outside-game ownership when projecting to 191, including rollback checkpoints;
+this is intentionally broader than necessary until future behavior is proven.
