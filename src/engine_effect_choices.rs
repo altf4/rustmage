@@ -1116,7 +1116,7 @@ impl Game {
             });
             let eligible = EffectChoice {
                 selected: std::array::from_fn(|_| Vec::new()),
-                ..choice.clone()
+                ..(*choice).clone()
             };
             let unique = selected
                 .iter()

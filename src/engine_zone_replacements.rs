@@ -84,7 +84,6 @@ pub(super) struct Plan {
 }
 impl ZoneState {
     // Choices and replays own checkpoints; passive reveals and object links do not.
-    #[cfg(test)]
     pub(super) fn has_checkpoint(&self) -> bool {
         self.choice.is_some() || self.replay.is_some()
     }
