@@ -36,3 +36,7 @@ silently serialize absence as a valid catalogue card.
 
 Until the internal source representation, all consumers, examples, schema
 projection and guarded tests are finished, this work and Tam remain gated.
+
+## Schema 190 trace audit
+
+The schema 190 source representation changes the public packet shape. The recorded schema 189 projection audit at `/home/altf4/.cache/fra-tam190.prior-mana-audit.json` matched all 2,928 prior supported-card traces. The schema 190 trace baseline was recorded from the same frozen integration inputs at `/home/altf4/.cache/fra-tam190.json`. This comparison does not establish full radiation or proliferate rules correctness; those require separate rules tests and review.

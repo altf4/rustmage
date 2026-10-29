@@ -995,7 +995,7 @@ fn own_counter_replacements_precede_general_replacements_and_prohibition() {
                 1,
                 origin_stack_id,
                 vec![make(0, 2, 0), make(1, 1, 1)],
-                replacements::ResumeMode::Program,
+                replacements::ResumeMode::Pending,
             );
             assert!(game.advance_replacements(false));
             let before = game.snapshot();
@@ -1017,7 +1017,8 @@ fn own_counter_replacements_precede_general_replacements_and_prohibition() {
                     game.state.players[player.index()].poison_counters,
                     if prohibited { 0 } else { expected }
                 );
-                assert_eq!(game.object_view(top).zone, Zone::Hand);
+                assert_eq!(game.object_view(top).zone, Zone::Library);
+                assert!(matches!(game.state.pending, Pending::EffectLibrary { .. }));
             }
         }
     }
