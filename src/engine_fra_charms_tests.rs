@@ -4611,6 +4611,40 @@ fn generous_revival_adds_to_intrinsic_entry_counters_before_replacements() {
 }
 
 #[test]
+fn yoshimaru_does_not_replace_its_own_entry_counters() {
+    for player in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            let mut game = scenario(player);
+            let yoshimaru = put(
+                &mut game,
+                player,
+                "Yoshimaru, Beloved Companion",
+                Zone::Graveyard,
+            );
+            if doubled {
+                put(&mut game, player, "Doubling Season", Zone::Battlefield);
+            }
+            let revival = put(&mut game, player, "Generous Revival", Zone::Hand);
+            cast(&mut game, revival, Some(Target::Card(yoshimaru)));
+            let before = game.snapshot();
+            super::contracts::branch_contract(game.clone());
+            settle(&mut game);
+            assert_eq!(game.object_view(yoshimaru).zone, Zone::Battlefield);
+            assert_eq!(
+                game.counter_count(yoshimaru, CounterKind::PlusOne),
+                if doubled { 2 } else { 1 }
+            );
+            game.restore(&before).unwrap();
+            settle(&mut game);
+            assert_eq!(
+                game.counter_count(yoshimaru, CounterKind::PlusOne),
+                if doubled { 2 } else { 1 }
+            );
+        }
+    }
+}
+
+#[test]
 fn recursive_recruitment_counts_own_graveyard_after_flashback_and_creation() {
     for p in [Player::P0, Player::P1] {
         for flashback in [false, true] {

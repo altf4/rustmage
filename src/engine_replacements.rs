@@ -552,14 +552,11 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     used: &[(ObjectRef, u16)],
 ) -> Vec<ReplacementEffectView> {
     let mut out = Vec::new();
-    let mut add = |reference: ObjectRef, card: Card, controller: Player, incoming: bool| {
+    let mut add = |reference: ObjectRef, card: Card, controller: Player| {
         if controller != p.controller {
             return;
         }
         for (index, &spec) in card.replacement_effects().iter().enumerate() {
-            if incoming && matches!(spec, ReplacementSpec::CountersPlacedByController) {
-                continue; // CR614.12: this is general, not a self-entry replacement.
-            }
             if world.object(reference.card).zone == Zone::Battlefield && world.reference(reference.card) == reference
                     && !world.fragment_available(reference.card, |fragment| matches!(fragment,
                         crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
@@ -576,14 +573,12 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     for &id in world.static_sources() {
         let o = world.object(id);
         if o.zone == Zone::Battlefield {
-            add(world.reference(id), o.card, o.controller, false);
+            add(world.reference(id), o.card, o.controller);
         }
     }
-    // CR614.12: only the incoming permanent's own effects may affect its entry;
-    // a different member of this simultaneous entry batch is not yet a source.
-    if p.entry_index.is_some() {
-        add(p.object, p.card, p.controller, true);
-    }
+    // The counter replacement variants above affect a general set of
+    // permanents. Under CR 614.12 they cannot apply from the incoming
+    // permanent itself; self-only entry effects are handled by the entry plan.
     out
 }
 fn modify_proliferate(
