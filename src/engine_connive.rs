@@ -63,24 +63,25 @@ impl Game {
                 .into_iter()
                 .collect(),
             Subject::Source => {
-                if !item.source_facts.battlefield {
+                let Some(source) = item.source else { return; };
+                if !source.facts.battlefield {
                     return;
                 }
                 vec![ConniverView {
-                    object: item.object,
-                    creature: if self.on_battlefield(item.card)
-                        && self.object_ref(item.card) == item.object
+                    object: source.object,
+                    creature: if self.on_battlefield(source.id)
+                        && self.object_ref(source.id) == source.object
                     {
-                        self.is_creature(item.card)
+                        self.is_creature(source.id)
                     } else {
-                        item.source_facts.is_creature()
+                        source.facts.is_creature()
                     },
-                    controller: if self.on_battlefield(item.card)
-                        && self.object_ref(item.card) == item.object
+                    controller: if self.on_battlefield(source.id)
+                        && self.object_ref(source.id) == source.object
                     {
-                        self.state.objects[item.card as usize].controller
+                        self.state.objects[source.id as usize].controller
                     } else {
-                        item.source_facts.controller
+                        source.facts.controller
                     },
                 }]
             }
