@@ -1,0 +1,3 @@
+# Pyre Rhymer historical projection
+
+Schema 185 adds public Mountain-mana bonus fields on players, retained spell packets and mana rollback views. Schema 184 traces remain byte-identical when the new behavior is absent. The guard rejects Pyre and Molten Tide identities, those public fields, hidden player bonuses and retained packet bonuses. It traverses copy recipes, captured packets, grants, delayed effects and rollback checkpoints; opaque active resolutions, replacement continuations and mana receipts are conservatively unrepresentable, including receipts with no Mountain bonus, because their historical replay cannot be established from these checks. Existing schema 184 paid-cast observations remain representable when their owned continuation is otherwise inspectable.
