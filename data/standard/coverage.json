@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "22cf6adcad7abb4fa56b8c6499ea77c43f4a592aa331684d283891dca82be680",
+  "catalogue_version": "0c8364e0ae9ecf3987572b638818a674863f1e3d697b76b8633fbed19bfa14e7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2910,
-  "implemented_total": 2916,
+  "implemented_standard_cards": 2912,
+  "implemented_total": 2918,
   "token_definitions": 144,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 263,
-      "gated": 22
+      "complete": 265,
+      "gated": 20
     },
     "frc": {
       "total": 6,
@@ -14147,8 +14147,8 @@
     {
       "name": "Gideon the Oathless",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/gideon_the_oathless.rs",
       "set": "fra"
     },
@@ -39387,8 +39387,8 @@
     {
       "name": "Vindictive Triumph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/vindictive_triumph.rs",
       "set": "fra"
     },

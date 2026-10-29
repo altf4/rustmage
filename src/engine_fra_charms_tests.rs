@@ -7637,3 +7637,18 @@ mod engine_fra_puppet_crafting_independent_tests;
 
 #[path = "engine_fra_puppet_arc_extra_tests.rs"]
 mod engine_fra_puppet_arc_extra_tests;
+
+#[path = "engine_fra_vindictive_triumph_tests.rs"]
+mod engine_fra_vindictive_triumph_tests;
+
+#[path = "engine_fra_vindictive_independent_tests.rs"]
+mod engine_fra_vindictive_independent_tests;
+
+#[path = "engine_fra_loyalty_observer_tests.rs"]
+mod engine_fra_loyalty_observer_tests;
+
+#[path = "engine_fra_gideon_source_independent_tests.rs"]
+mod engine_fra_gideon_source_independent_tests;
+
+#[path = "engine_fra_vindictive_controller_independent_tests.rs"]
+mod engine_fra_vindictive_controller_independent_tests;
