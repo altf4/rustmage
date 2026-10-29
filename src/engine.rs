@@ -537,6 +537,7 @@ define_actions! {
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
+    SelectResolutionExile { object: ObjectRef },
     ChooseArmy { object: ObjectRef },
     ChooseJace { object: ObjectRef },
     FinishLandSelection,
@@ -3876,6 +3877,7 @@ impl Game {
                             | EffectChoiceKind::ExileGraveyard
                             | EffectChoiceKind::TapPermanents(_)
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
+                            EffectChoiceKind::ExileSourceAndNamed { .. } => Action::SelectResolutionExile { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             EffectChoiceKind::SacrificeOrDiscard { .. } => {
                                 if s.objects[index].zone == Zone::Hand {
@@ -6246,7 +6248,8 @@ impl Game {
             | Action::PutHandLand { object }
             | Action::ChooseArmy { object }
             | Action::ChooseJace { object }
-            | Action::SelectLand { object } => self.choose_effect_object(actor, object),
+            | Action::SelectLand { object }
+            | Action::SelectResolutionExile { object } => self.choose_effect_object(actor, object),
             Action::FinishLandSelection => {
                 self.finish_land_selection();
                 self.run_program();

@@ -112,6 +112,13 @@ impl Game {
                 && self.current_kinds(object.card) & 2 != 0
                 && choice.selected[player.index()].is_empty();
         }
+        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = choice.kind {
+            let o = &self.state.objects[object.card as usize];
+            return o.zone == Zone::Graveyard && o.owner == player
+                && self.object_ref(object.card) == object && !o.is_token() && !o.is_spell_copy()
+                && crate::card_names::same_name(o.card.name(), name)
+                && !choice.selected[player.index()].contains(&object);
+        }
         if choice.kind == EffectChoiceKind::ExileGraveyard {
             return !choice.selected[player.index()].contains(&object)
                 && self.additional_candidate(
@@ -735,6 +742,12 @@ impl Game {
             assert_eq!(players, PlayerSet::Controller, "captured resolution payer");
         }
         let pc = self.state.resolving.as_ref().unwrap().pc;
+        if matches!(kind, EffectChoiceKind::ExileSourceAndNamed { .. })
+            && (self.object_ref(item.card) != item.object || self.state.objects[item.card as usize].zone != Zone::Stack)
+        {
+            self.state.resolving.as_mut().unwrap().pc = pc + optional_skip.expect("optional source cost");
+            return false;
+        }
         let mut choice = EffectChoice {
             discard_draw: None,
             discarded: None,
@@ -1036,7 +1049,19 @@ impl Game {
             }
             return false;
         }
-        if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
+        if let EffectChoiceKind::ExileSourceAndNamed { amount, .. } = choice.kind {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let selected = &choice.selected[item.controller.index()];
+            assert_eq!(selected.len(), usize::from(amount));
+            assert!(selected.iter().all(|&r| self.effect_choice_candidate(&EffectChoice {
+                selected: std::array::from_fn(|_| Vec::new()), ..choice.clone()
+            }, item.controller, r)));
+            let mut ids = Vec::with_capacity(selected.len() + 1);
+            ids.push(item.card);
+            ids.extend(selected.iter().map(|r| r.card));
+            let events = self.move_objects_raw(&ids, Zone::Exile);
+            self.finish_zone_events(&events, &[]);
+        } else if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             // The owned selection seat is the amassing player. The resolving
             // ability retains its original controller, which can be another player.

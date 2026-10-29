@@ -785,6 +785,8 @@ pub enum EffectChoiceKind {
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     ExileGraveyardCards(u16),
+    /// Resolution cost: exile this resolving spell and named graveyard cards.
+    ExileSourceAndNamed { name: &'static str, amount: u16 },
     /// Non-targeted graveyard cards of this color, with this printed-symbol sum.
     ExileGraveyardSymbols {
         color: ChoiceColor,

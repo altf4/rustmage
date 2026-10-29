@@ -1,17 +1,19 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete Oracle and pinned XMage rules; gated pending integration and validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(TargetPlan::NONE, &[
+        Instruction::Draw(PlayerSet::Controller, 2),
+        Instruction::ChooseObjects {
+            kind: EffectChoiceKind::ExileSourceAndNamed { name: "Sphinx's Approach", amount: 4 },
+            players: PlayerSet::Controller,
+            filter: SacrificeFilter { keywords: Keywords::NONE, source_only: false, kinds: 0,
+                nonland: false, other: false, tokens: None, artifact_enchantment_or_token: false, subtype: None },
+            amount: 4, optional_skip: Some(1),
+        },
+        Instruction::Search(SearchSpec {
+            filter: SearchFilter::AllOf(&[SearchFilter::Creature, SearchFilter::Subtype("Sphinx")]),
+            maximum: 1, destination: SearchDestination::Battlefield, tapped: false, reveal: false,
+        }),
+    ]),
     deck_limit: None,
     ..CardRules::EMPTY
 };

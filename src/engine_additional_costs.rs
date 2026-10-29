@@ -731,6 +731,7 @@ impl Game {
             | EffectChoiceKind::EmpowerJace(_)
             | EffectChoiceKind::HandToTop
             | EffectChoiceKind::ExileGraveyardCards(_)
+            | EffectChoiceKind::ExileSourceAndNamed { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. }
             | EffectChoiceKind::ExileGreatestManaValue
             | EffectChoiceKind::SacrificeGreatestManaValue
