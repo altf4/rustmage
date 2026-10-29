@@ -35,7 +35,8 @@ impl Game {
             };
             let rules = row.granting_card.activation(ability);
             let readiness = self.activation_readiness(actor, rules);
-            if !query.self_grant_available(row.recipient, row.timestamp)
+            if (rules.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, card))
+                || !query.self_grant_available(row.recipient, row.timestamp)
                 || !self.activation_guard_available(rules.guard, card, actor)
                 || !Self::object_activation_available_with_kinds(
                     &self.state.objects[card as usize],

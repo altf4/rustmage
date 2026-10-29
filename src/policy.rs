@@ -195,7 +195,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::PutHandLand { .. }
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
-            | Action::SelectLand { .. } => 50,
+            | Action::SelectLand { .. }
+            | Action::SelectResolutionExile { .. } => 50,
             Action::ProliferatePermanent { .. } | Action::ProliferatePlayer { .. } => 50,
             Action::FinishProliferate => 0,
             Action::FinishLandSelection => -1,

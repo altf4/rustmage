@@ -59,7 +59,7 @@ pub(super) fn behold_candidates<W: ability_world::CharacteristicWorld + ?Sized>(
                         && world.subtypes(id).has(world.definition(id), subtype)
                 }
                 Zone::Hand => {
-                    object.owner == actor && !object.is_token() && object.card.has_subtype(subtype)
+                    object.owner == actor && object.is_card() && object.card.has_subtype(subtype)
                 }
                 _ => false,
             };
@@ -98,7 +98,7 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter(|(_, o)| o.zone == Zone::Hand && o.owner == victim && !o.is_token())
+            .filter(|(_, o)| o.zone == Zone::Hand && o.owner == victim && o.is_card())
             .map(|(i, _)| self.object_ref(i as CardId))
             .collect()
     }
@@ -236,7 +236,7 @@ impl Game {
         match interaction.kind {
             HandChoiceKind::DeployCreatures => unreachable!(),
             HandChoiceKind::RevealSubset | HandChoiceKind::DiscardRevealed => {
-                o.zone == Zone::Hand && Some(o.owner) == interaction.victim && !o.is_token()
+                o.zone == Zone::Hand && Some(o.owner) == interaction.victim && o.is_card()
             }
             HandChoiceKind::ExileRevealedLinked => {
                 o.zone == Zone::Hand
@@ -249,12 +249,13 @@ impl Game {
                     && self.object_ref(interaction.source.card) == interaction.source
                     && (o.zone == Zone::Battlefield
                         || (o.zone == Zone::Hand
+                            && o.is_card()
                             && Some(o.owner) == interaction.victim
                             && !o.card.is_land()))
             }
             HandChoiceKind::Behold => {
                 (o.zone == Zone::Battlefield && o.controller == interaction.controller)
-                    || (o.zone == Zone::Hand && o.owner == interaction.controller && !o.is_token())
+                    || (o.zone == Zone::Hand && o.owner == interaction.controller && o.is_card())
             }
         }
     }

@@ -32,7 +32,7 @@ pub(super) struct ManaEvent {
     pub spent_lots: Vec<(mana_lots::Quality, Mana)>,
     pub entries: Vec<entries::EntryBatch>,
     pub entry_life: [u128; 2],
-    pub moves: Vec<(ObjectRef, Zone, bool)>,
+    pub moves: Vec<(ObjectRef, Zone, bool, bool)>,
     pub allocations: Vec<(CardId, u64)>,
     pub triggers: Vec<SpellView>,
     pub irreversible: bool,
@@ -51,7 +51,7 @@ impl ManaEvent {
                 .map(|item| std::mem::size_of::<SpellView>() + item.owned_bytes())
                 .sum::<usize>()
             + self.spent_lots.len() * std::mem::size_of::<(mana_lots::Quality, Mana)>()
-            + self.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool)>()
+            + self.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
             + self.allocations.len() * std::mem::size_of::<(CardId, u64)>()
             + match &self.kind {
                 ManaEventKind::Activated { item, counters, .. } => {
@@ -79,7 +79,7 @@ impl ManaEvent {
 struct ActiveManaReplay {
     entries: VecDeque<entries::EntryBatch>,
     entry_life: [u128; 2],
-    moves: VecDeque<(ObjectRef, Zone, bool)>,
+    moves: VecDeque<(ObjectRef, Zone, bool, bool)>,
     allocations: VecDeque<(CardId, u64)>,
     failed: bool,
 }
@@ -101,7 +101,7 @@ impl ManaReplay {
                         .iter()
                         .map(entries::EntryBatch::bytes)
                         .sum::<usize>()
-                    + active.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool)>()
+                    + active.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
                     + active.allocations.len() * std::mem::size_of::<(CardId, u64)>()
             })
     }
@@ -514,7 +514,7 @@ impl Game {
             .as_mut()?
             .active
             .as_mut()?;
-        let Some((expected, destination, shuffle)) = active.moves.pop_front() else {
+        let Some((expected, destination, shuffle, prevented)) = active.moves.pop_front() else {
             active.failed = true;
             return None;
         };
@@ -523,6 +523,7 @@ impl Game {
         }
         Some(zone_replacements::Plan {
             destination,
+            prevented,
             shuffle,
             // Exact actual reflexive packets are restored from ManaEvent.triggers;
             // replay must not recompute their old replacement-source witnesses.

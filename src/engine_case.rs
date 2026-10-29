@@ -37,7 +37,10 @@ impl Game {
             .iter()
             .enumerate()
             .filter_map(|(id, o)| {
-                (o.zone == Zone::Graveyard && o.owner == player && o.card.kind_mask() & 1 != 0)
+                (o.zone == Zone::Graveyard
+                    && o.owner == player
+                    && o.is_card()
+                    && o.card.kind_mask() & 1 != 0)
                     .then_some(self.object_ref(id as CardId))
             })
             .collect();

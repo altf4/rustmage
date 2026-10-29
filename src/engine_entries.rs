@@ -8,6 +8,8 @@ pub(super) struct EntryMove {
     pub choice: Option<EntryChoiceValue>,
     pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
+    /// Previously chosen zone replacement for an atomic cost transaction.
+    pub zone_plan: Option<zone_replacements::Plan>,
     /// Original source-zone view when this entry is projected using another face.
     pub source_before: Option<Box<ObjectView>>,
     /// Physical card hidden behind face-down entry characteristics.
@@ -60,8 +62,19 @@ pub(super) struct EntryMove {
     /// Frozen before replacement choices; payments in this event cannot enable it.
     pub counters: Counters,
 }
+/// Owned prepayment state and explicit unpaid-program continuation. The
+/// checkpoint is captured before zone replacement planning starts.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct AtomicCostCheckpoint {
+    pub before: Box<State>,
+    pub bytes: usize,
+    pub failure_pc: Option<usize>,
+    pub components: Vec<(ObjectRef, Zone)>,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryBatch {
+    pub atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     pub temporary_copy: Option<Box<SpellView>>,
     pub discard_context: Option<discard_events::DiscardContext>,
     pub moves: Vec<EntryMove>,
@@ -119,6 +132,7 @@ impl EntryMove {
             battle_protector: None,
             before,
             source_before: None,
+            zone_plan: None,
             destination,
             tapped,
             attachment: None,
@@ -155,6 +169,11 @@ impl EntryMove {
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.atomic_cost.as_ref().map_or(0, |a| {
+                std::mem::size_of::<AtomicCostCheckpoint>()
+                    + a.bytes
+                    + a.components.len() * std::mem::size_of::<(ObjectRef, Zone)>()
+            })
             + self.temporary_copy.as_ref().map_or(0, |item| {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             })
@@ -299,17 +318,24 @@ impl Game {
         EntryMove::from_view(self.object_view(id), destination, tapped)
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
-        self.stage_entries_inner(moves, shuffle_after, None, None);
+        self.stage_entries_inner(moves, shuffle_after, None, None, None);
     }
     pub(super) fn stage_discard_entries(
         &mut self,
         moves: Vec<EntryMove>,
         context: discard_events::DiscardContext,
     ) {
-        self.stage_entries_inner(moves, None, Some(context), None);
+        self.stage_entries_inner(moves, None, Some(context), None, None);
     }
     pub(super) fn stage_temporary_copy_entries(&mut self, moves: Vec<EntryMove>, item: &SpellView) {
-        self.stage_entries_inner(moves, None, None, Some(Box::new(item.clone())));
+        self.stage_entries_inner(moves, None, None, Some(Box::new(item.clone())), None);
+    }
+    pub(super) fn stage_atomic_cost_entries(
+        &mut self,
+        moves: Vec<EntryMove>,
+        checkpoint: AtomicCostCheckpoint,
+    ) {
+        self.stage_entries_inner(moves, None, None, None, Some(Box::new(checkpoint)));
     }
     fn stage_entries_inner(
         &mut self,
@@ -317,8 +343,9 @@ impl Game {
         shuffle_after: Option<Player>,
         discard_context: Option<discard_events::DiscardContext>,
         temporary_copy: Option<Box<SpellView>>,
+        atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     ) {
-        if self.replay_frozen_mana_entries() {
+        if atomic_cost.is_none() && self.replay_frozen_mana_entries() {
             return;
         }
         assert!(
@@ -467,6 +494,7 @@ impl Game {
             .collect::<Vec<_>>();
         counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
         let mut batch = EntryBatch {
+            atomic_cost,
             temporary_copy,
             discard_context,
             moves,
@@ -506,7 +534,11 @@ impl Game {
                             })
                     }))
         });
-        if batch.choices.is_empty()
+        // Atomic costs must always pass through advance_entries, even when
+        // there are no entry choices: that path revalidates every component
+        // and rolls the entire payment back before any event is committed.
+        if batch.atomic_cost.is_none()
+            && batch.choices.is_empty()
             && !batch
                 .moves
                 .iter()
@@ -708,8 +740,14 @@ impl Game {
             let before_battle = movement.before.kinds & crate::cards::BATTLE_KIND != 0;
             let manifest_face = movement.before.card;
             let mut before = movement.source_before.map_or(movement.before, |v| *v);
-            let rules = self.freeze_zone_rules(&before, movement.destination, None);
-            let plan = self.plan_zone_move(&before, movement.destination, rules);
+            let plan = movement
+                .zone_plan
+                .clone()
+                .filter(|plan| plan.destination == movement.destination)
+                .unwrap_or_else(|| {
+                    let rules = self.freeze_zone_rules(&before, movement.destination, None);
+                    self.plan_zone_move(&before, movement.destination, rules)
+                });
             if movement.manifest_original.is_some() {
                 if plan.destination == Zone::Battlefield {
                     self.state.objects[before.id as usize].card = manifest_face;
@@ -998,9 +1036,7 @@ impl Game {
             if self.state.players[player.index()].library.len() > 1 {
                 self.forget_library_top(player);
             }
-            self.state
-                .rng
-                .shuffle(&mut self.state.players[player.index()].library);
+            self.shuffle_library_cards(player);
         }
     }
     /// Settle transactions until an actual player choice blocks. Call at the outer
@@ -1126,6 +1162,35 @@ impl Game {
                 return true;
             }
             let mut batch = *self.state.entry_batch.take().unwrap();
+            if let Some(checkpoint) = batch.atomic_cost.take() {
+                let invalid = checkpoint.components.iter().any(|&(reference, zone)| {
+                    self.state
+                        .objects
+                        .get(reference.card as usize)
+                        .is_none_or(|object| {
+                            object.generation != reference.generation || object.zone != zone
+                        })
+                });
+                if invalid {
+                    let mut before = *checkpoint.before;
+                    zone_replacements::transfer_live_replay(
+                        &mut self.state.zone_rules,
+                        &mut before.zone_rules,
+                    );
+                    self.state = before;
+                    if let Some(pc) = checkpoint.failure_pc {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .expect("atomic cost failure continuation")
+                            .pc = pc;
+                    }
+                    if self.state.resolving.is_some() {
+                        self.run_program();
+                    }
+                    return false;
+                }
+            }
             self.state.pending = batch.resume.clone().unwrap();
             let replacement_resume = batch.replacement_resume.take();
             let selected = self

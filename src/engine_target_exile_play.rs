@@ -20,9 +20,7 @@ impl Game {
                 }
             })
             .collect();
-        if include_top
-            && let Some(&top) = self.state.players[item.controller.index()].library.last()
-        {
+        if include_top && let Some(top) = self.top_library_card(item.controller) {
             ids.push(top);
         }
         let events = self.move_objects_raw(&ids, Zone::Exile);

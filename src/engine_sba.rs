@@ -175,6 +175,12 @@ impl Game {
             if object.is_token() && !matches!(object.zone, Zone::Battlefield | Zone::Outside) {
                 batch.ceased.push(id);
             }
+            if object.copy_kind == CopyKind::Spell
+                && !matches!(object.zone, Zone::Stack | Zone::Outside)
+            {
+                batch.ceased.push(id);
+                continue;
+            }
             if object.copy_kind == CopyKind::Card
                 && !matches!(object.zone, Zone::Stack | Zone::Outside)
                 && !(object.zone == Zone::Exile && self.keeps_card_copy(self.object_ref(id)))
@@ -503,7 +509,10 @@ impl Game {
             }
         }
         for id in batch.ceased {
-            if self.state.objects[id as usize].copy_kind == CopyKind::Card {
+            if matches!(
+                self.state.objects[id as usize].copy_kind,
+                CopyKind::Card | CopyKind::Spell
+            ) {
                 self.cease_card_copy(self.object_ref(id));
             } else {
                 self.cease_token(id);

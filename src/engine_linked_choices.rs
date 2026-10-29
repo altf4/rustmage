@@ -123,6 +123,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(usize::from(maximum))
             .map(|&id| self.object_ref(id))
             .collect();
@@ -385,7 +386,7 @@ impl Game {
             .filter(|(id, o)| {
                 o.zone == Zone::Graveyard
                     && o.owner == player
-                    && !o.is_token()
+                    && o.is_card()
                     && crate::RecoveryFilter::Permanent.matches(o.card)
                     && self.object_ref(*id as CardId) != excluded
             })

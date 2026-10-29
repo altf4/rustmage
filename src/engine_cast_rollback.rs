@@ -398,6 +398,7 @@ impl Game {
                     before,
                     zone_replacements::Plan {
                         destination: Zone::Library,
+                        prevented: false,
                         shuffle: false,
                         reflexive: None,
                     },

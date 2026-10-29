@@ -1,5 +1,6 @@
 //! Simultaneous public sacrifices and private exact resolution-cost payments.
 use super::*;
+use ability_world::CharacteristicWorld;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct DiscardDrawChoice {
     players: [bool; 2],
@@ -117,6 +118,20 @@ impl Game {
                 && self.current_kinds(object.card) & 2 != 0
                 && choice.selected[player.index()].is_empty();
         }
+        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = choice.kind {
+            let o = &self.state.objects[object.card as usize];
+            return o.zone == Zone::Graveyard
+                && o.owner == player
+                && self.object_ref(object.card) == object
+                && !o.is_token()
+                && !o.is_spell_copy()
+                && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                    self,
+                    object.card,
+                )
+                && crate::card_names::same_name(o.card.name(), name)
+                && !choice.selected[player.index()].contains(&object);
+        }
         if choice.kind == EffectChoiceKind::ExileGraveyard {
             return !choice.selected[player.index()].contains(&object)
                 && self.additional_candidate(
@@ -142,6 +157,7 @@ impl Game {
         }
         if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
             return o.owner == player
+                && o.is_card()
                 && self.object_ref(object.card) == object
                 && matches!(o.zone, Zone::Hand | Zone::Graveyard)
                 && o.card.is_land()
@@ -152,6 +168,7 @@ impl Game {
             && o.zone == Zone::Hand
         {
             return o.owner == player
+                && o.is_card()
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object)
                 && (!nonland || !o.card.is_land());
@@ -182,6 +199,7 @@ impl Game {
                 | EffectChoiceKind::HandLand { .. }
         ) {
             return o.zone == Zone::Hand
+                && o.is_card()
                 && match choice.kind {
                     // Hand costs use the same typed characteristics and filters as
                     // announced discard costs, including artifact lands in hand.
@@ -223,6 +241,16 @@ impl Game {
             return false;
         }
         let f = choice.filter;
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::Sacrifice
+                | EffectChoiceKind::SacrificeGreatestManaValue
+                | EffectChoiceKind::SacrificeDifferentNames(_)
+                | EffectChoiceKind::SacrificeOrDiscard { .. }
+        ) && self.sacrifice_prohibited(object.card)
+        {
+            return false;
+        }
         o.zone == Zone::Battlefield
             && self.keywords(object.card).contains(f.keywords)
             && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)
@@ -268,7 +296,7 @@ impl Game {
                 .iter()
                 .filter(|o| {
                     if kind == EffectChoiceKind::Discard {
-                        o.zone == Zone::Hand && o.owner == player
+                        o.zone == Zone::Hand && o.owner == player && o.is_card()
                     } else {
                         o.zone == Zone::Battlefield && o.controller == player
                     }
@@ -297,7 +325,9 @@ impl Game {
                 .objects
                 .iter()
                 .enumerate()
-                .filter(|(_, o)| o.zone == Zone::Hand && participants[o.owner.index()])
+                .filter(|(_, o)| {
+                    o.zone == Zone::Hand && o.is_card() && participants[o.owner.index()]
+                })
                 .map(|(id, _)| id as CardId)
                 .collect();
             self.discard_batch_with_after(
@@ -391,7 +421,7 @@ impl Game {
         o.zone == Zone::Hand
             && o.owner == player
             && self.object_ref(object.card) == object
-            && !o.is_token()
+            && o.is_card()
             && (o.card.aura().is_none()
                 || self.state.objects.iter().enumerate().any(|(id, _)| {
                     self.aura_can_enchant(o.card, player, self.object_ref(id as CardId))
@@ -755,6 +785,16 @@ impl Game {
             assert_eq!(players, PlayerSet::Controller, "captured resolution payer");
         }
         let pc = self.state.resolving.as_ref().unwrap().pc;
+        if matches!(kind, EffectChoiceKind::ExileSourceAndNamed { .. })
+            && item.source.is_none_or(|source| {
+                self.object_ref(source.id) != source.object
+                    || self.state.objects[source.id as usize].zone != Zone::Stack
+            })
+        {
+            self.state.resolving.as_mut().unwrap().pc =
+                pc + optional_skip.expect("optional source cost");
+            return false;
+        }
         let mut choice = EffectChoice {
             discard_draw: None,
             discarded: None,
@@ -1039,7 +1079,87 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
+        // A ward cost is paid as one event: revalidate the complete selection
+        // before making any sacrifice, including live restrictions.
+        let ward = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .program
+            .get(self.state.resolving.as_ref().unwrap().pc.saturating_sub(1))
+            .is_some_and(|i| matches!(i, Instruction::CounterRelatedUnlessSacrifice(_)));
+        if ward {
+            let valid = choice.selected.iter().enumerate().all(|(seat, rows)| {
+                let player = if seat == 0 { Player::P0 } else { Player::P1 };
+                let mut empty = choice.clone();
+                empty.selected = std::array::from_fn(|_| Vec::new());
+                rows.iter()
+                    .all(|&r| self.effect_choice_candidate(&empty, player, r))
+            });
+            let sacrifices: Vec<_> = [self.state.active, self.state.active.other()]
+                .into_iter()
+                .flat_map(|p| choice.selected[p.index()].iter().map(move |r| (p, r.card)))
+                .collect();
+            if !valid || !self.sacrifice_cost_batch_atomic(&sacrifices) {
+                let related = self.state.resolving.as_ref().unwrap().item.related_stack;
+                if let Some(related) = related {
+                    self.counter_stack_item(related.id, false);
+                }
+            }
+            return false;
+        }
+        if let EffectChoiceKind::ExileSourceAndNamed { amount, .. } = choice.kind {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let selected = &choice.selected[item.controller.index()];
+            // Validate every component before committing any movement. An
+            // interrupted/replayed choice must not partially pay a stale cost.
+            let source_valid = item.source.is_some_and(|source| {
+                self.object_ref(source.id) == source.object
+                    && self.state.objects[source.id as usize].zone == Zone::Stack
+            });
+            let eligible = EffectChoice {
+                selected: std::array::from_fn(|_| Vec::new()),
+                ..(*choice).clone()
+            };
+            let unique = selected
+                .iter()
+                .enumerate()
+                .all(|(i, r)| !selected[..i].contains(r));
+            if !source_valid
+                || selected.len() != usize::from(amount)
+                || !unique
+                || !selected
+                    .iter()
+                    .all(|&r| self.effect_choice_candidate(&eligible, item.controller, r))
+            {
+                self.state.resolving.as_mut().unwrap().pc =
+                    choice.skip_to.expect("optional resolution cost");
+                return false;
+            }
+            let failure_pc = choice.skip_to.expect("optional resolution cost");
+            let checkpoint = self.atomic_zone_cost_checkpoint(Some(failure_pc));
+            let mut moves = Vec::with_capacity(selected.len() + 1);
+            moves.push((
+                item.source.expect("valid resolution cost source").object,
+                Zone::Exile,
+            ));
+            moves.extend(selected.iter().map(|&reference| (reference, Zone::Exile)));
+            let Some(plans) = self.plan_atomic_zone_cost(&moves) else {
+                self.state.resolving.as_mut().unwrap().pc = failure_pc;
+                return false;
+            };
+            if plans
+                .iter()
+                .any(|(_, plan)| !plan.prevented && plan.destination == Zone::Battlefield)
+            {
+                self.stage_atomic_zone_cost(plans, checkpoint);
+            } else if let Some(events) = self.commit_atomic_zone_cost(plans) {
+                self.finish_zone_events(&events, &[]);
+            } else {
+                self.state.resolving.as_mut().unwrap().pc = failure_pc;
+            }
+        } else if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             // The owned selection seat is the amassing player. The resolving
             // ability retains its original controller, which can be another player.
@@ -1281,7 +1401,19 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let ward_victim = resolution
+            .program
+            .get(resolution.pc.saturating_sub(1))
+            .is_some_and(|instruction| {
+                matches!(instruction, Instruction::CounterRelatedUnlessSacrifice(_))
+            })
+            .then_some(resolution.item.related_stack)
+            .flatten();
         self.state.resolving.as_mut().unwrap().pc = choice.skip_to.expect("optional payment");
+        if let Some(victim) = ward_victim {
+            self.counter_stack_item(victim.id, false);
+        }
         self.run_program();
     }
 

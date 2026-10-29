@@ -549,6 +549,7 @@ define_actions! {
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
+    SelectResolutionExile { object: ObjectRef },
     ProliferatePermanent { object: ObjectRef },
     ProliferatePlayer { player: Player },
     FinishProliferate,
@@ -950,6 +951,11 @@ impl Object {
     }
     fn is_token(&self) -> bool {
         self.copy_kind != CopyKind::Physical && (self.is_copy_token() || self.card.is_token())
+    }
+    /// True only for physical cards; spell/card copies and tokens are objects
+    /// but are not cards, including during the interval before state-based cleanup.
+    fn is_card(&self) -> bool {
+        !self.is_token() && !self.is_spell_copy() && !self.card.is_emblem()
     }
     fn untap(&mut self) {
         if self.tapped {
@@ -2497,6 +2503,8 @@ struct ZoneObservers {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    /// Whether the departing object was represented by a physical card.
+    pub(super) was_card: bool,
     pub(super) cast_event: Option<Box<CastPaymentEvent>>,
     /// CR122.6a: intrinsic entry counters are put on by the incoming controller.
     pub(super) entry_counter_player: Option<Player>,
@@ -3374,12 +3382,10 @@ impl Game {
                 game.draw(p);
             }
         }
-        if game
-            .state
-            .objects
-            .iter()
-            .any(|o| o.card.zone_replacement().is_some())
-        {
+        if game.state.objects.iter().any(|o| {
+            o.card.zone_replacement().is_some()
+                || zone_replacements::card_provides_prevention(o.card)
+        }) {
             game.state.zone_rules = Some(Box::default());
         }
         Ok(game)
@@ -4222,6 +4228,9 @@ impl Game {
                             | EffectChoiceKind::ExileGraveyard
                             | EffectChoiceKind::TapPermanents(_)
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
+                            EffectChoiceKind::ExileSourceAndNamed { .. } => {
+                                Action::SelectResolutionExile { object }
+                            }
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             EffectChoiceKind::SacrificeOrDiscard { .. } => {
                                 if s.objects[index].zone == Zone::Hand {
@@ -4341,7 +4350,7 @@ impl Game {
             }
             Pending::Bottom { .. } | Pending::Discard | Pending::EffectDiscard { .. } => {
                 for (i, obj) in s.objects.iter().enumerate() {
-                    if obj.owner == actor && obj.zone == Zone::Hand && !obj.is_token() {
+                    if obj.owner == actor && obj.zone == Zone::Hand && obj.is_card() {
                         if matches!(s.pending, Pending::EffectDiscard { .. })
                             && s.resolving.as_ref().unwrap().selected_discards[actor.index()]
                                 .contains(&(i as CardId))
@@ -4625,7 +4634,7 @@ impl Game {
                         return true;
                     }
                     if !casting_prohibited
-                        && !obj.is_token()
+                        && obj.is_card()
                         && obj.zone == Zone::Hand
                         && (!free_hand_cast || obj.card.is_land())
                     {
@@ -4668,7 +4677,7 @@ impl Game {
                         }
                     }
                     if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
-                        if free_hand_cast && obj.zone == Zone::Hand {
+                        if free_hand_cast && obj.zone == Zone::Hand && obj.is_card() {
                             for face in [
                                 CastFace::Normal,
                                 CastFace::Adventure,
@@ -4693,7 +4702,8 @@ impl Game {
                                 }
                             }
                         }
-                        if obj.zone == Zone::Hand && !limited_hand_casts.is_empty() {
+                        if obj.zone == Zone::Hand && obj.is_card() && !limited_hand_casts.is_empty()
+                        {
                             for face in [
                                 CastFace::Normal,
                                 CastFace::Adventure,
@@ -5581,6 +5591,7 @@ impl Game {
                 for (id, object) in s.objects.iter().enumerate() {
                     if object.zone == Zone::Hand
                         && object.owner == victim
+                        && object.is_card()
                         && object.card.kind_mask() & excluded_kinds == 0
                         && emit(Action::ChooseRevealedDiscard {
                             object: self.object_ref(id as CardId),
@@ -5634,7 +5645,8 @@ impl Game {
                         < choice.spec.maximum
                     {
                         for &card in &s.players[player.index()].library {
-                            if choice.spec.filter.matches(s.objects[card as usize].card)
+                            if s.objects[card as usize].is_card()
+                                && choice.spec.filter.matches(s.objects[card as usize].card)
                                 && !choice.selected.contains(&card)
                                 && (!choice.different_names
                                     || !choice.selected.iter().any(|&id| {
@@ -6823,7 +6835,8 @@ impl Game {
             | Action::PutHandLand { object }
             | Action::ChooseArmy { object }
             | Action::ChooseJace { object }
-            | Action::SelectLand { object } => self.choose_effect_object(actor, object),
+            | Action::SelectLand { object }
+            | Action::SelectResolutionExile { object } => self.choose_effect_object(actor, object),
             Action::FinishLandSelection => {
                 self.finish_land_selection();
                 self.run_program();
@@ -7001,9 +7014,7 @@ impl Game {
                     self.move_object(id, Zone::Library);
                 }
                 self.forget_library_top(p);
-                self.state
-                    .rng
-                    .shuffle(&mut self.state.players[p.index()].library);
+                self.shuffle_library_cards(p);
                 for _ in 0..7 {
                     self.draw(p);
                 }
@@ -7063,11 +7074,51 @@ impl Game {
         };
     }
 
+    /// CR 701.24a randomizes cards; a transient noncard keeps its object
+    /// position until the next state-based action removes it.
+    fn shuffle_library_cards(&mut self, p: Player) {
+        let library = &self.state.players[p.index()].library;
+        if library
+            .iter()
+            .all(|&id| self.state.objects[id as usize].is_card())
+        {
+            self.state
+                .rng
+                .shuffle(&mut self.state.players[p.index()].library);
+            return;
+        }
+        let positions: Vec<_> = library
+            .iter()
+            .enumerate()
+            .filter_map(|(i, &id)| self.state.objects[id as usize].is_card().then_some(i))
+            .collect();
+        let mut cards: Vec<_> = positions.iter().map(|&i| library[i]).collect();
+        self.state.rng.shuffle(&mut cards);
+        let library = &mut self.state.players[p.index()].library;
+        for (position, card) in positions.into_iter().zip(cards) {
+            library[position] = card;
+        }
+    }
+    fn library_card_count(&self, p: Player) -> usize {
+        self.state.players[p.index()]
+            .library
+            .iter()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
+            .count()
+    }
+    fn top_library_card(&self, p: Player) -> Option<CardId> {
+        self.state.players[p.index()]
+            .library
+            .iter()
+            .rev()
+            .copied()
+            .find(|&id| self.state.objects[id as usize].is_card())
+    }
     fn hand_count(&self, p: Player) -> usize {
         self.state
             .objects
             .iter()
-            .filter(|o| o.owner == p && o.zone == Zone::Hand && !o.is_token())
+            .filter(|o| o.owner == p && o.zone == Zone::Hand && o.is_card())
             .count()
     }
 
@@ -7075,7 +7126,7 @@ impl Game {
         self.draw_many_interruptible(p, 1);
     }
     pub(super) fn draw_one_unreplaced(&mut self, p: Player) -> bool {
-        match self.state.players[p.index()].library.last().copied() {
+        match self.top_library_card(p) {
             Some(id) => {
                 let event = self.move_object(id, Zone::Hand);
                 if event.moved && event.destination == Zone::Hand {
@@ -7131,38 +7182,233 @@ impl Game {
     /// Sacrifices are an explicit action, including costs paid for mana abilities.
     /// Freeze every observer and departing object before the simultaneous batch.
     fn sacrifice_batch(&mut self, sacrifices: &[(Player, CardId)]) {
-        self.refresh_enduring_stories();
-        for (index, &(actor, id)) in sacrifices.iter().enumerate() {
-            let object = &self.state.objects[id as usize];
-            assert_eq!(
-                object.zone,
-                Zone::Battlefield,
-                "sacrifice requires a permanent"
-            );
-            assert_eq!(object.controller, actor, "sacrifice requires control");
-            debug_assert!(
-                !sacrifices[..index].iter().any(|&(_, prior)| prior == id),
-                "duplicate sacrifice"
-            );
-        }
-        let sources = self.death_trigger_sources();
-        self.food_sacrifice_triggers(sacrifices, &sources);
-        // Most sacrifice costs move one object. Avoid batch-vector allocations
-        // in this hot path while retaining the same frozen observer boundary.
-        if let [(actor, id)] = sacrifices {
-            let mut event = self.move_object_raw(*id, Zone::Graveyard);
-            event.sacrificed_by = Some(*actor);
-            self.record_own_sacrifices(std::slice::from_ref(&event));
-            self.finish_zone_events(std::slice::from_ref(&event), &sources);
+        // Effects do as much as possible; prohibited permanents remain put.
+        // All permitted sacrifices still share one frozen replacement boundary.
+        let permitted: Vec<_> = sacrifices
+            .iter()
+            .copied()
+            .filter(|&(actor, id)| {
+                let object = &self.state.objects[id as usize];
+                assert_eq!(
+                    object.zone,
+                    Zone::Battlefield,
+                    "sacrifice requires a permanent"
+                );
+                assert_eq!(object.controller, actor, "sacrifice requires control");
+                !ability_world::CharacteristicWorld::sacrifice_prohibited(self, id)
+            })
+            .collect();
+        if permitted.is_empty() {
             return;
         }
-        let ids: Vec<_> = sacrifices.iter().map(|&(_, id)| id).collect();
-        let mut events = self.move_objects_raw(&ids, Zone::Graveyard);
-        for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) {
-            event.sacrificed_by = Some(actor);
+        assert!(
+            self.sacrifice_cost_batch_atomic(&permitted),
+            "legal sacrifice batch"
+        );
+    }
+
+    /// Freeze and choose every replacement before committing a zone-change
+    /// cost. Replacement-modified outcomes, including prevention, remain paid.
+    /// The action checkpoint owns any replacement-choice continuation.
+    fn plan_atomic_zone_cost(
+        &mut self,
+        moves: &[(ObjectRef, Zone)],
+    ) -> Option<Vec<(ObjectView, zone_replacements::Plan)>> {
+        if moves.iter().enumerate().any(|(i, &(reference, _))| {
+            self.state
+                .objects
+                .get(reference.card as usize)
+                .is_none_or(|o| o.generation != reference.generation)
+                || moves[..i].iter().any(|&(other, _)| other == reference)
+                || (moves[i].1 == Zone::Exile
+                    && ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                        self,
+                        reference.card,
+                    ))
+        }) {
+            return None;
         }
+        let views: Vec<_> = moves
+            .iter()
+            .map(|&(reference, destination)| {
+                let view = self.object_view(reference.card);
+                let rules = self.freeze_zone_rules(&view, destination, None);
+                (view, destination, rules)
+            })
+            .collect();
+        let plans: Vec<_> = views
+            .into_iter()
+            .map(|(view, destination, rules)| {
+                let plan = self.plan_zone_move(&view, destination, rules);
+                (view, plan)
+            })
+            .collect();
+        Some(plans)
+    }
+
+    /// Commit a previously planned nonbattlefield cost batch and return its
+    /// actual events for the caller to dispatch. Entry replacements require
+    /// the staged entry machinery and are deliberately excluded here.
+    fn commit_atomic_zone_cost(
+        &mut self,
+        plans: Vec<(ObjectView, zone_replacements::Plan)>,
+    ) -> Option<Vec<ZoneChange>> {
+        if plans.iter().any(|(view, plan)| {
+            self.state
+                .objects
+                .get(view.id as usize)
+                .is_none_or(|object| {
+                    object.generation != view.reference.generation || object.zone != view.zone
+                })
+                || (!plan.prevented && plan.destination == Zone::Battlefield)
+        }) {
+            return None;
+        }
+        let graveyard_observers = plans
+            .iter()
+            .any(|(view, _)| view.zone == Zone::Graveyard)
+            .then(|| self.freeze_graveyard_observers())
+            .flatten();
+        let returned_hand_observers = plans
+            .iter()
+            .any(|(view, plan)| view.zone == Zone::Battlefield && plan.destination == Zone::Hand)
+            .then(|| self.freeze_returned_hand_observers())
+            .flatten();
+        self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
+        self.capture_source_quantities(plans.iter().map(|(view, _)| view));
+        let events = plans
+            .into_iter()
+            .map(|(view, plan)| {
+                self.commit_planned_zone_move(
+                    view,
+                    plan,
+                    false,
+                    Counters::default(),
+                    EntryIdentity::default(),
+                    ZoneObservers {
+                        graveyard: graveyard_observers.clone(),
+                        returned_hand: returned_hand_observers.clone(),
+                    },
+                )
+            })
+            .collect();
+        self.refresh_controllers();
+        Some(events)
+    }
+
+    /// Capture before replacement planning so failed entry decisions restore
+    /// replacement choices and every other effect of this proposed payment.
+    fn atomic_zone_cost_checkpoint(
+        &self,
+        failure_pc: Option<usize>,
+    ) -> entries::AtomicCostCheckpoint {
+        assert!(self.state.entry_batch.is_none());
+        assert!(
+            self.state.resolving.is_none() || failure_pc.is_some(),
+            "resolving atomic cost requires an unpaid continuation"
+        );
+        entries::AtomicCostCheckpoint {
+            before: Box::new(self.state.clone()),
+            bytes: self.state_bytes(),
+            failure_pc,
+            components: Vec::new(),
+        }
+    }
+
+    /// Stage all nonprevented events as one owned transaction; prevention is
+    /// paid but its component remains part of the exact-incarnation audit.
+    fn stage_atomic_zone_cost(
+        &mut self,
+        plans: Vec<(ObjectView, zone_replacements::Plan)>,
+        mut checkpoint: entries::AtomicCostCheckpoint,
+    ) {
+        checkpoint.components = plans
+            .iter()
+            .map(|(view, _)| (view.reference, view.zone))
+            .collect();
+        let moves: Vec<_> = plans
+            .into_iter()
+            .filter_map(|(view, plan)| {
+                if plan.prevented {
+                    return None;
+                }
+                let mut movement = entries::EntryMove::from_view(view, plan.destination, false);
+                // Synthetic entry identity only for suspension/replay testing: no
+                // supported effect redirects an Approach card to the battlefield.
+                #[cfg(test)]
+                if zone_replacements::TEST_FAKE_ENTRY_LIFE
+                    .with(|target| target.get() == Some(movement.before.reference))
+                {
+                    movement.before.card = Card::from_name("Watery Grave").unwrap();
+                }
+                movement.zone_plan = Some(plan);
+                Some(movement)
+            })
+            .collect();
+        #[cfg(test)]
+        if let Some(reference) =
+            zone_replacements::TEST_INVALIDATE_STAGED_COST.with(|target| target.get())
+            && self.object_ref(reference.card) == reference
+        {
+            self.state.objects[reference.card as usize].generation += 1;
+        }
+        if !moves.is_empty() {
+            self.stage_atomic_cost_entries(moves, checkpoint);
+        }
+    }
+
+    /// Pay simultaneous sacrifice costs only after every replacement outcome
+    /// has been chosen and all proposed events remain possible. Redirected
+    /// and prevented events are valid cost payments (CR 118.11).
+    fn sacrifice_cost_batch_atomic(&mut self, sacrifices: &[(Player, CardId)]) -> bool {
+        self.refresh_enduring_stories();
+        if sacrifices.iter().enumerate().any(|(i, &(actor, id))| {
+            let object = &self.state.objects[id as usize];
+            object.zone != Zone::Battlefield
+                || object.controller != actor
+                || sacrifices[..i].iter().any(|&(_, prior)| prior == id)
+                || ability_world::CharacteristicWorld::sacrifice_prohibited(self, id)
+        }) {
+            return false;
+        }
+        let sources = self.death_trigger_sources();
+        let moves: Vec<_> = sacrifices
+            .iter()
+            .map(|&(_, id)| (self.object_ref(id), Zone::Graveyard))
+            .collect();
+        let Some(plans) = self.plan_atomic_zone_cost(&moves) else {
+            return false;
+        };
+        self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
+        self.capture_source_quantities(plans.iter().map(|(view, _)| view));
+        let actual: Vec<_> = sacrifices
+            .iter()
+            .zip(&plans)
+            .filter_map(|(&sacrifice, (_, plan))| (!plan.prevented).then_some(sacrifice))
+            .collect();
+        self.food_sacrifice_triggers(&actual, &sources);
+        let mut events: Vec<_> = plans
+            .into_iter()
+            .map(|(before, plan)| {
+                self.commit_planned_zone_move(
+                    before,
+                    plan,
+                    false,
+                    Counters::default(),
+                    EntryIdentity::default(),
+                    ZoneObservers::default(),
+                )
+            })
+            .collect();
+        for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) {
+            if event.moved {
+                event.sacrificed_by = Some(actor);
+            }
+        }
+        self.refresh_controllers();
         self.record_own_sacrifices(&events);
         self.finish_zone_events(&events, &sources);
+        true
     }
 
     /// Capture every pre-event characteristic before any simultaneous departure.
@@ -7487,42 +7733,18 @@ impl Game {
             returned_hand: returned_hand_observers,
         } = observers;
         let id = before.id;
-        // A public exile can be followed by another move within this action.
-        // Capture it before its exact exile reference and visibility are lost.
-        if before.zone == Zone::Exile {
-            self.capture_public_hand_exiles();
-        }
-        self.capture_mana_copy_source_departure(&before);
-        if before.zone == Zone::Stack {
-            self.capture_stack_copy_departure(id);
-        }
-        if before.zone == Zone::Stack
-            && plan.destination != Zone::Battlefield
-            && self.state.objects[id as usize].is_spell_copy()
-        {
-            self.state.stack.retain(|item| {
-                !(item.kind == StackKind::Spell
-                    && item
-                        .source
-                        .is_some_and(|source| source.id == id && source.object == before.reference))
-            });
-            self.clear_copy_recipe(before.reference);
-            let object = &mut self.state.objects[id as usize];
-            object.zone = Zone::Outside;
-            object.generation = object
-                .generation
-                .checked_add(1)
-                .capacity("object generation exhausted");
-            self.state.free_tokens.push(id);
+        let was_card = self.state.objects[id as usize].is_card();
+        if plan.prevented {
             return ZoneChange {
+                was_card,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
                 returned_hand_observers: None,
                 was_cast: false,
                 gift: None,
-                after: self.object_ref(id),
-                destination: Zone::Outside,
+                after: before.reference,
+                destination: before.zone,
                 before,
                 moved: false,
                 sacrificed_by: None,
@@ -7532,6 +7754,15 @@ impl Game {
                 x: 0,
                 evidence_collected: false,
             };
+        }
+        // A public exile can be followed by another move within this action.
+        // Capture it before its exact exile reference and visibility are lost.
+        if before.zone == Zone::Exile {
+            self.capture_public_hand_exiles();
+        }
+        self.capture_mana_copy_source_departure(&before);
+        if before.zone == Zone::Stack {
+            self.capture_stack_copy_departure(id);
         }
         let destination = plan.destination;
         if before.zone == Zone::Graveyard
@@ -7545,14 +7776,12 @@ impl Game {
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
         let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
-        if (self.state.objects[id as usize].copy_kind == CopyKind::Spell
-            && before.zone != Zone::Stack)
-            || (self.state.objects[id as usize].copy_kind == CopyKind::Card
-                && before.zone == Zone::Outside)
+        if (self.state.objects[id as usize].is_spell_copy() && before.zone == Zone::Outside)
             || before.card.is_emblem()
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
+                was_card,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -7574,6 +7803,7 @@ impl Game {
         if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
+                was_card,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -7703,8 +7933,7 @@ impl Game {
         if before.zone == Zone::Graveyard {
             self.forget_graveyard_cast_permission(before.reference);
         }
-        if (before.zone == Zone::Library
-            && self.state.players[before.owner.index()].library.last() == Some(&id))
+        if (before.zone == Zone::Library && self.top_library_card(before.owner) == Some(id))
             || destination == Zone::Library
         {
             self.library_top_changed(before.owner);
@@ -7957,9 +8186,9 @@ impl Game {
         obj.loyalty_activated_this_turn = false;
         obj.class_level = 1;
         obj.attached_to = None;
-        // This ordered index enumerates library cards, not transient tokens.
-        // Tokens still enter the actual zone and cease only at the next SBA;
-        // CR111.6/111.8 prevent looking at, drawing, or moving them as cards.
+        // Preserve the zone order of physical cards and transient spell/card
+        // copies until state-based cleanup. Card-only library operations filter
+        // copies; tokens do not enter this ordered index.
         if destination == Zone::Library && !obj.is_token() {
             self.state.players[obj.owner.index()].library.push(id);
         }
@@ -8046,6 +8275,7 @@ impl Game {
             self.queue_trigger(&source, usize::from(ability));
         }
         ZoneChange {
+            was_card,
             cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
             graveyard_observers,
@@ -8129,6 +8359,7 @@ impl Game {
         if self.miracle_choice_pending() {
             return;
         }
+        self.prune_exile_grant_cast_history();
         self.state.pending = Pending::Priority;
         self.state.priority = self.state.active;
         self.state.passes = 0;
@@ -9208,7 +9439,11 @@ impl Game {
                     .collect(),
                 mana: s.players[i].mana,
                 combat_red_mana: s.players[i].combat_red_mana,
-                library_count: s.players[i].library.len(),
+                library_count: s.players[i]
+                    .library
+                    .iter()
+                    .filter(|&&id| s.objects[id as usize].is_card())
+                    .count(),
                 hand_count: self.hand_count(if i == 0 { Player::P0 } else { Player::P1 }),
             }),
             milled_choice: self.milled_selection_view(viewer),
@@ -9526,6 +9761,7 @@ impl Game {
                         cards: s.players[choice_player.index()]
                             .library
                             .iter()
+                            .filter(|&&id| s.objects[id as usize].is_card())
                             .map(|&id| query.object_view(id))
                             .collect(),
                         selected: choice.selected.clone(),

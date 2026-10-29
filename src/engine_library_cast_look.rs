@@ -36,6 +36,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(usize::from(amount))
             .map(|&id| self.object_ref(id))
             .collect::<Vec<_>>();

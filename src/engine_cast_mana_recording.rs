@@ -270,10 +270,12 @@ impl Game {
             .as_mut()
             .and_then(|r| r.capture.as_mut())
         {
-            capture
-                .event
-                .moves
-                .push((before.reference, plan.destination, plan.shuffle));
+            capture.event.moves.push((
+                before.reference,
+                plan.destination,
+                plan.shuffle,
+                plan.prevented,
+            ));
             capture.event.irreversible |= plan.shuffle
                 || plan.destination == Zone::Library
                 || before.zone == Zone::Library && plan.destination != Zone::Stack;

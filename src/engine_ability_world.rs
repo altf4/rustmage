@@ -4,6 +4,13 @@
 use super::*;
 use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 
+#[cfg(test)]
+thread_local! {
+    /// Test-only provider identity; the query still uses live control and ability layers.
+    pub(super) static TEST_SACRIFICE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_EXILE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+}
+
 pub(super) trait CharacteristicWorld {
     fn power(&self, id: CardId) -> i128 {
         characteristic_query::CharacteristicQuery::in_world(self)
@@ -296,6 +303,129 @@ pub(super) trait CharacteristicWorld {
         } else {
             keywords
         }
+    }
+    fn zone_move_prevented(&self, object: ObjectRef, requested: Zone) -> bool {
+        #[cfg(test)]
+        if zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get() == Some(object)) {
+            return true;
+        }
+        let target = self.object(object.card);
+        if self.reference(object.card) != object
+            || target.zone != Zone::Battlefield
+            || requested != Zone::Graveyard
+        {
+            return false;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        self.static_sources().iter().any(|&source| {
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield || provider.controller != target.controller {
+                return false;
+            }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| {
+                matches!(
+                    f,
+                    crate::cards::StaticAbilityFragment::PreventControlledPermanentGraveyardMove
+                )
+            };
+            let printed = provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(fragment))
+                && query.continuous_fragment_available(source, fragment);
+            #[cfg(test)]
+            let synthetic = zone_replacements::TEST_PREVENT_PROVIDER
+                .with(|p| p.get() == Some(self.reference(source)))
+                && self.printed_abilities_available(source);
+            #[cfg(not(test))]
+            let synthetic = false;
+            printed || synthetic
+        })
+    }
+    /// Keep potential providers in speculative worlds even while blanked.
+    fn sacrifice_prohibition_source(&self, id: CardId) -> bool {
+        let object = self.object(id);
+        let printed = object.card.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|f| {
+                matches!(
+                    f,
+                    crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed
+                )
+            })
+        });
+        #[cfg(test)]
+        let synthetic = TEST_SACRIFICE_PROHIBITOR.with(|p| p.get() == Some(self.reference(id)));
+        #[cfg(not(test))]
+        let synthetic = false;
+        printed || synthetic
+    }
+    /// Whether a permanent can be sacrificed in this world, including projected
+    /// source control and live layer-six suppression.
+    fn sacrifice_prohibited(&self, id: CardId) -> bool {
+        let target = self.object(id);
+        if target.zone != Zone::Battlefield {
+            return true;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        (0..self.game().state.objects.len()).any(|index| {
+            let source = index as CardId;
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield || provider.controller != target.controller {
+                return false;
+            }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| {
+                matches!(
+                    f,
+                    crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed
+                )
+            };
+            let printed = provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(fragment))
+                && query.continuous_fragment_available(source, fragment);
+            #[cfg(test)]
+            let synthetic = TEST_SACRIFICE_PROHIBITOR
+                .with(|p| p.get() == Some(self.reference(source)))
+                && self.printed_abilities_available(source);
+            #[cfg(not(test))]
+            let synthetic = false;
+            printed || synthetic
+        })
+    }
+    /// A true prohibition is distinct from a replacement or prevention.
+    fn graveyard_exile_prohibited(&self, id: CardId) -> bool {
+        if self.object(id).zone != Zone::Graveyard || !self.object(id).is_card() {
+            return false;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        (0..self.game().state.objects.len()).any(|index| {
+            let source = index as CardId;
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield {
+                return false;
+            }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| {
+                matches!(
+                    f,
+                    crate::cards::StaticAbilityFragment::GraveyardCardsCannotBeExiled
+                )
+            };
+            let printed = provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(fragment))
+                && query.continuous_fragment_available(source, fragment);
+            #[cfg(test)]
+            let synthetic = TEST_EXILE_PROHIBITOR.with(|p| p.get() == Some(self.reference(source)))
+                && self.printed_abilities_available(source);
+            #[cfg(not(test))]
+            let synthetic = false;
+            printed || synthetic
+        })
     }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
@@ -642,7 +772,14 @@ pub(super) trait CharacteristicWorld {
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
         // Animation grants only keywords. It cannot remove a provider's printed
         // ability or change a mana grant, so only removal needs layer-six order.
-        if self.has_ability_removal() {
+        if self.has_ability_removal()
+            || self.roles().is_some_and(|roles| {
+                roles.source_linked_effects.iter().any(|row| {
+                    row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+                        && source_linked_effects::active(self, row)
+                })
+            })
+        {
             let evaluation = ability_evaluation::evaluate_abilities(self);
             let mut result = evaluation.result.objects[id as usize].mana.clone();
             if evaluation.result.objects[id as usize].printed

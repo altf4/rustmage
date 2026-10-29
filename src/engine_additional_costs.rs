@@ -54,6 +54,15 @@ impl Game {
             return false;
         }
         let spec = spec.in_zone(o.zone);
+        if matches!(
+            spec.kind,
+            EffectChoiceKind::Sacrifice
+                | EffectChoiceKind::SacrificeDifferentNames(_)
+                | EffectChoiceKind::SacrificeAttachedEquipment
+        ) && ability_world::CharacteristicWorld::sacrifice_prohibited(self, object.card)
+        {
+            return false;
+        }
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Behold => match o.zone {
                 Zone::Battlefield => o.controller == actor,
@@ -123,6 +132,9 @@ impl Game {
         name: &str,
     ) -> bool {
         let spec = spec.in_zone(o.zone);
+        if matches!(o.zone, Zone::Hand | Zone::Graveyard) && !o.is_card() {
+            return false;
+        }
         let zone = match spec.kind {
             EffectChoiceKind::Behold if matches!(o.zone, Zone::Battlefield | Zone::Hand) => o.zone,
             EffectChoiceKind::ExileGraveyard
@@ -149,7 +161,7 @@ impl Game {
         {
             return false;
         }
-        if spec.kind == EffectChoiceKind::Behold && zone == Zone::Hand && o.is_token() {
+        if spec.kind == EffectChoiceKind::Behold && zone == Zone::Hand && !o.is_card() {
             return false;
         }
         let f = spec.filter;
@@ -158,7 +170,7 @@ impl Game {
             EffectChoiceKind::ExileGraveyard
                 | EffectChoiceKind::ExileGraveyardCards(_)
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
-        ) && (o.is_token() || o.copy_kind == CopyKind::Card)
+        ) && !o.is_card()
         {
             return false;
         }
@@ -845,6 +857,7 @@ impl Game {
             | EffectChoiceKind::EmpowerJace(_)
             | EffectChoiceKind::HandToTop
             | EffectChoiceKind::ExileGraveyardCards(_)
+            | EffectChoiceKind::ExileSourceAndNamed { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. }
             | EffectChoiceKind::ExileGreatestManaValue
             | EffectChoiceKind::SacrificeGreatestManaValue

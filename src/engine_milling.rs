@@ -71,8 +71,9 @@ impl Game {
                     .library
                     .iter()
                     .rev()
-                    .take(maximum)
                     .copied()
+                    .filter(|&id| self.state.objects[id as usize].is_card())
+                    .take(maximum)
             })
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Graveyard);

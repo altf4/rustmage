@@ -1431,6 +1431,10 @@ impl Game {
         let card = stack
             .and_then(|i| self.state.stack[i].source.map(|source| source.card))
             .unwrap_or(card);
+        if let Some(index) = stack {
+            let item = self.state.stack[index].clone();
+            self.expire_land_mana_on_exile_cast(&item);
+        }
         self.consume_resolution_cast_quota(caster, stack);
         self.consume_next_spell_uncounterable(caster, stack);
         self.consume_turn_cast_grants(caster, card);
@@ -2550,8 +2554,10 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter_map(|(id, object)| {
-                    (object.zone == Zone::Hand && wheel.choices[object.owner.index()] == Some(true))
-                        .then_some(id as CardId)
+                    (object.zone == Zone::Hand
+                        && object.is_card()
+                        && wheel.choices[object.owner.index()] == Some(true))
+                    .then_some(id as CardId)
                 })
                 .collect();
             self.discard_batch_with_after(&cards, None, Some(cause), None);
@@ -3202,16 +3208,16 @@ impl Game {
                         .objects
                         .iter()
                         .enumerate()
-                        .filter(|(_, o)| o.zone == Zone::Graveyard && o.owner == item.controller)
+                        .filter(|(_, o)| {
+                            o.zone == Zone::Graveyard && o.owner == item.controller && o.is_card()
+                        })
                         .map(|(id, _)| id as CardId)
                         .collect();
                     for id in ids {
                         self.move_object(id, Zone::Library);
                     }
                     self.forget_library_top(item.controller);
-                    self.state
-                        .rng
-                        .shuffle(&mut self.state.players[item.controller.index()].library);
+                    self.shuffle_library_cards(item.controller);
                 }
                 Instruction::DoubleTargetPower => {
                     let affected: Vec<_> = item
@@ -4226,7 +4232,9 @@ impl Game {
                         .iter()
                         .enumerate()
                         .filter(|(_, object)| {
-                            object.zone == Zone::Hand && participants.contains(&object.owner)
+                            object.zone == Zone::Hand
+                                && object.is_card()
+                                && participants.contains(&object.owner)
                         })
                         .map(|(id, _)| id as CardId)
                         .collect();
@@ -4309,7 +4317,7 @@ impl Game {
                                 .filter(|object| {
                                     object.owner == player
                                         && object.zone == Zone::Graveyard
-                                        && !object.is_token()
+                                        && object.is_card()
                                 })
                                 .count()
                                 >= usize::from(minimum)
@@ -4333,10 +4341,10 @@ impl Game {
                 }
                 Instruction::MayMill(amount) => {
                     // CR701.17b forbids choosing to mill more than the library.
+                    let enough_cards =
+                        self.library_card_count(item.controller) >= usize::from(amount);
                     let resolution = self.state.resolving.as_mut().unwrap();
-                    if self.state.players[item.controller.index()].library.len()
-                        < usize::from(amount)
-                    {
+                    if !enough_cards {
                         resolution.pc += 1;
                     } else {
                         self.state.pending = Pending::EffectOptional {
@@ -4358,7 +4366,9 @@ impl Game {
                         .iter()
                         .enumerate()
                         .filter(|(_, object)| {
-                            object.zone == Zone::Graveyard && object.owner == item.controller
+                            object.zone == Zone::Graveyard
+                                && object.owner == item.controller
+                                && object.is_card()
                         })
                         .map(|(id, object)| ObjectRef {
                             card: id as CardId,
@@ -4419,7 +4429,9 @@ impl Game {
                         .objects
                         .iter()
                         .enumerate()
-                        .filter(|(_, object)| object.zone == Zone::Hand && object.owner == victim)
+                        .filter(|(_, object)| {
+                            object.zone == Zone::Hand && object.owner == victim && object.is_card()
+                        })
                         .map(|(id, _)| self.object_ref(id as CardId))
                         .collect();
                     for reference in &hand {
@@ -5178,8 +5190,7 @@ impl Game {
                             "required searches must not require finding a hidden quality"
                         );
                         spec.maximum.min(
-                            u64::try_from(self.state.players[player.index()].library.len())
-                                .expect("library length"),
+                            u64::try_from(self.library_card_count(player)).expect("library length"),
                         )
                     } else {
                         0
@@ -5313,17 +5324,17 @@ impl Game {
                 Instruction::RevealUntilLandToGraveyard(players) => {
                     for player in self.program_players(players, &item).collect::<Vec<_>>() {
                         let library = &self.state.players[player.index()].library;
-                        let amount = library
+                        let cards: Vec<_> = library
                             .iter()
                             .rev()
-                            .position(|&id| self.state.objects[id as usize].card.is_land())
-                            .map_or(library.len(), |n| n + 1);
-                        let ids = library
-                            .iter()
-                            .rev()
-                            .take(amount)
                             .copied()
-                            .collect::<Vec<_>>();
+                            .filter(|&id| self.state.objects[id as usize].is_card())
+                            .collect();
+                        let amount = cards
+                            .iter()
+                            .position(|&id| self.state.objects[id as usize].card.is_land())
+                            .map_or(cards.len(), |n| n + 1);
+                        let ids = cards.into_iter().take(amount).collect::<Vec<_>>();
                         let events = self.move_objects_raw(&ids, Zone::Graveyard);
                         self.finish_zone_events(&events, &[]);
                     }
@@ -5391,6 +5402,7 @@ impl Game {
                         .library
                         .iter()
                         .rev()
+                        .filter(|&&id| self.state.objects[id as usize].is_card())
                         .take(usize::from(amount))
                         .copied()
                         .collect();
@@ -5419,6 +5431,7 @@ impl Game {
                         .library
                         .iter()
                         .rev()
+                        .filter(|&&id| self.state.objects[id as usize].is_card())
                         .take(1)
                         .copied()
                         .collect();
@@ -5444,6 +5457,23 @@ impl Game {
                         return;
                     }
                     self.scry_or_surveil_event(item.controller);
+                }
+                Instruction::CounterRelatedUnlessSacrifice(amount) => {
+                    let related = item.related_stack.expect("ward payer and related object");
+                    let mut payer_item = item.clone();
+                    payer_item.controller = related.controller;
+                    let pending = self.start_effect_choice(
+                        &payer_item,
+                        EffectChoiceKind::Sacrifice,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        amount,
+                        Some(0),
+                    );
+                    if pending {
+                        return;
+                    }
+                    self.counter_stack_item(related.id, false);
                 }
                 Instruction::CounterRelatedUnlessDiscard => {
                     if self.start_ward_discard_only(&item) {
@@ -5825,7 +5855,9 @@ impl Game {
                         .iter()
                         .enumerate()
                         .filter(|(_, object)| {
-                            object.zone == Zone::Graveyard && players.contains(&object.owner)
+                            object.zone == Zone::Graveyard
+                                && object.is_card()
+                                && players.contains(&object.owner)
                         })
                         .map(|(id, _)| id as CardId)
                         .collect();
@@ -5931,7 +5963,8 @@ impl Game {
                             .iter()
                             .enumerate()
                             .filter_map(|(id, o)| {
-                                (o.zone == Zone::Hand && o.owner == player).then_some(id as CardId)
+                                (o.zone == Zone::Hand && o.owner == player && o.is_card())
+                                    .then_some(id as CardId)
                             })
                             .collect();
                         for _ in 0..usize::from(amount).min(hand.len()) {
@@ -5989,10 +6022,7 @@ impl Game {
                     return;
                 }
                 Instruction::WinIfLibraryEmpty => {
-                    if self.state.players[item.controller.index()]
-                        .library
-                        .is_empty()
-                    {
+                    if self.library_card_count(item.controller) == 0 {
                         self.try_win_game(item.controller);
                         if self.state.outcome.is_some() {
                             self.state.resolving = None;
@@ -6182,6 +6212,24 @@ impl Game {
                         .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
+                Instruction::GrantLandManaUntilSourceCast => {
+                    self.grant_land_mana_until_paid_source_cast(&item)
+                }
+                Instruction::UntapControlledLands => {
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, object)| {
+                            (object.zone == Zone::Battlefield
+                                && object.controller == item.controller
+                                && self.current_kinds(id as CardId) & 2 != 0)
+                                .then_some(id as CardId)
+                        })
+                        .collect();
+                    self.untap_objects(&ids, untap_rules::UntapCause::Effect);
                 }
                 Instruction::UntapControlledTokens => {
                     let ids: Vec<_> = self

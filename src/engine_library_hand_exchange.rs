@@ -63,7 +63,7 @@ impl Game {
             .filter(|r| {
                 self.object_ref(r.card) == *r
                     && self.state.objects[r.card as usize].zone == Zone::Exile
-                    && !self.state.objects[r.card as usize].is_token()
+                    && self.state.objects[r.card as usize].is_card()
             })
             .map(|r| self.entry_move(r.card, Zone::Hand, false))
             .collect();
@@ -90,7 +90,7 @@ impl Game {
         self.object_ref(object.card) == object
             && o.zone == Zone::Hand
             && o.owner == player
-            && !o.is_token()
+            && o.is_card()
             && o.card.is_creature()
             && !self.hand_deployment().unwrap().selected[player.index()].contains(&object)
     }
@@ -195,6 +195,7 @@ impl Game {
             .iter()
             .rev()
             .copied()
+            .filter(|&id| self.state.objects[id as usize].is_card())
             .collect::<Vec<_>>();
         self.state.resolving.as_mut().unwrap().milled.clear();
         for id in ids {

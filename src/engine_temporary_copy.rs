@@ -151,7 +151,7 @@ impl Game {
         let object = &self.state.objects[blueprint.card as usize];
         let mut recipe = match object.zone {
             Zone::Battlefield => self.copiable_recipe(blueprint),
-            Zone::Graveyard if !object.is_token() => CopyRecipe::new(object.card),
+            Zone::Graveyard if object.is_card() => CopyRecipe::new(object.card),
             _ => return,
         };
         let old = recipe.overrides.unwrap_or(CopyOverrides::NONE);

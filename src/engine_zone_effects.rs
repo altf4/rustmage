@@ -186,7 +186,7 @@ impl Game {
             .filter(|(_, o)| {
                 o.zone == Zone::Graveyard
                     && o.owner == item.controller
-                    && !o.is_token()
+                    && o.is_card()
                     && o.card.kind_mask() & kinds != 0
                     && u128::from(o.card.fixed_mana_value()) == value
             })
@@ -204,7 +204,7 @@ impl Game {
                 let kinds = object.card.kind_mask();
                 (object.zone == Zone::Graveyard
                     && object.owner == item.controller
-                    && !object.is_token()
+                    && object.is_card()
                     && kinds & (1 | 16 | 32 | 64 | 256) != 0
                     && kinds & 2 == 0)
                     .then(|| {
@@ -235,7 +235,7 @@ impl Game {
                 if o.zone == Zone::Graveyard
                     && owners[o.owner.index()]
                     && o.card.is_creature()
-                    && !o.is_token()
+                    && o.is_card()
                     && o.card.fixed_mana_value() <= maximum_mana_value
                 {
                     let mut movement = self.entry_move(id as CardId, Zone::Battlefield, false);

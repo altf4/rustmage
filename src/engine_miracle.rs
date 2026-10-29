@@ -140,7 +140,7 @@ impl Game {
         replaced: bool,
         remembering: Option<u64>,
     ) {
-        let attempts = amount.min(self.state.players[player.index()].library.len() as u128 + 1);
+        let attempts = amount.min(self.library_card_count(player) as u128 + 1);
         if self.miracle_choice_pending() {
             self.state
                 .miracle
@@ -161,7 +161,7 @@ impl Game {
             } else {
                 self.replaced_draw_count(player)
             };
-            let count = count.min(self.state.players[player.index()].library.len() as u128 + 1);
+            let count = count.min(self.library_card_count(player) as u128 + 1);
             for child in 0..count {
                 if self.draw_one_unreplaced(player)
                     && let Some(id) = remembering

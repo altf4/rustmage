@@ -103,7 +103,7 @@ impl Game {
     }
     pub(super) fn reveal_top_move_if_permanent(&mut self, item: &SpellView) {
         let player = item.controller;
-        let Some(&id) = self.state.players[player.index()].library.last() else {
+        let Some(id) = self.top_library_card(player) else {
             return;
         };
         let revealed = RevealedLibraryCard {
@@ -138,7 +138,7 @@ impl Game {
     }
     pub(super) fn reveal_top_draw_if_artifact(&mut self, item: &SpellView) {
         let player = item.controller;
-        let Some(&id) = self.state.players[player.index()].library.last() else {
+        let Some(id) = self.top_library_card(player) else {
             return;
         };
         let revealed = RevealedLibraryCard {
@@ -181,7 +181,7 @@ impl Game {
         power: i32,
         toughness: i32,
     ) {
-        let Some(&top) = self.state.players[item.controller.index()].library.last() else {
+        let Some(top) = self.top_library_card(item.controller) else {
             return;
         };
         let events = self.move_objects_raw(&[top], Zone::Exile);

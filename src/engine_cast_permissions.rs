@@ -155,7 +155,7 @@ impl Game {
         let object = &self.state.objects[card as usize];
         object.zone == Zone::Graveyard
             && object.owner == player
-            && !object.is_token()
+            && object.is_card()
             && self
                 .state
                 .graveyard_cast_permissions
@@ -192,10 +192,7 @@ impl Game {
         kind: GraveyardCastKind,
     ) {
         let card = &self.state.objects[object.card as usize];
-        if self.object_ref(object.card) != object
-            || card.zone != Zone::Graveyard
-            || card.is_token()
-            || card.card.is_emblem()
+        if self.object_ref(object.card) != object || card.zone != Zone::Graveyard || !card.is_card()
         {
             return;
         }

@@ -763,3 +763,668 @@ fn projected_type_transformation_funds_new_basic_type_without_live_fallback() {
         assert_eq!(g.snapshot(), before);
     }
 }
+
+#[test]
+fn prohibition_provider_is_tracked_in_funding_world_and_key() {
+    use crate::engine::ability_world::TEST_SACRIFICE_PROHIBITOR;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_SACRIFICE_PROHIBITOR.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let provider = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let treasure = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[treasure as usize].card = Card::test_index(5437);
+        g.state.objects[treasure as usize].summoning_sick = false;
+        g.state.players[p.index()].mana = [0; 6];
+        TEST_SACRIFICE_PROHIBITOR.with(|row| row.set(Some(g.object_ref(provider))));
+        let goal = FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        assert!(world.resources.iter().any(|r| r.id == provider));
+        assert!(
+            !world
+                .moves(&goal)
+                .iter()
+                .any(|m| world.resources[m.resource].id == treasure)
+        );
+        let mut departed = world.clone();
+        let source = departed
+            .resources
+            .iter_mut()
+            .find(|r| r.id == provider)
+            .unwrap();
+        source.object.zone = Zone::Graveyard;
+        assert!(world.key(&goal) != departed.key(&goal));
+        assert!(
+            departed
+                .moves(&goal)
+                .iter()
+                .any(|m| departed.resources[m.resource].id == treasure)
+        );
+        TEST_SACRIFICE_PROHIBITOR.with(|row| row.set(None));
+    }
+}
+
+#[test]
+fn prevented_sacrifice_mana_projection_matches_owned_payment() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        g.state.objects[id as usize].summoning_sick = false;
+        g.state.players[player.index()].mana = [0; 6];
+        let original = g.object_ref(id);
+        g.state
+            .roles
+            .get_or_insert_default()
+            .source_linked_effects
+            .push(SourceLinkedEffectView {
+                source: original,
+                recipient: original,
+                controller: player,
+                kind: SourceLinkedEffectKind::PreventDamageBy,
+                timestamp: 1,
+            });
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(original)));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        let step = world
+            .moves(&goal)
+            .into_iter()
+            .find(|step| {
+                world.resources[step.resource].id == id && step.production == [0, 0, 0, 0, 1, 0]
+            })
+            .unwrap();
+        let mut projected = None;
+        assert!(world.visit_applied(&step, &mut |next| {
+            projected = Some(next.clone());
+            true
+        }));
+        let projected = projected.unwrap();
+        assert_eq!(projected.reference(id), original);
+        assert_eq!(projected.object(id).zone, Zone::Battlefield);
+        assert!(projected.object(id).tapped);
+        assert_eq!(projected.mana[4], 1);
+        assert!(
+            projected
+                .roles()
+                .unwrap()
+                .source_linked_effects
+                .iter()
+                .any(|row| row.source == original)
+        );
+        assert!(world.key(&goal) != projected.key(&goal));
+        let projected_values = (
+            projected.reference(id),
+            projected.object(id).zone,
+            projected.object(id).tapped,
+            projected.mana[4],
+        );
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| {
+                matches!(a,
+            Action::ActivateMana { card, production: [0, 0, 0, 0, 1, 0], .. } if *card == id)
+            })
+            .unwrap();
+        owned_step(&mut g, action);
+        assert_eq!(g.object_ref(id), projected_values.0);
+        assert_eq!(g.state.objects[id as usize].zone, projected_values.1);
+        assert_eq!(g.state.objects[id as usize].tapped, projected_values.2);
+        assert!(
+            g.state
+                .roles
+                .as_ref()
+                .unwrap()
+                .source_linked_effects
+                .iter()
+                .any(|row| row.source == original)
+        );
+        assert_eq!(
+            u128::from(g.state.players[player.index()].mana[4]),
+            projected_values.3
+        );
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn prevention_provider_uses_live_control_and_ability_layer_after_restore() {
+    use crate::engine::zone_replacements::TEST_PREVENT_PROVIDER;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_PROVIDER.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let provider = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        let land = named(&mut g, player, "Forest", Zone::Battlefield);
+        g.state.static_sources.push(provider);
+        g.state.zone_rules.get_or_insert_default();
+        let source = g.object_ref(provider);
+        let target = g.object_ref(land);
+        TEST_PREVENT_PROVIDER.with(|p| p.set(Some(source)));
+        assert!(g.zone_move_prevented(target, Zone::Graveyard));
+        let saved = g.snapshot();
+        let mut blank = g.activation_item(player, land, 0);
+        blank.targets = vec![BoundTarget {
+            group: 0,
+            target: Target::Card(provider),
+            object: Some(source),
+        }];
+        g.remove_target_abilities_until_end_of_turn(&blank);
+        assert!(!g.zone_move_prevented(target, Zone::Graveyard));
+        g.restore(&saved).unwrap();
+        assert!(g.zone_move_prevented(target, Zone::Graveyard));
+        g.change_controller(source, player.other());
+        assert!(!g.zone_move_prevented(target, Zone::Graveyard));
+        TEST_PREVENT_PROVIDER.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn projected_competing_prevention_and_exile_are_distinct_funding_branches() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        named(&mut g, player, "Rest in Peace", Zone::Battlefield);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        g.state.objects[id as usize].summoning_sick = false;
+        g.state.players[player.index()].mana = [0; 6];
+        let reference = g.object_ref(id);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(reference)));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        let step = world
+            .moves(&goal)
+            .into_iter()
+            .find(|step| {
+                world.resources[step.resource].id == id && step.production == [0, 0, 0, 0, 1, 0]
+            })
+            .unwrap();
+        let mut branches = Vec::new();
+        world.visit_applied(&step, &mut |next| {
+            branches.push(next.clone());
+            false
+        });
+        let prevented = branches
+            .iter()
+            .find(|w| w.object(id).zone == Zone::Battlefield)
+            .unwrap();
+        let exiled = branches
+            .iter()
+            .find(|w| w.object(id).zone == Zone::Exile)
+            .unwrap();
+        assert_eq!(prevented.reference(id), reference);
+        assert_ne!(exiled.reference(id), reference);
+        assert_eq!(prevented.mana[4], 1);
+        assert_eq!(exiled.mana[4], 1);
+        assert!(prevented.key(&goal) != exiled.key(&goal));
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn prevented_nontapping_sacrifice_mana_can_fund_repeatedly() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::new();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        named(&mut g, player, "Rest in Peace", Zone::Battlefield);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        let reference = g.object_ref(id);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(reference)));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 0, 0, 0, 2, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        assert!(g.can_fund(goal));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            for _ in 0..2 {
+                let action = g.legal_actions().into_iter().find(|a| matches!(a,
+                    Action::ActivateMana { card, production: [0, 0, 0, 0, 1, 0], .. } if *card == id)).unwrap();
+                checked(&mut g, action);
+                checked(
+                    &mut g,
+                    Action::ChooseZoneReplacement {
+                        effect: ZoneReplacementKind::Prevent,
+                    },
+                );
+            }
+            assert_eq!(g.object_ref(id), reference);
+            assert_eq!(g.state.players[player.index()].mana[4], 2);
+            assert_eq!(g.state.objects[id as usize].zone, Zone::Battlefield);
+            g.restore(&saved).unwrap();
+        }
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn prevented_repeatable_black_mana_cannot_fund_missing_blue() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::new();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(id))));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 1, 0, 0, 0, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        assert!(!g.can_fund(goal));
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn simultaneous_sacrifices_freeze_animated_type_before_provider_leaves() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Battlefield);
+        let aura = named(&mut g, player, "Puppet Crafting", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(artifact));
+        assert!(g.is_creature(artifact));
+        let refs = [g.object_ref(aura), g.object_ref(artifact)];
+        let goal = FundingGoal {
+            actor: player,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        assert!(world.resources.iter().any(|r| r.id == aura));
+        assert!(world.resources.iter().any(|r| r.id == artifact));
+        let mut projected = None;
+        assert!(world.cost_departures(&refs, Zone::Graveyard, &mut |next| {
+            projected = Some(next.clone());
+            true
+        }));
+        let projected = projected.unwrap();
+        assert_eq!(projected.creatures_died, world.creatures_died + 1);
+        assert_eq!(
+            projected.controlled_creatures_died[player.index()],
+            world.controlled_creatures_died[player.index()] + 1
+        );
+        let projected_values = (
+            projected.creatures_died,
+            projected.controlled_creatures_died[player.index()],
+        );
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            g.sacrifice_batch(&[(player, aura), (player, artifact)]);
+            assert_eq!(g.state.creatures_died_this_turn, projected_values.0);
+            assert_eq!(
+                g.state.players[player.index()].controlled_creatures_died_this_turn,
+                projected_values.1
+            );
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn spell_only_mana_normalizes_unusable_search_keys_without_mutating_pools() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(id))));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let mut world = FundingState::from_game(&g, &goal);
+        world.set_purpose(mana_lots::Purpose::Other);
+        for amount in 1..=4 {
+            let old_key = world.key(&goal);
+            let step = world
+                .moves(&goal)
+                .into_iter()
+                .find(|step| world.resources[step.resource].id == id)
+                .unwrap();
+            let mut next = None;
+            assert!(world.visit_applied(&step, &mut |branch| {
+                next = Some(branch.clone());
+                true
+            }));
+            world = next.unwrap();
+            assert_eq!(world.mana[4], amount);
+            assert_eq!(
+                mana_lots::available(world.mana, &world.lots, mana_lots::Purpose::Other)[4],
+                0
+            );
+            if amount > 1 {
+                assert!(old_key == world.key(&goal));
+            }
+        }
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn spell_only_repeat_mana_cannot_pay_other_or_fuel_a_converter_but_can_pay_artifact_spell() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let id = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[id as usize].card = Card::test_index(5437);
+        g.state.players[player.index()].mana = [0; 6];
+        named(
+            &mut g,
+            player,
+            "Barrels of Blasting Jelly",
+            Zone::Battlefield,
+        );
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(id))));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        assert!(!g.can_fund_for(goal.clone(), mana_lots::Purpose::Other));
+        let artifact = mana_lots::Source::in_world(&g, id);
+        assert!(g.can_fund_for(goal, mana_lots::Purpose::Spell(artifact)));
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn repeatable_artifact_only_mana_is_inert_for_a_fixed_nonartifact_spell_goal() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let source = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::test_index(5437);
+        let converter = named(
+            &mut g,
+            player,
+            "Barrels of Blasting Jelly",
+            Zone::Battlefield,
+        );
+        let creature = named(&mut g, player, "Bear Cub", Zone::Hand);
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Hand);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(source))));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let creature_purpose = mana_lots::Purpose::Spell(mana_lots::Source::in_world(&g, creature));
+        let artifact_purpose = mana_lots::Purpose::Spell(mana_lots::Source::in_world(&g, artifact));
+        let mut world = FundingState::from_game(&g, &goal);
+        world.set_purpose(creature_purpose);
+        for amount in 1..=3 {
+            let old = world.key(&goal);
+            let step = world
+                .moves(&goal)
+                .into_iter()
+                .find(|step| world.resources[step.resource].id == source)
+                .unwrap();
+            let mut next = None;
+            assert!(world.visit_applied(&step, &mut |branch| {
+                next = Some(branch.clone());
+                true
+            }));
+            world = next.unwrap();
+            assert_eq!(world.mana[4], amount);
+            assert_eq!(
+                mana_lots::available(world.mana, &world.lots, creature_purpose)[4],
+                0
+            );
+            assert_eq!(
+                mana_lots::available(world.mana, &world.lots, artifact_purpose)[4],
+                amount
+            );
+            assert!(
+                world
+                    .moves(&goal)
+                    .iter()
+                    .all(|step| world.resources[step.resource].id != converter)
+            );
+            if amount > 1 {
+                assert!(old == world.key(&goal));
+            }
+        }
+        assert!(!g.can_fund_for(goal.clone(), creature_purpose));
+        assert!(g.can_fund_for(goal, artifact_purpose));
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn eligible_restricted_mana_does_not_enable_converter_or_missing_color() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let source = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::test_index(5437);
+        let converter = named(
+            &mut g,
+            player,
+            "Barrels of Blasting Jelly",
+            Zone::Battlefield,
+        );
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Hand);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(source))));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 1, 0, 0, 0, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let purpose = mana_lots::Purpose::Spell(mana_lots::Source::in_world(&g, artifact));
+        let mut world = FundingState::from_game(&g, &goal);
+        world.set_purpose(purpose);
+        for amount in 1..=4 {
+            let old = world.key(&goal);
+            let step = world
+                .moves(&goal)
+                .into_iter()
+                .find(|step| world.resources[step.resource].id == source)
+                .unwrap();
+            let mut next = None;
+            assert!(world.visit_applied(&step, &mut |branch| {
+                next = Some(branch.clone());
+                true
+            }));
+            world = next.unwrap();
+            assert_eq!(
+                mana_lots::available(world.mana, &world.lots, purpose)[4],
+                amount
+            );
+            assert_eq!(
+                mana_lots::available(world.mana, &world.lots, mana_lots::Purpose::Other)[4],
+                0
+            );
+            assert!(!payable(
+                mana_lots::available(world.mana, &world.lots, purpose),
+                goal.required,
+                goal.generic
+            ));
+            assert!(
+                world
+                    .moves(&goal)
+                    .iter()
+                    .all(|step| world.resources[step.resource].id != converter)
+            );
+            assert!(world.optimistic(&goal));
+            assert!(old != world.key(&goal));
+        }
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn ordinary_mana_can_fuel_blue_converter_alongside_artifact_only_mana() {
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    let _fixture = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let source = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::test_index(5437);
+        let converter = named(
+            &mut g,
+            player,
+            "Barrels of Blasting Jelly",
+            Zone::Battlefield,
+        );
+        let forest = named(&mut g, player, "Forest", Zone::Battlefield);
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Hand);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(source))));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 1, 0, 0, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let purpose = mana_lots::Purpose::Spell(mana_lots::Source::in_world(&g, artifact));
+        let mut world = FundingState::from_game(&g, &goal);
+        world.set_purpose(purpose);
+        for (id, expected) in [
+            (source, [0, 0, 0, 0, 1, 0]),
+            (forest, [0, 0, 0, 0, 1, 0]),
+            (converter, [0, 1, 0, 0, 0, 0]),
+        ] {
+            let step = world
+                .moves(&goal)
+                .into_iter()
+                .find(|m| world.resources[m.resource].id == id && m.production == expected)
+                .unwrap();
+            let mut next = None;
+            assert!(world.visit_applied(&step, &mut |branch| {
+                next = Some(branch.clone());
+                true
+            }));
+            world = next.unwrap();
+        }
+        assert!(payable(
+            mana_lots::available(world.mana, &world.lots, purpose),
+            goal.required,
+            goal.generic
+        ));
+        assert_eq!(mana_lots::available(world.mana, &world.lots, purpose)[4], 1);
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}

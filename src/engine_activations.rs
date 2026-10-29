@@ -29,9 +29,7 @@ pub(super) fn graveyard_cards_at_least<W: ability_world::CharacteristicWorld + ?
             let object = world.object(id);
             object.zone == Zone::Graveyard
                 && object.owner == actor
-                && !object.is_token()
-                && !object.is_spell_copy()
-                && !object.card.is_emblem()
+                && object.is_card()
                 && (kind == 0 || world.kinds(id) & kind != 0)
         })
         .take(usize::from(minimum))
@@ -255,6 +253,8 @@ impl Game {
     ) -> bool {
         let readiness = self.activation_readiness(actor, ability);
         !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            && (!ability.cost.sacrifice
+                || !ability_world::CharacteristicWorld::sacrifice_prohibited(self, card))
             && self.printed_abilities_available(card)
             && (ability.mana_production().is_some()
                 || (!self.nonmana_actions_prohibited() && !self.named_activation_prohibited(card)))
@@ -354,6 +354,11 @@ impl Game {
             return false;
         }
         for grant in ability_world::CharacteristicWorld::granted_mana(self, card) {
+            if grant.sacrifice
+                && ability_world::CharacteristicWorld::sacrifice_prohibited(self, card)
+            {
+                continue;
+            }
             if grant.production.in_world(self, card).visit(|production| {
                 emit(Action::TapGrantedMana {
                     card,
@@ -859,7 +864,18 @@ impl Game {
             item.source_attachment = source.attached_to;
         }
         if cost.exile_self {
-            self.move_object(source.id, Zone::Exile);
+            let event = self.move_object(source.id, Zone::Exile);
+            if definition
+                .program
+                .contains(&Instruction::GrantLandManaUntilSourceCast)
+            {
+                item.source_move = Some(Box::new(TriggerSourceMoveView {
+                    before: event.before.reference,
+                    after: event.after,
+                    origin: event.before.zone,
+                    destination: event.destination,
+                }));
+            }
         } else if cost.discard {
             self.discard_batch(&[source.id], definition.cycling.then_some(source.object));
         } else if cost.sacrifice {

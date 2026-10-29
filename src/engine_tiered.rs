@@ -95,9 +95,7 @@ impl Game {
         }
         // CR701.24c requires this shuffle even if the source cannot be moved.
         self.forget_library_top(owner);
-        self.state
-            .rng
-            .shuffle(&mut self.state.players[owner.index()].library);
+        self.shuffle_library_cards(owner);
     }
     pub(super) fn shuffle_target_into_library(&mut self, item: &SpellView) {
         let Some(source) = item.source else {
@@ -112,9 +110,7 @@ impl Game {
             let event = self.move_object(object.card, Zone::Library);
             // CR701.24c: replacement of the move does not cancel the shuffle.
             self.forget_library_top(before.owner);
-            self.state
-                .rng
-                .shuffle(&mut self.state.players[before.owner.index()].library);
+            self.shuffle_library_cards(before.owner);
             if event.moved && event.destination == Zone::Library {
                 self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
                     source: source.object,

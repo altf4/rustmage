@@ -221,6 +221,7 @@ impl Game {
                 self.record_nonland_entry(controller, self.current_kinds(id));
                 self.register_battlefield_sources(id);
                 events.push(ZoneChange {
+                    was_card: false,
                     cast_event: None,
                     entry_counter_player: Some(controller),
                     graveyard_observers: None,

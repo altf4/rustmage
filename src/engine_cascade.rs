@@ -82,11 +82,7 @@ impl Game {
             .map_or_else(|| item.mana_value(), |event| event.mana_value);
         let mut exiled = Vec::new();
         let mut eligible = None;
-        while let Some(card) = self.state.players[item.controller.index()]
-            .library
-            .last()
-            .copied()
-        {
+        while let Some(card) = self.top_library_card(item.controller) {
             let definition = self.state.objects[card as usize].card;
             let events = self.move_objects_raw(&[card], Zone::Exile);
             let moved = events
@@ -100,7 +96,7 @@ impl Game {
                     eligible = Some(object);
                     break;
                 }
-            } else if self.state.players[item.controller.index()].library.last() == Some(&card) {
+            } else if self.top_library_card(item.controller) == Some(card) {
                 // A prevented movement cannot make progress through this library.
                 break;
             }

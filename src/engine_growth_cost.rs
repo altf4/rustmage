@@ -1,4 +1,5 @@
 //! Direct typed persistent evolution and non-targeting growth-card costs.
+use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::StaticAbilityFragment;
 impl TriggerCondition {
@@ -49,7 +50,8 @@ impl Game {
                 };
                 let ability = giver.card.activation(index);
                 let readiness = self.activation_readiness(actor, ability);
-                if !view.grant_available(grantor, giver.card, index, None)
+                if (ability.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, card))
+                    || !view.grant_available(grantor, giver.card, index, None)
                     || !self.activation_guard_available(ability.guard, card, actor)
                     || !Self::object_activation_available_with_kinds(
                         &self.state.objects[card as usize],
@@ -214,6 +216,8 @@ impl Game {
                 || (ability.mana_production().is_none()
                     && (self.nonmana_actions_prohibited()
                         || self.named_activation_prohibited(recipient.card)))
+                || (ability.cost.sacrifice
+                    && CharacteristicWorld::sacrifice_prohibited(self, recipient.card))
                 || !Self::object_activation_available_with_kinds(
                     &self.state.objects[recipient.card as usize],
                     self.counter_amounts(recipient.card),

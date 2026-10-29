@@ -792,6 +792,11 @@ pub enum EffectChoiceKind {
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     ExileGraveyardCards(u16),
+    /// Resolution cost: exile this resolving spell and named graveyard cards.
+    ExileSourceAndNamed {
+        name: &'static str,
+        amount: u16,
+    },
     /// Non-targeted graveyard cards of this color, with this printed-symbol sum.
     ExileGraveyardSymbols {
         color: ChoiceColor,
@@ -1219,6 +1224,8 @@ pub(crate) enum Instruction {
     CounterRelatedUnlessDiscardOrPay(ManaCost),
     /// Ward payer may discard one card or decline and have the associated object countered.
     CounterRelatedUnlessDiscard,
+    /// Captured ward payer may sacrifice exactly this many permanents.
+    CounterRelatedUnlessSacrifice(u16),
     /// One combined ward cost, paid atomically or the related item is countered.
     CounterRelatedUnlessPayManaLife {
         cost: ManaCost,
@@ -1952,6 +1959,10 @@ pub(crate) enum Instruction {
     UntapCreatures(CreatureFilter),
     /// Untap every token currently controlled by the resolving player.
     UntapControlledTokens,
+    /// Untap every land currently controlled by the resolving player.
+    UntapControlledLands,
+    /// Grant target land colorless mana until the paid exiled source is cast.
+    GrantLandManaUntilSourceCast,
     UntapPlayerCreatures(PlayerSet),
     /// Controlled creatures other than exact objects in the selected target group.
     PutOtherControlledCreatureCounters {
@@ -4844,6 +4855,10 @@ impl Card {
     }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
         #[cfg(test)]
+        if self == Card::test_index(5437) && sacrifice_mana_fixture::enabled() {
+            return sacrifice_mana_fixture::abilities();
+        }
+        #[cfg(test)]
         if self == Card::JacePlaneswalkerToken && composite_loyalty_fixture::enabled() {
             return composite_loyalty_fixture::abilities();
         }
@@ -5307,4 +5322,76 @@ pub(crate) mod composite_loyalty_fixture {
     const ABILITIES: &[ActivatedAbility] = &[ability(false, 1)];
     const MANA_ABILITIES: &[ActivatedAbility] = &[ability(true, 1)];
     const TWO_COUNTER_ABILITIES: &[ActivatedAbility] = &[ability(true, 2)];
+}
+
+#[cfg(test)]
+pub(crate) mod sacrifice_mana_fixture {
+    use super::*;
+    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
+    pub(crate) struct Guard;
+    impl Guard {
+        pub(crate) fn new() -> Self {
+            Self::set(1)
+        }
+        pub(crate) fn artifact_only() -> Self {
+            Self::set(2)
+        }
+        fn set(mode: u8) -> Self {
+            MODE.with(|v| assert_eq!(v.replace(mode), 0));
+            Self
+        }
+    }
+    impl Drop for Guard {
+        fn drop(&mut self) {
+            MODE.with(|v| v.set(0));
+        }
+    }
+    pub(super) fn enabled() -> bool {
+        MODE.with(|v| v.get() != 0)
+    }
+    const fn ability(program: &'static [Instruction]) -> ActivatedAbility {
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            cycling: false,
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                colored: [0; 6],
+                generic: 0,
+                alternatives: &[],
+                additional: None,
+                mana_component: false,
+                tap: false,
+                sacrifice: true,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: None,
+            },
+            targets: TargetPlan::NONE,
+            program,
+            sorcery: false,
+            once_per_turn: false,
+        }
+    }
+    const ARTIFACT_ONLY: &[ActivatedAbility] =
+        &[ability(&[Instruction::AddMana(ManaProduction::Tagged {
+            production: &ManaProduction::Fixed([0, 0, 0, 0, 1, 0]),
+            quality: &ManaQuality {
+                restriction: ManaRestriction::ArtifactSpell,
+                spell_bonus: ManaSpellBonus::None,
+                retention: ManaRetention::Step,
+            },
+        })])];
+    const ORDINARY: &[ActivatedAbility] =
+        &[ability(&[Instruction::AddMana(ManaProduction::Fixed([
+            0, 0, 0, 0, 1, 0,
+        ]))])];
+    pub(super) fn abilities() -> &'static [ActivatedAbility] {
+        match MODE.with(|v| v.get()) {
+            2 => ARTIFACT_ONLY,
+            _ => ORDINARY,
+        }
+    }
 }

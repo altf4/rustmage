@@ -79,7 +79,7 @@ impl Game {
     pub(super) fn back_cast_available(&self, actor: Player, id: CardId, sorcery: bool) -> bool {
         let o = &self.state.objects[id as usize];
         let allowed = match o.zone {
-            Zone::Hand => o.owner == actor,
+            Zone::Hand => o.owner == actor && o.is_card(),
             Zone::Graveyard => self.has_graveyard_cast(actor, id, GraveyardCastKind::Cast),
             Zone::Exile => self.can_play_exiled(actor, id),
             Zone::Library => self.can_cast_library_top(actor, id),

@@ -40,9 +40,16 @@ impl ExilePlayExpiry {
 }
 /// Exact top-card selection, bounded only by the finite library's length.
 /// Keep the full rules scalar until that bound makes conversion address-safe.
-pub(super) fn top_library_cards(library: &[CardId], amount: u128) -> Vec<CardId> {
+pub(super) fn top_library_cards(game: &Game, player: Player, amount: u128) -> Vec<CardId> {
+    let library = &game.state.players[player.index()].library;
     let count = usize::try_from(amount.min(library.len() as u128)).unwrap();
-    library.iter().rev().take(count).copied().collect()
+    library
+        .iter()
+        .rev()
+        .copied()
+        .filter(|&id| game.state.objects[id as usize].is_card())
+        .take(count)
+        .collect()
 }
 impl Game {
     /// The linked permission is controlled by the source's current controller
@@ -132,7 +139,7 @@ impl Game {
             .collect::<Vec<_>>();
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
-            if event.moved && event.destination == Zone::Exile && !event.before.is_token() {
+            if event.moved && event.destination == Zone::Exile && event.was_card {
                 self.grant_exile_play_permission(item.controller, event.after, false);
                 for row in &mut self.state.exile_permissions {
                     if row.player == item.controller && row.object == event.after {
@@ -155,7 +162,7 @@ impl Game {
         amount: u128,
         next_turn: bool,
     ) {
-        let ids = top_library_cards(&self.state.players[library_owner.index()].library, amount);
+        let ids = top_library_cards(self, library_owner, amount);
         if ids.is_empty() {
             return;
         }
@@ -214,6 +221,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(usize::from(amount))
             .copied()
             .collect();
@@ -374,8 +382,7 @@ impl Game {
                     event.before.zone,
                     Zone::Battlefield | Zone::Graveyard | Zone::Stack | Zone::Exile
                 )
-                && !event.before.is_token()
-                && !event.before.card.is_emblem()
+                && event.was_card
                 && self.object_ref(event.after.card) == event.after
                 && self.state.objects[event.after.card as usize].zone == Zone::Hand
                 && !self.state.known_hand.contains(&event.after)
@@ -576,10 +583,7 @@ impl Game {
         let Some(source) = item.source else {
             return;
         };
-        let ids = top_library_cards(
-            &self.state.players[item.controller.index()].library,
-            u128::from(amount),
-        );
+        let ids = top_library_cards(self, item.controller, u128::from(amount));
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if !event.moved || event.destination != Zone::Exile {

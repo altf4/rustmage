@@ -190,7 +190,7 @@ impl Game {
         let mut remaining = Vec::new();
         let mut total = 0u64;
         while total < u64::from(minimum) {
-            let Some(&card) = self.state.players[player.index()].library.last() else {
+            let Some(card) = self.top_library_card(player) else {
                 break;
             };
             let value = self.state.objects[card as usize].card.fixed_mana_value();

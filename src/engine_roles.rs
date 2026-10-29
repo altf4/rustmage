@@ -32,6 +32,8 @@ pub(super) struct RoleState {
     pub animations: Vec<AnimationView>,
     pub keyword_effects: Vec<KeywordEffectView>,
     pub source_linked_effects: Vec<SourceLinkedEffectView>,
+    /// Exact paid exile objects cast while their grant activation is still pending.
+    pub exile_grant_cast_history: Vec<ObjectRef>,
     pub resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
@@ -62,6 +64,7 @@ impl RoleState {
             + self.animations.len() * std::mem::size_of::<AnimationView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
             + self.source_linked_effects.len() * std::mem::size_of::<SourceLinkedEffectView>()
+            + self.exile_grant_cast_history.len() * std::mem::size_of::<ObjectRef>()
             + self.resolved_ability_modifications.len()
                 * std::mem::size_of::<ResolvedAbilityModificationView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()

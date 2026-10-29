@@ -8,5 +8,41 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ded7230c9d7cd9335eb2eb525caa2ccaf4a555fc236c29fd5b064cab2e4c6b6e"
   },
-  "physical_metadata_sha256": "9b42e3587d398277056e7df0088c5e7fe1385c606c46146edb994cd392e652d0"
+  "physical_metadata_sha256": "9b42e3587d398277056e7df0088c5e7fe1385c606c46146edb994cd392e652d0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmrakulTheExigentDoom.java",
+  "java_sha256": "d3b882609c360a6bed66f65d48f82e47cb28bac2519404566a2bfc29bbe2934f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/GiveManaAbilityAndCastSourceAbility.java",
+      "sha256": "c73aef17d97985874bc38b07fc8d7e8c72fd8ec3bf25778827ba36817d496237"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CastSourceTriggeredAbility.java",
+      "sha256": "47edf1f8fa0fea60841309f6698825a1b6da0427d3580c91c750763fbe9ae22d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllLandsControllerEffect.java",
+      "sha256": "1b449dce4708dc63ab8ef3e3b5d7cc019203d88f54027dfcf80bd9ac11a43ec7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ],
+  "rules_tests": "src/engine_fra_emrakul_exigent_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_fra_emrakul_ward_independent_tests.rs",
+    "src/engine_fra_mixed_zone_cost_tests.rs",
+    "src/engine_funding_sacrifice_tests.rs"
+  ]
 }

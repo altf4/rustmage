@@ -395,8 +395,19 @@ mod fra_barbs_garden;
 mod fra_cruel_calculations;
 mod fra_way_copy_review;
 
+#[path = "../engine_fra_sphinx_mixed_cost_tests.rs"]
+mod fra_sphinx_mixed_cost_tests;
+#[path = "../engine_fra_sphinxs_approach_tests.rs"]
+mod fra_sphinxs_approach_tests;
 #[path = "../engine_fra_uldaros_target_tests.rs"]
 mod fra_uldaros_target_tests;
 
 #[path = "../engine_fra_uldaros_effect_tests.rs"]
 mod fra_uldaros_effect_tests;
+
+#[path = "../engine_fra_emrakul_exigent_tests.rs"]
+mod fra_emrakul_exigent_tests;
+#[path = "../engine_fra_emrakul_ward_independent_tests.rs"]
+mod fra_emrakul_ward_independent_tests;
+#[path = "../engine_fra_mixed_zone_cost_tests.rs"]
+mod fra_mixed_zone_cost_tests;

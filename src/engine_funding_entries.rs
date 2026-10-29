@@ -1728,6 +1728,16 @@ impl<'g> FundingState<'g> {
             && self.entry_projection.is_none()
             && self.game.state.exile_links.is_empty()
             && self.game.state.zone_rules.is_none()
+            && {
+                #[cfg(test)]
+                {
+                    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get().is_none())
+                }
+                #[cfg(not(test))]
+                {
+                    true
+                }
+            }
             && self.game.state.death_exile_replacements.is_none()
             && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0
         {
@@ -1766,6 +1776,10 @@ impl<'g> FundingState<'g> {
         if departed {
             next.resources[step.resource].object.zone = Zone::Battlefield;
         }
+        // The staged source remains present until a replacement plan commits.
+        next.refresh_control_projection();
+        next.prune_source_linked_projection();
+        next.refresh_enduring_projection();
         if let Some((external, _)) = external {
             // Selection belongs to this incarnation. Never silently substitute a
             // returned card or allow an object already spent by another cost.
