@@ -1,0 +1,18 @@
+{
+  "name": "@token/fra-blue-angel",
+  "catalogue_id": 5457,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "a7ebbac040a3b20881a0303e6f34838cdfa1fac039567c6a0bb6d0446ec4523d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/BlueAngelToken.java",
+  "java_sha256": "4a6fccdf1d4a76fba59f7e74199f1a212dea66a10f059d081881dca63c13d681",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
+}

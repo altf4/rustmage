@@ -5462,7 +5462,8 @@
     0,
     16,
     2,
-    17
+    17,
+    2
   ],
   "aliases": [
     [
@@ -6304,6 +6305,10 @@
     [
       "@token/fc4d98b9982bc99c31b60b7c",
       5332
+    ],
+    [
+      "@token/fra-blue-angel",
+      5457
     ],
     [
       "@token/fra-forest-tentacle",
@@ -28931,6 +28936,12 @@
       "factory_identity": "@token/fra-leviathan",
       "name": "Leviathan Token",
       "subtypes": "Leviathan",
+      "colors": 2
+    },
+    {
+      "factory_identity": "@token/fra-blue-angel",
+      "name": "Angel Token",
+      "subtypes": "Angel",
       "colors": 2
     }
   ],
@@ -184962,6 +184973,35 @@
         0,
         0,
         1,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5457,
+      "module": "card_5457",
+      "path": "synthetic/token_fra_blue_angel.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fra-blue-angel",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Angel",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
         0
       ],
       "generic": 0
