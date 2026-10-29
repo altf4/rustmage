@@ -207,8 +207,7 @@ fn flickering_hound_trigger_survives_source_but_rechecks_target() {
                 if !selected && actions.contains(&choice) {
                     act(&mut g, choice);
                     selected = true;
-                } else if selected && actions.contains(&Action::FinishTargets) {
-                    act(&mut g, Action::FinishTargets);
+                    // Choosing the sole target automatically finishes this group.
                     break;
                 } else if let Some(a) = actions
                     .into_iter()

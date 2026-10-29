@@ -3,7 +3,7 @@
   "catalogue_id": 881,
   "oracle_id": "71355b51-e70e-47b0-8460-933af3567141",
   "facts_sha256": "d464435da85f47f68fcdd05a0733a3699e126c5b0c3d5c3a055d17ee824ba57b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "420b041af521be8637be3d80b086af747f0e4da1a6fae8a91b89ff10518afc2e"
@@ -38,5 +38,6 @@
       "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
       "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_candidate_followup_tests.rs"
 }

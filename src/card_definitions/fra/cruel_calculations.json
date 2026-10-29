@@ -3,7 +3,7 @@
   "catalogue_id": 902,
   "oracle_id": "69b96fe5-9733-4b43-bd66-075742e142d9",
   "facts_sha256": "680915f83d7a2ca3ac59851598fd71ed98bf5b51867983773bb10823a368af27",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db2ef325928525d3b8de1f7d823ce97bdb181aef3589e3db97bc7506b01582c2"
@@ -18,5 +18,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
       "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
     }
-  ]
+  ],
+  "rules_tests": "src/assurance/fra_cruel_calculations.rs"
 }

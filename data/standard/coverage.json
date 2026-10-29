@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fe3283312f8453fa0c70a13a82069f2c8c7285a95ec7462665db6357f5039b7a",
+  "catalogue_version": "02e92a618733ec514c7615b00c292911c3ce5924785b97abbcec67cc346ec84b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2776,
-  "implemented_total": 2782,
+  "implemented_standard_cards": 2786,
+  "implemented_total": 2792,
   "token_definitions": 140,
   "emblem_definitions": 3,
   "adventure_definitions": 49,
@@ -71,8 +71,8 @@
     },
     "fra": {
       "total": 285,
-      "complete": 129,
-      "gated": 156
+      "complete": 139,
+      "gated": 146
     },
     "frc": {
       "total": 6,
@@ -4515,8 +4515,8 @@
     {
       "name": "Break Under Pressure",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/break_under_pressure.rs",
       "set": "fra"
     },
@@ -7251,8 +7251,8 @@
     {
       "name": "Craterclaw Colossus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/craterclaw_colossus.rs",
       "set": "fra"
     },
@@ -7419,8 +7419,8 @@
     {
       "name": "Cruel Calculations",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/cruel_calculations.rs",
       "set": "fra"
     },
@@ -7963,8 +7963,8 @@
     {
       "name": "Darklight Phoenix",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/darklight_phoenix.rs",
       "set": "fra"
     },
@@ -10995,8 +10995,8 @@
     {
       "name": "Entrust the Spark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/entrust_the_spark.rs",
       "set": "fra"
     },
@@ -19403,8 +19403,8 @@
     {
       "name": "Koth, the Geomancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/koth_the_geomancer.rs",
       "set": "fra"
     },
@@ -25427,8 +25427,8 @@
     {
       "name": "Pia, Determined Rebuilder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/pia_determined_rebuilder.rs",
       "set": "fra"
     },
@@ -29443,8 +29443,8 @@
     {
       "name": "Saheeli, Jewel of Avishkar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/saheeli_jewel_of_avishkar.rs",
       "set": "fra"
     },
@@ -40275,8 +40275,8 @@
     {
       "name": "Way of the Healer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_healer.rs",
       "set": "fra"
     },
@@ -40315,8 +40315,8 @@
     {
       "name": "Way of the Pyromancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/way_of_the_pyromancer.rs",
       "set": "fra"
     },
