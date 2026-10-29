@@ -5327,10 +5327,11 @@ fn trace_candidate(card: Card, schema_projection: Option<u32>, compare_mana: boo
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
     if schema_projection.is_some_and(|schema| schema < 190) {
-        if !prior_schema190_state_supported(&g.state) {
+        if !prior_schema190_state_supported(&g.state) || !uldaros_schema_candidate::prior_type_slots_owned_safe(&g.state) {
             projection_error = Some("owned schema 190 rules cannot be projected to schema 189".to_owned());
         } else {
-            match project_prior_schema190(&observation_bytes) {
+            match uldaros_schema_candidate::project_before_type_slots(&observation_bytes)
+                .and_then(|json| project_prior_schema190(&json)) {
                 Ok(projected) => observation_bytes = projected,
                 Err(reason) => projection_error = Some(reason),
             }
@@ -6528,3 +6529,5 @@ fn schema190_preserves_older_revisions_and_audits_owned_state() {
 
 #[path = "schema190_packet_independent.rs"]
 mod schema190_packet_independent;
+#[path = "uldaros_schema_candidate.rs"]
+mod uldaros_schema_candidate;

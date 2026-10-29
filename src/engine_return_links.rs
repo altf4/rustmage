@@ -386,6 +386,7 @@ impl Game {
             item.kind = StackKind::DelayedReturn;
             item.return_link = Some(Box::new(row.view.returning));
             item.targets.clear();
+            item.target_type_slots = None;
             item.mode = None;
             self.state.pending_triggers.push(item);
         }

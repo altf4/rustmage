@@ -714,6 +714,34 @@ impl Game {
             }
             return total <= u128::from(maximum);
         }
+        if let TargetGroupConstraint::DistinctCardTypeSlots = constraint {
+            let Target::Card(id) = target else {
+                return false;
+            };
+            if self
+                .state
+                .objects
+                .get(id as usize)
+                .is_none_or(|o| o.zone != Zone::Graveyard)
+            {
+                return false;
+            }
+            let mut masks = Vec::new();
+            for bound in chosen.iter().filter(|b| b.group == group) {
+                let Target::Card(other) = bound.target else {
+                    return false;
+                };
+                if other == id
+                    || !self.same_target_object(*bound)
+                    || self.state.objects[other as usize].zone != Zone::Graveyard
+                {
+                    return false;
+                }
+                masks.push(self.current_kinds(other));
+            }
+            masks.push(self.current_kinds(id));
+            return card_type_assignment::distinct_type_assignment(&masks);
+        }
         if let TargetGroupConstraint::OtherThanGroup(first) = constraint {
             return chosen
                 .iter()
@@ -726,7 +754,8 @@ impl Game {
             return false;
         };
         match constraint {
-            TargetGroupConstraint::OtherThanGroup(_) | TargetGroupConstraint::TotalManaValueAtMost(_) => unreachable!(),
+            TargetGroupConstraint::OtherThanGroup(_) | TargetGroupConstraint::TotalManaValueAtMost(_)
+                | TargetGroupConstraint::DistinctCardTypeSlots => unreachable!(),
             TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
@@ -770,6 +799,28 @@ impl Game {
         bound: BoundTarget,
         plan: TargetPlan,
     ) -> bool {
+        if plan.group(bound.group).is_some_and(|g| {
+            matches!(
+                g.rule,
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::DistinctCardTypeSlots,
+                    ..
+                }
+            )
+        }) {
+            let Some(index) = item.targets.iter().position(|target| *target == bound) else {
+                return false;
+            };
+            let Some(slot) = item
+                .target_type_slots
+                .as_ref()
+                .and_then(|slots| slots.get(index))
+            else {
+                return false;
+            };
+            return matches!(bound.target, Target::Card(id)
+                if self.same_target_object(bound) && self.current_kinds(id) & *slot != 0);
+        }
         if plan.group(bound.group).is_some_and(|g| {
             matches!(
                 g.rule,
@@ -1245,8 +1296,14 @@ impl Game {
                 });
             }
             TargetRule::Grouped { base, constraint } => {
+                if constraint == TargetGroupConstraint::DistinctCardTypeSlots
+                    && !matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| !o.is_token() && !o.is_spell_copy()))
+                {
+                    return false;
+                }
                 let zone = match constraint {
-                    TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
+                    TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
                     | TargetGroupConstraint::SharedCardType
                     | TargetGroupConstraint::ControllerOfPlayerGroup(_)
@@ -1647,6 +1704,7 @@ impl Game {
             self_granted_activation: None,
             target_controller_lki: None,
             target_kinds_lki: None,
+            target_type_slots: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
@@ -1997,10 +2055,23 @@ impl Game {
         {
             self.tap_objects(&frame.objects().iter().map(|s| s.card).collect::<Vec<_>>());
         }
-        announcement
-            .item
-            .targets
-            .sort_by_key(|bound| (bound.group, bound.target));
+        if let Some(slots) = &mut announcement.item.target_type_slots {
+            let mut rows: Vec<_> = announcement
+                .item
+                .targets
+                .iter()
+                .copied()
+                .zip(slots.iter().copied())
+                .collect();
+            rows.sort_by_key(|(bound, _)| (bound.group, bound.target));
+            announcement.item.targets = rows.iter().map(|(bound, _)| *bound).collect();
+            **slots = rows.into_iter().map(|(_, slot)| slot).collect();
+        } else {
+            announcement
+                .item
+                .targets
+                .sort_by_key(|bound| (bound.group, bound.target));
+        }
         // External discard precedes source sacrifice so it captures battlefield
         // observers. External sacrifice follows source tap/mana costs: the chosen
         // object may itself be this ability's source. No priority is granted.

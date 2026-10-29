@@ -100,6 +100,7 @@ impl Game {
         self.state.pending_triggers.push(SpellView {
             source: None,
             source_less_rule: Some(SourceLessRule::Radiation),
+            target_type_slots: None,
             additional_triggers: 0,
             loyalty_counters_paid: 0,
             loyalty_x: None,

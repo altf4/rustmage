@@ -156,6 +156,8 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    /// Each distinct target must fit a distinct card-type slot.
+    DistinctCardTypeSlots,
     /// Pair shares at least one current card type, not a subtype or supertype.
     SharedCardType,
     /// Controlled by the player chosen in a distinct target group.
@@ -1163,6 +1165,10 @@ pub(crate) enum Instruction {
     /// Copy the actual triggering spell its chosen X times.
     CopyCastSpellChosenX,
     CopyPreparedCastSpell,
+    /// Exile legal graveyard targets together, then copy the exiled cards and offer free casts.
+    ExileTargetsCopyFreeWithBudget {
+        mana_value: u64,
+    },
     CopyPaidExiledCardsFree {
         maximum_casts: u16,
     },
