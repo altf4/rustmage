@@ -3,7 +3,7 @@
   "catalogue_id": 5437,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "b5f8cd2717c010f553c799c588a50437b94f8efad44a26a63acb7ee9d7dbbdc1",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/SculptureTreasureToken.java",
@@ -14,5 +14,6 @@
       "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
       "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
     }
-  ]
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

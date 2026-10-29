@@ -1,4 +1,4 @@
-// Pinned Sculpture Treasure token; admission awaits rules tests.
+// Pinned Sculpture Treasure token.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 1),
     triggers: &[],
