@@ -2,11 +2,17 @@
 use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ProliferateGroup {
+    pub count: u128,
+    pub used: Vec<(ObjectRef, u16)>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct ProliferateSequence {
     pub player: Player,
     pub remaining: u128,
-    /// Events created by the current replacement process, not re-replaced.
-    pub expanded_remaining: u128,
+    /// Compact equivalent siblings retain exactly the replacement effects already applied.
+    pub pending: std::collections::VecDeque<ProliferateGroup>,
+    pub ready: bool,
     pub permanents: Vec<ObjectRef>,
     pub players: u8,
 }
@@ -20,7 +26,9 @@ pub struct ProliferateView {
 impl ProliferateSequence {
     pub(super) fn view(&self) -> ProliferateView {
         ProliferateView {
-            player: self.player, remaining: self.remaining.checked_add(self.expanded_remaining).capacity("proliferate quantity exhausted"),
+            player: self.player, remaining: self.pending.iter().fold(
+                self.remaining.checked_add(u128::from(self.ready)).capacity("proliferate quantity exhausted"),
+                |total, group| total.checked_add(group.count).capacity("proliferate quantity exhausted")),
             selected_permanents: self.permanents.clone(),
             selected_players: [Player::P0, Player::P1].into_iter()
                 .filter(|p| self.players & (1 << p.index()) != 0).collect(),
@@ -28,6 +36,8 @@ impl ProliferateSequence {
     }
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>() + self.permanents.len() * std::mem::size_of::<ObjectRef>()
+            + self.pending.iter().map(|group| std::mem::size_of::<ProliferateGroup>()
+                + group.used.len() * std::mem::size_of::<(ObjectRef, u16)>()).sum::<usize>()
     }
 }
 impl Game {
@@ -53,28 +63,36 @@ impl Game {
     pub(super) fn start_proliferate(&mut self, player: Player, remaining: u128) {
         if remaining != 0 {
             self.state.resolving.as_mut().unwrap().proliferate = Some(Box::new(ProliferateSequence {
-                player, remaining, expanded_remaining: 0, permanents: Vec::new(), players: 0,
+                player, remaining, pending: std::collections::VecDeque::new(), ready: false,
+                permanents: Vec::new(), players: 0,
             }));
         }
     }
     pub(super) fn advance_proliferate(&mut self) -> bool {
         loop {
-            let Some(sequence) = self.state.resolving.as_ref().unwrap().proliferate.as_ref() else {
+            let Some(sequence) = self.state.resolving.as_mut().unwrap().proliferate.as_mut() else {
                 return false;
             };
-            if sequence.expanded_remaining > 0 {
+            if sequence.ready {
                 self.state.pending = Pending::Proliferate { player: sequence.player };
                 return true;
             }
-            if sequence.remaining == 0 {
+            let player = sequence.player;
+            let used = if let Some(group) = sequence.pending.front_mut() {
+                let used = group.used.clone();
+                group.count -= 1;
+                if group.count == 0 { sequence.pending.pop_front(); }
+                used
+            } else if sequence.remaining > 0 {
+                sequence.remaining -= 1;
+                Vec::new()
+            } else {
                 self.state.resolving.as_mut().unwrap().proliferate = None;
                 return false;
-            }
-            let player = sequence.player;
-            self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().remaining -= 1;
-            // One original event is replaced once. Resulting copies bypass this
-            // replacement loop, but the next original event gets its own choices.
-            self.stage_proliferate_replacements(player);
+            };
+            // Each derived event retains its own applied-effect identities. Resolve
+            // this event and its choice before inspecting its next sibling.
+            self.stage_proliferate_replacements(player, used);
             if self.advance_replacements(false) { return true; }
         }
     }
@@ -96,10 +114,10 @@ impl Game {
             }
             added.has_any().then_some((object, added))
         }).collect();
-        sequence.expanded_remaining -= 1;
+        sequence.ready = false;
         sequence.players = 0;
         let player = sequence.player;
-        if sequence.remaining != 0 || sequence.expanded_remaining != 0 {
+        if sequence.remaining != 0 || !sequence.pending.is_empty() {
             self.state.resolving.as_mut().unwrap().proliferate = Some(sequence);
         }
         self.state.pending = Pending::Priority;

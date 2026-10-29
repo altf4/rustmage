@@ -511,10 +511,14 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     }
     out
 }
-fn modify_proliferate(spec: ReplacementSpec, batch: &mut ProliferateBatch) {
+fn modify_proliferate(spec: ReplacementSpec, batch: &mut ProliferateBatch, source: ObjectRef, ability: u16)
+    -> Option<proliferate::ProliferateGroup>
+{
     let ReplacementSpec::Proliferate { factor, add, .. } = spec else { unreachable!() };
-    batch.amount = batch.amount.checked_mul(u128::from(factor))
-        .and_then(|n| n.checked_add(u128::from(add))).capacity("proliferate quantity exhausted");
+    let created = u128::from(factor).checked_add(u128::from(add)).capacity("proliferate quantity exhausted");
+    batch.used.push((source, ability));
+    batch.amount = u128::from(created != 0);
+    (created > 1).then(|| proliferate::ProliferateGroup { count: created - 1, used: batch.used.clone() })
 }
 impl Game {
     fn proliferate_replacements(&self, batch: &ProliferateBatch) -> Vec<ReplacementEffectView> {
@@ -542,10 +546,10 @@ impl Game {
         }
         out
     }
-    pub(super) fn stage_proliferate_replacements(&mut self, player: Player) {
-        let batch = ProliferateBatch { player, amount: 1, used: Vec::new() };
+    pub(super) fn stage_proliferate_replacements(&mut self, player: Player, used: Vec<(ObjectRef, u16)>) {
+        let batch = ProliferateBatch { player, amount: 1, used };
         if self.state.replacements.is_none() && self.proliferate_replacements(&batch).is_empty() {
-            self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().expanded_remaining = 1;
+            self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().ready = true;
             return;
         }
         let state = self.state.replacements.get_or_insert_with(|| Box::new(ReplacementState {
@@ -1739,11 +1743,13 @@ impl Game {
                     match choices.as_slice() {
                         [] => {
                             let Some(Event::Proliferate(done)) = state.active.take() else { unreachable!() };
-                            self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().expanded_remaining = done.amount;
+                            self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().ready = done.amount != 0;
                         }
                         [only] => {
-                            modify_proliferate(only.source_card.replacement_effects()[only.ability as usize], batch);
-                            batch.used.push((only.source, only.ability));
+                            if let Some(siblings) = modify_proliferate(
+                                only.source_card.replacement_effects()[only.ability as usize], batch, only.source, only.ability) {
+                                self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().pending.push_front(siblings);
+                            }
                         }
                         _ => {
                             self.state.pending = Pending::Replacement { player: batch.player };
@@ -2168,8 +2174,10 @@ impl Game {
             Event::Proliferate(batch) => {
                 let choice = self.proliferate_replacements(batch).into_iter()
                     .find(|c| c.source == source && c.ability == ability).unwrap();
-                modify_proliferate(choice.source_card.replacement_effects()[ability as usize], batch);
-                batch.used.push((source, ability));
+                if let Some(siblings) = modify_proliferate(
+                    choice.source_card.replacement_effects()[ability as usize], batch, source, ability) {
+                    self.state.resolving.as_mut().unwrap().proliferate.as_mut().unwrap().pending.push_front(siblings);
+                }
             }
             Event::Damage(batch) => {
                 let choice = self
@@ -2821,15 +2829,22 @@ mod proliferate_player_replacement_unit_tests {
         };
         assert_eq!(modified_player_counters(plus, modified_player_counters(double, 1)), 3);
         assert_eq!(modified_player_counters(double, modified_player_counters(plus, 1)), 4);
+        let game = setup(Player::P0);
+        let source = game.object_ref(0);
         let mut event = ProliferateBatch { player: Player::P0, amount: 1, used: Vec::new() };
-        modify_proliferate(ReplacementSpec::Proliferate {
+        let sibling = modify_proliferate(ReplacementSpec::Proliferate {
             relation: CastRelation::You, factor: 2, add: 0,
-        }, &mut event);
-        assert_eq!(event.amount, 2);
-        modify_proliferate(ReplacementSpec::Proliferate {
+        }, &mut event, source, 0).unwrap();
+        assert_eq!(event.amount, 1);
+        assert_eq!(sibling.count, 1);
+        assert_eq!(sibling.used, vec![(source, 0)]);
+        let suppressed = modify_proliferate(ReplacementSpec::Proliferate {
             relation: CastRelation::You, factor: 0, add: 0,
-        }, &mut event);
+        }, &mut event, source, 1);
+        assert!(suppressed.is_none());
         assert_eq!(event.amount, 0);
+        // Cancelling one child cannot mutate the separately retained sibling.
+        assert_eq!(sibling.used, vec![(source, 0)]);
     }
 
     #[test]
