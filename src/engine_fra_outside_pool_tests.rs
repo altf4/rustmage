@@ -456,9 +456,16 @@ fn outside_real_player_control_keeps_pool_private_even_with_known_cards() {
                 }) {
                     break;
                 }
-                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+                choose(&mut g, |a| {
+                    matches!(a, Action::Pass | Action::PutTrigger { .. })
+                });
             }
-            act(&mut g, Action::ChooseTarget { target: Target::Player(owner) });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(owner),
+                },
+            );
             if g.legal_actions().contains(&Action::FinishTargets) {
                 act(&mut g, Action::FinishTargets);
             }
@@ -467,37 +474,46 @@ fn outside_real_player_control_keeps_pool_private_even_with_known_cards() {
             // Progress the actual game through combat, cleanup and the next
             // turn instead of editing the active step or calling cleanup.
             for _ in 0..160 {
-                if g.state.active == owner && g.state.step == Step::Main1
-                    && g.state.pending == Pending::Priority {
+                if g.state.active == owner
+                    && g.state.step == Step::Main1
+                    && g.state.pending == Pending::Priority
+                {
                     break;
                 }
-                choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }
-                    | Action::FinishAttackers | Action::FinishBlockers));
+                choose(&mut g, |a| {
+                    matches!(
+                        a,
+                        Action::Pass
+                            | Action::PutTrigger { .. }
+                            | Action::FinishAttackers
+                            | Action::FinishBlockers
+                    )
+                });
             }
             assert_eq!(g.state.active, owner);
             assert_eq!(g.state.step, Step::Main1);
             assert_eq!(g.decision_controller(owner), controller);
-        cast_extrapolate(&mut g, owner);
-        assert_eq!(g.actor(), Some(controller));
-        let visible = g.observe(controller);
-        assert!(visible.owned_outside.is_none());
-        assert!(visible.outside_choice.as_ref().unwrap().pool.is_none());
-        assert_eq!(visible.known_outside.unwrap()[owner.index()], vec![bear]);
-        assert!(visible.actions.contains(&Action::DeclineOutsideCards));
-        assert!(!visible.actions.iter().any(|a| matches!(
-            a,
-            Action::ChooseOutsideCard { .. } | Action::ChooseOutsideBasic { .. }
-        )));
-        let saved = g.snapshot();
-        for _ in 0..2 {
-            act(&mut g, Action::DeclineOutsideCards);
-            assert_eq!(
-                g.state.outside_game.as_ref().unwrap().pools[owner.index()],
-                vec![bear, forest]
-            );
-            g.restore(&saved).unwrap();
-            assert_eq!(g.snapshot(), saved);
-        }
+            cast_extrapolate(&mut g, owner);
+            assert_eq!(g.actor(), Some(controller));
+            let visible = g.observe(controller);
+            assert!(visible.owned_outside.is_none());
+            assert!(visible.outside_choice.as_ref().unwrap().pool.is_none());
+            assert_eq!(visible.known_outside.unwrap()[owner.index()], vec![bear]);
+            assert!(visible.actions.contains(&Action::DeclineOutsideCards));
+            assert!(!visible.actions.iter().any(|a| matches!(
+                a,
+                Action::ChooseOutsideCard { .. } | Action::ChooseOutsideBasic { .. }
+            )));
+            let saved = g.snapshot();
+            for _ in 0..2 {
+                act(&mut g, Action::DeclineOutsideCards);
+                assert_eq!(
+                    g.state.outside_game.as_ref().unwrap().pools[owner.index()],
+                    vec![bear, forest]
+                );
+                g.restore(&saved).unwrap();
+                assert_eq!(g.snapshot(), saved);
+            }
             g.restore(&before_control).unwrap();
             assert_eq!(g.snapshot(), before_control);
         }
