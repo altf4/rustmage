@@ -161,7 +161,9 @@ fn emrakul_cast_before_hand_ability_resolves_does_not_start_ended_grant() {
             settle(&mut g);
             assert!(!g.state.roles.as_ref().is_some_and(|roles| roles.source_linked_effects.iter().any(|row|
                 row.source == exile_ref && row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast)));
+            assert!(!g.state.roles.as_ref().is_some_and(|roles| roles.exile_grant_cast_history.contains(&exile_ref)));
             g.restore(&saved).unwrap();
+            assert!(g.state.roles.as_ref().is_some_and(|roles| roles.exile_grant_cast_history.contains(&exile_ref)));
         }
     }
 }

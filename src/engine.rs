@@ -7542,6 +7542,7 @@ impl Game {
         if self.miracle_choice_pending() {
             return;
         }
+        self.prune_exile_grant_cast_history();
         self.state.pending = Pending::Priority;
         self.state.priority = self.state.active;
         self.state.passes = 0;

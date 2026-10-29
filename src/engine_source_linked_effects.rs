@@ -110,19 +110,33 @@ impl Game {
         if !item.cast.is_some_and(|cast| cast.origin == Zone::Exile) { return; }
         let Some(generation) = item.object.generation.checked_sub(1) else { return; };
         let before = ObjectRef { card: item.object.card, generation };
-        let pending = self.state.stack.iter().chain(&self.state.pending_triggers)
-            .chain(&self.state.ordering_triggers)
-            .chain(self.state.stack_copy_data.as_ref().into_iter().flat_map(|state| state.packets()))
-            .any(|packet| packet.source_move.as_ref().is_some_and(|movement| movement.after == before)
-                && packet.source_card.activations().iter().any(|ability|
-                    ability.program.contains(&Instruction::GrantLandManaUntilSourceCast)));
-        if pending {
-            let rows = &mut self.state.roles.get_or_insert_default().exile_grant_cast_history;
-            if !rows.contains(&before) { rows.push(before); }
-        }
+        // Retain the exact pre-cast incarnation even when an ability copy is
+        // nested inside a continuation rather than directly on the stack.
+        let rows = &mut self.state.roles.get_or_insert_default().exile_grant_cast_history;
+        if !rows.contains(&before) { rows.push(before); }
         if let Some(roles) = &mut self.state.roles {
             roles.source_linked_effects.retain(|row| row.kind != SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast || row.source != before);
         }
+    }
+    /// Reclaim history only at a quiescent boundary where no retained spell
+    /// packet or rollback can later recreate a pending hand ability.
+    pub(super) fn prune_exile_grant_cast_history(&mut self) {
+        if !self.state.stack.is_empty() || !self.state.pending_triggers.is_empty()
+            || !self.state.ordering_triggers.is_empty() || self.state.resolving.is_some()
+            || self.state.announcing.is_some() || self.state.mana_announcement_stack.is_some()
+            || self.state.cast_rollback.is_some() || self.state.stack_copy_data.is_some()
+            || self.state.paradigm.is_some() || self.state.entry_batch.is_some()
+            || self.state.replacements.is_some() || self.state.linked_choices.is_some()
+            || self.state.delayed_artifact_copies.as_ref().is_some_and(|rows| !rows.is_empty())
+            || self.state.delayed_attack_this_turn.as_ref().is_some_and(|rows| !rows.is_empty())
+            || self.state.delayed_opponent_attack_until_next_turn.as_ref().is_some_and(|rows| !rows.is_empty())
+            || self.state.delayed_main_mana.as_ref().is_some_and(|rows| !rows.is_empty())
+            || self.state.delayed_upkeep_tokens.as_ref().is_some_and(|rows| !rows.is_empty())
+            || self.state.delayed_returns.as_ref().is_some_and(|rows| !rows.is_empty())
+            || self.state.earthbend_returns.as_ref().is_some_and(|rows| !rows.is_empty())
+            || self.state.manifest.as_ref().is_some_and(|m| !m.deaths.is_empty())
+        { return; }
+        if let Some(roles) = &mut self.state.roles { roles.exile_grant_cast_history.clear(); }
     }
     pub(super) fn remove_target_abilities_until_end_of_turn(&mut self, item: &SpellView) {
         let recipients: Vec<_> = self.keyword_subjects(item, Subject::Targets).into_iter()
