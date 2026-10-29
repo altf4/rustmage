@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "28228b6d857b7257eb32d3bb5bcd0c7b4ed056ea99c366b5eef974bcc924bd6d"
   },
-  "physical_metadata_sha256": "7debbe9d328eb2f1d3d3e8e7ce31bb8d2485a879b303f6017b56898c5d7cb90e"
+  "physical_metadata_sha256": "7debbe9d328eb2f1d3d3e8e7ce31bb8d2485a879b303f6017b56898c5d7cb90e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PuppetCrafting.java",
+  "java_sha256": "10ad777bc7cf8d338598d11bf6b1cdeedac9315a649d3c3076644fd8bd71069a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureAttachedEffect.java",
+      "sha256": "3fe1bc492de2b19b90314d93d7a07c705a70927e168d63458084f5a6360a2a0f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    }
+  ],
+  "rules_tests": "src/engine_fra_puppet_crafting_tests.rs"
 }
