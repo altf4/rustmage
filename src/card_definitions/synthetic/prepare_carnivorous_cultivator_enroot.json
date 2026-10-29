@@ -3,7 +3,7 @@
   "catalogue_id": 5424,
   "oracle_id": "db655c5a-06f6-42bc-8180-d9ca1c1d939a",
   "facts_sha256": "0f8e8600ec70f8a1e83f75f92b6bb8b31d68f227946d52386a7c73edee864e3f",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "eff19e5ef964e956f45140d57e49f1c65959b82a13237660d5b2cffdf7410492",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/c/CarnivorousCultivator.java",
