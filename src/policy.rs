@@ -101,7 +101,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 .iter()
                 .any(|item| item.id == id && item.controller == actor),
             Target::Spell(id) => observation.stack.iter().any(|item| {
-                item.kind == StackKind::Spell && item.card == id && item.controller == actor
+                item.kind == StackKind::Spell && item.source.is_some_and(|source| source.id == id) && item.controller == actor
             }),
         };
         if own == beneficial { 70 } else { -10 }
@@ -210,7 +210,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 let life_cost = observation
                     .announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.life_x_cost());
+                    .is_some_and(|s| s.source.is_some_and(|source| source.card.life_x_cost()));
                 if life_cost
                     && i128::from(*value) >= observation.players[actor.index()].life
                     && *value != 0
@@ -459,8 +459,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 .unwrap_or(0),
             Action::ChooseTarget { target } => {
                 let item = observation.announcing.as_ref().unwrap();
-                if item.kind == StackKind::Spell && item.source_card.aura().is_some() {
-                    return aura_score(item.source_card, *target);
+                if item.kind == StackKind::Spell
+                    && let Some(source) = item.source
+                    && source.card.aura().is_some()
+                {
+                    return aura_score(source.card, *target);
                 }
                 let program = item.program().map(|(_, program)| program).unwrap_or(&[]);
                 target_score(program, *target)
