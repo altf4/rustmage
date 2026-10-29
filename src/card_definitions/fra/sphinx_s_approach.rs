@@ -1,4 +1,4 @@
-// Complete Oracle and pinned XMage rules; gated pending integration and validation.
+// Complete Oracle and pinned XMage rules; admission is conditional on candidate validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Spell(TargetPlan::NONE, &[
         Instruction::Draw(PlayerSet::Controller, 2),
