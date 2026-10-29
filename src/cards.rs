@@ -5138,18 +5138,31 @@ pub(crate) mod composite_loyalty_fixture {
 #[cfg(test)]
 pub(crate) mod sacrifice_mana_fixture {
     use super::*;
-    std::thread_local! { static ENABLED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) }; }
+    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
     pub(crate) struct Guard;
-    impl Guard { pub(crate) fn new() -> Self { ENABLED.with(|v| assert!(!v.replace(true))); Self } }
-    impl Drop for Guard { fn drop(&mut self) { ENABLED.with(|v| v.set(false)); } }
-    pub(super) fn enabled() -> bool { ENABLED.with(|v| v.get()) }
-    pub(super) fn abilities() -> &'static [ActivatedAbility] {
-        &[ActivatedAbility {
+    impl Guard {
+        pub(crate) fn new() -> Self { Self::set(1) }
+        pub(crate) fn artifact_only() -> Self { Self::set(2) }
+        fn set(mode: u8) -> Self { MODE.with(|v| assert_eq!(v.replace(mode), 0)); Self }
+    }
+    impl Drop for Guard { fn drop(&mut self) { MODE.with(|v| v.set(0)); } }
+    pub(super) fn enabled() -> bool { MODE.with(|v| v.get() != 0) }
+    const fn ability(program: &'static [Instruction]) -> ActivatedAbility {
+        ActivatedAbility {
             exhaust: false, guard: ActivationGuard::Always, cycling: false, origin: ActivationOrigin::Battlefield,
             cost: ActivationCost { colored: [0; 6], generic: 0, alternatives: &[], additional: None,
                 mana_component: false, tap: false, sacrifice: true, exile_self: false, discard: false, life: 0, remove: None, loyalty: None },
-            targets: TargetPlan::NONE, program: &[Instruction::AddMana(ManaProduction::Fixed([0, 0, 0, 0, 1, 0]))],
-            sorcery: false, once_per_turn: false,
-        }]
+            targets: TargetPlan::NONE, program, sorcery: false, once_per_turn: false,
+        }
+    }
+    pub(super) fn abilities() -> &'static [ActivatedAbility] {
+        match MODE.with(|v| v.get()) {
+            2 => &[ability(&[Instruction::AddMana(ManaProduction::Tagged {
+                production: &ManaProduction::Fixed([0, 0, 0, 0, 1, 0]),
+                quality: &ManaQuality { restriction: ManaRestriction::ArtifactSpell,
+                    spell_bonus: ManaSpellBonus::None, retention: ManaRetention::Step },
+            })])],
+            _ => &[ability(&[Instruction::AddMana(ManaProduction::Fixed([0, 0, 0, 0, 1, 0]))])],
+        }
     }
 }
