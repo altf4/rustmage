@@ -254,6 +254,10 @@ fn veiled_modifier_expires_at_actual_extra_turn_not_skipped_turn() {
             g.advance_to_actual_turn();
             g.begin_turn();
             assert_eq!(stats(&g, target), (-1, 2));
+            // Consume the ordinary successor following the extra turn.
+            g.advance_to_actual_turn();
+            g.begin_turn();
+            assert_eq!(stats(&g, target), (-1, 2));
             let mut skips = [0; 2];
             skips[player.index()] = 1;
             g.state.turn_skips = Some(Box::new(skips));
