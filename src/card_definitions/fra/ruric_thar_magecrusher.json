@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "14d3ed29a5d182a6845e7a1d03996394461d152c7673c1e30194e48012012d00"
   },
-  "physical_metadata_sha256": "63c0d489490e3d64c76f46ab9216c39be8e4beb46f22bfa9d7054a608f4bd031"
+  "physical_metadata_sha256": "63c0d489490e3d64c76f46ab9216c39be8e4beb46f22bfa9d7054a608f4bd031",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RuricTharMagecrusher.java",
+  "java_sha256": "ab93189d82801f4db049191976c1c6e32ba400d5922851ea293b6b737043bf21",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    }
+  ],
+  "rules_tests": "src/engine_fra_ruric_magecrusher_tests.rs"
 }

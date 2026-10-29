@@ -1,18 +1,24 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct Oracle and pinned XMage rules; gated pending validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::REACH
-        .union(Keywords::VIGILANCE)
-        .union(Keywords::TRAMPLE),
+    effect: Effect::Creature(7, 7),
+    keywords: Keywords::REACH.union(Keywords::VIGILANCE).union(Keywords::TRAMPLE),
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::REACH.union(Keywords::VIGILANCE).union(Keywords::TRAMPLE),
+            )],
+        },
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::SourceConditionalKeywords {
+                condition: StatValue::SourceHasNotDealtCombatDamage,
+                keywords: Keywords::HEXPROOF,
+            }],
+        },
+    ],
+    extras: &CardExtras { uncounterable: true, ..CardExtras::EMPTY },
     ..CardRules::EMPTY
 };
