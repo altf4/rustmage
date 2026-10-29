@@ -171,3 +171,50 @@ fn null_mana_permission_tracks_live_and_projected_payment_world() {
         }
     }
 }
+
+#[test]
+fn null_sacrifice_mana_action_rechecks_permission_and_restores_payment() {
+    for player in [Player::P0, Player::P1] {
+        for independent_permission in [false, true] {
+            let mut g = scenario(player);
+            let card = put(&mut g, player.other(), "Spectral Sailor", Zone::Hand);
+            let source = cast_null(&mut g, player);
+            until_hand_choice(&mut g, player);
+            let chosen = g.object_ref(card);
+            act(&mut g, Action::ChooseHandCard { object: Some(chosen) });
+            for _ in 0..7 { put(&mut g, player, "Forest", Zone::Graveyard); }
+            let ring = put(&mut g, player, "Lotus Ring", Zone::Battlefield);
+            let source_ref = g.object_ref(source);
+            let ring_ref = g.object_ref(ring);
+            assert!(g.attach_equipment(ring_ref, source_ref));
+            g.state.objects[source as usize].summoning_sick = false;
+            if independent_permission {
+                put(&mut g, player, "Vizier of the Menagerie", Zone::Battlefield);
+            }
+            g.state.players[player.index()].mana = [0; 6];
+            let purpose = g.spell_mana_purpose_for_card(player, card, g.state.objects[card as usize].card);
+            let goal = FundingGoal { actor: player, required: [0, 1, 0, 0, 0, 0], generic: 0, reserve: None, source: None };
+            // Projected funding can sacrifice the source and produce blue.
+            assert!(g.can_fund_for(goal.clone(), purpose));
+            act(&mut g, Action::AnnounceExile { card });
+            let before_payment = g.snapshot();
+            for _ in 0..2 {
+                let red = Action::TapGrantedMana { card: source, grantor: ring_ref, production: [0, 0, 0, 3, 0, 0] };
+                act(&mut g, red);
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+                let item = g.state.announcing.as_ref().unwrap().item.clone();
+                let purpose = g.purpose_for_item(&item);
+                assert_eq!(cast_origins::spends_any_type(&g, player, purpose), independent_permission);
+                assert_eq!(g.can_fund_for(goal.clone(), purpose), independent_permission);
+                if independent_permission {
+                    pay(&mut g);
+                    assert_eq!(g.object_view(card).zone, Zone::Stack);
+                }
+                g.restore(&before_payment).unwrap();
+                assert_eq!(g.snapshot(), before_payment);
+                let item = g.state.announcing.as_ref().unwrap().item.clone();
+                assert!(cast_origins::spends_any_type(&g, player, g.purpose_for_item(&item)));
+            }
+        }
+    }
+}
