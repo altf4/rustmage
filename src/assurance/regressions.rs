@@ -603,14 +603,13 @@ fn prior_schema188_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_schema188_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_schema188_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack
@@ -886,14 +885,13 @@ fn prior_schema187_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_schema187_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_schema187_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack
@@ -1185,14 +1183,13 @@ fn prior_schema186_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_schema186_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_schema186_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack
@@ -1578,14 +1575,13 @@ fn prior_schema185_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_schema185_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_schema185_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack
@@ -1871,14 +1867,13 @@ fn prior_schema184_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_schema184_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_schema184_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack
@@ -2302,14 +2297,13 @@ fn prior_schema183_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_schema183_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_schema183_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack
@@ -2585,14 +2579,13 @@ fn prior_schema182_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_schema182_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_schema182_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack
@@ -2912,14 +2905,13 @@ fn prior_schema181_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_schema181_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_schema181_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack
@@ -3376,14 +3368,13 @@ fn prior_schema180_state_supported(state: &State) -> bool {
             return false;
         }
     }
-    if let Some(rollback) = &state.cast_rollback {
-        if !rollback.events.is_empty()
+    if let Some(rollback) = &state.cast_rollback
+        && (!rollback.events.is_empty()
             || rollback.replay.is_some()
             || rollback.capture.is_some()
-            || !prior_schema180_state_supported(&rollback.before)
-        {
-            return false;
-        }
+            || !prior_schema180_state_supported(&rollback.before))
+    {
+        return false;
     }
     state
         .stack

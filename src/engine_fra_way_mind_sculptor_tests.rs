@@ -249,8 +249,10 @@ fn combined_loyalty_and_source_counter_costs_never_offer_overcommitted_payments(
     let mut cost = ActivationCost::ZERO;
     cost.loyalty = Some(-1);
     cost.remove = Some((Some(CounterKind::Loyalty), 1));
-    let mut counters = Counters::default();
-    counters.loyalty = 1;
+    let mut counters = Counters {
+        loyalty: 1,
+        ..Default::default()
+    };
     let mut emitted = Vec::new();
     activations::counter_payments(cost, &counters, |payment| {
         emitted.push(payment);
