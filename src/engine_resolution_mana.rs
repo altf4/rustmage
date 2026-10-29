@@ -49,7 +49,7 @@ impl Game {
             let Some(victim) = self.bound_stack_item(bound).cloned() else {
                 continue;
             };
-            let permanent = PermanentType::ALL
+            let permanent = victim.kind == StackKind::Spell && PermanentType::ALL
                 .into_iter()
                 .any(|kind| victim.source_card.kind_mask() & kind.mask() != 0);
             if self.counter_stack_item(victim.id, permanent) && permanent && !victim.is_copy {
