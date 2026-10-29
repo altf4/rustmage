@@ -195,3 +195,28 @@ fn proliferate_replacement_creates_separate_owned_choices() {
         }
     }
 }
+
+#[test]
+fn player_counter_prohibition_stops_when_provider_loses_abilities() {
+    let _fixture = crate::cards::test_counter_providers::activate();
+    for controller in [Player::P0, Player::P1] {
+        let mut game = scenario(controller);
+        let provider = put(&mut game, controller, "Bear Cub", Zone::Battlefield);
+        let source = put(&mut game, controller.other(), "Forest", Zone::Battlefield);
+        let reference = game.object_ref(provider);
+        let source = game.object_ref(source);
+        assert!(game.player_counters_prohibited(controller, crate::cards::PlayerCounterKind::Poison));
+        let before = game.snapshot();
+        let timestamp = game.next_role_timestamp();
+        game.state.roles.get_or_insert_default().source_linked_effects.push(SourceLinkedEffectView {
+            source, recipient: reference, controller: controller.other(),
+            kind: SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn, timestamp,
+        });
+        assert!(!game.player_counters_prohibited(controller, crate::cards::PlayerCounterKind::Poison));
+        game.effect_counters_with_poison(Vec::new(), [1, 1], controller, replacements::ResumeMode::Pending);
+        game.advance_replacements(false);
+        assert_eq!(game.state.players[controller.index()].poison_counters, 1);
+        game.restore(&before).unwrap();
+        assert!(game.player_counters_prohibited(controller, crate::cards::PlayerCounterKind::Poison));
+    }
+}
