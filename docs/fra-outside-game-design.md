@@ -193,12 +193,15 @@ across suspension and replay. No such printed provider has been identified in
 the current catalogue. Do not mark the general rule complete or enable a card
 whose admission depends on this path.
 
-A redirected outside-to-exile admission likewise needs a typed admission event
-and destination-specific observer dispatch. It must not masquerade as a zone
-change from `Zone::Outside`: that internal staging value is not a game zone.
-The experimental exile history update is provisional until an authoritative
-rules analysis and observer tests establish its exact semantics. Existing
-return-to-hand and zone-change observers do not constitute this event model.
+The draft records a typed completed outside admission without an invented
+source zone or object. Only successful admission has a new object identity;
+prevention leaves the card outside and does not set exile history. A card
+actually put into exile sets the existing turn history, matching the condition
+that a card was put into exile. CR 400.11 and 603.6 do not justify fabricating
+a zone-change event from `Zone::Outside`. Whether a generic “whenever a card
+is exiled” observer sees this hypothetical replacement remains unresolved; no
+such observer is dispatched by the draft. Existing return-to-hand and
+zone-change observers do not constitute that event model.
 The experimental schema 192 guard conservatively rejects all states retaining
 outside-game ownership, entry batches and active zone-rule checkpoints when
 projecting to 191, including cast rollback checkpoints; passive zone rules remain

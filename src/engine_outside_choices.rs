@@ -29,6 +29,27 @@ pub(super) enum OutsideEntryDestination {
     )]
     Prevent,
 }
+/// A completed outside admission has no source zone or source object. An
+/// object reference exists only after an entry actually happened.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum OutsideAdmissionOutcome {
+    Prevented {
+        owner: Player,
+        card: Card,
+    },
+    Entered {
+        owner: Player,
+        card: Card,
+        object: ObjectRef,
+        destination: OutsideAdmissionDestination,
+    },
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum OutsideAdmissionDestination {
+    Hand,
+    Exile,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct OutsideEntryReplacement {
     pub id: u64,
@@ -628,6 +649,37 @@ impl Game {
         );
         self.advance_outside_entry();
     }
+    /// Apply bookkeeping supported by the actual admission destination. This
+    /// is not a zone-change dispatcher; generic exile-trigger semantics for an
+    /// outside admission remain unresolved.
+    fn record_outside_admission(&mut self, outcome: OutsideAdmissionOutcome) {
+        match outcome {
+            OutsideAdmissionOutcome::Prevented { owner, card } => {
+                let _ = (owner, card);
+            }
+            OutsideAdmissionOutcome::Entered {
+                owner,
+                card,
+                object,
+                destination,
+            } => {
+                let admitted = &self.state.objects[object.card as usize];
+                debug_assert_eq!(admitted.owner, owner);
+                debug_assert_eq!(admitted.card, card);
+                debug_assert_eq!(admitted.generation, object.generation);
+                match destination {
+                    OutsideAdmissionDestination::Hand => {
+                        debug_assert_eq!(admitted.zone, Zone::Hand);
+                        self.state.known_hand.push(object);
+                    }
+                    OutsideAdmissionDestination::Exile => {
+                        debug_assert_eq!(admitted.zone, Zone::Exile);
+                        self.state.cards_exiled_this_turn = true;
+                    }
+                }
+            }
+        }
+    }
     /// Commit only if the selected slot and owned choice have not changed.
     /// False leaves the plan, pool, public knowledge and objects unchanged.
     pub(super) fn commit_outside_hand(&mut self) -> bool {
@@ -654,6 +706,10 @@ impl Game {
         if event.destination == OutsideEntryDestination::Prevent {
             state.choice = None;
             state.pending_entry = None;
+            self.record_outside_admission(OutsideAdmissionOutcome::Prevented {
+                owner: event.owner,
+                card: event.card,
+            });
             return true;
         }
         let next_version = match event.selected {
@@ -711,11 +767,17 @@ impl Game {
             class_level: 1,
             attached_to: None,
         });
-        if event.destination == OutsideEntryDestination::Hand {
-            self.state.known_hand.push(self.object_ref(id));
-        } else if event.destination == OutsideEntryDestination::Exile {
-            self.state.cards_exiled_this_turn = true;
-        }
+        let destination = match event.destination {
+            OutsideEntryDestination::Hand => OutsideAdmissionDestination::Hand,
+            OutsideEntryDestination::Exile => OutsideAdmissionDestination::Exile,
+            OutsideEntryDestination::Prevent => unreachable!("prevented entry did not allocate"),
+        };
+        self.record_outside_admission(OutsideAdmissionOutcome::Entered {
+            owner: event.owner,
+            card,
+            object: self.object_ref(id),
+            destination,
+        });
         true
     }
 }

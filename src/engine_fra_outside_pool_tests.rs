@@ -1001,7 +1001,10 @@ fn outside_admission_uses_real_provider_choice_and_replays() {
             .is_err()
         );
         assert_eq!(game.snapshot(), before);
+        let before_objects = game.state.objects.len();
         act(&mut game, prevent);
+        assert_eq!(game.state.objects.len(), before_objects);
+        assert!(!game.state.cards_exiled_this_turn);
         assert_eq!(
             game.state.outside_game.as_ref().unwrap().pools[owner.index()],
             vec![shock, bear]
