@@ -386,6 +386,9 @@ fn project_prior_schema180(input: &str) -> Result<String, String> {
 /// Reject opaque continuations and copies rather than inferring hidden state
 /// from either viewer's observation. Check rollback snapshots recursively.
 fn prior_schema180_state_supported(state: &State) -> bool {
+    let new_card = |card: Card| card.aura_artifact_or_non_aura_enchantment()
+        || card.name() == "Variable Chaser // Arc of Fortune"
+        || card.name() == "Arc of Fortune";
     if state.resolving.is_some() || state.announcing.is_some()
         || state.mana_announcement_stack.is_some() || state.replacements.is_some()
         || state.entry_batch.is_some() || state.zone_rules.as_ref().is_some_and(|z| z.has_checkpoint())
@@ -394,9 +397,11 @@ fn prior_schema180_state_supported(state: &State) -> bool {
         || !state.ordering_triggers.is_empty()
         || state.copy_recipes.as_ref().is_some_and(|rows| !rows.is_empty())
         || state.temporary_copies.as_ref().is_some_and(|rows| !rows.is_empty())
-        || state.objects.iter().any(|o| o.card.aura_artifact_or_non_aura_enchantment()
-            || o.card.name() == "Variable Chaser // Arc of Fortune"
-            || o.card.name() == "Arc of Fortune")
+        || state.objects.iter().any(|o| new_card(o.card))
+        || state.manifest.as_ref().is_some_and(|manifest| {
+            manifest.permanents.iter().chain(manifest.spells.iter())
+                .any(|row| new_card(row.underlying))
+        })
     { return false; }
     if let Some(rollback) = &state.cast_rollback {
         if !rollback.events.is_empty() || rollback.replay.is_some() || rollback.capture.is_some()
@@ -414,6 +419,43 @@ fn prior_schema180_state_supported(state: &State) -> bool {
         || state.manifest.as_ref().is_some_and(|s| !s.deaths.is_empty())
     { return false; }
     true
+}
+
+#[test]
+fn schema180_rejects_hidden_manifest_underlying_in_live_and_rollback_state() {
+    for player in [Player::P0, Player::P1] {
+        for name in ["Puppet Crafting", "Variable Chaser // Arc of Fortune"] {
+            let mut g = scenario(player);
+            let id = put(&mut g, player, "Bear Cub", Zone::Library);
+            let physical = Card::from_name(name).unwrap();
+            g.state.objects[id as usize].card = physical;
+            let movement = g.manifest_entry(g.object_ref(id), player).unwrap();
+            g.stage_entries(vec![movement], None);
+            assert!(!g.advance_entries());
+            assert!(g.is_face_down(g.object_ref(id)));
+            assert_ne!(g.state.objects[id as usize].card, physical);
+            for viewer in [player, player.other()] {
+                let view = serde_json::to_string(&g.observe(viewer)).unwrap();
+                assert!(project_prior_schema180(&view).is_ok());
+            }
+            assert!(!prior_schema180_state_supported(&g.state));
+            let saved = g.snapshot();
+            g.begin_attack_rollback(player);
+            // Change the live underlying face while retaining its old value in
+            // the checkpoint; prior-schema compatibility must inspect both.
+            g.state.manifest.as_mut().unwrap().permanents[0].underlying = Card::from_name("Bear Cub").unwrap();
+            assert!(!prior_schema180_state_supported(&g.state));
+            g.state.cast_rollback = None;
+            assert!(prior_schema180_state_supported(&g.state));
+            g.restore(&saved).unwrap();
+            assert!(!prior_schema180_state_supported(&g.state));
+            // Exercise the separate face-down spell storage contract too.
+            let manifest = g.state.manifest.as_mut().unwrap();
+            let face = manifest.permanents.pop().unwrap();
+            manifest.spells.push(face);
+            assert!(!prior_schema180_state_supported(&g.state));
+        }
+    }
 }
 
 #[test]
