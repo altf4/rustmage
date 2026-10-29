@@ -7,7 +7,11 @@ fn solitary_cell_requires_a_legendary_discard_and_preserves_private_hand_and_rol
         let cell = put(&mut g, p, "Solitary Cell", Zone::Battlefield);
         let nonlegend = put(&mut g, p, "Bear Cub", Zone::Hand);
         let foreign = put(&mut g, p.other(), "Ajani, Caller of the Pride", Zone::Hand);
-        let action = Action::AnnounceActivate { card: cell, ability: 0, counter_payment: Counters::default() };
+        let action = Action::AnnounceActivate {
+            card: cell,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
         reject(&mut g, action.clone());
         let legend = put(&mut g, p, "Ajani, Caller of the Pride", Zone::Hand);
         assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == legend));
@@ -19,12 +23,24 @@ fn solitary_cell_requires_a_legendary_discard_and_preserves_private_hand_and_rol
         let own_ref = g.object_ref(legend);
         let nonlegend_ref = g.object_ref(nonlegend);
         let foreign_ref = g.object_ref(foreign);
-        reject(&mut g, Action::ChooseAdditionalCost { object: nonlegend_ref });
-        reject(&mut g, Action::ChooseAdditionalCost { object: foreign_ref });
+        reject(
+            &mut g,
+            Action::ChooseAdditionalCost {
+                object: nonlegend_ref,
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseAdditionalCost {
+                object: foreign_ref,
+            },
+        );
         let saved = g.snapshot();
         super::super::contracts::branch_contract(g.clone());
         for replay in 0..2 {
-            if replay == 1 { g.restore(&saved).unwrap(); }
+            if replay == 1 {
+                g.restore(&saved).unwrap();
+            }
             act(&mut g, Action::ChooseAdditionalCost { object: own_ref });
             pay(&mut g);
             assert!(g.object_view(cell).tapped);
@@ -48,12 +64,32 @@ fn solitary_cell_exiles_only_opposing_small_nonlands_and_returns_on_departure() 
         g.move_object(cell, Zone::Battlefield);
         g.prepare_triggers();
         for _ in 0..32 {
-            if g.legal_actions().contains(&Action::ChooseTarget { target: Target::Card(target) }) { break; }
-            choose(&mut g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+            if g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(target),
+            }) {
+                break;
+            }
+            choose(&mut g, |a| {
+                matches!(a, Action::Pass | Action::PutTrigger { .. })
+            });
         }
-        for id in [own, land, huge] { reject(&mut g, Action::ChooseTarget { target: Target::Card(id) }); }
-        act(&mut g, Action::ChooseTarget { target: Target::Card(target) });
-        if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+        for id in [own, land, huge] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(id),
+                },
+            );
+        }
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
         settle(&mut g);
         assert_eq!(g.object_view(target).zone, Zone::Exile);
         g.move_object(cell, Zone::Graveyard);

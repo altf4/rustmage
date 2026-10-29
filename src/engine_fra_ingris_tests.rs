@@ -23,7 +23,9 @@ fn ingris_triggers_for_each_attacker_with_departed_creature_damage_lki() {
         let saved = g.snapshot();
         super::super::contracts::branch_contract(g.clone());
         for replay in 0..2 {
-            if replay == 1 { g.restore(&saved).unwrap(); }
+            if replay == 1 {
+                g.restore(&saved).unwrap();
+            }
             settle(&mut g);
             assert_eq!(g.state.players[p.other().index()].life, enemy_life - 2);
             assert_eq!(g.state.players[p.index()].life, own_life + 1);
@@ -40,12 +42,30 @@ fn ingris_only_observes_its_controllers_attackers_and_grants_haste_to_current_cr
         let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         assert_eq!(stats(&g, ingris), (1, 4));
         assert!(g.keywords(ingris).contains(Keywords::FLYING));
-        act(&mut g, Action::AnnounceActivate { card: ingris, ability: 0, counter_payment: Counters::default() });
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: ingris,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
         pay(&mut g);
         g.move_object(ingris, Zone::Graveyard);
         settle(&mut g);
-        let cadet = g.state.objects.iter().enumerate().find_map(|(id, o)|
-            (o.is_token() && o.zone == Zone::Battlefield && o.card == Card::test_index(5298) && o.controller == p).then_some(id as CardId)).unwrap();
+        let cadet = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(id, o)| {
+                (o.is_token()
+                    && o.zone == Zone::Battlefield
+                    && o.card == Card::test_index(5298)
+                    && o.controller == p)
+                    .then_some(id as CardId)
+            })
+            .unwrap();
         assert!(g.keywords(cadet).contains(Keywords::HASTE));
         assert!(g.keywords(own).contains(Keywords::HASTE));
         assert!(!g.keywords(enemy).contains(Keywords::HASTE));
@@ -67,6 +87,12 @@ fn ingris_does_not_observe_opponents_attacking_creatures() {
         g.state.pending = Pending::Attackers;
         act(&mut g, Action::Attack { card: attacker });
         act(&mut g, Action::FinishAttackers);
-        assert!(!g.state.pending_triggers.iter().chain(g.state.stack.iter()).any(|item| item.card == ingris));
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .chain(g.state.stack.iter())
+                .any(|item| item.card == ingris)
+        );
     }
 }

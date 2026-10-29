@@ -7325,3 +7325,24 @@ mod engine_fra_craftwork_followup;
 
 #[path = "engine_fra_edgar_followup.rs"]
 mod engine_fra_edgar_followup;
+
+#[path = "engine_fra_violent_echoes_independent_tests.rs"]
+mod engine_fra_violent_echoes_independent_tests;
+
+#[path = "engine_fra_solitary_cell_independent_tests.rs"]
+mod engine_fra_solitary_cell_independent_tests;
+
+#[path = "engine_fra_ingris_independent_tests.rs"]
+mod engine_fra_ingris_independent_tests;
+
+#[path = "engine_fra_tether_technician_independent_tests.rs"]
+mod engine_fra_tether_technician_independent_tests;
+
+#[path = "engine_fra_violent_echoes_tests.rs"]
+mod engine_fra_violent_echoes_tests;
+
+#[path = "engine_fra_solitary_cell_tests.rs"]
+mod engine_fra_solitary_cell_tests;
+
+#[path = "engine_fra_ingris_tests.rs"]
+mod engine_fra_ingris_tests;
