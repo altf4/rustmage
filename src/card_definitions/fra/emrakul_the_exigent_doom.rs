@@ -14,5 +14,17 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[Instruction::CounterRelatedUnlessSacrifice(3)],
         },
     ],
+    activated: &[ActivatedAbility {
+        exhaust: false, guard: ActivationGuard::Always, origin: ActivationOrigin::Hand,
+        cycling: false, once_per_turn: false, sorcery: false,
+        cost: ActivationCost { colored: [0; 6], generic: 3, alternatives: &[], additional: None,
+            mana_component: true, tap: false, sacrifice: false, exile_self: true,
+            discard: false, life: 0, remove: None, loyalty: None },
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield, kinds: 2, relation: -1, other: false,
+            nonland: false, tapped: false, min_mana: 0, max_mana: u32::MAX,
+        })),
+        program: &[Instruction::GrantLandManaUntilSourceCast],
+    }],
     ..CardRules::EMPTY
 };

@@ -561,6 +561,12 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             }
             let action = match row.kind {
                 SourceLinkedEffectKind::RemoveAbilities | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn => LayerSixAction::Remove,
+                SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast => LayerSixAction::GrantEach(vec![LayerSixGrant {
+                    recipient: row.recipient.card, keywords: Keywords::NONE, abilities: Vec::new(),
+                    mana: vec![GrantedManaAbility { source: row.source,
+                        production: ManaProduction::Fixed([0, 0, 0, 0, 0, 2]),
+                        sacrifice: false, subtype_derived: false }],
+                }]),
                 SourceLinkedEffectKind::GrantHexproof => LayerSixAction::Grant {
                     keywords: Keywords::HEXPROOF,
                     abilities: Vec::new(),

@@ -1903,6 +1903,8 @@ pub(crate) enum Instruction {
     UntapControlledTokens,
     /// Untap every land currently controlled by the resolving player.
     UntapControlledLands,
+    /// Grant target land colorless mana until the paid exiled source is cast.
+    GrantLandManaUntilSourceCast,
     UntapPlayerCreatures(PlayerSet),
     /// Controlled creatures other than exact objects in the selected target group.
     PutOtherControlledCreatureCounters {

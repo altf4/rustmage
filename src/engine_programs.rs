@@ -1397,6 +1397,10 @@ impl Game {
         // Every committed path classifies the selected spell face, including
         // manual direct-payment insertion. The physical front may differ.
         let card = stack.map_or(card, |i| self.state.stack[i].source_card);
+        if let Some(index) = stack {
+            let item = self.state.stack[index].clone();
+            self.expire_land_mana_on_exile_cast(&item);
+        }
         self.consume_resolution_cast_quota(caster, stack);
         self.consume_next_spell_uncounterable(caster, stack);
         self.consume_turn_cast_grants(caster, card);
@@ -5423,6 +5427,7 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::GrantLandManaUntilSourceCast => self.grant_land_mana_until_paid_source_cast(&item),
                 Instruction::UntapControlledLands => {
                     let ids: Vec<_> = self.state.objects.iter().enumerate().filter_map(|(id, object)| {
                         (object.zone == Zone::Battlefield && object.controller == item.controller

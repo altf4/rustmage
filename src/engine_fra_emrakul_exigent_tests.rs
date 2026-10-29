@@ -102,3 +102,37 @@ fn emrakul_ward_sacrifice_three_is_selected_before_atomic_payment() {
         }
     }
 }
+
+#[test]
+fn emrakul_hand_exile_grants_land_mana_until_that_exile_incarnation_is_cast() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        let land = put(&mut g, player.other(), "Forest", Zone::Battlefield);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(land) });
+        pay(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        let exile_ref = g.object_ref(source);
+        settle(&mut g);
+        assert!(g.can_play_exiled(player, source));
+        let controller = g.object_ref(land);
+        g.change_controller(controller, player);
+        g.state.players[player.index()].mana = [0; 6];
+        let action = Action::TapGrantedMana { card: land, grantor: exile_ref, production: [0, 0, 0, 0, 0, 2] };
+        assert!(g.legal_actions().contains(&action));
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            act(&mut g, action.clone());
+            assert_eq!(g.state.players[player.index()].mana, [0, 0, 0, 0, 0, 2]);
+            g.state.objects[land as usize].tapped = false;
+            g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 10];
+            act(&mut g, Action::AnnounceExile { card: source });
+            pay(&mut g);
+            assert!(!g.legal_actions().contains(&action));
+            g.restore(&saved).unwrap();
+        }
+    }
+}

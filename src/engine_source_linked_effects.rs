@@ -8,6 +8,8 @@ pub enum SourceLinkedEffectKind {
     /// Source-independent removal lasting until cleanup.
     RemoveAbilitiesUntilEndOfTurn,
     GrantHexproof,
+    /// Independent land grant, ending when the captured exile incarnation is cast.
+    GrantTwoColorlessUntilSourceCast,
     PreventDamageBy,
     PreventUntap,
     Control,
@@ -24,7 +26,7 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
     world: &W,
     row: &SourceLinkedEffectView,
 ) -> bool {
-    (row.kind == SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
+    (matches!(row.kind, SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn | SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast)
         || (world.object(row.source.card).zone == Zone::Battlefield
             && world.reference(row.source.card) == row.source))
         && (row.kind == SourceLinkedEffectKind::PreventDamageBy
@@ -79,6 +81,38 @@ impl Game {
             self.refresh_copy_grant_availability();
         }
     }
+    pub(super) fn grant_land_mana_until_paid_source_cast(&mut self, item: &SpellView) {
+        let Some(source_move) = item.source_move.as_ref() else { return; };
+        if source_move.origin != Zone::Hand || source_move.destination != Zone::Exile { return; }
+        let source = source_move.after;
+        let recipients: Vec<_> = self.keyword_subjects(item, Subject::Targets).into_iter()
+            .filter(|&id| self.on_battlefield(id) && self.current_kinds(id) & 2 != 0)
+            .map(|id| self.object_ref(id)).collect();
+        if recipients.is_empty() { return; }
+        let timestamp = self.next_role_timestamp();
+        for recipient in recipients {
+            self.state.roles.get_or_insert_default().source_linked_effects.push(SourceLinkedEffectView {
+                source, recipient, controller: item.controller,
+                kind: SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast, timestamp,
+            });
+        }
+        if self.object_ref(source.card) == source && self.state.objects[source.card as usize].zone == Zone::Exile {
+            let index = self.state.exile_permissions.partition_point(|row| row.object.card < source.card);
+            self.state.exile_permissions.insert(index, ExilePlayPermission {
+                object: source, player: item.controller, expiry: ExilePlayExpiry::WhileExiled,
+                spend_any_mana: false, cast_only: true, exile_on_graveyard: false,
+                life_instead_of_mana: false, without_paying_mana_cost: false, requires_subtype: None,
+            });
+        }
+    }
+    pub(super) fn expire_land_mana_on_exile_cast(&mut self, item: &SpellView) {
+        if !item.cast.is_some_and(|cast| cast.origin == Zone::Exile) { return; }
+        let Some(generation) = item.object.generation.checked_sub(1) else { return; };
+        let before = ObjectRef { card: item.object.card, generation };
+        if let Some(roles) = &mut self.state.roles {
+            roles.source_linked_effects.retain(|row| row.kind != SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast || row.source != before);
+        }
+    }
     pub(super) fn remove_target_abilities_until_end_of_turn(&mut self, item: &SpellView) {
         let recipients: Vec<_> = self.keyword_subjects(item, Subject::Targets).into_iter()
             .filter(|&id| self.on_battlefield(id)).map(|id| self.object_ref(id)).collect();
@@ -103,7 +137,7 @@ impl Game {
     pub(super) fn forget_source_linked_effects(&mut self, reference: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
             state.source_linked_effects.retain(|row| {
-                (row.source != reference || row.kind == SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn)
+                (row.source != reference || matches!(row.kind, SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn | SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast))
                     && (row.recipient != reference
                         || row.kind == SourceLinkedEffectKind::PreventDamageBy)
             });

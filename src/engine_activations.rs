@@ -798,7 +798,13 @@ impl Game {
             item.source_attachment = source.attached_to;
         }
         if cost.exile_self {
-            self.move_object(item.card, Zone::Exile);
+            let event = self.move_object(item.card, Zone::Exile);
+            if definition.program.contains(&Instruction::GrantLandManaUntilSourceCast) && event.moved {
+                item.source_move = Some(Box::new(TriggerSourceMoveView {
+                    before: event.before.reference, after: event.after,
+                    origin: event.before.zone, destination: event.destination,
+                }));
+            }
         } else if cost.discard {
             self.discard_batch(&[item.card], definition.cycling.then_some(item.object));
         } else if cost.sacrifice {
