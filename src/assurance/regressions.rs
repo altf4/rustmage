@@ -386,6 +386,9 @@ fn project_prior_schema182(input: &str) -> Result<String, String> {
     fn check(value: &serde_json::Value) -> Result<(), String> {
         match value {
             serde_json::Value::Array(rows) => for row in rows { check(row)?; },
+            serde_json::Value::String(name) if Card::from_name(name).is_some_and(schema182_new_card) => {
+                return Err("card identity or command emblem behavior differs from the schema-181 baseline".to_owned());
+            }
             serde_json::Value::Object(map) => {
                 if map.contains_key("static_rule") {
                     return Err("static_rule has no schema-181 representation".to_owned());
@@ -403,7 +406,11 @@ fn project_prior_schema182(input: &str) -> Result<String, String> {
 
 /// These authored rules first became representable in schema 182.
 fn schema182_new_card(card: Card) -> bool {
-    matches!(card.identity(), "Tomik, Orzhov Lawmage")
+    matches!(card.identity(), "Tomik, Orzhov Lawmage" | "Ajani Resolute" | "Vivien Reid"
+        | "@token/fra-ajani-pridemate" | "@emblem/fra-ajani-resolute")
+        // The shared command-zone change also affects previously existing
+        // emblems with printed continuous groups, including Vivien Reid's.
+        || (card.is_emblem() && !card.static_ability_groups().is_empty())
 }
 
 fn schema182_recipe_supported(recipe: &CopyRecipe) -> bool {
@@ -2526,6 +2533,48 @@ fn schema182_rejects_real_static_grant_nested_in_packet_json() {
             let walker_view = view.objects.iter().find(|object| object.id == walker).unwrap();
             let nested = serde_json::json!({"copy_event": {"spell": {"source_view": walker_view}}});
             assert!(project_prior_schema182(&nested.to_string()).is_err());
+        }
+    }
+}
+
+#[test]
+fn schema181_rejects_ajani_and_older_live_emblem_semantics_in_hidden_state() {
+    for player in [Player::P0, Player::P1] {
+        for changed in [Card::from_name("Ajani Resolute").unwrap(), Card::test_index(5462), Card::test_index(5463), Card::from_name("Vivien Reid").unwrap()] {
+            let mut g = scenario(player);
+            let id = put(&mut g, player, "Bear Cub", Zone::Hand);
+            let object = g.object_ref(id);
+            let bear = Card::from_name("Bear Cub").unwrap();
+            assert!(prior_schema182_state_supported(&g.state));
+            let hidden = CopyRecipe::new(bear).with_faces(copies::CopyFaces::Double {
+                physical_front: bear, front: bear, back: changed, back_up: false,
+            });
+            g.set_copy_recipe(object, hidden);
+            assert!(!prior_schema182_state_supported(&g.state));
+            g.begin_attack_rollback(player);
+            g.set_copy_recipe(object, CopyRecipe::new(bear));
+            assert!(!prior_schema182_state_supported(&g.state));
+            let saved = g.snapshot();
+            g.state.cast_rollback = None;
+            assert!(prior_schema182_state_supported(&g.state));
+            g.restore(&saved).unwrap();
+            assert!(!prior_schema182_state_supported(&g.state));
+            for viewer in [player, player.other()] {
+                let observation = serde_json::to_string(&g.observe(viewer)).unwrap();
+                assert!(project_prior_schema182(&observation).is_ok());
+                // The hidden recipe is absent from wire views; owned-state audit
+                // must reject it even when projection of the view alone succeeds.
+                assert!(!prior_schema182_state_supported(&g.state));
+            }
+        }
+        for emblem in [Card::test_index(5463), Card::test_index(5338)] {
+            let mut g = scenario(player);
+            g.create_emblem(player, emblem);
+            assert!(!prior_schema182_state_supported(&g.state));
+            for viewer in [player, player.other()] {
+                let observation = serde_json::to_string(&g.observe(viewer)).unwrap();
+                assert!(project_prior_schema182(&observation).is_err());
+            }
         }
     }
 }
