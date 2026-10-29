@@ -5,6 +5,15 @@ fn face_create(g: &mut Game, p: Player, target: Player) {
     cast(g, spell, Some(Target::Player(target)));
     settle(g);
 }
+fn face_finish_end_step(g: &mut Game) {
+    for _ in 0..128 {
+        g.prepare_triggers();
+        if g.state.pending == Pending::Priority && g.state.stack.is_empty()
+            && g.state.pending_triggers.is_empty() && g.state.resolving.is_none() { return; }
+        choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    panic!("Face Yourself triggers did not resolve: {:?}", g.state.pending);
+}
 fn face_tokens(g: &Game, p: Player) -> Vec<CardId> {
     g.state.objects.iter().enumerate().filter_map(|(id, o)|
         (o.zone == Zone::Battlefield && o.controller == p && o.is_copy_token())
@@ -28,7 +37,7 @@ fn face_yourself_doubled_tokens_keep_their_copiable_sacrifice_abilities() {
         assert_eq!(g.state.pending_triggers.iter().filter(|s| s.kind == StackKind::CopyEndStepConditionalSacrifice).count(), 2);
         let saved = g.snapshot();
         for _ in 0..2 {
-            settle(&mut g);
+            face_finish_end_step(&mut g);
             assert!(copies.iter().all(|&token| !g.on_battlefield(token)));
             g.restore(&saved).unwrap();
         }
@@ -52,7 +61,7 @@ fn face_yourself_copying_a_copy_retains_both_sacrifice_abilities() {
         g.begin_step(Step::End);
         assert_eq!(g.state.pending_triggers.iter().filter(|s|
             s.object == g.object_ref(inherited) && s.kind == StackKind::CopyEndStepConditionalSacrifice).count(), 2);
-        settle(&mut g);
+        face_finish_end_step(&mut g);
         assert!(!g.on_battlefield(inherited));
     }
 }
@@ -94,7 +103,7 @@ fn face_yourself_losing_abilities_before_or_after_trigger() {
             let count = g.state.pending_triggers.iter().filter(|s|
                 s.object == g.object_ref(token) && s.kind == StackKind::CopyEndStepConditionalSacrifice).count();
             assert_eq!(count, usize::from(!before_step));
-            settle(&mut g);
+            face_finish_end_step(&mut g);
             assert_eq!(g.on_battlefield(token), before_step);
         }
     }
