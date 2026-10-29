@@ -469,7 +469,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     StackKind::ActivatedAbility { ability: 1 }
-                        if s.source_card.name() == NAMES[9] =>
+                        if s.source().is_some_and(|source| source.card.name() == NAMES[9]) =>
                     {
                         if let Some(v) = exact(&a, s.object) {
                             let e = ledger.entry(s.object).or_default();

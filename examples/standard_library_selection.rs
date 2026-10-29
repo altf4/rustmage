@@ -639,7 +639,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Action::ChooseMode { mode } = action
                 && b.announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == NAMES[5])
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == NAMES[5]))
             {
                 m.counter_modes[usize::from(mode)] += 1;
             }
@@ -661,7 +661,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 action,
                 Action::PayResolutionMana { .. } | Action::DeclineResolutionMana
             ) && let Some(root) = &b.resolving
-                && root.source_card.name() == NAMES[5]
+                && root.source().is_some_and(|source| source.card.name() == NAMES[5])
                 && root.mode == Some(1)
             {
                 let victim = root.targets[0].object.unwrap();

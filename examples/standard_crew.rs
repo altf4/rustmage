@@ -506,7 +506,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert_eq!(g.snapshot(), before);
             }
             if let (Some(ann), Action::PayCosts { .. }) = (&o.announcing, &action) {
-                if ann.source_card.name() == NAMES[i] {
+                if ann.source().is_some_and(|source| source.card.name() == NAMES[i]) {
                     if ann.kind == StackKind::Spell {
                         assert!(!ann.source_card.is_creature());
                         s[p.index()].source = Some(ann.card);

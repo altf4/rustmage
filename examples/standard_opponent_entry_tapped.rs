@@ -85,7 +85,7 @@ fn verify(s: &SpellView, b: &Observation, a: &Observation) -> usize {
                 a.players[s.controller.index()].life,
                 b.players[s.controller.index()].life + 1
             );
-            usize::from(s.source_card.name() == NAMES[0])
+            usize::from(s.source().is_some_and(|source| source.card.name() == NAMES[0]))
         }
         "Helpful Hunter" => {
             assert_eq!(
@@ -197,7 +197,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Action::ChooseSpellCost { cost } = &action
                 && b.announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == NAMES[1])
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == NAMES[1]))
             {
                 hybrid[usize::from(*cost)] += 1;
             }

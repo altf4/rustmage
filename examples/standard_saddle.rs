@@ -392,7 +392,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
             if let (Some(s), Action::PayCosts { .. }) = (&b.announcing, &action)
-                && s.source_card.name() == NAMES[i]
+                && s.source().is_some_and(|source| source.card.name() == NAMES[i])
                 && s.kind == StackKind::Spell
             {
                 casts[i][p.index()] += 1;
@@ -407,7 +407,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             if action == Action::Pass
                 && let Some(s) = b.stack.last()
-                && s.source_card.name() == NAMES[i]
+                && s.source().is_some_and(|source| source.card.name() == NAMES[i])
                 && matches!(s.kind, StackKind::TriggeredAbility { .. })
                 && (i == 15 || attacked.contains(&s.object))
                 && !done[s.controller.index()]

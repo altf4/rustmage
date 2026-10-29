@@ -52,7 +52,7 @@ fn choose(
             Action::Concede => -1000,
             Action::Pass
                 if o.stack.last().is_some_and(|s| {
-                    s.source_card.name() == RESCUE
+                    s.source().is_some_and(|source| source.card.name() == RESCUE)
                         && matches!(s.kind, StackKind::ActivatedAbility { .. })
                 }) =>
             {
@@ -268,7 +268,7 @@ fn main() {
             if let Some(s) = cost
                 && let StackKind::ActivatedAbility { ability } = s.kind
             {
-                if s.source_card.name() == ZEI && ability == 1 {
+                if s.source().is_some_and(|source| source.card.name() == ZEI) && ability == 1 {
                     assert!(
                         after
                             .objects
@@ -276,7 +276,7 @@ fn main() {
                             .any(|b| b.id == s.card && b.zone == Zone::Graveyard)
                     );
                 }
-                if s.source_card.name() == RESCUE {
+                if s.source().is_some_and(|source| source.card.name() == RESCUE) {
                     assert!(
                         after
                             .objects
@@ -291,7 +291,7 @@ fn main() {
             {
                 if let Some(target) = s.targets.first().and_then(|t| t.object) {
                     if let Some(old) = before.objects.iter().find(|b| b.reference == target) {
-                        let zone = if s.source_card.name() == RESCUE {
+                        let zone = if s.source().is_some_and(|source| source.card.name() == RESCUE) {
                             Zone::Battlefield
                         } else {
                             Zone::Graveyard
@@ -326,7 +326,7 @@ fn main() {
                             recovered.insert(s.source_card.name());
                         }
                     }
-                } else if s.source_card.name() == ZEI {
+                } else if s.source().is_some_and(|source| source.card.name() == ZEI) {
                     let p = s.controller.index();
                     assert_eq!(
                         after.players[p].cards_drawn_this_turn,
@@ -334,7 +334,7 @@ fn main() {
                             + u64::from(before.players[p].library_count > 0)
                     );
                     loot_checks += 1;
-                } else if s.source_card.name() == DOWSER
+                } else if s.source().is_some_and(|source| source.card.name() == DOWSER)
                     && let Some(b) = after
                         .objects
                         .iter()

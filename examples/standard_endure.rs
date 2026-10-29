@@ -336,7 +336,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             {
                 if a.kind == StackKind::Spell
                     && a.controller == p
-                    && a.source_card.name() == NAMES[i]
+                    && a.source().is_some_and(|source| source.card.name() == NAMES[i])
                     && !s.paid
                 {
                     s.paid = true;

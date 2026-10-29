@@ -526,7 +526,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let (Some(ann), Action::PayCosts { .. }) = (&o.announcing, &action)
                 && ann.kind == StackKind::Spell
             {
-                if ann.source_card.name() == NAMES[i] {
+                if ann.source().is_some_and(|source| source.card.name() == NAMES[i]) {
                     s[p.index()].source = Some(ann.card);
                     casts[i][p.index()] += 1;
                 }

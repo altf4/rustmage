@@ -249,7 +249,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             for packet in before.stack.iter().chain(before.announcing.iter()) {
                 if packet.kind == StackKind::Spell
-                    && packet.source_card.name() == NAMES[index]
+                    && packet.source().is_some_and(|source| source.card.name() == NAMES[index])
                     && seen.insert(packet.id)
                 {
                     casts[index] += 1;

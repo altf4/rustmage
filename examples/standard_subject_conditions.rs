@@ -197,7 +197,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let a = before.actions[j].clone();
             for packet in before.stack.iter().chain(before.announcing.iter()) {
                 if packet.kind == StackKind::Spell
-                    && packet.source_card.name() == NAMES[index]
+                    && packet.source().is_some_and(|source| source.card.name() == NAMES[index])
                     && seen.insert((seed, packet.id))
                 {
                     casts[index] += 1;
@@ -222,7 +222,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 rejects += 2;
             }
             let packet = before.stack.last().filter(|s| {
-                s.source_card.name() == NAMES[index]
+                s.source().is_some_and(|source| source.card.name() == NAMES[index])
                     && (matches!(index, 6 | 8) || s.kind != StackKind::Spell)
             });
             let subject = packet

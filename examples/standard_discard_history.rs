@@ -129,16 +129,16 @@ fn main() {
                 .stack
                 .last()
                 .filter(|s| {
-                    s.source_card.name() == MISTY
+                    s.source().is_some_and(|source| source.card.name() == MISTY)
                         && matches!(s.kind, StackKind::ActivatedAbility { .. })
-                        || s.source_card.name() == GOBLIN
+                        || s.source().is_some_and(|source| source.card.name() == GOBLIN)
                             && matches!(s.kind, StackKind::TriggeredAbility { .. })
                 })
                 .cloned();
             let resolving = before
                 .resolving
                 .as_ref()
-                .filter(|s| s.source_card.name() == GOBLIN)
+                .filter(|s| s.source().is_some_and(|source| source.card.name() == GOBLIN))
                 .cloned();
             let discard_action = matches!(a, Action::PayCosts { .. } | Action::Discard { .. });
             let saved = g.snapshot();

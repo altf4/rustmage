@@ -225,7 +225,7 @@ fn score(o: &Observation, a: &Action, i: usize, p: Player, s: &Pilot, round: usi
             }
             if o.announcing
                 .as_ref()
-                .is_none_or(|a| a.source_card.name() != NAMES[i])
+                .is_none_or(|a| a.source().is_none_or(|source| source.card.name() != NAMES[i]))
             {
                 return 1000;
             }
@@ -524,7 +524,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             } = action
                 && o.announcing
                     .as_ref()
-                    .is_some_and(|a| a.source_card.name() == NAMES[i])
+                    .is_some_and(|a| a.source().is_some_and(|source| source.card.name() == NAMES[i]))
                 && !(s.finished && i == 9)
             {
                 s.targets.push(id);
@@ -542,7 +542,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if matches!(action, Action::PayCosts { .. })
                 && let Some(a) = &o.announcing
             {
-                if a.source_card.name() == NAMES[i] && a.kind == StackKind::Spell {
+                if a.source().is_some_and(|source| source.card.name() == NAMES[i]) && a.kind == StackKind::Spell {
                     s.paid = true;
                     s.source = Some(a.card);
                     s.library = o.players[p.index()].library_count;
@@ -584,7 +584,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if s.finished
                     && i == 9
-                    && a.source_card.name() == NAMES[i]
+                    && a.source().is_some_and(|source| source.card.name() == NAMES[i])
                     && matches!(a.kind, StackKind::ActivatedAbility { .. })
                 {
                     s.residual_paid = true;

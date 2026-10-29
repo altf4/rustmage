@@ -310,7 +310,7 @@ fn score(o: &Observation, a: &Action, p: Player, i: usize, s: &Pilot, high: bool
                 && s.stage < 5
                 && o.announcing
                     .as_ref()
-                    .is_some_and(|v| v.source_card.name() == NAMES[i])
+                    .is_some_and(|v| v.source().is_some_and(|source| source.card.name() == NAMES[i]))
             {
                 if *payment
                     == if high {
@@ -581,7 +581,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && o.mana_payment.is_some()
                 && o.announcing
                     .as_ref()
-                    .is_some_and(|v| v.source_card.name() == NAMES[i])
+                    .is_some_and(|v| v.source().is_some_and(|source| source.card.name() == NAMES[i]))
             {
                 let payment = if high {
                     [1, 1, 1, 1, 1, 0]

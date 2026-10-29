@@ -643,7 +643,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && let Some(a) = &o.announcing
                 && a.kind == StackKind::Spell
                 && a.controller == p
-                && a.source_card.name() == NAMES[i]
+                && a.source().is_some_and(|source| source.card.name() == NAMES[i])
                 && !s.done
             {
                 let after = g.observe(p);

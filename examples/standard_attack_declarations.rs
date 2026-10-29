@@ -286,7 +286,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Action::ChooseSpellCost { cost } = &action
                 && b.announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == NAMES[10])
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == NAMES[10]))
             {
                 hybrid[usize::from(*cost)] += 1;
             }

@@ -137,7 +137,7 @@ fn score(o: &Observation, a: &Action, i: usize, p: Player, s: &Pilot) -> i32 {
             if i == 4
                 && o.announcing
                     .as_ref()
-                    .is_some_and(|a| a.source_card.name() == NAMES[i])
+                    .is_some_and(|a| a.source().is_some_and(|source| source.card.name() == NAMES[i]))
             {
                 if Some(*id) == s.source { 2200 } else { 1000 }
             } else if v.owner != actor && v.card.is_creature() {
@@ -296,7 +296,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if matches!(action, Action::PayCosts { .. })
                 && let Some(ann) = &o.announcing
             {
-                if ann.source_card.name() == NAMES[i] && ann.kind == StackKind::Spell && !s.paid {
+                if ann.source().is_some_and(|source| source.card.name() == NAMES[i]) && ann.kind == StackKind::Spell && !s.paid {
                     s.paid = true;
                     s.source = Some(ann.card);
                     casts[i][p.index()] += 1;
@@ -305,7 +305,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 }
                 if i == 6
-                    && ann.source_card.name() == NAMES[i]
+                    && ann.source().is_some_and(|source| source.card.name() == NAMES[i])
                     && matches!(ann.kind, StackKind::ActivatedAbility { .. })
                 {
                     s.activation = true;
@@ -432,7 +432,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && !s.damage_done
                 && after.stack.iter().all(|a| {
                     !matches!(a.kind, StackKind::ActivatedAbility { .. })
-                        || a.source_card.name() != NAMES[i]
+                        || a.source().is_none_or(|source| source.card.name() != NAMES[i])
                 })
                 && let Some(r) = s.target
             {

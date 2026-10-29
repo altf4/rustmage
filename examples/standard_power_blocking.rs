@@ -261,7 +261,7 @@ fn main() {
                         abilities.insert(root.source_card.name());
                         grants += 1;
                     }
-                } else if root.source_card.name() == PET
+                } else if root.source().is_some_and(|source| source.card.name() == PET)
                     && let Some(target) = root.targets.first().and_then(|t| t.object)
                     && before
                         .objects

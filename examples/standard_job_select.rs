@@ -886,7 +886,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             {
                 if actor == p
                     && packet.kind == StackKind::Spell
-                    && packet.source_card.name() == NAMES[i]
+                    && packet.source().is_some_and(|source| source.card.name() == NAMES[i])
                     && !s.paid
                 {
                     s.paid = true;
