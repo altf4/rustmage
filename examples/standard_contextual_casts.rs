@@ -386,7 +386,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && !a.stack.iter().any(|x| x.id == s.id)
             {
                 if s.kind == StackKind::Spell {
-                    if s.source_card.name() == "Giant Growth"
+                    if s.source().is_some_and(|source| source.card.name() == "Giant Growth")
                         && let Some(r) = s.targets.first().and_then(|t| t.object)
                         && exact(&a, r).is_some()
                     {

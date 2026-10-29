@@ -102,7 +102,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
                 after.players[i].life_gain_events_this_turn,
                 before.players[i].life_gain_events_this_turn + u64::from(amount > 0)
             );
-            if item.source_card.name() == "Shimmercreep" {
+            if item.source().is_some_and(|source| source.card.name() == "Shimmercreep") {
                 assert_eq!(
                     after.players[p.other().index()].life,
                     before.players[p.other().index()].life - amount
@@ -175,7 +175,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         }
         ("Glister Bairn", StackKind::TriggeredAbility { ability: 0 })
         | ("Frontline Rush", StackKind::Spell)
-            if item.source_card.name() == "Glister Bairn" || item.mode == Some(1) =>
+            if item.source().is_some_and(|source| source.card.name() == "Glister Bairn") || item.mode == Some(1) =>
         {
             let Some(bound) = item.targets.first() else {
                 return 0;
@@ -192,7 +192,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
                 .iter()
                 .find(|o| o.reference == old.reference)
                 .unwrap();
-            let amount = if item.source_card.name() == "Frontline Rush" {
+            let amount = if item.source().is_some_and(|source| source.card.name() == "Frontline Rush") {
                 before
                     .objects
                     .iter()
@@ -272,7 +272,7 @@ fn main() {
             let index = if before
                 .announcing
                 .as_ref()
-                .is_some_and(|a| a.source_card.name() == "Frontline Rush")
+                .is_some_and(|a| a.source().is_some_and(|source| source.card.name() == "Frontline Rush"))
                 && seed % 2 == 0
             {
                 actions

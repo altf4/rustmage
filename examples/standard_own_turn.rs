@@ -76,7 +76,7 @@ fn choose(
                 let b = o.objects.iter().find(|b| b.id == *card).unwrap();
                 if preserve_token && b.card.name() != RESCUE
                     || b.card.name() == RESCUE
-                        && o.stack.iter().any(|s| s.source_card.name() == "Gold Pan")
+                        && o.stack.iter().any(|s| s.source().is_some_and(|source| source.card.name() == "Gold Pan"))
                 {
                     -100
                 } else if !used.contains(&(b.reference, *ability)) {

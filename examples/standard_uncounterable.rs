@@ -76,7 +76,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 None
                             }
                         }),
-                        usize::from(s.source_card.name() == "Spell Pierce"),
+                        usize::from(s.source().is_some_and(|source| source.card.name() == "Spell Pierce")),
                     )
                 };
                 if let Some(victim) = victim

@@ -217,7 +217,7 @@ fn score(o: &Observation, a: &Action, i: usize, seed: usize, casts: &[[u64; 2]; 
             let v = object(*id);
             if o.announcing
                 .as_ref()
-                .is_some_and(|a| a.source_card.name() == "Shock")
+                .is_some_and(|a| a.source().is_some_and(|source| source.card.name() == "Shock"))
                 && matches!(i, 15 | 16)
                 && v.card.name() == NAMES[i]
                 && v.owner == p
@@ -414,7 +414,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && before
                     .announcing
                     .as_ref()
-                    .is_some_and(|v| v.source_card.name() == "Glimpse the Core")
+                    .is_some_and(|v| v.source().is_some_and(|source| source.card.name() == "Glimpse the Core"))
             {
                 modes[usize::from(mode)] += 1;
             }
@@ -536,14 +536,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     zeros += u64::from(f.selected.is_empty());
-                    if packet.source_card.name() == "Spinewoods Armadillo" {
+                    if packet.source().is_some_and(|source| source.card.name() == "Spinewoods Armadillo") {
                         assert_eq!(
                             after.players[actor.index()].life,
                             before.players[actor.index()].life + 3
                         );
                         life3 += 1;
                     }
-                    if packet.source_card.name() == "Call the Mountain Chocobo" {
+                    if packet.source().is_some_and(|source| source.card.name() == "Call the Mountain Chocobo") {
                         let birds = |o: &Observation| {
                             o.objects
                                 .iter()

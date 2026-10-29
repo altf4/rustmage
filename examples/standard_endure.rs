@@ -345,7 +345,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if a.kind == StackKind::Spell
                     && a.controller == p
-                    && a.source_card.name() == "Stab"
+                    && a.source().is_some_and(|source| source.card.name() == "Stab")
                     && !s.done
                     && i == 0
                 {

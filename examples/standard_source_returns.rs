@@ -144,7 +144,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         checks += 1;
                     }
                 }
-                if s.source_card.name() == "Arcanis the Omnipotent"
+                if s.source().is_some_and(|source| source.card.name() == "Arcanis the Omnipotent")
                     && matches!(s.kind, StackKind::ActivatedAbility { ability: 0 })
                     && !live(&after, s.id)
                 {

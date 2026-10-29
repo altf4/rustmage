@@ -117,7 +117,7 @@ fn main() {
             {
                 let item = before.stack.last().unwrap();
                 let p = item.controller.index();
-                if item.source_card.name() == "Professor Dellian Fel"
+                if item.source().is_some_and(|source| source.card.name() == "Professor Dellian Fel")
                     && let StackKind::ActivatedAbility { ability } = item.kind
                 {
                     resolved.insert(ability);

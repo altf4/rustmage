@@ -280,7 +280,7 @@ fn main() {
                         seen.insert(item.source_card.name());
                     }
                     checks += 1;
-                } else if item.source_card.name() == "Voracious Greatshark"
+                } else if item.source().is_some_and(|source| source.card.name() == "Voracious Greatshark")
                     && item.kind == StackKind::Spell
                 {
                     let source = after.objects.iter().find(|o| o.id == item.card).unwrap();
@@ -290,7 +290,7 @@ fn main() {
                 }
             }
             if let Some(item) = &before.resolving
-                && item.source_card.name() == "Spectral Interference"
+                && item.source().is_some_and(|source| source.card.name() == "Spectral Interference")
                 && matches!(
                     action,
                     Action::PayResolutionMana { .. } | Action::DeclineResolutionMana

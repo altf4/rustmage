@@ -284,7 +284,7 @@ fn score(obs: &Observation, a: &Action, hold_drake: bool) -> i32 {
             if obs
                 .announcing
                 .as_ref()
-                .is_some_and(|s| s.source_card.name() == "Venom's Hunger")
+                .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Venom's Hunger"))
                 && target.owner == obs.actor.unwrap()
             {
                 -100

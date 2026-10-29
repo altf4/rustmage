@@ -332,7 +332,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && before
                     .resolving
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Hoverstone Pilgrim")
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Hoverstone Pilgrim"))
             {
                 assert_eq!(before.resolution_payment.as_ref().unwrap().cost.generic, 2);
                 ward_payments += 1;

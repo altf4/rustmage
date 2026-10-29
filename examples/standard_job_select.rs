@@ -901,13 +901,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     s.life_before = o.players[p.index()].life;
                 }
                 if s.phase == 2 && s.started && packet.kind == StackKind::Spell {
-                    if actor == p && packet.source_card.name() == "Shock" {
+                    if actor == p && packet.source().is_some_and(|source| source.card.name() == "Shock") {
                         s.shock = true;
                     }
-                    if actor == p && packet.source_card.name() == "Thrill of Possibility" {
+                    if actor == p && packet.source().is_some_and(|source| source.card.name() == "Thrill of Possibility") {
                         s.thrill = true;
                     }
-                    if actor != p && i == 8 && packet.source_card.name() == "Shock" {
+                    if actor != p && i == 8 && packet.source().is_some_and(|source| source.card.name() == "Shock") {
                         s.enemy_shock = Some(packet.card);
                     }
                 }

@@ -122,7 +122,7 @@ fn choose(g: &Game, o: &Observation, actions: &[Action]) -> usize {
             } => {
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let root = o.announcing.as_ref().unwrap();
-                if root.source_card.name() == "Disenchant" {
+                if root.source().is_some_and(|source| source.card.name() == "Disenchant") {
                     if b.owner == o.actor.unwrap()
                         && matches!(
                             b.card.name(),

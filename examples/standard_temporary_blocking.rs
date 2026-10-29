@@ -64,7 +64,7 @@ fn choose(g: &Game, o: &Observation, actions: &[Action]) -> usize {
             } => {
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let attachment = o.announcing.as_ref().is_some_and(|s| {
-                    s.kind == StackKind::Spell && s.source_card.name() == "War Squeak"
+                    s.kind == StackKind::Spell && s.source().is_some_and(|source| source.card.name() == "War Squeak")
                 });
                 if attachment {
                     if b.owner == o.actor.unwrap() {

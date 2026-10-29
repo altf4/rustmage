@@ -530,7 +530,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     s[p.index()].source = Some(ann.card);
                     casts[i][p.index()] += 1;
                 }
-                if ann.source_card.name() == "Thrill of Possibility" {
+                if ann.source().is_some_and(|source| source.card.name() == "Thrill of Possibility") {
                     s[p.index()].thrill = true;
                 }
             }

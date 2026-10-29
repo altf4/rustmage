@@ -132,7 +132,7 @@ fn main() {
                 && before
                     .announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Dreaded Bat-Cloud")
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Dreaded Bat-Cloud"))
             {
                 let request = before.payment_request.as_ref().unwrap();
                 assert_eq!(request.generic, if deaths > 0 { 1 } else { 4 });
@@ -204,7 +204,7 @@ fn main() {
                 }
             }
             for item in before.stack.iter().filter(|s| {
-                matches!(s.kind, StackKind::TriggeredAbility { ability } if ability == u16::from(s.source_card.name() == "Cackling Prowler"))
+                matches!(s.kind, StackKind::TriggeredAbility { ability } if ability == u16::from(s.source().is_some_and(|source| source.card.name() == "Cackling Prowler")))
                     && NEW.contains(&s.source_card.name())
             }) {
                 assert!(deaths > 0, "morbid trigger requires death history");

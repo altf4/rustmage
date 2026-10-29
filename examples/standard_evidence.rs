@@ -279,13 +279,13 @@ fn score(o: &Observation, a: &Action, i: usize, p: Player, pay: bool, s: &Pilot)
         } => {
             let v = object(*id);
             let ann = o.announcing.as_ref().unwrap();
-            if ann.source_card.name() == "Shock" {
+            if ann.source().is_some_and(|source| source.card.name() == "Shock") {
                 if v.owner == p && v.card.name() == NAMES[i] {
                     1800
                 } else {
                     -1000
                 }
-            } else if ann.source_card.name() == "Forensic Researcher" {
+            } else if ann.source().is_some_and(|source| source.card.name() == "Forensic Researcher") {
                 if ann.kind == (StackKind::ActivatedAbility { ability: 0 })
                     && v.owner == p
                     && v.card.is_land()

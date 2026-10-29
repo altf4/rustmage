@@ -138,10 +138,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         continue;
                     }
                     if let StackKind::TriggeredAbility { ability } = item.kind {
-                        if ability == 1 && item.source_card.name() == "Sunset Saboteur" {
+                        if ability == 1 && item.source().is_some_and(|source| source.card.name() == "Sunset Saboteur") {
                             body_resolutions[0] += 1;
                         }
-                        if ability == 1 && item.source_card.name() == "Vein Ripper" {
+                        if ability == 1 && item.source().is_some_and(|source| source.card.name() == "Vein Ripper") {
                             body_resolutions[1] += 1;
                         }
                     }
@@ -151,7 +151,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && before
                     .resolving
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Spectral Snatcher")
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Spectral Snatcher"))
             {
                 cycles += 1;
             }

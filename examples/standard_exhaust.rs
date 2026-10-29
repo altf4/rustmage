@@ -297,7 +297,7 @@ fn main() {
                 && before
                     .resolving
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Keen Buccaneer")
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Keen Buccaneer"))
             {
                 assert!(g.observe(actor.other()).actions.is_empty());
                 assert!(g.observe(actor.other()).effect_discards.is_empty());
@@ -400,7 +400,7 @@ fn main() {
                             checks += 1;
                         }
                     }
-                } else if root.source_card.name() == "Unsummon"
+                } else if root.source().is_some_and(|source| source.card.name() == "Unsummon")
                     && let Some(reference) = root.targets.first().and_then(|t| t.object)
                     && before.objects.iter().any(|b| {
                         b.reference == reference

@@ -406,7 +406,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if granted > 0
                     && before.waiting_triggers.iter().any(|s| {
-                        s.attachment_trigger.is_none() && s.source_card.name() == "Pulse Tracker"
+                        s.attachment_trigger.is_none() && s.source().is_some_and(|source| source.card.name() == "Pulse Tracker")
                     })
                 {
                     printed_coexists += 1;
@@ -534,7 +534,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if matches!(a, Action::Pass)
                 && let Some(packet) = before.stack.last()
                 && (packet.attachment_trigger.is_some()
-                    || packet.source_card.name() == "Candlestick"
+                    || packet.source().is_some_and(|source| source.card.name() == "Candlestick")
                         && matches!(packet.kind, StackKind::ActivatedAbility { ability: 0 }))
             {
                 active.insert(packet.id, (packet.clone(), g.observe(packet.controller)));

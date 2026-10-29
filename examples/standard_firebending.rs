@@ -188,7 +188,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && before
                     .announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Shared Roots")
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Shared Roots"))
                 && before.objects.iter().any(|o| {
                     o.zone == Zone::Battlefield && o.owner == p && o.card.name() == "Uncle Iroh"
                 })

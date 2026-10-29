@@ -461,7 +461,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     StackKind::Spell => {
-                        if s.source_card.name() == "Giant Growth"
+                        if s.source().is_some_and(|source| source.card.name() == "Giant Growth")
                             && let Some(r) = s.targets.first().and_then(|t| t.object)
                             && exact(&a, r).is_some()
                         {

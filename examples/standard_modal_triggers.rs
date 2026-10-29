@@ -139,7 +139,7 @@ fn choose(g: &Game, o: &Observation, actions: &[Action], seed: usize, uses: &[us
                 let v = o.objects.iter().find(|v| v.id == *id).unwrap();
                 if o.announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Shock")
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Shock"))
                     && v.owner != o.actor.unwrap()
                     && v.toughness > 2
                 {

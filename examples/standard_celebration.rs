@@ -92,7 +92,7 @@ fn score(o: &Observation, a: &Action, primary: usize, seed: usize, fallback: boo
             let t = obj(*id);
             if o.announcing
                 .as_ref()
-                .is_some_and(|s| s.source_card.name() == "Shock")
+                .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Shock"))
             {
                 return if t.owner != p { 400 } else { -500 };
             }
@@ -311,7 +311,7 @@ fn main() -> Result<(), Error> {
             }
             if matches!(a, Action::FinishTargets)
                 && before.announcing.as_ref().is_some_and(|s| {
-                    s.source_card.name() == "Bespoke Battlegarb" && s.targets.is_empty()
+                    s.source().is_some_and(|source| source.card.name() == "Bespoke Battlegarb") && s.targets.is_empty()
                 })
             {
                 optional_zero[p.index()] += 1

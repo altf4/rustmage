@@ -209,8 +209,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         } => {
                             let v = b.objects.iter().find(|v| v.id == *id).unwrap();
                             if b.announcing.as_ref().is_some_and(|s| {
-                                s.source_card.name() == "Giant Growth"
-                                    || s.source_card.name() == "Blazing Crescendo"
+                                s.source().is_some_and(|source| source.card.name() == "Giant Growth")
+                                    || s.source().is_some_and(|source| source.card.name() == "Blazing Crescendo")
                             }) {
                                 if v.owner == p && v.card.name() == "Emberheart Challenger" {
                                     750

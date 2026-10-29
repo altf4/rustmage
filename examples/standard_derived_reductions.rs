@@ -261,7 +261,7 @@ fn score(obs: &Observation, a: &Action) -> i32 {
             if obs
                 .announcing
                 .as_ref()
-                .is_some_and(|s| s.source_card.name() == "Kin-Tree Severance")
+                .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Kin-Tree Severance"))
                 && target.owner == obs.actor.unwrap()
             {
                 -100

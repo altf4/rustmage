@@ -123,19 +123,19 @@ fn score(o: &Observation, a: &Action, i: usize, seed: usize, fallback: bool) -> 
         } => {
             let v = obj(*id);
             let source = o.announcing.as_ref().unwrap();
-            if source.source_card.name() == "Fell" {
+            if source.source().is_some_and(|source| source.card.name() == "Fell") {
                 if v.owner == p && v.card.name() == "Miner's Guidewing" {
                     2000
                 } else {
                     50
                 }
-            } else if source.source_card.name() == "Get Lost" {
+            } else if source.source().is_some_and(|source| source.card.name() == "Get Lost") {
                 if v.owner != p && v.card.is_creature() {
                     1800
                 } else {
                     500
                 }
-            } else if source.source_card.name() == "Over the Edge" && source.mode == Some(0) {
+            } else if source.source().is_some_and(|source| source.card.name() == "Over the Edge") && source.mode == Some(0) {
                 if is_map(v.card) {
                     2000
                 } else if v.owner != p {

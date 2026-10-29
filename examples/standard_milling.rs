@@ -89,7 +89,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .iter()
                 .filter(|item| {
                     item.kind == rustmage::StackKind::Spell
-                        && item.source_card.name() == "Space-Time Anomaly"
+                        && item.source().is_some_and(|source| source.card.name() == "Space-Time Anomaly")
                         && !before.stack.iter().any(|old| old.id == item.id)
                 })
                 .count();

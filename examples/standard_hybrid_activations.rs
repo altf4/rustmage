@@ -260,7 +260,7 @@ fn main() {
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()
             {
-                let target = if root.source_card.name() == "Cindering Cutthroat" {
+                let target = if root.source().is_some_and(|source| source.card.name() == "Cindering Cutthroat") {
                     Some(root.object)
                 } else {
                     root.targets.first().and_then(|t| t.object)
@@ -280,7 +280,7 @@ fn main() {
                         _ => unreachable!(),
                     };
                     assert!(object.keywords.contains(keyword));
-                    if root.source_card.name() == "Hovel Hurler" {
+                    if root.source().is_some_and(|source| source.card.name() == "Hovel Hurler") {
                         let old = before
                             .objects
                             .iter()

@@ -571,7 +571,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     && i == 7
                     && a.controller == p
                     && a.kind == StackKind::Spell
-                    && a.source_card.name() == "Candy Trail"
+                    && a.source().is_some_and(|source| source.card.name() == "Candy Trail")
                 {
                     s.extra = true;
                     s.baseline = objects

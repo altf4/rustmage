@@ -232,7 +232,7 @@ fn main() {
                         .iter()
                         .any(|b| b.id == selected.card && b.zone == Zone::Graveyard)
                 );
-                if root.source_card.name() == "Masked Meower" {
+                if root.source().is_some_and(|source| source.card.name() == "Masked Meower") {
                     assert!(
                         after
                             .objects
@@ -312,7 +312,7 @@ fn main() {
             }
             // Gecko's entry-trigger mana resolves on the stack, independently of its draw activation.
             if let Some(root) = before.stack.last()
-                && root.source_card.name() == "Flamecache Gecko"
+                && root.source().is_some_and(|source| source.card.name() == "Flamecache Gecko")
                 && matches!(root.kind, StackKind::TriggeredAbility { .. })
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()

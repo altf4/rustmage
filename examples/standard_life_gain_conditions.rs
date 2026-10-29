@@ -110,7 +110,7 @@ fn choose(
                     root.source_card.name(),
                     "Moment of Triumph" | "Giant Growth" | "Efflorescence"
                 );
-                if root.source_card.name() == "Giant Growth"
+                if root.source().is_some_and(|source| source.card.name() == "Giant Growth")
                     && b.card.name() == "Tenured Concocter"
                     && b.owner != root.controller
                 {
@@ -204,7 +204,7 @@ fn main() {
                 if before
                     .resolving
                     .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Grim Bauble")
+                    .is_some_and(|s| s.source().is_some_and(|source| source.card.name() == "Grim Bauble"))
                 {
                     surveils += 1;
                 }
@@ -251,7 +251,7 @@ fn main() {
             // when their recipient is an opponent's creature.
             if let Some(s) = root.as_ref()
                 && s.kind == StackKind::Spell
-                && s.source_card.name() == "Efflorescence"
+                && s.source().is_some_and(|source| source.card.name() == "Efflorescence")
                 && before.players[s.controller.index()].life_gained_this_turn > 0
                 && after.stack.iter().all(|t| t.id != s.id)
                 && after.resolving.is_none()

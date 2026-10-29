@@ -86,7 +86,7 @@ fn choose(
             } => {
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let root = o.announcing.as_ref().unwrap();
-                if root.source_card.name() == "Shock" {
+                if root.source().is_some_and(|source| source.card.name() == "Shock") {
                     if b.owner != root.controller && NEW.contains(&b.card.name()) {
                         300
                     } else {

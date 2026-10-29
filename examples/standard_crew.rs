@@ -522,12 +522,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             o.players[p.index()].cards_discarded_this_turn,
                         ));
                     }
-                } else if ann.source_card.name() == "Thrill of Possibility" {
+                } else if ann.source().is_some_and(|source| source.card.name() == "Thrill of Possibility") {
                     s[p.index()].draw = Some((
                         o.players[p.index()].cards_drawn_this_turn,
                         tokens(&o, p, "Thopter"),
                     ));
-                } else if ann.source_card.name() == "Disenchant" {
+                } else if ann.source().is_some_and(|source| source.card.name() == "Disenchant") {
                     s[p.index()].death = true;
                 }
             }

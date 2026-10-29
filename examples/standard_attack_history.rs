@@ -526,7 +526,7 @@ fn main() {
             {
                 let origin = origins.remove(&item.id).unwrap_or_else(|| before.clone());
                 let n = body(&origin, &after, item);
-                if n > 0 && item.source_card.name() == "Chart a Course" {
+                if n > 0 && item.source().is_some_and(|source| source.card.name() == "Chart a Course") {
                     chart_branches
                         .insert(origin.players[item.controller.index()].attacked_this_turn);
                 }
