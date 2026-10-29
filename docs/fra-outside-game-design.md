@@ -200,6 +200,6 @@ The experimental exile history update is provisional until an authoritative
 rules analysis and observer tests establish its exact semantics. Existing
 return-to-hand and zone-change observers do not constitute this event model.
 The experimental schema 192 guard conservatively rejects all states retaining
-outside-game ownership, entry batches and zone-rule containers when projecting
-to 191, including cast rollback checkpoints; this is intentionally broader than
-necessary until future behavior is proven.
+outside-game ownership, entry batches and active zone-rule checkpoints when
+projecting to 191, including cast rollback checkpoints; passive zone rules remain
+representable. This remains broader than necessary until future behavior is proven.

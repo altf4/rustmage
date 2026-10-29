@@ -1126,10 +1126,10 @@ fn prior_schema190_state_supported(state: &State) -> bool {
 /// complete future behavior has an equivalent old-contract proof.
 fn prior_schema192_state_supported(state: &State) -> bool {
     state.outside_game.is_none()
-        // Both containers can retain an older complete State in a checkpoint.
-        // Reject the containers conservatively, including passive zone rules.
+        // Entry batches and active zone replacement decisions can retain an
+        // older complete State. Passive zone rules have no checkpoint.
         && state.entry_batch.is_none()
-        && state.zone_rules.is_none()
+        && state.zone_rules.as_ref().is_none_or(|rules| !rules.has_checkpoint())
         && !matches!(state.pending, Pending::OutsideEntryReplacement { .. })
         && !state
             .cast_rollback
@@ -7530,6 +7530,21 @@ fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
         assert!(!prior_schema192_state_supported(&game.state));
         game.state.entry_batch = None;
         game.state.zone_rules = Some(Box::default());
+        assert!(prior_schema192_state_supported(&game.state));
+        let mut checkpoint = game.state.clone();
+        checkpoint.outside_game = Some(Box::new(OutsideGameState {
+            mode: OutsideGameMode::CasualCollection,
+            pools: [Vec::new(), Vec::new()],
+            choice: None,
+            pending_entry: None,
+            pool_versions: [0; 2],
+            next_choice_id: 0,
+            known: [Vec::new(), Vec::new()],
+        }));
+        let reference = game.object_ref(0);
+        game.state.zone_rules = Some(Box::new(zone_replacements::test_checkpoint(
+            checkpoint, reference, owner,
+        )));
         assert!(!prior_schema192_state_supported(&game.state));
         game.state.zone_rules = None;
         let source = game.object_ref(0);

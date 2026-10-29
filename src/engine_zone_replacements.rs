@@ -67,6 +67,33 @@ pub(super) struct ZoneState {
     reveals: SharedVec<ZoneRevealView>,
     graveyard_exile_spells: SharedVec<ObjectRef>,
 }
+/// A checkpoint fixture for conservative schema projection tests.
+#[cfg(test)]
+pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) -> ZoneState {
+    ZoneState {
+        choice: Some(Box::new(Choice {
+            base: Base {
+                state: Box::new(state),
+                bytes: 0,
+                actor: owner,
+                action: Action::Pass,
+                picks: SharedVec::default(),
+            },
+            request: Request {
+                object,
+                requested: Zone::Graveyard,
+                affected: owner,
+                view: ZoneReplacementChoiceView {
+                    card: Card::Forest,
+                    owner,
+                    from: Zone::Hand,
+                    choices: vec![ZoneReplacementKind::Prevent],
+                },
+            },
+        })),
+        ..ZoneState::default()
+    }
+}
 #[derive(Clone, Debug, Default)]
 pub(super) struct FrozenRules {
     pub prevent: bool,
