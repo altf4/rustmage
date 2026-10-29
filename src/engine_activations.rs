@@ -613,6 +613,7 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
             source_counter_lki: self.state.objects[card as usize]
                 .card
@@ -714,6 +715,11 @@ impl Game {
                 self.record_copy_activation_use(item, ability);
             }
             self.record_power_up_use(item, ability);
+        }
+        if let Some(change) = cost.loyalty {
+            item.loyalty_counters_paid = counter_payment.get(CounterKind::Loyalty)
+                .checked_add(if change < 0 { u64::from(change.unsigned_abs()) } else { 0 })
+                .capacity("loyalty activation counter payment exhausted");
         }
         self.pay_counters(item.card, &counter_payment);
         if let Some(kind) = definition.source_counter_cost() {

@@ -783,6 +783,7 @@ impl Game {
                     | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CreatureAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivated
+                    | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                     | TriggerCondition::OpponentLoyaltyAbilityActivated
                     | TriggerCondition::CardsLeaveGraveyard
                     | TriggerCondition::CreatureCardLeavesYourGraveyard
@@ -1199,6 +1200,7 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
             source_counter_lki: card_quantities::counter_quantity_facts(
                 definition.triggers()[index].program,

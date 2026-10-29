@@ -11,6 +11,7 @@ impl Game {
                     ability.condition.event(),
                     TriggerCondition::CreatureAbilityActivated
                         | TriggerCondition::LoyaltyAbilityActivated
+                        | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                         | TriggerCondition::OpponentLoyaltyAbilityActivated
                 )
             })
@@ -107,6 +108,8 @@ impl Game {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
                     let triggered = match ability.condition.event() {
                         TriggerCondition::LoyaltyAbilityActivated => source.controller == item.controller,
+                        TriggerCondition::LoyaltyAbilityActivatedRemoving(minimum) =>
+                            source.controller == item.controller && item.loyalty_counters_paid >= minimum,
                         TriggerCondition::OpponentLoyaltyAbilityActivated => source.controller != item.controller,
                         _ => false,
                     };
@@ -126,6 +129,7 @@ impl Game {
         if matches!(
             condition.event(),
             TriggerCondition::CreatureAbilityActivated | TriggerCondition::LoyaltyAbilityActivated
+                | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                 | TriggerCondition::OpponentLoyaltyAbilityActivated
         ) && condition.once_per_turn()
         {

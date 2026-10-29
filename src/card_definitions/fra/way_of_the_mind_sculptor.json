@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6762c187dcbd5415b57e801d748515565e80e66d9741382f76ee19aee91f075f"
   },
-  "physical_metadata_sha256": "211c7d5a479eae566794d0c80ffbfa4f5839b450118bf4ba8d88020c4b57584b"
+  "physical_metadata_sha256": "211c7d5a479eae566794d0c80ffbfa4f5839b450118bf4ba8d88020c4b57584b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WayOfTheMindSculptor.java",
+  "java_sha256": "6e9311a52bb03d86509e3c9acc52d26139edb21e273028e85193fd2bac0dd1e7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLoyaltyCost.java",
+      "sha256": "efe5edc4c58c5a3d697a1448642d7e251141eb54f3704ffee201f6ba3ed51365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "src/engine_fra_way_mind_sculptor_tests.rs"
 }

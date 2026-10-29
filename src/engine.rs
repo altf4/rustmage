@@ -1074,6 +1074,9 @@ pub struct SpellView {
     // the JSON control plane restores opaque snapshot handles, never packets.
     #[serde(skip)]
     pub(crate) additional_triggers: usize,
+    /// Actual loyalty counters removed during the committed activation cost.
+    #[serde(skip)]
+    pub(crate) loyalty_counters_paid: u64,
     /// Declared nonmana counter cost; paid is set only by the committed cost executor.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_payment: Option<SourceCounterPaymentView>,

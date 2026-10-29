@@ -3412,6 +3412,8 @@ pub(crate) enum TriggerCondition {
     CreatureAbilityActivated,
     /// The controller committed an activation of a loyalty ability.
     LoyaltyAbilityActivated,
+    /// Committed loyalty activation paid at least this many loyalty counters.
+    LoyaltyAbilityActivatedRemoving(u64),
     /// An opponent committed a loyalty activation.
     OpponentLoyaltyAbilityActivated,
     CardsLeaveGraveyard,
