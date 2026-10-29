@@ -111,12 +111,9 @@ impl Game {
                 let mut distinct = std::collections::BTreeSet::new();
                 for (id, object) in objects() {
                     if object.zone != Zone::Battlefield || object.controller != owner || kinds(id, object) & 64 == 0 { continue; }
-                    let printed = object.card.token_info().map_or_else(
-                        || object.card.info().type_line.split_once(" — ").map_or("", |(_, types)| types),
-                        |token| token.subtypes,
-                    );
-                    for subtype in printed.split_whitespace() {
-                        if subtypes::subtype_card_types(subtype) == 64 && subtypes(id).has(object.card, subtype) {
+                    let live = subtypes(id);
+                    for &subtype in subtypes::PLANESWALKER_TYPES {
+                        if live.has(object.card, subtype) {
                             distinct.insert(subtype);
                         }
                     }
