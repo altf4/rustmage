@@ -1,0 +1,3 @@
+# Jace timing schema projection
+
+The unpublished schema 187 candidate adds a turn-scoped public Jace loyalty timing permission. The schema 186 projection conservatively rejects that permission and retained rules, packets, copy recipes and rollback state that could contain it. The guarded candidate run passed 2,560 behavioral tests; its only failure was the expected current-schema trace migration. All 2,928 recorded prior-schema trace summaries matched the schema 186 baseline. Jace’s Machinations and Loot remain gated, with pinned XMage implementations unavailable; final card acceptance is not established.

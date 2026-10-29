@@ -7722,3 +7722,9 @@ mod engine_fra_pyre_jace_review_tests;
 
 #[path = "engine_fra_machinations_tests.rs"]
 mod engine_fra_machinations_tests;
+
+#[path = "engine_fra_loot_anomaly_tests.rs"]
+mod engine_fra_loot_anomaly_tests;
+
+#[path = "engine_fra_loot_anomaly_independent_tests.rs"]
+mod engine_fra_loot_anomaly_independent_tests;
