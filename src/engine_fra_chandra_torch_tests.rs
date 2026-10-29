@@ -292,3 +292,62 @@ fn torch_paid_offer_keeps_modal_spell_choices_and_opponent_tax() {
         act(&mut g, Action::FinishResolutionCasts);
     }
 }
+
+#[test]
+fn torch_emblem_ignores_opponent_casts_and_uncast_spell_copies() {
+    for owner in [Player::P0, Player::P1] {
+        let opponent = owner.other();
+        let mut g = scenario(opponent);
+        g.create_emblem(owner, Card::test_index(5465));
+        let spell = put(&mut g, opponent, "Bear Cub", Zone::Hand);
+        cast(&mut g, spell, None);
+        assert!(g.state.pending_triggers.is_empty());
+        assert!(g.state.ordering_triggers.is_empty());
+        let original = g.state.stack.last().unwrap().clone();
+        let copy = g.allocate_spell_copy(&original, owner);
+        g.state.stack.push(copy);
+        g.prepare_triggers();
+        assert!(g.state.pending_triggers.is_empty());
+        assert!(g.state.ordering_triggers.is_empty());
+        assert_eq!(g.state.stack.len(), 2);
+    }
+}
+
+#[test]
+fn torch_emblem_trigger_obeys_countering_and_damage_prevention() {
+    for owner in [Player::P0, Player::P1] {
+        for counter in [false, true] {
+            for prevent in [false, true] {
+                let mut g = scenario(owner);
+                g.create_emblem(owner, Card::test_index(5465));
+                let emblem = g.state.objects.iter().position(|o| o.zone == Zone::Command
+                    && o.card == Card::test_index(5465)).unwrap() as CardId;
+                let spell = put(&mut g, owner, "Bear Cub", Zone::Hand);
+                let life = g.state.players[owner.other().index()].life;
+                cast(&mut g, spell, None);
+                g.prepare_triggers();
+                act(&mut g, Action::ChooseTarget { target: Target::Player(owner.other()) });
+                if g.legal_actions().contains(&Action::FinishTargets) { act(&mut g, Action::FinishTargets); }
+                let trigger_id = g.state.stack.last().unwrap().id;
+                if prevent {
+                    let source = put(&mut g, owner.other(), "Forest", Zone::Battlefield);
+                    let source = g.object_ref(source);
+                    let recipient = g.object_ref(emblem);
+                    let timestamp = g.next_role_timestamp();
+                    g.state.roles.get_or_insert_default().source_linked_effects.push(SourceLinkedEffectView {
+                        source, recipient, controller: owner.other(),
+                        kind: SourceLinkedEffectKind::PreventDamageBy, timestamp,
+                    });
+                }
+                let saved = g.snapshot();
+                for _ in 0..2 {
+                    if counter { assert!(g.counter_stack_item(trigger_id, false)); }
+                    else { g.resolve_top(); }
+                    assert_eq!(g.state.players[owner.other().index()].life,
+                        life - if counter || prevent { 0 } else { 5 });
+                    g.restore(&saved).unwrap();
+                }
+            }
+        }
+    }
+}
