@@ -227,6 +227,10 @@ impl Game {
         let Some(index) = stack else { return };
         let spell = self.state.stack[index].clone();
         let instant_or_sorcery = crate::cards::CastFilter::InstantSorcery.matches(spell.source_card);
+        self.capture_copy_cast_classified(spell, first_trigger, instant_or_sorcery);
+    }
+
+    fn capture_copy_cast_classified(&mut self, spell: SpellView, first_trigger: usize, instant_or_sorcery: bool) {
         if !instant_or_sorcery && !spell.source_card.is_prepared_face() {
             return;
         }
@@ -283,6 +287,14 @@ impl Game {
         }
         self.state.stack_copy_data.as_mut().unwrap().delayed = retained;
         self.release_stack_copy_state();
+    }
+    #[cfg(test)]
+    pub(super) fn test_capture_noninstant_prepared_cast(&mut self, index: usize, first_trigger: usize) {
+        let mut spell = self.state.stack[index].clone();
+        // Preserve an actual spell object and stack id, while substituting the
+        // existing prepared-face marker. Classification is explicitly non-instant.
+        spell.source_card = Card::test_index(5458);
+        self.capture_copy_cast_classified(spell, first_trigger, false);
     }
     pub(super) fn allocate_spell_copy(
         &mut self,

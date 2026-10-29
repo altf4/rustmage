@@ -7592,3 +7592,21 @@ mod engine_fra_hall_of_echoes_tests;
 
 #[path = "engine_fra_hall_independent_tests.rs"]
 mod engine_fra_hall_independent_tests;
+
+#[path = "engine_fra_codie_tests.rs"]
+mod engine_fra_codie_tests;
+
+#[path = "engine_fra_codie_independent_tests.rs"]
+mod engine_fra_codie_independent_tests;
+
+#[path = "engine_fra_codie_delayed_tests.rs"]
+mod engine_fra_codie_delayed_tests;
+
+#[path = "engine_fra_omnipresence_face_suppression_tests.rs"]
+mod engine_fra_omnipresence_face_suppression_tests;
+
+#[path = "engine_fra_loot_funding_interactions.rs"]
+mod engine_fra_loot_funding_interactions;
+
+#[path = "engine_fra_jiang_discard_replacement_tests.rs"]
+mod engine_fra_jiang_discard_replacement_tests;
