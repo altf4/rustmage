@@ -130,6 +130,7 @@ impl Game {
         self.forget_library_top(player);
         // No zone changes or observable partial rearrangement occur while choosing.
         // Remove the looked-at suffix once, then preserve the untouched middle.
+        let mut return_cards = Vec::new();
         for &card in &choice.graveyard {
             let event = self.move_object(card, Zone::Graveyard);
             if choice.return_within_life_gained
@@ -140,7 +141,7 @@ impl Game {
                 && u128::from(self.state.objects[card as usize].card.fixed_mana_value())
                     <= self.state.players[player.index()].life_gained_this_turn
             {
-                self.move_object(card, Zone::Hand);
+                return_cards.push(event.after);
             }
         }
         let library = &mut self.state.players[player.index()].library;
@@ -150,7 +151,29 @@ impl Game {
         // Reuse library capacity; only bottom insertion shifts the untouched middle.
         library.splice(0..0, choice.bottom.iter().rev().copied());
         library.extend(choice.top.iter().rev().copied());
+        self.scry_or_surveil_event(player);
+        for reference in return_cards {
+            if self.object_ref(reference.card) == reference
+                && self.state.objects[reference.card as usize].zone == Zone::Graveyard
+            {
+                self.move_object(reference.card, Zone::Hand);
+            }
+        }
         self.run_program();
+    }
+
+    fn scry_or_surveil_event(&mut self, player: Player) {
+        let sources = self.indexed_trigger_sources(&self.state.scry_sources);
+        for (source, grant) in sources {
+            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::ScryOrSurveil
+                    && source.controller == player
+                {
+                    self.queue_trigger_from(&source, index, grant.clone().map(Box::new));
+                }
+            }
+        }
     }
 
     pub(super) fn next_stack_id(&mut self) -> u64 {
@@ -4428,6 +4451,9 @@ impl Game {
                         };
                         return;
                     }
+                    if amount != 0 {
+                        self.scry_or_surveil_event(item.controller);
+                    }
                 }
                 Instruction::SurveilOneReturnByLifeGained => {
                     let remaining: Vec<_> = self.state.players[item.controller.index()]
@@ -4451,6 +4477,7 @@ impl Game {
                         };
                         return;
                     }
+                    self.scry_or_surveil_event(item.controller);
                 }
                 Instruction::CounterRelatedUnlessDiscardOrPay(cost) => {
                     if self.start_ward_discard_or_mana(&item, cost) {

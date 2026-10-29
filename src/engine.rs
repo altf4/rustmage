@@ -2057,6 +2057,7 @@ struct State {
     triggered_this_turn: Vec<TriggerUse>,
     step_sources: Vec<CardId>,
     life_sources: Vec<CardId>,
+    scry_sources: Vec<CardId>,
     counter_sources: Vec<CardId>,
     death_sources: Vec<CardId>,
     ability_target_sources: ability_target_events::Sources,
@@ -2918,6 +2919,7 @@ impl Game {
                 triggered_this_turn: Vec::new(),
                 step_sources: Vec::new(),
                 life_sources: Vec::new(),
+                scry_sources: Vec::new(),
                 counter_sources: Vec::new(),
                 death_sources: Vec::new(),
                 ability_target_sources: None,
@@ -7088,6 +7090,7 @@ impl Game {
             self.state.draw_sources.retain(|&source| source != id);
             self.state.step_sources.retain(|&source| source != id);
             self.state.life_sources.retain(|&source| source != id);
+            self.state.scry_sources.retain(|&source| source != id);
             self.state.counter_sources.retain(|&source| source != id);
             self.state.death_sources.retain(|&source| source != id);
             self.forget_ability_target_source(id);
@@ -8972,6 +8975,7 @@ impl Game {
                 + s.cleanup_discards.len()
                 + s.step_sources.len()
                 + s.life_sources.len()
+                + s.scry_sources.len()
                 + s.counter_sources.len()
                 + s.death_sources.len()
                 + s.attachment_sources.len())

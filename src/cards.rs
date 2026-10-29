@@ -3306,6 +3306,8 @@ pub(crate) enum ReturnKind {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// The controller completed a positive scry or surveil instruction.
+    ScryOrSurveil,
     /// First declaration in the turn whose signed creature-power total reaches this threshold.
     FirstAttackWithTotalPowerAtLeast(u16),
     /// Pre-event observer and other permanent, with an actual owner-hand result.

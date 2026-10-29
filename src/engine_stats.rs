@@ -96,6 +96,12 @@ impl Game {
         }) {
             self.state.attack_sources.push(id);
         }
+        if triggers
+            .iter()
+            .any(|ability| ability.condition.event() == TriggerCondition::ScryOrSurveil)
+        {
+            self.state.scry_sources.push(id);
+        }
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),

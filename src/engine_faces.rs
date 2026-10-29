@@ -212,6 +212,7 @@ impl Game {
             &mut self.state.draw_sources,
             &mut self.state.step_sources,
             &mut self.state.life_sources,
+            &mut self.state.scry_sources,
             &mut self.state.counter_sources,
             &mut self.state.death_sources,
             &mut self.state.attachment_sources,
