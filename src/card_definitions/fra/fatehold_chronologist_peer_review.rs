@@ -1,16 +1,15 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from complete pinned Oracle and XMage; gated pending validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(1, 2),
     keywords: Keywords::FLYING,
+    extras: &CardExtras {
+        enters_prepared: true,
+        prepared_spell: Some(Card(5444)),
+        cost_alternatives: &[ManaCost {
+            colored: [0, 1, 0, 0, 0, 0],
+            generic: 1,
+        }],
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

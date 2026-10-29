@@ -5449,7 +5449,10 @@
     24,
     24,
     17,
-    17
+    17,
+    3,
+    3,
+    3
   ],
   "aliases": [
     [
@@ -70957,14 +70960,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Fatehold Chronologist",
+        "mana_cost": "{1}{W/U}",
+        "type_line": "Creature — Bird Wizard"
+      }
     },
     {
       "index": 1455,
@@ -122693,14 +122701,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        2,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Prudent Fateseer",
+        "mana_cost": "{1}{W/U}{W/U}",
+        "type_line": "Creature — Dwarf Wizard"
+      }
     },
     {
       "index": 3269,
@@ -137393,13 +137406,18 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3,
+      "front_face": {
+        "name": "Semester Foreseer",
+        "mana_cost": "{3}{U}",
+        "type_line": "Creature — Human Wizard"
+      }
     },
     {
       "index": 3786,
@@ -184519,6 +184537,87 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5444,
+      "module": "card_5444",
+      "path": "synthetic/prepare_fatehold_chronologist_peer_review.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Peer Review",
+      "oracle_id": "1063822f-47d3-42e9-8a21-f62b12609fe1",
+      "facts_sha256": "b7c1659a12594135f805236ead8bc7d07fcaa9b46bf7e50fe4b8eb86c95f6e1e",
+      "mana_cost": "{2}{W/U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5445,
+      "module": "card_5445",
+      "path": "synthetic/prepare_semester_foreseer_peer_review.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Peer Review",
+      "oracle_id": "21b8d59f-a90d-44ff-a2e3-9f439ac3e14a",
+      "facts_sha256": "213f2b2bc3ee193b10a2c0bd17ecdc0ce3aef76468db3c3fd41525bf43269b92",
+      "mana_cost": "{2}{W/U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5446,
+      "module": "card_5446",
+      "path": "synthetic/prepare_prudent_fateseer_peer_review.rs",
+      "set": "synthetic",
+      "category": "prepare",
+      "name": "Peer Review",
+      "oracle_id": "63f67baa-3f37-41b8-9ee6-3c37f828917d",
+      "facts_sha256": "5fc4997b8e6b22a00450095fe70395bf44b5423c82327d2de344804333646dee",
+      "mana_cost": "{2}{W/U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
     }
   ]
 }
