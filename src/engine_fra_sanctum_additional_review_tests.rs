@@ -56,13 +56,17 @@ fn sanctum_prevented_walker_damage_still_gains_life() {
         let recipient = g.object_ref(walker);
         let source = g.object_ref(prevention);
         let timestamp = g.next_role_timestamp();
-        g.state.roles.get_or_insert_default().source_linked_effects.push(SourceLinkedEffectView {
-            source,
-            recipient,
-            controller: p.other(),
-            kind: SourceLinkedEffectKind::PreventDamageBy,
-            timestamp,
-        });
+        g.state
+            .roles
+            .get_or_insert_default()
+            .source_linked_effects
+            .push(SourceLinkedEffectView {
+                source,
+                recipient,
+                controller: p.other(),
+                kind: SourceLinkedEffectKind::PreventDamageBy,
+                timestamp,
+            });
         let action = Action::AnnouncePlaneswalkerGrant {
             source: recipient,
             grantor: g.object_ref(provider),
