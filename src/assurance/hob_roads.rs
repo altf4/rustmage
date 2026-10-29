@@ -341,7 +341,7 @@ fn hob_roads_old_incarnation_link_survives_reentry_and_queued_chapter() {
         until(&mut g, |g| {
             g.state.pending == Pending::Priority
                 && g.state.stack.iter().any(|item| {
-                    item.object == old_source
+                    item.source.unwrap().object == old_source
                         && matches!(item.kind, StackKind::TriggeredAbility { ability: 1 })
                 })
         });

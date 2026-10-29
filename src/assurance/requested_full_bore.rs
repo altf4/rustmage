@@ -101,7 +101,7 @@ fn copy_of_warp_spell_resolves_as_token_without_warp_cast_marker() {
             .state
             .stack
             .iter()
-            .find(|item| item.card == creature && item.kind == StackKind::Spell)
+            .find(|item| item.source.unwrap().id == creature && item.kind == StackKind::Spell)
             .unwrap()
             .clone();
         let mut copy_effect = template.clone();

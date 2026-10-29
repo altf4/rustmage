@@ -40,7 +40,7 @@ fn sos_storm_counts_both_players_countered_creatures_and_never_copies_as_casts()
             let shock = put(&mut g, p, "Shock", Zone::Hand);
             paid(&mut g, shock, None, &[Target::Player(p.other())]);
             let packet = storm(&g);
-            assert_eq!(packet.card, shock);
+            assert_eq!(packet.source.unwrap().id, shock);
             assert_eq!(packet.copy_event.as_ref().unwrap().amount, 2);
             assert_eq!(
                 packet.attachment_trigger.as_ref().unwrap().grantor,

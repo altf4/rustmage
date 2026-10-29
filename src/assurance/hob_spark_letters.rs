@@ -254,7 +254,7 @@ fn letters_draws_actual_retained_payment_after_reduction_counter_and_source_depa
                 .state
                 .stack
                 .iter()
-                .find(|item| item.card == spell && item.kind == StackKind::Spell)
+                .find(|item| item.source.unwrap().id == spell && item.kind == StackKind::Spell)
                 .unwrap();
             assert_eq!(packet.mana_value(), 3);
             let spell_id = packet.id;
@@ -320,7 +320,7 @@ fn letters_free_cast_zero_can_be_accepted_or_declined_and_acceptance_still_disca
                 .state
                 .stack
                 .iter()
-                .find(|item| item.card == spell && item.kind == StackKind::Spell)
+                .find(|item| item.source.unwrap().id == spell && item.kind == StackKind::Spell)
                 .unwrap();
             assert_eq!(packet.mana_value(), 3);
             assert!(g.counter_stack_item(packet.id, false));
@@ -358,7 +358,7 @@ fn letters_retains_chosen_x_payment_and_discards_only_available_cards() {
             .state
             .stack
             .iter()
-            .find(|item| item.card == spell && item.kind == StackKind::Spell)
+            .find(|item| item.source.unwrap().id == spell && item.kind == StackKind::Spell)
             .unwrap();
         assert_eq!(packet.mana_value(), 4);
         assert!(g.counter_stack_item(packet.id, false));
@@ -390,7 +390,7 @@ fn letters_retains_chosen_x_payment_and_discards_only_available_cards() {
             g.state
                 .stack
                 .iter()
-                .find(|item| item.card == spell && item.kind == StackKind::Spell)
+                .find(|item| item.source.unwrap().id == spell && item.kind == StackKind::Spell)
                 .unwrap()
                 .id,
             false

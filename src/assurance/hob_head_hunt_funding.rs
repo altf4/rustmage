@@ -22,7 +22,7 @@ fn hob_hunt_funding_projects_opposing_replacement_without_creating_reflexive_tok
                 .iter()
                 .chain(&g.state.ordering_triggers)
                 .chain(&g.state.stack)
-                .filter(|item| item.object == g.object_ref(h))
+                .filter(|item| item.source.unwrap().object == g.object_ref(h))
                 .count(),
             1
         );

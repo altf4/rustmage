@@ -192,7 +192,7 @@ fn sos_review_mica_copy_of_flashed_back_antiquities_has_no_cast_origin_bonus() {
             g.state
                 .stack
                 .iter()
-                .any(|item| item.card == spell && !item.is_copy)
+                .any(|item| item.source.unwrap().id == spell && !item.is_copy)
         );
         let made = spirits(&g, p);
         assert_eq!(made.len(), 2);
@@ -254,10 +254,10 @@ fn sos_review_rendezvous_draw_trigger_ids_record_active_player_draws_first() {
             .iter()
             .chain(g.state.pending_triggers.iter())
             .chain(g.state.stack.iter())
-            .filter(|item| [own_crawler, their_crawler].contains(&item.card))
+            .filter(|item| [own_crawler, their_crawler].contains(&item.source.unwrap().id))
             .filter_map(|item| {
                 item.draw_event
-                    .map(|event| (item.id, event.player, event.ordinal, item.card))
+                    .map(|event| (item.id, event.player, event.ordinal, item.source.unwrap().id))
             })
             .collect();
         packets.sort_unstable_by_key(|packet| packet.0);

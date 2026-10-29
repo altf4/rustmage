@@ -2259,7 +2259,7 @@ fn sos_rubble_nested_payment_preserves_outer_graveyard_source_and_reserved_cost(
             let object = g.object_ref(if exile_source { professor } else { fuel });
             act(&mut g, Action::ChooseAdditionalCost { object });
             pay(&mut g);
-            assert_eq!(g.state.announcing.as_ref().unwrap().item.card, professor);
+            assert_eq!(g.state.announcing.as_ref().unwrap().item.source.unwrap().id, professor);
             assert_eq!(g.object_view(reserved).zone, Zone::Graveyard);
             assert_eq!(
                 g.object_view(professor).zone,

@@ -361,7 +361,7 @@ fn eagles_rescue_attachment_exists_before_actual_enchantment_entry_observer_free
         assert!(g.keywords(observer).contains(Keywords::FLYING));
         assert!(!matches!(g.state.pending, Pending::AuraEntry { .. }));
         let trigger = g.state.stack.last().expect("single trigger auto-stacks");
-        assert_eq!(trigger.card, observer);
+        assert_eq!(trigger.source.unwrap().id, observer);
         assert_eq!(trigger.source.unwrap().facts.power, 2);
         finish(&mut g);
         assert_eq!(
