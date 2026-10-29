@@ -196,3 +196,34 @@ fn emrakul_exile_departure_and_reentry_does_not_rebind_old_grant() {
         }
     }
 }
+
+#[test]
+fn copied_emrakul_hand_ability_grants_each_controller_independent_permission() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Hand);
+        g.state.objects[source as usize].card = Card::from_name("Emrakul, the Exigent Doom").unwrap();
+        let land = put(&mut g, player, "Forest", Zone::Battlefield);
+        g.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+        act(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
+        act(&mut g, Action::ChooseTarget { target: Target::Card(land) });
+        pay(&mut g);
+        let exile_ref = g.object_ref(source);
+        let original = g.state.stack.last().unwrap().clone();
+        let mut copier = original.clone();
+        copier.controller = player.other();
+        copier.targets = vec![BoundTarget { group: 0, target: Target::Stack(original.id), object: None }];
+        g.copy_target_ability(&copier, 0);
+        if g.legal_actions().contains(&Action::FinishStackTargets) { act(&mut g, Action::FinishStackTargets); }
+        let saved = g.snapshot();
+        for _ in 0..2 {
+            settle(&mut g);
+            assert!(g.can_play_exiled(player, source));
+            assert!(g.can_play_exiled(player.other(), source));
+            let rows = &g.state.roles.as_ref().unwrap().source_linked_effects;
+            assert_eq!(rows.iter().filter(|row| row.source == exile_ref
+                && row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast).count(), 2);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
