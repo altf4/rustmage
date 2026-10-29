@@ -445,6 +445,12 @@ fn outside_real_player_control_keeps_pool_private_even_with_known_cards() {
         // state helper and deliberately does not dispatch that event.
         g.add_counter(plan, CounterKind::Plan, 6);
         let divination = put(&mut g, controller, "Divination", Zone::Hand);
+        // The starting pool empties on the way to the controlled player's
+        // next turn. Give that player actual mana sources for the later cast.
+        let swamps = [
+            put(&mut g, owner, "Swamp", Zone::Battlefield),
+            put(&mut g, owner, "Swamp", Zone::Battlefield),
+        ];
         let before_control = g.snapshot();
         for _ in 0..2 {
             act(&mut g, Action::AnnounceCast { card: divination });
@@ -493,6 +499,11 @@ fn outside_real_player_control_keeps_pool_private_even_with_known_cards() {
             assert_eq!(g.state.active, owner);
             assert_eq!(g.state.step, Step::Main1);
             assert_eq!(g.decision_controller(owner), controller);
+            for &swamp in &swamps {
+                let mana = Action::TapMana { card: swamp };
+                assert!(g.legal_actions().contains(&mana));
+                act(&mut g, mana);
+            }
             cast_extrapolate(&mut g, owner);
             assert_eq!(g.actor(), Some(controller));
             let visible = g.observe(controller);
