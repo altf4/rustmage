@@ -67,7 +67,11 @@ fn prepared_permanent_departure_and_reentry_use_new_incarnations() {
             let original_copy = prepared_copy(&g, source);
             g.move_object(source, Zone::Graveyard);
             assert!(!g.is_prepared(original_source), "{name}");
-            assert_eq!(g.object_view(original_copy.card).zone, Zone::Exile, "{name}");
+            assert_eq!(
+                g.object_view(original_copy.card).zone,
+                Zone::Exile,
+                "{name}"
+            );
             g.state_based_actions();
             assert_eq!(
                 g.object_view(original_copy.card).zone,
