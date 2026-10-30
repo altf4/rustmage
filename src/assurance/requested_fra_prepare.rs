@@ -120,6 +120,49 @@ fn leaving_battlefield_ceases_prepared_copy() {
 }
 
 #[test]
+fn unassociated_prepared_copy_remains_until_state_based_actions() {
+    for p in [Player::P0, Player::P1] {
+        for source_leaves in [false, true] {
+            let mut g = setup(p);
+            let (creature, copy) = prepared(&mut g, p, "Carnivorous Cultivator // Enroot");
+            let saved = g.snapshot();
+            for replay in 0..2 {
+                if replay == 1 {
+                    g.restore(&saved).unwrap();
+                }
+                let permanent = g.object_ref(creature);
+                // Exercise the two mutations used inside resolving effects, before
+                // their enclosing action gets to run state-based actions.
+                if source_leaves {
+                    g.move_object(creature, Zone::Graveyard);
+                } else {
+                    g.forget_prepared(permanent);
+                }
+                assert!(!g.is_prepared(permanent));
+                assert!(!g.can_cast_prepared(p, copy.card));
+                assert_eq!(g.object_ref(copy.card), copy);
+                assert_eq!(g.object_view(copy.card).zone, Zone::Exile);
+                let new_copy = if source_leaves {
+                    None
+                } else {
+                    g.prepare_permanent(permanent);
+                    Some(g.state.preparations.as_ref().unwrap()[0].spell_copy)
+                };
+                g.state_based_actions();
+                assert_eq!(g.object_view(copy.card).zone, Zone::Outside);
+                assert_ne!(g.object_ref(copy.card), copy);
+                if let Some(new_copy) = new_copy {
+                    assert_ne!(new_copy, copy);
+                    assert_eq!(g.object_ref(new_copy.card), new_copy);
+                    assert_eq!(g.object_view(new_copy.card).zone, Zone::Exile);
+                    assert!(g.can_cast_prepared(p, new_copy.card));
+                }
+            }
+        }
+    }
+}
+
+#[test]
 fn cultivator_combat_damage_returns_own_land_and_trigger_survives_departure() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);

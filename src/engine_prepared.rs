@@ -93,10 +93,12 @@ impl Game {
         let Some(index) = rows.iter().position(|r| r.permanent == permanent) else {
             return;
         };
-        let copy = rows.remove(index).spell_copy;
+        rows.remove(index);
         if rows.is_empty() {
             self.state.preparations = None;
         }
-        self.cease_card_copy(copy);
+        // An unassociated card copy in exile ceases at the next state-based
+        // action, not in the middle of the effect that removed preparation.
+        // A copy already cast remains on the stack as usual.
     }
 }
