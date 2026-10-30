@@ -42,11 +42,11 @@ To explore the project:
 
 ## Standard set tracker
 
-**7 / 20 sets complete · 35%**
+**8 / 20 sets complete · 40%**
 
-`███████░░░░░░░░░░░░░`
+`████████░░░░░░░░░░░░`
 
-**3,027 / 5,164 unique Standard cards implemented across accepted branches · 58%**
+**3,219 / 5,164 unique Standard cards implemented across accepted branches · 62%**
 
 `████████████░░░░░░░░`
 
@@ -55,23 +55,11 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 “Complete” means an accepted whole-set implementation, with validation scope
 recorded in its published evidence; partial admission or catalogue entries do not
 establish set completion. Set completion is separate from integration into `main`.
-Accepted [Lorwyn Eclipsed](https://github.com/altf4/rustmage/pull/463)
-and [TMNT](https://github.com/altf4/rustmage/pull/465) implementations are merged into
-`codex/portable-set-skill`; [BIG](https://github.com/altf4/rustmage/pull/470) is merged
-into `main`, alongside [Secrets of Strixhaven](https://github.com/altf4/rustmage/pull/477)
-[Marvel Super Heroes](https://github.com/altf4/rustmage/pull/516), and
-[The Hobbit](https://github.com/altf4/rustmage/pull/523). Marvel uses
-[bounded card and interaction assurance](docs/msh-bounded-assurance-rebuild.json);
-its earlier full-game receipts are historical.
-The totals below combine accepted coverage by unique identity. The current `main`
-[coverage report](https://github.com/altf4/rustmage/blob/main/data/standard/coverage.json) separately admits 2,740 cards;
-its lower count does not undo accepted set milestones. Counts refreshed 2026-10-27.
 
 <!-- Refresh supported counts from the union of accepted implementation branches,
      using their pinned set membership and coverage reports. Deduplicate by physical
      identity; never demote an accepted set using a checkout that lacks its merged
      integration branch. Keep current-main admission separate from accepted coverage.
-     This refresh unions main at c55abea3 and codex/portable-set-skill at 91b4d6de.
      Reconcile set acceptance with its rules/game evidence and published PR. -->
 
 | Set | Code | Supported cards | Implementation status |
@@ -89,7 +77,7 @@ its lower count does not undo accepted set milestones. Counts refreshed 2026-10-
 | Marvel's Spider-Man | SPM | 79/193 (41%) | ⏳ Partial |
 | Murders at Karlov Manor | MKM | 82/279 (29%) | ⏳ Partial |
 | Outlaws of Thunder Junction | OTJ | 101/276 (37%) | ⏳ Partial |
-| Reality Fracture | FRA | 93/285 (33%) | ⏳ Partial |
+| Reality Fracture | FRA | 285/285 (100%) | ✅ Complete |
 | Secrets of Strixhaven | SOS | 271/271 (100%) | ✅ Complete |
 | Tarkir: Dragonstorm | TDM | 130/276 (47%) | ⏳ Partial |
 | The Big Score | BIG | 30/30 (100%) | ✅ Complete |
