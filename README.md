@@ -46,6 +46,10 @@ To explore the project:
 
 `████████░░░░░░░░░░░░`
 
+**3,027 / 5,164 unique Standard cards implemented across accepted branches · 58%**
+
+`████████████░░░░░░░░`
+
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
 “Complete” means an accepted whole-set implementation, with validation scope
