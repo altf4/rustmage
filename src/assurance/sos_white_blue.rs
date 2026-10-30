@@ -297,6 +297,8 @@ fn sos_preparation_public_copy_paid_cast_transaction_and_exact_departure() {
         assert_ne!(second.spell_copy, row.spell_copy);
         g.move_object(source, Zone::Exile);
         assert!(g.state.preparations.is_none());
+        assert_eq!(g.object_view(second.spell_copy.card).zone, Zone::Exile);
+        g.state_based_actions();
         assert_eq!(g.object_view(second.spell_copy.card).zone, Zone::Outside);
     }
 }

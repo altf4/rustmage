@@ -238,6 +238,8 @@ fn fra_peer_copy_follows_control_and_is_removed_when_source_leaves() {
         super::super::contracts::branch_contract(g.clone());
         g.move_object(source, Zone::Exile);
         assert!(!g.is_prepared(original));
+        assert_eq!(g.state.objects[copy.card as usize].zone, Zone::Exile);
+        g.state_based_actions();
         assert_eq!(g.state.objects[copy.card as usize].zone, Zone::Outside);
         g.move_object(source, Zone::Battlefield);
         let replacement = g.object_ref(source);
