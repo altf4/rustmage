@@ -46,7 +46,7 @@ To explore the project:
 
 `████████░░░░░░░░░░░░`
 
-**3,027 / 5,164 unique Standard cards implemented across accepted branches · 58%**
+**3,219 / 5,164 unique Standard cards implemented across accepted branches · 62%**
 
 `████████████░░░░░░░░`
 
