@@ -103,7 +103,8 @@ fn choose(g: &Game, o: &Observation, actions: &[Action], accept_ward: bool) -> u
             }
             Action::ChooseOptional { accept }
                 if o.resolving.as_ref().is_some_and(|s| {
-                    s.source_card.name() == "The Serpent Society"
+                    s.source()
+                        .is_some_and(|source| source.card.name() == "The Serpent Society")
                         && s.kind == (StackKind::TriggeredAbility { ability: 0 })
                 }) =>
             {
@@ -186,10 +187,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| index(s.source_card).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             if let Action::ChooseOptional { accept } = action
                 && before.resolving.as_ref().is_some_and(|s| {
-                    s.source_card.name() == "The Serpent Society"
+                    s.source()
+                        .is_some_and(|source| source.card.name() == "The Serpent Society")
                         && s.kind == (StackKind::TriggeredAbility { ability: 0 })
                 })
             {
@@ -208,7 +213,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     continue;
                 }
-                let Some(i) = index(s.source_card) else {
+                let Some(i) = s.source().and_then(|source| index(source.card)) else {
                     continue;
                 };
                 if s.kind == StackKind::Spell {

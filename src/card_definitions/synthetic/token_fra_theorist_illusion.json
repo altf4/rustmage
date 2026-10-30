@@ -1,0 +1,11 @@
+{
+  "name": "@token/fra-theorist-illusion",
+  "catalogue_id": 5464,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "c4787985954432711dda0aa1decbe25d632f0774131cc9df8a41527a43d308df",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Illusion11Token.java",
+  "java_sha256": "718c933fb1d5bfa35c2b9bd09a3973baa5228f62918edddb63efb23c58b563cf"
+}

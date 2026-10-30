@@ -3,10 +3,26 @@
   "catalogue_id": 3019,
   "oracle_id": "8dad1fa8-3533-4e3c-b9b3-fcd57b20a33d",
   "facts_sha256": "3c06299f58d2ddd698415e1e804ed43ac4c9c8f459b35b96df80dbb793fec972",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "556d5df9acad2c2ae2a5da95be4ad5fef2ed5a23efc4f46649096790eabcfd37"
   },
-  "physical_metadata_sha256": "921a53425ffd883a60c03a87dbd18942f2bec6048e62a76cfdc8af1b0e311d07"
+  "physical_metadata_sha256": "921a53425ffd883a60c03a87dbd18942f2bec6048e62a76cfdc8af1b0e311d07",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/Omnipresence.java",
+  "java_sha256": "41898b62a05b65481cc73faf801397c12b45b944077ef2429c335bfc9c974b29",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastFromHandWithoutPayingManaCostEffect.java",
+      "sha256": "21f6707d883b719f93109cf5687fe1141e7cd80c13ea464ba9bbb1b4f0f20ca8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
+      "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98"
+    }
+  ],
+  "rules_tests": "src/engine_fra_omnipresence_tests.rs"
 }

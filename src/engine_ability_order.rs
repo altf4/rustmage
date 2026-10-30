@@ -3,9 +3,15 @@
 use super::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum GrantedAbilityKind {
+    Template(u16),
+    PlaneswalkerAttackLimit,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct GrantedAbilityKey {
     pub source: ObjectRef,
-    pub ability: u16,
+    pub kind: GrantedAbilityKind,
     pub granting_card: Card,
     pub grantor_controller: Player,
     pub timestamp: u64,
@@ -15,6 +21,8 @@ pub(super) struct GrantedManaAbility {
     pub source: ObjectRef,
     pub production: ManaProduction,
     pub sacrifice: bool,
+    /// Intrinsic to a basic land subtype, removable by a later type replacement.
+    pub subtype_derived: bool,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LayerSixObject {
@@ -37,6 +45,8 @@ pub(super) struct LayerSixGrant {
 #[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
     Remove,
+    /// Losing the land card type removes its subtype-derived abilities only.
+    RemoveSubtypeMana,
     GrantSelf(u64),
     RemoveAndGrant(Vec<LayerSixGrant>),
     /// CR305.7 removes rules-text/copiable abilities, but not grants from other effects.
@@ -183,6 +193,7 @@ pub(super) fn apply_layer_six(
                 let object = &mut objects[recipient as usize];
                 object.printed = false;
                 object.keywords = object.granted_keywords;
+                object.mana.retain(|ability| !ability.subtype_derived);
             }
         }
         if let LayerSixAction::RemoveAndGrant(_) = &effect.action {
@@ -215,6 +226,9 @@ pub(super) fn apply_layer_six(
                 LayerSixAction::GrantEach(_)
                 | LayerSixAction::RemoveAndGrant(_)
                 | LayerSixAction::RemovePrintedAndGrant(_) => unreachable!(),
+                LayerSixAction::RemoveSubtypeMana => {
+                    object.mana.retain(|ability| !ability.subtype_derived);
+                }
                 LayerSixAction::Remove => {
                     object.printed = false;
                     object.keywords = Keywords::NONE;
@@ -279,6 +293,7 @@ mod basic_land_type_tests {
                     source,
                     production: ManaProduction::Fixed([0, 0, 0, 0, 1, 0]),
                     sacrifice: false,
+                    subtype_derived: true,
                 }],
             }]),
         };
@@ -300,5 +315,154 @@ mod basic_land_type_tests {
         let result = apply_layer_six(vec![initial], &[replacement, remove]);
         assert_eq!(result.objects[0].keywords, Keywords::NONE);
         assert!(result.objects[0].mana.is_empty());
+    }
+    #[test]
+    fn replacing_land_type_removes_only_old_type_mana() {
+        let source = ObjectRef {
+            card: 0,
+            generation: 1,
+        };
+        let mana = |color, subtype_derived| {
+            let mut production = [0; 6];
+            production[color] = 1;
+            GrantedManaAbility {
+                source,
+                production: ManaProduction::Fixed(production),
+                sacrifice: false,
+                subtype_derived,
+            }
+        };
+        let initial = LayerSixObject {
+            printed: true,
+            keywords: Keywords::NONE,
+            granted_keywords: Keywords::NONE,
+            grants: Vec::new(),
+            self_grants: Vec::new(),
+            mana: vec![mana(1, true), mana(5, false)],
+        };
+        let change = LayerSixEffect {
+            provider: None,
+            started_earlier: true,
+            timestamp: 2,
+            recipients: vec![0],
+            action: LayerSixAction::RemovePrintedAndGrant(vec![LayerSixGrant {
+                recipient: 0,
+                keywords: Keywords::NONE,
+                abilities: Vec::new(),
+                mana: vec![mana(4, true)],
+            }]),
+        };
+        let result = apply_layer_six(vec![initial.clone()], std::slice::from_ref(&change));
+        assert_eq!(result.objects[0].mana, vec![mana(5, false), mana(4, true)]);
+        let blank = LayerSixEffect {
+            provider: None,
+            started_earlier: false,
+            timestamp: 3,
+            recipients: vec![0],
+            action: LayerSixAction::Remove,
+        };
+        let result = apply_layer_six(vec![initial.clone()], &[change.clone(), blank.clone()]);
+        assert!(result.objects[0].mana.is_empty());
+        let early_blank = LayerSixEffect {
+            timestamp: 1,
+            ..blank
+        };
+        let result = apply_layer_six(vec![initial], &[early_blank, change]);
+        assert_eq!(result.objects[0].mana, vec![mana(4, true)]);
+    }
+    #[test]
+    fn later_subtype_addition_survives_earlier_blank_and_not_later_blank() {
+        let source = ObjectRef {
+            card: 0,
+            generation: 1,
+        };
+        let initial = LayerSixObject {
+            printed: true,
+            keywords: Keywords::NONE,
+            granted_keywords: Keywords::NONE,
+            grants: Vec::new(),
+            self_grants: Vec::new(),
+            mana: Vec::new(),
+        };
+        let grant = LayerSixEffect {
+            provider: None,
+            started_earlier: true,
+            timestamp: 2,
+            recipients: vec![0],
+            action: LayerSixAction::GrantEach(vec![LayerSixGrant {
+                recipient: 0,
+                keywords: Keywords::NONE,
+                abilities: Vec::new(),
+                mana: vec![GrantedManaAbility {
+                    source,
+                    production: ManaProduction::Fixed([0, 1, 0, 0, 0, 0]),
+                    sacrifice: false,
+                    subtype_derived: true,
+                }],
+            }]),
+        };
+        let blank = LayerSixEffect {
+            provider: None,
+            started_earlier: false,
+            timestamp: 1,
+            recipients: vec![0],
+            action: LayerSixAction::Remove,
+        };
+        assert_eq!(
+            apply_layer_six(vec![initial.clone()], &[blank.clone(), grant.clone()]).objects[0]
+                .mana
+                .len(),
+            1
+        );
+        let later_blank = LayerSixEffect {
+            timestamp: 3,
+            ..blank
+        };
+        assert!(
+            apply_layer_six(vec![initial], &[grant, later_blank]).objects[0]
+                .mana
+                .is_empty()
+        );
+    }
+}
+
+#[cfg(test)]
+mod basic_land_loss_tests {
+    use super::*;
+
+    #[test]
+    fn losing_land_type_keeps_independent_granted_mana() {
+        let source = ObjectRef {
+            card: 0,
+            generation: 1,
+        };
+        let mana = |color, subtype_derived| {
+            let mut production = [0; 6];
+            production[color] = 1;
+            GrantedManaAbility {
+                source,
+                production: ManaProduction::Fixed(production),
+                sacrifice: false,
+                subtype_derived,
+            }
+        };
+        let object = LayerSixObject {
+            printed: true,
+            keywords: Keywords::NONE,
+            granted_keywords: Keywords::NONE,
+            grants: Vec::new(),
+            self_grants: Vec::new(),
+            mana: vec![mana(1, true), mana(5, false)],
+        };
+        let effect = LayerSixEffect {
+            provider: None,
+            started_earlier: true,
+            timestamp: 2,
+            recipients: vec![0],
+            action: LayerSixAction::RemoveSubtypeMana,
+        };
+        let result = apply_layer_six(vec![object], &[effect]);
+        assert!(result.objects[0].printed);
+        assert_eq!(result.objects[0].mana, vec![mana(5, false)]);
     }
 }

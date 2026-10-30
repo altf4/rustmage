@@ -3,10 +3,41 @@
   "catalogue_id": 4406,
   "oracle_id": "708d4567-a5a3-437f-bae4-ae10f1537aa9",
   "facts_sha256": "7e441a77011e4fcb6672b885fa143fa89a6000b512ece13a6d180a4f6308bd9f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "28db548911c447906bc4f621337aed1f025260138972f4e5b30245e15a5098cb"
   },
-  "physical_metadata_sha256": "887a248c778bc8966b78e6add23b164f64bd93457d62336679685c97c8d9274d"
+  "physical_metadata_sha256": "887a248c778bc8966b78e6add23b164f64bd93457d62336679685c97c8d9274d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TetsukoUmezawaPursuer.java",
+  "java_sha256": "14a7d6d3b8efae266f38aa0aa14376c3e91b4bfd1fa7c0801680e5b86624c758",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+      "sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ToughnessPredicate.java",
+      "sha256": "dde981d3b674374b3638ade013cc0c706d21f4c4e93309422dc53b76c83b8ff2"
+    }
+  ],
+  "rules_tests": "src/engine_fra_tetsuko_pursuer_independent_tests.rs"
 }

@@ -3,10 +3,21 @@
   "catalogue_id": 902,
   "oracle_id": "69b96fe5-9733-4b43-bd66-075742e142d9",
   "facts_sha256": "680915f83d7a2ca3ac59851598fd71ed98bf5b51867983773bb10823a368af27",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db2ef325928525d3b8de1f7d823ce97bdb181aef3589e3db97bc7506b01582c2"
   },
-  "physical_metadata_sha256": "076a2e71f40038118766cc0cd46fff914363b5f3fac5fa91af8dc123a7ed9f52"
+  "physical_metadata_sha256": "076a2e71f40038118766cc0cd46fff914363b5f3fac5fa91af8dc123a7ed9f52",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CruelCalculations.java",
+  "java_sha256": "66d7c5eb695347cc52bf34a4dce6ace73531a4bbbc9dc215ed08b5bd94ddc5e7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "src/assurance/fra_cruel_calculations.rs"
 }

@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "42826156de15192ee2eba1790a58e2feade957b81d6958aae274c4db0d3fd6a8"
   },
-  "physical_metadata_sha256": "761d9f8abac0c5912f2fe2106cff15147202ba9fe9aa2bad8a6ff4b91f417b15"
+  "physical_metadata_sha256": "761d9f8abac0c5912f2fe2106cff15147202ba9fe9aa2bad8a6ff4b91f417b15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TitanbonesToweringHeart.java",
+  "java_sha256": "1819b74aa7d22b3990abc0cfaa74bb9ce12438caceb84446ca873f3e9e3d8bec"
 }

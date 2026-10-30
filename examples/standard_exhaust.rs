@@ -54,7 +54,15 @@ fn completed(o: &Observation, a: &Action) -> Option<(ObjectRef, Card, u16)> {
     match a {
         Action::PayCosts { .. } => o.announcing.as_ref().and_then(|s| {
             if let StackKind::ActivatedAbility { ability } = s.kind {
-                Some((s.object, s.source_card, ability))
+                Some((
+                    s.source()
+                        .expect("example expects an object-backed packet")
+                        .object,
+                    s.source()
+                        .expect("example expects an object-backed packet")
+                        .card,
+                    ability,
+                ))
             } else {
                 None
             }
@@ -154,7 +162,12 @@ fn choose(
             } => {
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let root = o.announcing.as_ref().unwrap();
-                match root.source_card.name() {
+                match root
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .card
+                    .name()
+                {
                     "Unsummon" => {
                         if b.owner == root.controller
                             && mask(b.card.name()) != 0
@@ -294,10 +307,10 @@ fn main() {
                 }
             }
             if matches!(a, Action::Discard { .. })
-                && before
-                    .resolving
-                    .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Keen Buccaneer")
+                && before.resolving.as_ref().is_some_and(|s| {
+                    s.source()
+                        .is_some_and(|source| source.card.name() == "Keen Buccaneer")
+                })
             {
                 assert!(g.observe(actor.other()).actions.is_empty());
                 assert!(g.observe(actor.other()).effect_discards.is_empty());
@@ -375,9 +388,24 @@ fn main() {
                 && live_items(&after).all(|s| s.id != root.id)
             {
                 if let StackKind::ActivatedAbility { ability } = root.kind {
-                    if NEW.contains(&root.source_card.name()) {
-                        resolved.insert((root.source_card.name(), ability));
-                        let amount = match (root.source_card.name(), ability) {
+                    if root
+                        .source()
+                        .is_some_and(|source| NEW.contains(&source.card.name()))
+                    {
+                        resolved.insert((
+                            root.source()
+                                .expect("example expects an object-backed packet")
+                                .card
+                                .name(),
+                            ability,
+                        ));
+                        let amount = match (
+                            root.source()
+                                .expect("example expects an object-backed packet")
+                                .card
+                                .name(),
+                            ability,
+                        ) {
                             ("Camera Launcher", 0)
                             | ("Draconautics Engineer", 0)
                             | ("Keen Buccaneer", 0)
@@ -387,20 +415,28 @@ fn main() {
                             ("Prowcatcher Specialist", 0) | ("Skystreak Engineer", 0) => 2,
                             _ => 0,
                         };
-                        if let Some(old) = before
-                            .objects
-                            .iter()
-                            .find(|b| b.reference == root.object && b.zone == Zone::Battlefield)
-                            && let Some(b) = after
-                                .objects
-                                .iter()
-                                .find(|b| b.reference == root.object && b.zone == Zone::Battlefield)
-                        {
+                        if let Some(old) = before.objects.iter().find(|b| {
+                            b.reference
+                                == root
+                                    .source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                                && b.zone == Zone::Battlefield
+                        }) && let Some(b) = after.objects.iter().find(|b| {
+                            b.reference
+                                == root
+                                    .source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                                && b.zone == Zone::Battlefield
+                        }) {
                             assert_eq!(b.counters.plus_one, old.counters.plus_one + amount);
                             checks += 1;
                         }
                     }
-                } else if root.source_card.name() == "Unsummon"
+                } else if root
+                    .source()
+                    .is_some_and(|source| source.card.name() == "Unsummon")
                     && let Some(reference) = root.targets.first().and_then(|t| t.object)
                     && before.objects.iter().any(|b| {
                         b.reference == reference

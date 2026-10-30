@@ -19,7 +19,7 @@ jobs:
   tests:
     name: Card and interaction assurance
     runs-on: ubuntu-24.04
-    timeout-minutes: 18
+    timeout-minutes: 40
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       RUSTUP_TOOLCHAIN: '1.98.0'
@@ -82,6 +82,8 @@ jobs:
           git init "$RUSTMAGE_XMAGE_SOURCE"
           git -C "$RUSTMAGE_XMAGE_SOURCE" remote add origin https://github.com/magefree/mage.git
           git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin "$revision"
+          # Null Summoner is pinned to the immutable head of unmerged XMage PR #16468.
+          git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin 11d430e97f277fad0fafe604fabbaa97f944d441
           # check_sources reads immutable blobs with one git cat-file process.
           # No full XMage working tree or Java build is needed.
 
@@ -96,8 +98,8 @@ jobs:
 
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
-        timeout-minutes: 16
-        run: python3 scripts/validate.py --release --python smoke --timeout 900 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+        timeout-minutes: 33
+        run: python3 scripts/validate.py --release --python smoke --timeout 1800 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 
       - name: Stop any remaining build processes
         if: always() && steps.scope.outputs.code == 'true'

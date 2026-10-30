@@ -3,7 +3,7 @@
   "catalogue_id": 5425,
   "oracle_id": "33e3793c-098f-4897-88f3-9f9ce9081e0f",
   "facts_sha256": "5bba04b9b754ade0b0e8dd93ddafc186ecee2f856c256c39f1ceb563e24eec16",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "19bf3384269c9c974f3fb3213022047fc26a034e333f739905accd22a33e40f4",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/p/PompousBattlemage.java",

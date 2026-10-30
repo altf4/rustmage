@@ -3,10 +3,50 @@
   "catalogue_id": 2168,
   "oracle_id": "bda098cb-31ec-41a1-a9d7-122877cc69d2",
   "facts_sha256": "16429f8b9f96ee3ec366e689a980cb49a99c60f5a0f269f1606d92f5c64bc16d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7af56185eb09f96ba4872798bd86d23c09241d28a4cc9ca4e4868207efe65681"
   },
-  "physical_metadata_sha256": "a3418485aec1c43169e5a4d412af6c0ab0c24190934c949e8e2d104596acf877"
+  "physical_metadata_sha256": "a3418485aec1c43169e5a4d412af6c0ab0c24190934c949e8e2d104596acf877",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IngrisStingerquill.java",
+  "java_sha256": "7112b21141da79a3fc3fa34228ee8cce54f0734211897c1ca68f52368782c4a6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksCreatureYouControlTriggeredAbility.java",
+      "sha256": "b03dbd90dc22641d1cac1b87c8a8f044c2b2a5e667f9389fcf0fecfd4e35a6d9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/CadetToken.java",
+      "sha256": "9e9b0eaec4d6f703141db5932b446205f25adb25e8fea103cd16d937fb0ef52a"
+    }
+  ]
 }

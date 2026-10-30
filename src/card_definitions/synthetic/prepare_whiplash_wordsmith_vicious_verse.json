@@ -1,0 +1,59 @@
+{
+  "name": "Vicious Verse",
+  "catalogue_id": 5449,
+  "oracle_id": "e1ffb884-a89e-4e2a-9beb-8bd5838b6a94",
+  "facts_sha256": "25eb340816d785cf8d17c94e7513416a09588e94eb5ad7a9773c250787e9faaf",
+  "complete": true,
+  "physical_metadata_sha256": "cbc94215cddeb9bd8a3ab39ffb2344f25c09c726cfa4a78657389d62d4265e74",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WhiplashWordsmith.java",
+  "java_sha256": "12dd3291f454d4a710eed786e7437fd922d45fddf4fbe13dfc9522a226688812",
+  "rules_tests": "src/engine_fra_prepared_extra_tests.rs",
+  "oracle_face": {
+    "oracle_id": "e1ffb884-a89e-4e2a-9beb-8bd5838b6a94",
+    "index": 1,
+    "sha256": "ad6f7d190e674562b0fa91bb759d33dc59cf8dc63721fcd8cfd3cbf7eb4e473f"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/OpponentDealtNoncombatDamageCondition.java",
+      "sha256": "d3466679793e8ac658d2a960695fd30490e2010219cf2cff6c6ec0af16a55072"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/NoncombatDamageToPlayersWatcher.java",
+      "sha256": "b2ea02b60e0276dfc3376e5f9af775918c5e5fc829acf3d0ae6ee69fdb9e1275"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ]
+}

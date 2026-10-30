@@ -3,10 +3,30 @@
   "catalogue_id": 5148,
   "oracle_id": "983f4fde-ab04-44f0-a294-c3b472de0b19",
   "facts_sha256": "19a97555dd6c315c06d5162f498c064564863b76fbfa8d1b2071bcd86c2b061f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "df9eb9152b2ee48ae96fa14c34c0ee1bdc48444afca24d31b9f0af30de3c4ab9"
   },
-  "physical_metadata_sha256": "bcdb8e80f8aebfed0f5381b46629e862b59695144fc867d7a753b41b25d3860b"
+  "physical_metadata_sha256": "bcdb8e80f8aebfed0f5381b46629e862b59695144fc867d7a753b41b25d3860b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/y/YurikoHopeFromTheShadows.java",
+  "java_sha256": "2497d1fa7a613dd691269702b9f5aab4ee4e9aecbdaeafc4506bd22ee2270aff",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }

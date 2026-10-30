@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "67aabf16dc5c1c73041806f8fe9120a1f372952a73229db6f19f54dc175e09d5"
   },
-  "physical_metadata_sha256": "1b9c7233d9814f8f23ebd81c9bfec1fc92a1ab20dc6deef1e72058e645fa8a3a"
+  "physical_metadata_sha256": "1b9c7233d9814f8f23ebd81c9bfec1fc92a1ab20dc6deef1e72058e645fa8a3a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MemoryTrap.java",
+  "java_sha256": "7df8c4e271e599ad583fcddb26ba8e2f6deb25da0bf193dc32b2e6df14ab9e87"
 }

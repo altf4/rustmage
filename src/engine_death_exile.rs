@@ -13,6 +13,9 @@ pub struct ExileDeathReplacementView {
 
 impl Game {
     pub(super) fn register_exile_if_dies(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
         for bound in &item.targets {
             if !self.same_target_object(*bound) {
                 continue;
@@ -25,7 +28,7 @@ impl Game {
             }
             let rule = ExileDeathReplacementView {
                 object: self.object_ref(id),
-                source: item.object,
+                source: source.object,
                 source_card: item.trigger_definition(),
                 source_controller: item.controller,
                 expires_turn: self.state.turn,

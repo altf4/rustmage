@@ -3,10 +3,41 @@
   "catalogue_id": 2593,
   "oracle_id": "d9060fff-0b65-4b3d-930d-6e36315b802c",
   "facts_sha256": "726f6ed309de70db1d4cfda9bab60b8462f0bfcc05cfccbf9a75999dde0b3c1c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "66f6fc20406aaa9c20b60126878e0a70090310c20786d2cdd8c0fdb74e2acc36"
   },
-  "physical_metadata_sha256": "e2d9a943e32b83748280f7ade985ebba11c7b38ba42d29e6c4b033b6b9c2280f"
+  "physical_metadata_sha256": "e2d9a943e32b83748280f7ade985ebba11c7b38ba42d29e6c4b033b6b9c2280f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LyraTolarianArchangel.java",
+  "java_sha256": "4f75d55d4ffed8e62af5c3852bbe4cb7beeef5b6b342f3af86953d53de48a80b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/BlueAngelToken.java",
+      "sha256": "4a6fccdf1d4a76fba59f7e74199f1a212dea66a10f059d081881dca63c13d681"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CardsAmountDrawnThisTurnWatcher.java",
+      "sha256": "a3e5ae94c9e554d04995781f7c835c0408b2f453f687d3a193facc0ece9c7345"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ],
+  "rules_tests": "src/engine_fra_lyra_tests.rs"
 }

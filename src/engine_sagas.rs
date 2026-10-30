@@ -65,7 +65,8 @@ impl Game {
         self.stage_counter_placements(placements, replacements::ResumeMode::Pending);
     }
     fn is_chapter_packet(item: &SpellView, source: ObjectRef) -> bool {
-        item.object == source
+        item.source
+            .is_some_and(|identity| identity.object == source)
             && match item.kind {
                 StackKind::TriggeredAbility { ability } => item
                     .trigger_definition()

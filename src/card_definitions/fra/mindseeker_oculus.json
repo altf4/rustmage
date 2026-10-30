@@ -3,10 +3,21 @@
   "catalogue_id": 2768,
   "oracle_id": "aa9547b3-e4e4-4557-9dd1-3aa9a7cb9937",
   "facts_sha256": "bfc727a3773c86532de39ad3039a9fde8e48f07abcb093a7eec6ea169fe93c03",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0fefe93bae87706fc65089bf8215d32df61d1c2eb586187ec207165f62519092"
   },
-  "physical_metadata_sha256": "985360991573663c832ba2de63f8428ba799baed5cb99471a492e5ce6d623ea8"
+  "physical_metadata_sha256": "985360991573663c832ba2de63f8428ba799baed5cb99471a492e5ce6d623ea8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MindseekerOculus.java",
+  "java_sha256": "d381bc37dab04ec29cbb6aacae71e3eed732c8943241ca3c577df24c93780fde",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

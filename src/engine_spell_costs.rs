@@ -1,6 +1,75 @@
 //! Generic reductions and the total cost locked before mana abilities/payment.
 use super::*;
 impl Game {
+    /// Compute the wide pre-reduction generic increase from active sources.
+    pub(super) fn opponent_noncreature_spell_tax(&self, actor: Player, definition: Card) -> u64 {
+        if definition.kind_mask() & 1 != 0 {
+            return 0;
+        }
+        self.state.static_sources.iter().copied().filter(|&source| {
+            self.on_battlefield(source) && self.state.objects[source as usize].controller != actor
+        }).map(|source| {
+            self.state.objects[source as usize].card.static_ability_groups().iter()
+                .flat_map(|group| group.fragments.iter())
+                .filter_map(|fragment| {
+                    let crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(amount) = *fragment else { return None; };
+                    self.continuous_fragment_available(source, |f| matches!(f,
+                        crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(n) if *n == amount))
+                        .then_some(u64::from(amount))
+                }).fold(0u64, u64::saturating_add)
+        }).fold(0u64, u64::saturating_add)
+    }
+    /// Keep increases and all reductions wide until the final payable total.
+    #[allow(clippy::too_many_arguments)] // Keep the distinct cost components explicit.
+    pub(super) fn spell_total_with_reductions(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        definition: Card,
+        mana_value: u64,
+        extra_generic: u64,
+        discount: ManaCost,
+        extra_reduction: u64,
+    ) -> Option<ManaCost> {
+        let raw = u64::from(base.generic)
+            .checked_add(extra_generic)?
+            .checked_add(self.opponent_noncreature_spell_tax(actor, definition))?;
+        let colored = std::array::from_fn(|i| base.colored[i].saturating_sub(discount.colored[i]));
+        let excess = (0..6)
+            .map(|i| u64::from(discount.colored[i].saturating_sub(base.colored[i])))
+            .sum::<u64>();
+        let reductions = self
+            .spell_reduction_for_definition(actor, id, mana_value, definition)
+            .saturating_add(u64::from(discount.generic))
+            .saturating_add(extra_reduction)
+            .saturating_add(excess);
+        Some(ManaCost {
+            colored,
+            generic: u32::try_from(raw.saturating_sub(reductions)).ok()?,
+        })
+    }
+    pub(super) fn spell_total_for_definition(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        definition: Card,
+    ) -> Option<ManaCost> {
+        self.spell_total_with_reductions(
+            actor,
+            id,
+            base,
+            definition,
+            definition.fixed_mana_value(),
+            0,
+            ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            },
+            0,
+        )
+    }
     pub(super) fn spell_cost_option_available(
         &self,
         actor: Player,
@@ -28,19 +97,52 @@ impl Game {
                 })
         })
     }
+    pub(super) fn announcement_optional_reduction(a: &Announcement) -> u64 {
+        let evidence = a.item.cast.is_some_and(|c| c.evidence == Some(true));
+        let bargain = a.item.cast.is_some_and(|c| c.bargain == Some(true));
+        u64::from(if evidence {
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .evidence_reduction()
+        } else {
+            0
+        }) + u64::from(if bargain {
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .bargain_reduction()
+        } else {
+            0
+        })
+    }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Miracle) {
                 return a.miracle_cost.expect("miracle cost");
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
-                return a.item.source_card.sneak_cost().expect("Sneak cost");
+                return a
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .sneak_cost()
+                    .expect("Sneak cost");
             }
             if a.item
                 .cast
                 .is_some_and(|c| c.method == CastMethod::Harmonize)
             {
-                return a.item.source_card.harmonize_cost().expect("Harmonize cost");
+                return a
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .harmonize_cost()
+                    .expect("Harmonize cost");
             }
             if a.item
                 .cast
@@ -52,7 +154,13 @@ impl Game {
                 };
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
-                return a.item.source_card.warp_cost().expect("fixed Warp cost");
+                return a
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .warp_cost()
+                    .expect("fixed Warp cost");
             }
             if a.item.cast.is_some_and(|c| {
                 matches!(
@@ -69,20 +177,38 @@ impl Game {
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::Flashback)
             {
-                return a.item.source_card.flashback_cost().unwrap();
+                return a
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .flashback_cost()
+                    .unwrap();
             }
             assert!(
-                !a.item.source_card.has_hybrid_cost(),
+                !a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .has_hybrid_cost(),
                 "hybrid cost not chosen"
             );
-            let (colored, generic) = a.item.source_card.cost();
+            let (colored, generic) = a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .cost();
             ManaCost { colored, generic }
         });
         // A selected hybrid equivalent already includes the declared surcharge.
         if a.cost.is_none() {
             base = Self::with_flash_surcharge(
                 base,
-                a.item.source_card,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
                 a.item.cast.is_some_and(|c| c.flash_surcharge),
             );
         }
@@ -97,23 +223,19 @@ impl Game {
                 .checked_add(1)
                 .capacity("forage alternative mana cost exhausted");
         }
-        if a.item.cast.is_some_and(|c| c.evidence == Some(true)) {
-            base.generic = base
-                .generic
-                .saturating_sub(a.item.source_card.evidence_reduction());
-        }
-        if a.item.cast.is_some_and(|c| c.bargain == Some(true)) {
-            base.generic = base
-                .generic
-                .saturating_sub(a.item.source_card.bargain_reduction());
-        }
         Self::with_kicker_cost(
             Self::with_offspring_cost(
                 base,
-                a.item.source_card,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
                 a.item.cast.is_some_and(|c| c.offspring == Some(true)),
             ),
-            a.item.source_card,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card,
             a.item.cast.is_some_and(|c| c.kicker == Some(true)),
         )
     }
@@ -152,7 +274,7 @@ impl Game {
             return false;
         }
         let costs = if flashback {
-            std::iter::once(definition.flashback_cost().unwrap()).chain([].iter().copied())
+            definition.flashback_cost_options()
         } else {
             definition.cost_options()
         };
@@ -188,7 +310,13 @@ impl Game {
     pub(super) fn kicker_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
         let mut proposal = a.clone();
         proposal.item.cast.as_mut().unwrap().kicker = Some(pay);
-        if proposal.item.source_card.kicked_targets().is_some()
+        if proposal
+            .item
+            .source
+            .expect("cost announcement has object source")
+            .card
+            .kicked_targets()
+            .is_some()
             && !self.targets_available(
                 self.target_spec(&proposal.item),
                 proposal.item.controller,
@@ -217,14 +345,30 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
-        if a.item.source_card.target_cost_reduction().is_some() {
+        if a.item
+            .source
+            .expect("cost announcement has object source")
+            .card
+            .target_cost_reduction()
+            .is_some()
+        {
             return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
         }
         a.cost_options().any(|cost| {
             self.spell_can_fund(
                 a.item.controller,
-                a.item.card,
-                Self::with_offspring_cost(cost, a.item.source_card, pay),
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id,
+                Self::with_offspring_cost(
+                    cost,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card,
+                    pay,
+                ),
             )
         })
     }
@@ -243,7 +387,7 @@ impl Game {
                     .flat_map(|frames| frames.iter().map(|f| &f.announcement.item)),
             )
             .chain(self.state.stack.iter())
-            .find(|s| s.kind == StackKind::Spell && s.card == id);
+            .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == id));
         let origin = packet
             .and_then(|s| s.cast.map(|c| c.origin))
             .unwrap_or(self.state.objects[id as usize].zone);
@@ -325,6 +469,23 @@ impl Game {
                     u64::try_from(self.stats_without_hand(target.card, departing).power.max(0))
                         .unwrap_or(u64::MAX)
                 }),
+            crate::cards::SpellReductionAmount::GreatestCreatureToughness => {
+                let maximum = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == actor
+                            && self.is_creature(*id as CardId)
+                    })
+                    .map(|(id, _)| self.stats_without_hand(id as CardId, departing).toughness)
+                    .max()
+                    .unwrap_or(0)
+                    .max(0);
+                u64::try_from(maximum).unwrap_or(u64::MAX)
+            }
             crate::cards::SpellReductionAmount::SourcePower => {
                 u64::try_from(self.stats_without_hand(source, departing).power.max(0))
                     .unwrap_or(u64::MAX)
@@ -384,14 +545,12 @@ impl Game {
         }
         reduction
     }
-    pub(super) fn reduced_spell_cost(&self, actor: Player, id: CardId, base: ManaCost) -> ManaCost {
-        ManaCost {
-            generic: if base.generic == 0 {
-                0
-            } else {
-                base.generic.saturating_sub(self.spell_reduction(actor, id))
-            },
-            ..base
-        }
+    pub(super) fn reduced_spell_cost(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+    ) -> Option<ManaCost> {
+        self.spell_total_for_definition(actor, id, base, self.effective_spell_card(id))
     }
 }

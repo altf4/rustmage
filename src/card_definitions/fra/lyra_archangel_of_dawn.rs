@@ -7,18 +7,18 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             own_turn: false,
         },
         targets: TargetPlan::Single(TargetSpec::NONE),
-        program: &[Instruction::PutCreatureCounters {
-            filter: CreatureFilter {
+        program: &[Instruction::PutPermanentCountersScaled {
+            filters: &[BattlefieldFilter {
+                kinds: 0,
                 relation: 0,
-                other: false,
+                nonland: false,
+                tapped: None,
+                without: Keywords::NONE,
                 subtype: Some("Angel"),
-                keyword: Keywords::NONE,
-                attacking: false,
-                tokens: None,
-                artifact: false,
-            },
+                max_mana: u32::MAX,
+            }],
             kind: CounterKind::PlusOne,
-            amount: 1,
+            amount: AmountValue::Fixed(1),
         }],
     }],
     activated: &[],

@@ -32,7 +32,7 @@ impl Game {
             || self.state.step != Step::Blockers
             || o.is_token()
             || o.card.sneak_cost().is_none()
-            || !(o.zone == Zone::Hand
+            || !(o.zone == Zone::Hand && o.is_card()
                 || self.can_play_exiled(actor, card)
                 || self.can_cast_library_top(actor, card)
                 || self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast))

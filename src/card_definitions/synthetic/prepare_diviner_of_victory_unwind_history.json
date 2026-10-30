@@ -1,0 +1,49 @@
+{
+  "name": "Unwind History",
+  "catalogue_id": 5458,
+  "oracle_id": "e7b78acd-5288-4528-97a8-a5b43de90bf5",
+  "facts_sha256": "7153921f2dc6a70f04934dc30d8755f0e610d022357db0eed0842f9879ce7319",
+  "complete": true,
+  "physical_metadata_sha256": "3ef5d885a45c55334520bfd99ddcf14bb0f1a7a2f43cc79ef02ebe599f8ee5b5",
+  "oracle_face": {
+    "oracle_id": "e7b78acd-5288-4528-97a8-a5b43de90bf5",
+    "index": 1,
+    "sha256": "79fa7684f1344ff810a0c9bb23caedabd7d145c0e3c0a8525f9439cc039a90e1"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DivinerOfVictory.java",
+  "java_sha256": "197fff124f843ca072ae9541bd8a2297d88c403a0e44b147514ade32fc6dab07",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ScryOrSurveilTriggeredAbility.java",
+      "sha256": "07026dc756086e1a14b9de69885470d042f850961f62c08141de22364aee8884"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    }
+  ],
+  "rules_tests": "src/engine_fra_diviner_tests.rs"
+}

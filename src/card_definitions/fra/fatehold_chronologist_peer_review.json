@@ -3,10 +3,51 @@
   "catalogue_id": 1454,
   "oracle_id": "1063822f-47d3-42e9-8a21-f62b12609fe1",
   "facts_sha256": "b7c1659a12594135f805236ead8bc7d07fcaa9b46bf7e50fe4b8eb86c95f6e1e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e900325c3a19128635722d81dbadef6641cd26df325cbae05d46a875d8950d23"
   },
-  "physical_metadata_sha256": "1573dde94836b22ce1d4a28b8904c80d4928c827da7efc291e42cf5f76428820"
+  "physical_metadata_sha256": "67b7cf938b6644eb053ed0bb6a8765e768d63e5e25bc828f363490cfbf4194bf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FateholdChronologist.java",
+  "java_sha256": "a16d4cbbabc7a47723ea7be1565f662750854a7cf347a141e0ea47e80c067c30",
+  "oracle_face": {
+    "oracle_id": "1063822f-47d3-42e9-8a21-f62b12609fe1",
+    "index": 0,
+    "sha256": "3d5c089fa32e79f1dcd3a749890910749b910f94d2087cb5de8928a2ccaa0c6a"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/CadetToken.java",
+      "sha256": "9e9b0eaec4d6f703141db5932b446205f25adb25e8fea103cd16d937fb0ef52a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "src/engine_fra_peer_review_tests.rs"
 }

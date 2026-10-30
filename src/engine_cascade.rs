@@ -21,6 +21,7 @@ impl Game {
         trigger.id = self.next_stack_id();
         trigger.kind = StackKind::TriggeredAbility { ability };
         trigger.targets.clear();
+        trigger.target_type_slots = None;
         trigger.mode = None;
         trigger.cast_event = spell.actual_cast_event().map(Box::new);
         trigger.cast = None;
@@ -35,7 +36,9 @@ impl Game {
         let spell = &self.state.stack[index];
         if spell.is_copy
             || !spell.cast.is_some_and(|c| c.origin == Zone::Hand)
-            || !CastFilter::InstantSorcery.matches(spell.source_card)
+            || !spell
+                .source
+                .is_some_and(|source| CastFilter::InstantSorcery.matches(source.card))
         {
             return;
         }
@@ -56,7 +59,7 @@ impl Game {
                             AttachmentTriggerView {
                                 grantor: source.reference,
                                 granting_card: source.card,
-                                recipient: spell.object,
+                                recipient: spell.source.expect("cast spell has source").object,
                                 defender: None,
                                 granted: true,
                                 origin: source.copied_grant_origin(),
@@ -79,11 +82,7 @@ impl Game {
             .map_or_else(|| item.mana_value(), |event| event.mana_value);
         let mut exiled = Vec::new();
         let mut eligible = None;
-        while let Some(card) = self.state.players[item.controller.index()]
-            .library
-            .last()
-            .copied()
-        {
+        while let Some(card) = self.top_library_card(item.controller) {
             let definition = self.state.objects[card as usize].card;
             let events = self.move_objects_raw(&[card], Zone::Exile);
             let moved = events
@@ -97,7 +96,7 @@ impl Game {
                     eligible = Some(object);
                     break;
                 }
-            } else if self.state.players[item.controller.index()].library.last() == Some(&card) {
+            } else if self.top_library_card(item.controller) == Some(card) {
                 // A prevented movement cannot make progress through this library.
                 break;
             }
@@ -113,6 +112,7 @@ impl Game {
                 paid: None,
                 casts_remaining: None,
                 pending_cast: None,
+                remaining_mana_value: None,
                 alternative_cost: None,
                 maximum_mana_value: Some(maximum),
                 origin: Zone::Exile,

@@ -5,6 +5,8 @@ pub(super) struct TargetLibraryChoice {
     pub source: ObjectRef,
     pub controller: Player,
     pub second_from_top: bool,
+    /// Damage on an actual top placement; None is the ordinary owner choice.
+    pub top_damage: Option<u16>,
     pub targets: Vec<BoundTarget>,
 }
 impl TargetLibraryChoice {
@@ -53,7 +55,7 @@ impl Game {
         source: ObjectRef,
         object: ObjectRef,
         destination: LibraryDestination,
-    ) {
+    ) -> bool {
         assert!(matches!(
             destination,
             LibraryDestination::Top
@@ -64,9 +66,13 @@ impl Game {
         let card = self.state.objects[object.card as usize].card;
         let token = self.state.objects[object.card as usize].is_token();
         let prior_top = self.public_library_top(owner);
-        let old_len = self.state.players[owner.index()].library.len();
+        let old_top_position = self.state.players[owner.index()]
+            .library
+            .iter()
+            .rposition(|&id| self.state.objects[id as usize].is_card());
         let event = self.move_object(object.card, Zone::Library);
-        if event.moved && event.destination == Zone::Library {
+        let placed = event.moved && event.destination == Zone::Library;
+        if placed {
             let library = &mut self.state.players[owner.index()].library;
             if !token
                 && matches!(
@@ -76,19 +82,20 @@ impl Game {
             {
                 assert_eq!(library.pop(), Some(object.card));
                 let index = if destination == LibraryDestination::SecondFromTop {
-                    old_len.saturating_sub(1)
+                    old_top_position.unwrap_or(0)
                 } else {
                     0
                 };
                 library.insert(index, object.card);
             }
-            if !token
+            if event.was_card
                 && (destination == LibraryDestination::Top
-                    || (destination == LibraryDestination::SecondFromTop && old_len == 0))
+                    || (destination == LibraryDestination::SecondFromTop
+                        && old_top_position.is_none()))
             {
                 self.remember_library_top(owner, event.after);
             } else if let Some(prior) = prior_top
-                && self.state.players[owner.index()].library.last() == Some(&prior.card)
+                && self.top_library_card(owner) == Some(prior.card)
                 && self.object_ref(prior.card) == prior
             {
                 self.remember_library_top(owner, prior);
@@ -104,8 +111,20 @@ impl Game {
                 destination,
             }));
         }
+        placed
     }
     pub(super) fn start_target_library(&mut self, item: &SpellView, second_from_top: bool) -> bool {
+        self.start_target_library_inner(item, second_from_top, None)
+    }
+    pub(super) fn start_target_library_damage(&mut self, item: &SpellView, damage: u16) -> bool {
+        self.start_target_library_inner(item, false, Some(damage))
+    }
+    fn start_target_library_inner(
+        &mut self,
+        item: &SpellView,
+        second_from_top: bool,
+        top_damage: Option<u16>,
+    ) -> bool {
         let targets = item
             .targets
             .iter()
@@ -120,6 +139,7 @@ impl Game {
                 source: item.target_source(),
                 controller: item.controller,
                 second_from_top,
+                top_damage,
                 targets,
             }));
         self.advance_target_library()
@@ -158,11 +178,26 @@ impl Game {
         let bound = r.target_library.as_ref().unwrap().targets[0];
         assert_eq!(bound.object, Some(object));
         if self.valid_library_target(&r.item, bound) {
-            self.move_target_to_library(
-                r.target_library.as_ref().unwrap().source,
-                object,
-                destination,
-            );
+            let source = r.target_library.as_ref().unwrap().source;
+            let top_damage = r.target_library.as_ref().unwrap().top_damage;
+            let item = r.item.clone();
+            let owner = self.state.objects[object.card as usize].owner;
+            let placed = self.move_target_to_library(source, object, destination);
+            if let Some(amount) = top_damage.filter(|_| destination == LibraryDestination::Top) {
+                if placed {
+                    let damage = DamageEvent {
+                        source: self.program_damage_source(&item),
+                        target: Target::Player(owner),
+                        amount: i128::from(amount),
+                        combat: false,
+                        preventable: true,
+                    };
+                    self.apply_damage_batch(&[damage]);
+                } else if self.object_ref(object.card) == object && self.on_battlefield(object.card)
+                {
+                    self.move_target_to_library(source, object, LibraryDestination::Bottom);
+                }
+            }
         }
         self.state
             .resolving

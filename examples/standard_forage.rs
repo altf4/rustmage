@@ -212,7 +212,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         objects: Vec::new(),
                         cost: b.announcing.is_some(),
                         player: actor,
-                        name: s.source_card.name(),
+                        name: s
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
                     },
                 );
             }
@@ -310,7 +314,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     paid.insert(id);
                     if !f.cost && f.name == NAMES[3] {
-                        credit(&mut debt, context.unwrap().object, 1);
+                        credit(
+                            &mut debt,
+                            context
+                                .unwrap()
+                                .source()
+                                .expect("forage packet has source")
+                                .object,
+                            1,
+                        );
                         if !a.objects.iter().any(|v| {
                             v.owner == f.player
                                 && v.zone == Zone::Graveyard
@@ -355,7 +367,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         if !v.card.is_token()
                             && b.stack.iter().any(|s| {
                                 s.kind == StackKind::Spell
-                                    && s.card == v.id
+                                    && s.source()
+                                        .expect("example expects an object-backed packet")
+                                        .id
+                                        == v.id
                                     && s.cast.is_some_and(|c| c.offspring == Some(true))
                             })
                         {
@@ -374,7 +389,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for s in &a.stack {
                 if s.kind == StackKind::Spell
                     && seen_cast.insert(s.id)
-                    && let Some(i) = NAMES.iter().position(|&n| n == s.source_card.name())
+                    && let Some(i) = NAMES.iter().position(|&n| {
+                        n == s
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name()
+                    })
                 {
                     casts[i] += 1;
                 }
@@ -383,15 +404,41 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && a.resolving.as_ref().is_none_or(|r| r.id != s.id)
                 && !a.stack.iter().any(|r| r.id == s.id)
             {
-                match (s.source_card.name(), s.kind) {
+                match (
+                    s.source()
+                        .expect("example expects an object-backed packet")
+                        .card
+                        .name(),
+                    s.kind,
+                ) {
                     ("Bushy Bodyguard", StackKind::TriggeredAbility { ability: 1 })
                         if paid.contains(&s.id) =>
                     {
-                        if let Some(v) = exact(&a, s.object).filter(|v| v.zone == Zone::Battlefield)
+                        if let Some(v) = exact(
+                            &a,
+                            s.source()
+                                .expect("example expects an object-backed packet")
+                                .object,
+                        )
+                        .filter(|v| v.zone == Zone::Battlefield)
                         {
-                            let before = exact(&b, s.object).unwrap().counters.plus_one;
+                            let before = exact(
+                                &b,
+                                s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .object,
+                            )
+                            .unwrap()
+                            .counters
+                            .plus_one;
                             assert_eq!(v.counters.plus_one, before + 2);
-                            *counters.entry(s.object).or_default() += 2;
+                            *counters
+                                .entry(
+                                    s.source()
+                                        .expect("example expects an object-backed packet")
+                                        .object,
+                                )
+                                .or_default() += 2;
                             effects[0] += 1;
                         }
                     }
@@ -406,13 +453,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         effects[5] += 1;
                     }
                     ("Corpseberry Cultivator", StackKind::TriggeredAbility { ability: 1 }) => {
-                        if let Some(v) = exact(&a, s.object).filter(|v| v.zone == Zone::Battlefield)
+                        if let Some(v) = exact(
+                            &a,
+                            s.source()
+                                .expect("example expects an object-backed packet")
+                                .object,
+                        )
+                        .filter(|v| v.zone == Zone::Battlefield)
                         {
                             assert_eq!(
                                 v.counters.plus_one,
-                                exact(&b, s.object).unwrap().counters.plus_one + 1
+                                exact(
+                                    &b,
+                                    s.source()
+                                        .expect("example expects an object-backed packet")
+                                        .object
+                                )
+                                .unwrap()
+                                .counters
+                                .plus_one
+                                    + 1
                             );
-                            *counters.entry(s.object).or_default() += 1;
+                            *counters
+                                .entry(
+                                    s.source()
+                                        .expect("example expects an object-backed packet")
+                                        .object,
+                                )
+                                .or_default() += 1;
                             effects[2] += 1;
                         }
                     }
@@ -432,7 +500,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         for v in
                             bf(&b).filter(|v| {
                                 v.owner == s.controller
-                                    && v.reference != s.object
+                                    && v.reference
+                                        != s.source()
+                                            .expect("example expects an object-backed packet")
+                                            .object
                                     && v.card.info().type_line.split('—').nth(1).is_some_and(|x| {
                                         x.split_whitespace().any(|x| x == "Squirrel")
                                     })
@@ -495,16 +566,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             for s in packets(&a) {
                 if let StackKind::TriggeredAbility { ability } = s.kind
-                    && NAMES.contains(&s.source_card.name())
+                    && s.source()
+                        .is_some_and(|source| NAMES.contains(&source.card.name()))
                     && seen_trigger.insert(s.id)
                 {
-                    let n = debt.get_mut(&(s.object, ability)).unwrap_or_else(|| {
-                        panic!(
-                            "unpredicted {} {:?} seed{seed}",
-                            s.source_card.name(),
-                            s.kind
-                        )
-                    });
+                    let n = debt
+                        .get_mut(&(
+                            s.source()
+                                .expect("example expects an object-backed packet")
+                                .object,
+                            ability,
+                        ))
+                        .unwrap_or_else(|| {
+                            panic!(
+                                "unpredicted {} {:?} seed{seed}",
+                                s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .card
+                                    .name(),
+                                s.kind
+                            )
+                        });
                     assert!(*n > 0);
                     *n -= 1;
                     qualified += 1;

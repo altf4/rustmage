@@ -79,6 +79,7 @@ impl Game {
                 let mut item = a.item.clone();
                 if !owns {
                     item.targets.clear();
+                    item.target_type_slots = None;
                 }
                 let goal = owns.then(|| self.funding_goal(a));
                 ManaAnnouncementView {

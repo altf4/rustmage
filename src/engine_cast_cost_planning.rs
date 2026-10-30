@@ -6,6 +6,7 @@ use ability_world::CharacteristicWorld;
 pub(super) struct CostContext {
     actor: Player,
     source: ObjectRef,
+    source_counter_reservation: Counters,
     clauses: Vec<CastCostRow>,
     active: Option<u16>,
     casualty: Vec<CasualtyDeclaration>,
@@ -35,7 +36,27 @@ impl CostContext {
             selected = e.selected.clone();
             exact = e.complete;
         }
+        let mut source_counter_reservation = Counters::default();
+        if let StackKind::ActivatedAbility { ability } = a.item.kind
+            && a.activation_cost_route != ActivationCostRoute::FirstEquipZero
+        {
+            source_counter_reservation = a.counter_payment.clone();
+            if let Some(change) = a
+                .item
+                .source
+                .expect("activated ability has a source")
+                .card
+                .activation(ability)
+                .cost
+                .loyalty
+                .filter(|change| *change < 0)
+            {
+                source_counter_reservation
+                    .add(CounterKind::Loyalty, u64::from(change.unsigned_abs()));
+            }
+        }
         Some(Box::new(Self {
+            source_counter_reservation,
             teammates: c.teammates.clone(),
             teamwork_exact: false,
             actor: a.item.controller,
@@ -45,7 +66,11 @@ impl CostContext {
                 .map(|c| c.remaining)
                 .or(a.total_cost)
                 .or(a.cost),
-            source: a.item.object,
+            source: a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .object,
             clauses: c.clauses.clone(),
             active: c.active,
             casualty: a.casualty.as_deref().cloned().unwrap_or_default(),
@@ -121,9 +146,12 @@ impl FundingState<'_> {
         let possible = match spec.kind {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
-            | EffectChoiceKind::DiscardMatchingLegendary => hand > 0,
+            | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary => hand > 0,
             EffectChoiceKind::DiscardOrLife(life) => hand > 0 || self.life >= i128::from(life),
-            EffectChoiceKind::SacrificeOrDiscard { .. } => battlefield > 0 || hand > 0,
+            EffectChoiceKind::Behold | EffectChoiceKind::SacrificeOrDiscard { .. } => {
+                battlefield > 0 || hand > 0
+            }
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::ReturnUnblockedAttacker
@@ -212,8 +240,14 @@ impl FundingState<'_> {
             return false;
         }
         let spec = spec.in_zone(o.zone);
-        (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
-            || (self.game.sneak_attacker(self.actor, r) && self.attacking(r.card)))
+        (!matches!(
+            spec.kind,
+            EffectChoiceKind::Sacrifice
+                | EffectChoiceKind::SacrificeDifferentNames(_)
+                | EffectChoiceKind::SacrificeAttachedEquipment
+        ) || !self.sacrifice_prohibited(r.card))
+            && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+                || (self.game.sneak_attacker(self.actor, r) && self.attacking(r.card)))
             && self.reference(r.card) == r
             && (r != source
                 || !matches!(
@@ -221,8 +255,10 @@ impl FundingState<'_> {
                     EffectChoiceKind::Discard
                         | EffectChoiceKind::DiscardNamed(_)
                         | EffectChoiceKind::DiscardMatchingLegendary
+                        | EffectChoiceKind::DiscardLegendary
                 ) && !spec.filter.other)
             && (!spec.filter.source_only || r == source)
+            && (spec.kind != EffectChoiceKind::DiscardLegendary || self.legendary(r.card))
             && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
                 || additional_costs::legendary_name_match(self, self.actor, r.card))
             && Game::additional_object_matches(
@@ -247,12 +283,27 @@ impl FundingState<'_> {
         requested: Zone,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        // Simultaneous departures all use characteristics from the same
+        // pre-event world, even when one leaving object is a type provider.
+        let before_facts: Vec<_> = objects
+            .iter()
+            .map(|r| {
+                let object = self.object(r.card);
+                (
+                    object.zone,
+                    object.controller,
+                    object.owner,
+                    CharacteristicWorld::kinds(self, r.card),
+                )
+            })
+            .collect();
         let destinations = objects
             .iter()
             .map(|r| {
                 let o = self.object(r.card);
+                let prevented = self.zone_move_prevented(*r, requested);
                 if requested != Zone::Graveyard {
-                    return vec![requested];
+                    return if prevented { vec![None] } else { vec![Some(requested)] };
                 }
                 let own = o.card.zone_replacement();
                 let shuffle = own == Some(crate::cards::ZoneReplacementRule::RevealShuffleSelf)
@@ -262,18 +313,20 @@ impl FundingState<'_> {
                     p.zone == Zone::Battlefield
                         && self.printed_abilities_available(id)
                         && match p.card.zone_replacement() {
-                            Some(crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens) => true,
+                            Some(crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens) => {
+                                o.is_card() || o.is_token()
+                            },
                             Some(
                                 crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath {
                                     ..
-                                },
+                                } | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeathPlain,
                             ) => {
                                 o.zone == Zone::Battlefield
                                     && CharacteristicWorld::kinds(self, r.card) & 1 != 0
                                     && p.controller != o.controller
                             }
                             Some(crate::cards::ZoneReplacementRule::ExileInstantSorceryCards) => {
-                                CharacteristicWorld::kinds(self, r.card) & 12 != 0 && !o.is_token()
+                                CharacteristicWorld::kinds(self, r.card) & 12 != 0 && o.is_card()
                             }
                             _ => false,
                         }
@@ -289,12 +342,15 @@ impl FundingState<'_> {
                                     rule.object == *r && rule.expires_turn == self.game.state.turn
                                 })
                             })));
-                match (shuffle, exile) {
-                    (true, true) => vec![Zone::Library, Zone::Exile],
-                    (true, false) => vec![Zone::Library],
-                    (false, true) => vec![Zone::Exile],
-                    _ => vec![Zone::Graveyard],
-                }
+                let mut choices = match (shuffle, exile) {
+                    (true, true) => vec![Some(Zone::Library), Some(Zone::Exile)],
+                    (true, false) => vec![Some(Zone::Library)],
+                    (false, true) => vec![Some(Zone::Exile)],
+                    _ if prevented => Vec::new(),
+                    _ => vec![Some(Zone::Graveyard)],
+                };
+                if prevented { choices.push(None); }
+                choices
             })
             .collect::<Vec<_>>();
         let mut initial = self.clone();
@@ -304,22 +360,33 @@ impl FundingState<'_> {
             initial.remember_payment_departure(object.card);
         }
         let mut worlds = vec![initial];
-        for (r, choices) in objects.iter().zip(destinations) {
+        for ((r, choices), &(before_zone, controller, owner, kinds)) in
+            objects.iter().zip(destinations).zip(&before_facts)
+        {
             let mut next = Vec::new();
             for w in worlds {
                 for &zone in &choices {
                     let mut n = w.clone();
+                    let Some(zone) = zone else {
+                        // No departure happened; do not retain a newly captured
+                        // departure witness for this prevented event.
+                        if !self
+                            .payment_departures
+                            .iter()
+                            .any(|(reference, _)| reference == r)
+                        {
+                            n.payment_departures.retain(|(reference, _)| reference != r);
+                        }
+                        next.push(n);
+                        continue;
+                    };
                     let i = n
                         .resources
                         .iter()
                         .position(|v| v.id == r.card)
                         .expect("cost resource retained");
-                    let before = &n.resources[i].object;
-                    if before.zone == Zone::Battlefield
-                        && zone == Zone::Graveyard
-                        && CharacteristicWorld::kinds(&n, r.card) & 1 != 0
+                    if before_zone == Zone::Battlefield && zone == Zone::Graveyard && kinds & 1 != 0
                     {
-                        let controller = before.controller;
                         n.controlled_creatures_died[controller.index()] = n
                             .controlled_creatures_died[controller.index()]
                         .checked_add(1)
@@ -329,9 +396,10 @@ impl FundingState<'_> {
                             .checked_add(1)
                             .capacity("virtual death history exhausted");
                     }
-                    if before.zone == Zone::Graveyard {
-                        n.graveyard_left[before.owner.index()] = true;
+                    if before_zone == Zone::Graveyard {
+                        n.graveyard_left[owner.index()] = true;
                     }
+                    let face_down_physical = n.projected_face_down_physical(*r);
                     n.resources[i].object.zone = zone;
                     n.resources[i].object.generation = n.resources[i]
                         .object
@@ -342,9 +410,15 @@ impl FundingState<'_> {
                     // outside stack/battlefield has only its physical front.
                     let object = &mut n.resources[i].object;
                     n.game.restore_projected_copy_identity(*r, object);
-                    if !object.is_token() && !object.is_spell_copy() {
+                    if let Some(physical) = face_down_physical {
+                        object.card = physical.front_face();
+                    } else if !object.is_token() && !object.is_spell_copy() {
                         object.card = object.card.front_face();
                     }
+                    if let Some(projection) = &mut n.entry_projection {
+                        projection.manifested.retain(|(source, _)| *source != *r);
+                    }
+                    live_counters::set(&mut n.named_counters, *r, None);
                     n.resources[i].object.counters = InitialCounters::default();
                     n.resources[i].object.growth = Stats::default();
                     n.resources[i].object.attached_to = None;
@@ -354,12 +428,16 @@ impl FundingState<'_> {
                     n.resources[i].object.damage = 0;
                     n.resources[i].object.damaged_this_turn = false;
                     n.resources[i].object.dealt_damage_this_turn = false;
+                    n.resources[i].object.dealt_combat_damage_this_incarnation = false;
                     n.resources[i].object.deathtouch_since_sba = false;
                     n.resources[i].object.gained_keywords = Keywords::NONE;
                     n.resources[i].object.used_abilities = 0;
+                    n.resources[i].object.loyalty_activated_this_turn = false;
                     let after = n.reference(r.card);
                     n.project_copy_departure(*r, after);
                     n.resources[i].object.flashback = false;
+                    n.resources[i].object.cast_for_warp = false;
+                    n.resources[i].object.class_level = 1;
                     n.resources[i].attacking = false;
                     next.push(n);
                 }
@@ -371,6 +449,7 @@ impl FundingState<'_> {
             // two once afterward, before linked returns or the next cost can use
             // a creature whose former control effect has just left.
             world.refresh_control_projection();
+            world.prune_source_linked_projection();
             world.refresh_enduring_projection();
             world.visit_linked_returns(emit)
         })
@@ -943,12 +1022,14 @@ impl FundingState<'_> {
             EffectChoiceKind::ReturnUnblockedAttacker | EffectChoiceKind::ReturnToHand => {
                 destination = Zone::Hand
             }
-            EffectChoiceKind::Sacrifice
+            EffectChoiceKind::Behold
+            | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
-            | EffectChoiceKind::DiscardMatchingLegendary => {}
+            | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary => {}
             _ => return false,
         }
         if let Some(n) = counters {
@@ -1025,7 +1106,9 @@ impl FundingState<'_> {
             if remaining.is_empty() {
                 return true;
             }
-            let success = if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) {
+            let success = if spec.kind == EffectChoiceKind::Behold {
+                self.complete_cost_rows(later, remaining)
+            } else if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) {
                 let mut next = self.clone();
                 for r in selected.iter() {
                     let i = next.resources.iter().position(|v| v.id == r.card).unwrap();
@@ -1088,7 +1171,11 @@ impl FundingState<'_> {
                 return false;
             }
         }
-        if c.counters.len() > usize::from(amount) {
+        if c.counters.len() > usize::from(amount)
+            || (!c.source_counter_reservation.is_empty()
+                && !CharacteristicWorld::counter_amounts(&next, c.source.card)
+                    .contains(&c.source_counter_reservation))
+        {
             return false;
         }
         fn fill(
@@ -1097,6 +1184,8 @@ impl FundingState<'_> {
             later: &CostContext,
             remaining: &[usize],
             first: usize,
+            source: ObjectRef,
+            reservation: &Counters,
         ) -> bool {
             if left == 0 {
                 return w.complete_cost_rows(later, remaining);
@@ -1113,7 +1202,21 @@ impl FundingState<'_> {
                     if !next.remove_creature_counter(w.reference(resource.id), kind) {
                         continue;
                     }
-                    if fill(&next, left - 1, later, remaining, index) {
+                    if !reservation.is_empty()
+                        && !CharacteristicWorld::counter_amounts(&next, source.card)
+                            .contains(reservation)
+                    {
+                        continue;
+                    }
+                    if fill(
+                        &next,
+                        left - 1,
+                        later,
+                        remaining,
+                        index,
+                        source,
+                        reservation,
+                    ) {
                         return true;
                     }
                 }
@@ -1126,6 +1229,8 @@ impl FundingState<'_> {
             later,
             remaining,
             0,
+            c.source,
+            &c.source_counter_reservation,
         )
     }
 }
@@ -1139,7 +1244,12 @@ impl Game {
             let mut world = FundingState::from_game_with_convoke(
                 self,
                 &goal,
-                choice.item.source_card.has_convoke(),
+                choice
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
@@ -1179,8 +1289,15 @@ impl Game {
             reserve: None,
             source: None,
         };
-        let mut world =
-            FundingState::from_game_with_convoke(self, &goal, a.item.source_card.has_convoke());
+        let mut world = FundingState::from_game_with_convoke(
+            self,
+            &goal,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .has_convoke(),
+        );
         world.set_purpose(self.purpose_for_item(&a.item));
         world.set_cost_context(Some(a));
         world
@@ -1275,10 +1392,22 @@ impl Game {
             .unwrap();
         row.pay = pay;
         row.declared = true;
-        a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+        a.initialize_cast_costs(improvise::potential(
+            self,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card,
+        ));
         if a.cast_costs.is_none() {
             a.cast_costs = Some(Box::default());
-            a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+            a.initialize_cast_costs(improvise::potential(
+                self,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
+            ));
         }
         if a.item
             .cast
@@ -1296,7 +1425,12 @@ impl Game {
             let mut world = FundingState::from_game_with_convoke(
                 self,
                 &goal,
-                choice.item.source_card.has_convoke(),
+                choice
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
@@ -1318,6 +1452,7 @@ impl Game {
                 teamwork_exact: false,
                 actor: goal.actor,
                 mana: None,
+                source_counter_reservation: Counters::default(),
                 source: ObjectRef {
                     card: 0,
                     generation: 0,
@@ -1369,7 +1504,11 @@ impl Game {
         let current = self.state.announcing.as_ref().filter(|a| {
             a.item.kind == StackKind::Spell
                 && a.item.controller == goal.actor
-                && a.item.source_card == spell.card
+                && a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    == spell.card
         });
         let ordered_additional = additional
             .is_some_and(|a| matches!(a.kind, EffectChoiceKind::DiscardOrLife(_)))
@@ -1481,6 +1620,7 @@ impl Game {
                             generic: attempt.generic,
                         }),
                     source,
+                    source_counter_reservation: Counters::default(),
                     clauses,
                     active: None,
                     casualty: casualty.to_vec(),
@@ -1522,6 +1662,7 @@ impl Game {
         world.install_cost_context(Some(Box::new(CostContext {
             actor: goal.actor,
             source,
+            source_counter_reservation: Counters::default(),
             clauses: vec![
                 CastCostRow {
                     clause: CastCostClause::Additional,

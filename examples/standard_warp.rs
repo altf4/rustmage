@@ -610,7 +610,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if matches!(a, Action::PayCosts { .. })
                 && let Some(packet) = &o.announcing
                 && actor == p
-                && Some(packet.card) == s.source
+                && Some(
+                    packet
+                        .source()
+                        .expect("example expects an object-backed packet")
+                        .id,
+                ) == s.source
                 && s.stage < 6
             {
                 s.library = o.players[p.index()].library_count;

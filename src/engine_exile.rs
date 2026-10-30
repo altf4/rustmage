@@ -40,13 +40,43 @@ impl ExilePlayExpiry {
 }
 /// Exact top-card selection, bounded only by the finite library's length.
 /// Keep the full rules scalar until that bound makes conversion address-safe.
-pub(super) fn top_library_cards(library: &[CardId], amount: u128) -> Vec<CardId> {
+pub(super) fn top_library_cards(game: &Game, player: Player, amount: u128) -> Vec<CardId> {
+    let library = &game.state.players[player.index()].library;
     let count = usize::try_from(amount.min(library.len() as u128)).unwrap();
-    library.iter().rev().take(count).copied().collect()
+    library
+        .iter()
+        .rev()
+        .copied()
+        .filter(|&id| game.state.objects[id as usize].is_card())
+        .take(count)
+        .collect()
 }
 impl Game {
+    /// The linked permission is controlled by the source's current controller
+    /// and follows its ability and threshold, not the entry trigger's controller.
+    pub(super) fn threshold_linked_source(&self, card: CardId) -> Option<(ObjectRef, Option<u64>)> {
+        let reference = self.object_ref(card);
+        self.state
+            .linked_choices
+            .as_ref()?
+            .null_cast_links
+            .iter()
+            .find(|link| link.exiled == reference)
+            .map(|link| (link.source, link.ability_origin))
+    }
+    fn can_cast_threshold_linked_exile(&self, player: Player, card: CardId) -> bool {
+        let Some(object) = self.state.objects.get(card as usize) else {
+            return false;
+        };
+        object.zone == Zone::Exile
+            && !object.card.is_land()
+            && self
+                .threshold_linked_source(card)
+                .is_some_and(|source| threshold_linked_source_available(self, player, source))
+    }
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
-        if self.can_cast_prepared(player, card)
+        if self.can_cast_threshold_linked_exile(player, card)
+            || self.can_cast_prepared(player, card)
             || self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
             || self.can_cast_warped(player, card)
@@ -109,7 +139,7 @@ impl Game {
             .collect::<Vec<_>>();
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
-            if event.moved && event.destination == Zone::Exile && !event.before.is_token() {
+            if event.moved && event.destination == Zone::Exile && event.was_card {
                 self.grant_exile_play_permission(item.controller, event.after, false);
                 for row in &mut self.state.exile_permissions {
                     if row.player == item.controller && row.object == event.after {
@@ -132,7 +162,7 @@ impl Game {
         amount: u128,
         next_turn: bool,
     ) {
-        let ids = top_library_cards(&self.state.players[library_owner.index()].library, amount);
+        let ids = top_library_cards(self, library_owner, amount);
         if ids.is_empty() {
             return;
         }
@@ -191,6 +221,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(usize::from(amount))
             .copied()
             .collect();
@@ -212,6 +243,9 @@ impl Game {
     }
 
     pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
         let objects = item
             .targets
             .iter()
@@ -219,7 +253,7 @@ impl Game {
             .filter(|&b| self.same_target_object(b))
             .filter_map(|b| b.object)
             .collect::<Vec<_>>();
-        self.exile_objects_until_source_leaves(item.object, &objects);
+        self.exile_objects_until_source_leaves(source.object, &objects);
     }
     /// A non-target hand choice and an ordinary bound target share the same exact
     /// movement/link transaction. Only an actual arrival in exile creates a link.
@@ -348,8 +382,7 @@ impl Game {
                     event.before.zone,
                     Zone::Battlefield | Zone::Graveyard | Zone::Stack | Zone::Exile
                 )
-                && !event.before.is_token()
-                && !event.before.card.is_emblem()
+                && event.was_card
                 && self.object_ref(event.after.card) == event.after
                 && self.state.objects[event.after.card as usize].zone == Zone::Hand
                 && !self.state.known_hand.contains(&event.after)
@@ -435,7 +468,7 @@ impl Game {
         cast.spend_any_mana = false;
         cast.exile_on_graveyard = false;
         cast.stash_origin = false;
-        if item.source_card.x_symbols() > 0 {
+        if item.source.expect("cast spell has source").card.x_symbols() > 0 {
             item.x = Some(0);
         }
     }
@@ -547,10 +580,10 @@ impl Game {
         amount: u16,
         subtype: &'static str,
     ) {
-        let ids = top_library_cards(
-            &self.state.players[item.controller.index()].library,
-            u128::from(amount),
-        );
+        let Some(source) = item.source else {
+            return;
+        };
+        let ids = top_library_cards(self, item.controller, u128::from(amount));
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if !event.moved || event.destination != Zone::Exile {
@@ -562,7 +595,7 @@ impl Game {
                 .linked_choices
                 .get_or_insert_default()
                 .hidden
-                .push((item.object, event.after, 1 << item.controller.index()));
+                .push((source.object, event.after, 1 << item.controller.index()));
             let at = self
                 .state
                 .exile_permissions
@@ -584,4 +617,36 @@ impl Game {
         }
         self.finish_zone_events(&events, &[]);
     }
+}
+
+/// Re-evaluate the continuous permission in the live or speculative world.
+pub(super) fn threshold_linked_source_available<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    linked: (ObjectRef, Option<u64>),
+) -> bool {
+    let (source, ability_origin) = linked;
+    let object = world.object(source.card);
+    object.zone == Zone::Battlefield
+        && world.reference(source.card) == source
+        && object.controller == player
+        && world.ability_origin(source.card) == ability_origin
+        && activations::graveyard_cards_at_least(world, player, 0, 7)
+        && object.card.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(
+                    fragment,
+                    crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold
+                )
+            })
+        })
+        && characteristic_query::CharacteristicQuery::in_world(world).continuous_fragment_available(
+            source.card,
+            |fragment| {
+                matches!(
+                    fragment,
+                    crate::cards::StaticAbilityFragment::CastLinkedExileAtThreshold
+                )
+            },
+        )
 }

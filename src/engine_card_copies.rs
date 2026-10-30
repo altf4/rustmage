@@ -33,11 +33,13 @@ impl Game {
             damage: 0,
             damaged_this_turn: false,
             dealt_damage_this_turn: false,
+            dealt_combat_damage_this_incarnation: false,
             deathtouch_since_sba: false,
             growth: Stats::default(),
             gained_keywords: Keywords::NONE,
             counters: InitialCounters::default(),
             used_abilities: 0,
+            loyalty_activated_this_turn: false,
             class_level: 1,
             attached_to: None,
         };
@@ -58,7 +60,7 @@ impl Game {
             return;
         };
         if object.generation != reference.generation
-            || object.copy_kind != CopyKind::Card
+            || !matches!(object.copy_kind, CopyKind::Card | CopyKind::Spell)
             || matches!(object.zone, Zone::Stack | Zone::Outside)
         {
             return;

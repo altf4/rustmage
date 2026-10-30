@@ -3,10 +3,36 @@
   "catalogue_id": 4898,
   "oracle_id": "d6b478d1-5015-49ba-b1aa-cbc2b08107a6",
   "facts_sha256": "766d064ac50f8d5a8691b0a2dca9dc8aae14d0b61a60c17fbe2c8f747fce02d8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8792c5a7d75367ddc2a2105915de27e9867ca97642cfb1a49187968c9f5571b6"
   },
-  "physical_metadata_sha256": "59dbae943f99fc68b0cfd43ab57eabec8232b0cd8dc2392e6f0762f60f29a4f1"
+  "physical_metadata_sha256": "59dbae943f99fc68b0cfd43ab57eabec8232b0cd8dc2392e6f0762f60f29a4f1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VindictiveTriumph.java",
+  "java_sha256": "3e9b247a021a92863f2d146b223ba3b8fb0d67d9038b9f6f6eaa114bdb089f32",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
+      "sha256": "e9588b28dba4b7d15dd3a9119f75b3b6b3837213fc8004750b4d6d5bca294852"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderYourControlTargetEffect.java",
+      "sha256": "74449a872e162e05c8786a448131888148ed869002fce1bf9eb67884f2920e65"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    }
+  ],
+  "rules_tests": "src/engine_fra_vindictive_triumph_tests.rs"
 }

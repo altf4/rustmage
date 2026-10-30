@@ -136,7 +136,10 @@ impl Game {
                     .flatten()
             })
         };
-        let Some(recipient) = spec.recipient_group.map_or(Some(item.object), selected) else {
+        let Some(recipient) = spec
+            .recipient_group
+            .map_or(item.source.map(|source| source.object), selected)
+        else {
             return;
         };
         if !self.on_battlefield(recipient.card) || self.object_ref(recipient.card) != recipient {
@@ -148,7 +151,7 @@ impl Game {
         let object = &self.state.objects[blueprint.card as usize];
         let mut recipe = match object.zone {
             Zone::Battlefield => self.copiable_recipe(blueprint),
-            Zone::Graveyard if !object.is_token() => CopyRecipe::new(object.card),
+            Zone::Graveyard if object.is_card() => CopyRecipe::new(object.card),
             _ => return,
         };
         let old = recipe.overrides.unwrap_or(CopyOverrides::NONE);
@@ -595,11 +598,14 @@ impl Game {
         }
     }
     pub(super) fn record_copy_activation_use(&mut self, item: &SpellView, ability: u16) {
+        let Some(source) = item.source else {
+            return;
+        };
         let bit = 1u64 << ability;
-        if self.copy_ability_origin(item.object) == item.source_ability_origin {
-            self.state.objects[item.card as usize].used_abilities |= bit;
+        if self.copy_ability_origin(source.object) == item.source_ability_origin {
+            self.state.objects[source.id as usize].used_abilities |= bit;
         } else if let Some(rows) = &mut self.state.temporary_copies
-            && let Some(row) = rows.iter_mut().find(|row| row.object == item.object)
+            && let Some(row) = rows.iter_mut().find(|row| row.object == source.object)
         {
             if let Some(origin) = item.source_ability_origin {
                 if let Some(layer) = row

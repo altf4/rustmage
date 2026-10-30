@@ -271,7 +271,7 @@ fn sos_preparation_public_copy_paid_cast_transaction_and_exact_departure() {
         assert!(!g.object_view(source).prepared);
         assert!(g.state.preparations.is_none());
         assert_eq!(
-            g.state.stack.last().unwrap().source_card.name(),
+            g.state.stack.last().unwrap().source.unwrap().card.name(),
             "Vibrant Idea"
         );
         assert_eq!(
@@ -297,6 +297,8 @@ fn sos_preparation_public_copy_paid_cast_transaction_and_exact_departure() {
         assert_ne!(second.spell_copy, row.spell_copy);
         g.move_object(source, Zone::Exile);
         assert!(g.state.preparations.is_none());
+        assert_eq!(g.object_view(second.spell_copy.card).zone, Zone::Exile);
+        g.state_based_actions();
         assert_eq!(g.object_view(second.spell_copy.card).zone, Zone::Outside);
     }
 }
@@ -1261,10 +1263,21 @@ fn sos_matterbending_optional_other_bounce_and_frozen_triggering_x() {
             act(&mut g, Action::AnnounceCast { card: spell });
             act(&mut g, Action::ChooseX { value: x });
             pay(&mut g);
-            let packet = g.state.stack.iter().find(|t| t.card == source).unwrap();
+            let packet = g
+                .state
+                .stack
+                .iter()
+                .find(|t| t.source.is_some_and(|identity| identity.id == source))
+                .unwrap();
             assert_eq!(packet.x, Some(x));
             assert_eq!(g.item_amount(AmountValue::ChosenX, packet), u128::from(x));
-            let id = g.state.stack.iter().find(|t| t.card == spell).unwrap().id;
+            let id = g
+                .state
+                .stack
+                .iter()
+                .find(|t| t.source.is_some_and(|identity| identity.id == spell))
+                .unwrap()
+                .id;
             assert!(g.counter_stack_item(id, false));
             big_helpers::settle(&mut g);
             assert!(g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
@@ -1278,7 +1291,12 @@ fn sos_matterbending_optional_other_bounce_and_frozen_triggering_x() {
         }
         let regular = put(&mut g, p, "Divination", Zone::Hand);
         cast(&mut g, regular, None);
-        assert!(!g.state.pending_triggers.iter().any(|t| t.card == source));
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .any(|t| t.source.is_some_and(|identity| identity.id == source))
+        );
         settle(&mut g);
     }
 }
@@ -1440,7 +1458,7 @@ fn sos_spiritcall_batches_noncreature_tokens_and_observes_its_own_copy_entry() {
             g.state
                 .pending_triggers
                 .iter()
-                .filter(|t| t.card == source)
+                .filter(|t| t.source.is_some_and(|identity| identity.id == source))
                 .count(),
             1
         );
@@ -1455,7 +1473,7 @@ fn sos_spiritcall_batches_noncreature_tokens_and_observes_its_own_copy_entry() {
             g.state
                 .pending_triggers
                 .iter()
-                .filter(|t| t.card == source)
+                .filter(|t| t.source.is_some_and(|identity| identity.id == source))
                 .count(),
             2
         );
@@ -1478,7 +1496,7 @@ fn sos_spiritcall_batches_noncreature_tokens_and_observes_its_own_copy_entry() {
             g.state
                 .pending_triggers
                 .iter()
-                .filter(|t| t.card == source)
+                .filter(|t| t.source.is_some_and(|identity| identity.id == source))
                 .count(),
             1
         );
@@ -1500,7 +1518,7 @@ fn sos_spiritcall_batches_noncreature_tokens_and_observes_its_own_copy_entry() {
             g.state
                 .pending_triggers
                 .iter()
-                .filter(|t| t.card == source)
+                .filter(|t| t.source.is_some_and(|identity| identity.id == source))
                 .count(),
             1
         );

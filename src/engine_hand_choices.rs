@@ -6,6 +6,7 @@ pub enum HandChoiceKind {
     RevealSubset,
     DiscardRevealed,
     ExileRevealedOrCreature,
+    ExileRevealedLinked,
     /// Choose a controlled permanent of the requested subtype or reveal a hand card.
     Behold,
 }
@@ -36,31 +37,46 @@ impl HandInteraction {
             + (self.selected.len() + self.candidates.len()) * std::mem::size_of::<ObjectRef>()
     }
 }
+/// Collect exact non-targeting behold witnesses in an actual or projected world.
+/// Objects in the simultaneous entry batch are not yet on the battlefield.
+pub(super) fn behold_candidates<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    subtype: &str,
+    entering: &[ObjectRef],
+) -> Vec<ObjectRef> {
+    (0..world.game().state.objects.len())
+        .filter_map(|index| {
+            let id = index as CardId;
+            let object = world.object(id);
+            let reference = world.reference(id);
+            if entering.contains(&reference) {
+                return None;
+            }
+            let matches = match object.zone {
+                Zone::Battlefield => {
+                    object.controller == actor
+                        && world.subtypes(id).has(world.definition(id), subtype)
+                }
+                Zone::Hand => {
+                    object.owner == actor && object.is_card() && object.card.has_subtype(subtype)
+                }
+                _ => false,
+            };
+            matches.then_some(reference)
+        })
+        .collect()
+}
 impl Game {
     pub(super) fn start_behold_search_result(
         &mut self,
         item: &SpellView,
         subtype: &'static str,
     ) -> bool {
-        let candidates = self
-            .state
-            .objects
-            .iter()
-            .enumerate()
-            .filter_map(|(id, o)| {
-                let id = id as CardId;
-                let matches = match o.zone {
-                    Zone::Battlefield => {
-                        o.controller == item.controller && self.has_subtype(id, subtype)
-                    }
-                    Zone::Hand => {
-                        o.owner == item.controller && !o.is_token() && o.card.has_subtype(subtype)
-                    }
-                    _ => false,
-                };
-                matches.then(|| self.object_ref(id))
-            })
-            .collect::<Vec<_>>();
+        let Some(source) = item.source else {
+            return false;
+        };
+        let candidates = behold_candidates(self, item.controller, subtype, &[]);
         if candidates.is_empty() {
             self.state.resolving.as_mut().unwrap().search_result = None;
             return false;
@@ -70,7 +86,7 @@ impl Game {
             actor: item.controller,
             controller: item.controller,
             victim: Some(item.controller),
-            source: item.object,
+            source: source.object,
             required: 0,
             selected: Vec::new(),
             candidates,
@@ -82,7 +98,7 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter(|(_, o)| o.zone == Zone::Hand && o.owner == victim && !o.is_token())
+            .filter(|(_, o)| o.zone == Zone::Hand && o.owner == victim && o.is_card())
             .map(|(i, _)| self.object_ref(i as CardId))
             .collect()
     }
@@ -107,6 +123,9 @@ impl Game {
         item: &SpellView,
         amount: AmountValue,
     ) -> bool {
+        let Some(source) = item.source else {
+            return false;
+        };
         let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
         };
@@ -120,7 +139,7 @@ impl Game {
             actor: victim,
             controller: item.controller,
             victim: Some(victim),
-            source: item.object,
+            source: source.object,
             required,
             selected: Vec::new(),
             candidates: hand,
@@ -135,6 +154,9 @@ impl Game {
         true
     }
     pub(super) fn start_revealed_hand_exile(&mut self, item: &SpellView) -> bool {
+        let Some(source) = item.source else {
+            return false;
+        };
         let victim = item.targets.iter().find_map(|b| {
             if b.group == 0 {
                 if let Target::Player(p) = b.target {
@@ -148,8 +170,8 @@ impl Game {
         });
         let hand = victim.map_or_else(Vec::new, |p| self.exact_hand(p));
         self.reveal_hand_refs(&hand);
-        if !self.on_battlefield(item.object.card)
-            || self.object_ref(item.object.card) != item.object
+        if !self.on_battlefield(source.object.card)
+            || self.object_ref(source.object.card) != source.object
         {
             return false;
         }
@@ -171,8 +193,33 @@ impl Game {
             actor: item.controller,
             controller: item.controller,
             victim,
-            source: item.object,
+            source: source.object,
             required: 0,
+            selected: Vec::new(),
+            candidates,
+        });
+        true
+    }
+    pub(super) fn start_revealed_hand_exile_linked(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        let hand = self.exact_hand(victim);
+        self.reveal_hand_refs(&hand);
+        let candidates: Vec<_> = hand
+            .into_iter()
+            .filter(|r| !self.state.objects[r.card as usize].card.is_land())
+            .collect();
+        if candidates.is_empty() {
+            return false;
+        }
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::ExileRevealedLinked,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item.source.expect("object-backed packet").object,
+            required: 1,
             selected: Vec::new(),
             candidates,
         });
@@ -189,19 +236,26 @@ impl Game {
         match interaction.kind {
             HandChoiceKind::DeployCreatures => unreachable!(),
             HandChoiceKind::RevealSubset | HandChoiceKind::DiscardRevealed => {
-                o.zone == Zone::Hand && Some(o.owner) == interaction.victim && !o.is_token()
+                o.zone == Zone::Hand && Some(o.owner) == interaction.victim && o.is_card()
+            }
+            HandChoiceKind::ExileRevealedLinked => {
+                o.zone == Zone::Hand
+                    && Some(o.owner) == interaction.victim
+                    && !o.is_token()
+                    && !o.card.is_land()
             }
             HandChoiceKind::ExileRevealedOrCreature => {
                 self.on_battlefield(interaction.source.card)
                     && self.object_ref(interaction.source.card) == interaction.source
                     && (o.zone == Zone::Battlefield
                         || (o.zone == Zone::Hand
+                            && o.is_card()
                             && Some(o.owner) == interaction.victim
                             && !o.card.is_land()))
             }
             HandChoiceKind::Behold => {
                 (o.zone == Zone::Battlefield && o.controller == interaction.controller)
-                    || (o.zone == Zone::Hand && o.owner == interaction.controller && !o.is_token())
+                    || (o.zone == Zone::Hand && o.owner == interaction.controller && o.is_card())
             }
         }
     }
@@ -267,6 +321,27 @@ impl Game {
                 }
                 HandChoiceKind::ExileRevealedOrCreature => {
                     self.exile_objects_until_source_leaves(interaction.source, &[object])
+                }
+                HandChoiceKind::ExileRevealedLinked => {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        let ability_origin = self
+                            .state
+                            .resolving
+                            .as_ref()
+                            .unwrap()
+                            .item
+                            .source_ability_origin;
+                        self.state
+                            .linked_choices
+                            .get_or_insert_default()
+                            .null_cast_links
+                            .push(linked_choices::NullCastLink {
+                                source: interaction.source,
+                                exiled: event.after,
+                                ability_origin,
+                            });
+                    }
                 }
                 HandChoiceKind::Behold => {
                     if self.state.objects[object.card as usize].zone == Zone::Hand {

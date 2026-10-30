@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "112b7a2fff0fc59d5386bc69ec14506e4e643b61069316b5a9ca25e6708f8840"
   },
-  "physical_metadata_sha256": "2b2671282d92956c0d50de31be5cd50b8c17fbda638b73bbf270a1821c6255ec"
+  "physical_metadata_sha256": "2b2671282d92956c0d50de31be5cd50b8c17fbda638b73bbf270a1821c6255ec",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LyraArchangelOfDawn.java",
+  "java_sha256": "4b688e252c5440880b25bd3e11e1bbbe0d23f2de76272868ffb9be85cb612649"
 }

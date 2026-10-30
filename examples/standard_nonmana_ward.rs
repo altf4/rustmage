@@ -67,7 +67,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .resolving
                 .as_ref()
                 .filter(|s| s.related_stack.is_some())
-                .and_then(|s| ward_index(s.source_card));
+                .and_then(|s| s.source().and_then(|source| ward_index(source.card)));
             if let Some(index) = ward
                 && (before.effect_choice.is_some() || before.decision == "optional_effect")
             {
@@ -138,20 +138,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         continue;
                     }
                     if let StackKind::TriggeredAbility { ability } = item.kind {
-                        if ability == 1 && item.source_card.name() == "Sunset Saboteur" {
+                        if ability == 1
+                            && item
+                                .source()
+                                .is_some_and(|source| source.card.name() == "Sunset Saboteur")
+                        {
                             body_resolutions[0] += 1;
                         }
-                        if ability == 1 && item.source_card.name() == "Vein Ripper" {
+                        if ability == 1
+                            && item
+                                .source()
+                                .is_some_and(|source| source.card.name() == "Vein Ripper")
+                        {
                             body_resolutions[1] += 1;
                         }
                     }
                 }
             }
             if matches!(action, Action::FinishSearch)
-                && before
-                    .resolving
-                    .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Spectral Snatcher")
+                && before.resolving.as_ref().is_some_and(|s| {
+                    s.source()
+                        .is_some_and(|source| source.card.name() == "Spectral Snatcher")
+                })
             {
                 cycles += 1;
             }

@@ -27,6 +27,16 @@ pub struct AdditionalCostView {
     pub creature_counter_payments: Vec<(ObjectRef, CounterKind)>,
     pub paid: bool,
 }
+/// A tap-symbol cost and a separate tap-permanents cost cannot both tap the
+/// same source. Without the tap symbol the source is an ordinary candidate.
+fn tap_cost_reserves_source(goal: &FundingGoal, object: ObjectRef) -> bool {
+    goal.source
+        .as_ref()
+        .is_some_and(|(source, ability, _, definition, _)| {
+            *source == object && definition.activation(*ability).cost.tap
+        })
+}
+
 impl Game {
     pub(super) fn additional_candidate(
         &self,
@@ -44,10 +54,25 @@ impl Game {
             return false;
         }
         let spec = spec.in_zone(o.zone);
+        if matches!(
+            spec.kind,
+            EffectChoiceKind::Sacrifice
+                | EffectChoiceKind::SacrificeDifferentNames(_)
+                | EffectChoiceKind::SacrificeAttachedEquipment
+        ) && ability_world::CharacteristicWorld::sacrifice_prohibited(self, object.card)
+        {
+            return false;
+        }
         let controls_cost_object = match spec.kind {
+            EffectChoiceKind::Behold => match o.zone {
+                Zone::Battlefield => o.controller == actor,
+                Zone::Hand => o.owner == actor,
+                _ => false,
+            },
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary
             | EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => o.owner == actor,
@@ -66,8 +91,14 @@ impl Game {
                     EffectChoiceKind::Discard
                         | EffectChoiceKind::DiscardNamed(_)
                         | EffectChoiceKind::DiscardMatchingLegendary
+                        | EffectChoiceKind::DiscardLegendary
                 ) || spec.filter.other)
             || spec.filter.source_only && object != source
+        {
+            return false;
+        }
+        if spec.kind == EffectChoiceKind::DiscardLegendary
+            && !ability_world::CharacteristicWorld::legendary(self, object.card)
         {
             return false;
         }
@@ -101,13 +132,18 @@ impl Game {
         name: &str,
     ) -> bool {
         let spec = spec.in_zone(o.zone);
+        if matches!(o.zone, Zone::Hand | Zone::Graveyard) && !o.is_card() {
+            return false;
+        }
         let zone = match spec.kind {
+            EffectChoiceKind::Behold if matches!(o.zone, Zone::Battlefield | Zone::Hand) => o.zone,
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => Zone::Graveyard,
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
-            | EffectChoiceKind::DiscardMatchingLegendary => Zone::Hand,
+            | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary => Zone::Hand,
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
@@ -125,13 +161,16 @@ impl Game {
         {
             return false;
         }
+        if spec.kind == EffectChoiceKind::Behold && zone == Zone::Hand && !o.is_card() {
+            return false;
+        }
         let f = spec.filter;
         if matches!(
             spec.kind,
             EffectChoiceKind::ExileGraveyard
                 | EffectChoiceKind::ExileGraveyardCards(_)
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
-        ) && (o.is_token() || o.copy_kind == CopyKind::Card)
+        ) && !o.is_card()
         {
             return false;
         }
@@ -164,17 +203,8 @@ impl Game {
         definition: Card,
     ) -> bool {
         let skips_additional = definition.mana_alternative_replaces_additional(cost);
-        let cost = ManaCost {
-            generic: cost.generic.saturating_sub(
-                u32::try_from(self.spell_reduction_for_definition(
-                    actor,
-                    card,
-                    definition.fixed_mana_value(),
-                    definition,
-                ))
-                .unwrap_or(u32::MAX),
-            ),
-            ..cost
+        let Some(cost) = self.spell_total_for_definition(actor, card, cost, definition) else {
+            return false;
         };
         if skips_additional {
             return self.can_fund_for(
@@ -294,10 +324,7 @@ impl Game {
             !chosen.contains(&r)
                 && self.additional_candidate(spec, goal.actor, source, r)
                 && (!matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
-                    || goal
-                        .source
-                        .as_ref()
-                        .is_none_or(|(source, _, _, _, _)| *source != r))
+                    || !tap_cost_reserves_source(&goal, r))
         };
         if needed > 0
             && (0..self.state.objects.len())
@@ -332,10 +359,7 @@ impl Game {
             if chosen.contains(&r)
                 || !self.additional_candidate(spec, goal.actor, source, r)
                 || (matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
-                    && goal
-                        .source
-                        .as_ref()
-                        .is_some_and(|(source, _, _, _, _)| *source == r))
+                    && tap_cost_reserves_source(&goal, r))
             {
                 return false;
             }
@@ -382,6 +406,22 @@ impl Game {
             return self.can_fund(goal);
         };
         let source = goal.source.as_ref().expect("activation source").0;
+        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
+            let purpose = self.funding_purpose(&goal);
+            let selected = self
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| {
+                    a.item
+                        .source
+                        .is_some_and(|identity| identity.object == source)
+                        && a.item.controller == goal.actor
+                })
+                .and_then(|a| a.creature_counter_cost.as_deref())
+                .map_or(&[][..], Vec::as_slice);
+            return self.creature_counter_fundable(goal, purpose, amount, selected);
+        }
         if matches!(
             spec.kind,
             EffectChoiceKind::TapPermanents(_)
@@ -418,7 +458,15 @@ impl Game {
             return false;
         };
         if self.cast_costs_mana_paid() {
-            if !self.additional_candidate(spec, a.item.controller, a.item.object, object) {
+            if !self.additional_candidate(
+                spec,
+                a.item.controller,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
+                object,
+            ) {
                 return false;
             }
             if matches!(
@@ -459,7 +507,15 @@ impl Game {
                         self.object_view(object.card).name(),
                     )
                 })
-                || !self.additional_candidate(spec, a.item.controller, a.item.object, object)
+                || !self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    object,
+                )
             {
                 return false;
             }
@@ -482,10 +538,17 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |g| g.to_vec());
             if selected.contains(&object)
-                || !self.additional_candidate(spec, a.item.controller, a.item.object, object)
+                || !self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    object,
+                )
                 || (matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
-                    && a.item.kind != StackKind::Spell
-                    && object == a.item.object)
+                    && tap_cost_reserves_source(&self.funding_goal(a), object))
             {
                 return false;
             }
@@ -494,11 +557,22 @@ impl Game {
                 self.funding_goal(a),
                 self.purpose_for_item(&a.item),
                 spec,
-                a.item.object,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
                 &selected,
             );
         }
-        if !self.additional_candidate(spec, a.item.controller, a.item.object, object) {
+        if !self.additional_candidate(
+            spec,
+            a.item.controller,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .object,
+            object,
+        ) {
             return false;
         }
         let mut goal = self.funding_goal(a);
@@ -560,6 +634,23 @@ impl Game {
         };
         self.resume_cast_cost_selection();
     }
+    pub(super) fn pay_selected_creature_counters(
+        &mut self,
+        item: &mut SpellView,
+        selected: &[(ObjectRef, CounterKind)],
+    ) {
+        for &(object, kind) in selected {
+            self.pay_counters(object.card, &Counters::of(kind, 1));
+            if matches!(item.kind, StackKind::ActivatedAbility { .. })
+                && kind == CounterKind::Loyalty
+            {
+                item.loyalty_counters_paid = item
+                    .loyalty_counters_paid
+                    .checked_add(1)
+                    .capacity("loyalty activation counter payment exhausted");
+            }
+        }
+    }
     pub(super) fn pay_additional_cost(&mut self, a: &mut Announcement) {
         let Some(spec) = a.additional_cost() else {
             return;
@@ -567,20 +658,53 @@ impl Game {
         // The local announcement is outside State while an external cost commits.
         // Preserve its actual pre-departure source, not a borrowed definition.
         if matches!(a.item.kind, StackKind::ActivatedAbility { .. })
-            && self.on_battlefield(a.item.object.card)
-            && self.object_ref(a.item.object.card) == a.item.object
+            && self.on_battlefield(
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object
+                    .card,
+            )
+            && self.object_ref(
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object
+                    .card,
+            ) == a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .object
         {
-            a.item.source_facts = DamageFacts::from_view(&self.object_view(a.item.object.card));
+            a.item
+                .source
+                .as_mut()
+                .expect("activated ability source exists")
+                .facts = DamageFacts::from_view(
+                &self.object_view(
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object
+                        .card,
+                ),
+            );
         }
         if let EffectChoiceKind::ExileGraveyardSymbols { color, minimum } = spec.kind {
             let group = a.additional_group.as_deref().unwrap();
             assert!(self.graveyard_symbol_total(group, color) >= u128::from(minimum));
-            assert!(group.iter().all(|&r| self.additional_candidate(
-                spec,
-                a.item.controller,
-                a.item.object,
-                r
-            )));
+            assert!(group.iter().all(|&r| {
+                self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    r,
+                )
+            }));
             let events = self.move_objects_raw(
                 &group.iter().map(|r| r.card).collect::<Vec<_>>(),
                 Zone::Exile,
@@ -599,9 +723,7 @@ impl Game {
         if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
             let selected = a.creature_counter_cost.as_ref().unwrap();
             assert_eq!(selected.len(), usize::from(amount));
-            for &(r, kind) in selected.iter() {
-                self.pay_counters(r.card, &Counters::of(kind, 1));
-            }
+            self.pay_selected_creature_counters(&mut a.item, selected);
             a.additional_paid = true;
             return;
         }
@@ -611,12 +733,17 @@ impl Game {
                 .as_ref()
                 .expect("selected sacrifice group");
             assert_eq!(group.len(), usize::from(amount));
-            assert!(group.iter().all(|&r| self.additional_candidate(
-                spec,
-                a.item.controller,
-                a.item.object,
-                r
-            )));
+            assert!(group.iter().all(|&r| {
+                self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    r,
+                )
+            }));
             self.sacrifice_batch(
                 &group
                     .iter()
@@ -632,12 +759,17 @@ impl Game {
                 .as_ref()
                 .expect("selected graveyard group");
             assert_eq!(group.len(), usize::from(amount));
-            assert!(group.iter().all(|&r| self.additional_candidate(
-                spec,
-                a.item.controller,
-                a.item.object,
-                r
-            )));
+            assert!(group.iter().all(|&r| {
+                self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .object,
+                    r,
+                )
+            }));
             let events = self.move_objects_raw(
                 &group.iter().map(|r| r.card).collect::<Vec<_>>(),
                 Zone::Exile,
@@ -649,8 +781,18 @@ impl Game {
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
             let group = a.additional_group.as_ref().expect("selected tap group");
             assert_eq!(group.len(), usize::from(amount));
-            assert!(group.iter().all(|&r| r != a.item.object
-                && self.additional_candidate(spec, a.item.controller, a.item.object, r)));
+            assert!(group.iter().all(|&r| {
+                !tap_cost_reserves_source(&self.funding_goal(a), r)
+                    && self.additional_candidate(
+                        spec,
+                        a.item.controller,
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .object,
+                        r,
+                    )
+            }));
             self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
             a.additional_paid = true;
             return;
@@ -658,7 +800,10 @@ impl Game {
         if evidence::threshold(spec).is_some() {
             self.commit_evidence(
                 a.evidence.as_ref().expect("selected evidence"),
-                a.item.object,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
             );
             a.additional_paid = true;
             return;
@@ -680,21 +825,42 @@ impl Game {
         }
         let object = a.additional.expect("additional cost selected");
         assert!(
-            self.additional_candidate(spec, a.item.controller, a.item.object, object),
+            self.additional_candidate(
+                spec,
+                a.item.controller,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .object,
+                object
+            ),
             "unpaid additional cost"
         );
         a.additional_paid = true;
-        if object == a.item.object {
+        if object
+            == a.item
+                .source
+                .expect("cost announcement has object source")
+                .object
+        {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind {
+            EffectChoiceKind::Behold => {
+                if self.state.objects[object.card as usize].zone == Zone::Hand {
+                    self.remember_public_hand(object);
+                }
+            }
             EffectChoiceKind::TargetAttackingReturn { .. }
             | EffectChoiceKind::AmassGoblins(_)
+            | EffectChoiceKind::EmpowerJace(_)
             | EffectChoiceKind::HandToTop
             | EffectChoiceKind::ExileGraveyardCards(_)
+            | EffectChoiceKind::ExileSourceAndNamed { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. }
             | EffectChoiceKind::ExileGreatestManaValue
+            | EffectChoiceKind::SacrificeGreatestManaValue
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)
@@ -716,9 +882,8 @@ impl Game {
             }
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
-            | EffectChoiceKind::DiscardMatchingLegendary => {
-                self.discard_batch(&[object.card], None)
-            }
+            | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary => self.discard_batch(&[object.card], None),
             EffectChoiceKind::ReturnUnblockedAttacker => {
                 a.item.cast.as_mut().unwrap().sneak_defender = self
                     .state
@@ -787,5 +952,40 @@ impl Game {
                 .map_or_else(Vec::new, |v| v.as_ref().clone()),
             paid: a.additional_paid,
         })
+    }
+}
+
+#[cfg(test)]
+mod tap_source_tests {
+    use super::*;
+
+    #[test]
+    fn tap_symbol_reserves_the_source_but_a_group_cost_alone_does_not() {
+        let source = ObjectRef {
+            card: 0,
+            generation: 7,
+        };
+        let other = ObjectRef {
+            card: 1,
+            generation: 7,
+        };
+        let goal = |name: &str| FundingGoal {
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: Some((
+                source,
+                0,
+                Counters::default(),
+                Card::from_name(name).unwrap(),
+                None,
+            )),
+        };
+        let tethermage = goal("Tenured Tethermage");
+        assert!(!tap_cost_reserves_source(&tethermage, source));
+        let lathril = goal("Lathril, Blade of the Elves");
+        assert!(tap_cost_reserves_source(&lathril, source));
+        assert!(!tap_cost_reserves_source(&lathril, other));
     }
 }

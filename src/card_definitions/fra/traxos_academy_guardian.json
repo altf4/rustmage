@@ -3,10 +3,26 @@
   "catalogue_id": 4667,
   "oracle_id": "7b9a574f-6d56-421b-8fbd-94da1e6e3ce1",
   "facts_sha256": "355435fe1e40c0d24adc10a52b0baff1af6ed5665bd07300f5d03e8993732779",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c7275485307d01a7baa3fc27e11a0888bc143f83b17a3845f002b35c8e81d4e9"
   },
-  "physical_metadata_sha256": "0dffbb3d9e8ec9f8196f43599b5796f2e71368cf073b73023e12140d9d945c09"
+  "physical_metadata_sha256": "0dffbb3d9e8ec9f8196f43599b5796f2e71368cf073b73023e12140d9d945c09",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TraxosAcademyGuardian.java",
+  "java_sha256": "44d959c33f4c033c0fa1cee3fe084b56079073574e7a92f6d466c7c3c5287ff6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    }
+  ],
+  "rules_tests": "src/assurance/fra_traxos_interactions.rs"
 }

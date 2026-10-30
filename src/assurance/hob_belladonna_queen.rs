@@ -101,7 +101,7 @@ fn counter_original(g: &mut Game, id: CardId) {
         .state
         .stack
         .iter()
-        .find(|i| i.card == id && i.kind == StackKind::Spell)
+        .find(|i| i.source.is_some_and(|identity| identity.id == id) && i.kind == StackKind::Spell)
         .unwrap()
         .id;
     assert!(g.counter_stack_item(stack_id, false));
@@ -167,16 +167,19 @@ fn belladonna_countered_packet_does_not_consume_resolution_and_new_turn_resets()
         let b = belladonna(&mut g, p);
         one(&mut g, p);
         until(&mut g, |g| {
-            g.state
-                .stack
-                .iter()
-                .any(|s| s.card == b && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+            g.state.stack.iter().any(|s| {
+                s.source.is_some_and(|source| source.id == b)
+                    && matches!(s.kind, StackKind::TriggeredAbility { .. })
+            })
         });
         let id = g
             .state
             .stack
             .iter()
-            .find(|s| s.card == b && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+            .find(|s| {
+                s.source.is_some_and(|source| source.id == b)
+                    && matches!(s.kind, StackKind::TriggeredAbility { .. })
+            })
             .unwrap()
             .id;
         contracts::branch_contract(g.clone());
@@ -206,7 +209,12 @@ fn belladonna_queued_source_departure_and_new_incarnation_have_independent_ordin
             finish(&mut g);
         }
         one(&mut g, p);
-        until(&mut g, |g| g.state.stack.iter().any(|s| s.card == b));
+        until(&mut g, |g| {
+            g.state
+                .stack
+                .iter()
+                .any(|s| s.source.is_some_and(|source| source.id == b))
+        });
         let old = g.object_ref(b);
         g.move_object(b, Zone::Graveyard);
         contracts::branch_contract(g.clone());

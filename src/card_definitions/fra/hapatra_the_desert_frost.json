@@ -3,10 +3,36 @@
   "catalogue_id": 1938,
   "oracle_id": "ac0f161a-e5ec-4a95-9f37-305bdf1ac900",
   "facts_sha256": "69b30e77dee534bfa2db78e26317861e42dd99030b4c7826b3925339e87a1122",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d24a25431ee4517af7342be2350e75af15e82034c19c6813cb735a2d1eb45b2b"
   },
-  "physical_metadata_sha256": "7947f6c1d79e776a2304ab29fcc89f2bb1af6192ad23f2df7f84596f7264fe45"
+  "physical_metadata_sha256": "7947f6c1d79e776a2304ab29fcc89f2bb1af6192ad23f2df7f84596f7264fe45",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HapatraTheDesertFrost.java",
+  "java_sha256": "1190a7006111f30130b99964d49bb25680ebf5ab1991071bde8d28cb35fe1b6e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ForEachPlayerTargetsAdjuster.java",
+      "sha256": "0983e17113baf50a95495f9aac7c2218adf8b0c7350303f390e2ecdfd2576971"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    }
+  ],
+  "rules_tests": "src/engine_fra_hapatra_final_tests.rs"
 }

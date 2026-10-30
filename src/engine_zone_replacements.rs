@@ -1,10 +1,13 @@
 //! Typed graveyard-event replacements and rare owned competing-effect choices.
+use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::ZoneReplacementRule;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ZoneReplacementKind {
     RevealShuffle,
+    /// The event is prevented; the object remains in its original zone.
+    Prevent,
     Exile,
     /// Distinct replacement identity; only the selected source creates a reflexive packet.
     ExileReflexive {
@@ -64,20 +67,57 @@ pub(super) struct ZoneState {
     reveals: SharedVec<ZoneRevealView>,
     graveyard_exile_spells: SharedVec<ObjectRef>,
 }
+/// A checkpoint fixture for conservative schema projection tests.
+#[cfg(test)]
+pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) -> ZoneState {
+    ZoneState {
+        choice: Some(Box::new(Choice {
+            base: Base {
+                state: Box::new(state),
+                bytes: 0,
+                actor: owner,
+                action: Action::Pass,
+                picks: SharedVec::default(),
+            },
+            request: Request {
+                object,
+                requested: Zone::Graveyard,
+                affected: owner,
+                view: ZoneReplacementChoiceView {
+                    card: Card::Forest,
+                    owner,
+                    from: Zone::Hand,
+                    choices: vec![ZoneReplacementKind::Prevent],
+                },
+            },
+        })),
+        ..ZoneState::default()
+    }
+}
 #[derive(Clone, Debug, Default)]
 pub(super) struct FrozenRules {
+    pub prevent: bool,
     pub shuffle_self: bool,
     pub exile_spell: bool,
     pub discard_to_battlefield: bool,
     pub reflexive_exiles: Vec<(u16, ObjectView)>,
 }
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Plan {
     pub destination: Zone,
+    pub prevented: bool,
     pub shuffle: bool,
     pub reflexive: Option<(u16, Box<ObjectView>)>,
 }
 impl ZoneState {
+    // Choices and replays own checkpoints; passive reveals and object links do not.
+    pub(super) fn has_checkpoint(&self) -> bool {
+        self.choice.is_some() || self.replay.is_some()
+    }
+    #[cfg(test)]
+    pub(super) fn schema191_passive_safe(&self, new_card: impl Fn(Card) -> bool) -> bool {
+        !self.has_checkpoint() && self.reveals.iter().all(|view| !new_card(view.card))
+    }
     pub fn bytes(&self) -> usize {
         let base_bytes = |base: &Base| {
             base.bytes
@@ -133,19 +173,38 @@ impl ZoneState {
                 .map_or(0, |r| std::mem::size_of::<Replay>() + base_bytes(&r.base))
     }
 }
+#[cfg(test)]
+thread_local! {
+    pub(super) static TEST_INVALIDATE_STAGED_COST: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_FAKE_ENTRY_LIFE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_REDIRECT_EXILE_TO_BATTLEFIELD: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_PREVENT_ZONE_MOVE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_PREVENT_PROVIDER: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+}
+pub(super) fn card_provides_prevention(card: Card) -> bool {
+    card.static_ability_groups().iter().any(|group| {
+        group.fragments.iter().any(|fragment| {
+            matches!(
+                fragment,
+                crate::cards::StaticAbilityFragment::PreventControlledPermanentGraveyardMove
+            )
+        })
+    })
+}
 impl Game {
     pub(super) fn register_stack_graveyard_exile(&mut self, item: &SpellView) {
         if item.kind == StackKind::Spell
             && !item.is_copy
             && item.cast.is_some_and(|cast| cast.exile_on_graveyard)
+            && let Some(source) = item.source
         {
             let rows = &mut self
                 .state
                 .zone_rules
                 .get_or_insert_default()
                 .graveyard_exile_spells;
-            if !rows.contains(&item.object) {
-                rows.push(item.object);
+            if !rows.contains(&source.object) {
+                rows.push(source.object);
             }
         }
     }
@@ -166,7 +225,7 @@ impl Game {
     }
 
     pub(super) fn register_zone_rule_card(&mut self, card: Card) {
-        if card.zone_replacement().is_some() {
+        if card.zone_replacement().is_some() || card_provides_prevention(card) {
             self.state.zone_rules.get_or_insert_default();
         }
     }
@@ -225,13 +284,19 @@ impl Game {
         requested: Zone,
         discard_cause: Option<Player>,
     ) -> FrozenRules {
+        let prevent = self.zone_move_prevented(before.reference, requested);
         if requested != Zone::Graveyard {
-            return FrozenRules::default();
+            return FrozenRules {
+                prevent,
+                ..FrozenRules::default()
+            };
         }
         let own = before.card.zone_replacement();
         let own_available =
             before.zone != Zone::Battlefield || self.printed_abilities_available(before.id);
-        let spell = before.kinds & 12 != 0 && !before.is_token();
+        let card_or_token =
+            !self.state.objects[before.id as usize].is_spell_copy() || before.is_token();
+        let spell = before.kinds & 12 != 0 && !before.is_token() && card_or_token;
         let reflexive_exiles = if before.zone == Zone::Battlefield && before.is_creature() {
             self.state
                 .static_sources
@@ -253,6 +318,7 @@ impl Game {
             Vec::new()
         };
         FrozenRules {
+            prevent,
             reflexive_exiles,
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
             exile_spell: (before.zone == Zone::Stack
@@ -261,8 +327,14 @@ impl Game {
                     self.on_battlefield(id)
                         && self.printed_abilities_available(id)
                         && match self.state.objects[id as usize].card.zone_replacement() {
-                            Some(ZoneReplacementRule::ExileAllCardsAndTokens) => true,
+                            Some(ZoneReplacementRule::ExileAllCardsAndTokens) => card_or_token,
                             Some(ZoneReplacementRule::ExileInstantSorceryCards) => spell,
+                            Some(ZoneReplacementRule::ExileOpposingCreatureDeathPlain) => {
+                                before.zone == Zone::Battlefield
+                                    && before.is_creature()
+                                    && self.state.objects[id as usize].controller
+                                        != before.controller
+                            }
                             _ => false,
                         }
                 }),
@@ -290,27 +362,31 @@ impl Game {
         requested: Zone,
         rules: FrozenRules,
     ) -> Plan {
-        // A stack copy ceases without a physical card event or replacement choice.
-        if before.zone == Zone::Stack
-            && requested != Zone::Battlefield
-            && self.state.objects[before.id as usize].is_spell_copy()
-        {
-            return Plan {
-                destination: Zone::Outside,
-                shuffle: false,
-                reflexive: None,
-            };
-        }
-        if requested != Zone::Graveyard
+        #[cfg(test)]
+        let test_redirect = requested == Zone::Exile
+            && TEST_REDIRECT_EXILE_TO_BATTLEFIELD
+                .with(|target| target.get() == Some(before.reference));
+        #[cfg(not(test))]
+        let test_redirect = false;
+        if !rules.prevent
+            && !test_redirect
+            && requested != Zone::Graveyard
             && !(before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback)
         {
             return Plan {
                 destination: requested,
+                prevented: false,
                 shuffle: false,
                 reflexive: None,
             };
         }
         let mut choices = Vec::new();
+        if rules.prevent {
+            choices.push(ZoneReplacementKind::Prevent);
+        }
+        if test_redirect {
+            choices.push(ZoneReplacementKind::Battlefield);
+        }
         if before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback
             || rules.exile_spell
             || self.death_exile_destination(before, requested) != requested
@@ -333,6 +409,7 @@ impl Game {
             [] => {
                 return Plan {
                     destination: requested,
+                    prevented: false,
                     shuffle: false,
                     reflexive: None,
                 };
@@ -382,12 +459,14 @@ impl Game {
     fn zone_plan(effect: ZoneReplacementKind, rules: &FrozenRules) -> Plan {
         Plan {
             destination: match effect {
+                ZoneReplacementKind::Prevent => Zone::Graveyard,
                 ZoneReplacementKind::RevealShuffle => Zone::Library,
                 ZoneReplacementKind::Exile | ZoneReplacementKind::ExileReflexive { .. } => {
                     Zone::Exile
                 }
                 ZoneReplacementKind::Battlefield => Zone::Battlefield,
             },
+            prevented: effect == ZoneReplacementKind::Prevent,
             shuffle: effect == ZoneReplacementKind::RevealShuffle,
             reflexive: if let ZoneReplacementKind::ExileReflexive { source, ability } = effect {
                 Some((
@@ -418,9 +497,7 @@ impl Game {
                 from: before.zone,
             });
         self.forget_library_top(before.owner);
-        self.state
-            .rng
-            .shuffle(&mut self.state.players[before.owner.index()].library);
+        self.shuffle_library_cards(before.owner);
     }
     pub(super) fn suspend_zone_replacement(
         &mut self,
@@ -532,5 +609,18 @@ pub(super) fn preserve_irreversible_reveals(
         }
     } else if let Some(target) = target {
         target.reveals.clear();
+    }
+}
+
+/// Preserve only the currently live replay when restoring a staged cost.
+/// A checkpoint can outlive the replay that created it, or can fail while
+/// that replay is still on the caller's stack.
+pub(super) fn transfer_live_replay(
+    from: &mut Option<Box<ZoneState>>,
+    to: &mut Option<Box<ZoneState>>,
+) {
+    let live = from.as_mut().and_then(|rules| rules.replay.take());
+    if live.is_some() || to.is_some() {
+        to.get_or_insert_default().replay = live;
     }
 }

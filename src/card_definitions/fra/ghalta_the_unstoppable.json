@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ed16491c09e35956f9e67f04a2f2589156c6dcbfd2f00e97c7b7c5213e8b1ab8"
   },
-  "physical_metadata_sha256": "1a7f626f888d1c33f94f728d015ebec0f084b69050a64a9fc0d6cc9d5854c818"
+  "physical_metadata_sha256": "1a7f626f888d1c33f94f728d015ebec0f084b69050a64a9fc0d6cc9d5854c818",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GhaltaTheUnstoppable.java",
+  "java_sha256": "e02571836ea5382eb8d6b1c6c481cd3c29c5c15628c28f066096fc1b0baab801"
 }

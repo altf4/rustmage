@@ -3,10 +3,51 @@
   "catalogue_id": 4146,
   "oracle_id": "e8f755f7-ec93-4d2e-bffc-c719984fa13d",
   "facts_sha256": "f3afeb1c12e0655529505d8d1364ab989e89726fc08729dcfe83a8b9f0b226ee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f654f21baceda028c135acd68d6d4ebbd22c9ca1467e38e3aff00c36a5279e4a"
   },
-  "physical_metadata_sha256": "64dde37a8a0ac033af64c8e0b2184aecffdbb5abc5143cb7726c6d62643b6b39"
+  "physical_metadata_sha256": "57168f93b363baf3007ee637aaf845cc73fa54f671a6d8c159701e68793c84d2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StingerquillVoxmancer.java",
+  "java_sha256": "9bcfed14cdba82c9fe3728fd1e24e8ca2e207e307245a3e0d8a622ce0175941e",
+  "oracle_face": {
+    "oracle_id": "e8f755f7-ec93-4d2e-bffc-c719984fa13d",
+    "index": 0,
+    "sha256": "e4539099d1aa1c407ed4e3a27892736ad2c3be00b6e52bb4893c1b57ca4bab02"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourcePreparedCondition.java",
+      "sha256": "010390bed14d8e636c2c4ec49831c957b757b6bcba388c437d2015c76b69ca63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_tests": "src/engine_fra_prepared_extra_tests.rs"
 }

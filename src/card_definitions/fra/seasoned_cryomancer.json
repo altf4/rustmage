@@ -3,10 +3,34 @@
   "catalogue_id": 3755,
   "oracle_id": "c3936db3-d3b6-4a92-9773-6f3c52dc419d",
   "facts_sha256": "c0c071a2af19cfd055fb62bbb7f0aa67341108e0e3e980e4243b69a30ad9016d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c64c2dbd07970dc4e69d87ea3f52e0507623ba2c9c335897183af8b01d7a9df1"
   },
-  "physical_metadata_sha256": "7f130ae0d02b5b965bb88b4c722148708687f4d6b61be91ed3a7f483cd93dbef"
+  "physical_metadata_sha256": "7f130ae0d02b5b965bb88b4c722148708687f4d6b61be91ed3a7f483cd93dbef",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "c3936db3-d3b6-4a92-9773-6f3c52dc419d",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory has no matching class or implementations. The listed XMage helpers are analogues, not card-specific implementations; admission without the missing class is explicitly authorized."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/StunCounterEffect.java",
+      "sha256": "0c19b2482bb343e7c1224e50c4765d99281a389dd1328dea1ebfd04704a48ea5"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "section": "CR 603.12, 608.2, 701.8, 701.16, 122.1e",
+    "notes": "Printed Oracle is frozen in data/standard/cards.json. Card-specific XMage source is absent; helpers are behavioral analogues only."
+  }
 }

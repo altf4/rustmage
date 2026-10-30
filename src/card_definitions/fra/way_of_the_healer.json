@@ -3,10 +3,46 @@
   "catalogue_id": 5009,
   "oracle_id": "cb27dc83-85ee-4f54-b032-41cd1806d3ac",
   "facts_sha256": "eb2188c876bcbd5f5f08c6694f8605e2cddda982822c04e709dbd5adcf74c652",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "728995155624dcaf9e97a0502a6a291a24416f3dd960fb6b2fa8a83bb2fbf4e2"
   },
-  "physical_metadata_sha256": "7ef2d75ebbdd8fbf1fbc98a833e62da79c6737155b88bc2e20b6d702b248d3ff"
+  "physical_metadata_sha256": "7ef2d75ebbdd8fbf1fbc98a833e62da79c6737155b88bc2e20b6d702b248d3ff",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WayOfTheHealer.java",
+  "java_sha256": "f17e2a2a04b7b34e7b7afcb75d540b8cb372ec12d14e5775d9122453f467f36b",
+  "rules_tests": "src/assurance/fra_way_loyalty_foundation.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+      "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/CadetToken.java",
+      "sha256": "9e9b0eaec4d6f703141db5932b446205f25adb25e8fea103cd16d937fb0ef52a"
+    }
+  ]
 }

@@ -3,10 +3,35 @@
   "catalogue_id": 4013,
   "oracle_id": "9f004382-c57b-4fde-af97-0c85516c3cf4",
   "facts_sha256": "1bb47c3dc9b219f6222d1f4cab304910ffecf95380f5a06368c1d082fbc0a98e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "379ad236f810e631a4059da48fbd8557210d7e839eaae4362d49a61b7cae9d4c"
   },
-  "physical_metadata_sha256": "888b12260fbc7300a9d49a09f55bcaa7c70cc305075a51077f44b27629d485a7"
+  "physical_metadata_sha256": "888b12260fbc7300a9d49a09f55bcaa7c70cc305075a51077f44b27629d485a7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SphinxOfFalseConclusions.java",
+  "java_sha256": "ee93313d4a677e05ccf20a3c28912f4a3203796e46006a4325fad634e1e4adf0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    }
+  ]
 }

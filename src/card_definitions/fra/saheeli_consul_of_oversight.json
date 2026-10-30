@@ -3,10 +3,36 @@
   "catalogue_id": 3654,
   "oracle_id": "dfa95c0e-393d-4b22-9de3-45a7efc0ba14",
   "facts_sha256": "4837f83a5f066bf1140626eb0175458bf1e428e5f456fbbbe6c93164b14587a1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e2522ea20fea8673c76d30c9757af1072780abbbe1707e82735d33e8f102bc9c"
   },
-  "physical_metadata_sha256": "22683920a93bfe0aebf03d0fad69b19bdca93742f1e706f17c6a0ab99d00eb18"
+  "physical_metadata_sha256": "22683920a93bfe0aebf03d0fad69b19bdca93742f1e706f17c6a0ab99d00eb18",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SaheeliConsulOfOversight.java",
+  "java_sha256": "18bc68c91579e9885ee7cf9f4a1417895dc6f2c52bca2924b95841a810eb3d69",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ScryOrSurveilTriggeredAbility.java",
+      "sha256": "07026dc756086e1a14b9de69885470d042f850961f62c08141de22364aee8884"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+      "sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "src/engine_fra_scry_events_tests.rs"
 }

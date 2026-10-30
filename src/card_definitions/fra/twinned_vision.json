@@ -3,10 +3,31 @@
   "catalogue_id": 4724,
   "oracle_id": "fa1cc78f-26bc-4d5d-973b-7cb7d7490973",
   "facts_sha256": "036a66a1d626d634425279cfb9a2d28471830df0be3377a8039c209d76589ba8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0b2dbdd03b6e07271143b7bba636c1b02cdec63458c3c15feac08dbea04cf1b0"
   },
-  "physical_metadata_sha256": "289ae9d6bbbef7a31d98d079e28a62fa3919b8a5d043e637ec8a92bf9a7dc8e1"
+  "physical_metadata_sha256": "289ae9d6bbbef7a31d98d079e28a62fa3919b8a5d043e637ec8a92bf9a7dc8e1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwinnedVision.java",
+  "java_sha256": "ab144654034e9efb637878d109928203ad42025ab7a0a66dedcb97b10be3be7b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

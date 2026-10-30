@@ -3,10 +3,31 @@
   "catalogue_id": 3865,
   "oracle_id": "43654381-c55c-4d6d-abfd-12932ceb5a4a",
   "facts_sha256": "816051047baee5609912b771803aef1be050deec78d79a9b2348e18b68b18e51",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dd5efa5ad3ce0af9531d6cc8f8515c963a4850feb9c2bd2f8fd99317099f90e4"
   },
-  "physical_metadata_sha256": "68108d05debde80ba97b82b4bfb4d1755cd4c6d377677b68466760738067b6ef"
+  "physical_metadata_sha256": "68108d05debde80ba97b82b4bfb4d1755cd4c6d377677b68466760738067b6ef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SilenceTheEcho.java",
+  "java_sha256": "5f5e4fca6752b38b742b3670a9417d21bdd1d03fef3c1f2ab3af397aad8cffd2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

@@ -3,10 +3,56 @@
   "catalogue_id": 3098,
   "oracle_id": "511951ed-fbff-4e44-9429-27f237496672",
   "facts_sha256": "230e23946bcc26317eeb881ff978fdaec95410d25619c7f67529c7d5a65fb829",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4c04cac63cd22fb313effae5e1d68c262caa39e5800ab3d93333565bfd86f728"
   },
-  "physical_metadata_sha256": "9b2eb9a21ccb1487de91eac8d50d51c132d19ea957cb95042aefdbf68992f6c0"
+  "physical_metadata_sha256": "81892bc88b5b3c9ab5aa84a81415734502b82cc8e6daaf1857810627e74bc6fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ParadoxShaper.java",
+  "java_sha256": "32e0286e93b06e7e0c66d99e7141c711f7eb5a13d3639ded8e403b6da494659b",
+  "oracle_face": {
+    "oracle_id": "511951ed-fbff-4e44-9429-27f237496672",
+    "index": 0,
+    "sha256": "aa5e22f3afbce0e4a1ca79029088e67406def6889997948705aa0bc3c8806a51"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourcePreparedCondition.java",
+      "sha256": "010390bed14d8e636c2c4ec49831c957b757b6bcba388c437d2015c76b69ca63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_tests": "src/engine_fra_prepared_extra_tests.rs"
 }

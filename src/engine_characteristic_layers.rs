@@ -84,6 +84,32 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .flat_map(|r| &r.animations)
         .filter(move |row| Some(row.object) == recipient)
 }
+/// Layer-four changes to the presence of the land card type. Other card-type
+/// additions do not affect existing land types and need no timeline entry.
+pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Vec<(u64, bool)> {
+    let mut events: Vec<_> = aura_effects(world, id)
+        .into_iter()
+        .filter_map(|(time, spec)| match spec.form {
+            PermanentForm::AddCreature => None,
+            form => Some((time, matches!(form, PermanentForm::Land))),
+        })
+        .collect();
+    events.extend(animations(world, id).filter_map(|row| {
+        if row.food_only || row.artifact_noncreature {
+            Some((row.timestamp, false))
+        } else if row.land && (!row.preserve_card_types || row.artifact) {
+            Some((row.timestamp, true))
+        } else {
+            None
+        }
+    }));
+    events.sort_by_key(|event| event.0);
+    events
+}
+
 #[inline]
 pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     world: &W,
@@ -130,8 +156,9 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
                 match spec.form {
                     PermanentForm::Creature => 1,
                     PermanentForm::Land => 2,
+                    PermanentForm::AddCreature => 1,
                 },
-                false,
+                matches!(spec.form, PermanentForm::AddCreature),
             )
         })
         .collect();
@@ -219,13 +246,16 @@ pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> 
 fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     aura_effects(world, id)
         .into_iter()
-        .map(|(timestamp, spec)| {
-            (
+        .filter_map(|(timestamp, spec)| {
+            if matches!(spec.form, PermanentForm::AddCreature) {
+                return None;
+            }
+            Some((
                 timestamp,
                 spec.colors
                     .iter()
                     .fold(0, |mask, c| mask | (1 << c.index())),
-            )
+            ))
         })
         .chain(
             animations(world, id)
@@ -266,6 +296,7 @@ pub(super) enum SubtypeChange {
     All,
     LandOnly,
     BasicLand(crate::cards::BasicLandType),
+    AddBasicLand(crate::cards::BasicLandType),
     FoodOnly,
 }
 #[inline]
@@ -294,6 +325,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
                 match s.form {
                     PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
                     PermanentForm::Land => SubtypeChange::LandOnly,
+                    PermanentForm::AddCreature => SubtypeChange::Add(s.creature_types),
                 },
             )
         })
@@ -327,9 +359,12 @@ impl Game {
         spec: AnimationSpec,
         ability: u16,
     ) {
-        if !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
-            || self.is_creature(item.card)
+        let Some(source) = item.source else {
+            return;
+        };
+        if !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
+            || self.is_creature(source.id)
         {
             return;
         }
@@ -351,9 +386,12 @@ impl Game {
         spec: AnimationSpec,
         kind: SelfGrantedAbilityKind,
     ) {
-        if !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
-            || self.is_creature(item.card)
+        let Some(source) = item.source else {
+            return;
+        };
+        if !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
+            || self.is_creature(source.id)
         {
             return;
         }
@@ -378,7 +416,10 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
-        self.change_object_form(item.object, spec, type_mode);
+        let Some(source) = item.source else {
+            return;
+        };
+        self.change_object_form(source.object, spec, type_mode);
     }
     pub(super) fn add_artifact_to_targets(&mut self, item: &SpellView) {
         let spec = AnimationSpec {

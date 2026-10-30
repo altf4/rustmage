@@ -190,12 +190,14 @@ impl Game {
             if actor != rollback.player
                 && matches!(
                     action,
-                    Action::ChooseEntryValue { .. }
+                    Action::ChooseEntryBehold { .. }
+                        | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }
                         | Action::ChooseAuraAttachment { .. }
                         | Action::ChooseEntryReplacement { .. }
                         | Action::ChooseEntryTimestamp { .. }
                         | Action::ChooseReplacement { .. }
+                        | Action::ChooseSelfCounterReplacement { .. }
                         | Action::ChooseZoneReplacement { .. }
                 )
             {
@@ -396,6 +398,7 @@ impl Game {
                     before,
                     zone_replacements::Plan {
                         destination: Zone::Library,
+                        prevented: false,
                         shuffle: false,
                         reflexive: None,
                     },

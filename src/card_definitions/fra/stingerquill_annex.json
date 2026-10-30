@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "08b3472890a3cd9f69bb9094a70c2fe796ec685139b7feb6392024c9c1137a14"
   },
-  "physical_metadata_sha256": "f25da7932dc7805289b2eef2dd3dc14abc3a3335003fba21ef1fe06573090672"
+  "physical_metadata_sha256": "f25da7932dc7805289b2eef2dd3dc14abc3a3335003fba21ef1fe06573090672",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StingerquillAnnex.java",
+  "java_sha256": "621565389c5096f38e330c8efcb03125d3142f0ae6fc861477739f627ddbb074"
 }

@@ -3,10 +3,31 @@
   "catalogue_id": 4946,
   "oracle_id": "cad63b31-667b-4518-bc49-be4ffb82bc63",
   "facts_sha256": "40ab9a4d1bb24138fcbabcc87e63a3ac0935bd4cbc1658b0dd0da11bf3cde641",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "90482fb16187ba04ebb86e70aa2f86337f523e267589d4390fed8657f1d99de5"
   },
-  "physical_metadata_sha256": "94f3417a6b2bd1f175d72deb2147e0715c5b9a9f2e29e66703c62bbefdb46094"
+  "physical_metadata_sha256": "94f3417a6b2bd1f175d72deb2147e0715c5b9a9f2e29e66703c62bbefdb46094",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VraskaSoulOfStone.java",
+  "java_sha256": "1b05a83892b613f2ac4ed705cbe84e7d971dd264d35878a104cae528a9eca066",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/SculptureTreasureToken.java",
+      "sha256": "16c8317548a87cb9ecdc4f8dd46ccf2fd31d872c3e9ab91a4fe51c453200e34d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+      "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

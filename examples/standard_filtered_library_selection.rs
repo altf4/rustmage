@@ -168,7 +168,7 @@ fn items(o: &Observation) -> impl Iterator<Item = &SpellView> {
         .chain(&o.resolving)
 }
 fn selection(s: &SpellView) -> Option<usize> {
-    let i = index(s.source_card)?;
+    let i = s.source().and_then(|source| index(source.card))?;
     match (i, s.kind) {
         (2, StackKind::Spell) => Some(i),
         (11, StackKind::TriggeredAbility { ability: 1 }) => Some(i),
@@ -340,8 +340,16 @@ fn verify_choice(
         let expected = if b.resolving.as_ref().unwrap().kind == StackKind::Spell {
             let s = b.resolving.as_ref().unwrap();
             BTreeSet::from([ObjectRef {
-                card: s.card,
-                generation: s.object.generation + 1,
+                card: s
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .id,
+                generation: s
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .object
+                    .generation
+                    + 1,
             }])
         } else {
             BTreeSet::new()
@@ -394,8 +402,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let attack_source = b.stack.iter().rev().find(|s| {
                 s.controller == actor
                     && selection(s).is_some_and(|i| i == 0 || i == 9)
-                    && object(&b, s.card)
-                        .is_some_and(|v| v.reference == s.object && v.zone == Zone::Battlefield)
+                    && object(
+                        &b,
+                        s.source()
+                            .expect("example expects an object-backed packet")
+                            .id,
+                    )
+                    .is_some_and(|v| {
+                        v.reference
+                            == s.source()
+                                .expect("example expects an object-backed packet")
+                                .object
+                            && v.zone == Zone::Battlefield
+                    })
             });
             let preferred = (seed as usize / NAMES.len() + actor.index() + costs[actor.index()])
                 % alternatives(family);
@@ -442,7 +461,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     Action::ChooseAdditionalCost { object: r } => {
-                        if attack_source.is_some_and(|s| s.object == *r) {
+                        if attack_source.is_some_and(|s| {
+                            s.source()
+                                .expect("example expects an object-backed packet")
+                                .object
+                                == *r
+                        }) {
                             600
                         } else {
                             -100
@@ -506,7 +530,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let action = actions[selected].clone();
             if let Action::ChooseSpellCost { cost: k } = action {
                 let root = b.announcing.as_ref().unwrap();
-                if let Some(i) = index(root.source_card) {
+                if let Some(i) = root.source().and_then(|source| index(source.card)) {
                     assert!((3..=7).contains(&i));
                     for option in &b.cost_choices {
                         let expected = cost(i, usize::from(option.index));
@@ -524,13 +548,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if frames.insert(root.id) {
                     verify_frame(i, &b, f, &mut m);
                     if i == 11 {
-                        let copy = root.source_card.is_token();
+                        let copy = root
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .is_token();
                         m.trainer_frames[usize::from(copy)] += 1;
-                        assert_eq!(root.entering_object, Some(root.object));
+                        assert_eq!(
+                            root.entering_object,
+                            Some(
+                                root.source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                            )
+                        );
                     }
                     if (i == 0 || i == 9)
-                        && object(&b, root.card).is_none_or(|v| {
-                            v.reference != root.object || v.zone != Zone::Battlefield
+                        && object(
+                            &b,
+                            root.source()
+                                .expect("example expects an object-backed packet")
+                                .id,
+                        )
+                        .is_none_or(|v| {
+                            v.reference
+                                != root
+                                    .source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                                || v.zone != Zone::Battlefield
                         })
                     {
                         m.departed[usize::from(i == 9)] += 1;
@@ -627,33 +673,56 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 match root.kind {
                     StackKind::CasualtyCopy
                     | StackKind::CopyEndStepSacrifice
+                    | StackKind::CopyEndStepConditionalSacrifice
                     | StackKind::DelayedReturn
                     | StackKind::DelayedTokenCreation { .. }
                     | StackKind::DelayedSacrifice
                     | StackKind::DelayedWarpExile
                     | StackKind::DelayedManifestDread
-                    | StackKind::SiegeDefeat => {
+                    | StackKind::SiegeDefeat
+                    | StackKind::InherentRule { .. } => {
                         panic!("no delayed producer in this fixture")
                     }
                     StackKind::Spell => {
-                        if index(root.source_card) == Some(11) {
+                        if root.source().and_then(|source| index(source.card)) == Some(11) {
                             let p = root.cast.unwrap().offspring.unwrap();
                             m.trainer_casts[usize::from(p)] += 1;
                             if p {
                                 paid.insert(ObjectRef {
-                                    card: root.card,
-                                    generation: root.object.generation + 1,
+                                    card: root
+                                        .source()
+                                        .expect("example expects an object-backed packet")
+                                        .id,
+                                    generation: root
+                                        .source()
+                                        .expect("example expects an object-backed packet")
+                                        .object
+                                        .generation
+                                        + 1,
                                 });
                             }
                         }
                     }
                     StackKind::TriggeredAbility { ability } => {
-                        if index(root.source_card).is_some() {
-                            let remaining =
-                                debt.get_mut(&(root.object, ability)).unwrap_or_else(|| {
+                        if root
+                            .source()
+                            .and_then(|source| index(source.card))
+                            .is_some()
+                        {
+                            let remaining = debt
+                                .get_mut(&(
+                                    root.source()
+                                        .expect("example expects an object-backed packet")
+                                        .object,
+                                    ability,
+                                ))
+                                .unwrap_or_else(|| {
                                     panic!(
                                         "unexpected trigger {} {ability}",
-                                        root.source_card.name()
+                                        root.source()
+                                            .expect("example expects an object-backed packet")
+                                            .card
+                                            .name()
                                     )
                                 });
                             assert!(*remaining > 0);

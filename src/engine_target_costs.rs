@@ -58,16 +58,35 @@ impl Game {
         }
         Some(qualifies)
     }
-    fn apply_target_discount(&self, id: CardId, mut cost: ManaCost, qualifies: bool) -> ManaCost {
-        if qualifies && let Some(rule) = self.effective_spell_card(id).target_cost_reduction() {
-            cost.generic = cost.generic.saturating_sub(rule.discount.generic);
-            for (n, discount) in cost.colored.iter_mut().zip(rule.discount.colored) {
-                // CR 118.7b-d: excess typed reduction reduces generic mana.
-                cost.generic = cost.generic.saturating_sub(discount.saturating_sub(*n));
-                *n = n.saturating_sub(discount);
-            }
-        }
-        cost
+    fn target_total(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        qualifies: bool,
+        extra_reduction: u64,
+    ) -> Option<ManaCost> {
+        let definition = self.effective_spell_card(id);
+        let discount = definition
+            .target_cost_reduction()
+            .filter(|_| qualifies)
+            .map_or(
+                ManaCost {
+                    colored: [0; 6],
+                    generic: 0,
+                },
+                |rule| rule.discount,
+            );
+        self.spell_total_with_reductions(
+            actor,
+            id,
+            base,
+            definition,
+            definition.fixed_mana_value(),
+            0,
+            discount,
+            extra_reduction,
+        )
     }
     pub(super) fn target_spell_cost(
         &self,
@@ -75,7 +94,30 @@ impl Game {
         id: CardId,
         base: ManaCost,
         targets: &[BoundTarget],
-    ) -> ManaCost {
+    ) -> Option<ManaCost> {
+        let extra = self
+            .state
+            .announcing
+            .as_ref()
+            .filter(|a| {
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id
+                    == id
+                    && a.item.controller == actor
+            })
+            .map_or(0, Self::announcement_optional_reduction);
+        self.target_spell_cost_with_extra(actor, id, base, targets, extra)
+    }
+    pub(super) fn target_spell_cost_with_extra(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        targets: &[BoundTarget],
+        extra: u64,
+    ) -> Option<ManaCost> {
         let qualifies = self
             .effective_spell_card(id)
             .target_cost_reduction()
@@ -85,7 +127,7 @@ impl Game {
                         && self.cast_target_matches(r.rule, actor, self.object_ref(id), b.target)
                 })
             });
-        self.apply_target_discount(id, self.reduced_spell_cost(actor, id, base), qualifies)
+        self.target_total(actor, id, base, qualifies, extra)
     }
     pub(super) fn initial_target_cost_fundable(
         &self,
@@ -106,16 +148,8 @@ impl Game {
                 finished: false,
             };
             self.completion_discount(&c).is_some_and(|qualifies| {
-                self.spell_can_fund_total(
-                    actor,
-                    id,
-                    self.apply_target_discount(
-                        id,
-                        self.reduced_spell_cost(actor, id, base),
-                        qualifies,
-                    ),
-                    None,
-                )
+                self.target_total(actor, id, base, qualifies, 0)
+                    .is_some_and(|total| self.spell_can_fund_total(actor, id, total, None))
             })
         };
         match card.effect() {
@@ -134,11 +168,24 @@ impl Game {
         finished: bool,
     ) -> bool {
         if let StackKind::ActivatedAbility { ability } = a.item.kind
-            && Self::activation_target_sensitive(a.item.source_card, ability)
+            && Self::activation_target_sensitive(
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
+                ability,
+            )
         {
             return self.announcement_activation_target_fundable(a, extra, finished);
         }
-        if a.item.kind != StackKind::Spell || a.item.source_card.target_cost_reduction().is_none() {
+        if a.item.kind != StackKind::Spell
+            || a.item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .target_cost_reduction()
+                .is_none()
+        {
             return true;
         }
         if plan.is_none()
@@ -172,12 +219,18 @@ impl Game {
         let test = |cost| {
             let mut base = Self::with_offspring_cost(
                 cost,
-                a.item.source_card,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
                 offspring.unwrap_or_else(|| a.item.cast.is_some_and(|c| c.offspring == Some(true))),
             );
             base = Self::with_kicker_cost(
                 base,
-                a.item.source_card,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
                 a.item.cast.is_some_and(|c| c.kicker == Some(true)),
             );
             if a.forage
@@ -188,17 +241,27 @@ impl Game {
                     .checked_add(1)
                     .capacity("forage alternative mana cost exhausted");
             }
-            let total = self.apply_target_discount(
-                a.item.card,
-                self.reduced_spell_cost(a.item.controller, a.item.card, base),
-                qualifies,
-            );
-            self.spell_can_fund_total(
+            self.target_total(
                 a.item.controller,
-                a.item.card,
-                total,
-                a.forage.as_ref().and_then(|f| f.route),
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id,
+                base,
+                qualifies,
+                Self::announcement_optional_reduction(a),
             )
+            .is_some_and(|total| {
+                self.spell_can_fund_total(
+                    a.item.controller,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .id,
+                    total,
+                    a.forage.as_ref().and_then(|f| f.route),
+                )
+            })
         };
         if let Some(cost) = cost.or(a.cost) {
             test(cost)
@@ -217,10 +280,16 @@ impl Game {
             finished: false,
         };
         let qualifies = self.completion_discount(&c) == Some(true);
-        self.apply_target_discount(
-            a.item.card,
-            self.reduced_spell_cost(a.item.controller, a.item.card, base),
+        self.target_total(
+            a.item.controller,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .id,
+            base,
             qualifies,
+            Self::announcement_optional_reduction(a),
         )
+        .expect("validated provisional cost")
     }
 }

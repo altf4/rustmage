@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1eae95bda211d3974c304684aa6fb8fb883b6b46f04e6a2b7930670f6c2d8bea"
   },
-  "physical_metadata_sha256": "bb18031bba776256c97488fc4ada965a21c3ac79afe9f1713232f476266a0406"
+  "physical_metadata_sha256": "bb18031bba776256c97488fc4ada965a21c3ac79afe9f1713232f476266a0406",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExtendedAbsence.java",
+  "java_sha256": "1f025bee1522c451e87e1166edf40201b288e54dd4a687d8d524ee29128ba4a7"
 }

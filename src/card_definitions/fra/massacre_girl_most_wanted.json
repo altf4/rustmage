@@ -3,10 +3,41 @@
   "catalogue_id": 2677,
   "oracle_id": "81f35914-73bf-429f-ba20-32e23ac30159",
   "facts_sha256": "174fdfdaa8eb474eaddf62239e358a6a3a7c18cc59c326d29507e9f3a2a486e1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "488279f4ab0a7e077a49c269d40df26eb8b4f3787f61e1c90fe3a5bc6cdf7e63"
   },
-  "physical_metadata_sha256": "500959261b14bcc8940fc61e3699c5e0d0fe027a0b80c02e55b9b700b5fecaa2"
+  "physical_metadata_sha256": "500959261b14bcc8940fc61e3699c5e0d0fe027a0b80c02e55b9b700b5fecaa2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MassacreGirlMostWanted.java",
+  "java_sha256": "fd99d8902e3dd1476f8f1e2eb93a0daf6d3cf463a82b41f864066f6a5db64a4f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/OpponentDealtNoncombatDamageTriggeredAbility.java",
+      "sha256": "ecd63c01d732d5aad48b08174565bf9c4a0850884cb3d7e7f38626c8c6726f89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

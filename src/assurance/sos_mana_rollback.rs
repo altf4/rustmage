@@ -264,3 +264,6 @@ mod decree_tests;
 
 #[path = "hob_gandalf_flameshape_rollback.rs"]
 mod gandalf_flameshape_tests;
+
+#[path = "fra_cruel_history_extra.rs"]
+mod fra_cruel_history_extra;

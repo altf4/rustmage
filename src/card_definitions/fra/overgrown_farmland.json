@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "864797a1689e912aaf6d0db4c8f9b229e692e0d4bca9e6663106b96cd556c081"
   },
-  "physical_metadata_sha256": "52c475df717625ad11649ba1744b81bec3f1e527fb6b303d6bc4909f89eaaf50"
+  "physical_metadata_sha256": "52c475df717625ad11649ba1744b81bec3f1e527fb6b303d6bc4909f89eaaf50",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OvergrownFarmland.java",
+  "java_sha256": "085e7a66e91e07a50bfef7bd8fcf7b1bfb9b9e7b6fefc9f9b9d13f5b0ad2e27b"
 }

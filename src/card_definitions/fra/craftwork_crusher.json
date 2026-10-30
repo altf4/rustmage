@@ -3,10 +3,46 @@
   "catalogue_id": 877,
   "oracle_id": "d25284b9-50e4-4dcb-9aaf-6f6478c4a90a",
   "facts_sha256": "d0bfa934a022f840068e960e6a7e166eebd65f0cfe58936bc94b55c26d24d5ec",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4a436129114853f2825407ca29c9349aabf1e6d9b04a8641a7fda5952aa3f3a9"
   },
-  "physical_metadata_sha256": "e15a8113ed5ff003c3b400f393a117ea2fbe77e89f97b47f20582b343bc0dc02"
+  "physical_metadata_sha256": "e15a8113ed5ff003c3b400f393a117ea2fbe77e89f97b47f20582b343bc0dc02",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CraftworkCrusher.java",
+  "java_sha256": "83a34e60a5c4ab532b37ee7cbc7b0feaec9fc5d6c1e21562a650afdfe3af2c9b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/CadetToken.java",
+      "sha256": "9e9b0eaec4d6f703141db5932b446205f25adb25e8fea103cd16d937fb0ef52a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_tests": "src/engine_fra_craftwork_tests.rs"
 }

@@ -253,7 +253,7 @@ fn inside_adventure_chosen_face_value_and_normal_permission_are_independent() {
         );
         assert_eq!(g.state.players[p.index()].life, 17);
         assert_eq!(
-            g.state.stack.last().unwrap().source_card,
+            g.state.stack.last().unwrap().source.unwrap().card,
             Card::from_name("Bubble Up").unwrap()
         );
         finish(&mut g);

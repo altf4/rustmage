@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "53837a2a7ba2eec6fd8c42855d3a88ba2ba905c78e190cec0767dfd430df64c4"
   },
-  "physical_metadata_sha256": "7247f2be171901038c682052c98189764baa26852972bcdbb6956484bfdaf320"
+  "physical_metadata_sha256": "7247f2be171901038c682052c98189764baa26852972bcdbb6956484bfdaf320",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/Unsummon.java",
+  "java_sha256": "c028a1fb0b06c9fe68c9a4465d78dbf4fd3ab7100517c4057cf545a191654580"
 }

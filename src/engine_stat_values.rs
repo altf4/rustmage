@@ -32,7 +32,7 @@ impl Game {
                     card: id,
                     generation: o.generation,
                 } != source)
-            && (!filter.cards_only || !o.is_token())
+            && (!filter.cards_only || o.is_card())
             && (filter.kind == 0 || kinds(id, o) & filter.kind != 0)
             && kinds(id, o) & filter.exclude == 0
             && filter.subtype.is_none_or(|s| subtypes(id).has(o.card, s))
@@ -104,6 +104,29 @@ impl Game {
         I: Iterator<Item = (CardId, &'a Object)>,
     {
         match value {
+            StatValue::SourceHasNotDealtCombatDamage => objects()
+                .find(|(id, object)| *id == source.card && object.generation == source.generation)
+                .map_or(0, |(_, object)| {
+                    i128::from(!object.dealt_combat_damage_this_incarnation)
+                }),
+            StatValue::DistinctControlledPlaneswalkerTypes => {
+                let mut distinct = std::collections::BTreeSet::new();
+                for (id, object) in objects() {
+                    if object.zone != Zone::Battlefield
+                        || object.controller != owner
+                        || kinds(id, object) & 64 == 0
+                    {
+                        continue;
+                    }
+                    let live = subtypes(id);
+                    for &subtype in subtypes::PLANESWALKER_TYPES {
+                        if live.has(object.card, subtype) {
+                            distinct.insert(subtype);
+                        }
+                    }
+                }
+                i128::try_from(distinct.len()).capacity("planeswalker type count exhausted")
+            }
             StatValue::Fixed(n) => i128::from(n),
             StatValue::HasEnduringStory => i128::from(enduring_story),
             StatValue::SourceCounters(kind) => objects()
@@ -159,8 +182,29 @@ impl Game {
                     })
                     .count() as i128
             }
+            StatValue::ControllerDomain => {
+                let mut mask = 0u8;
+                for (id, object) in objects() {
+                    if object.zone != Zone::Battlefield
+                        || object.controller != owner
+                        || kinds(id, object) & 2 == 0
+                    {
+                        continue;
+                    }
+                    let types = subtypes(id);
+                    for (bit, name) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                        .iter()
+                        .enumerate()
+                    {
+                        if types.has(object.card, name) {
+                            mask |= 1 << bit;
+                        }
+                    }
+                }
+                i128::from(mask.count_ones())
+            }
             StatValue::ControllerHandSize => objects()
-                .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand)
+                .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand && o.is_card())
                 .count() as i128,
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
@@ -258,9 +302,21 @@ impl Game {
             StatValue::CreatureSpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].creature_spells_cast_this_turn)
             }
+            StatValue::NoncreatureSpellsCastThisTurn => {
+                let player = &self.state.players[owner.index()];
+                i128::from(
+                    player
+                        .spells_cast_this_turn
+                        .checked_sub(player.creature_spells_cast_this_turn)
+                        .expect("creature spell count cannot exceed total spell count"),
+                )
+            }
             StatValue::CreaturesDiedThisTurn => i128::from(self.state.creatures_died_this_turn),
             StatValue::LifeGainOccurredThisTurn => {
                 i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)
+            }
+            StatValue::OpponentNoncombatDamageThisTurn => {
+                i128::from(self.state.players[owner.other().index()].noncombat_damage_this_turn)
             }
             StatValue::LinkedExileCardTypes => {
                 let mut mask = 0u16;
@@ -366,9 +422,31 @@ impl Game {
                     .unwrap_or(0),
             ),
             StatValue::GraveyardCardTypes => objects()
-                .filter(|(_, o)| o.zone == Zone::Graveyard && !o.is_token())
+                .filter(|(_, o)| o.zone == Zone::Graveyard && o.is_card())
                 .fold(0u16, |mask, (_, o)| mask | o.card.kind_mask())
                 .count_ones() as i128,
+            StatValue::GroupsOf { value, size } => {
+                self.stat_value_with(
+                    *value,
+                    source,
+                    owner,
+                    objects,
+                    subtypes,
+                    kinds,
+                    names,
+                    colors,
+                    legendary,
+                    mana_value,
+                    counter_count,
+                    has_counters,
+                    life,
+                    attacking,
+                    enduring_story,
+                    life_lost,
+                )
+                .max(0)
+                    / i128::from(size.get())
+            }
             StatValue::Sum(values) => values
                 .iter()
                 .map(|&value| {
@@ -416,10 +494,12 @@ impl Game {
             }
             AmountValue::PaidSourceCounterQuantity(_)
             | AmountValue::TargetPlayerHandSize
+            | AmountValue::TargetPlayerLibraryToGraveyardThisTurn
             | AmountValue::TargetPlayerCreatureCount
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount
             | AmountValue::ChosenX
+            | AmountValue::ReflexiveTargetLimit
             | AmountValue::ManaSpent
             | AmountValue::CastSpellManaValue
             | AmountValue::CastSpellManaSymbols(_)

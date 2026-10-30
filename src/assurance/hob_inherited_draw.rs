@@ -100,11 +100,10 @@ fn hob_inherited_draw_discovery_own_artifacts_tokens_and_departed_observer() {
         assert_eq!(g.hand_count(p), 0);
         paid(&mut g, p, "Goldvein Pick", [0, 0, 0, 0, 0, 2]);
         for _ in 0..16 {
-            if g.state
-                .stack
-                .iter()
-                .any(|s| s.card == source && matches!(s.kind, StackKind::TriggeredAbility { .. }))
-            {
+            if g.state.stack.iter().any(|s| {
+                s.source.is_some_and(|identity| identity.id == source)
+                    && matches!(s.kind, StackKind::TriggeredAbility { .. })
+            }) {
                 break;
             }
             act(&mut g, Action::Pass);
@@ -113,7 +112,8 @@ fn hob_inherited_draw_discovery_own_artifacts_tokens_and_departed_observer() {
             g.state
                 .stack
                 .iter()
-                .any(|s| s.card == source && matches!(s.kind, StackKind::TriggeredAbility { .. }))
+                .any(|s| s.source.is_some_and(|identity| identity.id == source)
+                    && matches!(s.kind, StackKind::TriggeredAbility { .. }))
         );
         g.move_object(source, Zone::Graveyard);
         g.give_priority();

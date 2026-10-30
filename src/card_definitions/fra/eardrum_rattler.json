@@ -3,10 +3,21 @@
   "catalogue_id": 1230,
   "oracle_id": "25151d18-8e73-4b0d-a8d2-e5fa291e5729",
   "facts_sha256": "b81ddf521a2c4992bc0e4a7ed82ddb7f326aa43eb0e1ae58705d3186f2f90328",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a2e33114a6a0b1e467a7539a7f2171687f265b3e26350a20ddc712f1fea3f115"
   },
-  "physical_metadata_sha256": "022abb70cfb46aa446487c38285cee6e56559dbf9e0fdfb8d4812eb4e3c3bbdc"
+  "physical_metadata_sha256": "022abb70cfb46aa446487c38285cee6e56559dbf9e0fdfb8d4812eb4e3c3bbdc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EardrumRattler.java",
+  "java_sha256": "72ac6f34a00c5eee073e39a754af4c907f3e08307cdbf54b729dbec06479f399",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+      "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
+    }
+  ],
+  "rules_tests": "src/assurance/fra_rattler_dark.rs"
 }

@@ -49,7 +49,10 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     if item.kind != StackKind::Spell {
         return 0;
     }
-    let name = item.source_card.name();
+    let Some(source) = item.source() else {
+        return 0;
+    };
+    let name = source.card.name();
     let mode = item.mode;
     let moved = matches!(
         name,
@@ -268,7 +271,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let n = check(&before, &after, item);
                 checks += n;
                 if n > 0 {
-                    resolved.insert((item.source_card.name(), item.mode));
+                    resolved.insert((
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                        item.mode,
+                    ));
                 }
             }
             if before.announcing.is_some()

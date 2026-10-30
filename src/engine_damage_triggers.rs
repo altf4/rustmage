@@ -71,6 +71,7 @@ impl Game {
         subject: DamageSubject,
     ) -> bool {
         match subject {
+            DamageSubject::AnySources | DamageSubject::AnyNoncombatSources => true,
             DamageSubject::ControlledNoncombatSources => dealer.controller == source.controller,
             DamageSubject::Source => dealer.reference == source.reference,
             DamageSubject::Attached => {
@@ -147,7 +148,11 @@ impl Game {
                 };
                 let mut aggregate = std::collections::BTreeMap::new();
                 for (&(dealer, player, combat), &amount) in &hits {
-                    if (matches!(subject, DamageSubject::ControlledNoncombatSources) && combat)
+                    if (matches!(
+                        subject,
+                        DamageSubject::AnyNoncombatSources
+                            | DamageSubject::ControlledNoncombatSources
+                    ) && combat)
                         || (combat_only && !combat)
                         || (opponent_only && source.controller == player)
                         || !self.damage_qualified(&source, dealer, subject)

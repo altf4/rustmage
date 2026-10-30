@@ -6,6 +6,7 @@ pub enum EntryTapKind {
     Tapped,
     Untapped,
     PayLife(u32),
+    Behold(&'static str),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct EntryTapEffect {
@@ -18,6 +19,7 @@ pub(super) struct EntryTapEvent {
     pub index: usize,
     pub effects: Vec<EntryTapEffect>,
     pub payment: Option<u32>,
+    pub behold: Option<&'static str>,
 }
 impl EntryTapEvent {
     pub fn bytes(&self) -> usize {
@@ -60,7 +62,12 @@ impl Game {
             }
         }
         // Preserve the legacy fast path when no new untapped effect applies.
-        if effects.is_empty() {
+        if effects.is_empty()
+            && !matches!(
+                movement.before.card.entry_tapped(),
+                EntryTapped::UnlessBehold(_)
+            )
+        {
             return effects;
         }
         for &id in &self.state.static_sources {
@@ -102,6 +109,14 @@ impl Game {
                 return true;
             }
             let player = batch.moves[event.index].controller;
+            if event.behold.is_some() {
+                if self.entry_behold_candidates().is_empty() {
+                    self.choose_entry_behold(None);
+                    continue;
+                }
+                self.state.pending = Pending::EntryBehold { player };
+                return true;
+            }
             if event.payment.is_some() {
                 if self.can_pay_entry_life() {
                     self.state.pending = Pending::EntryLife { player };
@@ -117,8 +132,10 @@ impl Game {
             // Identical fixed replacements commute; there is no meaningful order
             // choice. A payment always remains a real separate choice.
             let first = event.effects[0];
-            let commute = !matches!(first.kind, EntryTapKind::PayLife(_))
-                && event.effects.iter().all(|effect| effect.kind == first.kind);
+            let commute = !matches!(
+                first.kind,
+                EntryTapKind::PayLife(_) | EntryTapKind::Behold(_)
+            ) && event.effects.iter().all(|effect| effect.kind == first.kind);
             if event.effects.len() == 1 || commute {
                 self.choose_entry_tap_effect(first.source, first.intrinsic);
                 continue;
@@ -146,6 +163,38 @@ impl Game {
             EntryTapKind::Tapped => batch.moves[event.index].tapped = true,
             EntryTapKind::Untapped => batch.moves[event.index].tapped = false,
             EntryTapKind::PayLife(cost) => event.payment = Some(cost),
+            EntryTapKind::Behold(subtype) => event.behold = Some(subtype),
+        }
+    }
+    pub(super) fn entry_behold_candidates(&self) -> Vec<ObjectRef> {
+        let batch = self.state.entry_batch.as_ref().unwrap();
+        let event = &batch.tap_events[batch.tap_next];
+        let movement = &batch.moves[event.index];
+        let excluded = batch
+            .moves
+            .iter()
+            .filter(|m| m.destination == Zone::Battlefield && !m.skipped)
+            .map(|m| m.before.reference)
+            .collect::<Vec<_>>();
+        hand_choices::behold_candidates(
+            self,
+            movement.controller,
+            event.behold.expect("behold choice"),
+            &excluded,
+        )
+    }
+    pub(super) fn choose_entry_behold(&mut self, object: Option<ObjectRef>) {
+        if let Some(reference) = object {
+            assert!(self.entry_behold_candidates().contains(&reference));
+            if self.state.objects[reference.card as usize].zone == Zone::Hand {
+                self.remember_public_hand(reference);
+            }
+        }
+        let batch = self.state.entry_batch.as_mut().unwrap();
+        let event = &mut batch.tap_events[batch.tap_next];
+        event.behold = None;
+        if object.is_none() {
+            batch.moves[event.index].tapped = true;
         }
     }
     pub(super) fn entry_tap_payment(&self) -> Option<(&entries::EntryMove, u32)> {

@@ -433,7 +433,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if matches!(a, Action::PayCosts { .. })
                 && let Some(item) = &o.announcing
                 && item.kind == StackKind::Spell
-                && Some(item.card) == s.source
+                && Some(
+                    item.source()
+                        .expect("example expects an object-backed packet")
+                        .id,
+                ) == s.source
             {
                 s.round += 1;
                 s.stage = 1;

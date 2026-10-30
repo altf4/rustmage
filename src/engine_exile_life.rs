@@ -11,7 +11,7 @@ impl Game {
         cast.spend_any_mana = false;
         cast.exile_on_graveyard = false;
         cast.stash_origin = false;
-        if item.source_card.x_symbols() > 0 {
+        if item.source.expect("cast spell has source").card.x_symbols() > 0 {
             item.x = Some(0);
         }
     }
@@ -75,8 +75,7 @@ impl Game {
         player: Player,
         amount: u128,
     ) {
-        let ids =
-            exile::top_library_cards(&self.state.players[library_owner.index()].library, amount);
+        let ids = exile::top_library_cards(self, library_owner, amount);
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if event.moved && event.destination == Zone::Exile {

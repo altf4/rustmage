@@ -56,7 +56,9 @@ impl Game {
                 .program()
                 .is_some_and(|(_, program)| program.contains(&Instruction::TransformSource))
         {
-            item.source_transform = Some(self.transform_serial(item.object));
+            item.source_transform = item
+                .source
+                .map(|source| self.transform_serial(source.object));
         }
     }
     pub(super) fn transform_serial(&self, object: ObjectRef) -> u64 {
@@ -77,7 +79,7 @@ impl Game {
     pub(super) fn back_cast_available(&self, actor: Player, id: CardId, sorcery: bool) -> bool {
         let o = &self.state.objects[id as usize];
         let allowed = match o.zone {
-            Zone::Hand => o.owner == actor,
+            Zone::Hand => o.owner == actor && o.is_card(),
             Zone::Graveyard => self.has_graveyard_cast(actor, id, GraveyardCastKind::Cast),
             Zone::Exile => self.can_play_exiled(actor, id),
             Zone::Library => self.can_cast_library_top(actor, id),
@@ -100,24 +102,27 @@ impl Game {
         item: &SpellView,
         counter: CounterKind,
     ) {
-        if item.is_copy
-            || self.object_ref(item.card) != item.object
-            || self.state.objects[item.card as usize].zone != Zone::Stack
-        {
-            return;
-        }
-        let Some(back) = item.source_card.back_face() else {
+        let Some(source) = item.source else {
             return;
         };
-        let event = self.move_object(item.card, Zone::Exile);
-        if !event.moved
-            || event.destination != Zone::Exile
-            || self.object_ref(item.card) != event.after
+        if item.is_copy
+            || self.object_ref(source.id) != source.object
+            || self.state.objects[source.id as usize].zone != Zone::Stack
         {
             return;
         }
-        let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
-        movement.controller = self.state.objects[item.card as usize].owner;
+        let Some(back) = source.card.back_face() else {
+            return;
+        };
+        let event = self.move_object(source.id, Zone::Exile);
+        if !event.moved
+            || event.destination != Zone::Exile
+            || self.object_ref(source.id) != event.after
+        {
+            return;
+        }
+        let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
+        movement.controller = self.state.objects[source.id as usize].owner;
         movement.source_before = Some(Box::new(movement.before.clone()));
         movement.before.card = back;
         movement.before.kinds = back.kind_mask();
@@ -132,13 +137,16 @@ impl Game {
         self.stage_entries(vec![movement], None);
     }
     pub(super) fn transform_source(&mut self, item: &SpellView) {
-        if !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
-            || item.source_transform != Some(self.transform_serial(item.object))
+        let Some(source) = item.source else {
+            return;
+        };
+        if !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
+            || item.source_transform != Some(self.transform_serial(source.object))
         {
             return;
         }
-        self.transform_permanent(item.object);
+        self.transform_permanent(source.object);
     }
     pub(super) fn can_transform_permanent(&self, object: ObjectRef) -> bool {
         self.on_battlefield(object.card)
@@ -212,6 +220,7 @@ impl Game {
             &mut self.state.draw_sources,
             &mut self.state.step_sources,
             &mut self.state.life_sources,
+            &mut self.state.scry_sources,
             &mut self.state.counter_sources,
             &mut self.state.death_sources,
             &mut self.state.attachment_sources,

@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8e775a0c90bbf557fe5ca1ecaca8bdf0dfc0ef5292eae47c81aa8eccd07daf3f"
   },
-  "physical_metadata_sha256": "7d4b035e65667161eebf08266007eff5bb936d5f0a480d88f26254bfc5b1fafd"
+  "physical_metadata_sha256": "7d4b035e65667161eebf08266007eff5bb936d5f0a480d88f26254bfc5b1fafd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RefuteDestiny.java",
+  "java_sha256": "6b39fbbca9e3fc2f30f7ffe44273d77890f51a2da2c09f43955ae1b02fa47435"
 }

@@ -101,7 +101,12 @@ fn silvan_paid_body_private_draw_mandatory_discard_exact_land_automatic_tapped()
         assert_eq!(g.object_view(unrelated).zone, Zone::Graveyard);
         assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 1);
         assert!(g.observe(p).effect_choice.is_none());
-        assert!(!g.state.stack.iter().any(|s| s.card == source));
+        assert!(
+            !g.state
+                .stack
+                .iter()
+                .any(|s| s.source.is_some_and(|identity| identity.id == source))
+        );
     }
 }
 #[test]
@@ -243,7 +248,14 @@ fn silvan_graveyard_landfall_paid_decline_unpayable_and_battlefield_exile_hand_e
             landfall(&mut g, p, "Forest");
             payment(&mut g);
             assert_eq!(
-                g.state.resolving.as_ref().unwrap().item.object,
+                g.state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .source
+                    .unwrap()
+                    .object,
                 g.object_ref(source)
             );
             assert_eq!(g.state.resolving.as_ref().unwrap().item.controller, p);
@@ -356,7 +368,12 @@ fn silvan_landfall_token_land_and_multiple_lands_make_distinct_exact_triggers() 
         assert_eq!(token.len(), 2);
         g.prepare_triggers();
         until(&mut g, |g| g.state.stack.len() == 2);
-        assert!(g.state.stack.iter().all(|s| s.object == old));
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .all(|s| s.source.is_some_and(|source| source.object == old))
+        );
         payment(&mut g);
         pay_return(&mut g, p);
         assert_eq!(g.object_view(source).zone, Zone::Hand);
@@ -380,7 +397,17 @@ fn silvan_landfall_stale_graveyard_incarnation_can_pay_without_moving_reentry() 
                 g.move_object(source, Zone::Graveyard);
             }
             payment(&mut g);
-            assert_eq!(g.state.resolving.as_ref().unwrap().item.object, old);
+            assert_eq!(
+                g.state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .source
+                    .unwrap()
+                    .object,
+                old
+            );
             contracts::branch_contract(g.clone());
             pay_return(&mut g, p);
             finish(&mut g);

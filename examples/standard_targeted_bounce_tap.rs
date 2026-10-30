@@ -312,7 +312,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| index(s.source_card).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(p, action.clone())?;
@@ -321,7 +324,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let after = g.observe(p);
             if let Some(root) = before.stack.last()
-                && let Some(i) = index(root.source_card)
+                && let Some(i) = root.source().and_then(|source| index(source.card))
                 && !after.stack.iter().any(|v| v.id == root.id)
                 && matches!(action, Action::Pass)
             {
@@ -333,7 +336,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     continue;
                 }
-                let Some(i) = index(s.source_card) else {
+                let Some(i) = s.source().and_then(|source| index(source.card)) else {
                     continue;
                 };
                 if s.kind == StackKind::Spell {

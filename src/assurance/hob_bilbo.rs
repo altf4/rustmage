@@ -135,7 +135,12 @@ fn hob_bilbo_paid_artifact_or_instant_one_cast_and_exile_only_spells() {
                 }
                 reject(&mut g, Action::PayCosts { payment: [0; 6] });
                 pay(&mut g);
-                let spell = g.state.stack.iter().find(|s| s.card == id).unwrap();
+                let spell = g
+                    .state
+                    .stack
+                    .iter()
+                    .find(|s| s.source.is_some_and(|source| source.id == id))
+                    .unwrap();
                 assert_eq!(spell.cast.unwrap().origin, Zone::Graveyard);
                 assert_eq!(spell.cast.unwrap().method, CastMethod::Normal);
                 assert_eq!(spell.cast.unwrap().exile_on_graveyard, !artifact);
@@ -276,7 +281,7 @@ fn hob_bilbo_face_specific_permissions_include_adventure_not_creature_and_real_c
         select(&mut g, goblin, CastFace::Adventure);
         pay(&mut g);
         let spell = g.state.stack.last().unwrap();
-        assert_eq!(spell.source_card.name(), "Clap! Snap!");
+        assert_eq!(spell.source.unwrap().card.name(), "Clap! Snap!");
         assert!(spell.cast.unwrap().exile_on_graveyard);
         finish_offer(&mut g);
         assert_eq!(g.object_view(goblin).zone, Zone::Exile);

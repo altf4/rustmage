@@ -4,6 +4,15 @@
 use super::*;
 use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 
+#[cfg(test)]
+thread_local! {
+    /// Synthetic selective protection; no authored provider uses this fixture.
+    pub(super) static TEST_SACRIFICE_PROHIBITED_OBJECT: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    /// Test-only provider identity; the query still uses live control and ability layers.
+    pub(super) static TEST_SACRIFICE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_EXILE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+}
+
 pub(super) trait CharacteristicWorld {
     fn power(&self, id: CardId) -> i128 {
         characteristic_query::CharacteristicQuery::in_world(self)
@@ -11,13 +20,19 @@ pub(super) trait CharacteristicWorld {
             .power
     }
     fn game(&self) -> &Game;
+    fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
+        &self.game().state.borrowed_slots
+    }
+    fn borrowed_slots(&self) -> &[borrowed_activations::SlotRow] {
+        self.borrowed_slots_state()
+            .as_ref()
+            .map_or(&[], |rows| rows.as_slice())
+    }
     fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
         &self.game().state.graveyard_borrowing
     }
     fn graveyard_borrowing(&self) -> &[graveyard_borrowing::Row] {
-        self.game()
-            .state
-            .graveyard_borrowing
+        self.graveyard_borrowing_state()
             .as_ref()
             .map_or(&[], |rows| rows.as_slice())
     }
@@ -133,7 +148,9 @@ pub(super) trait CharacteristicWorld {
         let keywords = recipe
             .overrides
             .map_or(Keywords::NONE, |value| value.keywords);
-        if recipe.exceptions.sacrifice_abilities != 0 {
+        if recipe.exceptions.sacrifice_abilities != 0
+            || recipe.exceptions.conditional_sacrifice_abilities != 0
+        {
             keywords.union(Keywords::HASTE)
         } else {
             keywords
@@ -165,19 +182,47 @@ pub(super) trait CharacteristicWorld {
     }
     fn intrinsic_mana_color(&self, id: CardId) -> Option<usize> {
         let card = self.definition(id);
-        let color = card.mana_color()?;
-        // CR305.6 belongs to the current basic land subtype. The same shortcut
-        // also represents printed mana on Llanowar Elves, which survives losing Elf.
-        if card.is_basic_land()
-            && (self.kinds(id) & 2 == 0
-                || !self.subtypes(id).has(
-                    card,
-                    ["Plains", "Island", "Swamp", "Mountain", "Forest"][color],
-                ))
+        if self.has_ability_removal() {
+            let evaluation = ability_evaluation::evaluate_abilities(self);
+            let state = &evaluation.result.objects[id as usize];
+            if !card.is_land() && state.printed && card.mana_color().is_some() {
+                return card.mana_color();
+            }
+            if let Some(color) = state
+                .mana
+                .iter()
+                .filter(|grant| grant.subtype_derived)
+                .find_map(|grant| match grant.production {
+                    ManaProduction::Fixed(mana) => mana.iter().position(|amount| *amount != 0),
+                    _ => None,
+                })
+            {
+                return Some(color);
+            }
+            return if state.printed
+                && !(card.is_land() && card.printed_intrinsic_mana_colors().next().is_some())
+            {
+                card.mana_color()
+            } else {
+                None
+            };
+        }
+        // The generated shortcut on a nonland (e.g. Llanowar Elves) is a
+        // printed ability, independent of any types the object gains later.
+        if !card.is_land() && card.mana_color().is_some() {
+            return card.mana_color();
+        }
+        if self.kinds(id) & 2 != 0
+            && let Some(color) = ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                .iter()
+                .position(|subtype| self.subtypes(id).has(card, subtype))
         {
+            return Some(color);
+        }
+        if card.is_land() && card.printed_intrinsic_mana_colors().next().is_some() {
             None
         } else {
-            Some(color)
+            card.mana_color()
         }
     }
     /// Sparse rows belong to this world, including virtual counter payments.
@@ -260,6 +305,134 @@ pub(super) trait CharacteristicWorld {
         } else {
             keywords
         }
+    }
+    fn zone_move_prevented(&self, object: ObjectRef, requested: Zone) -> bool {
+        #[cfg(test)]
+        if zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get() == Some(object)) {
+            return true;
+        }
+        let target = self.object(object.card);
+        if self.reference(object.card) != object
+            || target.zone != Zone::Battlefield
+            || requested != Zone::Graveyard
+        {
+            return false;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        self.static_sources().iter().any(|&source| {
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield || provider.controller != target.controller {
+                return false;
+            }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| {
+                matches!(
+                    f,
+                    crate::cards::StaticAbilityFragment::PreventControlledPermanentGraveyardMove
+                )
+            };
+            let printed = provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(fragment))
+                && query.continuous_fragment_available(source, fragment);
+            #[cfg(test)]
+            let synthetic = zone_replacements::TEST_PREVENT_PROVIDER
+                .with(|p| p.get() == Some(self.reference(source)))
+                && self.printed_abilities_available(source);
+            #[cfg(not(test))]
+            let synthetic = false;
+            printed || synthetic
+        })
+    }
+    /// Keep potential providers in speculative worlds even while blanked.
+    fn sacrifice_prohibition_source(&self, id: CardId) -> bool {
+        let object = self.object(id);
+        let printed = object.card.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|f| {
+                matches!(
+                    f,
+                    crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed
+                )
+            })
+        });
+        #[cfg(test)]
+        let synthetic = TEST_SACRIFICE_PROHIBITOR.with(|p| p.get() == Some(self.reference(id)));
+        #[cfg(not(test))]
+        let synthetic = false;
+        printed || synthetic
+    }
+    /// Whether a permanent can be sacrificed in this world, including projected
+    /// source control and live layer-six suppression.
+    fn sacrifice_prohibited(&self, id: CardId) -> bool {
+        let target = self.object(id);
+        if target.zone != Zone::Battlefield {
+            return true;
+        }
+        #[cfg(test)]
+        if TEST_SACRIFICE_PROHIBITED_OBJECT.with(|object| object.get() == Some(self.reference(id)))
+        {
+            return true;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        (0..self.game().state.objects.len()).any(|index| {
+            let source = index as CardId;
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield || provider.controller != target.controller {
+                return false;
+            }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| {
+                matches!(
+                    f,
+                    crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed
+                )
+            };
+            let printed = provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(fragment))
+                && query.continuous_fragment_available(source, fragment);
+            #[cfg(test)]
+            let synthetic = TEST_SACRIFICE_PROHIBITOR
+                .with(|p| p.get() == Some(self.reference(source)))
+                && self.printed_abilities_available(source);
+            #[cfg(not(test))]
+            let synthetic = false;
+            printed || synthetic
+        })
+    }
+    /// A true prohibition is distinct from a replacement or prevention.
+    fn graveyard_exile_prohibited(&self, id: CardId) -> bool {
+        if self.object(id).zone != Zone::Graveyard || !self.object(id).is_card() {
+            return false;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        (0..self.game().state.objects.len()).any(|index| {
+            let source = index as CardId;
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield {
+                return false;
+            }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| {
+                matches!(
+                    f,
+                    crate::cards::StaticAbilityFragment::GraveyardCardsCannotBeExiled
+                )
+            };
+            let printed = provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(fragment))
+                && query.continuous_fragment_available(source, fragment);
+            #[cfg(test)]
+            let synthetic = TEST_EXILE_PROHIBITOR.with(|p| p.get() == Some(self.reference(source)))
+                && self.printed_abilities_available(source);
+            #[cfg(not(test))]
+            let synthetic = false;
+            printed || synthetic
+        })
     }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
@@ -395,7 +568,6 @@ pub(super) trait CharacteristicWorld {
     fn has_ability_removal(&self) -> bool {
         self.static_sources().iter().any(|&id| {
             self.object(id).zone == Zone::Battlefield
-                && self.kinds(id) & 2 != 0
                 && self
                     .object(id)
                     .card
@@ -419,8 +591,11 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .any(|row| return_ability_modification::active(self, row))
                 || state.source_linked_effects.iter().any(|row| {
-                    row.kind == SourceLinkedEffectKind::RemoveAbilities
-                        && source_linked_effects::active(self, row)
+                    matches!(
+                        row.kind,
+                        SourceLinkedEffectKind::RemoveAbilities
+                            | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
+                    ) && source_linked_effects::active(self, row)
                 })
                 || state.ability_removal_sources.iter().any(|&source| {
                     self.object(source.card).zone == Zone::Battlefield
@@ -468,7 +643,6 @@ pub(super) trait CharacteristicWorld {
                 self.entry_value(self.reference(id)),
                 Some(EntryChoiceValue::BasicLandType(_))
             )
-            && self.kinds(id) & 2 != 0
         {
             return ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
                 .printed;
@@ -479,7 +653,11 @@ pub(super) trait CharacteristicWorld {
                     && return_ability_modification::active(self, row)
             }) || state.source_linked_effects.iter().any(|row| {
                 row.recipient == self.reference(id)
-                    && row.kind == SourceLinkedEffectKind::RemoveAbilities
+                    && matches!(
+                        row.kind,
+                        SourceLinkedEffectKind::RemoveAbilities
+                            | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
+                    )
                     && source_linked_effects::active(self, row)
             })
         }) {
@@ -601,11 +779,37 @@ pub(super) trait CharacteristicWorld {
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
         // Animation grants only keywords. It cannot remove a provider's printed
         // ability or change a mana grant, so only removal needs layer-six order.
-        if self.has_ability_removal() {
+        if self.has_ability_removal()
+            || self.roles().is_some_and(|roles| {
+                roles.source_linked_effects.iter().any(|row| {
+                    row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+                        && source_linked_effects::active(self, row)
+                })
+            })
+        {
             let evaluation = ability_evaluation::evaluate_abilities(self);
-            return evaluation.result.objects[id as usize].mana.clone();
+            let mut result = evaluation.result.objects[id as usize].mana.clone();
+            if evaluation.result.objects[id as usize].printed
+                && self.kinds(id) & 2 != 0
+                && !(!self.definition(id).is_land()
+                    && evaluation.result.objects[id as usize].printed
+                    && self.definition(id).mana_color().is_some())
+                && let Some(first) = self.intrinsic_mana_color(id)
+            {
+                let mut production = [0; 6];
+                production[first] = 1;
+                if let Some(index) = result.iter().position(|grant| {
+                    grant.subtype_derived
+                        && grant.source == self.reference(id)
+                        && grant.production == ManaProduction::Fixed(production)
+                }) {
+                    result.remove(index);
+                }
+            }
+            return result;
         }
         let mut result = Vec::new();
+        self.append_additional_basic_subtype_mana(id, &mut result);
         for &source in self.attachment_sources() {
             let reference = self.reference(source);
             if self.kinds(source) & 1 != 0 || !self.attachment_link(reference, self.reference(id)) {
@@ -621,6 +825,7 @@ pub(super) trait CharacteristicWorld {
                         result.push(ability_order::GrantedManaAbility {
                             source: reference,
                             production,
+                            subtype_derived: false,
                             sacrifice: matches!(
                                 *fragment,
                                 crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(_)
@@ -643,12 +848,43 @@ pub(super) trait CharacteristicWorld {
                             source: self.reference(source),
                             production,
                             sacrifice: false,
+                            subtype_derived: false,
                         });
                     }
                 }
             }
         }
         result
+    }
+    fn append_additional_basic_subtype_mana(
+        &self,
+        id: CardId,
+        result: &mut Vec<ability_order::GrantedManaAbility>,
+    ) {
+        let card = self.definition(id);
+        if self.object(id).zone != Zone::Battlefield || self.kinds(id) & 2 == 0 {
+            return;
+        }
+        let Some(first) = self.intrinsic_mana_color(id) else {
+            return;
+        };
+        for (color, subtype) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+            .iter()
+            .enumerate()
+        {
+            if (color != first || (!card.is_land() && card.mana_color().is_some()))
+                && self.subtypes(id).has(card, subtype)
+            {
+                let mut production = [0; 6];
+                production[color] = 1;
+                result.push(ability_order::GrantedManaAbility {
+                    source: self.reference(id),
+                    production: ManaProduction::Fixed(production),
+                    sacrifice: false,
+                    subtype_derived: true,
+                });
+            }
+        }
     }
     fn attachment_link(&self, source: ObjectRef, recipient: ObjectRef) -> bool {
         let object = self.object(source.card);
@@ -730,6 +966,19 @@ impl CharacteristicWorld for Game {
     }
 }
 
+/// Evaluate the printed Aura restriction in either live or projected worlds.
+pub(super) fn aura_artifact_or_non_aura_enchantment<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    aura: Card,
+    id: CardId,
+) -> bool {
+    if !aura.aura_artifact_or_non_aura_enchantment() {
+        return true;
+    }
+    let kinds = world.kinds(id);
+    kinds & 16 != 0 || (kinds & 32 != 0 && !world.subtypes(id).has(world.object(id).card, "Aura"))
+}
+
 impl ManaProduction {
     /// Evaluate against the actual game or a speculative funding overlay.
     pub(super) fn in_world<W: CharacteristicWorld + ?Sized>(
@@ -762,6 +1011,37 @@ impl ManaProduction {
                     mana[color.index()] = 1;
                 }
                 Self::Fixed(mana)
+            }
+            Self::DistinctCreaturePowers => {
+                // Mana resolves after the source is tapped; power and even creature
+                // status can depend on that tap in either the live or projected world.
+                let mut object = world.object(source).clone();
+                object.tapped = true;
+                let tapped = SourceTappedWorld {
+                    parent: world,
+                    source,
+                    object,
+                };
+                let controller = tapped.object(source).controller;
+                let mut powers = Vec::new();
+                for id in 0..tapped.game().state.objects.len() {
+                    let id = id as CardId;
+                    let object = tapped.object(id);
+                    if object.zone == Zone::Battlefield
+                        && object.controller == controller
+                        && tapped.kinds(id) & 1 != 0
+                    {
+                        powers.push(tapped.power(id));
+                    }
+                }
+                powers.sort_unstable();
+                powers.dedup();
+                let amount = u32::try_from(powers.len()).capacity("mana representation exhausted");
+                if amount == 0 {
+                    Self::Fixed([0; 6])
+                } else {
+                    Self::any_color(amount)
+                }
             }
             Self::MonocoloredPermanentColors => {
                 let controller = world.object(source).controller;
@@ -818,6 +1098,9 @@ struct SourceTappedWorld<'a, W: CharacteristicWorld + ?Sized> {
 impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<'_, W> {
     fn game(&self) -> &Game {
         self.parent.game()
+    }
+    fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
+        self.parent.battle_protector(object)
     }
     fn object(&self, id: CardId) -> &Object {
         if id == self.source {
@@ -879,6 +1162,15 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, p: Player) -> bool {
         self.parent.plus_one_placed_this_turn(object, p)
+    }
+    fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
+        self.parent.graveyard_borrowing_state()
+    }
+    fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
+        self.parent.borrowed_slots_state()
+    }
+    fn borrowed_slots(&self) -> &[borrowed_activations::SlotRow] {
+        self.parent.borrowed_slots()
     }
     fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
         self.parent.borrowed_activation_used(source, slot)

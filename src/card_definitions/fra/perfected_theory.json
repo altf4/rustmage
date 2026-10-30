@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b93ee6ad63b30700f77b1b8c828ead9fb3b69d7259d82689f12076fb34753b9f"
   },
-  "physical_metadata_sha256": "ce4365b45f856d49392925af03a1c176f37fb9dc054f8cc67c10a9779f214a02"
+  "physical_metadata_sha256": "ce4365b45f856d49392925af03a1c176f37fb9dc054f8cc67c10a9779f214a02",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PerfectedTheory.java",
+  "java_sha256": "890dea9f292ec8339f530a2ef0319c9de799b39c639f81813ef1d6e50cec6d50"
 }

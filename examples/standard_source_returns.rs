@@ -18,7 +18,7 @@ fn index(c: Card) -> Option<usize> {
     NAMES.iter().position(|n| *n == c.name())
 }
 fn returning(s: &SpellView) -> Option<usize> {
-    let i = index(s.source_card)?;
+    let i = s.source().and_then(|source| index(source.card))?;
     matches!(s.kind,StackKind::ActivatedAbility{ability}if ability==if i<=1{1}else{0}).then_some(i)
 }
 fn deck(family: usize) -> Vec<Card> {
@@ -104,8 +104,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     commits[i] += 1;
                     let owner = g.observe(s.controller);
-                    let source = owner.objects.iter().find(|o| o.id == s.card).unwrap();
-                    assert_eq!(source.reference, s.object);
+                    let source = owner
+                        .objects
+                        .iter()
+                        .find(|o| {
+                            o.id == s
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                        })
+                        .unwrap();
+                    assert_eq!(
+                        source.reference,
+                        s.source()
+                            .expect("example expects an object-backed packet")
+                            .object
+                    );
                     assert_eq!(
                         source.zone,
                         if matches!(i, 1 | 10) {
@@ -123,12 +137,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     resolved[i] += 1;
                     let owner = g.observe(s.controller);
-                    if let Some(new) = owner.objects.iter().find(|o| o.id == s.card)
-                        && before
-                            .objects
-                            .iter()
-                            .any(|old| old.id == s.card && old.reference == s.object)
-                        && new.reference != s.object
+                    if let Some(new) = owner.objects.iter().find(|o| {
+                        o.id == s
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .id
+                    }) && before.objects.iter().any(|old| {
+                        old.id
+                            == s.source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                            && old.reference
+                                == s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                    }) && new.reference
+                        != s.source()
+                            .expect("example expects an object-backed packet")
+                            .object
                         && matches!(new.zone, Zone::Hand | Zone::Battlefield)
                     {
                         moved[i] += 1;
@@ -144,7 +170,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         checks += 1;
                     }
                 }
-                if s.source_card.name() == "Arcanis the Omnipotent"
+                if s.source()
+                    .is_some_and(|source| source.card.name() == "Arcanis the Omnipotent")
                     && matches!(s.kind, StackKind::ActivatedAbility { ability: 0 })
                     && !live(&after, s.id)
                 {

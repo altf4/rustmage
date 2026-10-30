@@ -29,7 +29,7 @@ class CapacityError(EngineError):
 
 
 class Game:
-    def __init__(self, decks, seed=0, starting_player="P0", deck_rules="Constructed", *, library=None):
+    def __init__(self, decks, seed=0, starting_player="P0", deck_rules="Constructed", *, library=None, outside=None):
         self._lock = threading.RLock()
         self._handle = None
         if library is None:
@@ -41,7 +41,15 @@ class Game:
         self._configure()
         error = ctypes.c_void_p()
         config = json.dumps(dict(decks=decks, seed=seed, starting_player=starting_player, deck_rules=deck_rules)).encode()
-        self._handle = self._lib.rm_new(config, ctypes.byref(error))
+        if outside is None:
+            self._handle = self._lib.rm_new(config, ctypes.byref(error))
+        else:
+            if not hasattr(self._lib, "rm_new_with_outside"):
+                raise EngineError("native library does not support outside-game pools")
+            self._lib.rm_new_with_outside.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
+            self._lib.rm_new_with_outside.restype = ctypes.c_void_p
+            envelope = json.dumps(dict(config=json.loads(config), outside=outside)).encode()
+            self._handle = self._lib.rm_new_with_outside(envelope, ctypes.byref(error))
         if not self._handle:
             message = self._take_string(error.value) if error.value else "engine creation failed"
             raise EngineError(message)

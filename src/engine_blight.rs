@@ -3,7 +3,7 @@ use super::*;
 
 impl Game {
     pub(super) fn blight_mode_allowed(&self, item: &SpellView, mode: usize) -> bool {
-        let Some(spec) = item.source_card.blight() else {
+        let Some(spec) = item.source.and_then(|source| source.card.blight()) else {
             return true;
         };
         let bits = if item.cast.is_some_and(|c| c.blight == Some(true)) {
@@ -37,7 +37,9 @@ impl Game {
         if !target_available(spec.paid_modes) {
             return false;
         }
-        let cost = self.reduced_spell_cost(actor, id, base);
+        let Some(cost) = self.reduced_spell_cost(actor, id, base) else {
+            return false;
+        };
         self.preview_optional_cast_costs(
             FundingGoal {
                 actor,
@@ -63,7 +65,13 @@ impl Game {
     pub(super) fn blight_intent_fundable(&self, pay: bool) -> bool {
         let mut a = self.state.announcing.as_ref().unwrap().clone();
         a.item.cast.as_mut().unwrap().blight = Some(pay);
-        a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+        a.initialize_cast_costs(improvise::potential(
+            self,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card,
+        ));
         let available = a.item.modes().is_some_and(|modes| {
             modes.iter().enumerate().any(|(i, m)| {
                 self.blight_mode_allowed(&a.item, i)
@@ -75,7 +83,14 @@ impl Game {
     pub(super) fn choose_blight(&mut self, pay: bool) {
         let improvise = improvise::potential(
             self,
-            self.state.announcing.as_ref().unwrap().item.source_card,
+            self.state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .item
+                .source
+                .expect("cast announcement has source")
+                .card,
         );
         let a = self.state.announcing.as_mut().unwrap();
         a.item.cast.as_mut().unwrap().blight = Some(pay);

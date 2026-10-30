@@ -3,10 +3,21 @@
   "catalogue_id": 764,
   "oracle_id": "78304a06-4c9a-4cdf-b67f-067d88762381",
   "facts_sha256": "932326c68e20c298e1dd196399895434c8ba658138c9753afe389b39361a1046",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "da51652a53184b05ae097c025f0b49ec86e676b9a1265cb5ec11aeed57a3b26c"
   },
-  "physical_metadata_sha256": "f112bda69c047459edb6d06dc59ade8226b4c55beb7432b376498eb5851c8c1e"
+  "physical_metadata_sha256": "f112bda69c047459edb6d06dc59ade8226b4c55beb7432b376498eb5851c8c1e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ClashOfElements.java",
+  "java_sha256": "7f4c17bdc6bcea7f1de252e1edfcde328931c21d2e1efa367e29dc4e9bbb34ed",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    }
+  ],
+  "rules_tests": "src/engine_fra_clash_tests.rs"
 }

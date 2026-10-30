@@ -90,14 +90,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .filter(|s| {
                     matches!(s.kind, StackKind::ActivatedAbility { .. })
                         && !before.stack.iter().any(|old| old.id == s.id)
-                        && before
-                            .objects
-                            .iter()
-                            .any(|o| o.id == s.card && o.zone == Zone::Hand)
-                        && after
-                            .objects
-                            .iter()
-                            .any(|o| o.id == s.card && o.zone == Zone::Graveyard)
+                        && before.objects.iter().any(|o| {
+                            o.id == s
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                                && o.zone == Zone::Hand
+                        })
+                        && after.objects.iter().any(|o| {
+                            o.id == s
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .id
+                                && o.zone == Zone::Graveyard
+                        })
                 })
                 .count();
             searches +=

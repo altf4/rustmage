@@ -3,10 +3,30 @@
   "catalogue_id": 4945,
   "oracle_id": "7799413d-e313-4a05-ad28-f4c926c26d28",
   "facts_sha256": "124892ef37c722966cd7d0bf94e080f234487f213892f348cb82449eff07cc29",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5012bcfa7c1dff3b1b444442a02b98023f33192055867d73a4d6fe05582f677d"
   },
-  "physical_metadata_sha256": "1dbd6dab0119c06b7e47b302548456e066cda5cca33136734bfb6440cf1b161c"
+  "physical_metadata_sha256": "1dbd6dab0119c06b7e47b302548456e066cda5cca33136734bfb6440cf1b161c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VraskasFinalMercy.java",
+  "java_sha256": "a1cce05c242e61fc35f3aa6b51b4e069cf575ea84d9f8a91161c96102609baeb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }

@@ -45,12 +45,35 @@ pub(crate) enum AdditionalTriggerScope {
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub(crate) enum StaticAbilityFragment {
+    /// Cast the exact card exiled by this source's linked hand-reveal ability at threshold.
+    CastLinkedExileAtThreshold,
+    /// Controlled instant and sorcery spells have split second.
+    ControlledInstantSorcerySplitSecond,
+    /// Permanents controlled by this source's controller cannot be sacrificed.
+    ControlledPermanentsCannotBeSacrificed,
+    /// Cards in graveyards cannot be exiled by any player.
+    GraveyardCardsCannotBeExiled,
+    /// Replace a controlled permanent's move to a graveyard with no move.
+    PreventControlledPermanentGraveyardMove,
+    /// During combat no spells or nonmana activated abilities may be started.
+    NoSpellsOrNonmanaDuringCombat,
+
     /// Grants its controller the permanent enduring-story designation at threshold.
     Storied,
     /// This source continuously acquires activations from matching cards in its controller graveyard.
     BorrowGraveyardActivations(&'static str),
+    /// This creature can attack despite defender after its controller scries or surveils.
+    AttackWithoutDefenderIfScried,
+    /// Controlled creatures may attack despite defender.
+    ControlledAttackWithoutDefender,
+    /// Controlled creatures with greater toughness assign combat damage using toughness.
+    ControlledCombatDamageByGreaterToughness,
+    /// This source assigns combat damage using the magnitude of negative power.
+    SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Increase opponents' noncreature spell costs by generic mana.
+    OpponentNoncreatureSpellTax(u32),
     /// Generic cost per creature declared attacking this source's controller.
     AttackControllerTax {
         amount: u32,
@@ -61,6 +84,7 @@ pub(crate) enum StaticAbilityFragment {
         condition: StatValue,
     },
     FreeHandCast,
+    FreeHandCastAtMostControlledCreatures,
     GrantInstantSorceryStorm {
         ability: u16,
     },
@@ -87,6 +111,21 @@ pub(crate) enum StaticAbilityFragment {
     ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
+    /// Grant keywords to controlled battlefield permanents matching a live kind mask.
+    ControlledPermanentKeywords {
+        kinds: u16,
+        keywords: Keywords,
+    },
+    /// Grant the immutable activated template to controlled planeswalkers.
+    ControlledPlaneswalkerActivation(u16),
+    /// Planeswalkers this permanent's controller controls survive zero loyalty.
+    ControlledPlaneswalkersSurviveZeroLoyalty,
+    /// Grant controlled planeswalkers the one-attacker restriction.
+    ControlledPlaneswalkerAttackLimit,
+    ControlledSubtypeKeywords {
+        subtype: &'static str,
+        keywords: Keywords,
+    },
     PlayerHexproof,
     ActivateControlledCreaturesAsHaste,
     PlayerHexproofIfSourceCounter {
@@ -122,6 +161,11 @@ pub(crate) enum StaticAbilityFragment {
     AttachedCounterProhibition,
     /// Prevent counters on all permanents matching these card-type bits.
     CounterProhibition(u16),
+    /// Players matching this relation cannot receive the specified counter kind.
+    PlayerCounterProhibition {
+        kind: crate::cards::PlayerCounterKind,
+        relation: crate::cards::CastRelation,
+    },
     SelfUntap(UntapRestriction),
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),
@@ -197,6 +241,8 @@ pub(crate) enum StaticAbilityFragment {
     ScalingModifier(u16, ScalingModifier),
     EnchantedModifier(u16, EnchantedModifier),
     CounterKeyword(u16, CounterKind, Keywords),
+    /// Other controlled creatures with this counter have the keyword.
+    CounterKeywordOther(CounterKind, Keywords),
     /// One union effect: Skeletons and other Zombies, never twice for changeling.
     DeathBaronLord,
     CounterKeywordOwnTurn(CounterKind, Keywords),
@@ -226,6 +272,8 @@ pub(crate) enum StaticAbilityFragment {
     /// Rules restriction evaluated after all derived power modifications.
     CannotBeBlockedIfSourcePowerAtMost(i128),
     CannotBeBlockedByCreaturesWithLessPower,
+    /// Controlled creatures meeting either live stat bound cannot be blocked.
+    ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(i128),
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,
@@ -244,6 +292,8 @@ pub(crate) enum UntapRestriction {
 pub(crate) enum PermanentForm {
     Creature,
     Land,
+    /// Add creature type without removing other card or creature types.
+    AddCreature,
 }
 #[derive(Clone, Copy, Debug)]
 pub(crate) struct AttachedCharacteristics {

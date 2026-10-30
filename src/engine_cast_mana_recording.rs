@@ -44,6 +44,7 @@ impl Game {
             actor,
             kind,
             production,
+            mountain_bonus: 0,
             quality: None,
             spent_lots: Vec::new(),
             entries: Vec::new(),
@@ -178,6 +179,21 @@ impl Game {
             };
         }
     }
+    pub(super) fn record_cast_mana_bonus(&mut self, actor: Player, amount: u32) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|r| r.capture.as_mut())
+        {
+            assert_eq!(capture.event.actor, actor);
+            capture.event.mountain_bonus = capture
+                .event
+                .mountain_bonus
+                .checked_add(amount)
+                .capacity("mountain mana receipt exhausted");
+        }
+    }
     pub(super) fn record_cast_mana_production(
         &mut self,
         actor: Player,
@@ -254,10 +270,12 @@ impl Game {
             .as_mut()
             .and_then(|r| r.capture.as_mut())
         {
-            capture
-                .event
-                .moves
-                .push((before.reference, plan.destination, plan.shuffle));
+            capture.event.moves.push((
+                before.reference,
+                plan.destination,
+                plan.shuffle,
+                plan.prevented,
+            ));
             capture.event.irreversible |= plan.shuffle
                 || plan.destination == Zone::Library
                 || before.zone == Zone::Library && plan.destination != Zone::Stack;

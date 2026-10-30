@@ -129,16 +129,20 @@ fn main() {
                 .stack
                 .last()
                 .filter(|s| {
-                    s.source_card.name() == MISTY
+                    s.source().is_some_and(|source| source.card.name() == MISTY)
                         && matches!(s.kind, StackKind::ActivatedAbility { .. })
-                        || s.source_card.name() == GOBLIN
+                        || s.source()
+                            .is_some_and(|source| source.card.name() == GOBLIN)
                             && matches!(s.kind, StackKind::TriggeredAbility { .. })
                 })
                 .cloned();
             let resolving = before
                 .resolving
                 .as_ref()
-                .filter(|s| s.source_card.name() == GOBLIN)
+                .filter(|s| {
+                    s.source()
+                        .is_some_and(|source| source.card.name() == GOBLIN)
+                })
                 .cloned();
             let discard_action = matches!(a, Action::PayCosts { .. } | Action::Discard { .. });
             let saved = g.snapshot();
@@ -216,11 +220,25 @@ fn main() {
             }
             let completed = root
                 .filter(|s| after.stack.iter().all(|n| n.id != s.id) && after.resolving.is_none())
-                .map(|s| (s.source_card.name(), s.controller))
+                .map(|s| {
+                    (
+                        s.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                        s.controller,
+                    )
+                })
                 .or_else(|| {
-                    resolving
-                        .filter(|_| after.resolving.is_none())
-                        .map(|s| (s.source_card.name(), s.controller))
+                    resolving.filter(|_| after.resolving.is_none()).map(|s| {
+                        (
+                            s.source()
+                                .expect("example expects an object-backed packet")
+                                .card
+                                .name(),
+                            s.controller,
+                        )
+                    })
                 });
             if let Some((name, p)) = completed {
                 let amount = after.players[p.index()].cards_discarded_this_turn;

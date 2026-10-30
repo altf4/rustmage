@@ -175,6 +175,12 @@ impl Game {
             if object.is_token() && !matches!(object.zone, Zone::Battlefield | Zone::Outside) {
                 batch.ceased.push(id);
             }
+            if object.copy_kind == CopyKind::Spell
+                && !matches!(object.zone, Zone::Stack | Zone::Outside)
+            {
+                batch.ceased.push(id);
+                continue;
+            }
             if object.copy_kind == CopyKind::Card
                 && !matches!(object.zone, Zone::Stack | Zone::Outside)
                 && !(object.zone == Zone::Exile && self.keeps_card_copy(self.object_ref(id)))
@@ -191,7 +197,13 @@ impl Game {
             if self.saga_sacrifice_required(id) {
                 batch.deaths.push(id);
             }
-            if self.current_kinds(id) & 64 != 0 && object.counters.loyalty == 0 {
+            if self.current_kinds(id) & 64 != 0 && object.counters.loyalty == 0
+                && !self.state.objects.iter().enumerate().any(|(provider, source)| {
+                    let provider = provider as CardId;
+                    source.zone == Zone::Battlefield && source.controller == object.controller
+                        && source.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|f| matches!(f, crate::cards::StaticAbilityFragment::ControlledPlaneswalkersSurviveZeroLoyalty)))
+                        && self.continuous_fragment_available(provider, |f| matches!(f, crate::cards::StaticAbilityFragment::ControlledPlaneswalkersSurviveZeroLoyalty))
+                }) {
                 batch.deaths.push(id);
             }
             if self.current_kinds(id) & crate::cards::BATTLE_KIND != 0
@@ -223,7 +235,9 @@ impl Game {
             {
                 batch.detached.push(self.object_ref(id));
             }
-            if ability_world::CharacteristicWorld::legendary(self, id) {
+            if !self.state.players[object.controller.index()].legend_rule_ignored_this_turn
+                && ability_world::CharacteristicWorld::legendary(self, id)
+            {
                 legends[object.controller.index()]
                     .entry(crate::card_names::comparison_key(self.object_name(id)))
                     .or_default()
@@ -495,7 +509,10 @@ impl Game {
             }
         }
         for id in batch.ceased {
-            if self.state.objects[id as usize].copy_kind == CopyKind::Card {
+            if matches!(
+                self.state.objects[id as usize].copy_kind,
+                CopyKind::Card | CopyKind::Spell
+            ) {
                 self.cease_card_copy(self.object_ref(id));
             } else {
                 self.cease_token(id);

@@ -126,7 +126,7 @@ fn choose(g: &Game, o: &Observation, actions: &[Action], seed: usize, uses: &[us
             }
             Action::ChooseMode { mode } => {
                 let root = o.announcing.as_ref().unwrap();
-                let i = index(root.source_card).unwrap();
+                let i = root.source().and_then(|source| index(source.card)).unwrap();
                 if usize::from(*mode) == (seed + i + uses[i]) % COUNTS[i] {
                     350
                 } else {
@@ -137,10 +137,10 @@ fn choose(g: &Game, o: &Observation, actions: &[Action], seed: usize, uses: &[us
                 target: rustmage::Target::Card(id),
             } => {
                 let v = o.objects.iter().find(|v| v.id == *id).unwrap();
-                if o.announcing
-                    .as_ref()
-                    .is_some_and(|s| s.source_card.name() == "Shock")
-                    && v.owner != o.actor.unwrap()
+                if o.announcing.as_ref().is_some_and(|s| {
+                    s.source()
+                        .is_some_and(|source| source.card.name() == "Shock")
+                }) && v.owner != o.actor.unwrap()
                     && v.toughness > 2
                 {
                     340
@@ -440,9 +440,14 @@ fn verify(o: &Observation, e: &Expected, ledger: &mut Ledger) {
         }
         (10, 0) => assert_eq!(token_count(o, "Rat"), token_count(before, "Rat") + 1),
         (10, 1) => {
-            let can = own
-                .iter()
-                .any(|v| v.card.is_creature() && v.reference != e.root.object);
+            let can = own.iter().any(|v| {
+                v.card.is_creature()
+                    && v.reference
+                        != e.root
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .object
+            });
             assert_eq!(
                 now.library_count,
                 old.library_count.saturating_sub(usize::from(can))
@@ -523,7 +528,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| index(s.source_card).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             if matches!(action, Action::ChooseMode { .. }) {
                 let hidden = g.observe(p.other());
                 assert!(hidden.mode_choices.is_empty() && hidden.actions.is_empty());
@@ -537,14 +545,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let after = g.observe(p);
             if let Action::ChooseMode { mode } = action {
                 let root = before.announcing.as_ref().unwrap();
-                let i = index(root.source_card).unwrap();
+                let i = root.source().and_then(|source| index(source.card)).unwrap();
                 assert!(matches!(root.kind, StackKind::TriggeredAbility { .. }));
                 assert!(root.mode.is_none());
                 chosen[i][usize::from(mode)] += 1;
                 uses[i] += 1;
             }
             if let Some(root) = before.stack.last()
-                && let Some(i) = index(root.source_card)
+                && let Some(i) = root.source().and_then(|source| index(source.card))
                 && !after.stack.iter().any(|v| v.id == root.id)
                 && matches!(action, Action::Pass)
                 && let Some(e) = expected(&before, root, i)
@@ -557,7 +565,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     continue;
                 }
-                let Some(i) = index(s.source_card) else {
+                let Some(i) = s.source().and_then(|source| index(source.card)) else {
                     continue;
                 };
                 if s.kind == StackKind::Spell {

@@ -25,6 +25,16 @@ impl Card {
                 .any(|f| matches!(f, StaticAbilityFragment::OwnTurnFreeHandInstantSorcery))
         })
     }
+    pub(super) fn has_creature_count_free_hand_cast(self) -> bool {
+        self.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|f| {
+                matches!(
+                    f,
+                    StaticAbilityFragment::FreeHandCastAtMostControlledCreatures
+                )
+            })
+        })
+    }
     pub(super) fn has_free_hand_cast(self) -> bool {
         self.static_ability_groups().iter().any(|group| {
             group
@@ -35,6 +45,33 @@ impl Card {
     }
 }
 impl Game {
+    /// The source is already on the stack when casting restrictions are checked.
+    pub(super) fn spell_graveyard_requirement_holds(
+        &self,
+        actor: Player,
+        id: CardId,
+        definition: Card,
+    ) -> bool {
+        let minimum = usize::from(definition.cast_graveyard_minimum());
+        if minimum == 0 {
+            return true;
+        }
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(index, object)| {
+                *index != id as usize
+                    && object.owner == actor
+                    && object.zone == Zone::Graveyard
+                    && !object.is_token()
+                    && !object.is_spell_copy()
+            })
+            .take(minimum)
+            .count()
+            >= minimum
+    }
+
     pub(super) fn limited_free_hand_permissions(&self, player: Player) -> Vec<ObjectRef> {
         if player != self.state.active {
             return Vec::new();
@@ -75,6 +112,40 @@ impl Game {
                 && self.printed_abilities_available(id)
         })
     }
+    /// Evaluate against the selected spell face at announcement, before any
+    /// additional cost can remove creatures. A free X spell has X equal to zero.
+    pub(super) fn creature_count_free_hand_cast_available(
+        &self,
+        player: Player,
+        definition: Card,
+    ) -> bool {
+        let count = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && self.is_creature(*id as CardId)
+            })
+            .count();
+        if u128::from(definition.fixed_mana_value()) > count as u128 {
+            return false;
+        }
+        self.state.static_sources.iter().any(|&id| {
+            let object = &self.state.objects[id as usize];
+            object.zone == Zone::Battlefield
+                && object.controller == player
+                && object.card.has_creature_count_free_hand_cast()
+                && self.continuous_fragment_available(id, |fragment| {
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::FreeHandCastAtMostControlledCreatures
+                    )
+                })
+        })
+    }
     pub(super) fn has_graveyard_cast(
         &self,
         player: Player,
@@ -84,7 +155,7 @@ impl Game {
         let object = &self.state.objects[card as usize];
         object.zone == Zone::Graveyard
             && object.owner == player
-            && !object.is_token()
+            && object.is_card()
             && self
                 .state
                 .graveyard_cast_permissions
@@ -121,10 +192,7 @@ impl Game {
         kind: GraveyardCastKind,
     ) {
         let card = &self.state.objects[object.card as usize];
-        if self.object_ref(object.card) != object
-            || card.zone != Zone::Graveyard
-            || card.is_token()
-            || card.card.is_emblem()
+        if self.object_ref(object.card) != object || card.zone != Zone::Graveyard || !card.is_card()
         {
             return;
         }
@@ -173,7 +241,8 @@ impl Game {
         if face == CastFace::Normal {
             return;
         }
-        let physical = self.state.objects[item.card as usize].card;
+        let physical =
+            self.state.objects[item.source.expect("cast spell has source").id as usize].card;
         let definition = match face {
             CastFace::Adventure => physical.adventure_spell(),
             CastFace::Omen => physical.omen_spell(),
@@ -184,12 +253,28 @@ impl Game {
         let cast = item.cast.as_mut().unwrap();
         cast.face = face;
         cast.physical_card = Some(physical);
-        item.source_card = definition;
+        item.set_source_definition(definition);
         item.source_keywords = definition.info().keywords;
-        item.source_facts.card = definition;
-        item.source_facts.colors = definition.colors();
-        item.source_facts.kinds = definition.kind_mask();
-        item.source_facts.power = 0;
+        item.source
+            .as_mut()
+            .expect("spell source exists")
+            .facts
+            .card = definition;
+        item.source
+            .as_mut()
+            .expect("spell source exists")
+            .facts
+            .colors = definition.colors();
+        item.source
+            .as_mut()
+            .expect("spell source exists")
+            .facts
+            .kinds = definition.kind_mask();
+        item.source
+            .as_mut()
+            .expect("spell source exists")
+            .facts
+            .power = 0;
     }
     pub(super) fn permitted_cast_available(
         &self,
@@ -295,6 +380,9 @@ impl Game {
         }) else {
             return false;
         };
+        if !self.spell_graveyard_requirement_holds(actor, card, definition) {
+            return false;
+        }
         if flash_surcharge && definition.flash_surcharge().is_none() {
             return false;
         }

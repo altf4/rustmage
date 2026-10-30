@@ -22,7 +22,7 @@ pub(super) fn contribution<W: CharacteristicWorld + ?Sized>(
     Some(u32::try_from(world.power(object.card).max(0)).unwrap_or(u32::MAX))
 }
 
-/// Harmonize only reduces generic mana and never a colored or colorless symbol.
+#[cfg(test)]
 pub(super) fn reduce(mut cost: ManaCost, amount: u32) -> ManaCost {
     cost.generic = cost.generic.saturating_sub(amount);
     cost
@@ -42,10 +42,19 @@ impl Game {
             None => 0,
         };
         let base = Self::announcement_base_cost(a);
-        let total = reduce(
-            self.target_spell_cost(a.item.controller, a.item.card, base, &a.item.targets),
-            discount,
-        );
+        let extra = Self::announcement_optional_reduction(a) + u64::from(discount);
+        let Some(total) = self.target_spell_cost_with_extra(
+            a.item.controller,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .id,
+            base,
+            &a.item.targets,
+            extra,
+        ) else {
+            return false;
+        };
         self.harmonize_proposal_fundable(a, object, total)
     }
 
@@ -70,7 +79,15 @@ impl Game {
     }
 
     pub(super) fn choose_harmonizer(&mut self, object: Option<ObjectRef>) {
-        let definition = self.state.announcing.as_ref().unwrap().item.source_card;
+        let definition = self
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .item
+            .source
+            .expect("cast announcement has source")
+            .card;
         let can_improvise = improvise::potential(self, definition);
         let a = self.state.announcing.as_mut().unwrap();
         a.harmonizer = Some(object);

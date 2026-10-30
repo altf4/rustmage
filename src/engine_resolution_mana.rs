@@ -7,6 +7,7 @@ pub(super) struct ResolutionPayment {
     pub alternatives: &'static [ManaCost],
     pub life: Option<u32>,
     pub discard: bool,
+    pub discard_only: bool,
     pub victim: Option<u64>,
     pub exile: bool,
     pub unpaid_pc: usize,
@@ -17,8 +18,13 @@ pub struct ResolutionPaymentView {
     pub cost: ManaCost,
     pub alternatives: Vec<ManaCost>,
     pub life: Option<u32>,
+    #[serde(skip_serializing_if = "is_false")]
+    pub discard_only: bool,
     pub victim: Option<u64>,
     pub exile: bool,
+}
+fn is_false(value: &bool) -> bool {
+    !*value
 }
 impl Game {
     /// Explicit counters share one check. Abilities are independent of their source spell.
@@ -28,15 +34,20 @@ impl Game {
         };
         let victim = &self.state.stack[index];
         if victim.kind == StackKind::Spell {
-            if victim.source_card.cannot_be_countered()
-                || self.controlled_spells_uncounterable(victim.controller, victim.source_card)
+            let Some(source) = victim.source else {
+                return false;
+            };
+            if self
+                .state
+                .uncounterable_spell_ids
+                .as_deref()
+                .is_some_and(|ids| ids.contains(&victim.id))
+                || source.card.cannot_be_countered()
+                || self.controlled_spells_uncounterable(victim.controller, source.card)
             {
                 return false;
             }
-            self.move_object(
-                victim.card,
-                if exile { Zone::Exile } else { Zone::Graveyard },
-            );
+            self.move_object(source.id, if exile { Zone::Exile } else { Zone::Graveyard });
         } else {
             self.state.stack.remove(index);
         }
@@ -48,13 +59,17 @@ impl Game {
             let Some(victim) = self.bound_stack_item(bound).cloned() else {
                 continue;
             };
-            let permanent = PermanentType::ALL
-                .into_iter()
-                .any(|kind| victim.source_card.kind_mask() & kind.mask() != 0);
+            let Some(source) = victim.source else {
+                continue;
+            };
+            let permanent = victim.kind == StackKind::Spell
+                && PermanentType::ALL
+                    .into_iter()
+                    .any(|kind| source.card.kind_mask() & kind.mask() != 0);
             if self.counter_stack_item(victim.id, permanent) && permanent && !victim.is_copy {
-                let after = self.object_ref(victim.card);
-                if after != victim.object
-                    && self.state.objects[victim.card as usize].zone == Zone::Exile
+                let after = self.object_ref(source.id);
+                if after != source.object
+                    && self.state.objects[source.id as usize].zone == Zone::Exile
                 {
                     self.grant_exile_free_permission(item.controller, after);
                 }
@@ -137,7 +152,15 @@ impl Game {
                     granted: true,
                     origin: self.copy_ability_origin(grant.grantor),
                 });
-                if self.queue_trigger_from(&source, usize::from(grant.ability), Some(event)) {
+                if self.queue_trigger_from(
+                    &source,
+                    usize::from(
+                        grant
+                            .ability
+                            .expect("conditional ward has a trigger template"),
+                    ),
+                    Some(event),
+                ) {
                     self.state
                         .pending_triggers
                         .last_mut()
@@ -185,9 +208,6 @@ impl Game {
     }
     pub(super) fn start_ward_discard_or_mana(&mut self, item: &SpellView, cost: ManaCost) -> bool {
         let related = item.related_stack.expect("ward stack association");
-        if !self.state.stack.iter().any(|s| s.id == related.id) {
-            return false;
-        }
         self.start_resolution_payment(item, cost, CounterSubject::Related, false, 0);
         self.state
             .resolving
@@ -200,12 +220,36 @@ impl Game {
         self.start_ward_discard_choice(item, related.controller);
         true
     }
+    pub(super) fn start_ward_discard_only(&mut self, item: &SpellView) -> bool {
+        if !self.start_ward_discard_or_mana(
+            item,
+            ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            },
+        ) {
+            return false;
+        }
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .mana_payment
+            .as_mut()
+            .unwrap()
+            .discard_only = true;
+        true
+    }
     pub(super) fn finish_ward_discard(&mut self, card: CardId) {
         let resolution = self.state.resolving.as_mut().unwrap();
         let request = resolution.mana_payment.take().unwrap();
         assert!(request.discard);
         resolution.choice = None;
-        let cause = resolution.item.controller;
+        let cause = if request.discard_only {
+            request.payer
+        } else {
+            resolution.item.controller
+        };
         self.discard_batch_caused(&[card], None, Some(cause));
         self.run_program();
     }
@@ -242,6 +286,7 @@ impl Game {
             alternatives: &[],
             life: None,
             discard: false,
+            discard_only: false,
             victim: Some(victim.id),
             exile,
             unpaid_pc,
@@ -266,6 +311,7 @@ impl Game {
             alternatives: &[],
             life: None,
             discard: false,
+            discard_only: false,
             victim: None,
             exile: false,
             unpaid_pc,
@@ -298,6 +344,7 @@ impl Game {
             alternatives: &[],
             life: Some(amount),
             discard: false,
+            discard_only: false,
             victim: Some(victim.id),
             exile: false,
             unpaid_pc: resolution.pc,

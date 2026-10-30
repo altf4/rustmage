@@ -30,7 +30,9 @@ impl Game {
         if normal_targets {
             return self.spell_can_fund(actor, id, base);
         }
-        let cost = self.reduced_spell_cost(actor, id, base);
+        let Some(cost) = self.reduced_spell_cost(actor, id, base) else {
+            return false;
+        };
         self.preview_optional_cast_costs(
             FundingGoal {
                 actor,
@@ -51,7 +53,7 @@ impl Game {
         .unwrap_or(false)
     }
     pub(super) fn teamwork_mode_allowed(&self, item: &SpellView, mode: usize) -> bool {
-        let Some(spec) = item.source_card.teamwork() else {
+        let Some(spec) = item.source.and_then(|source| source.card.teamwork()) else {
             return true;
         };
         let bits = if item.cast.is_some_and(|c| c.teamwork == Some(true)) {
@@ -64,7 +66,13 @@ impl Game {
     pub(super) fn teamwork_intent_fundable(&self, pay: bool) -> bool {
         let mut a = self.state.announcing.as_ref().unwrap().clone();
         a.item.cast.as_mut().unwrap().teamwork = Some(pay);
-        a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+        a.initialize_cast_costs(improvise::potential(
+            self,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card,
+        ));
         let available = if let Some(modes) = a.item.modes() {
             modes.iter().enumerate().any(|(i, m)| {
                 self.teamwork_mode_allowed(&a.item, i)
@@ -82,7 +90,14 @@ impl Game {
     pub(super) fn choose_teamwork(&mut self, pay: bool) {
         let improvise = improvise::potential(
             self,
-            self.state.announcing.as_ref().unwrap().item.source_card,
+            self.state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .item
+                .source
+                .expect("cast announcement has source")
+                .card,
         );
         let a = self.state.announcing.as_mut().unwrap();
         a.item.cast.as_mut().unwrap().teamwork = Some(pay);
@@ -163,7 +178,13 @@ impl Game {
             sum.add(self.stats(r.card).power);
         }
         Some(TeamworkChoiceView {
-            minimum: a.item.source_card.teamwork()?.minimum,
+            minimum: a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .teamwork()?
+                .minimum,
             selected: selected.clone(),
             selected_power: sum.represented(),
             can_finish: self.teamwork_prefix_fundable(selected, true),

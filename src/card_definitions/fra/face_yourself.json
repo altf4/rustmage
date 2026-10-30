@@ -3,10 +3,31 @@
   "catalogue_id": 1423,
   "oracle_id": "3c0fe71c-bee1-41d3-aeb5-1723028eedde",
   "facts_sha256": "9f1df18df28ef850dbb705b5660cd14522b890c4bc8e4c5c7eeaeb39ab00e0ed",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e7abaf4ca9b95c82ff6593d436d8c9eb84ae876707421b46bce95f77d5506670"
   },
-  "physical_metadata_sha256": "5bec5b024ea170b7196de297b7440246bf672f048fc118bd7a09a9887c9bd2d3"
+  "physical_metadata_sha256": "5bec5b024ea170b7196de297b7440246bf672f048fc118bd7a09a9887c9bd2d3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FaceYourself.java",
+  "java_sha256": "eb70f13e93387bfca8c5dc983c2c534e65c1205d282fa52ab73de33825b56c87",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ],
+  "rules_tests": "src/engine_fra_face_yourself_tests.rs"
 }

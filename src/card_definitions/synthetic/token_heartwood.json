@@ -1,0 +1,24 @@
+{
+  "name": "@token/heartwood",
+  "catalogue_id": 5438,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "a9f4762a27faacef889998c0c8521e66353870a947f246c299cf01816b119c23",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/HeartwoodToken.java",
+  "java_sha256": "956f8bf81061e436da05478f1923f01ec377b0563b620d0751ba6a5e35680a91",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+      "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+    }
+  ],
+  "rules_tests": "src/assurance/fra_prepared_extra.rs"
+}

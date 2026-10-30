@@ -6,6 +6,7 @@ use crate::cards::StaticAbilityFragment;
 pub struct PlayerCastGrantsView {
     pub artifact_generic_reduction: u64,
     pub next_red_or_green_creature_free: u64,
+    pub next_spell_uncounterable: bool,
 }
 impl Game {
     pub(super) fn player_cast_grants_view(&self, index: usize) -> Option<PlayerCastGrantsView> {
@@ -14,6 +15,52 @@ impl Game {
             .as_ref()
             .map(|rows| rows[index])
             .filter(|row| *row != PlayerCastGrantsView::default())
+    }
+    pub(super) fn grant_next_spell_uncounterable(&mut self, player: Player) {
+        self.state
+            .turn_cast_grants
+            .get_or_insert_with(Default::default)[player.index()]
+        .next_spell_uncounterable = true;
+    }
+    pub(super) fn consume_next_spell_uncounterable(
+        &mut self,
+        player: Player,
+        stack: Option<usize>,
+    ) {
+        let Some(index) = stack else {
+            return;
+        };
+        let Some(rows) = self.state.turn_cast_grants.as_mut() else {
+            return;
+        };
+        if !rows[player.index()].next_spell_uncounterable {
+            return;
+        }
+        rows[player.index()].next_spell_uncounterable = false;
+        let id = self.state.stack[index].id;
+        self.prune_uncounterable_spell_ids();
+        self.state
+            .uncounterable_spell_ids
+            .get_or_insert_with(Default::default)
+            .push(id);
+    }
+    pub(super) fn prune_uncounterable_spell_ids(&mut self) {
+        if let Some(ids) = &mut self.state.uncounterable_spell_ids {
+            ids.retain(|id| self.state.stack.iter().any(|item| item.id == *id));
+            if ids.is_empty() {
+                self.state.uncounterable_spell_ids = None;
+            }
+        }
+    }
+    pub(super) fn uncounterable_spell_ids_view(&self) -> Vec<u64> {
+        self.state
+            .uncounterable_spell_ids
+            .as_deref()
+            .into_iter()
+            .flatten()
+            .copied()
+            .filter(|id| self.state.stack.iter().any(|item| item.id == *id))
+            .collect()
     }
     pub(super) fn grant_artifact_spell_reduction(&mut self, player: Player, amount: u32) {
         if amount == 0 {
@@ -124,15 +171,16 @@ impl Game {
                 continue;
             }
             let ordinary_origin = match object.zone {
-                Zone::Hand => object.owner == player,
+                Zone::Hand => object.owner == player && object.is_card(),
                 Zone::Exile => self.can_play_exiled(player, card),
                 Zone::Library => self.can_cast_library_face(player, card, definition),
                 Zone::Graveyard => self.has_graveyard_cast(player, card, GraveyardCastKind::Cast),
                 _ => false,
             };
-            let counter_cost = (object.zone == Zone::Graveyard && object.owner == player)
-                .then(|| definition.graveyard_counter_cost())
-                .flatten();
+            let counter_cost =
+                (object.zone == Zone::Graveyard && object.owner == player && object.is_card())
+                    .then(|| definition.graveyard_counter_cost())
+                    .flatten();
             for flash_surcharge in [false, true] {
                 let ordinary_available = self.permitted_cast_available(
                     player,

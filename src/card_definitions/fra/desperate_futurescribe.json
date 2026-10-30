@@ -3,10 +3,51 @@
   "catalogue_id": 1058,
   "oracle_id": "83c12f50-e5a1-479d-afab-edb0b40412f2",
   "facts_sha256": "a93ec28780c7a4613aa832b62e34291cb13507a6df16ce99163d23a1c47d2ff8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c8b086496e76511bfabcd78a234b47866a1861ca25ced0f5d10e1a8101ea9bba"
   },
-  "physical_metadata_sha256": "cbdbd6df227721569428bc839dc1fd0f1233da1335f587ca643c88d8a5385ccb"
+  "physical_metadata_sha256": "cbdbd6df227721569428bc839dc1fd0f1233da1335f587ca643c88d8a5385ccb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DesperateFuturescribe.java",
+  "java_sha256": "687bb9f23fddd0e86e73ea3d1c64fb2262786f7f9fb77b262a10210c91badd2a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ScryOrSurveilCondition.java",
+      "sha256": "a1c8b077c13c1c97c5ec084d8fda7dfe71caa63fa33ef657ba059c04bf2882bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/ScryOrSurveilWatcher.java",
+      "sha256": "7953afdadce7199087c8343b8faa6de8941c21878a7d038f5b78a4f4ff1a71a8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "src/engine_fra_scry_events_tests.rs"
 }

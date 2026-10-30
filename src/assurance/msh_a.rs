@@ -1879,7 +1879,11 @@ fn msh_super_soldier_shields_and_wings_toughness_response_with_ward() {
     let hero = put(&mut g, p, "Agent Maria Hill", Zone::Battlefield);
     attack(&mut g, &[wing]);
     until(&mut g, |g| {
-        g.state.pending == Pending::Priority && g.state.stack.iter().any(|s| s.card == wing)
+        g.state.pending == Pending::Priority
+            && g.state
+                .stack
+                .iter()
+                .any(|s| s.source.is_some_and(|source| source.id == wing))
     });
     spell(
         &mut g,

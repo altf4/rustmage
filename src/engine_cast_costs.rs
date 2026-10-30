@@ -60,7 +60,13 @@ impl Announcement {
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
         self.initialize_alternative_life();
         if self.item.kind == StackKind::Spell
-            && ((self.item.source_card.has_convoke() || improvise)
+            && ((self
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .has_convoke()
+                || improvise)
                 && self.additional_cost().is_some()
                 || self
                     .additional_cost()
@@ -70,13 +76,26 @@ impl Announcement {
         }
         if self.item.cast.is_some_and(|c| c.blight == Some(true)) {
             self.add_cast_cost_clause(CastCostClause::Blight {
-                amount: self.item.source_card.blight().unwrap().amount,
+                amount: self
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .blight()
+                    .unwrap()
+                    .amount,
                 selected: None,
             });
         }
         if self.item.cast.is_some_and(|c| c.teamwork == Some(true)) {
             self.add_cast_cost_clause(CastCostClause::Teamwork(
-                self.item.source_card.teamwork().unwrap().minimum,
+                self.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .teamwork()
+                    .unwrap()
+                    .minimum,
             ));
         }
         let casualty: Vec<_> = self
@@ -93,7 +112,12 @@ impl Announcement {
         }
         if self.cast_costs.is_some()
             && self.item.kind == StackKind::Spell
-            && (self.item.source_card.has_convoke()
+            && (self
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .has_convoke()
                 || improvise
                 || self
                     .additional_cost()
@@ -191,11 +215,23 @@ impl Game {
                 self.state.announcing = Some(a);
             }
             CastCostClause::Mana => {
-                self.state.pending = if a.item.source_card.has_convoke() {
+                self.state.pending = if a
+                    .item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .has_convoke()
+                {
                     Pending::Convoke {
                         player: a.item.controller,
                     }
-                } else if improvise::potential(self, a.item.source_card) {
+                } else if improvise::potential(
+                    self,
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card,
+                ) {
                     Pending::Improvise {
                         player: a.item.controller,
                     }

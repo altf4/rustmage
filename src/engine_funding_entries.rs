@@ -25,6 +25,7 @@ impl PaymentContinuation<'_> {
 pub(super) struct EntryProjection {
     /// Opt-in restoration origins; these are copy changes, never entry history.
     pub copy_origins: Vec<(ObjectRef, Option<u64>)>,
+    pub manifested: Vec<(ObjectRef, Card)>,
     pub static_sources: Vec<CardId>,
     pub attachment_sources: Vec<CardId>,
     pub roles: roles::RoleState,
@@ -54,6 +55,22 @@ impl EntryProjection {
         });
         Self {
             copy_origins: Vec::new(),
+            manifested: w
+                .game
+                .state
+                .manifest
+                .as_ref()
+                .map_or_else(Vec::new, |state| {
+                    state
+                        .permanents
+                        .iter()
+                        .filter(|row| {
+                            w.reference(row.object.card) == row.object
+                                && w.object(row.object.card).zone == Zone::Battlefield
+                        })
+                        .map(|row| (row.object, row.underlying))
+                        .collect()
+                }),
             static_sources: w.static_sources().to_vec(),
             attachment_sources: w.attachment_sources().to_vec(),
             roles: w.roles().cloned().unwrap_or_default(),
@@ -250,6 +267,12 @@ impl FundingState<'_> {
                 .count()
         };
         match guard {
+            StepGuard::SourceUnprepared => {
+                let object = ability_world::CharacteristicWorld::object(self, source.card);
+                object.zone == Zone::Battlefield
+                    && self.reference(source.card) == source
+                    && !self.game.is_prepared(source)
+            }
             StepGuard::ClassLevelAtLeast(level) => {
                 let object = ability_world::CharacteristicWorld::object(self, source.card);
                 object.zone == Zone::Battlefield
@@ -269,6 +292,11 @@ impl FundingState<'_> {
             }
             StepGuard::YourTurn => self.active == player,
             StepGuard::GainedLife => self.gained_life(player),
+            StepGuard::ScriedOrSurveilledThisTurn => state.scried_or_surveilled_this_turn,
+            StepGuard::LoyaltyAbilityActivatedThisTurn => state.loyalty_ability_activated_this_turn,
+            StepGuard::OpponentNoncombatDamageLastTurn => {
+                self.game.state.players[player.other().index()].noncombat_damage_last_turn
+            }
             StepGuard::GainedAndLostLife => self.gained_life(player) && self.lost_life(player),
             StepGuard::Attacked => state.attacked_this_turn,
             StepGuard::CreatureDied => self.creatures_died > 0,
@@ -503,7 +531,7 @@ impl FundingState<'_> {
                 .count()
         };
         match m.before.card.entry_tapped() {
-            EntryTapped::Never | EntryTapped::PayLife(_) => false,
+            EntryTapped::Never | EntryTapped::PayLife(_) | EntryTapped::UnlessBehold(_) => false,
             EntryTapped::Always => true,
             EntryTapped::ChosenXAtMost(n) => m.x <= n,
             EntryTapped::OpponentsTurn => owner != self.active,
@@ -587,7 +615,9 @@ impl FundingState<'_> {
                     && self.printed_abilities_available(id)
             })
             .collect::<Vec<_>>();
-        if effects.is_empty() {
+        if effects.is_empty()
+            && !matches!(m.before.card.entry_tapped(), EntryTapped::UnlessBehold(_))
+        {
             m.tapped |= self.entry_tapped(m) || !opponent.is_empty();
             return effects;
         }
@@ -610,6 +640,15 @@ impl FundingState<'_> {
                 source: m.before.reference,
                 intrinsic: true,
                 kind: entry_tap::EntryTapKind::PayLife(n),
+            });
+        }
+        if m.manifest_original.is_none()
+            && let EntryTapped::UnlessBehold(subtype) = m.before.card.entry_tapped()
+        {
+            effects.push(entry_tap::EntryTapEffect {
+                source: m.before.reference,
+                intrinsic: true,
+                kind: entry_tap::EntryTapKind::Behold(subtype),
             });
         }
         effects
@@ -638,6 +677,7 @@ impl FundingState<'_> {
                             index,
                             effects,
                             payment: None,
+                            behold: None,
                         });
                     }
                 }
@@ -663,6 +703,32 @@ impl FundingState<'_> {
                 let mut next = moves.clone();
                 next[event.index].choice = Some(EntryChoiceValue::BasicLandType(kind));
                 if self.visit_entry_taps(next, taps.clone(), at, actual, emit) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if let Some(subtype) = event.behold {
+            let excluded = moves
+                .iter()
+                .filter(|m| m.destination == Zone::Battlefield && !m.skipped)
+                .map(|m| m.before.reference)
+                .collect::<Vec<_>>();
+            let candidates = hand_choices::behold_candidates(
+                self,
+                moves[event.index].controller,
+                subtype,
+                &excluded,
+            );
+            for pay in [false, true] {
+                if pay && candidates.is_empty() {
+                    continue;
+                }
+                let mut next = moves.clone();
+                next[event.index].tapped |= !pay;
+                let mut events = taps.clone();
+                events[at].behold = None;
+                if self.visit_entry_taps(next, events, at, actual, emit) {
                     return true;
                 }
             }
@@ -700,6 +766,7 @@ impl FundingState<'_> {
                 entry_tap::EntryTapKind::Tapped => next[event.index].tapped = true,
                 entry_tap::EntryTapKind::Untapped => next[event.index].tapped = false,
                 entry_tap::EntryTapKind::PayLife(n) => events[at].payment = Some(n),
+                entry_tap::EntryTapKind::Behold(subtype) => events[at].behold = Some(subtype),
             }
             if self.visit_entry_taps(next, events, at, actual, emit) {
                 return true;
@@ -730,6 +797,11 @@ impl FundingState<'_> {
             } else {
                 CharacteristicWorld::kinds(self, target.card) & u16::from(spec.kinds) != 0
             }
+            && ability_world::aura_artifact_or_non_aura_enchantment(
+                self,
+                m.before.card,
+                target.card,
+            )
             && match spec.relation {
                 0 => o.controller == m.controller,
                 1 => o.controller != m.controller,
@@ -1079,6 +1151,7 @@ impl FundingState<'_> {
             if m.skipped {
                 continue;
             }
+            let face_down_physical = next.projected_face_down_physical(m.before.reference);
             let row = next
                 .resources
                 .iter_mut()
@@ -1087,7 +1160,14 @@ impl FundingState<'_> {
             let o = &mut row.object;
             next.game
                 .restore_projected_copy_identity(m.before.reference, o);
-            o.card = if m.destination == Zone::Battlefield
+            o.card = if m.destination == Zone::Battlefield && m.manifest_original.is_some() {
+                m.before.card
+            } else if let Some(physical) = face_down_physical
+                && m.before.zone == Zone::Battlefield
+                && m.destination != Zone::Battlefield
+            {
+                physical.front_face()
+            } else if m.destination == Zone::Battlefield
                 && (m.source_before.is_some() || m.before.zone == Zone::Stack)
             {
                 m.before.card
@@ -1106,7 +1186,8 @@ impl FundingState<'_> {
             } else {
                 o.owner
             };
-            o.summoning_sick = true;
+            o.summoning_sick = m.destination == Zone::Battlefield;
+            o.flashback = false;
             o.cast_for_warp = m.destination == Zone::Battlefield
                 && m.warp_controller.is_some()
                 && m.cast_origin.is_some();
@@ -1114,10 +1195,12 @@ impl FundingState<'_> {
             o.growth = Stats::default();
             o.counters = m.counters.hot();
             o.used_abilities = 0;
+            o.loyalty_activated_this_turn = false;
             o.class_level = 1;
             o.damage = 0;
             o.damaged_this_turn = false;
             o.dealt_damage_this_turn = false;
+            o.dealt_combat_damage_this_incarnation = false;
             o.deathtouch_since_sba = false;
             o.attached_to = m.attachment;
             o.tapped = m.tapped;
@@ -1126,6 +1209,13 @@ impl FundingState<'_> {
                 card: row.id,
                 generation: o.generation,
             };
+            let manifested = &mut next.entry_projection.as_mut().unwrap().manifested;
+            manifested.retain(|(object, _)| *object != m.before.reference);
+            if m.destination == Zone::Battlefield
+                && let Some(physical) = m.manifest_original
+            {
+                manifested.push((source, physical));
+            }
             live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
             if m.destination == Zone::Battlefield {
                 next.entry_projection.as_mut().unwrap().entered.push(source);
@@ -1174,7 +1264,7 @@ impl FundingState<'_> {
             keyword_counters::sync_effects(
                 &mut p.roles,
                 source,
-                [0; 11],
+                [0; CounterKind::KEYWORDS.len()],
                 CounterAmounts::from(&m.counters).keyword_amounts(),
                 Some(timestamp),
             );
@@ -1406,7 +1496,8 @@ impl Game {
         }
         if !matches!(
             action,
-            Action::ChooseEntryValue { .. }
+            Action::ChooseEntryBehold { .. }
+                | Action::ChooseEntryValue { .. }
                 | Action::ChooseEntryLife { .. }
                 | Action::ChooseAuraAttachment { .. }
                 | Action::ChooseEntryReplacement { .. }
@@ -1455,7 +1546,13 @@ impl Game {
                 self,
                 &goal,
                 parent.announcement.item.kind == StackKind::Spell
-                    && parent.announcement.item.source_card.has_convoke(),
+                    && parent
+                        .announcement
+                        .item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card
+                        .has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&parent.announcement.item));
             world.set_payment_context(&parent.announcement);
@@ -1474,7 +1571,12 @@ impl Game {
             let mut world = FundingState::from_game_with_convoke(
                 self,
                 &goal,
-                a.item.kind == StackKind::Spell && a.item.source_card.has_convoke(),
+                a.item.kind == StackKind::Spell
+                    && a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card
+                        .has_convoke(),
             );
             world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(a);
@@ -1489,6 +1591,9 @@ impl Game {
                     for (pool, amount) in next.mana.iter_mut().zip(production) {
                         *pool += u128::from(amount);
                     }
+                    next.mana[3] = next.mana[3]
+                        .checked_add(u128::from(a.item.mana_tap_bonus.unwrap_or(0)))
+                        .capacity("mana representation exhausted");
                     if let Some((_, quality)) = self
                         .state
                         .mana_lots
@@ -1563,6 +1668,15 @@ impl Game {
                     batch.tap_events[batch.tap_next].payment = None;
                 }
             }
+            Some(Action::ChooseEntryBehold { object }) => {
+                let event = &mut batch.tap_events[batch.tap_next];
+                if event.behold.take().is_none() {
+                    return false;
+                }
+                if object.is_none() {
+                    batch.moves[event.index].tapped = true;
+                }
+            }
             Some(Action::ChooseEntryReplacement { source, intrinsic }) => {
                 let event = &mut batch.tap_events[batch.tap_next];
                 let Some(i) = event
@@ -1577,6 +1691,7 @@ impl Game {
                     entry_tap::EntryTapKind::Tapped => batch.moves[event.index].tapped = true,
                     entry_tap::EntryTapKind::Untapped => batch.moves[event.index].tapped = false,
                     entry_tap::EntryTapKind::PayLife(cost) => event.payment = Some(cost),
+                    entry_tap::EntryTapKind::Behold(subtype) => event.behold = Some(subtype),
                 }
             }
             Some(Action::ChooseEntryTimestamp { object }) => {
@@ -1613,6 +1728,16 @@ impl<'g> FundingState<'g> {
             && self.entry_projection.is_none()
             && self.game.state.exile_links.is_empty()
             && self.game.state.zone_rules.is_none()
+            && {
+                #[cfg(test)]
+                {
+                    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get().is_none())
+                }
+                #[cfg(not(test))]
+                {
+                    true
+                }
+            }
             && self.game.state.death_exile_replacements.is_none()
             && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0
         {
@@ -1651,6 +1776,10 @@ impl<'g> FundingState<'g> {
         if departed {
             next.resources[step.resource].object.zone = Zone::Battlefield;
         }
+        // The staged source remains present until a replacement plan commits.
+        next.refresh_control_projection();
+        next.prune_source_linked_projection();
+        next.refresh_enduring_projection();
         if let Some((external, _)) = external {
             // Selection belongs to this incarnation. Never silently substitute a
             // returned card or allow an object already spent by another cost.
@@ -1720,11 +1849,14 @@ impl<'g> FundingState<'g> {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return false;
         };
-        let Some(resource) = self
-            .resources
-            .iter()
-            .position(|r| r.id == a.item.object.card)
-        else {
+        let Some(resource) = self.resources.iter().position(|r| {
+            r.id == a
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .object
+                .card
+        }) else {
             return false;
         };
         let parent_goal = self.game.funding_goal(&parent.announcement);
@@ -1765,7 +1897,13 @@ impl<'g> FundingState<'g> {
                     quality: current.quality.copied(),
                     allocation,
                     external,
-                    frozen: Some(Box::new((a.item.source_card, a.item.borrowed_slot))),
+                    frozen: Some(Box::new((
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
+                        a.item.borrowed_slot,
+                    ))),
                 };
                 found = self.visit_applied(&step, &mut |w| {
                     let mut next = w.clone();
@@ -1776,7 +1914,13 @@ impl<'g> FundingState<'g> {
                     );
                     next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
-                        && parent.announcement.item.source_card.has_convoke();
+                        && parent
+                            .announcement
+                            .item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card
+                            .has_convoke();
                     next.set_payment_context(&parent.announcement);
                     next.reachable_with_evidence(
                         &parent_goal,
@@ -2186,6 +2330,58 @@ mod battle_projection_tests {
             });
             assert!(seen);
             assert_eq!(g.snapshot(), before);
+        }
+    }
+}
+
+#[cfg(test)]
+mod loyalty_incarnation_tests {
+    use super::*;
+    use crate::engine::assurance::big_helpers::{named, setup};
+
+    #[test]
+    fn projected_departures_and_entries_reset_loyalty_use_without_mutating_branch() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let walker = named(&mut g, p, "Ajani, Caller of the Pride", Zone::Battlefield);
+            g.state.objects[walker as usize].loyalty_activated_this_turn = true;
+            let old = g.object_ref(walker);
+            let saved = g.snapshot();
+            let goal = FundingGoal {
+                actor: p,
+                required: [0; 6],
+                generic: 0,
+                reserve: None,
+                source: None,
+            };
+            let mut world = FundingState::from_game(&g, &goal);
+            // A real cast-cost context retains candidates before projecting their
+            // departure; this direct fixture must retain its candidate as well.
+            if !world.resources.iter().any(|r| r.id == walker) {
+                world.resources.push(Resource {
+                    id: walker,
+                    attacking: false,
+                    object: g.state.objects[walker as usize].clone(),
+                });
+            }
+            let mut seen = false;
+            world.cost_departures(&[old], Zone::Graveyard, &mut |next| {
+                assert!(!next.object(walker).loyalty_activated_this_turn);
+                assert_ne!(next.reference(walker), old);
+                seen = true;
+                false
+            });
+            assert!(seen);
+            let movement =
+                entries::EntryMove::from_view(g.object_view(walker), Zone::Battlefield, false);
+            assert!(
+                !world
+                    .preview_entry_view(&movement)
+                    .unwrap()
+                    .loyalty_activated_this_turn
+            );
+            assert!(world.object(walker).loyalty_activated_this_turn);
+            assert_eq!(g.snapshot(), saved);
         }
     }
 }

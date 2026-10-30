@@ -174,11 +174,12 @@ fn sos_review_mica_copy_of_flashed_back_antiquities_has_no_cast_origin_bonus() {
             .iter()
             .find(|item| {
                 item.is_copy
-                    && item.source_card == Card::from_name("Antiquities on the Loose").unwrap()
+                    && item.source.unwrap().card
+                        == Card::from_name("Antiquities on the Loose").unwrap()
             })
             .unwrap();
         let copy_id = copied.id;
-        let copy_card = copied.card;
+        let copy_card = copied.source.unwrap().id;
         assert_eq!(copied.cast.as_ref().unwrap().origin, Zone::Graveyard);
         assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
         for _ in 0..10 {
@@ -192,7 +193,7 @@ fn sos_review_mica_copy_of_flashed_back_antiquities_has_no_cast_origin_bonus() {
             g.state
                 .stack
                 .iter()
-                .any(|item| item.card == spell && !item.is_copy)
+                .any(|item| item.source.unwrap().id == spell && !item.is_copy)
         );
         let made = spirits(&g, p);
         assert_eq!(made.len(), 2);
@@ -254,10 +255,16 @@ fn sos_review_rendezvous_draw_trigger_ids_record_active_player_draws_first() {
             .iter()
             .chain(g.state.pending_triggers.iter())
             .chain(g.state.stack.iter())
-            .filter(|item| [own_crawler, their_crawler].contains(&item.card))
+            .filter(|item| [own_crawler, their_crawler].contains(&item.source.unwrap().id))
             .filter_map(|item| {
-                item.draw_event
-                    .map(|event| (item.id, event.player, event.ordinal, item.card))
+                item.draw_event.map(|event| {
+                    (
+                        item.id,
+                        event.player,
+                        event.ordinal,
+                        item.source.unwrap().id,
+                    )
+                })
             })
             .collect();
         packets.sort_unstable_by_key(|packet| packet.0);

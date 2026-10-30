@@ -1,0 +1,11 @@
+{
+  "name": "@emblem/fra-ajani-resolute",
+  "catalogue_id": 5463,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/command/emblems/AjaniResoluteEmblem.java",
+  "java_sha256": "c37c87e101fc5129f43fbf390f0e9d01db92945459f5658489605eee08f980ac",
+  "physical_metadata_sha256": "a0ab30d91b15dd7f96ce7252f943da05ddfa4e6fe256223823af9ed400e041cb"
+}

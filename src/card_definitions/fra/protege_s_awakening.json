@@ -3,10 +3,26 @@
   "catalogue_id": 3264,
   "oracle_id": "07617648-6490-4719-acec-7705671f7e01",
   "facts_sha256": "6f731243c4bc9775adb8340def183603ca0b521a5e9c4f4c799e08c63ffde4a1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a14ff4d42c6e18d5d73a99a58b22f7f865bc941d5536c63473e4353ef811f066"
   },
-  "physical_metadata_sha256": "a4331633faf701ff45c9174482db8f9d35f52a4037dc0406e00588f5ecd1b259"
+  "physical_metadata_sha256": "a4331633faf701ff45c9174482db8f9d35f52a4037dc0406e00588f5ecd1b259",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ProtegesAwakening.java",
+  "java_sha256": "77670d75a2a869774dccb965cfd1f4edad7cae5f778ae4ca33e73b4d5175f69e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

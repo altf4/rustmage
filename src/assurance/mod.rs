@@ -4,6 +4,9 @@ use super::*;
 pub(super) mod big_helpers;
 mod cards;
 mod contracts;
+mod fra_complete_games;
+mod fra_coverage_gaps;
+mod fra_way_loyalty_foundation;
 mod interactions;
 mod regressions;
 mod requested_earthbend;
@@ -62,11 +65,13 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
         damage: 0,
         damaged_this_turn: false,
         dealt_damage_this_turn: false,
+        dealt_combat_damage_this_incarnation: false,
         deathtouch_since_sba: false,
         growth: Stats::default(),
         gained_keywords: Keywords::NONE,
         counters: InitialCounters::default(),
         used_abilities: 0,
+        loyalty_activated_this_turn: false,
         class_level: 1,
         attached_to: None,
     });
@@ -360,3 +365,50 @@ mod requested_esper;
 
 mod requested_battle_foundation;
 mod requested_callous;
+
+#[path = "../engine_fra_blue_tests.rs"]
+mod fra_blue;
+
+#[path = "../engine_fra_charms_tests.rs"]
+mod fra_charms;
+
+mod fra_seed_suture;
+
+mod fra_soul_tether;
+
+mod fra_archive_arbiter;
+mod fra_fatehold_empower;
+mod fra_prepared_extra;
+
+mod fra_prepared_control;
+mod fra_yuriko_shadows;
+
+mod fra_prepared_upkeep;
+
+mod fra_charm_extra;
+mod fra_graveyard_extra;
+mod fra_rattler_dark;
+mod fra_removal_interactions;
+mod fra_traxos_interactions;
+mod fra_wrath_twisted;
+
+mod fra_barbs_garden;
+mod fra_cruel_calculations;
+mod fra_way_copy_review;
+
+#[path = "../engine_fra_sphinx_mixed_cost_tests.rs"]
+mod fra_sphinx_mixed_cost_tests;
+#[path = "../engine_fra_sphinxs_approach_tests.rs"]
+mod fra_sphinxs_approach_tests;
+#[path = "../engine_fra_uldaros_target_tests.rs"]
+mod fra_uldaros_target_tests;
+
+#[path = "../engine_fra_uldaros_effect_tests.rs"]
+mod fra_uldaros_effect_tests;
+
+#[path = "../engine_fra_emrakul_exigent_tests.rs"]
+mod fra_emrakul_exigent_tests;
+#[path = "../engine_fra_emrakul_ward_independent_tests.rs"]
+mod fra_emrakul_ward_independent_tests;
+#[path = "../engine_fra_mixed_zone_cost_tests.rs"]
+mod fra_mixed_zone_cost_tests;

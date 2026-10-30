@@ -3,10 +3,26 @@
   "catalogue_id": 2761,
   "oracle_id": "18d1765b-3b60-4dda-93a6-d02a4e53f185",
   "facts_sha256": "ecc1e088087093085f5dc41cacd7dcda8d4fae9fb963346843c85c910ef2e8b4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aad0c6a7321c7e09eab818377d20a335deb1b38eb61c1f1b63b9c23283535b3a"
   },
-  "physical_metadata_sha256": "7ceab095a14c04dc5883e0f7eed2def1711a1ee6e495520af330036f961fea33"
+  "physical_metadata_sha256": "7ceab095a14c04dc5883e0f7eed2def1711a1ee6e495520af330036f961fea33",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MindMeanderer.java",
+  "java_sha256": "eb9c39c8c57656e78a035ca1ec1b32317f49b78419f5efd9dd9c17b8b5a8f6ea",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightTargetSourceEffect.java",
+      "sha256": "b802e4848e87fcc9bfdf1cbcf6f1c333051aba5139e0a69f556a8015f215fd6f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

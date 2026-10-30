@@ -3,10 +3,14 @@
   "catalogue_id": 3259,
   "oracle_id": "45f4d057-5134-40a2-9590-ddba73a65582",
   "facts_sha256": "7606b6bbd1f4a87c2517bc537b2e9feb32d83ba48583499e63af16e4e6dc1ac1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5489c8d454a028e6e7a73fc7c11988e6cbf95c0c0f52ce401e702256497323d9"
   },
-  "physical_metadata_sha256": "9c9802a18982d6dad691977e39f9e3f26f9adbde593bb769fbcae7aa723ff6be"
+  "physical_metadata_sha256": "9c9802a18982d6dad691977e39f9e3f26f9adbde593bb769fbcae7aa723ff6be",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ProphesiedEnd.java",
+  "java_sha256": "a8966ae3d106f0eaf7ebc7bfb93078b5cecb20d64108dfd6cd38aa79264269bd",
+  "rules_tests": "src/assurance/fra_removal_interactions.rs"
 }

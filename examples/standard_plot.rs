@@ -519,7 +519,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && a.controller == p
                 && !s.done
             {
-                let n = a.source_card.name();
+                let n = a.source().expect("spell has source").card.name();
                 if n == NAMES[i] && !s.paid {
                     s.paid = true;
                     s.library = o.players[p.index()].library_count;
@@ -643,14 +643,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && let Some(a) = &o.announcing
                 && a.kind == StackKind::Spell
                 && a.controller == p
-                && a.source_card.name() == NAMES[i]
+                && a.source()
+                    .is_some_and(|source| source.card.name() == NAMES[i])
                 && !s.done
             {
                 let after = g.observe(p);
                 let spell = after
                     .stack
                     .iter()
-                    .find(|v| v.card == a.card && v.kind == StackKind::Spell)
+                    .find(|v| {
+                        v.source()
+                            .zip(a.source())
+                            .is_some_and(|(v, a)| v.id == a.id)
+                            && v.kind == StackKind::Spell
+                    })
                     .unwrap();
                 let cast = serde_json::to_value(spell.cast)?;
                 assert_eq!(cast["method"], if plotted { "Plot" } else { "Normal" });

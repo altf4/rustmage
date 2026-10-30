@@ -3,10 +3,36 @@
   "catalogue_id": 1453,
   "oracle_id": "313aee0e-4090-4589-b323-a4edbda21c68",
   "facts_sha256": "4d9751e2258908f1935c57c578dee454e02e5d348f570398a8c1692dffa603e4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "de6149f4489cf65bceb90a29a70b5946fdb2530bc93ce630ed43d07c49fe2b18"
   },
-  "physical_metadata_sha256": "2b65a3315d9f5e978defd5ef832fbffb405d82f5dae68d4a9292e3c21ece4756"
+  "physical_metadata_sha256": "2b65a3315d9f5e978defd5ef832fbffb405d82f5dae68d4a9292e3c21ece4756",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FateholdCharm.java",
+  "java_sha256": "e6a9338fa933eb4397585276c01d4813ecf1e387c60a8067bf1356094543e66e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ],
+  "rules_tests": "src/assurance/fra_charm_extra.rs"
 }

@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b0a7ed35b2bec9d1d73d32c376cabec86d8d9cdd924254b6a365443e635a3ead"
   },
-  "physical_metadata_sha256": "31670aa4e7e58d4f3953be655b0eafeeca28c2a49e00e04aa2238125aa032900"
+  "physical_metadata_sha256": "31670aa4e7e58d4f3953be655b0eafeeca28c2a49e00e04aa2238125aa032900",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnflinchingHortimancer.java",
+  "java_sha256": "9ab9e1f134d78812aa716fbeb125e62dd687ce6f908f0f1c33cf328a31fc659b"
 }

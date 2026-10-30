@@ -329,7 +329,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| index(s.source_card).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(p, action.clone())?;
@@ -343,7 +346,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     continue;
                 }
-                let Some(i) = index(s.source_card) else {
+                let Some(i) = s.source().and_then(|source| index(source.card)) else {
                     continue;
                 };
                 if s.kind == StackKind::Spell {
@@ -351,7 +354,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 } else if matches!(s.kind, StackKind::ActivatedAbility { .. }) {
                     activations[i] += 1;
                     if i == 0 {
-                        pump_roots.insert(s.id, (s.object, after.turn));
+                        pump_roots.insert(
+                            s.id,
+                            (
+                                s.source()
+                                    .expect("example expects an object-backed packet")
+                                    .object,
+                                after.turn,
+                            ),
+                        );
                     }
                 } else if matches!(s.kind, StackKind::TriggeredAbility { .. }) {
                     assert!(!tracked.contains_key(&s.id));

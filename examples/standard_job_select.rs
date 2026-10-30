@@ -564,9 +564,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     assert!(ctx.granted);
                     assert_eq!(Some(ctx.recipient), s.bear);
-                    assert_eq!(packet.object, ctx.recipient);
+                    assert_eq!(
+                        packet
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .object,
+                        ctx.recipient
+                    );
                     assert_eq!(packet.controller, p);
-                    assert_eq!(packet.source_card.name(), "Bear Cub");
+                    assert_eq!(
+                        packet
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                        "Bear Cub"
+                    );
                     if !s.seen.contains(&packet.id) {
                         s.seen.push(packet.id);
                         if i == 9 {
@@ -886,7 +899,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             {
                 if actor == p
                     && packet.kind == StackKind::Spell
-                    && packet.source_card.name() == NAMES[i]
+                    && packet
+                        .source()
+                        .is_some_and(|source| source.card.name() == NAMES[i])
                     && !s.paid
                 {
                     s.paid = true;
@@ -894,21 +909,44 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 if actor == p
                     && matches!(packet.kind, StackKind::ActivatedAbility { .. })
-                    && Some(packet.card) == s.source
+                    && Some(
+                        packet
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .id,
+                    ) == s.source
                     && s.phase == 1
                 {
                     s.equipped = true;
                     s.life_before = o.players[p.index()].life;
                 }
                 if s.phase == 2 && s.started && packet.kind == StackKind::Spell {
-                    if actor == p && packet.source_card.name() == "Shock" {
+                    if actor == p
+                        && packet
+                            .source()
+                            .is_some_and(|source| source.card.name() == "Shock")
+                    {
                         s.shock = true;
                     }
-                    if actor == p && packet.source_card.name() == "Thrill of Possibility" {
+                    if actor == p
+                        && packet
+                            .source()
+                            .is_some_and(|source| source.card.name() == "Thrill of Possibility")
+                    {
                         s.thrill = true;
                     }
-                    if actor != p && i == 8 && packet.source_card.name() == "Shock" {
-                        s.enemy_shock = Some(packet.card);
+                    if actor != p
+                        && i == 8
+                        && packet
+                            .source()
+                            .is_some_and(|source| source.card.name() == "Shock")
+                    {
+                        s.enemy_shock = Some(
+                            packet
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .id,
+                        );
                     }
                 }
             }

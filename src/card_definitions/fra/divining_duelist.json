@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "31709ff5d234b258abe658c77e1e2a88301f7ff8a5fd513aea9f7ed3540ef10a"
   },
-  "physical_metadata_sha256": "42a5c4caf1e6c0332ac14d563e47848c432a404e2835609556100bea382d8821"
+  "physical_metadata_sha256": "42a5c4caf1e6c0332ac14d563e47848c432a404e2835609556100bea382d8821",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DiviningDuelist.java",
+  "java_sha256": "6b3680fbab0f210999f9b5415891fd748e43c7ea3fd9e883e00eb1596e26b335"
 }

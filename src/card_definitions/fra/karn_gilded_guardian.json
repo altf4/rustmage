@@ -3,10 +3,26 @@
   "catalogue_id": 2320,
   "oracle_id": "20b90a18-ff62-4995-b0d6-fbef44dca357",
   "facts_sha256": "35836e10023e59395240067c8b9e45ef830f1092b295b9ef8f04ca68c5ba1994",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d23539d4548fc3ffdce55360b445417930b2b7d6cf9f171d0ad1902c1f4586de"
   },
-  "physical_metadata_sha256": "eb7056274712077518e23fdb0b6a269c60e909c058e2735d57e6b6e89059408b"
+  "physical_metadata_sha256": "eb7056274712077518e23fdb0b6a269c60e909c058e2735d57e6b6e89059408b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KarnGildedGuardian.java",
+  "java_sha256": "5bae556d440f403c6e8d60f60217af5ab8549d5c7d4eaf0bf4461fa0b36f3061",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsAmongControlledPermanentsCount.java",
+      "sha256": "94d0639d201ef40c27aa8b05d8dc072166ac4f2c82494425ebe1449d385eb8a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

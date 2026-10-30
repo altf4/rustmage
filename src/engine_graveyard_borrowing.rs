@@ -52,9 +52,8 @@ fn source_subtype<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> Opt
         })
         .then_some(subtype)
 }
-fn width(card: Card) -> u64 {
-    u64::try_from(card.activations().len() + usize::from(card.mana_color().is_some()))
-        .capacity("graveyard borrowed activation width exhausted")
+fn width(_card: Card) -> u64 {
+    borrowed_activations::DONOR_SLOT_WIDTH
 }
 /// Existing exile and graveyard acquisitions occupy a single source-local space.
 pub(super) fn next_slot<W: CharacteristicWorld + ?Sized>(world: &W, source: ObjectRef) -> u64 {
@@ -102,7 +101,7 @@ fn current_rows<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> Vec<R
         let card = world.object(id);
         if card.zone != Zone::Graveyard
             || card.owner != controller
-            || card.is_token()
+            || !card.is_card()
             || !world.subtypes(id).has(card.card, subtype)
         {
             continue;
@@ -202,12 +201,15 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
     for row in current_rows(world, id) {
         for (index, _) in row.definition.activations().iter().enumerate() {
             let ability = index as u16;
+            if row.definition.legacy_subtype_mana_activation(ability) {
+                continue;
+            }
             if row.definition.grants_activation(ability)
                 || row.definition.self_granted_activation_template(ability)
             {
                 continue;
             }
-            let slot = row.first_slot + index as u64;
+            let slot = 0;
             result.push(BorrowedDescriptor {
                 source: row.source,
                 donor: row.donor,
@@ -215,11 +217,34 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: row.definition,
                 ability,
                 slot,
-                used: world.borrowed_activation_used(row.source, slot),
+                used: false,
+                acquisition: row.first_slot,
             });
         }
-        if row.definition.mana_color().is_some() {
-            let slot = row.first_slot + row.definition.activations().len() as u64;
+        if world.kinds(row.donor.card) & 2 != 0 {
+            let subtypes = world.subtypes(row.donor.card);
+            for (color, subtype) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                .iter()
+                .enumerate()
+            {
+                if !subtypes.has(row.definition, subtype) {
+                    continue;
+                }
+                let slot = 0;
+                result.push(BorrowedDescriptor {
+                    source: row.source,
+                    donor: row.donor,
+                    zone: Zone::Graveyard,
+                    definition: row.definition,
+                    ability: u16::MAX - 1 - color as u16,
+                    slot,
+                    used: false,
+                    acquisition: row.first_slot,
+                });
+            }
+        }
+        if !row.definition.is_land() && row.definition.mana_color().is_some() {
+            let slot = 0;
             result.push(BorrowedDescriptor {
                 source: row.source,
                 donor: row.donor,
@@ -227,7 +252,8 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: row.definition,
                 ability: u16::MAX,
                 slot,
-                used: world.borrowed_activation_used(row.source, slot),
+                used: false,
+                acquisition: row.first_slot,
             });
         }
     }

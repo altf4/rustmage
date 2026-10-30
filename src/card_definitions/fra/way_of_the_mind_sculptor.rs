@@ -1,16 +1,17 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete pinned Oracle and XMage behavior; gated pending validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::EnsureJaceToken, Instruction::EmpowerJace(5)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::LoyaltyAbilityActivatedRemoving(2),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        },
+    ],
     ..CardRules::EMPTY
 };

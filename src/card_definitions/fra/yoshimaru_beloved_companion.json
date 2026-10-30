@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6910603e98bb33b17bf4a1fcc597789f137f35bd2d9dab0604a2a0fbf8d4c5ba"
   },
-  "physical_metadata_sha256": "b1dc852de80bfd9eba9b9f96c476c980cc57e23770702ac3da0102b0272e6f87"
+  "physical_metadata_sha256": "b1dc852de80bfd9eba9b9f96c476c980cc57e23770702ac3da0102b0272e6f87",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/y/YoshimaruBelovedCompanion.java",
+  "java_sha256": "3456921fecb1298d7a598efa5aa3098ef7f6a82146725c3bdc66b13434a0a0c7"
 }

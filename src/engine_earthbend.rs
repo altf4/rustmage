@@ -9,7 +9,7 @@ pub struct EarthbendReturnView {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EarthbendReturn {
     subject: ObjectRef,
-    item: SpellView,
+    pub(super) item: SpellView,
 }
 impl Game {
     pub(super) fn animate_earthbend_targets(&mut self, item: &SpellView) {
@@ -63,6 +63,7 @@ impl Game {
             item.id = self.next_stack_id();
             item.kind = StackKind::DelayedReturn;
             item.return_link = Some(Box::new(ReturnLinkView {
+                exile_after: false,
                 additional_returning: None,
                 object: event.after,
                 zone: event.destination,
@@ -71,6 +72,7 @@ impl Game {
                 tapped: true,
             }));
             item.targets.clear();
+            item.target_type_slots = None;
             item.mode = None;
             self.state.pending_triggers.push(item);
         }

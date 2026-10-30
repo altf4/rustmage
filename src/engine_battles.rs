@@ -14,12 +14,20 @@ impl Game {
         let source = self.object_view(reference.card);
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            source: Some(StackSourceView {
+                id: source.id,
+                object: reference,
+                card: source.card,
+                facts: DamageFacts::from_view(&source),
+            }),
+            source_less_rule: None,
             additional_triggers: source.additional_triggers,
             source_move: None,
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
             target_kinds_lki: None,
+            target_type_slots: None,
             gift: None,
             reflexive_subject: None,
             delayed_warp_exile: None,
@@ -36,18 +44,22 @@ impl Game {
             is_copy: false,
             delayed_sacrifice: None,
             x: None,
+            loyalty_x: None,
+            reflexive_target_limit: None,
             attachment_trigger: None,
             cast: None,
             entering_object: None,
             evidence_collected: false,
             id,
             kind: StackKind::SiegeDefeat,
-            source_card: source.card,
+
+            split_second: false,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
+            mana_tap_bonus: None,
             source_attachment: source.attached_to,
             source_transform: None,
-            source_facts: DamageFacts::from_view(&source),
+
             related_stack: None,
             damage_event: None,
             damage_received: None,
@@ -56,15 +68,16 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
+            event_player: None,
             event_object: None,
             manifest_event: None,
             sacrificed_toughness: None,
             sacrificed_power: None,
-            card: source.id,
-            object: reference,
+
             targets: Vec::new(),
             mode: None,
             controller: source.controller,
@@ -81,7 +94,8 @@ impl Game {
         }
         let source = self.object_ref(id);
         let pending = |item: &SpellView| {
-            item.object == source
+            item.source
+                .is_some_and(|identity| identity.object == source)
                 && !matches!(
                     item.kind,
                     StackKind::Spell | StackKind::ActivatedAbility { .. }
@@ -106,16 +120,19 @@ impl Game {
                 .is_some_and(|r| pending(&r.item))
     }
     pub(super) fn resolve_siege_defeat(&mut self, item: &SpellView) -> bool {
-        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+        let Some(source) = item.source else {
+            return false;
+        };
+        if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return false;
         }
-        let token = self.state.objects[item.card as usize].is_token();
-        let event = self.move_object(item.card, Zone::Exile);
+        let token = self.state.objects[source.id as usize].is_token();
+        let event = self.move_object(source.id, Zone::Exile);
         if token
             || !event.moved
             || event.destination != Zone::Exile
-            || self.object_ref(item.card) != event.after
-            || self.state.objects[item.card as usize]
+            || self.object_ref(source.id) != event.after
+            || self.state.objects[source.id as usize]
                 .card
                 .back_face()
                 .is_none()
@@ -127,6 +144,7 @@ impl Game {
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,

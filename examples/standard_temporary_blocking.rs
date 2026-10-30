@@ -64,7 +64,9 @@ fn choose(g: &Game, o: &Observation, actions: &[Action]) -> usize {
             } => {
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let attachment = o.announcing.as_ref().is_some_and(|s| {
-                    s.kind == StackKind::Spell && s.source_card.name() == "War Squeak"
+                    s.kind == StackKind::Spell
+                        && s.source()
+                            .is_some_and(|source| source.card.name() == "War Squeak")
                 });
                 if attachment {
                     if b.owner == o.actor.unwrap() {
@@ -155,7 +157,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let action = actions[choose(&g, &before, &actions)].clone();
             let boundary = before.announcing.is_some()
                 || before.resolving.is_some()
-                || before.stack.iter().any(|s| index(s.source_card).is_some());
+                || before
+                    .stack
+                    .iter()
+                    .any(|s| s.source().and_then(|source| index(source.card)).is_some());
             let saved = g.snapshot();
             let mut fork = boundary.then(|| g.clone());
             g.apply(p, action.clone())?;
@@ -166,7 +171,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for s in &after.stack {
                 if s.kind == StackKind::Spell
                     && !before.stack.iter().any(|old| old.id == s.id)
-                    && let Some(i) = index(s.source_card)
+                    && let Some(i) = s.source().and_then(|source| index(source.card))
                 {
                     casts[i] += 1;
                 }
@@ -186,7 +191,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             for s in before.stack.iter().chain(before.resolving.iter()) {
                 if s.kind != StackKind::Spell
-                    && let Some(i) = index(s.source_card)
+                    && let Some(i) = s.source().and_then(|source| index(source.card))
                     && !s.targets.is_empty()
                     && !after.stack.iter().any(|a| a.id == s.id)
                     && !after.resolving.as_ref().is_some_and(|a| a.id == s.id)

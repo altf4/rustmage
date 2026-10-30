@@ -1,16 +1,12 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct Oracle behavior and pinned XMage sources; admission awaits rules tests.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::ExileAllCreaturesCount,
+            Instruction::EnsureJaceToken,
+            Instruction::EmpowerJaceScaled(AmountValue::MovedCount),
+        ],
+    ),
     ..CardRules::EMPTY
 };

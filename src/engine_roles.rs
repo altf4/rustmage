@@ -23,13 +23,17 @@ pub(super) struct RoleState {
     pub toughness_combat_damage: [bool; 2],
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
+    pub until_next_turn_stats: Vec<UntilNextTurnStatsView>,
     pub live_static: Vec<LiveStaticSourceView>,
     pub stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_timestamps: Vec<AbilitySourceTimestampView>,
     pub creature_types: Vec<subtypes::CreatureTypesEffectView>,
+    pub basic_land_types: Vec<subtypes::BasicLandTypesEffectView>,
     pub animations: Vec<AnimationView>,
     pub keyword_effects: Vec<KeywordEffectView>,
     pub source_linked_effects: Vec<SourceLinkedEffectView>,
+    /// Exact paid exile objects cast while their grant activation is still pending.
+    pub exile_grant_cast_history: Vec<ObjectRef>,
     pub resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
@@ -50,13 +54,17 @@ impl RoleState {
         std::mem::size_of::<Self>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
+            + self.until_next_turn_stats.len() * std::mem::size_of::<UntilNextTurnStatsView>()
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()
             + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()
             + self.ability_timestamps.len() * std::mem::size_of::<AbilitySourceTimestampView>()
             + self.creature_types.len() * std::mem::size_of::<subtypes::CreatureTypesEffectView>()
+            + self.basic_land_types.len()
+                * std::mem::size_of::<subtypes::BasicLandTypesEffectView>()
             + self.animations.len() * std::mem::size_of::<AnimationView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
             + self.source_linked_effects.len() * std::mem::size_of::<SourceLinkedEffectView>()
+            + self.exile_grant_cast_history.len() * std::mem::size_of::<ObjectRef>()
             + self.resolved_ability_modifications.len()
                 * std::mem::size_of::<ResolvedAbilityModificationView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
@@ -71,12 +79,15 @@ impl Game {
         ability: u16,
         subject: Option<ObjectRef>,
     ) {
+        let Some(source) = item.source else {
+            return;
+        };
         let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
         if matches!(condition, TriggerCondition::InterveningIf { .. })
             && !self.trigger_guards_hold(
                 condition,
                 item.controller,
-                item.object,
+                source.object,
                 item.source_tapped,
             )
         {
@@ -87,10 +98,11 @@ impl Game {
         reflexive.kind = StackKind::TriggeredAbility { ability };
         reflexive.is_copy = false;
         reflexive.targets.clear();
+        reflexive.target_type_slots = None;
         reflexive.mode = None;
         if let Some((_, program)) = reflexive.program()
             && let Some(facts) = card_quantities::counter_quantity_facts(program, |kind| {
-                self.source_counter_quantity_live(reflexive.object, kind)
+                self.source_counter_quantity_live(source.object, kind)
                     .unwrap_or_else(|| {
                         item.source_counter_lki
                             .as_ref()
@@ -111,7 +123,7 @@ impl Game {
         } = condition
         {
             let count = self
-                .source_counter_quantity_live(reflexive.object, kind)
+                .source_counter_quantity_live(source.object, kind)
                 .unwrap_or(0);
             let facts = reflexive
                 .source_counter_lki
@@ -137,14 +149,17 @@ impl Game {
                 object,
                 facts: EventObjectFacts::DamageActor(self.damage_source(object.card)),
                 conniver_creature: None,
+                subtype_lki: None,
             }));
         }
         self.state.pending_triggers.push(reflexive);
     }
     pub(super) fn exact_source_can_tap(&self, item: &SpellView) -> bool {
-        self.on_battlefield(item.card)
-            && self.object_ref(item.card) == item.object
-            && !self.state.objects[item.card as usize].tapped
+        item.source.is_some_and(|source| {
+            self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object
+                && !self.state.objects[source.id as usize].tapped
+        })
     }
     pub(super) fn complete_optional_tap_reflexive(&mut self) {
         let resolution = self.state.resolving.as_ref().unwrap();
@@ -155,10 +170,11 @@ impl Game {
         };
         let (item, ability) = (resolution.item.clone(), *ability);
         if self.exact_source_can_tap(&item) {
-            self.tap_objects(&[item.card]);
-            if self.on_battlefield(item.card)
-                && self.object_ref(item.card) == item.object
-                && self.state.objects[item.card as usize].tapped
+            let source = item.source.expect("tap source was checked");
+            self.tap_objects(&[source.id]);
+            if self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object
+                && self.state.objects[source.id as usize].tapped
             {
                 self.queue_reflexive(&item, ability, None);
             }
@@ -199,6 +215,9 @@ impl Game {
         token: Card,
         filter: CreatureFilter,
     ) {
+        let Some(source) = item.source else {
+            return;
+        };
         assert!(token.role().is_some(), "predefined Role factory required");
         let recipients = self
             .state
@@ -208,7 +227,7 @@ impl Game {
             .filter_map(|(id, _)| {
                 let id = id as CardId;
                 let recipient = self.object_ref(id);
-                (self.creature_matches(filter, item.controller, item.object, id)
+                (self.creature_matches(filter, item.controller, source.object, id)
                     && self.aura_can_enchant(token, item.controller, recipient))
                 .then_some(recipient)
             })
@@ -262,6 +281,11 @@ impl Game {
                     row.timestamp = timestamp;
                 }
             }
+            for row in &mut r.basic_land_types {
+                if row.recipient == source && row.timestamp == 0 {
+                    row.timestamp = timestamp;
+                }
+            }
             for v in &mut r.ability_timestamps {
                 if v.source == source {
                     v.timestamp = timestamp;
@@ -306,14 +330,17 @@ impl Game {
     }
 
     pub(super) fn resolve_role(&mut self, item: &SpellView, token: Card, subject: Subject) {
+        let Some(source) = item.source else {
+            return;
+        };
         assert!(
             token.role().is_some(),
             "Role instruction requires a predefined Role factory"
         );
         let recipients: Vec<_> = match subject {
-            Subject::Source => (self.on_battlefield(item.card)
-                && self.object_ref(item.card) == item.object)
-                .then_some(item.object)
+            Subject::Source => (self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object)
+                .then_some(source.object)
                 .into_iter()
                 .collect(),
             Subject::Attached => self

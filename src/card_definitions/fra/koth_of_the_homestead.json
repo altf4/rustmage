@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "28de9f77a5d8f30b43e498aba42bbf9d7587ce2f16d1c7ec53ab94f7d1ba75df"
   },
-  "physical_metadata_sha256": "f995ac0047c00bffb3b7b58d305cfd30960dcf3552c16592d3346bdc8c65a3d0"
+  "physical_metadata_sha256": "f995ac0047c00bffb3b7b58d305cfd30960dcf3552c16592d3346bdc8c65a3d0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KothOfTheHomestead.java",
+  "java_sha256": "67697f528d0bb2446e89970a1707c1dfc77429ca189d23c96e1a5d23f5728b75"
 }

@@ -3,10 +3,31 @@
   "catalogue_id": 5120,
   "oracle_id": "c1994d6a-984d-4b75-9198-1f1822eab6eb",
   "facts_sha256": "77ab846212747e402e43779c6f3c3241157491b606f1bf01dc15fd6401fde6ef",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "692fa1cb3d601ae5911c2e4de6fb3b90aa6db9016ad30b0f7524b03393bcdbba"
   },
-  "physical_metadata_sha256": "79038e8a92a3dab65d49c18e9fc76ab921857ec0a44d005a0e1a2b916c4206a5"
+  "physical_metadata_sha256": "79038e8a92a3dab65d49c18e9fc76ab921857ec0a44d005a0e1a2b916c4206a5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WrathOfTheBloodmane.java",
+  "java_sha256": "3f159572e0726a5139b86af82b4e1ff8e9cac1ea90a1b3850d996c3483893598",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ],
+  "rules_tests": "src/assurance/fra_wrath_twisted.rs"
 }

@@ -7,7 +7,7 @@ impl Game {
             panic!("optional once-per-turn use requires a triggered ability")
         };
         TriggerUse {
-            source: item.object,
+            source: item.source.expect("triggered ability has source").object,
             ability,
             origin: item.source_ability_origin,
         }
@@ -39,6 +39,7 @@ impl Game {
                     .library
                     .iter()
                     .rev()
+                    .filter(|&&id| self.state.objects[id as usize].is_card())
                     .take(7)
                     .copied(),
             );

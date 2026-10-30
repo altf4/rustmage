@@ -267,6 +267,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             return (base, stats);
         }
         stats += self.self_granted_artifact_bonus(id);
+        if let Some(roles) = self.roles() {
+            for effect in roles
+                .until_next_turn_stats
+                .iter()
+                .filter(|effect| effect.recipient == self.reference(id))
+            {
+                stats += Stats {
+                    power: i128::from(effect.power),
+                    toughness: i128::from(effect.toughness),
+                };
+            }
+        }
         stats += self.chosen_bonus(id);
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
@@ -292,7 +304,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in self.static_sources() {
             let object = self.object(source);
-            if object.zone != Zone::Battlefield {
+            if object.zone != Zone::Battlefield
+                && !(object.zone == Zone::Command && object.card.is_emblem())
+            {
                 continue;
             }
             if object.card.static_ability_groups().iter().any(|group| {
@@ -509,6 +523,37 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         (stats, keywords)
     }
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
+        let base = self.base_keywords(id);
+        let target = self.object(id);
+        if target.zone != Zone::Stack || self.kinds(id) & (4 | 8) == 0 {
+            return base;
+        }
+        let grant = self.static_sources().iter().copied().any(|source| {
+            let object = self.object(source);
+            object.zone == Zone::Battlefield
+                && object.controller == target.controller
+                && object.card.static_ability_groups().iter().any(|g| {
+                    g.fragments.iter().any(|f| {
+                        matches!(
+                            f,
+                            StaticAbilityFragment::ControlledInstantSorcerySplitSecond
+                        )
+                    })
+                })
+                && self.continuous_fragment_available(source, |f| {
+                    matches!(
+                        f,
+                        StaticAbilityFragment::ControlledInstantSorcerySplitSecond
+                    )
+                })
+        });
+        if grant {
+            base.union(Keywords::SPLIT_SECOND)
+        } else {
+            base
+        }
+    }
+    fn base_keywords(&self, id: CardId) -> Keywords {
         if (matches!(self.object(id).zone, Zone::Battlefield | Zone::Stack)
             || self
                 .counter_amounts(id)
@@ -556,6 +601,23 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
                     match *fragment {
+                        StaticAbilityFragment::ControlledPermanentKeywords {
+                            kinds,
+                            keywords: grant,
+                        } if target.controller == object.controller
+                            && CharacteristicWorld::kinds(self, id) & kinds != 0 =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
+                        StaticAbilityFragment::ControlledSubtypeKeywords {
+                            subtype,
+                            keywords: grant,
+                        } if target.controller == object.controller
+                            && CharacteristicWorld::subtypes(self, id)
+                                .has(CharacteristicWorld::definition(self, id), subtype) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::PlusOnePlacedKeywords {
                             filter,
                             keywords: grant,
@@ -576,6 +638,14 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                             ) =>
                         {
                             keywords = keywords.union(Keywords::DEATHTOUCH)
+                        }
+                        StaticAbilityFragment::CounterKeywordOther(kind, grant)
+                            if source != id
+                                && target.controller == object.controller
+                                && self.is_creature(id)
+                                && self.counter_count(id, kind) > 0 =>
+                        {
+                            keywords = keywords.union(grant)
                         }
                         StaticAbilityFragment::CounterKeywordOwnTurn(kind, grant)
                             if object.controller == self.state.active
@@ -914,7 +984,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         grants.push(GrantedAbilityView {
                             grantor: source,
                             granting_card: self.object(id).card,
-                            ability,
+                            ability: Some(ability),
+                            static_rule: None,
                             grantor_controller: self.object(id).controller,
                             timestamp,
                         });
@@ -947,7 +1018,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .map(|grant| GrantedAbilityView {
                     grantor: grant.source,
                     granting_card: grant.granting_card,
-                    ability: grant.ability,
+                    ability: match grant.kind {
+                        ability_order::GrantedAbilityKind::Template(index) => Some(index),
+                        _ => None,
+                    },
+                    static_rule: match grant.kind {
+                        ability_order::GrantedAbilityKind::PlaneswalkerAttackLimit => {
+                            Some(ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit)
+                        }
+                        _ => None,
+                    },
                     grantor_controller: grant.grantor_controller,
                     timestamp: grant.timestamp,
                 })
@@ -1000,8 +1080,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             damage: obj.damage,
             damaged_this_turn: obj.damaged_this_turn,
             dealt_damage_this_turn: obj.dealt_damage_this_turn,
+            dealt_combat_damage_this_incarnation: obj.dealt_combat_damage_this_incarnation,
             counters: self.counter_amounts(id).to_owned(),
             used_abilities: obj.used_abilities,
+            loyalty_activated_this_turn: obj.loyalty_activated_this_turn,
             class_level: (obj.zone == Zone::Battlefield
                 && (obj.class_level > 1 || self.granted_subtypes(id).has(definition, "Class")))
             .then_some(obj.class_level),
@@ -1024,11 +1106,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             power_above_base: obj.zone == Zone::Battlefield
                 && self.is_creature(id)
                 && stats.power > base.power,
-            keywords: if inset {
-                definition.info().keywords
-            } else {
-                self.keywords(id)
-            },
+            keywords: self.keywords(id),
             copy_recipe: self.stored_recipe(id),
             temporary_copy: if obj.zone == Zone::Battlefield {
                 self.world
@@ -1065,6 +1143,24 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn object(&self, id: CardId) -> &Object {
         self.world.object(id)
+    }
+    fn ability_origin(&self, id: CardId) -> Option<u64> {
+        self.world.ability_origin(id)
+    }
+    fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
+        self.world.borrowed_slots_state()
+    }
+    fn borrowed_slots(&self) -> &[borrowed_activations::SlotRow] {
+        self.world.borrowed_slots()
+    }
+    fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
+        self.world.graveyard_borrowing_state()
+    }
+    fn graveyard_borrowing(&self) -> &[graveyard_borrowing::Row] {
+        self.world.graveyard_borrowing()
+    }
+    fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
+        self.world.borrowed_activation_used(source, slot)
     }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.world.stored_recipe(id)

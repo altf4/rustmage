@@ -42,7 +42,11 @@ fn verify_damage(old: &ObjectView, after: &Observation, amount: i128) {
     }
 }
 fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
-    let name = item.source_card.name();
+    let name = item
+        .source()
+        .expect("example expects an object-backed packet")
+        .card
+        .name();
     let mode = item.mode;
     let mut checks = 0;
     if name == "Dragonback Assault"
@@ -196,7 +200,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 checks += n;
                 if n > 0 {
                     resolved.insert((
-                        item.source_card.name(),
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
                         format!("{:?}", item.kind),
                         item.mode,
                     ));

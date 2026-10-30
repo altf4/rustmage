@@ -101,7 +101,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 .iter()
                 .any(|item| item.id == id && item.controller == actor),
             Target::Spell(id) => observation.stack.iter().any(|item| {
-                item.kind == StackKind::Spell && item.card == id && item.controller == actor
+                item.kind == StackKind::Spell
+                    && item.source.is_some_and(|source| source.id == id)
+                    && item.controller == actor
             }),
         };
         if own == beneficial { 70 } else { -10 }
@@ -172,6 +174,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
             Action::ChooseEntryTimestamp { .. } => 120,
             Action::ChooseReplacement { .. }
+            | Action::ChooseSelfCounterReplacement { .. }
             | Action::ChooseDamagePrevention { .. }
             | Action::ChooseDamageEvent { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
@@ -191,7 +194,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::PutHandPermanent { .. }
             | Action::PutHandLand { .. }
             | Action::ChooseArmy { .. }
-            | Action::SelectLand { .. } => 50,
+            | Action::ChooseJace { .. }
+            | Action::SelectLand { .. }
+            | Action::SelectResolutionExile { .. } => 50,
+            Action::ProliferatePermanent { .. } | Action::ProliferatePlayer { .. } => 50,
+            Action::FinishProliferate => 0,
             Action::FinishLandSelection => -1,
             Action::DeclineHandEntry => -1,
             Action::ChooseBlight { pay } => i128::from(*pay) * 40,
@@ -206,7 +213,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 let life_cost = observation
                     .announcing
                     .as_ref()
-                    .is_some_and(|s| s.source_card.life_x_cost());
+                    .is_some_and(|s| s.source.is_some_and(|source| source.card.life_x_cost()));
                 if life_cost
                     && i128::from(*value) >= observation.players[actor.index()].life
                     && *value != 0
@@ -268,6 +275,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ChooseRevealedDiscard { .. } => 60,
             Action::ChooseHandCard { object: None } => -1,
             Action::FinishMilledSelection => 0,
+            Action::SelectTargetCounter { .. } => 1,
+            Action::FinishTargetCounterRemoval => 0,
             Action::RecoverMilled { object } => {
                 if object.is_some() {
                     60
@@ -317,6 +326,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnouncePlot { .. } | Action::BeginFaceUp { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
+            | Action::AnnouncePlaneswalkerGrant { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
             | Action::AnnounceBorrowedAbility { .. }
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
@@ -329,6 +339,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::PayAttackCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
+            Action::ChooseOutsideCard { .. }
+            | Action::ChooseOutsideBasic { .. }
+            | Action::ChooseOutsideRevealed { .. }
+            | Action::ChooseOutsideEntryReplacement { .. }
+            | Action::ChooseOutsideSelfReplacement { .. } => 60,
+            Action::CancelOutsideCard | Action::DeclineOutsideCards => -1,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
             Action::ChooseSearchDestination { destination } => {
                 if *destination == crate::SearchDestination::Hand {
@@ -399,6 +415,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseEntryValue { .. } => 0,
+            Action::ChooseEntryBehold { object } => {
+                if object.is_some() {
+                    80
+                } else {
+                    40
+                }
+            }
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises
                 // both branches as life falls during games.
@@ -443,10 +466,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     })
                 })
                 .unwrap_or(0),
-            Action::ChooseTarget { target } => {
+            Action::ChooseTarget { target } | Action::ChooseTargetCardType { target, .. } => {
                 let item = observation.announcing.as_ref().unwrap();
-                if item.kind == StackKind::Spell && item.source_card.aura().is_some() {
-                    return aura_score(item.source_card, *target);
+                if item.kind == StackKind::Spell
+                    && let Some(source) = item.source
+                    && source.card.aura().is_some()
+                {
+                    return aura_score(source.card, *target);
                 }
                 let program = item.program().map(|(_, program)| program).unwrap_or(&[]);
                 target_score(program, *target)
@@ -555,14 +581,19 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::TapMana { card } => {
                 if observation.resolution_payment.is_some() {
                     let mut production = [0; 6];
-                    production[observation
-                        .objects
-                        .iter()
-                        .find(|o| o.id == *card)
-                        .unwrap()
-                        .card
-                        .mana_color()
-                        .unwrap()] = 1;
+                    let object = observation.objects.iter().find(|o| o.id == *card).unwrap();
+                    let color = if !object.card.is_land() && object.card.mana_color().is_some() {
+                        object.card.mana_color()
+                    } else if object.kinds & 2 != 0 {
+                        ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                            .iter()
+                            .position(|subtype| object.has_subtype(subtype))
+                            .or(object.card.mana_color())
+                    } else {
+                        object.card.mana_color()
+                    }
+                    .expect("legal mana action has a color");
+                    production[color] = 1;
                     return resolution_mana_score([0; 6], production);
                 }
                 if tap_for_payment { 10 } else { -20 }
@@ -583,6 +614,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseToken { .. } => 10,
+            Action::ChooseKeyword { .. } => 10,
             Action::CancelAttackDeclaration
             | Action::AbortAttackPayment
             | Action::AbortFaceUpPayment => -100,

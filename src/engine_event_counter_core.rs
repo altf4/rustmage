@@ -154,12 +154,12 @@ impl Game {
                     continue;
                 }
                 let matches = |item: &SpellView| {
-                    item.object == source.reference
-                        && item.source_card == source.card
-                        && item.kind
-                            == (StackKind::TriggeredAbility {
-                                ability: index as u16,
-                            })
+                    item.source.is_some_and(|identity| {
+                        identity.object == source.reference && identity.card == source.card
+                    }) && item.kind
+                        == (StackKind::TriggeredAbility {
+                            ability: index as u16,
+                        })
                 };
                 let queued = self
                     .state

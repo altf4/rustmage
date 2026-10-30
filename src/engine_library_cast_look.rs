@@ -36,6 +36,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(usize::from(amount))
             .map(|&id| self.object_ref(id))
             .collect::<Vec<_>>();
@@ -59,6 +60,7 @@ impl Game {
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value,
             origin: Zone::Library,

@@ -37,6 +37,25 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &before);
     }
+    pub(super) fn exile_all_creatures_count(&mut self) {
+        let ids = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(i, o)| o.zone == Zone::Battlefield && self.is_creature(*i as CardId))
+            .map(|(i, _)| i as CardId)
+            .collect::<Vec<_>>();
+        let before = self.death_trigger_sources();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let count = events
+            .iter()
+            .filter(|event| event.moved && event.destination == Zone::Exile)
+            .count();
+        self.state.resolving.as_mut().unwrap().moved_count =
+            Some(u64::try_from(count).capacity("exiled creature count exhausted"));
+        self.finish_zone_events(&events, &before);
+    }
     pub(super) fn return_exiled_result_to_hands(&mut self) {
         let objects = std::mem::take(&mut self.state.resolving.as_mut().unwrap().milled);
         let moves = objects
@@ -44,7 +63,7 @@ impl Game {
             .filter(|r| {
                 self.object_ref(r.card) == *r
                     && self.state.objects[r.card as usize].zone == Zone::Exile
-                    && !self.state.objects[r.card as usize].is_token()
+                    && self.state.objects[r.card as usize].is_card()
             })
             .map(|r| self.entry_move(r.card, Zone::Hand, false))
             .collect();
@@ -71,7 +90,7 @@ impl Game {
         self.object_ref(object.card) == object
             && o.zone == Zone::Hand
             && o.owner == player
-            && !o.is_token()
+            && o.is_card()
             && o.card.is_creature()
             && !self.hand_deployment().unwrap().selected[player.index()].contains(&object)
     }
@@ -176,6 +195,7 @@ impl Game {
             .iter()
             .rev()
             .copied()
+            .filter(|&id| self.state.objects[id as usize].is_card())
             .collect::<Vec<_>>();
         self.state.resolving.as_mut().unwrap().milled.clear();
         for id in ids {
@@ -192,8 +212,9 @@ impl Game {
         }
     }
     pub(super) fn offer_source_counter_or_cast(&mut self, item: &SpellView) -> bool {
-        if self.on_battlefield(item.object.card) && self.object_ref(item.object.card) == item.object
-        {
+        if item.source.is_some_and(|source| {
+            self.on_battlefield(source.id) && self.object_ref(source.id) == source.object
+        }) {
             let skip_to = self.state.resolving.as_ref().unwrap().pc;
             self.state.pending = Pending::EffectOptional {
                 player: item.controller,
@@ -215,11 +236,12 @@ impl Game {
         let item = r.item.clone();
         if accept {
             self.state.resolving.as_mut().unwrap().milled.clear();
-            if self.on_battlefield(item.object.card)
-                && self.object_ref(item.object.card) == item.object
+            if let Some(source) = item.source
+                && self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object
             {
                 self.effect_counter_by(
-                    item.object.card,
+                    source.id,
                     CounterKind::PlusOne,
                     1,
                     item.controller,

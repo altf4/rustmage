@@ -38,22 +38,20 @@ impl Game {
             .chain(self.state.announcing.iter().map(|a| &a.item))
             .chain(self.state.resolving.iter().map(|r| &r.item))
             .filter(|s| s.kind == StackKind::Spell)
-            .map(|s| {
-                let info = s.source_card.info();
-                SpellCharacteristicsView {
+            .filter_map(|s| {
+                let source = s.source?;
+                let info = source.card.info();
+                Some(SpellCharacteristicsView {
                     id: s.id,
-                    object: s.object,
-                    physical_card: s
-                        .cast
-                        .and_then(|c| c.physical_card)
-                        .unwrap_or(s.source_card),
+                    object: source.object,
+                    physical_card: s.cast.and_then(|c| c.physical_card).unwrap_or(source.card),
                     face: s.cast.map_or(CastFace::Normal, |c| c.face),
                     name: info.name,
                     mana_cost: info.mana_cost,
                     mana_value: s.mana_value(),
                     type_line: info.type_line,
-                    colors: s.source_card.colors(),
-                }
+                    colors: source.card.colors(),
+                })
             })
             .collect()
     }
@@ -81,11 +79,12 @@ impl Game {
         item: &SpellView,
         destination: Zone,
     ) -> ZoneChange {
-        let mut before = self.object_view(item.card);
-        if before.zone == Zone::Stack && before.reference == item.object {
-            before.card = item.source_card;
-            before.name = item.source_card.name();
-            before.kinds = item.source_card.kind_mask();
+        let source = item.source.expect("adventure spell has a source");
+        let mut before = self.object_view(source.id);
+        if before.zone == Zone::Stack && before.reference == source.object {
+            before.card = source.card;
+            before.name = source.card.name();
+            before.kinds = source.card.kind_mask();
             before.keywords = item.source_keywords;
             before.power = 0;
             before.toughness = 0;
@@ -95,14 +94,17 @@ impl Game {
         event
     }
     pub(super) fn finish_adventure(&mut self, item: &SpellView) {
-        if self.state.objects[item.card as usize].zone != Zone::Stack
-            || self.object_ref(item.card) != item.object
+        let Some(source) = item.source else {
+            return;
+        };
+        if self.state.objects[source.id as usize].zone != Zone::Stack
+            || self.object_ref(source.id) != source.object
         {
             return;
         }
         let event = self.move_adventure_spell(item, Zone::Exile);
         if event.moved && event.destination == Zone::Exile {
-            let card = self.state.objects[item.card as usize].card;
+            let card = self.state.objects[source.id as usize].card;
             self.state
                 .adventures
                 .get_or_insert_with(|| Box::new(AdventureState::default()))
@@ -115,34 +117,41 @@ impl Game {
         }
     }
     pub(super) fn finish_omen(&mut self, item: &SpellView) {
-        if self.state.objects[item.card as usize].zone != Zone::Stack
-            || self.object_ref(item.card) != item.object
+        let Some(source) = item.source else {
+            return;
+        };
+        if self.state.objects[source.id as usize].zone != Zone::Stack
+            || self.object_ref(source.id) != source.object
         {
             return;
         }
-        let owner = self.state.objects[item.card as usize].owner;
+        let owner = self.state.objects[source.id as usize].owner;
         let event = self.move_adventure_spell(item, Zone::Library);
         if event.moved && event.destination == Zone::Library {
             self.forget_library_top(owner);
-            self.state
-                .rng
-                .shuffle(&mut self.state.players[owner.index()].library);
+            self.shuffle_library_cards(owner);
         }
     }
     /// Real stack and announcement packets carry the chosen immutable definition.
     pub(super) fn effective_spell_card(&self, id: CardId) -> Card {
         if let Some(a) = &self.state.announcing
             && a.item.kind == StackKind::Spell
-            && a.item.card == id
+            && let Some(source) = a.item.source
+            && source.id == id
         {
-            return a.item.source_card;
+            return source.card;
         }
         self.state
             .stack
             .iter()
             .chain(self.state.resolving.iter().map(|r| &r.item))
-            .find(|s| s.kind == StackKind::Spell && s.card == id)
-            .map_or(self.state.objects[id as usize].card, |s| s.source_card)
+            .find_map(|s| {
+                (s.kind == StackKind::Spell)
+                    .then_some(s.source)
+                    .flatten()
+                    .filter(|source| source.id == id)
+            })
+            .map_or(self.state.objects[id as usize].card, |source| source.card)
     }
     pub(super) fn alternate_cast_available(
         &self,
@@ -189,24 +198,10 @@ impl Game {
                 .is_empty();
         }
         definition.cost_options().any(|cost| {
-            let reduction = self.spell_reduction_for_definition(
-                actor,
-                id,
-                definition.fixed_mana_value(),
-                definition,
-            );
-            self.spell_can_fund_total_for_definition(
-                actor,
-                id,
-                ManaCost {
-                    colored: cost.colored,
-                    generic: cost
-                        .generic
-                        .saturating_sub(u32::try_from(reduction).unwrap_or(u32::MAX)),
-                },
-                None,
-                definition,
-            )
+            self.spell_total_for_definition(actor, id, cost, definition)
+                .is_some_and(|total| {
+                    self.spell_can_fund_total_for_definition(actor, id, total, None, definition)
+                })
         })
     }
 }

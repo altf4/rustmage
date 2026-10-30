@@ -19,7 +19,8 @@ impl Game {
         if !rows.iter().any(|row| row.recipient.card == card) {
             return false;
         }
-        if CharacteristicWorld::activation_prohibited(self, actor, card)
+        if self.nonmana_actions_prohibited()
+            || CharacteristicWorld::activation_prohibited(self, actor, card)
             || self.named_activation_prohibited(card)
         {
             return false;
@@ -34,7 +35,8 @@ impl Game {
             };
             let rules = row.granting_card.activation(ability);
             let readiness = self.activation_readiness(actor, rules);
-            if !query.self_grant_available(row.recipient, row.timestamp)
+            if (rules.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, card))
+                || !query.self_grant_available(row.recipient, row.timestamp)
                 || !self.activation_guard_available(rules.guard, card, actor)
                 || !Self::object_activation_available_with_kinds(
                     &self.state.objects[card as usize],
@@ -45,7 +47,7 @@ impl Game {
                     &readiness,
                     usize::from(ability),
                     actor,
-                    sorcery,
+                    self.loyalty_timing(card, rules, actor, sorcery),
                 )
             {
                 continue;
@@ -95,7 +97,7 @@ impl Game {
         };
         let actor = self.state.objects[source.card as usize].controller;
         let mut item = self.activation_item(actor, source.card, ability);
-        item.source_card = row.granting_card;
+        item.set_source_definition(row.granting_card);
         item.source_ability_origin = Some(row.timestamp);
         item.self_granted_activation = Some(Box::new(SelfGrantedActivationContext {
             grant_timestamp: row.timestamp,

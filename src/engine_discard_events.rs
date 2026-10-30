@@ -14,6 +14,8 @@ pub(super) enum DiscardAfter {
     LoseLife(Player, i128),
     DrawActual { players: [bool; 2], bonus: u16 },
     RememberActual,
+    DrawUnlessOpponentDiscardedTwoNonland(Player),
+    NonlandReflexive { controller: Player, ability: u16 },
     ConniveCounters(ObjectRef, u64, Player),
     ChooseLand { player: Player, tapped: bool },
     ReturnLandFromGraveyard { player: Player, tapped: bool },
@@ -26,20 +28,13 @@ pub(super) struct DiscardContext {
     pub after: Option<DiscardAfter>,
 }
 impl DiscardContext {
-    pub fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>()
-            + self.sources.len() * std::mem::size_of::<ObjectView>()
+    /// Heap-owned initialized elements; the entry batch owns the inline context.
+    pub fn owned_bytes(&self) -> usize {
+        self.sources.len() * std::mem::size_of::<ObjectView>()
             + self
                 .sources
                 .iter()
-                .map(|s| {
-                    s.counters.owned_bytes()
-                        + s.temporary_copy_bytes()
-                        + s.abilities.as_ref().map_or(0, |a| {
-                            std::mem::size_of::<AbilityAvailabilityView>()
-                                + a.grants.len() * std::mem::size_of::<GrantedAbilityView>()
-                        })
-                })
+                .map(ObjectView::owned_bytes)
                 .sum::<usize>()
             + self.shuffles.len() * std::mem::size_of::<ObjectRef>()
     }
@@ -64,6 +59,13 @@ impl Game {
         cause: Option<Player>,
         after: Option<DiscardAfter>,
     ) {
+        // Discard moves cards from hand; transient copies in the hand are not
+        // eligible even when an effect supplies a broad object list.
+        let cards: Vec<_> = cards
+            .iter()
+            .copied()
+            .filter(|&id| self.state.objects[id as usize].is_card())
+            .collect();
         if cards.is_empty() {
             self.finish_discard_after(after, [0; 2], &[]);
             return;
@@ -117,7 +119,7 @@ impl Game {
             self.stage_discard_entries(moves, context);
             return;
         }
-        let events = self.move_objects_raw(cards, Zone::Graveyard);
+        let events = self.move_objects_raw(&cards, Zone::Graveyard);
         self.finish_discard_events(&events, context);
     }
     pub(super) fn finish_discard_events(&mut self, events: &[ZoneChange], context: DiscardContext) {
@@ -248,6 +250,42 @@ impl Game {
         events: &[ZoneChange],
     ) {
         match after {
+            Some(DiscardAfter::NonlandReflexive {
+                controller,
+                ability,
+            }) => {
+                let count = events
+                    .iter()
+                    .filter(|event| {
+                        event.moved
+                            && event.before.owner == controller
+                            && event.before.kinds & 2 == 0
+                    })
+                    .count();
+                if count > 0 {
+                    let item = self.state.resolving.as_ref().unwrap().item.clone();
+                    let before = self.state.pending_triggers.len();
+                    self.queue_reflexive(&item, ability, None);
+                    if self.state.pending_triggers.len() > before {
+                        let trigger = self.state.pending_triggers.last_mut().unwrap();
+                        trigger.reflexive_target_limit =
+                            Some(u32::try_from(count).expect("discard count exceeds u32"));
+                    }
+                }
+            }
+            Some(DiscardAfter::DrawUnlessOpponentDiscardedTwoNonland(controller)) => {
+                let nonland = events
+                    .iter()
+                    .filter(|event| {
+                        event.moved
+                            && event.before.owner == controller.other()
+                            && event.before.kinds & 2 == 0
+                    })
+                    .count();
+                if nonland < 2 {
+                    self.draw_many(controller, 1);
+                }
+            }
             Some(DiscardAfter::RememberActual) => {
                 self.state.resolving.as_mut().unwrap().moved_count =
                     Some(counts.into_iter().map(u64::from).sum());
@@ -272,7 +310,7 @@ impl Game {
                             && event.destination == Zone::Graveyard
                             && self.object_ref(event.after.card) == event.after
                             && self.state.objects[event.after.card as usize].zone == Zone::Graveyard
-                            && !event.before.is_token()
+                            && event.was_card
                     })
                     .map(|event| {
                         let mut movement =
@@ -356,6 +394,67 @@ impl Game {
 mod balin_result_tests {
     use super::*;
     use crate::engine::assurance::big_helpers::{named, setup};
+    #[test]
+    fn discard_context_counts_only_owned_elements() {
+        let mut context = DiscardContext {
+            sources: Vec::new(),
+            cycled: None,
+            shuffles: Vec::new(),
+            after: None,
+        };
+        assert_eq!(context.owned_bytes(), 0);
+        context.shuffles.push(ObjectRef {
+            card: 0,
+            generation: 0,
+        });
+        assert_eq!(context.owned_bytes(), std::mem::size_of::<ObjectRef>());
+    }
+
+    #[test]
+    fn captured_view_counts_abilities_and_power_up_uses() {
+        let mut game = setup(Player::P0);
+        let id = named(&mut game, Player::P0, "Forest", Zone::Battlefield);
+        let mut view = game.object_view(id);
+        view.abilities = None;
+        view.power_up_uses.clear();
+        let before = view.owned_bytes();
+        view.abilities = Some(Box::new(AbilityAvailabilityView {
+            printed: true,
+            grants: vec![GrantedAbilityView {
+                grantor: view.reference,
+                granting_card: view.card,
+                ability: Some(0),
+                static_rule: None,
+                grantor_controller: Player::P0,
+                timestamp: 0,
+            }],
+        }));
+        view.power_up_uses.push(PowerUpUseView {
+            definition: view.card,
+            ability: 0,
+            borrowed_slot: None,
+            origin: None,
+            count: 1,
+        });
+        assert_eq!(
+            view.owned_bytes(),
+            before
+                + std::mem::size_of::<AbilityAvailabilityView>()
+                + std::mem::size_of::<GrantedAbilityView>()
+                + std::mem::size_of::<PowerUpUseView>()
+        );
+        let context = DiscardContext {
+            sources: vec![view],
+            cycled: None,
+            shuffles: Vec::new(),
+            after: None,
+        };
+        assert_eq!(
+            context.owned_bytes(),
+            std::mem::size_of::<ObjectView>() + context.sources[0].owned_bytes()
+        );
+    }
+
     fn root(p: Player) -> Game {
         let mut g = setup(p);
         named(&mut g, p, "Balin, Loremaster", Zone::Battlefield);

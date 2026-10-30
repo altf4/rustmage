@@ -3,10 +3,26 @@
   "catalogue_id": 1498,
   "oracle_id": "747a1b36-eb4f-44e6-9e5a-bb1a0259a471",
   "facts_sha256": "990bc5e169baee663181d19fcd8fd036b5fa2840ea7a38cf95ada4a010937244",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "daf2769be28f12685814ced7a7be6529855b48dcb9d548956c7a36dd687886ca"
   },
-  "physical_metadata_sha256": "b14bb20755f63b9b06e525c0fb67aac6e07b4953783c63836c82102dc8d0c92b"
+  "physical_metadata_sha256": "b14bb20755f63b9b06e525c0fb67aac6e07b4953783c63836c82102dc8d0c92b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FerocityOfTheHunt.java",
+  "java_sha256": "243e3eb5816a22391b71f2fafd8e803e340eb6aab2f68443c7269a20f4eadc49",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesAttachedTriggeredAbility.java",
+      "sha256": "c0616700f1713116304f78f73d8c4b26620034f76930a2f47723c31067f05e75"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+      "sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+    }
+  ],
+  "rules_tests": "src/engine_fra_ferocity_extra_tests.rs"
 }

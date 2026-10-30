@@ -33,7 +33,7 @@ fn hob_hunt_mana_rollback_keeps_exact_reflexive_packet_once_or_reverses_it_entir
                 g.state
                     .pending_triggers
                     .iter()
-                    .filter(|t| t.object == source)
+                    .filter(|t| t.source.is_some_and(|identity| identity.object == source))
                     .count(),
                 1
             );

@@ -3,10 +3,26 @@
   "catalogue_id": 2951,
   "oracle_id": "d53ae01b-87e1-48e1-9fc3-23a734ce6622",
   "facts_sha256": "025cb05b55efef7bf17a1d5b299a5e8098c9edec6c97063c8e1e6974db162680",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6a8c5af57fe84de6cf6bed9eebfaa3681157bc54f801058e0b4097fc56a49d93"
   },
-  "physical_metadata_sha256": "d74abdb77be21b45ef047282fba64ca520bfa4e3d715f87216931f61b6790d25"
+  "physical_metadata_sha256": "d74abdb77be21b45ef047282fba64ca520bfa4e3d715f87216931f61b6790d25",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NoAdmittance.java",
+  "java_sha256": "847e9ac7aa09810f05f3f382434fdb8e4c1113a40b30e6c89eafa80502809130",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ],
+  "remaining_obligations": []
 }

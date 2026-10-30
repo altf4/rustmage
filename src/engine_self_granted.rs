@@ -45,8 +45,11 @@ pub(super) fn owned_bytes(rows: &Option<Box<Vec<Row>>>) -> usize {
 }
 impl Game {
     pub(super) fn grant_self_ability(&mut self, item: &SpellView, kind: SelfGrantedAbilityKind) {
-        if !self.on_battlefield(item.object.card)
-            || self.object_ref(item.object.card) != item.object
+        let Some(source) = item.source else {
+            return;
+        };
+        if !self.on_battlefield(source.object.card)
+            || self.object_ref(source.object.card) != source.object
         {
             return;
         }
@@ -58,8 +61,11 @@ impl Game {
         item: &SpellView,
         kind: SelfGrantedAbilityKind,
     ) {
-        if !self.on_battlefield(item.object.card)
-            || self.object_ref(item.object.card) != item.object
+        let Some(source) = item.source else {
+            return;
+        };
+        if !self.on_battlefield(source.object.card)
+            || self.object_ref(source.object.card) != source.object
         {
             return;
         }
@@ -83,8 +89,11 @@ impl Game {
         timestamp: u64,
         expires_turn: Option<u32>,
     ) {
+        let Some(source) = item.source else {
+            return;
+        };
         self.grant_recipient_ability(
-            item.object,
+            source.object,
             item.trigger_definition(),
             kind,
             timestamp,

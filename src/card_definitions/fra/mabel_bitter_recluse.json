@@ -3,10 +3,21 @@
   "catalogue_id": 2599,
   "oracle_id": "36924990-8e3a-434e-bcd1-f03603cb350d",
   "facts_sha256": "6530e1142f637e2b3442b0f7a7538e12d8fd4d20b877dd16654dab6be5ce0582",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "88f568d565a261976660cc5e35ff5ae40e1b02d374fc6f051ddca8ba568ab5af"
   },
-  "physical_metadata_sha256": "71176bc6414b4184ab07e265f9c89660a79e8d6714b72ce3b12a14148d15a16d"
+  "physical_metadata_sha256": "71176bc6414b4184ab07e265f9c89660a79e8d6714b72ce3b12a14148d15a16d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MabelBitterRecluse.java",
+  "java_sha256": "7fa271f25e92940620c953b9922c5accb7a8cda571c48465ca1c7db3d2c67f74",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RemoveUpToAmountCountersEffect.java",
+      "sha256": "c88b15e8dcd846171dc11b4df1df6573870a653b5e0fa87cd2b4d2c7f1245e51"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

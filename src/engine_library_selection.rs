@@ -121,6 +121,7 @@ impl Game {
                 .library
                 .iter()
                 .rev()
+                .filter(|&&id| self.state.objects[id as usize].is_card())
                 .position(|&id| self.state.objects[id as usize].card.kind_mask() & kinds != 0)
                 .map_or(usize::MAX, |at| at + 1),
         };
@@ -129,6 +130,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(limit)
             .map(|&id| self.object_ref(id))
             .collect();
@@ -166,7 +168,7 @@ impl Game {
             self.state
                 .objects
                 .iter()
-                .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && !o.is_token())
+                .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && o.is_card())
         };
         let requested = match spec.count {
             LibrarySelectionCount::Fixed(n) => usize::from(n),
@@ -207,7 +209,7 @@ impl Game {
             exclude_selected_from_remainder: matches!(
                 effect.destination,
                 LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(_)
-            ),
+            ) || matches!(effect.look, LibraryLook::UntilKinds(_)),
             public: effect.public,
             entering: false,
             remaining,
@@ -374,7 +376,15 @@ impl Game {
         if f.destination == LibraryPickDestination::Hideaway {
             let events = self.move_objects_raw(&ids, Zone::Exile);
             self.remember_linked_exile(&ids);
-            let source = self.state.resolving.as_ref().unwrap().item.object;
+            let source = self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .item
+                .source
+                .expect("hideaway has source")
+                .object;
             for event in &events {
                 if event.moved && event.destination == Zone::Exile {
                     let data = self.state.linked_choices.get_or_insert_default();
@@ -469,9 +479,7 @@ impl Game {
                 if self.state.players[owner.index()].library.len() > 1 {
                     self.forget_library_top(owner);
                 }
-                self.state
-                    .rng
-                    .shuffle(&mut self.state.players[owner.index()].library);
+                self.shuffle_library_cards(owner);
             }
             LibraryRemainder::Graveyard => {
                 let ids: Vec<_> = f.remaining.iter().map(|r| r.card).collect();

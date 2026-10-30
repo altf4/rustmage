@@ -3,10 +3,36 @@
   "catalogue_id": 3232,
   "oracle_id": "c21fafaf-4510-4752-a501-606ae68e6699",
   "facts_sha256": "81b2940b268302e2e6fd666194deb663a618f4511eeda9b7c0f2c9b6403b297e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9ebedfd80e1b1d682766af542ea2c4aa15808c1d5e7f2c70aa13797651bb9715"
   },
-  "physical_metadata_sha256": "7ee9fa5cd76ae10ca491f9b00b16a805ec94f9933a843ff600d6d1e0d55a99ee"
+  "physical_metadata_sha256": "7ee9fa5cd76ae10ca491f9b00b16a805ec94f9933a843ff600d6d1e0d55a99ee",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PrimalWitchstalker.java",
+  "java_sha256": "b5f4312f3300d7f4e51128e7d32f88cfbb1f5d370c3c058abc2a7896464004e5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/MillCardsCost.java",
+      "sha256": "3e9c8bda67abc80b2b699e01aa13e2cdabf44ebbec4a406dccb159ebff52e302"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    }
+  ],
+  "rules_note": "Mandatory milling proceeds as far as possible even with fewer than four cards; the reflexive trigger requires the full four. The pinned XMage cost helper instead skips milling when fewer than four are available."
 }

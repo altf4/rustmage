@@ -40,6 +40,9 @@ impl Game {
         group: u16,
         subtype: Option<&'static str>,
     ) -> bool {
+        let Some(source) = item.source else {
+            return false;
+        };
         let recipient = item
             .targets
             .iter()
@@ -55,7 +58,7 @@ impl Game {
         };
         self.state.resolving.as_mut().unwrap().return_attachment =
             Some(Box::new(ReturnAttachment {
-                origin: item.object,
+                origin: source.object,
                 player: item.controller,
                 recipient: Some(recipient),
                 entering: false,
@@ -87,9 +90,12 @@ impl Game {
             }
             return false;
         }
+        let Some(source) = item.source else {
+            return false;
+        };
         self.state.resolving.as_mut().unwrap().return_attachment =
             Some(Box::new(ReturnAttachment {
-                origin: item.object,
+                origin: source.object,
                 player: item.controller,
                 recipient: Some(recipient),
                 entering: false,
@@ -102,21 +108,24 @@ impl Game {
         self.advance_return_attachment()
     }
     pub(super) fn return_source_with_equipment(&mut self, item: &SpellView, counter: CounterKind) {
-        if self.object_ref(item.card) != item.object
-            || self.state.objects[item.card as usize].zone != Zone::Graveyard
+        let Some(source) = item.source else {
+            return;
+        };
+        if self.object_ref(source.id) != source.object
+            || self.state.objects[source.id as usize].zone != Zone::Graveyard
         {
             return;
         }
         self.state.resolving.as_mut().unwrap().return_attachment =
             Some(Box::new(ReturnAttachment {
-                origin: item.object,
+                origin: source.object,
                 player: item.controller,
                 recipient: None,
                 entering: true,
                 order: None,
                 reflexive: None,
             }));
-        let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
+        let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
         movement.controller = item.controller;
         movement.effect_counter = Some((counter, 1));
         movement.equipment_after = true;

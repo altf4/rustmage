@@ -90,10 +90,10 @@ fn score(o: &Observation, a: &Action, primary: usize, seed: usize, fallback: boo
             target: Target::Card(id),
         } => {
             let t = obj(*id);
-            if o.announcing
-                .as_ref()
-                .is_some_and(|s| s.source_card.name() == "Shock")
-            {
+            if o.announcing.as_ref().is_some_and(|s| {
+                s.source()
+                    .is_some_and(|source| source.card.name() == "Shock")
+            }) {
                 return if t.owner != p { 400 } else { -500 };
             }
             if t.owner == p {
@@ -230,7 +230,10 @@ fn main() -> Result<(), Error> {
                 )
             }
             for item in packets(&before) {
-                if index(item.source_card).is_some()
+                if item
+                    .source()
+                    .and_then(|source| index(source.card))
+                    .is_some()
                     && matches!(
                         item.kind,
                         StackKind::TriggeredAbility { .. } | StackKind::ActivatedAbility { .. }
@@ -284,11 +287,13 @@ fn main() -> Result<(), Error> {
                 && let Some(item) = &before.announcing
                 && item.kind == StackKind::Spell
             {
-                if let Some(i) = index(item.source_card) {
+                if let Some(i) = item.source().and_then(|source| index(source.card)) {
                     casts[i][p.index()] += 1
                 }
                 let printed: u32 = item
-                    .source_card
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .card
                     .info()
                     .mana_cost
                     .split('}')
@@ -311,7 +316,9 @@ fn main() -> Result<(), Error> {
             }
             if matches!(a, Action::FinishTargets)
                 && before.announcing.as_ref().is_some_and(|s| {
-                    s.source_card.name() == "Bespoke Battlegarb" && s.targets.is_empty()
+                    s.source()
+                        .is_some_and(|source| source.card.name() == "Bespoke Battlegarb")
+                        && s.targets.is_empty()
                 })
             {
                 optional_zero[p.index()] += 1
@@ -381,13 +388,17 @@ fn main() -> Result<(), Error> {
                 .collect::<Vec<_>>();
             for id in finished {
                 let (item, base) = active.remove(&id).unwrap();
-                let i = index(item.source_card).unwrap();
+                let i = item.source().and_then(|source| index(source.card)).unwrap();
                 let owner = item.controller;
                 let view = g.observe(owner);
-                let source = view
-                    .objects
-                    .iter()
-                    .find(|v| v.reference == item.object && v.zone == Zone::Battlefield);
+                let source = view.objects.iter().find(|v| {
+                    v.reference
+                        == item
+                            .source()
+                            .expect("example expects an object-backed packet")
+                            .object
+                        && v.zone == Zone::Battlefield
+                });
                 let target = item.targets.first().and_then(|t| t.object).and_then(|r| {
                     view.objects
                         .iter()
@@ -400,7 +411,13 @@ fn main() -> Result<(), Error> {
                     .and_then(|r| base.objects.iter().find(|v| v.reference == r));
                 let ok = match i {
                     1 | 7 => source
-                        .zip(base.objects.iter().find(|v| v.reference == item.object))
+                        .zip(base.objects.iter().find(|v| {
+                            v.reference
+                                == item
+                                    .source()
+                                    .expect("example expects an object-backed packet")
+                                    .object
+                        }))
                         .is_some_and(|(n, b)| n.counters.plus_one == b.counters.plus_one + 1),
                     2 => target.zip(old_target).is_some_and(|(n, b)| {
                         n.power == b.power + 1 && n.keywords.contains(Keywords::MENACE)

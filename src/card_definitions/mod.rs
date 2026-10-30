@@ -70,6 +70,23 @@ impl CardRules {
             }
             reduction_index += 1;
         }
+        let mut counter_reduction_index = 0;
+        while counter_reduction_index < self.extras.activation_target_counter_discounts.len() {
+            let (slot, _) =
+                self.extras.activation_target_counter_discounts[counter_reduction_index];
+            assert!(
+                (slot as usize) < self.activated.len(),
+                "target counter reduction lacks activated slot"
+            );
+            match self.activated[slot as usize].targets {
+                TargetPlan::Single(spec) => assert!(
+                    spec.min == 1 && spec.max == 1,
+                    "target counter reduction requires one target"
+                ),
+                _ => panic!("target counter reduction requires one target group"),
+            }
+            counter_reduction_index += 1;
+        }
         // A printed mana component opens the mana-ability payment window.
         // Reject zero-mana template flags copied into newly authored paid abilities.
         let mut index = 0;
@@ -146,6 +163,8 @@ pub(super) struct CardExtras {
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
+    /// Minimum cards in the caster's graveyard after this spell leaves its origin.
+    pub cast_graveyard_minimum: u8,
     pub prepared_spell: Option<Card>,
     pub enters_prepared: bool,
     pub prepared_identity: Option<&'static str>,
@@ -164,6 +183,8 @@ pub(super) struct CardExtras {
     /// These are not alternative casting costs.
     pub power_up_mana_cost_alternatives: &'static [ManaCost],
     pub activation_target_reductions: &'static [(u16, TargetActivationReduction)],
+    /// Generic cost reduced by the chosen target's counters of this kind.
+    pub activation_target_counter_discounts: &'static [(u16, CounterKind)],
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     /// Reduce generic activation cost once per controlled permanent of this subtype.
     pub activation_subtype_discounts: &'static [(u16, &'static str)],
@@ -219,6 +240,7 @@ pub(super) struct CardExtras {
     pub offspring_cost: Option<ManaCost>,
     pub offspring_copy: Option<Card>,
     pub flashback_cost: Option<ManaCost>,
+    pub flashback_cost_alternatives: &'static [ManaCost],
     pub flashback_additional: Option<AdditionalCost>,
     pub target_cost_reduction: Option<&'static TargetSpellReduction>,
     pub cast_timing_grants: &'static [CastFilter],
@@ -231,6 +253,8 @@ pub(super) struct CardExtras {
     pub mana_alternative_replaces_additional: bool,
     /// Independent additional mana route crossed with every printed hybrid base.
     pub additional_mana_alternative: Option<ManaCost>,
+    /// Legacy reminder-text activation replaced by rules-derived basic-land mana.
+    pub legacy_subtype_mana_activation: Option<u16>,
     pub kicked_targets: Option<TargetPlan>,
     pub cast_entry_counters: &'static [(CounterKind, u64)],
     pub hand_cast_entry_counters: &'static [(CounterKind, u64)],
@@ -241,6 +265,8 @@ pub(super) struct CardExtras {
     pub has_improvise: bool,
     pub static_cast_restriction: u8,
     pub uncounterable: bool,
+    /// This Aura may enchant an artifact or a non-Aura enchantment.
+    pub aura_artifact_or_non_aura_enchantment: bool,
     pub enchanted_modifiers: &'static [EnchantedModifier],
     pub flash_surcharge: Option<ManaCost>,
 }
@@ -250,6 +276,7 @@ impl CardExtras {
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,
+        cast_graveyard_minimum: 0,
         prepared_spell: None,
         enters_prepared: false,
         prepared_identity: None,
@@ -262,6 +289,7 @@ impl CardExtras {
         power_up_other_creature_reduction: 0,
         power_up_mana_cost_alternatives: &[],
         activation_target_reductions: &[],
+        activation_target_counter_discounts: &[],
         activation_counter_discounts: &[],
         activation_subtype_discounts: &[],
         activation_put_counters: &[],
@@ -318,6 +346,7 @@ impl CardExtras {
         offspring_cost: None,
         offspring_copy: None,
         flashback_cost: None,
+        flashback_cost_alternatives: &[],
         flashback_additional: None,
         target_cost_reduction: None,
         cast_timing_grants: &[],
@@ -329,6 +358,7 @@ impl CardExtras {
         cost_alternative_guard: None,
         mana_alternative_replaces_additional: false,
         additional_mana_alternative: None,
+        legacy_subtype_mana_activation: None,
         kicked_targets: None,
         entry_counter_rules: &[],
         starting_loyalty: 0,
@@ -337,6 +367,7 @@ impl CardExtras {
         has_improvise: false,
         static_cast_restriction: 0,
         uncounterable: false,
+        aura_artifact_or_non_aura_enchantment: false,
         enchanted_modifiers: &[],
         flash_surcharge: None,
     };

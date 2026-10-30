@@ -3,10 +3,25 @@
   "catalogue_id": 3539,
   "oracle_id": "57ea9f63-8267-4303-a3dd-9ded220294dc",
   "facts_sha256": "210e83946329616ee66c549a1e48e30e6e29eb520bca66d951e72dcca045d0c3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8a1bc1f6e79da00daf5084cc496c76ab480c29005f4b04c6cfcad983957050e6"
   },
-  "physical_metadata_sha256": "9b5434659c3adc903cfed174b378085769dc7352365496073d6643da4f9a9f5f"
+  "physical_metadata_sha256": "9b5434659c3adc903cfed174b378085769dc7352365496073d6643da4f9a9f5f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RiseOfTheDeathbringer.java",
+  "java_sha256": "abd7afc43e7feb69e84c798db5146ecb06237af23aa5cd9515a0c37329fb6578",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+      "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    }
+  ]
 }

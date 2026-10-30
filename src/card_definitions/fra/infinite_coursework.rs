@@ -1,16 +1,34 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct Oracle behavior and pinned XMage sources; admission awaits rules tests.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Aura(one(object(1))),
+    aura: Some(AuraSpec {
+        kinds: 1,
+        relation: -1,
+        bonus: EquipmentSpec {
+            stats: Stats {
+                power: 0,
+                toughness: 0,
+            },
+            keywords: Keywords::NONE,
+        },
+    }),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::TapAttached,
+            Instruction::Unprepare {
+                subject: Subject::Attached,
+            },
+        ],
+    }],
+    static_groups: &[StaticAbilityGroup {
+        line: 2,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[
+            StaticAbilityFragment::RemoveAttachedAbilities,
+            StaticAbilityFragment::AttachedUntap(UntapRestriction::ControllerStep),
+        ],
+    }],
     ..CardRules::EMPTY
 };

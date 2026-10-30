@@ -268,13 +268,16 @@ impl Tracker {
             if !self.seen_packets.insert(s.id) {
                 continue;
             }
+            let Some(source) = s.source() else {
+                continue;
+            };
             if s.kind == StackKind::Spell && !s.is_copy && s.cast.is_some() {
-                self.cards.insert(s.source_card.name().into());
-                self.colors |= s.source_card.colors();
+                self.cards.insert(source.card.name().into());
+                self.colors |= source.card.colors();
                 self.hit("actual_cast", s.id.to_string());
             }
             let printed_landfall = matches!(
-                (s.source_card.name(), s.kind),
+                (source.card.name(), s.kind),
                 (
                     "Attercop"
                         | "Beorn's Hospitality"

@@ -331,7 +331,7 @@ fn wicked_smaug_opponents_treasure_casts_and_spell_copies_do_not_trigger() {
             .state
             .stack
             .iter()
-            .find(|item| item.card == original && item.kind == StackKind::Spell)
+            .find(|item| item.source.unwrap().id == original && item.kind == StackKind::Spell)
             .unwrap()
             .clone();
         let triggers = |g: &Game| {
@@ -341,7 +341,7 @@ fn wicked_smaug_opponents_treasure_casts_and_spell_copies_do_not_trigger() {
                 .chain(&g.state.ordering_triggers)
                 .chain(g.state.stack.iter())
                 .filter(|item| {
-                    item.card == smaug
+                    item.source.unwrap().id == smaug
                         && matches!(item.kind, StackKind::TriggeredAbility { ability: 1 })
                 })
                 .count()

@@ -3,10 +3,31 @@
   "catalogue_id": 4628,
   "oracle_id": "7a501f7e-eec8-45f7-9ac3-483fd8f5ca5e",
   "facts_sha256": "9c693a8e5d3bf267018b4b1e027ef32c42904446d3b1d4490f36767a462acad3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6007cd4528c48d9194e17bdb1f94104f57b49101c3ebb6dedbb6ad374c3fe0cc"
   },
-  "physical_metadata_sha256": "132f4b83b550eaff30c4e7a8e2b53ef45d0bad6d5828f31727e5820638ade04e"
+  "physical_metadata_sha256": "132f4b83b550eaff30c4e7a8e2b53ef45d0bad6d5828f31727e5820638ade04e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TomikOrzhovLawmage.java",
+  "java_sha256": "90d4d850e9584b669186699b73014f129db7c5e6e153cfa2e6291260e36e9501",
+  "rules_tests": "src/engine_fra_tomik_lawmage_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    }
+  ]
 }

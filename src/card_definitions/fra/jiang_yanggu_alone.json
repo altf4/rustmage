@@ -3,10 +3,36 @@
   "catalogue_id": 2277,
   "oracle_id": "fa8b3557-b35a-4a68-ab85-cf09683f3bc5",
   "facts_sha256": "81d2b243b545b44460f63f70ba990aa1aeb8f566c287ef1755a37c19a5e032b6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eb472ae221106cae0c485fd1a37eedd4ee4a1f72b9181eb5c2c04adcae889072"
   },
-  "physical_metadata_sha256": "bacc53766c1aa6e36393aa82b20021372846d4602a32e20312b3b0bbb816492d"
+  "physical_metadata_sha256": "bacc53766c1aa6e36393aa82b20021372846d4602a32e20312b3b0bbb816492d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JiangYangguAlone.java",
+  "java_sha256": "9bf987a0602e6d0e608923b20989ff6cc7cf9a466c1c12a39bd88beed8e4ae06",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksPlayerAloneControlledTriggeredAbility.java",
+      "sha256": "1f6f0b27823a4c13bf6e5e038ad0767b7c77798e315f915cb72dbfceb8a84869"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/DiscardedCardWatcher.java",
+      "sha256": "9e83e53154c9a1bf14384776e367e712bf6f454ad6d63c42767c7adfd57ba244"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    }
+  ],
+  "rules_tests": "src/engine_fra_jiang_discard_replacement_tests.rs"
 }

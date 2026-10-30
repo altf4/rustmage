@@ -3,10 +3,26 @@
   "catalogue_id": 3668,
   "oracle_id": "a275f7ac-7dae-4422-875a-f34f24b6f28a",
   "facts_sha256": "c5d32f4756dbb0657f17fe6fea2e7f14f58a9c3d9438b71ef9c0120ff049cfa5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "12c96f6181505bcc0fd3616217d45783d9b7cd8c9bbfbf2cbabf9e8b3418d581"
   },
-  "physical_metadata_sha256": "dbfc25d5e4a258d40f3b460c9f3ddd17f7eaefd31570afba6bf3a18524bff121"
+  "physical_metadata_sha256": "dbfc25d5e4a258d40f3b460c9f3ddd17f7eaefd31570afba6bf3a18524bff121",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SamutTyrantOfNaktamun.java",
+  "java_sha256": "86973300d0754cb41bfb950974c976af7fc34bf4a3f7a86fb5c06e8563b3a378",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SplitSecondAbility.java",
+      "sha256": "d4dbc8ebd609e6acf42631b686568fdd98ecb7d75530767a3125c7b3a8465e69"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledSpellsEffect.java",
+      "sha256": "fe96f9ccb2dbf72b35b14b2fa8c2e131e1e8e4e399b9cfd55ad6d4a198741227"
+    }
+  ],
+  "rules_tests": "src/engine_fra_combat_restrictions_tests.rs"
 }

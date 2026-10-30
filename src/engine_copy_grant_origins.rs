@@ -29,6 +29,8 @@ impl Game {
                         fragment,
                         F::AttachmentTrigger(_)
                             | F::AttachmentActivation(_)
+                            | F::ControlledPlaneswalkerActivation(_)
+                            | F::ControlledPlaneswalkerAttackLimit
                             | F::GrantInstantSorceryStorm { .. }
                             | F::CascadeFromHand { .. }
                             | F::HandMiracle { .. }

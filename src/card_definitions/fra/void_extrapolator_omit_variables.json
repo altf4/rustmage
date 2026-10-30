@@ -3,10 +3,46 @@
   "catalogue_id": 4928,
   "oracle_id": "517f84b5-cf99-410d-96ea-910740231dac",
   "facts_sha256": "23ce6f944ecd1f26195740467bceb8d9458a44e90d7de7ed97463cd539ca9adf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9d511d901ccf7308016ef203b929f3c0ccd6663521b277ba6180ef8a6fa3318e"
   },
-  "physical_metadata_sha256": "5582c1fddadf08adc9c1dbdc55e897c53a3feb0c87cb4cfe270fb1bdfba9a2b8"
+  "physical_metadata_sha256": "c073eb86eb5be95d097b1b4f64205162068f4ee8d8dd5e9a054b77c03bb3419b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VoidExtrapolator.java",
+  "java_sha256": "468d2792dcb9119bc32c026e655d8dcd4ac259d5966e07636cc201ee279d0fef",
+  "oracle_face": {
+    "oracle_id": "517f84b5-cf99-410d-96ea-910740231dac",
+    "index": 0,
+    "sha256": "af67b0357839f56a17a0e7e1ad7e9f8d06379fd1c94fd2d751cc66365a56d6f6"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
+      "sha256": "f7d6ad71cd5857b9d0c127469d9b39afd84148a38001a42a309c5c218694382a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ],
+  "rules_tests": "src/engine_fra_prepared_extra_tests.rs"
 }

@@ -30,7 +30,13 @@ fn hob_elrond_retained_mana_replays_draw_and_latch_only_for_kept_event() {
                 "mana observer must wait for announced payment"
             );
             let captured = &g.state.cast_rollback.as_ref().unwrap().events[0].triggers;
-            assert_eq!(captured.iter().filter(|s| s.card == source).count(), 1);
+            assert_eq!(
+                captured
+                    .iter()
+                    .filter(|s| s.source.is_some_and(|identity| identity.id == source))
+                    .count(),
+                1
+            );
             fail(&mut g, silver);
             contracts::branch_contract(g.clone());
             checked(&mut g, Action::ChooseManaRollback { keep });

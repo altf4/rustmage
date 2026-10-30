@@ -3,10 +3,25 @@
   "catalogue_id": 211,
   "oracle_id": "36cb3d18-019c-464d-b591-8c87e1b81f31",
   "facts_sha256": "f53715c03607f8fc68e178ef10711be8ddaf3dc26854ae9bd0417df0c4423410",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "816ab334d36c3eeba9d38de8ca8f1ea18684bcc15567e6ac791487b94a4065e6"
   },
-  "physical_metadata_sha256": "48ff63ed85ee291ae9c9cd9cccf3731414e721bdc161fbcab63b775f5713b5da"
+  "physical_metadata_sha256": "48ff63ed85ee291ae9c9cd9cccf3731414e721bdc161fbcab63b775f5713b5da",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArchiveArbiter.java",
+  "java_sha256": "b81f04752b6af586da9c11f36be6cc05c3479a3b408b005ba5df6d8488a23ff5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ]
 }

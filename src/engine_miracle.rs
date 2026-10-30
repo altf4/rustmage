@@ -19,6 +19,8 @@ struct DrawRequest {
     player: Player,
     amount: u128,
     replaced: bool,
+    /// Resolving spell which owns this request, if it remembers actual draws.
+    remembering: Option<u64>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct Protection {
@@ -126,10 +128,19 @@ impl Game {
         }
     }
     pub(super) fn draw_many_interruptible(&mut self, player: Player, amount: u128) {
-        self.draw_requests(player, amount, false);
+        self.draw_requests(player, amount, false, None);
     }
-    fn draw_requests(&mut self, player: Player, amount: u128, replaced: bool) {
-        let attempts = amount.min(self.state.players[player.index()].library.len() as u128 + 1);
+    pub(super) fn draw_many_recording(&mut self, player: Player, amount: u128, item_id: u64) {
+        self.draw_requests(player, amount, false, Some(item_id));
+    }
+    fn draw_requests(
+        &mut self,
+        player: Player,
+        amount: u128,
+        replaced: bool,
+        remembering: Option<u64>,
+    ) {
+        let attempts = amount.min(self.library_card_count(player) as u128 + 1);
         if self.miracle_choice_pending() {
             self.state
                 .miracle
@@ -140,6 +151,7 @@ impl Game {
                     player,
                     amount: attempts,
                     replaced,
+                    remembering,
                 });
             return;
         }
@@ -149,9 +161,28 @@ impl Game {
             } else {
                 self.replaced_draw_count(player)
             };
-            let count = count.min(self.state.players[player.index()].library.len() as u128 + 1);
+            let count = count.min(self.library_card_count(player) as u128 + 1);
             for child in 0..count {
-                self.draw_one_unreplaced(player);
+                if self.draw_one_unreplaced(player)
+                    && let Some(id) = remembering
+                {
+                    let resolving = self
+                        .state
+                        .resolving
+                        .as_mut()
+                        .expect("remembered draw must have its resolution");
+                    assert_eq!(
+                        resolving.item.id, id,
+                        "draw request belongs to a different resolution"
+                    );
+                    let count = resolving
+                        .remembered_draws
+                        .as_mut()
+                        .expect("remembered draw counter");
+                    *count = count
+                        .checked_add(1)
+                        .capacity("remembered draw count exhausted");
+                }
                 if self.miracle_choice_pending() {
                     let remaining = attempts - index - 1;
                     if remaining > 0 {
@@ -164,6 +195,7 @@ impl Game {
                                 player,
                                 amount: remaining,
                                 replaced,
+                                remembering,
                             });
                     }
                     let children = count - child - 1;
@@ -177,6 +209,7 @@ impl Game {
                                 player,
                                 amount: children,
                                 replaced: true,
+                                remembering,
                             });
                     }
                     return;
@@ -221,7 +254,7 @@ impl Game {
             let Some(next) = next else {
                 break;
             };
-            self.draw_requests(next.player, next.amount, next.replaced);
+            self.draw_requests(next.player, next.amount, next.replaced, next.remembering);
             if self.miracle_choice_pending() {
                 return;
             }
@@ -237,8 +270,11 @@ impl Game {
         }
     }
     pub(super) fn offer_miracle_cast(&mut self, item: &SpellView, cost: ManaCost) -> bool {
-        if self.object_ref(item.card) != item.object
-            || self.state.objects[item.card as usize].zone != Zone::Hand
+        let Some(source) = item.source else {
+            return false;
+        };
+        if self.object_ref(source.id) != source.object
+            || self.state.objects[source.id as usize].zone != Zone::Hand
         {
             return false;
         }
@@ -247,13 +283,14 @@ impl Game {
             paid: None,
             casts_remaining: None,
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: Some(cost),
             maximum_mana_value: None,
             origin: Zone::Hand,
             exile_on_graveyard: false,
             allow_lands: false,
             player: item.controller,
-            remaining: vec![item.object],
+            remaining: vec![source.object],
         }));
         self.state.pending = Pending::ResolutionCasts {
             player: item.controller,

@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b75610adabbaec0a7780ad1ee0423a981b2a8cda9fe34b69d5d9514b5e139113"
   },
-  "physical_metadata_sha256": "e4a6b3ea84ad7a452c418cacf85eec9873584c8d700d2fbc9733993d892626bc"
+  "physical_metadata_sha256": "e4a6b3ea84ad7a452c418cacf85eec9873584c8d700d2fbc9733993d892626bc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PredictivePreparations.java",
+  "java_sha256": "c253252e97c018b3ef2f2204b551436c1459beda379c1c9c5b767380f80061b9"
 }

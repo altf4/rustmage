@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eb27a160e92965b853d34ef6c87c7a344793a4a37ac8a8beab93b075f65fc643"
   },
-  "physical_metadata_sha256": "8acced5eaf7453e996f3da84faf50e0e0561ed57af32e94283245ad9bdf78e45"
+  "physical_metadata_sha256": "8acced5eaf7453e996f3da84faf50e0e0561ed57af32e94283245ad9bdf78e45",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChandrasEmberling.java",
+  "java_sha256": "1537e278ff9ef03e5f1c5ee65c74a73ae4e2ad8ff72cb3fc9323c77452b75ccf"
 }

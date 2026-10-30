@@ -3,10 +3,41 @@
   "catalogue_id": 5015,
   "oracle_id": "10721d62-dc68-43b4-bfa2-dcb8cf8ea980",
   "facts_sha256": "71c08bf71aec03a00771885303d0d560e8913a9f9900fc0b76a94b038f3b610d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5d1bae9a6f13fbcc4b5b3281ee56e71020531800e1501cddd4af4491113e3926"
   },
-  "physical_metadata_sha256": "d66a2fd2331ffaddf3a5ca38a33fb0c1802598d9399fba8d398fc96e054736ce"
+  "physical_metadata_sha256": "d66a2fd2331ffaddf3a5ca38a33fb0c1802598d9399fba8d398fc96e054736ce",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WayOfTheWarlord.java",
+  "java_sha256": "b2ece44ab66a640cbd03c41a74ba9433ff901fa69c21f9f41afa66ffef61d812",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+      "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetAndTargetEffect.java",
+      "sha256": "23bed77af2f847ef446bbb6c293ae9d3c1f8b38a50fb37eb828b628a34a6f27e"
+    }
+  ],
+  "rules_tests": "src/engine_fra_loyalty_grants_extra_tests.rs"
 }

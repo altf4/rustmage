@@ -3,10 +3,26 @@
   "catalogue_id": 2552,
   "oracle_id": "a99ce9db-9b7d-45a0-bee7-0875fc62ca48",
   "facts_sha256": "2c1e7ff9e5bb84b1aa3a3a485453746334430d369ec9791ee47164aea97c32c9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c480f5a29e5cc9baa7ead9054050a7b5513dd1397116be46a73b2e9d22c88ad8"
   },
-  "physical_metadata_sha256": "f23e00fdb6e804581a41f92630f605f0e582fa97c09a85f5bf99d032b7303182"
+  "physical_metadata_sha256": "f23e00fdb6e804581a41f92630f605f0e582fa97c09a85f5bf99d032b7303182",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LootTheNexus.java",
+  "java_sha256": "c57262331e93ee732102453355f503a3c3d318af6c5f337804808453b565aa51",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/DynamicManaAbility.java",
+      "sha256": "b3d0b50f07f8a0d751bf30a6ecaca74c91fd98a7dd4e3228f71b7543a2d108da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    }
+  ],
+  "rules_tests": "src/engine_fra_loot_nexus_tests.rs"
 }

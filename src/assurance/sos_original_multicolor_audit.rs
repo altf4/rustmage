@@ -446,7 +446,7 @@ fn sos_audit_multi_skywhale_opus_x_paid_four_or_five_and_critique_loot() {
                 g.state
                     .stack
                     .iter()
-                    .find(|s| s.card == spell)
+                    .find(|s| s.source.is_some_and(|source| source.id == spell))
                     .unwrap()
                     .cast
                     .unwrap()

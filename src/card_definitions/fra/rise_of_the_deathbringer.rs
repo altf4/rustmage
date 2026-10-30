@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct Oracle and pinned XMage rules; gated pending integration validation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Modal(&[
+        SpellMode {
+            text: "Draw cards equal to the greatest power among creatures you control. You lose life equal to the number of cards drawn this way.",
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::DrawGreatestCreaturePowerRemember,
+                Instruction::LoseLifeRememberedDraws,
+            ],
+        },
+        SpellMode {
+            text: "All creatures get -3/-3 until end of turn.",
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GrowPlayerCreatures {
+                players: PlayerSet::Each,
+                power: -3,
+                toughness: -3,
+            }],
+        },
+    ]),
     ..CardRules::EMPTY
 };

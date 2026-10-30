@@ -183,10 +183,10 @@ fn main() {
                 used.insert((b.reference, ability));
             }
             if matches!(a, Action::ArrangeLibrary { .. })
-                && before
-                    .resolving
-                    .as_ref()
-                    .is_some_and(|s| matches!(s.source_card.name(), APRIL | STOMPER))
+                && before.resolving.as_ref().is_some_and(|s| {
+                    s.source()
+                        .is_some_and(|source| matches!(source.card.name(), APRIL | STOMPER))
+                })
             {
                 scry_choices += 1;
                 assert!(g.observe(actor.other()).library_choice.is_none());
@@ -195,7 +195,8 @@ fn main() {
                 .stack
                 .last()
                 .filter(|s| {
-                    NEW.contains(&s.source_card.name())
+                    s.source()
+                        .is_some_and(|source| NEW.contains(&source.card.name()))
                         && matches!(s.kind, StackKind::ActivatedAbility { .. })
                 })
                 .cloned();
@@ -251,17 +252,30 @@ fn main() {
                 && after.stack.iter().all(|s| s.id != root.id)
                 && after.resolving.is_none()
             {
-                if matches!(root.source_card.name(), STOMPER | OUTRIDER) {
-                    if let Some(b) = after
-                        .objects
-                        .iter()
-                        .find(|b| b.reference == root.object && b.zone == Zone::Battlefield)
-                    {
+                if root
+                    .source()
+                    .is_some_and(|source| matches!(source.card.name(), STOMPER | OUTRIDER))
+                {
+                    if let Some(b) = after.objects.iter().find(|b| {
+                        b.reference
+                            == root
+                                .source()
+                                .expect("example expects an object-backed packet")
+                                .object
+                            && b.zone == Zone::Battlefield
+                    }) {
                         assert!(b.keywords.contains(Keywords::NO_POWER_LE_TWO_BLOCKERS));
-                        abilities.insert(root.source_card.name());
+                        abilities.insert(
+                            root.source()
+                                .expect("example expects an object-backed packet")
+                                .card
+                                .name(),
+                        );
                         grants += 1;
                     }
-                } else if root.source_card.name() == PET
+                } else if root
+                    .source()
+                    .is_some_and(|source| source.card.name() == PET)
                     && let Some(target) = root.targets.first().and_then(|t| t.object)
                     && before
                         .objects

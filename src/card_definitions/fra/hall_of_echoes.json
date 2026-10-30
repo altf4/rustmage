@@ -3,10 +3,26 @@
   "catalogue_id": 1930,
   "oracle_id": "dc0a51d4-5b7e-4987-b1fe-349fd118a625",
   "facts_sha256": "349db203ba56d7fa79836a8e63f8682f14d711b948aed0a703eadecabfba9ef3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9cede81be01e9e674f4036a22b21f158ee85722738abeccecbf5e9db1889f81a"
   },
-  "physical_metadata_sha256": "e270262953bf206a8e5c96e4b690bef519cf73015dde37a144d7ac5723d50737"
+  "physical_metadata_sha256": "e270262953bf206a8e5c96e4b690bef519cf73015dde37a144d7ac5723d50737",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HallOfEchoes.java",
+  "java_sha256": "ec12296f979d7cf2d642dfcf8e2cbd98dde13aaacf1a1f6c382ed0033df51153",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/LegendRuleDoesntApplyEffect.java",
+      "sha256": "61a3b1b8c11e299a8f3fa34b49a77aa1501a7e0f79962bfb55697068c73cb0cf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "rules_tests": "src/engine_fra_hall_of_echoes_tests.rs"
 }

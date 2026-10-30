@@ -3,10 +3,36 @@
   "catalogue_id": 4985,
   "oracle_id": "f47419a5-b975-4934-a987-ea064a0c7c1a",
   "facts_sha256": "a960ca403f42ad9ea05f7dae2517d21b3b334e9c55199bde2c2ef5399d3d58f4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "08d269ab2d94cc4e73840f9f33700b2a98a6b337a8d9b4e933e2ab61c2199b35"
   },
-  "physical_metadata_sha256": "28f56f93a49f3d6b391f4f0ab9b9b13289e964cb5927f946f55ef3de32161850"
+  "physical_metadata_sha256": "28f56f93a49f3d6b391f4f0ab9b9b13289e964cb5927f946f55ef3de32161850",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WarriorsBlades.java",
+  "java_sha256": "ede50a5c72d5824271afd4b308529510b85e96044403c2102bf79c10790c2048",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

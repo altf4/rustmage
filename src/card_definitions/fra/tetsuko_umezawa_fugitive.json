@@ -3,10 +3,21 @@
   "catalogue_id": 4405,
   "oracle_id": "ceeeacbc-01b0-4421-aaca-2ce6cdbe45d7",
   "facts_sha256": "a809398b0a6f103801c1b8c7dd94a6bff4d77ada5ed24511f60429475b551b61",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "83a53627b45edf63e0e37061f6bfbac706630e190f07b60221e31a925671e196"
   },
-  "physical_metadata_sha256": "3daa1f5564a753073ccc0f62dbb0c552501bb6641bffbb0bdac2bcf0d337b93a"
+  "physical_metadata_sha256": "3daa1f5564a753073ccc0f62dbb0c552501bb6641bffbb0bdac2bcf0d337b93a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TetsukoUmezawaFugitive.java",
+  "java_sha256": "99c3334b0960b51798245acc66416b43394defcd5d08f1435774bdc4eeb05a71",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedAllEffect.java",
+      "sha256": "79bac1894a825e0672eead214ec1ef8727761117d468a42f287c1606e9391ebd"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

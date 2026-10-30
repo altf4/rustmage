@@ -26,11 +26,12 @@ impl SpellView {
         let Some(GiftDeclaration::Promised { beneficiary }) = self.cast?.gift else {
             return None;
         };
+        let source = self.source?;
         Some(GiftContext {
-            source: self.object,
+            source: source.object,
             caster: self.controller,
             beneficiary,
-            kind: self.source_card.gift()?.kind,
+            kind: source.card.gift()?.kind,
             entry: None,
         })
     }
@@ -47,7 +48,9 @@ impl Game {
                 {
                     self.move_adventure_spell(&victim, Zone::Hand);
                 } else {
-                    self.move_object(victim.card, Zone::Hand);
+                    if let Some(source) = victim.source {
+                        self.move_object(source.id, Zone::Hand);
+                    }
                 }
             }
         }
@@ -59,7 +62,12 @@ impl Game {
         match context.kind {
             GiftKind::Card => self.draw_many(context.beneficiary, 1),
             GiftKind::Food | GiftKind::Treasure | GiftKind::TappedFish => {
-                let spec = item.source_card.gift().expect("complete Gift recipe");
+                let spec = item
+                    .source
+                    .expect("gift spell has source")
+                    .card
+                    .gift()
+                    .expect("complete Gift recipe");
                 self.create_tokens(
                     context.beneficiary,
                     spec.token.expect("Gift token factory"),

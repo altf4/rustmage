@@ -3,10 +3,31 @@
   "catalogue_id": 3467,
   "oracle_id": "b775a404-ec0a-47ff-bb9d-eae2273d945b",
   "facts_sha256": "6f26d69b11ff9b87b50711a4fa9a022c85843337d1025bbdd05c7e2d9d8903c5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "75c6d59dad1b644caf6a6ba9495a7910617e4f364c0d179c16601dc98fcbd9e5"
   },
-  "physical_metadata_sha256": "bca066b9ecc7cdb50f1684270b78e3f4596079fa99fae16ddae17ffdbed752d5"
+  "physical_metadata_sha256": "bca066b9ecc7cdb50f1684270b78e3f4596079fa99fae16ddae17ffdbed752d5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RepurposedEnforcer.java",
+  "java_sha256": "4b74f59acc95cf0d0c59c17928f9b33765026ba86bc46fcb4eb1f300bab0b9e6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

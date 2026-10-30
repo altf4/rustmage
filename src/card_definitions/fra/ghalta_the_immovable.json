@@ -3,10 +3,36 @@
   "catalogue_id": 1726,
   "oracle_id": "0d496c6e-8f7b-420f-9197-dacd2feb528f",
   "facts_sha256": "6deb9ba1829ccb45d46abb39c86804399fd54a4e1f9eff81e6407015198cbc85",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c773b27a2780cca6efdc3a0b7b4d358c58df0db99bf37dcfc9520bde3a4a12b3"
   },
-  "physical_metadata_sha256": "5e6a040a13db925c9223cecc774b90d396dba8f9370e2704df766db5fae2fbdd"
+  "physical_metadata_sha256": "5e6a040a13db925c9223cecc774b90d396dba8f9370e2704df766db5fae2fbdd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GhaltaTheImmovable.java",
+  "java_sha256": "13a6443d82372a7a1c58814b809e73f9c9ba36a7a7bd17597a914e37a5735c8d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+      "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CanAttackAsThoughItDidntHaveDefenderAllEffect.java",
+      "sha256": "0027f9ad91f88edd47705645a3e21f2faed8f6b1069305206cc15ab91f927e2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CombatDamageByToughnessControlledEffect.java",
+      "sha256": "f53d12244705d3bec02687372af643608ee307af417a19d2f4ee28f072e6732b"
+    }
+  ],
+  "rules_tests": "src/engine_fra_combat_assignment_tests.rs"
 }

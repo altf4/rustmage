@@ -3,10 +3,21 @@
   "catalogue_id": 1418,
   "oracle_id": "c8f802ad-4621-4f71-b52d-fbc55853dc88",
   "facts_sha256": "fe08f811537c966990eba25c6626f7a183912cf5e36e939c2f148e812c543fb7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a58584daa7af6f34a0f1966ed6e7547546e6b391e1c4621d7ee2ed19468b7e7a"
   },
-  "physical_metadata_sha256": "1ac4dd90db79e0deadce499e43fd7f4a3d98412a4e0f4ab426356211158c913f"
+  "physical_metadata_sha256": "1ac4dd90db79e0deadce499e43fd7f4a3d98412a4e0f4ab426356211158c913f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EyeOfJace.java",
+  "java_sha256": "66cedb79a53886bfe2555d9ef3fc30c2aa9e0a05b4243fae57d4ce2e85041a02",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    }
+  ],
+  "rules_tests": "src/engine_fra_conditional_artifacts_tests.rs"
 }

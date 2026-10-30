@@ -103,7 +103,7 @@ impl Game {
     }
     pub(super) fn reveal_top_move_if_permanent(&mut self, item: &SpellView) {
         let player = item.controller;
-        let Some(&id) = self.state.players[player.index()].library.last() else {
+        let Some(id) = self.top_library_card(player) else {
             return;
         };
         let revealed = RevealedLibraryCard {
@@ -121,7 +121,7 @@ impl Game {
             .capacity("library reveal sequence exhausted");
         self.state.library_top.get_or_insert_default().reveal = Some(LibraryRevealEvent {
             sequence,
-            source: item.object,
+            source: item.source.expect("library effect requires source").object,
             player,
             revealed,
             drawn: None,
@@ -138,7 +138,7 @@ impl Game {
     }
     pub(super) fn reveal_top_draw_if_artifact(&mut self, item: &SpellView) {
         let player = item.controller;
-        let Some(&id) = self.state.players[player.index()].library.last() else {
+        let Some(id) = self.top_library_card(player) else {
             return;
         };
         let revealed = RevealedLibraryCard {
@@ -157,7 +157,7 @@ impl Game {
             .capacity("library reveal sequence exhausted");
         let mut event = LibraryRevealEvent {
             sequence,
-            source: item.object,
+            source: item.source.expect("library effect requires source").object,
             player,
             revealed,
             drawn: None,
@@ -181,7 +181,7 @@ impl Game {
         power: i32,
         toughness: i32,
     ) {
-        let Some(&top) = self.state.players[item.controller.index()].library.last() else {
+        let Some(top) = self.top_library_card(item.controller) else {
             return;
         };
         let events = self.move_objects_raw(&[top], Zone::Exile);
@@ -191,10 +191,13 @@ impl Game {
                 if self.state.objects[event.after.card as usize]
                     .card
                     .has_subtype(subtype)
-                    && self.on_battlefield(item.card)
-                    && self.object_ref(item.card) == item.object
+                    && self.on_battlefield(item.source.expect("library effect requires source").id)
+                    && self.object_ref(item.source.expect("library effect requires source").id)
+                        == item.source.expect("library effect requires source").object
                 {
-                    self.state.objects[item.card as usize].growth += Stats {
+                    self.state.objects
+                        [item.source.expect("library effect requires source").id as usize]
+                        .growth += Stats {
                         power: i128::from(power),
                         toughness: i128::from(toughness),
                     };

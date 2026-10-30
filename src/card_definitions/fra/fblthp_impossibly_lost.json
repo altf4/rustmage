@@ -3,10 +3,26 @@
   "catalogue_id": 1457,
   "oracle_id": "17e7212e-69d8-4014-af98-447baed2cae7",
   "facts_sha256": "2687fd5fc43ec2e21e988e48884d50a8f182a38f1f4565ce91e6f02f59708967",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2cd3c8dee1be9e8117c61e1da138dbae9835d6df036f5d8affc55284ed2cfef3"
   },
-  "physical_metadata_sha256": "670f3e81f379c0db83a2e9eb7183504b3b124cbddfab586c13950c44a35c0c76"
+  "physical_metadata_sha256": "670f3e81f379c0db83a2e9eb7183504b3b124cbddfab586c13950c44a35c0c76",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FblthpImpossiblyLost.java",
+  "java_sha256": "8fc22d2e662d277b99c7b804275e99e5aaac447d75d09437ff301ddd7ac8faae",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleIntoLibrarySourceEffect.java",
+      "sha256": "bbb5942769ee34f8ca0539d82c4487bc0f39bcf14787978fe588240bccf4f8d0"
+    }
+  ],
+  "rules_tests": "src/engine_fra_fblthp_tests.rs"
 }

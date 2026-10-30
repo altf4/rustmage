@@ -3,10 +3,72 @@
   "catalogue_id": 2976,
   "oracle_id": "56c412be-daab-4461-931f-1e2ea8ecd75d",
   "facts_sha256": "4c33e19fec94b353257afc371d8bfc3f0666e0c13f695a80cd968500af9f78c0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "646cc0624c38978a226256a932371e0da8bc7f5842a4e1a3278d100e68900a59"
+    "definition_sha256": "186ec6dbc650e731b94b1f3a7fc1c113ab42c1aa001dcefade1a14142fc0b4a8"
   },
-  "physical_metadata_sha256": "72f6f2d0e26cbe9b089f701588331275cc8ecdd07aef664d326a7b9257686eb8"
+  "physical_metadata_sha256": "72f6f2d0e26cbe9b089f701588331275cc8ecdd07aef664d326a7b9257686eb8",
+  "source_note": "XMage source is from unmerged upstream PR #16468 at its immutable head, independently of the pinned inventory revision; full frozen Oracle reviewed.",
+  "official_release_notes": "https://magic.wizards.com/en/news/feature/reality-fracture-release-notes",
+  "java_revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+  "java_source": "Mage.Sets/src/mage/cards/n/NullSummoner.java",
+  "java_sha256": "3239f2a00300535bee807bb435eb6a0963e96e2626a7dbc4675b08101cf7b910",
+  "xmage_dependencies": [
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba"
+    },
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
+      "sha256": "f7d6ad71cd5857b9d0c127469d9b39afd84148a38001a42a309c5c218694382a"
+    },
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+      "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+    },
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughManaEffect.java",
+      "sha256": "d1906e107586766d2bc0c35b41475ac15296e0087ec975ac440137a79bbb7fc6"
+    },
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    },
+    {
+      "revision": "11d430e97f277fad0fafe604fabbaa97f944d441",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "631fe0d1b7ee4e225e09296f0ef6fbca0df5d74fb51cc9fe39db7eb5bcfca388"
+    }
+  ],
+  "rules_tests": "src/engine_fra_null_summoner_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_fra_null_origin_independent_tests.rs",
+    "src/engine_fra_null_independent_tests.rs"
+  ]
 }

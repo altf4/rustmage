@@ -3,10 +3,56 @@
   "catalogue_id": 1688,
   "oracle_id": "4a6972fe-348a-4a19-a1d0-bdf8f1f9c792",
   "facts_sha256": "548e2a6545afefb37f0dbc5a090be3ee2d00dc8bd27a6eeb890e4d24ed683102",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "95f0b2ae73a5dfddb9d2f1c1c1f951c9e726cd14e0cf6eed6ff02b76ef3fe44c"
   },
-  "physical_metadata_sha256": "c7a3f97b6de0be84cb56efd07fa10ca4fe2791ed4fed9967c39c65cf02ed9a6d"
+  "physical_metadata_sha256": "c7a3f97b6de0be84cb56efd07fa10ca4fe2791ed4fed9967c39c65cf02ed9a6d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GarrukVeiledButcher.java",
+  "java_sha256": "805ab71cf89f7754ae433be567a07066ecd1cdc07ed686a2033d1fc811e32b28",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+      "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeAllEffect.java",
+      "sha256": "edfea847c85bbbee218fd9e81bc9c2d310ce3bc2221d31eef237e9c66accfc62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/CreaturesAreExiledOnDeathReplacementEffect.java",
+      "sha256": "370b0b2b0e837ba61f178b316482c96d6714f065fea91fddf3e839f0e2c7cb97"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "src/engine_fra_garruk_veiled_tests.rs"
 }

@@ -90,7 +90,9 @@ impl Game {
             state.excess = None;
         }
         if let Some(target) = bound.object {
-            let lethal = self.lethal_assignment(source, target.card);
+            // Excess is the greatest result for every applicable permanent type
+            // (CR 120.10), equivalently the least applicable threshold.
+            let lethal = self.excess_damage_threshold(source, target.card);
             self.state
                 .combat_rules
                 .get_or_insert_with(Default::default)
@@ -113,6 +115,51 @@ impl Game {
             preventable: true,
         }]);
     }
+    fn excess_damage_threshold(&self, source: DamageSource, target: CardId) -> i128 {
+        let kinds = self.current_kinds(target);
+        let creature = (kinds & 1 != 0).then(|| self.lethal_assignment(source, target));
+        let loyalty =
+            (kinds & 64 != 0).then(|| i128::from(self.counter_count(target, CounterKind::Loyalty)));
+        let defense = (kinds & crate::cards::BATTLE_KIND != 0)
+            .then(|| i128::from(self.counter_count(target, CounterKind::Defense)));
+        [creature, loyalty, defense]
+            .into_iter()
+            .flatten()
+            .min()
+            .unwrap_or(0)
+    }
+
+    /// Freeze the threshold after all replacement side effects, before the
+    /// simultaneous damage batch changes marked damage or loyalty counters.
+    pub(super) fn refresh_excess_threshold(&mut self, events: &[DamageEvent]) {
+        let tracked = self
+            .state
+            .combat_rules
+            .as_ref()
+            .and_then(|rules| rules.excess.as_ref());
+        let Some(tracked) = tracked else { return };
+        // Preserve the threshold once this tracked damage has begun; a later
+        // split batch must not replace it after marking damage.
+        if tracked.dealt != 0 {
+            return;
+        }
+        let Some(event) = events.iter().find(|event| {
+            event.source.reference == tracked.source
+                && matches!(event.target, Target::Card(id) if self.object_ref(id) == tracked.target)
+        }) else {
+            return;
+        };
+        let lethal = self.excess_damage_threshold(event.source, tracked.target.card);
+        self.state
+            .combat_rules
+            .as_mut()
+            .unwrap()
+            .excess
+            .as_mut()
+            .unwrap()
+            .lethal = lethal;
+    }
+
     /// Called only for actual positive damage, after replacement/prevention and
     /// before that event changes life or marked damage. Later type changes do
     /// not change whether the recipient was a Dragon when it was damaged.
@@ -252,6 +299,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(amount)
             .copied()
             .collect();
@@ -291,7 +339,9 @@ impl Game {
             .enumerate()
             .filter(|(id, object)| {
                 object.zone == Zone::Battlefield
-                    && self.creature_matches(filter, item.controller, item.object, *id as CardId)
+                    && item.source.is_some_and(|source| {
+                        self.creature_matches(filter, item.controller, source.object, *id as CardId)
+                    })
             })
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
@@ -312,7 +362,10 @@ impl Game {
         let mut damaged = [false; 2];
         if let Some(rules) = &self.state.combat_rules {
             for row in &rules.damaged_players {
-                if row.source == item.object {
+                if item
+                    .source
+                    .is_some_and(|source| row.source == source.object)
+                {
                     damaged[row.player.index()] = true;
                 }
             }
@@ -357,11 +410,26 @@ impl Announcement {
     pub(super) fn has_x_cost(&self) -> bool {
         match self.item.kind {
             StackKind::Spell => {
-                self.item.source_card.x_symbols() > 0 || self.item.source_card.life_x_cost()
+                self.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .x_symbols()
+                    > 0
+                    || self
+                        .item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card
+                        .life_x_cost()
             }
-            StackKind::ActivatedAbility { ability } => {
-                self.item.source_card.activation(ability).has_x_cost()
-            }
+            StackKind::ActivatedAbility { ability } => self
+                .item
+                .source
+                .expect("cost announcement has object source")
+                .card
+                .activation(ability)
+                .has_x_cost(),
             _ => false,
         }
     }

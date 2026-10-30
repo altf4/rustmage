@@ -3,10 +3,40 @@
   "catalogue_id": 869,
   "oracle_id": "fc3353e9-fe24-4ca7-bff8-9da767f2903a",
   "facts_sha256": "2e12ec990cda0c09552bef5b7c71a19051ef14acea0fcd3ff12b2e5fb6ed2644",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1ea6d58f521cac9fbc3d5b5eca915b099d611a186dc2f70ba0c2caecac249a80"
   },
-  "physical_metadata_sha256": "c0e8bf5e30a1fb2975ba91c138ec7dd2bd99d4c0527a2050fc2d314d15fbfc2a"
+  "physical_metadata_sha256": "c0e8bf5e30a1fb2975ba91c138ec7dd2bd99d4c0527a2050fc2d314d15fbfc2a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/Countersculpt.java",
+  "java_sha256": "d28b182be2a1e530417e880f1848079df4fcd0d48a88f40ce442fdd918247b24",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+      "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ]
 }

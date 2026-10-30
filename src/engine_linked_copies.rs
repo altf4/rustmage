@@ -8,12 +8,15 @@ pub(super) struct LinkedCopyCapture {
 impl Game {
     pub(super) fn exile_and_capture_attached_copy(&mut self, item: &SpellView) {
         self.state.resolving.as_mut().unwrap().linked_copy = None;
-        if !self.on_battlefield(item.object.card)
-            || self.object_ref(item.object.card) != item.object
+        let Some(source) = item.source else {
+            return;
+        };
+        if !self.on_battlefield(source.object.card)
+            || self.object_ref(source.object.card) != source.object
         {
             return;
         }
-        if self.state.objects[item.object.card as usize]
+        if self.state.objects[source.object.card as usize]
             .attached_to
             .is_none()
         {
@@ -33,13 +36,13 @@ impl Game {
             .find(|e| e.moved && e.destination == Zone::Exile)
         {
             self.state.exile_links.push(ExileLink {
-                source: item.object,
+                source: source.object,
                 exiled: event.after,
                 return_zone: event.before.zone,
             });
             self.state.resolving.as_mut().unwrap().linked_copy =
                 Some(Box::new(LinkedCopyCapture {
-                    source: item.object,
+                    source: source.object,
                     recipe,
                 }));
         }

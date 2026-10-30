@@ -3,10 +3,36 @@
   "catalogue_id": 4668,
   "oracle_id": "acf4abde-4034-4fcf-b531-78c935aecd8c",
   "facts_sha256": "97c06eaab88fe19a1e7ed2c2f97ff335abb34b17895833c3fe891f34ec22b5c2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7859ad0971b4b0f855c2ca3203a138749a06eba7a52a3a15b08548e3d25a1417"
   },
-  "physical_metadata_sha256": "cde6213de35ad663f436e10b9bc1db5c0ad3f3d4fdc9d01560ed031665fd6c2e"
+  "physical_metadata_sha256": "cde6213de35ad663f436e10b9bc1db5c0ad3f3d4fdc9d01560ed031665fd6c2e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TraxosScourgeEternal.java",
+  "java_sha256": "e54d3e28f03a70ea1dab96cc3cb8baf3cdfe8821ea86b22779910259aa87ccbc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepSourceEffect.java",
+      "sha256": "afff3901e3135ea4fa0a22eb75914fc88050eb0f03ce876c74b666564c213ad8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+      "sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_tests": "src/assurance/fra_traxos_interactions.rs"
 }

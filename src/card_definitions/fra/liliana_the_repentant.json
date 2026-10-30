@@ -3,10 +3,41 @@
   "catalogue_id": 2507,
   "oracle_id": "5eb4403f-f199-4f75-a7c6-e76783f9b07d",
   "facts_sha256": "50e6824b3dc01eaeaf976b49f7959881853172b3de697e9424a4c46194e470f7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0f0d28a7521714b61a2541cd39fe7037535809e2e193af197751b96b585a8822"
   },
-  "physical_metadata_sha256": "d3bacf65f8be340fd61f7974c06d356f70a6ceea685a6769d11e1fd85b3d225a"
+  "physical_metadata_sha256": "d3bacf65f8be340fd61f7974c06d356f70a6ceea685a6769d11e1fd85b3d225a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LilianaTheRepentant.java",
+  "java_sha256": "bdc0b011b0a8d4c9b8bdc806544306a20c417017d4dd8e693a119778e3b2897b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+    }
+  ],
+  "rules_tests": "src/engine_fra_liliana_repentant_tests.rs"
 }

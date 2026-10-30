@@ -3,10 +3,26 @@
   "catalogue_id": 1558,
   "oracle_id": "162421d2-8761-437f-bed9-578b61c96f1f",
   "facts_sha256": "b9da0597e5cb29ddcc8b59f2309edcf0d28391e701fa43e823c9f11b245f06d5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fe7b05ab35ea7a64cd130123b25b557ee77447411b37d89ef3dfc643955c91ae"
   },
-  "physical_metadata_sha256": "6ebfee377747ee4e0affe4d606d9434b2096901eff5127973570f558c0001d2c"
+  "physical_metadata_sha256": "6ebfee377747ee4e0affe4d606d9434b2096901eff5127973570f558c0001d2c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FlickeringHound.java",
+  "java_sha256": "2fd833216446ff9bd85a708b8a40dd75407619b642540ec0097bde53028317d8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
+      "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "66223cbdcd605ecf1ab634ab4230230b56927b4ca54f836545ea89f020a5c94c"
   },
-  "physical_metadata_sha256": "a7abc21d4e0e05b23427c5cb526cf8c4e660034bdc8702f5a8d1cb424b9ce312"
+  "physical_metadata_sha256": "a7abc21d4e0e05b23427c5cb526cf8c4e660034bdc8702f5a8d1cb424b9ce312",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShatterwingPegasus.java",
+  "java_sha256": "7ecbd24277af24c28a5d060407931799c442deeb7e547bfaf64d31377bec6595"
 }

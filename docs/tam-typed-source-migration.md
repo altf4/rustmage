@@ -1,0 +1,9 @@
+# Stack source identity and schema 190
+
+A stack ability created by an inherent player rule can have no source card or object. `SpellView` now owns a single `Option<StackSourceView>` source. Call `SpellView::source()` to obtain its object ID, exact `ObjectRef`, card definition and last-known damage facts, or `None` for an inherent player ability. `source_identity()` offers the object reference and card as a pair; `source_less_rule()` identifies the inherent rule when present. Radiation packets use `None`, including when copied. Their affected player remains part of the owned stack kind.
+
+This is a Rust API break: the old public `SpellView.card`, `object`, `source_card` and `source_facts` fields were removed. External callers must migrate to `source()` and handle absence. Only unwrap after establishing that the operation requires an object-backed spell or ability; arbitrary observed stack items can be inherent abilities. Source-relative rules must use the exact object incarnation and retained facts rather than rebinding a later object.
+
+Schema 190 serializes object-backed packet identity inside `source` and serializes the inherent source as null. The prior-schema projector restores the schema 189 packet shape when representable and rejects source-less packets and incompatible owned state, including retained or rollback state; the combined projector also checks Uldaros type-slot additions. Previous projectors remain in sequence. The source field change is not wire-compatible with schema 189 without projection.
+
+The prior-schema audit at `/home/altf4/.cache/fra-tam190.prior-mana-audit.json` matched all 2,928 prior supported-card traces. This trace comparison does not establish full radiation or proliferate correctness. Tam remains gated pending its remaining branch evidence and final independent reviews.

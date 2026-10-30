@@ -62,6 +62,7 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
             | Instruction::AddColorlessScaled(value)
+            | Instruction::AddManaScaled { amount: value, .. }
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
@@ -143,10 +144,10 @@ impl Game {
                     return None;
                 }
                 let mut selected = (false, false);
-                for item in self
-                    .source_quantity_packets()
-                    .filter(|item| item.object == source.reference)
-                {
+                for item in self.source_quantity_packets().filter(|item| {
+                    item.source
+                        .is_some_and(|identity| identity.object == source.reference)
+                }) {
                     if let Some(facts) = &item.source_quantity_lki {
                         selected.0 |= facts.toughness.is_some();
                         selected.1 |= facts.equipment_count.is_some();
@@ -183,7 +184,9 @@ impl Game {
             .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
         {
             if let Some(saved) = &mut item.source_quantity_lki
-                && let Some((_, frozen)) = facts.iter().find(|(object, _)| *object == item.object)
+                && let Some((_, frozen)) = facts
+                    .iter()
+                    .find(|(object, _)| item.source.is_some_and(|source| *object == source.object))
             {
                 if saved.toughness.is_some() {
                     saved.toughness = frozen.toughness;
@@ -195,11 +198,14 @@ impl Game {
         }
     }
     pub(super) fn source_toughness(&self, item: &SpellView) -> u128 {
-        let value = if self.on_battlefield(item.object.card)
-            && self.object_ref(item.object.card) == item.object
+        let Some(source) = item.source else {
+            return 0;
+        };
+        let value = if self.on_battlefield(source.object.card)
+            && self.object_ref(source.object.card) == source.object
         {
-            if self.is_creature(item.object.card) {
-                self.stats(item.object.card).toughness
+            if self.is_creature(source.object.card) {
+                self.stats(source.object.card).toughness
             } else {
                 0
             }
@@ -213,12 +219,18 @@ impl Game {
         value.max(0) as u128
     }
     pub(super) fn source_equipment_quantity(&self, item: &SpellView) -> u128 {
-        u128::from(self.source_equipment_count(item.object).unwrap_or_else(|| {
-            item.source_quantity_lki
-                .as_ref()
-                .and_then(|f| f.equipment_count)
-                .unwrap_or(0)
-        }))
+        let Some(source) = item.source else {
+            return 0;
+        };
+        u128::from(
+            self.source_equipment_count(source.object)
+                .unwrap_or_else(|| {
+                    item.source_quantity_lki
+                        .as_ref()
+                        .and_then(|f| f.equipment_count)
+                        .unwrap_or(0)
+                }),
+        )
     }
     pub(super) fn source_quantity_guard(&self, item: &SpellView) -> bool {
         let StackKind::TriggeredAbility { ability } = item.kind else {

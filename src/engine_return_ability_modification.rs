@@ -26,8 +26,11 @@ impl std::hash::Hash for ResolvedAbilityModificationView {
 }
 impl Game {
     pub(super) fn return_source_blank_with_haste(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
         let Some(movement) = item.source_move.as_ref().filter(|m| {
-            m.before == item.object
+            m.before == source.object
                 && m.origin == Zone::Battlefield
                 && m.destination == Zone::Graveyard
         }) else {
@@ -42,7 +45,7 @@ impl Game {
         let mut entry = self.entry_move(r.card, Zone::Battlefield, false);
         entry.controller = owner;
         entry.effect_counter = Some((CounterKind::PlusOne, 1));
-        entry.blank_with_haste_after = Some(item.object);
+        entry.blank_with_haste_after = Some(source.object);
         self.stage_entries(vec![entry], None);
     }
     pub(super) fn blank_and_grant_haste(&mut self, recipient: ObjectRef, source: ObjectRef) {

@@ -294,7 +294,7 @@ fn msh_c_artifact_entry_and_villain_cast_observers() {
             .state
             .ordering_triggers
             .iter()
-            .find(|t| t.card == a)
+            .find(|t| t.source.is_some_and(|identity| identity.id == a))
             .unwrap()
             .id;
         act(&mut g, Action::PutTrigger { id: trigger });
@@ -303,7 +303,7 @@ fn msh_c_artifact_entry_and_villain_cast_observers() {
                 .state
                 .ordering_triggers
                 .iter()
-                .find(|t| t.card == drone)
+                .find(|t| t.source.is_some_and(|identity| identity.id == drone))
                 .unwrap()
                 .id;
             act(&mut g, Action::PutTrigger { id: trigger });
@@ -1625,7 +1625,10 @@ fn msh_c_modal_faces_prowess_transformation_and_attached_controller_upkeep() {
             .state
             .ordering_triggers
             .iter()
-            .find(|t| t.card == monica && t.kind == StackKind::TriggeredAbility { ability: 0 })
+            .find(|t| {
+                t.source.is_some_and(|identity| identity.id == monica)
+                    && t.kind == StackKind::TriggeredAbility { ability: 0 }
+            })
             .unwrap()
             .id;
         act(&mut g, Action::PutTrigger { id: first });
@@ -1634,7 +1637,7 @@ fn msh_c_modal_faces_prowess_transformation_and_attached_controller_upkeep() {
                 .state
                 .ordering_triggers
                 .iter()
-                .find(|t| t.card == monica)
+                .find(|t| t.source.is_some_and(|identity| identity.id == monica))
                 .unwrap()
                 .id;
             act(&mut g, Action::PutTrigger { id: second });

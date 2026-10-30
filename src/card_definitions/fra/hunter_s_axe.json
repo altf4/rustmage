@@ -3,10 +3,41 @@
   "catalogue_id": 2104,
   "oracle_id": "d7d59fef-1401-464b-b1bb-ee5da92cde51",
   "facts_sha256": "5d819134a5ee65ed12b069274811ac34187fd57b580fbd00e9eee86ca262e010",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ceb5d02fbbb1fafc3235453ab9deba26932010459309a32ac70d7cd83e6a4701"
   },
-  "physical_metadata_sha256": "321343e4bd17d1c234c37dd122a10cfac514de0478623d9280f02f805ca4fc11"
+  "physical_metadata_sha256": "321343e4bd17d1c234c37dd122a10cfac514de0478623d9280f02f805ca4fc11",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HuntersAxe.java",
+  "java_sha256": "823b443a6c8ce7dcdcfefae520a0abe3d45f8cb8b90df1db7d3cf1a39e4ba645",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainsChoiceOfAbilitiesEffect.java",
+      "sha256": "aa49281058acd322aa947ca2930690fe936281953eab784b9585954f44893553"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

@@ -42,6 +42,12 @@ pub struct LinkedExileView {
     pub source: ObjectRef,
     pub exiled: ObjectRef,
 }
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct NullCastLink {
+    pub source: ObjectRef,
+    pub exiled: ObjectRef,
+    pub ability_origin: Option<u64>,
+}
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ChoiceState {
     pub hand: Option<Box<super::hand_choices::HandInteraction>>,
@@ -54,10 +60,20 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    pub null_cast_links: Vec<NullCastLink>,
     pub hidden: Vec<(ObjectRef, ObjectRef, u8)>,
     pub hideaway_controllers: Vec<(ObjectRef, u8)>,
 }
 impl ChoiceState {
+    // Suspended interactions may own packets; the remaining bookkeeping owns only references.
+    #[cfg(test)]
+    pub(super) fn has_opaque_interaction(&self) -> bool {
+        self.hand.is_some()
+            || self.hand_library_search.is_some()
+            || self.zone_search.is_some()
+            || self.library_cast.is_some()
+            || self.deployment.is_some()
+    }
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.hand_library_search.as_ref().map_or(0, |_| {
@@ -73,6 +89,7 @@ impl ChoiceState {
             + self.hideaway_controllers.len() * std::mem::size_of::<(ObjectRef, u8)>()
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, ObjectRef, u8)>()
             + self.links.len() * std::mem::size_of::<LinkedExileView>()
+            + self.null_cast_links.len() * std::mem::size_of::<NullCastLink>()
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()
             })
@@ -93,6 +110,7 @@ impl Game {
             data.keep_types = None;
             data.sacrifice = None;
             if data.links.is_empty()
+                && data.null_cast_links.is_empty()
                 && data.hideaway_controllers.is_empty()
                 && data.hidden.is_empty()
             {
@@ -105,6 +123,7 @@ impl Game {
             .library
             .iter()
             .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
             .take(usize::from(maximum))
             .map(|&id| self.object_ref(id))
             .collect();
@@ -367,7 +386,7 @@ impl Game {
             .filter(|(id, o)| {
                 o.zone == Zone::Graveyard
                     && o.owner == player
-                    && !o.is_token()
+                    && o.is_card()
                     && crate::RecoveryFilter::Permanent.matches(o.card)
                     && self.object_ref(*id as CardId) != excluded
             })
@@ -418,6 +437,9 @@ impl Game {
         }
     }
     pub(super) fn play_hideaway_if_coven(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
         let mut powers: Vec<_> = self
             .state
             .objects
@@ -443,7 +465,7 @@ impl Game {
                 data.links
                     .iter()
                     .filter(|link| {
-                        link.source == item.object
+                        link.source == source.object
                             && self.object_ref(link.exiled.card) == link.exiled
                             && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
                     })
@@ -458,6 +480,7 @@ impl Game {
             paid: None,
             casts_remaining: None,
             pending_cast: None,
+            remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
@@ -471,7 +494,15 @@ impl Game {
         };
     }
     pub(super) fn remember_linked_exile(&mut self, selected: &[CardId]) {
-        let source = self.state.resolving.as_ref().unwrap().item.object;
+        let Some(source) = self
+            .state
+            .resolving
+            .as_ref()
+            .and_then(|r| r.item.source)
+            .map(|s| s.object)
+        else {
+            return;
+        };
         for &id in selected {
             if self.state.objects[id as usize].zone == Zone::Exile {
                 let exiled = self.object_ref(id);
@@ -525,7 +556,15 @@ impl Game {
             })
     }
     pub(super) fn choose_linked_exile(&mut self, object: ObjectRef) {
-        let source = self.state.resolving.as_ref().unwrap().item.object;
+        let Some(source) = self
+            .state
+            .resolving
+            .as_ref()
+            .and_then(|r| r.item.source)
+            .map(|s| s.object)
+        else {
+            return;
+        };
         assert!(self.linked_exile_candidates(source).contains(&object));
         let movement = self.entry_move(object.card, Zone::Hand, false);
         self.stage_entries(vec![movement], None);
@@ -562,17 +601,20 @@ impl Game {
                 .iter()
                 .chain(&self.state.pending_triggers)
                 .chain(&self.state.ordering_triggers)
-                .any(|item| item.object == source)
-                || self
-                    .state
-                    .resolving
-                    .as_ref()
-                    .is_some_and(|r| r.item.object == source)
-                || self
-                    .state
-                    .announcing
-                    .as_ref()
-                    .is_some_and(|a| a.item.object == source)
+                .any(|item| {
+                    item.source
+                        .is_some_and(|identity| identity.object == source)
+                })
+                || self.state.resolving.as_ref().is_some_and(|r| {
+                    r.item
+                        .source
+                        .is_some_and(|identity| identity.object == source)
+                })
+                || self.state.announcing.as_ref().is_some_and(|a| {
+                    a.item
+                        .source
+                        .is_some_and(|identity| identity.object == source)
+                })
         };
         data.hideaway_controllers.retain(|&(source, _)| {
             let o = &objects[source.card as usize];
@@ -581,6 +623,10 @@ impl Game {
         data.hidden.retain(|&(_, exiled, _)| {
             let o = &objects[exiled.card as usize];
             o.zone == Zone::Exile && o.generation == exiled.generation
+        });
+        data.null_cast_links.retain(|link| {
+            let o = &objects[link.exiled.card as usize];
+            matches!(o.zone, Zone::Exile | Zone::Stack) && o.generation == link.exiled.generation
         });
         data.links.retain(|link| {
             let o = &objects[link.exiled.card as usize];

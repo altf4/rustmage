@@ -7,7 +7,7 @@ impl Game {
         players: &[Player],
         amount: MillAmount,
         controller: Player,
-    ) {
+    ) -> usize {
         // Freeze all players' top cards before moving anything. Mandatory milling
         // does as much as possible and never attempts a draw from an empty library.
         let maximum = match amount {
@@ -33,6 +33,40 @@ impl Game {
                     .unwrap_or(usize::MAX)
             }
         };
+        self.mill_batch_up_to(players, maximum)
+            .iter()
+            .filter(|event| event.moved || event.shuffled_in_place)
+            .count()
+    }
+
+    /// The rad-trigger continuation uses the exact committed destinations and
+    /// public characteristics of this one mill event, including replacements.
+    pub(super) fn mill_radiation(&mut self, player: Player, count: u64) -> u64 {
+        let maximum = usize::try_from(count).unwrap_or(usize::MAX);
+        let events = self.mill_batch_up_to(&[player], maximum);
+        u64::try_from(
+            events
+                .iter()
+                .filter(|event| {
+                    event.moved
+                        && self.public_milled_object(event.after)
+                        && self
+                            .state
+                            .objects
+                            .get(event.after.card as usize)
+                            .is_some_and(|object| {
+                                object.generation == event.after.generation
+                                    && !object.is_token()
+                                    && !object.is_spell_copy()
+                                    && self.current_kinds(event.after.card) & 2 == 0
+                            })
+                })
+                .count(),
+        )
+        .capacity("radiation mill count exhausted")
+    }
+
+    fn mill_batch_up_to(&mut self, players: &[Player], maximum: usize) -> Vec<ZoneChange> {
         let ids: Vec<_> = players
             .iter()
             .flat_map(|player| {
@@ -40,8 +74,9 @@ impl Game {
                     .library
                     .iter()
                     .rev()
-                    .take(maximum)
                     .copied()
+                    .filter(|&id| self.state.objects[id as usize].is_card())
+                    .take(maximum)
             })
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Graveyard);
@@ -51,6 +86,7 @@ impl Game {
             .map(|event| event.after)
             .collect();
         self.finish_zone_events(&events, &[]);
+        events
     }
 
     pub(super) fn can_recover_milled(

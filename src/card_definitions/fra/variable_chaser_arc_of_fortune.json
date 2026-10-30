@@ -3,10 +3,41 @@
   "catalogue_id": 4850,
   "oracle_id": "67c603cc-ad66-4a1c-8386-5901c9c01bfb",
   "facts_sha256": "9464e84f9a1255a8c673918490129b8bb970167af7ff5bd40d08b7419e5aa7bf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "726e310d89f03f4bb4d7e9640dcb3588b991bedd0bfed53e8bed724485324340"
   },
-  "physical_metadata_sha256": "e90a6f13772a58d79dc9eb238dd8c32024e6d3849926019182fc9c46002b9a18"
+  "physical_metadata_sha256": "487e25c4e83e97e847bd5482fb667b56d6d448772fec9d1c7d5cc2270a254a0d",
+  "oracle_face": {
+    "oracle_id": "67c603cc-ad66-4a1c-8386-5901c9c01bfb",
+    "index": 0,
+    "sha256": "837ff4af2dc2f6d030223f4b951e58b92d9343eb2e00ee04a407417b920a6704"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VariableChaser.java",
+  "java_sha256": "007ebfc77ae9b45e7d3af57824e8ddbbb8f3d2b94bb23d208e8103a9a3ef3621",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    }
+  ],
+  "rules_tests": "src/engine_fra_variable_chaser_tests.rs"
 }

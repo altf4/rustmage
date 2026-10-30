@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bcdac350977b3d395d81a6cdfdf5fc10534515187bc0246b2b4c9f2ae30b11df"
   },
-  "physical_metadata_sha256": "b47e9ff24c0d9e9c5e34af1314cc226b0e3ce289484f134c3c0bbdbc378a7c4d"
+  "physical_metadata_sha256": "b47e9ff24c0d9e9c5e34af1314cc226b0e3ce289484f134c3c0bbdbc378a7c4d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DesertedBeach.java",
+  "java_sha256": "d2bf9b40b6b0a64b1f1555db3241d8f40df19e89b4d8b865ee1f03c9faa5c933"
 }

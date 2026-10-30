@@ -86,7 +86,10 @@ fn choose(
             } => {
                 let b = o.objects.iter().find(|b| b.id == *id).unwrap();
                 let root = o.announcing.as_ref().unwrap();
-                if root.source_card.name() == "Shock" {
+                if root
+                    .source()
+                    .is_some_and(|source| source.card.name() == "Shock")
+                {
                     if b.owner != root.controller && NEW.contains(&b.card.name()) {
                         300
                     } else {
@@ -238,7 +241,10 @@ fn main() {
             if matches!(a, Action::ArrangeLibrary { .. } | Action::Discard { .. })
                 && before.resolving.as_ref().is_some_and(|s| {
                     matches!(
-                        s.source_card.name(),
+                        s.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
                         "Veteran Guardmouse" | "Whiskerquill Scribe"
                     )
                 })
@@ -284,7 +290,11 @@ fn main() {
                 }
             }
             for item in items(&after) {
-                let name = item.source_card.name();
+                let name = item
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .card
+                    .name();
                 let index = if name == "Ruric Thar, Biomagus" { 2 } else { 0 };
                 if NEW.contains(&name)
                     && item.kind == (StackKind::TriggeredAbility { ability: index })

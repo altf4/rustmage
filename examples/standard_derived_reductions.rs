@@ -258,11 +258,10 @@ fn score(obs: &Observation, a: &Action) -> i32 {
             target: Target::Card(id),
         } => {
             let target = obs.objects.iter().find(|o| o.id == *id).unwrap();
-            if obs
-                .announcing
-                .as_ref()
-                .is_some_and(|s| s.source_card.name() == "Kin-Tree Severance")
-                && target.owner == obs.actor.unwrap()
+            if obs.announcing.as_ref().is_some_and(|s| {
+                s.source()
+                    .is_some_and(|source| source.card.name() == "Kin-Tree Severance")
+            }) && target.owner == obs.actor.unwrap()
             {
                 -100
             } else {
@@ -290,9 +289,16 @@ fn before_generic(obs: &Observation, index: u16) -> u32 {
         .generic
 }
 fn body(before: &Observation, after: &Observation, item: &SpellView) -> usize {
-    let name = item.source_card.name();
+    let Some(source) = item.source() else {
+        return 0;
+    };
+    let name = source.card.name();
     let p = item.controller.index();
-    if item.kind == StackKind::Spell && item.source_card.is_creature() {
+    if item.kind == StackKind::Spell
+        && item
+            .source()
+            .is_some_and(|source| source.card.is_creature())
+    {
         let stats = match name {
             "Fungal Colossus" => (5, 5),
             "Ghalta the Unstoppable" => (8, 8),
@@ -302,14 +308,32 @@ fn body(before: &Observation, after: &Observation, item: &SpellView) -> usize {
             "The Scarlet Witch" => (2, 3),
             _ => return 0,
         };
-        let o = after.objects.iter().find(|o| o.id == item.card).unwrap();
+        let o = after
+            .objects
+            .iter()
+            .find(|o| {
+                o.id == item
+                    .source()
+                    .expect("example expects an object-backed packet")
+                    .id
+            })
+            .unwrap();
         assert_eq!(o.zone, Zone::Battlefield);
         assert_eq!((o.power, o.toughness), stats);
         return 3;
     }
     if name == "All-Fates Scroll" {
         if item.kind == StackKind::Spell {
-            let o = after.objects.iter().find(|o| o.id == item.card).unwrap();
+            let o = after
+                .objects
+                .iter()
+                .find(|o| {
+                    o.id == item
+                        .source()
+                        .expect("example expects an object-backed packet")
+                        .id
+                })
+                .unwrap();
             assert_eq!(o.zone, Zone::Battlefield);
             return 1;
         }
@@ -379,10 +403,16 @@ fn main() {
                     let (cost, rules) = costs(
                         &before,
                         root.controller,
-                        root.source_card,
-                        before
-                            .announcing_cost
-                            .unwrap_or_else(|| base(root.source_card)),
+                        root.source()
+                            .expect("example expects an object-backed packet")
+                            .card,
+                        before.announcing_cost.unwrap_or_else(|| {
+                            base(
+                                root.source()
+                                    .expect("example expects an object-backed packet")
+                                    .card,
+                            )
+                        }),
                     );
                     locked_rules.insert(root.id, rules);
                     cost
@@ -448,13 +478,24 @@ fn main() {
             }
             let after = game.observe(actor);
             for item in &after.stack {
-                if item.kind == StackKind::Spell && NEW.contains(&item.source_card.name()) {
-                    casted.insert(item.source_card.name());
+                if item.kind == StackKind::Spell
+                    && item
+                        .source()
+                        .is_some_and(|source| NEW.contains(&source.card.name()))
+                {
+                    casted.insert(
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                    );
                 }
             }
             if let Some(item) = before.stack.last()
                 && after.stack.iter().all(|s| s.id != item.id)
-                && NEW.contains(&item.source_card.name())
+                && item
+                    .source()
+                    .is_some_and(|source| NEW.contains(&source.card.name()))
             {
                 origins.entry(item.id).or_insert_with(|| before.clone());
             }
@@ -469,13 +510,21 @@ fn main() {
                     })
                 });
             if let Some(item) = complete
-                && NEW.contains(&item.source_card.name())
+                && item
+                    .source()
+                    .is_some_and(|source| NEW.contains(&source.card.name()))
             {
                 let origin = origins.remove(&item.id).unwrap_or_else(|| before.clone());
                 let n = body(&origin, &after, item);
                 checks += n;
                 if n > 0 {
-                    resolved.insert((item.source_card.name(), format!("{:?}", item.kind)));
+                    resolved.insert((
+                        item.source()
+                            .expect("example expects an object-backed packet")
+                            .card
+                            .name(),
+                        format!("{:?}", item.kind),
+                    ));
                 }
             }
             decisions += 1;

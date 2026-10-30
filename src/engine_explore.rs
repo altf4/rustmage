@@ -60,10 +60,7 @@ impl Game {
         }
     }
     pub(super) fn remember_library_top(&mut self, p: Player, object: ObjectRef) {
-        assert_eq!(
-            self.state.players[p.index()].library.last(),
-            Some(&object.card)
-        );
+        assert_eq!(self.top_library_card(p), Some(object.card));
         assert_eq!(self.object_ref(object.card), object);
         self.explore_data().known_top[p.index()] = Some(object);
     }
@@ -116,24 +113,29 @@ impl Game {
     }
     pub(super) fn start_explore(&mut self, item: &SpellView, subject: Subject) -> bool {
         let explorer = match subject {
-            Subject::Source => ExplorerView {
-                kinds: if self.on_battlefield(item.card)
-                    && self.object_ref(item.card) == item.object
-                {
-                    self.current_kinds(item.card)
-                } else {
-                    item.source_facts.kinds
-                },
-                object: item.object,
-                card: item.source_card,
-                controller: if self.on_battlefield(item.card)
-                    && self.object_ref(item.card) == item.object
-                {
-                    self.state.objects[item.card as usize].controller
-                } else {
-                    item.source_facts.controller
-                },
-            },
+            Subject::Source => {
+                let Some(source) = item.source else {
+                    return false;
+                };
+                ExplorerView {
+                    kinds: if self.on_battlefield(source.id)
+                        && self.object_ref(source.id) == source.object
+                    {
+                        self.current_kinds(source.id)
+                    } else {
+                        source.facts.kinds
+                    },
+                    object: source.object,
+                    card: source.card,
+                    controller: if self.on_battlefield(source.id)
+                        && self.object_ref(source.id) == source.object
+                    {
+                        self.state.objects[source.id as usize].controller
+                    } else {
+                        source.facts.controller
+                    },
+                }
+            }
             Subject::Targets => {
                 let Some(bound) = item.targets.first().copied() else {
                     return false;
@@ -154,14 +156,10 @@ impl Game {
             _ => unreachable!("unsupported explore subject"),
         };
         let player = explorer.controller;
-        let revealed = self.state.players[player.index()]
-            .library
-            .last()
-            .copied()
-            .map(|id| RevealedLibraryCard {
-                object: self.object_ref(id),
-                card: self.state.objects[id as usize].card,
-            });
+        let revealed = self.top_library_card(player).map(|id| RevealedLibraryCard {
+            object: self.object_ref(id),
+            card: self.state.objects[id as usize].card,
+        });
         if let Some(card) = revealed {
             self.remember_library_top(player, card.object);
             if card.card.is_land() {

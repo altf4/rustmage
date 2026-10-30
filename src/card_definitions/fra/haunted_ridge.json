@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d773d074755c8f2e9271b3c700146e4b83b488073266f38997db54fd2253a76d"
   },
-  "physical_metadata_sha256": "7c53047e204a5a0c1a0645d979b5722b411bf7d652be95b4cc21e88c81ad5fdc"
+  "physical_metadata_sha256": "7c53047e204a5a0c1a0645d979b5722b411bf7d652be95b4cc21e88c81ad5fdc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HauntedRidge.java",
+  "java_sha256": "f31b8af82cc20d514bb860c91ebcbebfd22c37f0d1ae8b67b50e3ff8ad343d8a"
 }

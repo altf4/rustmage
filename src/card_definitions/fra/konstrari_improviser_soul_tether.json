@@ -3,10 +3,71 @@
   "catalogue_id": 2397,
   "oracle_id": "bad2e3b2-ad47-4e17-b35e-0fcc13e82937",
   "facts_sha256": "07d01766938e81d5baf19fe29de665a89673478c356f0606145d95fc53ad8a74",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dea9a89a6a87e29079d65f7ebac25f51070c7e82994142af22ee67a5c811627e"
   },
-  "physical_metadata_sha256": "228e9df7abe97af5fe8c3a2e5d723842587d5a7e977b18a4368dc247d5443494"
+  "physical_metadata_sha256": "e0e988828ca899f350ea4204f7dce1f7da71d82033eb6dbe79645c81794827ab",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KonstrariImproviser.java",
+  "java_sha256": "99abd33f6951303f89e4f032afc693e82999ff1eb61ee5675052313abfe0da00",
+  "rules_tests": "src/assurance/fra_soul_tether.rs",
+  "oracle_face": {
+    "oracle_id": "bad2e3b2-ad47-4e17-b35e-0fcc13e82937",
+    "index": 0,
+    "sha256": "a5d2981aaa8f626ccaf37a909d28a928c10ec67c918c7a893f5adffa40b3525e"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HeartwoodToken.java",
+      "sha256": "956f8bf81061e436da05478f1923f01ec377b0563b620d0751ba6a5e35680a91"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareSpellCard.java",
+      "sha256": "d44b2de46baa68db903d8d5d9ab989bc3d4075e3dc03b3eab5a6b6d14f8d1872"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PreparedSpellCopy.java",
+      "sha256": "47b70902962be18fa763cc8854b371c9a36072815ae3dc5c67319bde72667c95"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+      "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    }
+  ]
 }

@@ -103,7 +103,10 @@ impl Game {
             Target::Spell(_) | Target::Stack(_) => self
                 .bound_stack_item(&bound)
                 .filter(|target| {
-                    target.kind == StackKind::Spell && target.source_card.is_creature()
+                    target.kind == StackKind::Spell
+                        && target
+                            .source
+                            .is_some_and(|source| source.card.is_creature())
                 })
                 .map(|target| target.controller),
             _ => None,

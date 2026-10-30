@@ -15,6 +15,15 @@ impl Game {
         {
             base.generic = base.generic.saturating_sub(rule.generic);
         }
+        if let (Some(kind), Target::Card(id)) = (
+            definition.activation_target_counter_discount(ability),
+            target,
+        ) && self.on_battlefield(id)
+        {
+            base.generic = base
+                .generic
+                .saturating_sub(u32::try_from(self.counter_count(id, kind)).unwrap_or(u32::MAX));
+        }
         base.generic = base
             .generic
             .saturating_sub(self.equip_target_reduction(actor, definition, ability, target));
@@ -28,7 +37,10 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return base;
         };
-        if let Some(rule) = item.source_card.activation_target_reduction(ability)
+        let Some(source) = item.source else {
+            return base;
+        };
+        if let Some(rule) = source.card.activation_target_reduction(ability)
             && item.targets.iter().any(|b| {
                 self.same_target_object(*b) && self.item_target_matches(item, rule.rule, b.target)
             })
@@ -36,9 +48,18 @@ impl Game {
             base.generic = base.generic.saturating_sub(rule.generic);
         }
         for target in item.targets.iter().filter(|b| self.same_target_object(**b)) {
+            if let (Some(kind), Target::Card(id)) = (
+                source.card.activation_target_counter_discount(ability),
+                target.target,
+            ) && self.on_battlefield(id)
+            {
+                base.generic = base.generic.saturating_sub(
+                    u32::try_from(self.counter_count(id, kind)).unwrap_or(u32::MAX),
+                );
+            }
             base.generic = base.generic.saturating_sub(self.equip_target_reduction(
                 item.controller,
-                item.source_card,
+                source.card,
                 ability,
                 target.target,
             ));
@@ -102,10 +123,16 @@ impl Game {
                 reserve: None,
                 source: (!free).then(|| {
                     (
-                        a.item.object,
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .object,
                         ability,
                         a.counter_payment.clone(),
-                        a.item.source_card,
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
                         a.item.borrowed_slot,
                     )
                 }),
@@ -131,14 +158,19 @@ impl Game {
         }
         let fund_target = |target| {
             let apply = |base| {
-                test(self.activation_target_total(
-                    a.item.controller,
-                    a.item.target_source(),
-                    a.item.source_card,
-                    ability,
-                    target,
-                    base,
-                ))
+                test(
+                    self.activation_target_total(
+                        a.item.controller,
+                        a.item.target_source(),
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
+                        ability,
+                        target,
+                        base,
+                    ),
+                )
             };
             if let Some(base) = a.cost {
                 apply(base)

@@ -1,16 +1,17 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Full frozen Oracle and immutable upstream PR implementation reviewed.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(4, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEntersIfCast,
+        targets: one(TargetRule::Player {
+            opponent_only: true,
+        }),
+        program: &[Instruction::RevealTargetHandExileLinked],
+    }],
+    static_groups: &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::CastLinkedExileAtThreshold],
+    }],
     ..CardRules::EMPTY
 };

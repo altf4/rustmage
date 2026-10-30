@@ -213,7 +213,8 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return None;
         };
-        self.power_up_costs(item.object, item.source_card, ability)
+        let source = item.source?;
+        self.power_up_costs(source.object, source.card, ability)
     }
     pub(super) fn activation_mana_costs(
         &self,
@@ -232,16 +233,19 @@ impl Game {
         }
     }
     pub(super) fn record_power_up_use(&mut self, item: &SpellView, ability: u16) {
-        if !item.source_card.power_up_abilities().contains(&ability)
-            || !self.on_battlefield(item.card)
-            || self.object_ref(item.card) != item.object
+        let Some(source) = item.source else {
+            return;
+        };
+        if !source.card.power_up_abilities().contains(&ability)
+            || !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
         {
             return;
         }
         let rows = self.state.power_up_uses.get_or_insert_default();
         if let Some(row) = rows.iter_mut().find(|r| {
-            r.object == item.object
-                && r.value.definition == item.source_card
+            r.object == source.object
+                && r.value.definition == source.card
                 && r.value.ability == ability
                 && r.value.borrowed_slot == item.borrowed_slot
                 && r.value.origin == item.source_ability_origin
@@ -253,9 +257,9 @@ impl Game {
                 .capacity("Power-up use count exhausted");
         } else {
             rows.push(UseRow {
-                object: item.object,
+                object: source.object,
                 value: PowerUpUseView {
-                    definition: item.source_card,
+                    definition: source.card,
                     ability,
                     borrowed_slot: item.borrowed_slot,
                     origin: item.source_ability_origin,

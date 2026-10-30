@@ -3,10 +3,46 @@
   "catalogue_id": 2021,
   "oracle_id": "158823ed-6015-437a-82b0-8dadb1e9aab2",
   "facts_sha256": "5623d228820f4eb51e454ee747e825684aad926cf93f2a0cca4ac5fcfa631bea",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7e3200344c66d4c2bc860d82c55cb1b40b2cd890c0ddece775c0fbfbcf2b3c16"
   },
-  "physical_metadata_sha256": "d81193014b19f9931dc7bd5b0ded1883c9d400b7807db6d92e159da30df92481"
+  "physical_metadata_sha256": "d81193014b19f9931dc7bd5b0ded1883c9d400b7807db6d92e159da30df92481",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HexhavenBattalion.java",
+  "java_sha256": "cdcd80e8f575101e86d943d3382e053bbabe438cc6a5ed62b56382108f0e3bf6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/CadetToken.java",
+      "sha256": "9e9b0eaec4d6f703141db5932b446205f25adb25e8fea103cd16d937fb0ef52a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BasicLandcyclingAbility.java",
+      "sha256": "cdead6dec40f9d3f99eaaf7f84279bc1f8140885c5ec48dae0c092aa18f622aa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+      "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EmpowerJaceEffect.java",
+      "sha256": "a2fe52ae39b744838822f87c2881c13a5c4de98b57813cec50c8a0c4ebfc58ea"
+    }
+  ],
+  "rules_tests": "src/engine_fra_charms_tests.rs"
 }

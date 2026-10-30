@@ -181,11 +181,13 @@ impl Game {
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
+                    dealt_combat_damage_this_incarnation: false,
                     deathtouch_since_sba: false,
                     growth: Stats::default(),
                     gained_keywords: Keywords::NONE,
                     counters: InitialCounters::default(),
                     used_abilities: 0,
+                    loyalty_activated_this_turn: false,
                     class_level: 1,
                     attached_to: None,
                 };
@@ -219,6 +221,8 @@ impl Game {
                 self.record_nonland_entry(controller, self.current_kinds(id));
                 self.register_battlefield_sources(id);
                 events.push(ZoneChange {
+                    was_card: false,
+                    shuffled_in_place: false,
                     cast_event: None,
                     entry_counter_player: Some(controller),
                     graveyard_observers: None,
@@ -275,11 +279,13 @@ impl Game {
         object.damage = 0;
         object.damaged_this_turn = false;
         object.dealt_damage_this_turn = false;
+        object.dealt_combat_damage_this_incarnation = false;
         object.deathtouch_since_sba = false;
         object.growth = Stats::default();
         object.gained_keywords = Keywords::NONE;
         object.counters = InitialCounters::default();
         object.used_abilities = 0;
+        object.loyalty_activated_this_turn = false;
         object.class_level = 1;
         object.attached_to = None;
         // No zone-change event: this game object ceases to exist (CR111.7).

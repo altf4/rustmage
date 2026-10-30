@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a89012695953d6ff92406154039fce6b1cd3c3c171c9006d51ca761fa0f319a6"
   },
-  "physical_metadata_sha256": "8f05078433cb326c91d10f4a309c5224a2d7cefa135d73b81af8b709cbc180a3"
+  "physical_metadata_sha256": "8f05078433cb326c91d10f4a309c5224a2d7cefa135d73b81af8b709cbc180a3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/y/YargleGluttonOfUrborg.java",
+  "java_sha256": "92ba594b6a3479ca38df4dc483382dd49167323b65f000339076c3d4093bf8b9"
 }

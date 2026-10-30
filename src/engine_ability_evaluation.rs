@@ -2,8 +2,8 @@
 //! Static candidates stay registered while blank, so leaving the removal source
 //! restores them without a zone change or mutable derived cache.
 use super::ability_order::{
-    GrantedAbilityKey, GrantedManaAbility, LayerSixAction, LayerSixEffect, LayerSixGrant,
-    LayerSixObject, LayerSixResult, apply_layer_six,
+    GrantedAbilityKey, GrantedAbilityKind, GrantedManaAbility, LayerSixAction, LayerSixEffect,
+    LayerSixGrant, LayerSixObject, LayerSixResult, apply_layer_six,
 };
 use super::ability_world::CharacteristicWorld;
 use super::*;
@@ -59,7 +59,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
     let own = provider.controller == target.controller;
     let key = |ability| GrantedAbilityKey {
         source,
-        ability,
+        kind: GrantedAbilityKind::Template(ability),
         granting_card: provider.card,
         grantor_controller: provider.controller,
         timestamp: time,
@@ -92,6 +92,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: vec![GrantedManaAbility {
                     source,
                     production,
+                    subtype_derived: false,
                     sacrifice: matches!(
                         fragment,
                         StaticAbilityFragment::AttachmentSacrificeMana(_)
@@ -114,6 +115,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                     source,
                     production,
                     sacrifice: false,
+                    subtype_derived: false,
                 }],
             });
         }
@@ -154,6 +156,46 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 abilities: vec![key(ability)],
                 mana: Vec::new(),
             });
+        }
+        StaticAbilityFragment::ControlledPlaneswalkerAttackLimit => {
+            if !own || world.kinds(id) & 64 == 0 {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![GrantedAbilityKey {
+                    source,
+                    kind: GrantedAbilityKind::PlaneswalkerAttackLimit,
+                    granting_card: provider.card,
+                    grantor_controller: provider.controller,
+                    timestamp: time,
+                }],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::ControlledPlaneswalkerActivation(ability) => {
+            if !own || world.kinds(id) & 64 == 0 {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::ControlledPermanentKeywords { kinds, keywords } => {
+            if !own || world.kinds(id) & kinds == 0 {
+                return None;
+            }
+            keywords
+        }
+        StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
+            if !own || !world.subtypes(id).has(world.definition(id), subtype) {
+                return None;
+            }
+            keywords
         }
         StaticAbilityFragment::DeathBaronLord => {
             if !world.death_baron_applies(source, id) {
@@ -208,6 +250,16 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::CounterKeywordOther(kind, value) => {
+            if !own
+                || world.reference(id) == source
+                || world.kinds(id) & 1 == 0
+                || world.counter_count(id, kind) == 0
+            {
+                return None;
+            }
+            value
+        }
         StaticAbilityFragment::CounterKeyword(_, kind, value) => {
             if !own || world.kinds(id) & 1 == 0 || world.counter_count(id, kind) == 0 {
                 return None;
@@ -255,6 +307,15 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
+        || world.static_sources().iter().any(|&id| {
+            let source = world.object(id);
+            source.zone == Zone::Battlefield
+                && source.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| matches!(
+                        fragment, StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
+                    ))
+                })
+        })
         // External attachment rules must participate even without ability removal.
         // They are deliberately absent from EquipmentSpec's granted abilities.
         || world.attachment_sources().iter().any(|&id| {
@@ -322,7 +383,37 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 },
                 grants: Vec::new(),
                 self_grants: Vec::new(),
-                mana: Vec::new(),
+                // Native land subtypes exist before any later layer-six removal.
+                // Type-setting effects add their own timestamped grants below.
+                mana: if object.zone == Zone::Battlefield {
+                    let timeline = subtypes::basic_land_timeline(world, i as CardId);
+                    let native = timeline.has_events.then_some(timeline.initial_types);
+                    let current = (native.is_none() && world.kinds(i as CardId) & 2 != 0)
+                        .then(|| world.subtypes(i as CardId));
+                    ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(color, subtype)| {
+                            let has_subtype = native.map_or_else(
+                                || current.is_some_and(|types| types.has(object.card, subtype)),
+                                |mask| mask & (1 << color) != 0,
+                            );
+                            if !has_subtype {
+                                return None;
+                            }
+                            let mut production = [0; 6];
+                            production[color] = 1;
+                            Some(GrantedManaAbility {
+                                source: world.reference(i as CardId),
+                                production: ManaProduction::Fixed(production),
+                                sacrifice: false,
+                                subtype_derived: true,
+                            })
+                        })
+                        .collect()
+                } else {
+                    Vec::new()
+                },
             }
         })
         .collect();
@@ -335,33 +426,40 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             continue;
         }
         let source = world.reference(id);
-        if world.kinds(id) & 2 != 0
-            && object.card.static_ability_groups().iter().any(|group| {
-                group
-                    .fragments
-                    .iter()
-                    .any(|fragment| matches!(fragment, StaticAbilityFragment::ChosenBasicLandType))
-            })
-            && let Some(EntryChoiceValue::BasicLandType(kind)) = world.entry_value(source)
         {
-            let mut production = [0; 6];
-            production[kind.index()] = 1;
-            effects.push(LayerSixEffect {
-                provider: Some(id),
-                started_earlier: true,
-                timestamp: timestamp(world, source),
-                recipients: vec![id],
-                action: LayerSixAction::RemovePrintedAndGrant(vec![LayerSixGrant {
-                    recipient: id,
-                    keywords: Keywords::NONE,
-                    abilities: Vec::new(),
-                    mana: vec![GrantedManaAbility {
-                        source,
-                        production: ManaProduction::Fixed(production),
-                        sacrifice: false,
-                    }],
-                }]),
-            });
+            for (timestamp, change) in subtypes::basic_land_timeline(world, id).ability_changes {
+                let action = match change {
+                    subtypes::BasicLandAbilityChange::Remove => LayerSixAction::RemoveSubtypeMana,
+                    subtypes::BasicLandAbilityChange::Add(kind)
+                    | subtypes::BasicLandAbilityChange::Set(kind) => {
+                        let mut production = [0; 6];
+                        production[kind.index()] = 1;
+                        let grants = vec![LayerSixGrant {
+                            recipient: id,
+                            keywords: Keywords::NONE,
+                            abilities: Vec::new(),
+                            mana: vec![GrantedManaAbility {
+                                source,
+                                production: ManaProduction::Fixed(production),
+                                sacrifice: false,
+                                subtype_derived: true,
+                            }],
+                        }];
+                        if matches!(change, subtypes::BasicLandAbilityChange::Set(_)) {
+                            LayerSixAction::RemovePrintedAndGrant(grants)
+                        } else {
+                            LayerSixAction::GrantEach(grants)
+                        }
+                    }
+                };
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: true,
+                    timestamp,
+                    recipients: vec![id],
+                    action,
+                });
+            }
         }
         for (group, origin) in object.card.static_ability_groups().iter().enumerate() {
             let removes = origin
@@ -386,9 +484,14 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }
                         | StaticAbilityFragment::CounterKeyword(..)
+                        | StaticAbilityFragment::CounterKeywordOther(..)
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                         | StaticAbilityFragment::DeathBaronLord
                         | StaticAbilityFragment::KeywordGrant(..)
+                        | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
+                        | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
+                        | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)
                 )
             });
@@ -466,7 +569,21 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 continue;
             }
             let action = match row.kind {
-                SourceLinkedEffectKind::RemoveAbilities => LayerSixAction::Remove,
+                SourceLinkedEffectKind::RemoveAbilities
+                | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn => LayerSixAction::Remove,
+                SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast => {
+                    LayerSixAction::GrantEach(vec![LayerSixGrant {
+                        recipient: row.recipient.card,
+                        keywords: Keywords::NONE,
+                        abilities: Vec::new(),
+                        mana: vec![GrantedManaAbility {
+                            source: row.source,
+                            production: ManaProduction::Fixed([0, 0, 0, 0, 0, 2]),
+                            sacrifice: false,
+                            subtype_derived: false,
+                        }],
+                    }])
+                }
                 SourceLinkedEffectKind::GrantHexproof => LayerSixAction::Grant {
                     keywords: Keywords::HEXPROOF,
                     abilities: Vec::new(),
@@ -539,7 +656,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                             source: grant.grantor,
                             granting_card: grant.granting_card,
                             grantor_controller: grant.grantor_controller,
-                            ability: grant.ability,
+                            kind: GrantedAbilityKind::Template(grant.ability),
                             timestamp: grant.timestamp,
                         }],
                     },
@@ -628,10 +745,18 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum GrantedStaticRule {
+    PlaneswalkerAttackLimit,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct GrantedAbilityView {
     pub grantor: ObjectRef,
     pub granting_card: Card,
-    pub ability: u16,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ability: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub static_rule: Option<GrantedStaticRule>,
     pub grantor_controller: Player,
     pub timestamp: u64,
 }
@@ -660,6 +785,20 @@ impl ObjectView {
     pub(super) fn printed_abilities_available(&self) -> bool {
         self.abilities.as_ref().is_none_or(|value| value.printed)
     }
+    pub(super) fn static_grant_available(
+        &self,
+        grantor: ObjectRef,
+        granting_card: Card,
+        rule: GrantedStaticRule,
+    ) -> bool {
+        self.abilities.as_ref().is_some_and(|value| {
+            value.grants.iter().any(|grant| {
+                grant.grantor == grantor
+                    && grant.granting_card == granting_card
+                    && grant.static_rule == Some(rule)
+            })
+        })
+    }
     pub(super) fn grant_available(
         &self,
         grantor: ObjectRef,
@@ -671,7 +810,8 @@ impl ObjectView {
             value.grants.iter().any(|grant| {
                 grant.grantor == grantor
                     && grant.granting_card == granting_card
-                    && grant.ability == ability
+                    && grant.ability == Some(ability)
+                    && grant.static_rule.is_none()
                     && timestamp.is_none_or(|time| grant.timestamp == time)
             })
         })

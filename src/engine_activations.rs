@@ -29,7 +29,7 @@ pub(super) fn graveyard_cards_at_least<W: ability_world::CharacteristicWorld + ?
             let object = world.object(id);
             object.zone == Zone::Graveyard
                 && object.owner == actor
-                && !object.is_token()
+                && object.is_card()
                 && (kind == 0 || world.kinds(id) & kind != 0)
         })
         .take(usize::from(minimum))
@@ -90,9 +90,9 @@ impl Game {
     }
     pub(super) fn item_activation_discount(&self, item: &SpellView) -> u32 {
         match item.kind {
-            StackKind::ActivatedAbility { ability } => {
-                self.activation_generic_discount(item.card, item.source_card, ability)
-            }
+            StackKind::ActivatedAbility { ability } => item.source.map_or(0, |source| {
+                self.activation_generic_discount(source.id, source.card, ability)
+            }),
             _ => 0,
         }
     }
@@ -150,6 +150,12 @@ impl Game {
             ActivationGuard::CastInstantSorceryThisTurn => {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
+            ActivationGuard::ScriedOrSurveilledThisTurn => {
+                self.state.players[actor.index()].scried_or_surveilled_this_turn
+            }
+            ActivationGuard::OpponentNoncombatDamageThisTurn => {
+                self.state.players[actor.other().index()].noncombat_damage_this_turn
+            }
             ActivationGuard::SourceSolved => self.case_solved(self.object_ref(source)),
             ActivationGuard::Always => true,
             ActivationGuard::SourceAttackedThisTurn => self
@@ -173,6 +179,29 @@ impl Game {
                 self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)
             }
             ActivationGuard::OwnTurn => self.state.active == actor,
+            ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype, minimum } => {
+                let world = self.characteristic_query();
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == actor
+                            && ability_world::CharacteristicWorld::kinds(&world, *id as CardId) & 64
+                                != 0
+                            && ability_world::CharacteristicWorld::subtypes(&world, *id as CardId)
+                                .has(object.card, subtype)
+                    })
+                    .fold(0u64, |sum, (id, _)| {
+                        sum.saturating_add(ability_world::CharacteristicWorld::counter_count(
+                            &world,
+                            id as CardId,
+                            CounterKind::Loyalty,
+                        ))
+                    })
+                    >= minimum
+            }
             ActivationGuard::ControlLandsAtLeast(minimum) => {
                 self.state
                     .objects
@@ -198,6 +227,22 @@ impl Game {
             }
         }
     }
+    /// Loyalty timing permission follows current controller, type, and subtype.
+    pub(super) fn loyalty_timing(
+        &self,
+        card: CardId,
+        ability: &ActivatedAbility,
+        actor: Player,
+        sorcery: bool,
+    ) -> bool {
+        sorcery
+            || (ability.cost.loyalty.is_some()
+                && self.state.players[actor.index()].jace_loyalty_anytime
+                && self.state.objects[card as usize].controller == actor
+                && self.current_kinds(card) & 64 != 0
+                && self.has_subtype(card, "Jace"))
+    }
+
     pub(super) fn activation_cost_available(
         &self,
         card: CardId,
@@ -208,8 +253,11 @@ impl Game {
     ) -> bool {
         let readiness = self.activation_readiness(actor, ability);
         !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            && (!ability.cost.sacrifice
+                || !ability_world::CharacteristicWorld::sacrifice_prohibited(self, card))
             && self.printed_abilities_available(card)
-            && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
+            && (ability.mana_production().is_some()
+                || (!self.nonmana_actions_prohibited() && !self.named_activation_prohibited(card)))
             && self.activation_guard_available(ability.guard, card, actor)
             && self.power_up_available(
                 self.object_ref(card),
@@ -226,7 +274,7 @@ impl Game {
                 &readiness,
                 index,
                 actor,
-                sorcery,
+                self.loyalty_timing(card, ability, actor, sorcery),
             )
     }
 
@@ -262,13 +310,24 @@ impl Game {
         }
         if let Some(change) = ability.cost.loyalty
             && (!sorcery
-                || object.used_abilities & object.card.loyalty_mask() != 0
+                || object.loyalty_activated_this_turn
                 || (change < 0 && object.counters.loyalty < u64::from(change.unsigned_abs())))
         {
             return false;
         }
         if let Some((kind, amount)) = ability.cost.remove {
-            let count = counters.available(kind);
+            let loyalty_reserve = ability
+                .cost
+                .loyalty
+                .filter(|change| *change < 0)
+                .map_or(0, |change| u64::from(change.unsigned_abs()));
+            let count = counters.available(kind).saturating_sub(
+                if kind.is_none() || kind == Some(CounterKind::Loyalty) {
+                    u128::from(loyalty_reserve)
+                } else {
+                    0
+                },
+            );
             if count < u128::from(amount) {
                 return false;
             }
@@ -295,6 +354,11 @@ impl Game {
             return false;
         }
         for grant in ability_world::CharacteristicWorld::granted_mana(self, card) {
+            if grant.sacrifice
+                && ability_world::CharacteristicWorld::sacrifice_prohibited(self, card)
+            {
+                continue;
+            }
             if grant.production.in_world(self, card).visit(|production| {
                 emit(Action::TapGrantedMana {
                     card,
@@ -317,7 +381,8 @@ impl Game {
     ) -> bool {
         let object = &self.state.objects[card as usize];
         for (index, ability) in object.card.activations().iter().enumerate() {
-            if object.card.grants_activation(index as u16)
+            if object.card.legacy_subtype_mana_activation(index as u16)
+                || object.card.grants_activation(index as u16)
                 || object.card.self_granted_activation_template(index as u16)
             {
                 continue;
@@ -417,6 +482,10 @@ impl Game {
                         .card
                         .activation_target_reduction(index as u16)
                         .is_some()
+                        || object
+                            .card
+                            .activation_target_counter_discount(index as u16)
+                            .is_some()
                         || self.active_target_equip_reducer(actor, object.card, index as u16)
                     {
                         return self.visit_target_cost_direct_actions(
@@ -547,12 +616,20 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
+            source: Some(StackSourceView {
+                id: card,
+                object: self.object_ref(card),
+                card: self.state.objects[card as usize].card,
+                facts: self.damage_facts(card),
+            }),
+            source_less_rule: None,
             additional_triggers: 0,
             source_move: None,
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
             target_kinds_lki: None,
+            target_type_slots: None,
             gift: None,
             reflexive_subject: None,
             crew: None,
@@ -576,6 +653,8 @@ impl Game {
             delayed_warp_exile: None,
             return_link: None,
             x: None,
+            loyalty_x: None,
+            reflexive_target_limit: None,
             attachment_trigger: None,
             cast: None,
             id: self.next_stack_id(),
@@ -586,10 +665,11 @@ impl Game {
                 .get(usize::from(ability))
                 .is_some_and(|ability| ability.program.contains(&Instruction::TransformSource))
                 .then(|| self.transform_serial(self.object_ref(card))),
-            source_card: self.state.objects[card as usize].card,
+
+            split_second: false,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
-            source_facts: self.damage_facts(card),
+            mana_tap_bonus: None,
             related_stack: None,
             entering_object: None,
             evidence_collected: false,
@@ -600,6 +680,7 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
             source_counter_lki: self.state.objects[card as usize]
                 .card
@@ -612,13 +693,13 @@ impl Game {
                     })
                 }),
             source_quantity_lki: None,
+            event_player: None,
             event_object: None,
             manifest_event: None,
             sacrificed_toughness: None,
             sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,
-            card,
-            object: self.object_ref(card),
+
             controller: actor,
             targets: Vec::new(),
             mode: None,
@@ -643,7 +724,8 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             unreachable!()
         };
-        let mut definition = *item.source_card.activation(ability);
+        let source = item.source.expect("activated ability has an object source");
+        let mut definition = *source.card.activation(ability);
         if route == ActivationCostRoute::FirstEquipZero {
             assert!(definition.is_equip());
             assert_eq!(counter_payment, Counters::default());
@@ -662,12 +744,14 @@ impl Game {
         ability: u16,
         definition: &ActivatedAbility,
     ) {
+        let source = item.source.expect("activated ability has an object source");
         let cost: ActivationCost = definition.cost;
         self.record_cast_mana_activation(item, payment, &counter_payment);
         self.spend_mana_for(item.controller, payment, self.purpose_for_item(item));
         self.lose_life(item.controller, i128::from(cost.life));
-        let object = &mut self.state.objects[item.card as usize];
-        if object.generation != item.object.generation || object.zone != definition.source_zone() {
+        let object = &mut self.state.objects[source.id as usize];
+        if object.generation != source.object.generation || object.zone != definition.source_zone()
+        {
             assert!(
                 !cost.tap
                     && !cost.sacrifice
@@ -679,15 +763,44 @@ impl Game {
             );
             return;
         }
-        if item.self_granted_activation.is_none() {
+        let external_planeswalker_grant = item.attachment_trigger.as_ref().is_some_and(|event| {
+            event.granted
+                && item
+                    .source
+                    .expect("object-backed announcement")
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(fragment,
+                    crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
+                        if *index == ability)
+                        })
+                    })
+        });
+        if item.self_granted_activation.is_none() && !external_planeswalker_grant {
             if let Some(slot) = item.borrowed_slot {
-                self.record_borrowed_use(item.object, slot, definition.exhaust);
+                self.record_borrowed_use(source.object, slot, definition.exhaust);
             } else {
                 self.record_copy_activation_use(item, ability);
             }
             self.record_power_up_use(item, ability);
         }
-        self.pay_counters(item.card, &counter_payment);
+        if let Some(change) = cost.loyalty {
+            item.loyalty_counters_paid = item
+                .loyalty_counters_paid
+                .checked_add(counter_payment.get(CounterKind::Loyalty))
+                .and_then(|paid| {
+                    paid.checked_add(if change < 0 {
+                        u64::from(change.unsigned_abs())
+                    } else {
+                        0
+                    })
+                })
+                .capacity("loyalty activation counter payment exhausted");
+        }
+        self.pay_counters(source.id, &counter_payment);
         if let Some(kind) = definition.source_counter_cost() {
             item.source_counter_payment = Some(SourceCounterPaymentView {
                 kind,
@@ -695,20 +808,32 @@ impl Game {
                 paid: true,
             });
         }
-        let object = &mut self.state.objects[item.card as usize];
         if let Some(change) = cost.loyalty {
+            self.state.objects[source.id as usize].loyalty_activated_this_turn = true;
             if change < 0 {
-                object.counters.loyalty -= u64::from(change.unsigned_abs());
-            } else {
-                self.add_counter(item.card, CounterKind::Loyalty, change as u64);
+                self.pay_counters(
+                    source.id,
+                    &Counters::of(CounterKind::Loyalty, u64::from(change.unsigned_abs())),
+                );
+            } else if change > 0 {
+                self.activation_cost_counters(
+                    source.object,
+                    CounterKind::Loyalty,
+                    change as u64,
+                    item.controller,
+                );
             }
         }
         // Capture the tap event before a subsequent sacrifice/discard/exile
         // changes the source incarnation. All other paid source costs are set.
         if cost.tap {
-            self.tap_objects(&[item.card]);
+            if definition.mana_production().is_some() {
+                let bonus = self.mountain_tap_bonus(item.controller, source.id);
+                item.mana_tap_bonus = (bonus > 0).then_some(bonus);
+            }
+            self.tap_objects(&[source.id]);
             if let Some(grant) = &item.attachment_trigger
-                && item.source_card.grants_activation(ability)
+                && source.card.grants_activation(ability)
             {
                 self.tap_objects(&[grant.grantor.card]);
             }
@@ -719,8 +844,8 @@ impl Game {
         else {
             unreachable!()
         };
-        if let Some((kind, amount)) = item.source_card.activation_put_counter(definition_index) {
-            self.activation_cost_counters(item.object, kind, amount, item.controller);
+        if let Some((kind, amount)) = source.card.activation_put_counter(definition_index) {
+            self.activation_cost_counters(source.object, kind, amount, item.controller);
         }
         self.refresh_local_source_counter_quantities(item);
         // Costs and real mana activations may briefly reach the threshold before
@@ -729,18 +854,32 @@ impl Game {
         if cost.exile_self || cost.discard || cost.sacrifice {
             // The local announcement is temporarily outside State while costs
             // commit. Freeze its post-payment source facts before departure too.
-            let source = self.object_view(item.card);
-            item.source_facts = DamageFacts::from_view(&source);
+            let source = self.object_view(source.id);
+            item.source
+                .as_mut()
+                .expect("activated ability source exists")
+                .facts = DamageFacts::from_view(&source);
             item.source_keywords = source.keywords;
             item.source_tapped = source.tapped;
             item.source_attachment = source.attached_to;
         }
         if cost.exile_self {
-            self.move_object(item.card, Zone::Exile);
+            let event = self.move_object(source.id, Zone::Exile);
+            if definition
+                .program
+                .contains(&Instruction::GrantLandManaUntilSourceCast)
+            {
+                item.source_move = Some(Box::new(TriggerSourceMoveView {
+                    before: event.before.reference,
+                    after: event.after,
+                    origin: event.before.zone,
+                    destination: event.destination,
+                }));
+            }
         } else if cost.discard {
-            self.discard_batch(&[item.card], definition.cycling.then_some(item.object));
+            self.discard_batch(&[source.id], definition.cycling.then_some(source.object));
         } else if cost.sacrifice {
-            self.sacrifice_batch(&[(item.controller, item.card)]);
+            self.sacrifice_batch(&[(item.controller, source.id)]);
         }
     }
 }
@@ -751,7 +890,15 @@ pub(super) fn counter_payments<'a>(
     available: impl Into<CounterAmounts<'a>>,
     mut emit: impl FnMut(Counters) -> bool,
 ) -> bool {
-    let available = available.into();
+    let mut available = available.into();
+    let reserve = cost
+        .loyalty
+        .filter(|change| *change < 0)
+        .map_or(0, |change| u64::from(change.unsigned_abs()));
+    let Some(remaining) = available.hot.loyalty.checked_sub(reserve) else {
+        return false;
+    };
+    available.hot.loyalty = remaining;
     let Some((kind, amount)) = cost.remove else {
         return emit(Counters::default());
     };

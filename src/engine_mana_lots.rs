@@ -10,10 +10,13 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
+    ExceptCastFromHand,
     ArtifactSpell,
     ExceptNonArtifactSpells,
     SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
+    NoncreatureSpell,
+    PlaneswalkerSpell,
     Unrestricted,
     Unavailable,
     SpellSubtype(&'static str),
@@ -121,6 +124,7 @@ impl Quality {
     ) -> Self {
         Self {
             restriction: match quality.restriction {
+                ManaRestriction::ExceptCastFromHand => ManaRestrictionView::ExceptCastFromHand,
                 ManaRestriction::EquipmentSpellOrEquip => {
                     ManaRestrictionView::EquipmentSpellOrEquip
                 }
@@ -133,6 +137,8 @@ impl Quality {
                     ManaRestrictionView::SubtypeSpellOrActivation(subtype)
                 }
                 ManaRestriction::InstantSorcery => ManaRestrictionView::InstantSorcery,
+                ManaRestriction::NoncreatureSpell => ManaRestrictionView::NoncreatureSpell,
+                ManaRestriction::PlaneswalkerSpell => ManaRestrictionView::PlaneswalkerSpell,
                 ManaRestriction::Unrestricted => ManaRestrictionView::Unrestricted,
                 ManaRestriction::SpellSubtype(subtype) => {
                     ManaRestrictionView::SpellSubtype(subtype)
@@ -177,6 +183,9 @@ impl Quality {
     }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
+            ManaRestrictionView::ExceptCastFromHand => {
+                !matches!(purpose, Purpose::Spell(source) if source.cast_from_hand)
+            }
             ManaRestrictionView::EquipmentSpellOrEquip => match purpose {
                 Purpose::Spell(facts) => facts.has_subtype("Equipment"),
                 Purpose::Activation(facts) => facts.equip,
@@ -197,6 +206,12 @@ impl Quality {
             },
             ManaRestrictionView::InstantSorcery => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & (4 | 8) != 0)
+            }
+            ManaRestrictionView::NoncreatureSpell => {
+                matches!(purpose, Purpose::Spell(facts) if facts.kinds & CREATURE_KIND == 0)
+            }
+            ManaRestrictionView::PlaneswalkerSpell => {
+                matches!(purpose, Purpose::Spell(facts) if facts.kinds & 64 != 0)
             }
             ManaRestrictionView::Unrestricted => true,
             ManaRestrictionView::Unavailable => false,
@@ -229,7 +244,10 @@ pub(super) struct Source {
     pub kinds: u16,
     pub subtypes: GrantedSubtypes,
     pub foreign_stash: bool,
+    /// Frozen cast origin; irrelevant for abilities and non-cast payments.
+    pub cast_from_hand: bool,
     pub spend_any_mana: bool,
+    pub linked_mana_source: Option<(ObjectRef, Option<u64>)>,
     pub equip: bool,
 }
 impl Source {
@@ -246,7 +264,9 @@ impl Source {
             kinds: world.kinds(id),
             subtypes: world.subtypes(id),
             foreign_stash: false,
+            cast_from_hand: false,
             spend_any_mana: false,
+            linked_mana_source: None,
             equip: false,
         }
     }
@@ -259,7 +279,9 @@ impl Source {
             kinds: card.kind_mask(),
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
+            cast_from_hand: false,
             spend_any_mana: false,
+            linked_mana_source: None,
             equip: false,
         }
     }
@@ -271,7 +293,9 @@ impl From<DamageFacts> for Source {
             kinds: facts.kinds,
             subtypes: facts.granted_subtypes,
             foreign_stash: false,
+            cast_from_hand: false,
             spend_any_mana: false,
+            linked_mana_source: None,
             equip: false,
         }
     }
@@ -496,14 +520,15 @@ impl Game {
         item: &SpellView,
         production: ManaProduction,
     ) -> Option<Quality> {
+        let source = item.source?;
         let mut quality = self
-            .mana_quality(production, item.card)
+            .mana_quality(production, source.id)
             .unwrap_or(Quality::ORDINARY);
-        if self.object_ref(item.card) != item.object {
-            quality.treasure_source = item
-                .source_facts
+        if self.object_ref(source.id) != source.object {
+            quality.treasure_source = source
+                .facts
                 .granted_subtypes
-                .has(item.source_facts.card, "Treasure");
+                .has(source.facts.card, "Treasure");
         }
         (quality != Quality::ORDINARY).then_some(quality)
     }
@@ -513,27 +538,48 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return;
         };
-        let quality = item
-            .source_card
+        let Some(source) = item.source else {
+            return;
+        };
+        let quality = source
+            .card
             .activation(ability)
             .mana_production()
-            .and_then(|production| self.mana_quality(production, item.object.card))
-            .map(|quality| quality.with_definition(item.source_card));
+            .and_then(|production| self.mana_quality(production, source.object.card))
+            .map(|quality| quality.with_definition(source.card));
         if let Some(quality) = quality {
             self.state
                 .mana_lots
                 .get_or_insert_default()
-                .announcement_quality = Some((item.object, quality));
+                .announcement_quality = Some((source.object, quality));
+        }
+    }
+    pub(super) fn mountain_tap_bonus(&self, actor: Player, card: CardId) -> u32 {
+        let object = &self.state.objects[card as usize];
+        if object.zone == Zone::Battlefield
+            && object.controller == actor
+            && self.has_subtype(card, "Mountain")
+        {
+            self.state.players[actor.index()].mountain_mana_bonus
+        } else {
+            0
+        }
+    }
+    pub(super) fn produce_mountain_tap_bonus(&mut self, actor: Player, amount: u32) {
+        if amount > 0 {
+            self.record_cast_mana_bonus(actor, amount);
+            self.add_mana(actor, [0, 0, 0, amount, 0, 0]);
         }
     }
     pub(super) fn add_announced_mana(&mut self, item: &SpellView, mana: Mana) {
         let quality = self.state.mana_lots.as_mut().and_then(|state| {
             state.announcement_quality.take().map(|(source, quality)| {
-                assert_eq!(source, item.object);
+                assert_eq!(Some(source), item.source.map(|identity| identity.object));
                 quality
             })
         });
         self.add_quality_mana(item.controller, mana, quality);
+        self.produce_mountain_tap_bonus(item.controller, item.mana_tap_bonus.unwrap_or(0));
     }
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
         self.record_cast_mana_production(actor, mana, quality);
@@ -709,24 +755,38 @@ impl Game {
         self.apply_transaction(actor, choice.action)
     }
     pub(super) fn purpose_for_item(&self, item: &SpellView) -> Purpose {
+        let Some(identity) = item.source else {
+            return Purpose::Other;
+        };
         if item.kind == StackKind::Spell {
-            let mut source = Source::printed(item.source_card);
+            let mut source = Source::printed(identity.card);
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
+            source.cast_from_hand = item.cast.is_some_and(|c| {
+                c.origin == Zone::Hand
+                    && self
+                        .state
+                        .objects
+                        .get(identity.object.card as usize)
+                        .is_some_and(|object| object.owner == c.caster)
+            });
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
+            source.linked_mana_source =
+                self.threshold_linked_source(item.source.expect("object-backed packet").id);
             Purpose::Spell(source)
         } else if let StackKind::ActivatedAbility { ability } = item.kind {
             let source = if self
                 .state
                 .objects
-                .get(item.object.card as usize)
+                .get(identity.object.card as usize)
                 .is_some_and(|o| {
-                    o.zone != Zone::Outside && self.object_ref(item.object.card) == item.object
+                    o.zone != Zone::Outside
+                        && self.object_ref(identity.object.card) == identity.object
                 }) {
-                Source::in_world(self, item.object.card)
+                Source::in_world(self, identity.object.card)
             } else {
-                item.source_facts.into()
+                identity.facts.into()
             };
-            Purpose::Activation(source.with_activation(item.source_card.activation(ability)))
+            Purpose::Activation(source.with_activation(identity.card.activation(ability)))
         } else {
             // Costs of triggered abilities (including ward) are not activations.
             Purpose::Other
@@ -739,13 +799,39 @@ impl Game {
         definition: Card,
     ) -> Purpose {
         let mut source = Source::printed(definition);
+        source.cast_from_hand = self.state.objects[card as usize].owner == actor
+            && self
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| {
+                    a.item
+                        .source
+                        .expect("cost announcement has object source")
+                        .id
+                        == card
+                })
+                .and_then(|a| a.item.cast.map(|cast| cast.origin))
+                .unwrap_or(self.state.objects[card as usize].zone)
+                == Zone::Hand;
         source.spend_any_mana = self.exile_cast_modifiers(actor, card).0
             || self.state.announcing.as_ref().is_some_and(|a| {
-                a.item.card == card && a.item.cast.is_some_and(|c| c.spend_any_mana)
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id
+                    == card
+                    && a.item.cast.is_some_and(|c| c.spend_any_mana)
             });
+        source.linked_mana_source = self.threshold_linked_source(card);
         source.foreign_stash = self.foreign_stash(actor, card)
             || self.state.announcing.as_ref().is_some_and(|a| {
-                a.item.card == card && a.item.cast.is_some_and(|c| c.stash_origin)
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id
+                    == card
+                    && a.item.cast.is_some_and(|c| c.stash_origin)
             });
         Purpose::Spell(source)
     }
@@ -981,10 +1067,10 @@ impl Game {
                         .map(|frame| &frame.announcement.item),
                 )
                 .find(|item| {
-                    item.object == *source
-                        && item.controller == goal.actor
+                    item.source.is_some_and(|identity| {
+                        identity.object == *source && identity.card == *definition
+                    }) && item.controller == goal.actor
                         && item.kind == StackKind::ActivatedAbility { ability: *ability }
-                        && item.source_card == *definition
                         && item.borrowed_slot == *slot
                 })
             {

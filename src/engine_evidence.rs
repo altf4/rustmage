@@ -87,10 +87,7 @@ impl Game {
     }
     fn evidence_card(&self, p: Player, r: ObjectRef) -> bool {
         self.state.objects.get(r.card as usize).is_some_and(|o| {
-            o.owner == p
-                && o.zone == Zone::Graveyard
-                && !o.is_token()
-                && self.object_ref(r.card) == r
+            o.owner == p && o.zone == Zone::Graveyard && o.is_card() && self.object_ref(r.card) == r
         })
     }
     pub(super) fn can_collect_evidence(&self, p: Player, n: u16) -> bool {
@@ -100,7 +97,7 @@ impl Game {
             .state
             .objects
             .iter()
-            .filter(|o| o.owner == p && o.zone == Zone::Graveyard && !o.is_token())
+            .filter(|o| o.owner == p && o.zone == Zone::Graveyard && o.is_card())
         {
             total += u128::from(o.card.fixed_mana_value());
             if total >= u128::from(n) {
@@ -113,14 +110,30 @@ impl Game {
         &self,
         p: Player,
         id: CardId,
-        mut mana: ManaCost,
+        mana: ManaCost,
         collect: bool,
     ) -> bool {
         let card = self.state.objects[id as usize].card;
-        if collect {
-            mana.generic = mana.generic.saturating_sub(card.evidence_reduction());
-        }
-        let mana = self.reduced_spell_cost(p, id, mana);
+        let discount = if collect {
+            card.evidence_reduction()
+        } else {
+            0
+        };
+        let Some(mana) = self.spell_total_with_reductions(
+            p,
+            id,
+            mana,
+            card,
+            card.fixed_mana_value(),
+            0,
+            ManaCost {
+                colored: [0; 6],
+                generic: discount,
+            },
+            0,
+        ) else {
+            return false;
+        };
         let goal = FundingGoal {
             actor: p,
             required: mana.colored,
@@ -140,8 +153,17 @@ impl Game {
     }
     pub(super) fn evidence_intent_fundable(&self, collect: bool) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        a.cost_options()
-            .any(|c| self.evidence_cast_fundable(a.item.controller, a.item.card, c, collect))
+        a.cost_options().any(|c| {
+            self.evidence_cast_fundable(
+                a.item.controller,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .id,
+                c,
+                collect,
+            )
+        })
     }
     fn evidence_selection(&self) -> &EvidenceSelection {
         self.state
@@ -252,7 +274,7 @@ impl Game {
     }
     pub(super) fn reopen_evidence_after_mana_sacrifice(&mut self, source: CardId) {
         let o = &self.state.objects[source as usize];
-        if o.zone != Zone::Graveyard || o.is_token() {
+        if o.zone != Zone::Graveyard || !o.is_card() {
             return;
         }
         if let Some(a) = &mut self.state.announcing
@@ -286,7 +308,7 @@ impl Game {
         } else {
             let r = self.state.resolving.as_mut().unwrap();
             let e = r.evidence.take().unwrap();
-            let source = r.item.object;
+            let source = r.item.source.expect("evidence effect has source").object;
             self.commit_evidence(&e, source);
             self.run_program();
         }

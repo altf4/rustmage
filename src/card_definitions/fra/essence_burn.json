@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e9710011b8368625ec066dc18fd61bdc1941c67fadba092745ba9f1e4b58a708"
   },
-  "physical_metadata_sha256": "bcb046633d80da1bd9fba902d956fb9ce0e87a5d875b7dbd4fca0d74aec62ca2"
+  "physical_metadata_sha256": "bcb046633d80da1bd9fba902d956fb9ce0e87a5d875b7dbd4fca0d74aec62ca2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EssenceBurn.java",
+  "java_sha256": "0f6d60b56c2d8847b604636622dac7dcd843241ea62965e181ef3ea08ba374f1"
 }

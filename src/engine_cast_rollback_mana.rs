@@ -26,11 +26,13 @@ pub(super) struct ManaEvent {
     pub actor: Player,
     pub kind: ManaEventKind,
     pub production: Mana,
+    /// Unrestricted mana produced by triggered mana abilities after this event.
+    pub mountain_bonus: u32,
     pub quality: Option<mana_lots::Quality>,
     pub spent_lots: Vec<(mana_lots::Quality, Mana)>,
     pub entries: Vec<entries::EntryBatch>,
     pub entry_life: [u128; 2],
-    pub moves: Vec<(ObjectRef, Zone, bool)>,
+    pub moves: Vec<(ObjectRef, Zone, bool, bool)>,
     pub allocations: Vec<(CardId, u64)>,
     pub triggers: Vec<SpellView>,
     pub irreversible: bool,
@@ -49,7 +51,7 @@ impl ManaEvent {
                 .map(|item| std::mem::size_of::<SpellView>() + item.owned_bytes())
                 .sum::<usize>()
             + self.spent_lots.len() * std::mem::size_of::<(mana_lots::Quality, Mana)>()
-            + self.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool)>()
+            + self.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
             + self.allocations.len() * std::mem::size_of::<(CardId, u64)>()
             + match &self.kind {
                 ManaEventKind::Activated { item, counters, .. } => {
@@ -61,7 +63,9 @@ impl ManaEvent {
     fn source(&self) -> ObjectRef {
         match &self.kind {
             ManaEventKind::Basic { source } | ManaEventKind::Granted { source, .. } => *source,
-            ManaEventKind::Activated { item, .. } => item.object,
+            ManaEventKind::Activated { item, .. } => {
+                item.source.expect("mana activation has source").object
+            }
         }
     }
     fn payment(&self) -> Mana {
@@ -75,7 +79,7 @@ impl ManaEvent {
 struct ActiveManaReplay {
     entries: VecDeque<entries::EntryBatch>,
     entry_life: [u128; 2],
-    moves: VecDeque<(ObjectRef, Zone, bool)>,
+    moves: VecDeque<(ObjectRef, Zone, bool, bool)>,
     allocations: VecDeque<(CardId, u64)>,
     failed: bool,
 }
@@ -97,7 +101,7 @@ impl ManaReplay {
                         .iter()
                         .map(entries::EntryBatch::bytes)
                         .sum::<usize>()
-                    + active.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool)>()
+                    + active.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
                     + active.allocations.len() * std::mem::size_of::<(CardId, u64)>()
             })
     }
@@ -110,6 +114,8 @@ pub struct ManaRollbackView {
     pub source: ObjectRef,
     pub definition: Card,
     pub production: Mana,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mountain_bonus: Option<u32>,
     pub payment: Mana,
     pub irreversible: bool,
     pub can_keep: bool,
@@ -163,7 +169,7 @@ impl Game {
         let event = rollback.events.get(replay.index)?;
         let source = event.source();
         let definition = match &event.kind {
-            ManaEventKind::Activated { item, .. } => item.source_card,
+            ManaEventKind::Activated { item, .. } => item.source?.card,
             _ => self.state.objects[source.card as usize].card,
         };
         Some(ManaRollbackView {
@@ -173,6 +179,7 @@ impl Game {
             source,
             definition,
             production: event.production,
+            mountain_bonus: (event.mountain_bonus > 0).then_some(event.mountain_bonus),
             payment: event.payment(),
             irreversible: event.irreversible,
             can_keep: self.mana_rollback_option(true),
@@ -334,7 +341,11 @@ impl Game {
                 let StackKind::ActivatedAbility { ability } = item.kind else {
                     return false;
                 };
-                let definition = item.source_card.activation(ability);
+                let definition = item
+                    .source
+                    .expect("mana activation has source")
+                    .card
+                    .activation(ability);
                 let cost = definition.cost;
                 if self.state.players[event.actor.index()].life < i128::from(cost.life)
                     && cost.life > 0
@@ -405,6 +416,9 @@ impl Game {
             }
         }
         self.add_quality_mana(event.actor, event.production, event.quality);
+        if event.mountain_bonus > 0 {
+            self.add_mana(event.actor, [0, 0, 0, event.mountain_bonus, 0, 0]);
+        }
         let active = self
             .state
             .cast_rollback
@@ -500,7 +514,7 @@ impl Game {
             .as_mut()?
             .active
             .as_mut()?;
-        let Some((expected, destination, shuffle)) = active.moves.pop_front() else {
+        let Some((expected, destination, shuffle, prevented)) = active.moves.pop_front() else {
             active.failed = true;
             return None;
         };
@@ -509,6 +523,7 @@ impl Game {
         }
         Some(zone_replacements::Plan {
             destination,
+            prevented,
             shuffle,
             // Exact actual reflexive packets are restored from ManaEvent.triggers;
             // replay must not recompute their old replacement-source witnesses.
