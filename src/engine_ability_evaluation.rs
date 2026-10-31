@@ -240,6 +240,20 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::SourceCounterTurnCreature {
+            kind,
+            minimum,
+            keywords,
+            ..
+        } => {
+            if id != source.card
+                || provider.controller != world.game().state.active
+                || world.counter_count(source.card, kind) < minimum
+            {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::CounterKeywordOwnTurn(kind, value) => {
             if provider.controller != world.game().state.active
                 || !own
@@ -505,6 +519,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceConditionalKeywords { .. }
                         | StaticAbilityFragment::SourceCounterKeywords { .. }
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
+                        | StaticAbilityFragment::SourceCounterTurnCreature { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::HarnessedTrigger(..)

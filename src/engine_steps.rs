@@ -127,6 +127,7 @@ impl Game {
             target_allocations: None,
             mana_copy_sources: None,
             is_copy: false,
+            ninjutsu_defender: None,
             delayed_sacrifice: None,
             x: None,
             attachment_trigger: None,

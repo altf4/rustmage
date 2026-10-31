@@ -1205,6 +1205,7 @@ impl Game {
             source_ability_origin: ability_origin,
             mana_copy_sources: None,
             is_copy: false,
+            ninjutsu_defender: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             return_link: None,
@@ -3991,6 +3992,17 @@ impl Game {
                         );
                     }
                     self.stage_entries(moves, None);
+                }
+                Instruction::PutHandSourceAttacking => {
+                    if let Some(source) = item.source
+                        && self.object_ref(source.id) == source.object
+                        && self.state.objects[source.id as usize].zone == Zone::Hand
+                    {
+                        let mut movement = self.entry_move(source.id, Zone::Battlefield, true);
+                        movement.controller = item.controller;
+                        movement.attacking = item.ninjutsu_defender;
+                        self.stage_entries(vec![movement], None);
+                    }
                 }
                 Instruction::ReturnSourceToBattlefield { tapped } => {
                     if self.object_ref(

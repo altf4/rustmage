@@ -194,6 +194,16 @@ pub(crate) enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
+    /// On its controller's turn this source becomes a creature with this
+    /// subtype and keyword while it has the required counters. Its type change
+    /// starts in layer four; the same ability's base stats are a separate
+    /// BaseStatSetter fragment in its group.
+    SourceCounterTurnCreature {
+        kind: CounterKind,
+        minimum: u64,
+        subtypes: &'static [&'static str],
+        keywords: Keywords,
+    },
     /// One source-local conditional effect may span type and stat layers.
     SourceGraveyardAllTypes {
         kind: u16,

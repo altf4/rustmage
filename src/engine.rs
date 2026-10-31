@@ -1239,6 +1239,9 @@ pub struct SpellView {
     #[allow(clippy::box_collection)]
     pub mana_copy_sources: Option<Box<Vec<(ManaCopySource, u64)>>>,
     pub is_copy: bool,
+    /// Defender of the unblocked attacker returned for a hand activation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ninjutsu_defender: Option<CombatDefender>,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
     pub delayed_warp_exile: Option<Box<DelayedWarpExileView>>,
     pub return_link: Option<Box<ReturnLinkView>>,

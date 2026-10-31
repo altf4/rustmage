@@ -84,6 +84,37 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .flat_map(|r| &r.animations)
         .filter(move |row| Some(row.object) == recipient)
 }
+
+fn source_counter_turn_creature<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Option<(u64, &'static [&'static str])> {
+    let object = world.object(id);
+    if object.zone != Zone::Battlefield || object.controller != world.game().state.active {
+        return None;
+    }
+    let types = object
+        .card
+        .static_ability_groups()
+        .iter()
+        .flat_map(|g| g.fragments)
+        .find_map(|fragment| match *fragment {
+            StaticAbilityFragment::SourceCounterTurnCreature {
+                kind,
+                minimum,
+                subtypes,
+                ..
+            } if world.counter_count(id, kind) >= minimum => Some(subtypes),
+            _ => None,
+        })?;
+    let timestamp = world
+        .roles()?
+        .ability_timestamps
+        .iter()
+        .find(|row| row.source == world.reference(id))?
+        .timestamp;
+    Some((timestamp, types))
+}
 /// Layer-four changes to the presence of the land card type. Other card-type
 /// additions do not affect existing land types and need no timeline entry.
 pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
@@ -132,6 +163,7 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         .roles()
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
+        && source_counter_turn_creature(world, id).is_none()
     {
         if world
             .game()
@@ -162,6 +194,9 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
             )
         })
         .collect();
+    if let Some((timestamp, _)) = source_counter_turn_creature(world, id) {
+        changes.push((timestamp, 1, true));
+    }
     for row in animations(world, id) {
         if row.food_only {
             changes.push((row.timestamp, 16, false));
@@ -308,6 +343,7 @@ pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
         .roles()
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
+        && source_counter_turn_creature(world, id).is_none()
     {
         return Vec::new();
     }
@@ -330,6 +366,9 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             )
         })
         .collect();
+    if let Some((timestamp, types)) = source_counter_turn_creature(world, id) {
+        changes.push((timestamp, SubtypeChange::Named(types, false)));
+    }
     changes.extend(animations(world, id).filter_map(|row| {
         if row.food_only {
             return Some((row.timestamp, SubtypeChange::FoodOnly));

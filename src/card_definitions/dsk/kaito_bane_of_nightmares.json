@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aed104fc772e50915dda9656653da3b6867eca128e57e612ffb98a8630b86e09"
   },
-  "physical_metadata_sha256": "6e180517cf39878bf33c0be96a4d4df48bc347b95ecce1ecb1a08bab822b3a31"
+  "physical_metadata_sha256": "6e180517cf39878bf33c0be96a4d4df48bc347b95ecce1ecb1a08bab822b3a31",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KaitoBaneOfNightmares.java",
+  "java_sha256": "e1111a75269e12bc93199d0cf864a80374022e99ce27c1d5083eda25ebbf41ef",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/NinjutsuAbility.java",
+      "sha256": "8e95e1e45baae1c3aca73cdf6259e4916d9d22d73d5fda4ec9c0cc44e08446f8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/command/emblems/KaitoBaneOfNightmaresEmblem.java",
+      "sha256": "feab4261bb69413d99e6389c73a585d11def6d83446bbfcca27209a9b3225b5f"
+    }
+  ]
 }

@@ -263,6 +263,7 @@ impl Game {
                 target_allocations: None,
                 mana_copy_sources: None,
                 is_copy: false,
+                ninjutsu_defender: None,
                 delayed_sacrifice: Some(Box::new(b.view)),
                 delayed_warp_exile: None,
                 return_link: None,

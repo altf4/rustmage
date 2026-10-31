@@ -43,6 +43,7 @@ impl Card {
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
+                            | StaticAbilityFragment::SourceCounterTurnCreature { .. }
                             | StaticAbilityFragment::SourceGraveyardAllTypes { .. }
                             | StaticAbilityFragment::SourceConditionalKeywords { .. }
                             | StaticAbilityFragment::SourceCounterKeywords { .. }

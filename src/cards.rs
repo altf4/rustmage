@@ -1718,6 +1718,9 @@ pub(crate) enum Instruction {
     ReturnSourceToBattlefield {
         tapped: bool,
     },
+    /// Resolve a hand activation by putting its exact source in tapped and
+    /// attacking the defender captured when its unblocked attacker was returned.
+    PutHandSourceAttacking,
     /// Return the exact graveyard source with an entry counter.
     ReturnSourceToBattlefieldWithCounter {
         tapped: bool,

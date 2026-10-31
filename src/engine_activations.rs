@@ -798,6 +798,7 @@ impl Game {
             source_ability_origin: self.copy_ability_origin(self.object_ref(card)),
             mana_copy_sources: None,
             is_copy: false,
+            ninjutsu_defender: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             return_link: None,
