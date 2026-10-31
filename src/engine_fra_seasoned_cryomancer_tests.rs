@@ -359,6 +359,7 @@ fn seasoned_copied_reflexive_preserves_target_limit_and_resolves_twice() {
             target_group: 0,
             moved_count: None,
             remembered_draws: None,
+            remembered_creatures: Vec::new(),
             sacrificed_power: None,
             discard_after: None,
             optional_wheel: None,

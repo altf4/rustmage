@@ -373,6 +373,7 @@ fn hob_storied_transient_threshold_inside_one_typed_resolution() {
         target_group: 0,
         moved_count: None,
         remembered_draws: None,
+        remembered_creatures: Vec::new(),
         discard_after: None,
         optional_wheel: None,
         discards: [0; 2],

@@ -8534,6 +8534,7 @@ impl Game {
 
     fn begin_turn(&mut self) {
         self.expire_next_turn_stats(self.state.active);
+        self.expire_next_turn_keywords(self.state.active);
         let active = self.state.active.index();
         self.state.players[active].turns_started = self.state.players[active]
             .turns_started
@@ -10378,6 +10379,7 @@ impl Game {
                             std::mem::size_of::<resolution_mana::ResolutionPayment>()
                         })
                         + resolution.milled.len() * std::mem::size_of::<ObjectRef>()
+                        + resolution.remembered_creatures.len() * std::mem::size_of::<ObjectRef>()
                         + resolution
                             .choice
                             .as_ref()
