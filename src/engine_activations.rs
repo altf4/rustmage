@@ -1107,10 +1107,13 @@ impl Game {
         }
         if cost.exile_self {
             let event = self.move_object(source.id, Zone::Exile);
-            if definition
-                .program
-                .contains(&Instruction::GrantLandManaUntilSourceCast)
-            {
+            if definition.program.iter().any(|instruction| {
+                matches!(
+                    instruction,
+                    Instruction::GrantLandManaUntilSourceCast
+                        | Instruction::ReturnCraftedSourceTransformed
+                )
+            }) {
                 item.source_move = Some(Box::new(TriggerSourceMoveView {
                     before: event.before.reference,
                     after: event.after,

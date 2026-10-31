@@ -798,6 +798,10 @@ pub enum EffectChoiceKind {
     /// Sacrifice one controlled permanent of greatest mana value among matching kinds.
     SacrificeGreatestManaValue,
     ExileGraveyard,
+    /// Craft material: an artifact you control or an artifact card in your graveyard.
+    ExileControlledOrGraveyard,
+    /// Internal projected route for a controlled battlefield material.
+    ExileControlled,
     /// During resolution, choose a card from either graveyard without targeting.
     ExileCardFromAnyGraveyard,
     /// Optionally choose a creature card captured by an exile-batch trigger.
@@ -894,6 +898,13 @@ impl AdditionalCost {
     /// The hand route has its own printed restriction; the permanent filter
     /// applies only to the sacrifice route.
     pub(crate) fn in_zone(mut self, zone: Zone) -> Self {
+        if self.kind == EffectChoiceKind::ExileControlledOrGraveyard {
+            match zone {
+                Zone::Battlefield => self.kind = EffectChoiceKind::ExileControlled,
+                Zone::Graveyard => self.kind = EffectChoiceKind::ExileGraveyard,
+                _ => {}
+            }
+        }
         if self.kind == EffectChoiceKind::SacrificeAttachedEquipment && zone == Zone::Battlefield {
             self.kind = EffectChoiceKind::Sacrifice;
         }
@@ -1066,6 +1077,8 @@ pub(crate) enum Instruction {
     ExileSourceReturnTransformed {
         counter: CounterKind,
     },
+    /// Return the exact source incarnation exiled as an activation cost, transformed.
+    ReturnCraftedSourceTransformed,
     /// Privately exile top cards; paid play remains conditional on a current subtype.
     ExileTopFaceDownPlay {
         amount: u16,

@@ -984,12 +984,16 @@ impl<'g> FundingState<'g> {
                     })
             })
             && goal.reserve.is_none_or(|(r, spec)| {
-                (!matches!(
-                    spec.kind,
-                    EffectChoiceKind::Sacrifice
-                        | EffectChoiceKind::SacrificeDifferentNames(_)
-                        | EffectChoiceKind::SacrificeAttachedEquipment
-                ) || !self.sacrifice_prohibited(r.card))
+                (spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
+                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                        self, r.card,
+                    ))
+                    && (!matches!(
+                        spec.kind,
+                        EffectChoiceKind::Sacrifice
+                            | EffectChoiceKind::SacrificeDifferentNames(_)
+                            | EffectChoiceKind::SacrificeAttachedEquipment
+                    ) || !self.sacrifice_prohibited(r.card))
                     && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
                         || self.game.ninjutsu_attacker(goal.actor, r)
                             && ability_world::CharacteristicWorld::attacking(self, r.card))

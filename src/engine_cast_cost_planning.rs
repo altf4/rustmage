@@ -239,13 +239,15 @@ impl FundingState<'_> {
         {
             return false;
         }
+        let craft = spec.kind == EffectChoiceKind::ExileControlledOrGraveyard;
         let spec = spec.in_zone(o.zone);
-        (!matches!(
-            spec.kind,
-            EffectChoiceKind::Sacrifice
-                | EffectChoiceKind::SacrificeDifferentNames(_)
-                | EffectChoiceKind::SacrificeAttachedEquipment
-        ) || !self.sacrifice_prohibited(r.card))
+        (!craft || !CharacteristicWorld::graveyard_exile_prohibited(self, r.card))
+            && (!matches!(
+                spec.kind,
+                EffectChoiceKind::Sacrifice
+                    | EffectChoiceKind::SacrificeDifferentNames(_)
+                    | EffectChoiceKind::SacrificeAttachedEquipment
+            ) || !self.sacrifice_prohibited(r.card))
             && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
                 || (self.game.ninjutsu_attacker(self.actor, r) && self.attacking(r.card)))
             && self.reference(r.card) == r
@@ -1011,7 +1013,9 @@ impl FundingState<'_> {
             EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
                 amount = usize::from(n)
             }
-            EffectChoiceKind::ExileGraveyard => destination = Zone::Exile,
+            EffectChoiceKind::ExileGraveyard
+            | EffectChoiceKind::ExileControlled
+            | EffectChoiceKind::ExileControlledOrGraveyard => destination = Zone::Exile,
             EffectChoiceKind::ExileGraveyardCards(n) => {
                 destination = Zone::Exile;
                 amount = usize::from(n);

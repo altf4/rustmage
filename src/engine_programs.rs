@@ -5494,6 +5494,9 @@ impl Game {
                 Instruction::ExileSourceReturnTransformed { counter } => {
                     self.exile_source_return_transformed(&item, counter)
                 }
+                Instruction::ReturnCraftedSourceTransformed => {
+                    self.return_crafted_source_transformed(&item)
+                }
                 Instruction::ExileTopFaceDownPlay { amount, subtype } => {
                     self.exile_top_face_down_play(&item, amount, subtype)
                 }

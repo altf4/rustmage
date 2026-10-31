@@ -136,6 +136,44 @@ impl Game {
         movement.effect_counter = Some((counter, 1));
         self.stage_entries(vec![movement], None);
     }
+    /// Craft pays by moving the source to exile before the ability resolves.
+    /// Only that exact resulting incarnation can return; an intervening zone
+    /// change or a replacement destination cannot bind a later object.
+    pub(super) fn return_crafted_source_transformed(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let Some(movement) = item.source_move.as_ref().filter(|movement| {
+            movement.before == source.object
+                && movement.origin == Zone::Battlefield
+                && movement.destination == Zone::Exile
+        }) else {
+            return;
+        };
+        let object = movement.after;
+        if self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+            || self.state.objects[object.card as usize].is_token()
+        {
+            return;
+        }
+        let Some(back) = source.card.back_face() else {
+            return;
+        };
+        let mut entry = self.entry_move(object.card, Zone::Battlefield, false);
+        entry.controller = self.state.objects[object.card as usize].owner;
+        entry.source_before = Some(Box::new(entry.before.clone()));
+        entry.before.card = back;
+        entry.before.kinds = back.kind_mask();
+        entry.before.colors = back.colors();
+        entry.before.name = back.name();
+        entry.before.keywords = back.keywords();
+        if let Effect::Creature(power, toughness) = back.effect() {
+            entry.before.power = i128::from(power);
+            entry.before.toughness = i128::from(toughness);
+        }
+        self.stage_entries(vec![entry], None);
+    }
     pub(super) fn transform_source(&mut self, item: &SpellView) {
         let Some(source) = item.source else {
             return;

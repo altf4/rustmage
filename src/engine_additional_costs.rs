@@ -53,6 +53,11 @@ impl Game {
         {
             return false;
         }
+        if spec.kind == EffectChoiceKind::ExileControlledOrGraveyard
+            && ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, object.card)
+        {
+            return false;
+        }
         let spec = spec.in_zone(o.zone);
         if matches!(
             spec.kind,
@@ -76,7 +81,8 @@ impl Game {
             | EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => o.owner == actor,
-            EffectChoiceKind::Sacrifice
+            EffectChoiceKind::ExileControlled
+            | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
@@ -144,7 +150,8 @@ impl Game {
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::DiscardLegendary => Zone::Hand,
-            EffectChoiceKind::Sacrifice
+            EffectChoiceKind::ExileControlled
+            | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
@@ -878,9 +885,10 @@ impl Game {
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack
             | EffectChoiceKind::SacrificeOrDiscard { .. }
+            | EffectChoiceKind::ExileControlledOrGraveyard
             | EffectChoiceKind::DiscardOrLife(_)
             | EffectChoiceKind::SacrificeAttachedEquipment => unreachable!(),
-            EffectChoiceKind::ExileGraveyard => {
+            EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
                 self.move_object(object.card, Zone::Exile);
             }
             EffectChoiceKind::Discard
