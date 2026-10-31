@@ -50,7 +50,9 @@ impl Game {
                 };
                 let ability = giver.card.activation(index);
                 let readiness = self.activation_readiness(actor, ability);
-                if (ability.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, card))
+                if activations::pure_loyalty_placement_prohibited(self, source, &readiness)
+                    || (ability.cost.sacrifice
+                        && CharacteristicWorld::sacrifice_prohibited(self, card))
                     || !view.grant_available(grantor, giver.card, index, None)
                     || !self.activation_guard_available(ability.guard, card, actor)
                     || !Self::object_activation_available_with_kinds(

@@ -1297,6 +1297,14 @@ pub struct SpellView {
 }
 
 impl SpellView {
+    /// Keep uncommitted target declarations private in viewer projections.
+    pub(super) fn redact_uncommitted_targets(&mut self) {
+        self.targets.clear();
+        self.target_type_slots = None;
+        self.target_allocations = None;
+        self.target_controller_lki = None;
+        self.target_kinds_lki = None;
+    }
     fn needs_source_copy_lki(&self) -> bool {
         // Some legacy event packets carry no corresponding typed ability.
         match self.kind {
@@ -2285,6 +2293,7 @@ struct State {
     roles: Option<Box<roles::RoleState>>,
     hand_size: Option<Box<hand_size::HandSizeState>>,
     replacements: Option<Box<replacements::ReplacementState>>,
+    activation_payment: Option<Box<activations::ActivationPayment>>,
     // Sparse registry: keep an eight-byte pointer in the common empty state
     // rather than an inline Vec header for games with no delayed obligation.
     #[allow(clippy::box_collection)]
@@ -3435,6 +3444,7 @@ impl Game {
                 stack: Vec::new(),
                 resolving: None,
                 announcing: None,
+                activation_payment: None,
                 mana_announcement_stack: None,
                 pending_triggers: Vec::new(),
                 trigger_multiplicity: None,
@@ -6404,11 +6414,24 @@ impl Game {
                                 .card,
                         )
                     });
-                self.pay_activation(&mut item, payment, counter_payment);
-                self.add_quality_mana(actor, production, quality);
-                self.produce_mountain_tap_bonus(actor, item.mana_tap_bonus.unwrap_or(0));
-                self.committed_mana_reflexive(&item);
-                self.reopen_evidence_after_mana_sacrifice(card);
+                if let Some(phase) = self.pay_activation(&mut item, payment, counter_payment) {
+                    self.suspend_activation_payment(
+                        item,
+                        phase,
+                        ActivationCostRoute::Printed,
+                        activations::ActivationPaymentCompletion::DirectMana {
+                            actor,
+                            card,
+                            production,
+                            quality,
+                        },
+                    );
+                } else {
+                    self.add_quality_mana(actor, production, quality);
+                    self.produce_mountain_tap_bonus(actor, item.mana_tap_bonus.unwrap_or(0));
+                    self.committed_mana_reflexive(&item);
+                    self.reopen_evidence_after_mana_sacrifice(card);
+                }
             }
             Action::AnnounceActivate {
                 card,
@@ -6473,15 +6496,37 @@ impl Game {
                 counter_payment,
             } => {
                 let mut item = self.activation_item(actor, card, ability);
+                self.begin_direct_activation_on_stack(&mut item);
                 if let Some(target) = target {
                     let bound = self.bind_target(target);
+                    self.state
+                        .stack
+                        .iter_mut()
+                        .find(|entry| entry.id == item.id)
+                        .expect("direct activation on stack")
+                        .targets
+                        .push(bound);
                     self.target_becomes_bound(&item, bound);
                     item.targets.push(bound);
                 }
                 item.allocate_single_target();
-                self.pay_activation(&mut item, payment, counter_payment);
-                self.push_stack_item(item);
-                self.state.passes = 0;
+                self.state
+                    .stack
+                    .iter_mut()
+                    .find(|entry| entry.id == item.id)
+                    .expect("direct activation on stack")
+                    .target_allocations = item.target_allocations.clone();
+                if let Some(phase) = self.pay_activation(&mut item, payment, counter_payment) {
+                    self.suspend_activation_payment(
+                        item,
+                        phase,
+                        ActivationCostRoute::Printed,
+                        activations::ActivationPaymentCompletion::DirectStack,
+                    );
+                } else {
+                    self.finish_direct_activation_on_stack(item);
+                    self.state.passes = 0;
+                }
             }
             Action::ActivateMana {
                 card,
@@ -6497,11 +6542,24 @@ impl Game {
                     .mana_production()
                     .unwrap();
                 let quality = self.mana_quality(definition, card);
-                self.pay_activation(&mut item, payment, counter_payment);
-                self.add_quality_mana(actor, production, quality);
-                self.produce_mountain_tap_bonus(actor, item.mana_tap_bonus.unwrap_or(0));
-                self.committed_mana_reflexive(&item);
-                self.reopen_evidence_after_mana_sacrifice(card);
+                if let Some(phase) = self.pay_activation(&mut item, payment, counter_payment) {
+                    self.suspend_activation_payment(
+                        item,
+                        phase,
+                        ActivationCostRoute::Printed,
+                        activations::ActivationPaymentCompletion::DirectMana {
+                            actor,
+                            card,
+                            production,
+                            quality,
+                        },
+                    );
+                } else {
+                    self.add_quality_mana(actor, production, quality);
+                    self.produce_mountain_tap_bonus(actor, item.mana_tap_bonus.unwrap_or(0));
+                    self.committed_mana_reflexive(&item);
+                    self.reopen_evidence_after_mana_sacrifice(card);
+                }
             }
             Action::ChooseManaLotSpend { .. } => unreachable!("allocation handled transactionally"),
             Action::ChooseMana { production } => {
@@ -6526,8 +6584,16 @@ impl Game {
                     announcement.counter_payment = counter_payment;
                 } else {
                     let mut item = self.state.stack.last().unwrap().clone();
-                    self.pay_activation(&mut item, payment, counter_payment);
-                    self.committed_activation_observers(&item);
+                    if let Some(phase) = self.pay_activation(&mut item, payment, counter_payment) {
+                        self.suspend_activation_payment(
+                            item,
+                            phase,
+                            ActivationCostRoute::Printed,
+                            activations::ActivationPaymentCompletion::AlreadyOnStack,
+                        );
+                    } else {
+                        self.finish_direct_activation_on_stack(item);
+                    }
                 }
             }
             Action::BeginCast { card, payment } => {
@@ -8085,6 +8151,12 @@ impl Game {
                 .chain(&mut self.state.ordering_triggers)
                 .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
                 .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
+                .chain(
+                    self.state
+                        .activation_payment
+                        .iter_mut()
+                        .map(|p| &mut p.item),
+                )
                 .chain(
                     self.state
                         .mana_announcement_stack
@@ -9681,11 +9753,38 @@ impl Game {
             stack: s
                 .stack
                 .iter()
-                .map(|item| self.spell_with_current_abilities(item))
+                .map(|item| {
+                    let mut view = self.spell_with_current_abilities(item);
+                    if s.activation_payment.as_ref().is_some_and(|payment| {
+                        payment.item.id == item.id
+                            && !self.shares_information(viewer, payment.item.controller)
+                    }) {
+                        view.redact_uncommitted_targets();
+                    }
+                    view
+                })
+                .chain(
+                    s.activation_payment
+                        .iter()
+                        .filter(|payment| {
+                            matches!(
+                                payment.completion,
+                                activations::ActivationPaymentCompletion::Crew(_)
+                                    | activations::ActivationPaymentCompletion::Saddle(_)
+                            )
+                        })
+                        .map(|payment| {
+                            let mut view = self.spell_with_current_abilities(&payment.item);
+                            if !self.shares_information(viewer, payment.item.controller) {
+                                view.redact_uncommitted_targets();
+                            }
+                            view
+                        }),
+                )
                 .collect(),
             uncounterable_spell_ids: self.uncounterable_spell_ids_view(),
             retarget: self.retarget_view(),
-            target_amount: self.target_amount_choice(),
+            target_amount: owns_choice.then(|| self.target_amount_choice()).flatten(),
             delayed_spell_copies: self.delayed_spell_copy_view(),
             resolving: s
                 .resolving
@@ -9706,9 +9805,8 @@ impl Game {
                 .map_or_else(Vec::new, |rows| rows.clone()),
             announcing: s.announcing.as_ref().map(|announcement| {
                 let mut item = self.spell_with_current_abilities(&announcement.item);
-                if !owns_choice {
-                    item.targets.clear();
-                    item.target_type_slots = None;
+                if !self.shares_information(viewer, announcement.item.controller) {
+                    item.redact_uncommitted_targets();
                 }
                 item
             }),
@@ -9989,6 +10087,19 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + s.activation_payment.as_ref().map_or(0, |payment| {
+                std::mem::size_of::<activations::ActivationPayment>()
+                    + payment.item.owned_bytes()
+                    + match &payment.completion {
+                        activations::ActivationPaymentCompletion::Crew(context) => {
+                            context.contributors.len() * std::mem::size_of::<ObjectRef>()
+                        }
+                        activations::ActivationPaymentCompletion::Saddle(selected) => {
+                            selected.len() * std::mem::size_of::<ObjectRef>()
+                        }
+                        _ => 0,
+                    }
+            })
             + s.outside_game.as_ref().map_or(0, |v| {
                 std::mem::size_of::<OutsideGameState>()
                     + self.outside_entry_bytes()

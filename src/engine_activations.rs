@@ -1,6 +1,39 @@
 //! Zone-qualified activations: legality, captured source context, and committed costs.
 use super::*;
 
+/// The first unpaid phase after a counter-placement replacement batch.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum ActivationPaymentPhase {
+    AfterLoyalty,
+    AfterSourceCounter,
+}
+
+/// Caller-specific work that must happen only after every activation cost.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) enum ActivationPaymentCompletion {
+    Announcement,
+    DirectStack,
+    DirectMana {
+        actor: Player,
+        card: CardId,
+        production: Mana,
+        quality: Option<mana_lots::Quality>,
+    },
+    AlreadyOnStack,
+    Crew(CrewContext),
+    Saddle(Vec<ObjectRef>),
+}
+
+/// Owned only while a counter-placement cost is waiting on replacements.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ActivationPayment {
+    pub item: SpellView,
+    pub ability: u16,
+    pub definition: ActivatedAbility,
+    pub phase: ActivationPaymentPhase,
+    pub completion: ActivationPaymentCompletion,
+}
+
 impl ActivatedAbility {
     pub(super) fn source_zone(&self) -> Zone {
         match self.origin {
@@ -9,6 +42,43 @@ impl ActivatedAbility {
             ActivationOrigin::Graveyard => Zone::Graveyard,
         }
     }
+}
+
+/// A pure loyalty activation has no mana-payment window in which to remove a
+/// counter prohibition. Composite costs need their funding world evaluated at
+/// the eventual payment point instead of applying this early restriction.
+pub(super) fn pure_loyalty_placement_prohibited<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    ability: &ActivatedAbility,
+) -> bool {
+    !ability.cost.mana_component && simple_loyalty_placement_prohibited(world, source, ability)
+}
+
+/// Whether this simple mana-bearing loyalty cost cannot currently place its
+/// counters. Funding must re-evaluate this in each projected payment world.
+pub(super) fn mana_loyalty_placement_prohibited<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    ability: &ActivatedAbility,
+) -> bool {
+    ability.cost.mana_component && simple_loyalty_placement_prohibited(world, source, ability)
+}
+
+fn simple_loyalty_placement_prohibited<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    ability: &ActivatedAbility,
+) -> bool {
+    ability.cost.loyalty.is_some_and(|change| change > 0)
+        && ability.cost.additional.is_none()
+        && !ability.cost.tap
+        && !ability.cost.sacrifice
+        && !ability.cost.exile_self
+        && !ability.cost.discard
+        && ability.cost.life == 0
+        && ability.cost.remove.is_none()
+        && replacements::counters_prohibited(world, source)
 }
 
 /// Starting restriction reads the same object overlay in actual and funding worlds.
@@ -53,6 +123,80 @@ pub(super) fn controls_tough_creature<W: ability_world::CharacteristicWorld + ?S
     })
 }
 impl Game {
+    /// Retain the exact ability and caller while replacement choices are made.
+    pub(super) fn suspend_activation_payment(
+        &mut self,
+        item: SpellView,
+        phase: ActivationPaymentPhase,
+        route: ActivationCostRoute,
+        completion: ActivationPaymentCompletion,
+    ) {
+        let StackKind::ActivatedAbility { ability } = item.kind else {
+            unreachable!("only activations pay activation costs")
+        };
+        let source = item.source.expect("activated ability has an object source");
+        let mut definition = *source.card.activation(ability);
+        if route == ActivationCostRoute::FirstEquipZero {
+            assert!(definition.is_equip());
+            definition.cost = ActivationCost::ZERO;
+        }
+        assert!(self.state.activation_payment.is_none());
+        self.state.activation_payment = Some(Box::new(ActivationPayment {
+            item,
+            ability,
+            definition,
+            phase,
+            completion,
+        }));
+    }
+
+    /// Resume after a replacement batch has completely drained. Returns true
+    /// when the next cost staged another replacement batch.
+    pub(super) fn resume_activation_payment(&mut self) -> bool {
+        let Some(mut payment) = self.state.activation_payment.take() else {
+            return false;
+        };
+        if let Some(phase) = self.resume_activation_costs(
+            &mut payment.item,
+            payment.ability,
+            &payment.definition,
+            payment.phase,
+        ) {
+            payment.phase = phase;
+            self.state.activation_payment = Some(payment);
+            return true;
+        }
+        match payment.completion {
+            ActivationPaymentCompletion::Announcement => {
+                self.resume_activation_announcement(payment.item);
+            }
+            ActivationPaymentCompletion::DirectStack => {
+                self.finish_direct_activation_on_stack(payment.item);
+                self.state.passes = 0;
+            }
+            ActivationPaymentCompletion::DirectMana {
+                actor,
+                card,
+                production,
+                quality,
+            } => {
+                self.add_quality_mana(actor, production, quality);
+                self.produce_mountain_tap_bonus(actor, payment.item.mana_tap_bonus.unwrap_or(0));
+                self.committed_mana_reflexive(&payment.item);
+                self.reopen_evidence_after_mana_sacrifice(card);
+            }
+            ActivationPaymentCompletion::AlreadyOnStack => {
+                self.finish_direct_activation_on_stack(payment.item);
+            }
+            ActivationPaymentCompletion::Crew(context) => {
+                self.finish_paid_crew(payment.item, context);
+            }
+            ActivationPaymentCompletion::Saddle(selected) => {
+                self.finish_paid_saddle(payment.item, selected);
+            }
+        }
+        self.state.replacements.is_some()
+    }
     pub(super) fn activation_generic_discount(
         &self,
         source: CardId,
@@ -252,7 +396,8 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         let readiness = self.activation_readiness(actor, ability);
-        !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+        !pure_loyalty_placement_prohibited(self, self.object_ref(card), &readiness)
+            && !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && (!ability.cost.sacrifice
                 || !ability_world::CharacteristicWorld::sacrifice_prohibited(self, card))
             && self.printed_abilities_available(card)
@@ -476,6 +621,9 @@ impl Game {
                     // A direct action cannot declare which optional whole-cost
                     // route it pays; expose the explicit announcement instead.
                     if self.first_equip_zero_available(actor, ability) {
+                        return false;
+                    }
+                    if mana_loyalty_placement_prohibited(self, self.object_ref(card), ability) {
                         return false;
                     }
                     if object
@@ -711,8 +859,8 @@ impl Game {
         item: &mut SpellView,
         payment: Mana,
         counter_payment: Counters,
-    ) {
-        self.pay_activation_route(item, payment, counter_payment, ActivationCostRoute::Printed);
+    ) -> Option<ActivationPaymentPhase> {
+        self.pay_activation_route(item, payment, counter_payment, ActivationCostRoute::Printed)
     }
     pub(super) fn pay_activation_route(
         &mut self,
@@ -720,7 +868,7 @@ impl Game {
         payment: Mana,
         counter_payment: Counters,
         route: ActivationCostRoute,
-    ) {
+    ) -> Option<ActivationPaymentPhase> {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             unreachable!()
         };
@@ -731,7 +879,7 @@ impl Game {
             assert_eq!(counter_payment, Counters::default());
             definition.cost = ActivationCost::ZERO;
         }
-        self.pay_activation_definition(item, payment, counter_payment, ability, &definition);
+        self.pay_activation_definition(item, payment, counter_payment, ability, &definition)
     }
 
     // The same committed payment routine handles both ordinary authored abilities
@@ -743,7 +891,50 @@ impl Game {
         counter_payment: Counters,
         ability: u16,
         definition: &ActivatedAbility,
-    ) {
+    ) -> Option<ActivationPaymentPhase> {
+        if !self.start_activation_payment(item, payment, counter_payment, definition) {
+            return None;
+        }
+        self.pay_activation_loyalty(item, definition);
+        if self.state.replacements.is_some() {
+            return Some(ActivationPaymentPhase::AfterLoyalty);
+        }
+        self.pay_activation_tap(item, ability, definition);
+        self.pay_activation_source_counter(item);
+        if self.state.replacements.is_some() {
+            return Some(ActivationPaymentPhase::AfterSourceCounter);
+        }
+        self.finish_activation_source_costs(item, definition);
+        None
+    }
+
+    /// Continue only the unpaid source-cost phases after a replacement batch.
+    pub(super) fn resume_activation_costs(
+        &mut self,
+        item: &mut SpellView,
+        ability: u16,
+        definition: &ActivatedAbility,
+        phase: ActivationPaymentPhase,
+    ) -> Option<ActivationPaymentPhase> {
+        if phase == ActivationPaymentPhase::AfterLoyalty {
+            self.pay_activation_tap(item, ability, definition);
+            self.pay_activation_source_counter(item);
+            if self.state.replacements.is_some() {
+                return Some(ActivationPaymentPhase::AfterSourceCounter);
+            }
+        }
+        self.finish_activation_source_costs(item, definition);
+        None
+    }
+
+    /// Apply the receipt and removal phases exactly once, before placements.
+    fn start_activation_payment(
+        &mut self,
+        item: &mut SpellView,
+        payment: Mana,
+        counter_payment: Counters,
+        definition: &ActivatedAbility,
+    ) -> bool {
         let source = item.source.expect("activated ability has an object source");
         let cost: ActivationCost = definition.cost;
         self.record_cast_mana_activation(item, payment, &counter_payment);
@@ -761,31 +952,7 @@ impl Game {
                     && cost.loyalty.is_none(),
                 "unpaid source cost"
             );
-            return;
-        }
-        let external_planeswalker_grant = item.attachment_trigger.as_ref().is_some_and(|event| {
-            event.granted
-                && item
-                    .source
-                    .expect("object-backed announcement")
-                    .card
-                    .static_ability_groups()
-                    .iter()
-                    .any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(fragment,
-                    crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
-                        if *index == ability)
-                        })
-                    })
-        });
-        if item.self_granted_activation.is_none() && !external_planeswalker_grant {
-            if let Some(slot) = item.borrowed_slot {
-                self.record_borrowed_use(source.object, slot, definition.exhaust);
-            } else {
-                self.record_copy_activation_use(item, ability);
-            }
-            self.record_power_up_use(item, ability);
+            return false;
         }
         if let Some(change) = cost.loyalty {
             item.loyalty_counters_paid = item
@@ -808,8 +975,53 @@ impl Game {
                 paid: true,
             });
         }
+        true
+    }
+
+    /// Record activation-use history only after all costs have been paid.
+    pub(super) fn commit_activation_use(&mut self, item: &SpellView) {
+        let StackKind::ActivatedAbility { ability } = item.kind else {
+            return;
+        };
+        if item.is_copy {
+            return;
+        }
+        let Some(source) = item.source else {
+            return;
+        };
+        let definition = source.card.activation(ability);
+        let Some(object) = self.state.objects.get(source.id as usize) else {
+            return;
+        };
+        if object.generation != source.object.generation || object.zone != definition.source_zone()
+        {
+            return;
+        }
+        let external_planeswalker_grant = item.attachment_trigger.as_ref().is_some_and(|event| {
+            event.granted
+                && source.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment,
+                        crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
+                        if *index == ability)
+                    })
+                })
+        });
+        if item.self_granted_activation.is_none() && !external_planeswalker_grant {
+            if let Some(slot) = item.borrowed_slot {
+                self.record_borrowed_use(source.object, slot, definition.exhaust);
+            } else {
+                self.record_copy_activation_use(item, ability);
+            }
+            self.record_power_up_use(item, ability);
+        }
+    }
+
+    /// Pay the signed loyalty cost as one counter event.
+    fn pay_activation_loyalty(&mut self, item: &SpellView, definition: &ActivatedAbility) {
+        let source = item.source.expect("activated ability has an object source");
+        let cost = definition.cost;
         if let Some(change) = cost.loyalty {
-            self.state.objects[source.id as usize].loyalty_activated_this_turn = true;
             if change < 0 {
                 self.pay_counters(
                     source.id,
@@ -824,6 +1036,18 @@ impl Game {
                 );
             }
         }
+    }
+
+    /// Tap is a distinct cost phase: a later counter replacement choice must
+    /// not repeat the tap event when payment resumes.
+    fn pay_activation_tap(
+        &mut self,
+        item: &mut SpellView,
+        ability: u16,
+        definition: &ActivatedAbility,
+    ) {
+        let source = item.source.expect("activated ability has an object source");
+        let cost = definition.cost;
         // Capture the tap event before a subsequent sacrifice/discard/exile
         // changes the source incarnation. All other paid source costs are set.
         if cost.tap {
@@ -838,6 +1062,11 @@ impl Game {
                 self.tap_objects(&[grant.grantor.card]);
             }
         }
+    }
+
+    /// A typed source-counter cost is a separate placement event from loyalty.
+    fn pay_activation_source_counter(&mut self, item: &SpellView) {
+        let source = item.source.expect("activated ability has an object source");
         let StackKind::ActivatedAbility {
             ability: definition_index,
         } = item.kind
@@ -847,6 +1076,16 @@ impl Game {
         if let Some((kind, amount)) = source.card.activation_put_counter(definition_index) {
             self.activation_cost_counters(source.object, kind, amount, item.controller);
         }
+    }
+
+    /// Refresh cost facts and perform departure costs after counter placements.
+    fn finish_activation_source_costs(
+        &mut self,
+        item: &mut SpellView,
+        definition: &ActivatedAbility,
+    ) {
+        let source = item.source.expect("activated ability has an object source");
+        let cost = definition.cost;
         self.refresh_local_source_counter_quantities(item);
         // Costs and real mana activations may briefly reach the threshold before
         // the same payment sacrifices its source. Speculative planning never does.

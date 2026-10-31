@@ -30,6 +30,8 @@ pub(super) struct ManaEvent {
     pub mountain_bonus: u32,
     pub quality: Option<mana_lots::Quality>,
     pub spent_lots: Vec<(mana_lots::Quality, Mana)>,
+    /// Fully replaced, ordered activation-cost placements from the actual event.
+    pub counter_costs: Vec<Vec<replacements::CounterPlacement>>,
     pub entries: Vec<entries::EntryBatch>,
     pub entry_life: [u128; 2],
     pub moves: Vec<(ObjectRef, Zone, bool, bool)>,
@@ -51,6 +53,15 @@ impl ManaEvent {
                 .map(|item| std::mem::size_of::<SpellView>() + item.owned_bytes())
                 .sum::<usize>()
             + self.spent_lots.len() * std::mem::size_of::<(mana_lots::Quality, Mana)>()
+            + self
+                .counter_costs
+                .iter()
+                .map(|batch| {
+                    std::mem::size_of::<Vec<replacements::CounterPlacement>>()
+                        + batch.len() * std::mem::size_of::<replacements::CounterPlacement>()
+                        + batch.iter().map(|p| p.amount.owned_bytes()).sum::<usize>()
+                })
+                .sum::<usize>()
             + self.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
             + self.allocations.len() * std::mem::size_of::<(CardId, u64)>()
             + match &self.kind {
@@ -77,6 +88,7 @@ impl ManaEvent {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct ActiveManaReplay {
+    counter_costs: VecDeque<Vec<replacements::CounterPlacement>>,
     entries: VecDeque<entries::EntryBatch>,
     entry_life: [u128; 2],
     moves: VecDeque<(ObjectRef, Zone, bool, bool)>,
@@ -103,6 +115,16 @@ impl ManaReplay {
                         .sum::<usize>()
                     + active.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
                     + active.allocations.len() * std::mem::size_of::<(CardId, u64)>()
+                    + active
+                        .counter_costs
+                        .iter()
+                        .map(|batch| {
+                            std::mem::size_of::<Vec<replacements::CounterPlacement>>()
+                                + batch.len()
+                                    * std::mem::size_of::<replacements::CounterPlacement>()
+                                + batch.iter().map(|p| p.amount.owned_bytes()).sum::<usize>()
+                        })
+                        .sum::<usize>()
             })
     }
 }
@@ -388,6 +410,7 @@ impl Game {
             .as_mut()
             .unwrap()
             .active = Some(Box::new(ActiveManaReplay {
+            counter_costs: event.counter_costs.clone().into(),
             entries: event.entries.clone().into(),
             entry_life: event.entry_life,
             moves: event.moves.clone().into(),
@@ -412,7 +435,13 @@ impl Game {
                     self.move_object(external.card, Zone::Exile);
                 }
                 let mut item = (**item).clone();
-                self.pay_activation(&mut item, *payment, counters.clone());
+                if self
+                    .pay_activation(&mut item, *payment, counters.clone())
+                    .is_some()
+                {
+                    return false;
+                }
+                self.commit_activation_use(&item);
             }
         }
         self.add_quality_mana(event.actor, event.production, event.quality);
@@ -431,6 +460,7 @@ impl Game {
             .take()
             .unwrap();
         if active.failed
+            || !active.counter_costs.is_empty()
             || !active.entries.is_empty()
             || !active.moves.is_empty()
             || !active.allocations.is_empty()
@@ -451,7 +481,7 @@ impl Game {
         for trigger in &event.triggers {
             // Retained mana carries its actual observer packet and consumed limit;
             // an undone event carries neither. Do not recompute its past witnesses.
-            self.restore_activation_observer_use(trigger);
+            self.restore_retained_trigger_use(trigger);
             self.state.next_stack_id = self.state.next_stack_id.max(
                 trigger
                     .id
@@ -461,6 +491,34 @@ impl Game {
             self.state.pending_triggers.push(trigger.clone());
         }
         true
+    }
+    pub(super) fn take_frozen_mana_counter_cost(
+        &mut self,
+    ) -> Option<Option<Vec<replacements::CounterPlacement>>> {
+        let active = self
+            .state
+            .cast_rollback
+            .as_mut()?
+            .replay
+            .as_mut()?
+            .active
+            .as_mut()?;
+        let batch = active.counter_costs.pop_front();
+        if batch.is_none() {
+            active.failed = true;
+        }
+        Some(batch)
+    }
+    pub(super) fn fail_frozen_mana_replay(&mut self) {
+        if let Some(active) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|r| r.replay.as_mut())
+            .and_then(|r| r.active.as_mut())
+        {
+            active.failed = true;
+        }
     }
     pub(super) fn replay_frozen_mana_entries(&mut self) -> bool {
         let Some(active) = self

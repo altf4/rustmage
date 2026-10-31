@@ -26,6 +26,21 @@ struct Resource {
     attacking: bool,
     object: Object,
 }
+
+fn mana_loyalty_placement_payable<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    goal: &FundingGoal,
+) -> bool {
+    goal.source
+        .as_ref()
+        .is_none_or(|(source, index, _, definition, _)| {
+            !activations::mana_loyalty_placement_prohibited(
+                world,
+                *source,
+                definition.activation(*index),
+            )
+        })
+}
 #[derive(Clone)]
 pub(super) struct FundingState<'g> {
     game: &'g Game,
@@ -2656,6 +2671,7 @@ impl<'g> FundingState<'g> {
                 adjusted.generic,
             )
         }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
+            && mana_loyalty_placement_payable(self, goal)
             && self.complete_funding_continuation(goal)
         {
             return true;
@@ -2976,7 +2992,8 @@ impl Game {
             self.available_mana(goal.actor, purpose),
             adjusted.required,
             adjusted.generic,
-        ) {
+        ) && mana_loyalty_placement_payable(self, &goal)
+        {
             return true;
         }
         let mut state = FundingState::from_game(self, &goal);
@@ -3749,6 +3766,7 @@ impl Game {
             state.mark_mana_clause_paid();
             if !state.obligations(&goal)
                 || !state.cost_completion()
+                || !mana_loyalty_placement_payable(&state, &goal)
                 || a.cast_costs.is_none() && a.evidence.as_ref().is_some_and(|e| !e.complete)
             {
                 return None;

@@ -283,13 +283,26 @@ impl Game {
             contributors: p.selected,
             paid_power: sum.represented(),
         };
+        if let Some(phase) = self.pay_activation(&mut a.item, [0; 6], Counters::default()) {
+            self.suspend_activation_payment(
+                a.item,
+                phase,
+                ActivationCostRoute::Printed,
+                activations::ActivationPaymentCompletion::Crew(context),
+            );
+            return;
+        }
+        self.finish_paid_crew(a.item, context);
+    }
+
+    pub(super) fn finish_paid_crew(&mut self, mut item: SpellView, context: CrewContext) {
         let state = self.state.crew.as_mut().unwrap();
         let at = state
             .history
             .iter()
             .position(|h| {
                 h.vehicle
-                    == a.item
+                    == item
                         .source
                         .expect("cost announcement has object source")
                         .object
@@ -300,8 +313,7 @@ impl Game {
                     .try_reserve(1)
                     .capacity("Crew history capacity exhausted");
                 state.history.push(CrewHistory {
-                    vehicle: a
-                        .item
+                    vehicle: item
                         .source
                         .expect("cost announcement has object source")
                         .object,
@@ -318,7 +330,6 @@ impl Game {
                 history.push(r)
             }
         }
-        self.pay_activation(&mut a.item, [0; 6], Counters::default());
         self.tap_objects(
             &context
                 .contributors
@@ -326,9 +337,9 @@ impl Game {
                 .map(|r| r.card)
                 .collect::<Vec<_>>(),
         );
-        a.item.crew = Some(Box::new(context));
-        self.state.priority = a.item.controller;
-        self.push_stack_item(a.item);
+        item.crew = Some(Box::new(context));
+        self.state.priority = item.controller;
+        self.push_stack_item(item);
         self.state.pending = Pending::Priority;
         self.state.passes = 0;
     }

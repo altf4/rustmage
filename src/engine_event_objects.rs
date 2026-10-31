@@ -60,6 +60,7 @@ impl Game {
             .chain(&self.state.ordering_triggers)
             .chain(self.state.resolving.iter().map(|r| &r.item))
             .chain(self.state.announcing.iter().map(|a| &a.item))
+            .chain(self.state.activation_payment.iter().map(|p| &p.item))
             .chain(
                 self.state
                     .mana_announcement_stack
@@ -115,6 +116,12 @@ impl Game {
             .chain(&mut self.state.ordering_triggers)
             .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
             .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
+            .chain(
+                self.state
+                    .activation_payment
+                    .iter_mut()
+                    .map(|p| &mut p.item),
+            )
             .chain(
                 self.state
                     .mana_announcement_stack

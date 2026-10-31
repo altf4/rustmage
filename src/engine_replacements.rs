@@ -8,6 +8,7 @@ pub(super) enum ResumeMode {
     Program,
     Pending,
     CastCosts,
+    ActivationCosts,
     Entry,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1130,11 +1131,15 @@ impl Game {
         player_counters: [[u64; 5]; 2],
         proliferated: Option<Player>,
         completion: Option<Box<CounterReflexiveCompletion>>,
+        activation_cost: bool,
     ) {
         for placement in &mut placements {
             if placement_prohibited(self, placement) {
                 placement.amount = Counters::default();
             }
+        }
+        if activation_cost {
+            self.record_cast_mana_counter_cost(&placements);
         }
         let completed = completion.as_ref().is_some_and(|c| {
             placements.iter().any(|p| {
@@ -1265,6 +1270,9 @@ impl Game {
         }
         placements.retain(|p| p.amount.has_any());
         if placements.is_empty() && player_counters == [[0; 5]; 2] && proliferated.is_none() {
+            if mode == ResumeMode::ActivationCosts {
+                self.record_cast_mana_counter_cost(&[]);
+            }
             return;
         }
         placements.sort_by_key(|p| (p.controller != self.state.active, p.object.card));
@@ -1289,7 +1297,13 @@ impl Game {
                     })
             })
         {
-            self.commit_counter_placements(placements, player_counters, proliferated, completion);
+            self.commit_counter_placements(
+                placements,
+                player_counters,
+                proliferated,
+                completion,
+                mode == ResumeMode::ActivationCosts,
+            );
             self.finish_face_up_counter_replacement();
             return;
         }
@@ -1386,6 +1400,48 @@ impl Game {
         amount: u64,
         player: Player,
     ) {
+        if let Some(receipt) = self.take_frozen_mana_counter_cost() {
+            if let Some(placements) = receipt {
+                // Replacement effects can set `effect` even on a cost event.
+                if placements.len() > 1
+                    || !self.on_battlefield(object.card)
+                    || self.object_ref(object.card) != object
+                    || placements.iter().any(|p| {
+                        p.object != object || p.entry_index.is_some() || p.placed_by != player
+                    })
+                    || placements.iter().any(|p| {
+                        CounterKind::ALL.into_iter().any(|kind| {
+                            self.counter_count(object.card, kind)
+                                .checked_add(p.amount.get(kind))
+                                .is_none()
+                        })
+                    })
+                {
+                    self.fail_frozen_mana_replay();
+                } else {
+                    // The receipt owns the actual observer packets. Applying
+                    // the physical event must not redispatch observers against
+                    // a different reconstructed world.
+                    for placement in &placements {
+                        for kind in CounterKind::ALL {
+                            self.add_counter(object.card, kind, placement.amount.get(kind));
+                        }
+                    }
+                    for placement in &placements {
+                        for kind in CounterKind::ALL {
+                            if placement.amount.get(kind) > 0 {
+                                self.record_counter_placement(
+                                    object,
+                                    player,
+                                    kind == CounterKind::PlusOne,
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            return;
+        }
         let o = &self.state.objects[object.card as usize];
         let placement = CounterPlacement {
             placed_by: player,
@@ -1402,7 +1458,7 @@ impl Game {
             entry_index: None,
             private: false,
         };
-        self.stage_counter_placements(vec![placement], ResumeMode::Pending);
+        self.stage_counter_placements(vec![placement], ResumeMode::ActivationCosts);
     }
     pub(super) fn blight_cost_counters(&mut self, object: ObjectRef, amount: u16, player: Player) {
         let o = &self.state.objects[object.card as usize];
@@ -2174,6 +2230,12 @@ impl Game {
             let Some(active) = state.active.as_mut() else {
                 self.state.pending = state.resume.take().unwrap();
                 self.finish_face_up_counter_replacement();
+                if state.mode == ResumeMode::ActivationCosts
+                    && self.state.activation_payment.is_some()
+                    && self.resume_activation_payment()
+                {
+                    return self.advance_replacements(resume_program);
+                }
                 if state.mode == ResumeMode::CastCosts && self.state.announcing.is_some() {
                     self.finish_announcement();
                 }
@@ -2373,6 +2435,7 @@ impl Game {
                             totals,
                             batch.proliferated,
                             batch.completion,
+                            state.mode == ResumeMode::ActivationCosts,
                         );
                         continue;
                     }

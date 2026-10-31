@@ -295,10 +295,21 @@ impl Game {
         assert!(total.enough(f.minimum));
         // All powers are checked before the simultaneous tap cost. Tap observers
         // queue during payment, then are ordered above the activated ability.
-        self.pay_activation(&mut a.item, [0; 6], Counters::default());
-        self.tap_objects(&f.selected.iter().map(|r| r.card).collect::<Vec<_>>());
-        self.state.priority = a.item.controller;
-        self.push_stack_item(a.item);
+        if let Some(phase) = self.pay_activation(&mut a.item, [0; 6], Counters::default()) {
+            self.suspend_activation_payment(
+                a.item,
+                phase,
+                ActivationCostRoute::Printed,
+                activations::ActivationPaymentCompletion::Saddle(f.selected),
+            );
+            return;
+        }
+        self.finish_paid_saddle(a.item, f.selected);
+    }
+    pub(super) fn finish_paid_saddle(&mut self, item: SpellView, selected: Vec<ObjectRef>) {
+        self.tap_objects(&selected.iter().map(|r| r.card).collect::<Vec<_>>());
+        self.state.priority = item.controller;
+        self.push_stack_item(item);
         self.state.pending = Pending::Priority;
         self.state.passes = 0;
     }

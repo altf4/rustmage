@@ -47,6 +47,7 @@ impl Game {
             mountain_bonus: 0,
             quality: None,
             spent_lots: Vec::new(),
+            counter_costs: Vec::new(),
             entries: Vec::new(),
             entry_life: [0; 2],
             moves: Vec::new(),
@@ -245,6 +246,19 @@ impl Game {
             .and_then(|r| r.capture.as_mut())
         {
             capture.event.entries.push(batch.clone());
+        }
+    }
+    pub(super) fn record_cast_mana_counter_cost(
+        &mut self,
+        placements: &[replacements::CounterPlacement],
+    ) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|r| r.capture.as_mut())
+        {
+            capture.event.counter_costs.push(placements.to_vec());
         }
     }
     pub(super) fn record_cast_mana_entry_life(&mut self, player: Player, amount: u32) {

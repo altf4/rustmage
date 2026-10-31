@@ -154,6 +154,12 @@ impl Game {
             .chain(&mut self.state.ordering_triggers)
             .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
             .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
+            .chain(
+                self.state
+                    .activation_payment
+                    .iter_mut()
+                    .map(|p| &mut p.item),
+            )
         {
             if item
                 .source

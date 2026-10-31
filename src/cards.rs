@@ -4893,7 +4893,21 @@ impl Card {
     }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
         #[cfg(test)]
+        if self == Card::from_name("Fanatical Firebrand").unwrap()
+            && issue_93_copy_cost_fixture::enabled()
+        {
+            return issue_93_copy_cost_fixture::abilities();
+        }
+        #[cfg(test)]
+        if self == Card::JacePlaneswalkerToken && issue_93_copy_cost_fixture::prepaid_enabled() {
+            return issue_93_copy_cost_fixture::prepaid_abilities();
+        }
+        #[cfg(test)]
         if self == Card::test_index(5437) && sacrifice_mana_fixture::enabled() {
+            return sacrifice_mana_fixture::abilities();
+        }
+        #[cfg(test)]
+        if self == Card::test_index(470) && sacrifice_mana_fixture::enabled() {
             return sacrifice_mana_fixture::abilities();
         }
         #[cfg(test)]
@@ -4968,6 +4982,16 @@ impl Card {
         self,
         ability: u16,
     ) -> Option<TargetActivationReduction> {
+        #[cfg(test)]
+        if self == Card::JacePlaneswalkerToken
+            && ability == 0
+            && composite_loyalty_fixture::target_discount()
+        {
+            return Some(TargetActivationReduction {
+                rule: TargetRule::Creature,
+                generic: 1,
+            });
+        }
         authored::RULES[self.index()]
             .extras
             .activation_target_reductions
@@ -5000,6 +5024,12 @@ impl Card {
             .map(|(_, kind)| *kind)
     }
     pub(crate) fn activation_put_counter(self, ability: u16) -> Option<(CounterKind, u64)> {
+        #[cfg(test)]
+        if ability == 0
+            && let Some(kind) = issue_93_mana_counter_fixture::counter_kind(self)
+        {
+            return Some((kind, 1));
+        }
         authored::RULES[self.index()]
             .extras
             .activation_put_counters
@@ -5233,6 +5263,133 @@ impl Card {
     }
 }
 
+/// Synthetic cost overlay for testing retained mana with replacement choices.
+#[cfg(test)]
+pub(crate) mod issue_93_mana_counter_fixture {
+    use super::{Card, CounterKind};
+    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
+    pub(crate) struct Guard;
+    impl Guard {
+        pub(crate) fn new() -> Self {
+            Self::set(1)
+        }
+        pub(crate) fn with_plus_one() -> Self {
+            Self::set(2)
+        }
+        fn set(mode: u8) -> Self {
+            MODE.with(|enabled| assert_eq!(enabled.replace(mode), 0));
+            Self
+        }
+    }
+    impl Drop for Guard {
+        fn drop(&mut self) {
+            MODE.with(|enabled| enabled.set(0));
+        }
+    }
+    pub(super) fn counter_kind(card: Card) -> Option<CounterKind> {
+        let mode = MODE.with(|enabled| enabled.get());
+        let loot = card == Card::from_name("Loot, the Pathfinder").unwrap();
+        let devotee = card == Card::from_name("Abzan Devotee").unwrap();
+        match mode {
+            1 if loot => Some(CounterKind::Stun),
+            2 if loot || devotee => Some(CounterKind::PlusOne),
+            _ => None,
+        }
+    }
+}
+
+/// Synthetic self-sacrifice source-copy ability for announcement LKI tests.
+#[cfg(test)]
+pub(crate) mod issue_93_copy_cost_fixture {
+    use super::*;
+    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
+    pub(crate) struct Guard;
+    impl Guard {
+        pub(crate) fn new() -> Self {
+            MODE.with(|mode| assert_eq!(mode.replace(1), 0));
+            Self
+        }
+        pub(crate) fn prepaid() -> Self {
+            MODE.with(|mode| assert_eq!(mode.replace(2), 0));
+            Self
+        }
+    }
+    impl Drop for Guard {
+        fn drop(&mut self) {
+            MODE.with(|mode| mode.set(0));
+        }
+    }
+    pub(super) fn enabled() -> bool {
+        MODE.with(|mode| mode.get() == 1)
+    }
+    pub(super) fn prepaid_enabled() -> bool {
+        MODE.with(|mode| mode.get() == 2)
+    }
+    pub(super) const fn abilities() -> &'static [ActivatedAbility] {
+        &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            cycling: false,
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                colored: [0; 6],
+                generic: 0,
+                alternatives: &[],
+                additional: None,
+                mana_component: false,
+                tap: false,
+                sacrifice: true,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateCopyToken {
+                subject: Subject::Source,
+                amount: 1,
+            }],
+            sorcery: false,
+            once_per_turn: false,
+        }]
+    }
+    pub(super) fn prepaid_abilities() -> &'static [ActivatedAbility] {
+        const PREPAID: &[ActivatedAbility] = &[ActivatedAbility {
+            cost: ActivationCost {
+                colored: [0; 6],
+                generic: 0,
+                alternatives: &[],
+                additional: None,
+                mana_component: false,
+                tap: false,
+                sacrifice: true,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: Some(-1),
+            },
+            targets: TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Object {
+                    zone: TargetZone::Battlefield,
+                    kinds: 1,
+                    relation: 1,
+                    other: false,
+                    nonland: false,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: u32::MAX,
+                },
+                min: 0,
+                max: 2,
+            }),
+            ..abilities()[0]
+        }];
+        PREPAID
+    }
+}
+
 impl Serialize for Card {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         serializer.serialize_str(self.identity())
@@ -5297,6 +5454,12 @@ pub(crate) mod composite_loyalty_fixture {
         pub(crate) fn with_mana_two_counters() -> Self {
             Self::set(3)
         }
+        pub(crate) fn with_mana_positive() -> Self {
+            Self::set(4)
+        }
+        pub(crate) fn with_mana_positive_target() -> Self {
+            Self::set(5)
+        }
         fn set(mode: u8) -> Self {
             MODE.with(|value| {
                 assert_eq!(value.replace(mode), 0);
@@ -5312,10 +5475,15 @@ pub(crate) mod composite_loyalty_fixture {
     pub(super) fn enabled() -> bool {
         MODE.with(|value| value.get() != 0)
     }
+    pub(super) fn target_discount() -> bool {
+        MODE.with(|value| value.get() == 5)
+    }
     pub(super) fn abilities() -> &'static [ActivatedAbility] {
         match MODE.with(|value| value.get()) {
             2 => MANA_ABILITIES,
             3 => TWO_COUNTER_ABILITIES,
+            4 => POSITIVE_MANA_ABILITIES,
+            5 => POSITIVE_MANA_TARGET_ABILITIES,
             _ => ABILITIES,
         }
     }
@@ -5360,6 +5528,27 @@ pub(crate) mod composite_loyalty_fixture {
     const ABILITIES: &[ActivatedAbility] = &[ability(false, 1)];
     const MANA_ABILITIES: &[ActivatedAbility] = &[ability(true, 1)];
     const TWO_COUNTER_ABILITIES: &[ActivatedAbility] = &[ability(true, 2)];
+    const POSITIVE_MANA_ABILITIES: &[ActivatedAbility] = &[ActivatedAbility {
+        cost: ActivationCost {
+            colored: [0; 6],
+            generic: 1,
+            alternatives: &[],
+            additional: None,
+            mana_component: true,
+            tap: false,
+            sacrifice: false,
+            exile_self: false,
+            discard: false,
+            life: 0,
+            remove: None,
+            loyalty: Some(1),
+        },
+        ..ability(false, 0)
+    }];
+    const POSITIVE_MANA_TARGET_ABILITIES: &[ActivatedAbility] = &[ActivatedAbility {
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+        ..POSITIVE_MANA_ABILITIES[0]
+    }];
 }
 
 #[cfg(test)]
