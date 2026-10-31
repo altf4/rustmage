@@ -2978,6 +2978,9 @@ impl Game {
                 Instruction::CopyNextInstantSorcery { ability } => {
                     self.remember_next_spell_copy(&item, ability)
                 }
+                Instruction::CopySpellsThisTurn { ability } => {
+                    self.remember_next_spell_copy(&item, ability)
+                }
                 Instruction::ExileTargetsCopyFreeWithBudget { mana_value } => {
                     if self.exile_targets_copy_free_with_budget(&item, mana_value) {
                         return;

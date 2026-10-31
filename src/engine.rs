@@ -4326,6 +4326,9 @@ impl Game {
                             EffectChoiceKind::ExileSourceAndNamed { .. } => {
                                 Action::SelectResolutionExile { object }
                             }
+                            EffectChoiceKind::HandPlot { .. } => {
+                                Action::SelectResolutionExile { object }
+                            }
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             EffectChoiceKind::SacrificeOrDiscard { .. } => {
                                 if s.objects[index].zone == Zone::Hand {

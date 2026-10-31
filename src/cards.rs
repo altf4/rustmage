@@ -825,6 +825,10 @@ pub enum EffectChoiceKind {
         tapped: bool,
     },
     HandExileCopy,
+    /// Exile a nonland card in hand and mark the resulting exile object plotted.
+    HandPlot {
+        maximum: u32,
+    },
     HandLand {
         tapped: bool,
     },
@@ -1164,6 +1168,10 @@ pub(crate) enum Instruction {
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
     CopyNextInstantSorcery {
+        ability: u16,
+    },
+    /// Create a source-independent delayed trigger for every spell cast this turn.
+    CopySpellsThisTurn {
         ability: u16,
     },
     ScheduleSacrificedArtifactCopy {
@@ -5125,6 +5133,9 @@ impl Card {
     }
     pub(crate) fn cast_graveyard_minimum(self) -> u8 {
         authored::rules(self).map_or(0, |r| r.extras.cast_graveyard_minimum)
+    }
+    pub(crate) fn cast_after_first_three_turns(self) -> bool {
+        authored::rules(self).is_some_and(|r| r.extras.cast_after_first_three_turns)
     }
     pub(crate) fn cast_timing_guard(self) -> StepGuard {
         authored::rules(self).map_or(StepGuard::Always, |r| r.extras.cast_timing_guard)

@@ -66,6 +66,20 @@ fn delayed_copy_reads_source_power(item: &SpellView) -> bool {
                 .condition.event() == TriggerCondition::DelayedSpellCastSourcePower
     )
 }
+fn delayed_copy_all_spells(item: &SpellView) -> bool {
+    matches!(
+        item.kind,
+        StackKind::TriggeredAbility { ability }
+            if matches!(
+                item.trigger_definition().triggers()[usize::from(ability)].condition,
+                TriggerCondition::Granted(&TriggerCondition::SpellCast {
+                    relation: CastRelation::You,
+                    filter: crate::cards::CastFilter::Any,
+                    ordinal: None,
+                })
+            )
+    )
+}
 impl Game {
     pub(super) fn stack_target_rule_matches(
         &self,
@@ -278,6 +292,28 @@ impl Game {
         first_trigger: usize,
         instant_or_sorcery: bool,
     ) {
+        let repeated = self
+            .state
+            .stack_copy_data
+            .as_ref()
+            .map_or_else(Vec::new, |state| {
+                state
+                    .delayed
+                    .iter()
+                    .filter(|trigger| {
+                        trigger.controller == spell.controller && delayed_copy_all_spells(trigger)
+                    })
+                    .cloned()
+                    .collect::<Vec<_>>()
+            });
+        for mut trigger in repeated {
+            trigger.id = self.next_stack_id();
+            trigger.copy_event = Some(Box::new(CopyEvent {
+                spell: spell.clone(),
+                amount: 1,
+            }));
+            self.state.pending_triggers.push(trigger);
+        }
         if !instant_or_sorcery
             && !spell
                 .source
@@ -320,6 +356,10 @@ impl Game {
         let mut delayed = std::mem::take(&mut state.delayed);
         let mut retained = Vec::new();
         for mut trigger in delayed.drain(..) {
+            if delayed_copy_all_spells(&trigger) {
+                retained.push(trigger);
+                continue;
+            }
             if trigger.controller == spell.controller
                 && (!delayed_copy_reads_source_power(&trigger) || {
                     let power = if self.on_battlefield(

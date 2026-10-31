@@ -52,6 +52,12 @@ impl Game {
         id: CardId,
         definition: Card,
     ) -> bool {
+        if definition.cast_after_first_three_turns()
+            && actor == self.state.active
+            && (1..=3).contains(&self.state.players[actor.index()].turns_started)
+        {
+            return false;
+        }
         let minimum = usize::from(definition.cast_graveyard_minimum());
         if minimum == 0 {
             return true;
