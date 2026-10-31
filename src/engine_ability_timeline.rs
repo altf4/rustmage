@@ -9,9 +9,17 @@ pub struct AbilitySourceTimestampView {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum KeywordEffectOrigin {
-    Resolution { source: ObjectRef },
+    Resolution {
+        source: ObjectRef,
+    },
+    ResolutionUntilNextTurn {
+        source: ObjectRef,
+        controller: Player,
+    },
     Suspected,
-    Counter { kind: CounterKind },
+    Counter {
+        kind: CounterKind,
+    },
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct KeywordEffectView {
@@ -210,6 +218,31 @@ impl Game {
                     timestamp,
                     expires_turn: Some(self.state.turn),
                 });
+        }
+    }
+    pub(super) fn grant_keywords_until_next_turn(
+        &mut self,
+        ids: &[CardId],
+        source: ObjectRef,
+        controller: Player,
+        keywords: Keywords,
+    ) {
+        self.grant_keyword_effects(ids, source, keywords);
+        if ids.is_empty() || keywords == Keywords::NONE {
+            return;
+        }
+        let rows = &mut self.state.roles.as_mut().unwrap().keyword_effects;
+        let start = rows.len() - ids.len();
+        for row in &mut rows[start..] {
+            row.origin = KeywordEffectOrigin::ResolutionUntilNextTurn { source, controller };
+            row.expires_turn = None;
+        }
+    }
+    pub(super) fn expire_next_turn_keywords(&mut self, player: Player) {
+        if let Some(state) = &mut self.state.roles {
+            state.keyword_effects.retain(|row| {
+                !matches!(row.origin, KeywordEffectOrigin::ResolutionUntilNextTurn { controller, .. } if controller == player)
+            });
         }
     }
     pub(super) fn keyword_subjects(&self, item: &SpellView, subject: Subject) -> Vec<CardId> {

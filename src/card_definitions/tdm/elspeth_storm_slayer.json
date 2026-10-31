@@ -3,10 +3,30 @@
   "catalogue_id": 1292,
   "oracle_id": "f78af825-023a-42e9-8374-5c52303a1417",
   "facts_sha256": "128b61caf509aa3036a6c3f209330d0eb66fbd6bf569013ba268bc2fe31784e4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7f70e9d6c95cddc500fe72b1aa097ab3f9c7fb7ad59d2b3e26fcf40c02a04653"
   },
-  "physical_metadata_sha256": "52d0995fe819062051e2ac9cdfda28abc64d70785cc8be7203b295eef9c77e7b"
+  "physical_metadata_sha256": "52d0995fe819062051e2ac9cdfda28abc64d70785cc8be7203b295eef9c77e7b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ElspethStormSlayer.java",
+  "java_sha256": "4da6366c832b938decfdd785a90f4a0122ee21e70f937dfabe2724c527064f10",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/SoldierToken.java",
+      "sha256": "7c859e450b096f19105ca3418abdce2a01555a2d61e0c545e2c04fb162cb891c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/CreateTwiceThatManyTokensEffect.java",
+      "sha256": "69a7a85dbf7e5537041f4d1b6b633f76dfb0f73b429ef33dac9bcc648ec419c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ]
 }

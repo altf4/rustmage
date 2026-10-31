@@ -417,3 +417,5 @@ mod fra_emrakul_exigent_tests;
 mod fra_emrakul_ward_independent_tests;
 #[path = "../engine_fra_mixed_zone_cost_tests.rs"]
 mod fra_mixed_zone_cost_tests;
+
+mod issue_93_elspeth;

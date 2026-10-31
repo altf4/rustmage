@@ -44,6 +44,7 @@ pub(super) struct Resolution {
     pub target_group: u16,
     pub moved_count: Option<u64>,
     pub remembered_draws: Option<u64>,
+    pub remembered_creatures: Vec<ObjectRef>,
     pub sacrificed_power: Option<Box<i128>>,
     pub discard_after: Option<discard_events::DiscardAfter>,
     pub optional_wheel: Option<OptionalWheel>,
@@ -2456,6 +2457,7 @@ impl Game {
             target_group: 0,
             moved_count: None,
             remembered_draws: None,
+            remembered_creatures: Vec::new(),
             discard_after: None,
             optional_wheel: None,
             discards: [0; 2],
@@ -6693,11 +6695,32 @@ impl Game {
                             )
                         })
                         .collect();
-                    self.grant_keyword_effects(
+                    let source = item
+                        .source
+                        .expect("instruction requires an object source")
+                        .object;
+                    self.grant_keyword_effects(&affected, source, keywords);
+                }
+                Instruction::GrantRememberedCreaturesUntilNextTurn(keywords) => {
+                    let objects = std::mem::take(
+                        &mut self.state.resolving.as_mut().unwrap().remembered_creatures,
+                    );
+                    let affected: Vec<_> = objects
+                        .into_iter()
+                        .filter(|object| {
+                            self.on_battlefield(object.card)
+                                && self.object_ref(object.card) == *object
+                        })
+                        .map(|object| object.card)
+                        .collect();
+                    let source = item
+                        .source
+                        .expect("instruction requires an object source")
+                        .object;
+                    self.grant_keywords_until_next_turn(
                         &affected,
-                        item.source
-                            .expect("instruction requires an object source")
-                            .object,
+                        source,
+                        item.controller,
                         keywords,
                     );
                 }
@@ -6869,6 +6892,11 @@ impl Game {
                     filter,
                     kind,
                     amount,
+                }
+                | Instruction::PutCreatureCountersAndRemember {
+                    filter,
+                    kind,
+                    amount,
                 } => {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
@@ -6888,6 +6916,13 @@ impl Game {
                             (self.object_ref(id), c)
                         })
                         .collect();
+                    if matches!(
+                        instruction,
+                        Instruction::PutCreatureCountersAndRemember { .. }
+                    ) {
+                        self.state.resolving.as_mut().unwrap().remembered_creatures =
+                            affected.iter().map(|(object, _)| *object).collect();
+                    }
                     self.effect_counters(affected, replacements::ResumeMode::Program);
                 }
                 Instruction::PutPowerExcessCounters { filter } => {

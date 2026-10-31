@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "adf25ed1d8e46ee0241a279592769c526b20cecc06ef619f71d19d43fb754d9d",
+  "catalogue_version": "2b186dcf9d06bea1638fe53cec2e2434dbe62112aefcf02878e19efcc9f3627a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2934,
-  "implemented_total": 2940,
+  "implemented_standard_cards": 2935,
+  "implemented_total": 2941,
   "token_definitions": 147,
   "emblem_definitions": 7,
   "adventure_definitions": 49,
@@ -163,8 +163,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 120,
-      "gated": 144
+      "complete": 121,
+      "gated": 143
     },
     "tla": {
       "total": 278,
@@ -10538,8 +10538,8 @@
     {
       "name": "Elspeth, Storm Slayer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/elspeth_storm_slayer.rs",
       "set": "tdm"
     },

@@ -35,6 +35,7 @@ fn self_replacing_effect(g: &mut Game, player: Player, source: CardId) {
         target_group: 0,
         moved_count: None,
         remembered_draws: None,
+        remembered_creatures: Vec::new(),
         discard_after: None,
         discards: [0; 2],
         selected_discards: [vec![], vec![]],

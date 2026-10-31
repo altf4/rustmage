@@ -2096,6 +2096,7 @@ pub(crate) enum Instruction {
         filter: CreatureFilter,
         keywords: Keywords,
     },
+    GrantRememberedCreaturesUntilNextTurn(Keywords),
     /// Freeze current creatures controlled by the selected players until cleanup.
     GrowPlayerCreatures {
         players: PlayerSet,
@@ -2193,6 +2194,11 @@ pub(crate) enum Instruction {
         amount: u16,
     },
     PutCreatureCounters {
+        filter: CreatureFilter,
+        kind: CounterKind,
+        amount: u32,
+    },
+    PutCreatureCountersAndRemember {
         filter: CreatureFilter,
         kind: CounterKind,
         amount: u32,
