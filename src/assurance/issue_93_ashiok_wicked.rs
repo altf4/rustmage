@@ -62,6 +62,47 @@ fn ashiok_wicked_manipulator_provisional_card() {
         finish(&mut payment);
         assert_eq!(payment.state.players[player.index()].life, 18);
 
+        // Funding must account for the first replaced payment before checking
+        // whether the enclosing ability's remaining life cost is payable.
+        let mut funded = scenario(player);
+        gated_ashiok(&mut funded, player, Zone::Battlefield);
+        let dredger = put(&mut funded, player, "Treasure Dredger", Zone::Battlefield);
+        let town = put(&mut funded, player, "Starting Town", Zone::Battlefield);
+        funded.state.players[player.index()].life = 1;
+        funded.state.players[player.index()].mana = [0; 6];
+        let top = funded.state.players[player.index()]
+            .library
+            .iter()
+            .rev()
+            .take(2)
+            .copied()
+            .collect::<Vec<_>>();
+        checked(
+            &mut funded,
+            Action::AnnounceActivate {
+                card: dredger,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut funded,
+            Action::ActivateMana {
+                card: town,
+                ability: 1,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        pay(&mut funded);
+        finish(&mut funded);
+        assert_eq!(funded.state.players[player.index()].life, 1);
+        assert!(
+            top.iter()
+                .all(|&id| funded.object_view(id).zone == Zone::Exile)
+        );
+
         let mut tokens = scenario(player);
         let ashiok = gated_ashiok(&mut tokens, player, Zone::Battlefield);
         checked(

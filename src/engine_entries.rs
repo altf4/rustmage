@@ -1292,7 +1292,6 @@ impl Game {
         movement.tapped |= !pay;
         batch.next += 1;
         if pay {
-            self.record_cast_mana_entry_life(player, cost);
             self.pay_life(player, i128::from(cost));
         }
     }

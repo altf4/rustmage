@@ -3308,7 +3308,7 @@ fn schema185_rejects_owned_bonus_nested_packets_receipts_and_rollback() {
                 spent_lots: Vec::new(),
                 counter_costs: Vec::new(),
                 entries: Vec::new(),
-                entry_life: [0; 2],
+                life_payments: Vec::new(),
                 moves: Vec::new(),
                 allocations: Vec::new(),
                 triggers: Vec::new(),

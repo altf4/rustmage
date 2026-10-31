@@ -216,6 +216,20 @@ impl Game {
         if amount <= 0 {
             return;
         }
+        let frozen = self.take_frozen_mana_life_payment();
+        if let Some(None) = frozen {
+            return;
+        }
+        if let Some(Some(receipt)) = &frozen {
+            if receipt.player != player || receipt.amount != amount {
+                self.fail_frozen_mana_replay();
+                return;
+            }
+            if receipt.exiled.is_none() {
+                self.lose_life(player, amount);
+                return;
+            }
+        }
         let applies = self.state.static_sources.iter().copied().any(|id| {
             let source = &self.state.objects[id as usize];
             source.zone == Zone::Battlefield
@@ -230,7 +244,7 @@ impl Game {
                     })
                 })
         });
-        if applies {
+        if applies || frozen.is_some() {
             let excluded = self
                 .state
                 .entry_batch
@@ -260,12 +274,24 @@ impl Game {
                 })
                 .take(count)
                 .collect::<Vec<_>>();
+            let references = cards
+                .iter()
+                .map(|&id| self.object_ref(id))
+                .collect::<Vec<_>>();
+            if let Some(Some(receipt)) = &frozen {
+                if receipt.exiled.as_ref() != Some(&references) {
+                    self.fail_frozen_mana_replay();
+                    return;
+                }
+            }
             if cards.len() == count {
+                self.record_cast_mana_life_payment(player, amount, Some(references));
                 let events = self.move_objects_raw(&cards, Zone::Exile);
                 self.finish_zone_events(&events, &[]);
                 return;
             }
         }
+        self.record_cast_mana_life_payment(player, amount, None);
         self.lose_life(player, amount);
     }
 

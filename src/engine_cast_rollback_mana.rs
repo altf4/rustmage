@@ -20,6 +20,14 @@ pub(super) enum ManaEventKind {
         additional: Option<(AdditionalCost, ObjectRef)>,
     },
 }
+/// The actual result of one payment, before any later payment changes the library.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct LifePaymentReceipt {
+    pub player: Player,
+    pub amount: i128,
+    pub entry_index: Option<usize>,
+    pub exiled: Option<Vec<ObjectRef>>,
+}
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct ManaEvent {
     pub id: u32,
@@ -33,7 +41,7 @@ pub(super) struct ManaEvent {
     /// Fully replaced, ordered activation-cost placements from the actual event.
     pub counter_costs: Vec<Vec<replacements::CounterPlacement>>,
     pub entries: Vec<entries::EntryBatch>,
-    pub entry_life: [u128; 2],
+    pub life_payments: Vec<LifePaymentReceipt>,
     pub moves: Vec<(ObjectRef, Zone, bool, bool)>,
     pub allocations: Vec<(CardId, u64)>,
     pub triggers: Vec<SpellView>,
@@ -63,6 +71,16 @@ impl ManaEvent {
                 })
                 .sum::<usize>()
             + self.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
+            + self
+                .life_payments
+                .iter()
+                .map(|p| {
+                    std::mem::size_of::<LifePaymentReceipt>()
+                        + p.exiled
+                            .as_ref()
+                            .map_or(0, |cards| cards.len() * std::mem::size_of::<ObjectRef>())
+                })
+                .sum::<usize>()
             + self.allocations.len() * std::mem::size_of::<(CardId, u64)>()
             + match &self.kind {
                 ManaEventKind::Activated { item, counters, .. } => {
@@ -90,7 +108,8 @@ impl ManaEvent {
 struct ActiveManaReplay {
     counter_costs: VecDeque<Vec<replacements::CounterPlacement>>,
     entries: VecDeque<entries::EntryBatch>,
-    entry_life: [u128; 2],
+    life_payments: VecDeque<LifePaymentReceipt>,
+    entries_seen: usize,
     moves: VecDeque<(ObjectRef, Zone, bool, bool)>,
     allocations: VecDeque<(CardId, u64)>,
     failed: bool,
@@ -114,6 +133,16 @@ impl ManaReplay {
                         .map(entries::EntryBatch::bytes)
                         .sum::<usize>()
                     + active.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
+                    + active
+                        .life_payments
+                        .iter()
+                        .map(|p| {
+                            std::mem::size_of::<LifePaymentReceipt>()
+                                + p.exiled.as_ref().map_or(0, |cards| {
+                                    cards.len() * std::mem::size_of::<ObjectRef>()
+                                })
+                        })
+                        .sum::<usize>()
                     + active.allocations.len() * std::mem::size_of::<(CardId, u64)>()
                     + active
                         .counter_costs
@@ -412,7 +441,8 @@ impl Game {
             .active = Some(Box::new(ActiveManaReplay {
             counter_costs: event.counter_costs.clone().into(),
             entries: event.entries.clone().into(),
-            entry_life: event.entry_life,
+            life_payments: event.life_payments.clone().into(),
+            entries_seen: 0,
             moves: event.moves.clone().into(),
             allocations: event.allocations.clone().into(),
             failed: false,
@@ -462,6 +492,7 @@ impl Game {
         if active.failed
             || !active.counter_costs.is_empty()
             || !active.entries.is_empty()
+            || !active.life_payments.is_empty()
             || !active.moves.is_empty()
             || !active.allocations.is_empty()
             || self.state.entry_batch.is_some()
@@ -536,11 +567,27 @@ impl Game {
         };
         batch.resume = None;
         batch.replacement_resume = None;
-        let life = std::mem::take(&mut active.entry_life);
-        for player in [Player::P0, Player::P1] {
-            let amount =
-                i128::try_from(life[player.index()]).capacity("retained entry life exhausted");
-            if amount > 0 && self.state.players[player.index()].life < amount {
+        let index = active.entries_seen;
+        active.entries_seen += 1;
+        loop {
+            let next = self
+                .state
+                .cast_rollback
+                .as_ref()
+                .unwrap()
+                .replay
+                .as_ref()
+                .unwrap()
+                .active
+                .as_ref()
+                .unwrap()
+                .life_payments
+                .front()
+                .cloned();
+            let Some(payment) = next.filter(|p| p.entry_index == Some(index)) else {
+                break;
+            };
+            if self.state.players[payment.player.index()].life < payment.amount {
                 self.state
                     .cast_rollback
                     .as_mut()
@@ -554,10 +601,33 @@ impl Game {
                     .failed = true;
                 return true;
             }
-            self.pay_life(player, amount);
+            // The still-entering objects are excluded from library replacement.
+            self.state.entry_batch = Some(batch.clone());
+            self.pay_life(payment.player, payment.amount);
+            self.state.entry_batch = None;
         }
         self.commit_entries(batch);
         true
+    }
+    pub(super) fn take_frozen_mana_life_payment(&mut self) -> Option<Option<LifePaymentReceipt>> {
+        let is_entry = self.state.entry_batch.is_some();
+        let active = self
+            .state
+            .cast_rollback
+            .as_mut()?
+            .replay
+            .as_mut()?
+            .active
+            .as_mut()?;
+        let payment = active.life_payments.pop_front();
+        if payment
+            .as_ref()
+            .is_none_or(|p| p.entry_index.is_some() != is_entry)
+        {
+            active.failed = true;
+            return Some(None);
+        }
+        Some(payment)
     }
     pub(super) fn replay_frozen_mana_zone_plan(
         &mut self,

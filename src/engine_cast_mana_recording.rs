@@ -1,7 +1,7 @@
 //! Cold receipts of completed legal mana abilities inside a casting proposal.
 //! Speculative funding never calls these hooks or owns these snapshots.
 use super::*;
-use cast_rollback_mana::{ManaEvent, ManaEventKind};
+use cast_rollback_mana::{LifePaymentReceipt, ManaEvent, ManaEventKind};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct ManaCapture {
@@ -49,7 +49,7 @@ impl Game {
             spent_lots: Vec::new(),
             counter_costs: Vec::new(),
             entries: Vec::new(),
-            entry_life: [0; 2],
+            life_payments: Vec::new(),
             moves: Vec::new(),
             allocations: Vec::new(),
             triggers: Vec::new(),
@@ -261,16 +261,26 @@ impl Game {
             capture.event.counter_costs.push(placements.to_vec());
         }
     }
-    pub(super) fn record_cast_mana_entry_life(&mut self, player: Player, amount: u32) {
+    pub(super) fn record_cast_mana_life_payment(
+        &mut self,
+        player: Player,
+        amount: i128,
+        exiled: Option<Vec<ObjectRef>>,
+    ) {
+        let is_entry = self.state.entry_batch.is_some();
         if let Some(capture) = self
             .state
             .cast_rollback
             .as_mut()
             .and_then(|r| r.capture.as_mut())
         {
-            capture.event.entry_life[player.index()] = capture.event.entry_life[player.index()]
-                .checked_add(u128::from(amount))
-                .capacity("entry life receipt exhausted");
+            let entry_index = is_entry.then_some(capture.event.entries.len());
+            capture.event.life_payments.push(LifePaymentReceipt {
+                player,
+                amount,
+                entry_index,
+                exiled,
+            });
         }
     }
     pub(super) fn record_cast_mana_zone_plan(

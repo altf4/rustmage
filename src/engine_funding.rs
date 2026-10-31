@@ -1,6 +1,7 @@
 //! Exact reachability for the admitted pure mana sources; no game-state clones,
 //! heuristics that discard legal plans, or mutation during action generation.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 use ability_world::CharacteristicWorld;
 use std::collections::HashSet;
 #[path = "engine_cast_cost_planning.rs"]
@@ -58,6 +59,7 @@ pub(super) struct FundingState<'g> {
     payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
     life: i128,
     other_life: i128,
+    life_replacement_possible: bool,
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
     copy_recipes: copies::Rows,
@@ -318,6 +320,7 @@ struct FundingKey {
     mana: [u128; 6],
     lots: Vec<mana_lots::Lot>,
     life: i128,
+    payment_libraries: Option<[Vec<ObjectRef>; 2]>,
     // Equivalent sources are interchangeable for feasibility. Protect the
     // enclosing ability's source separately, even if its printed card matches.
     resources: Vec<ResourceKey>,
@@ -702,13 +705,24 @@ impl<'g> FundingState<'g> {
                 }
             }
         }
+        let life_replacement_possible = game.state.objects.iter().any(|object| {
+            object.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
+                    )
+                })
+            })
+        });
         let resources = game
             .state
             .objects
             .iter()
             .enumerate()
             .filter(|(id, object)| {
-                (graveyard_mana_cost && object.zone == Zone::Graveyard && object.owner == goal.actor && object.is_card())
+                (life_replacement_possible && object.zone == Zone::Library && object.is_card())
+                    || (graveyard_mana_cost && object.zone == Zone::Graveyard && object.owner == goal.actor && object.is_card())
                     || (object.zone == Zone::Command && object.card.is_emblem()) || goal.reserve
                     .is_some_and(|(reference, _)| reference.card == *id as CardId)
                     || goal
@@ -718,7 +732,7 @@ impl<'g> FundingState<'g> {
                         && game.state.linked_choices.as_ref().is_some_and(|data|
                             data.null_cast_links.iter().any(|link| link.source.card == *id as CardId))
                     || object.zone == Zone::Battlefield
-                        && (loyalty_threshold_sensitive || sacrifice_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
+                        && (life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
                                 #[cfg(test)] { zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(game.object_ref(*id as CardId))) }
                                 #[cfg(not(test))] { false }
                             } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
@@ -828,6 +842,7 @@ impl<'g> FundingState<'g> {
             payment_departures: Vec::new(),
             life: game.state.players[goal.actor.index()].life,
             other_life: game.state.players[goal.actor.other().index()].life,
+            life_replacement_possible,
             resources,
             named_counters: game.state.named_counters.clone(),
             counter_placement_history: game.state.counter_placement_history.clone(),
@@ -1607,8 +1622,7 @@ impl<'g> FundingState<'g> {
                 .cost
         });
         if let Some(cost) = cost {
-            self.life -= i128::from(cost.life);
-            self.life_lost[self.actor.index()] |= cost.life > 0;
+            self.pay_projected_life(self.actor, u32::from(cost.life), &[]);
         }
         let object = &mut self.resources[step.resource].object;
         let mut departure = None;
@@ -1999,6 +2013,17 @@ impl<'g> FundingState<'g> {
             mana: key_mana,
             lots: key_lots,
             life: self.life,
+            payment_libraries: self.life_replacement_possible.then(|| {
+                [Player::P0, Player::P1].map(|player| {
+                    self.game.state.players[player.index()]
+                        .library
+                        .iter()
+                        .copied()
+                        .filter(|&id| self.object(id).zone == Zone::Library)
+                        .map(|id| self.reference(id))
+                        .collect()
+                })
+            }),
             life_lost: self.life_lost,
             resources,
             named_counters: self.named_counters.clone(),
@@ -2126,7 +2151,11 @@ impl<'g> FundingState<'g> {
                             resource.id,
                         ),
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
-                        self.life,
+                        if self.life_replacement_possible {
+                            i128::MAX
+                        } else {
+                            self.life
+                        },
                     ));
                 }
             }
@@ -2281,7 +2310,7 @@ impl<'g> FundingState<'g> {
                 } else {
                     u128::MAX
                 };
-                if cost.life > 0 {
+                if cost.life > 0 && !self.life_replacement_possible {
                     uses = uses.min(self.life.max(0) as u128 / u128::from(cost.life));
                 }
                 if let Some((kind, amount)) = cost.remove
@@ -2536,7 +2565,7 @@ impl<'g> FundingState<'g> {
                 } else {
                     u64::MAX
                 };
-                if cost.life > 0 {
+                if cost.life > 0 && !self.life_replacement_possible {
                     uses = uses.min(
                         u64::try_from(self.life.max(0) / i128::from(cost.life)).unwrap_or(u64::MAX),
                     );
