@@ -197,7 +197,8 @@ pub(super) fn modifier_bonus<W: CharacteristicWorld + ?Sized>(
     let provider = world.object(source);
     let object = world.object(target);
     if !world.printed_abilities_available(source)
-        || provider.zone != Zone::Battlefield
+        || !(provider.zone == Zone::Battlefield
+            || (provider.zone == Zone::Command && provider.card.is_emblem()))
         || object.zone != Zone::Battlefield
         || provider.controller != object.controller
         || world.kinds(target) & 1 == 0
@@ -241,7 +242,10 @@ impl<W: CharacteristicWorld + ?Sized> super::characteristic_query::Characteristi
             if self.object_ref(source) != row.object {
                 continue;
             }
-            if self.object(source).zone != Zone::Battlefield {
+            if self.object(source).zone != Zone::Battlefield
+                && !(self.object(source).zone == Zone::Command
+                    && self.object(source).card.is_emblem())
+            {
                 continue;
             }
             for group in self.object(source).card.static_ability_groups() {

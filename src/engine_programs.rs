@@ -5736,6 +5736,7 @@ impl Game {
                     }
                 }
                 Instruction::CreateTokensForChosenCreatureType { .. }
+                | Instruction::CreateEmblemForChosenCreatureType(_)
                 | Instruction::DestroyCreaturesExceptChosenType => {
                     self.state.pending = Pending::CreatureTypeChoice {
                         player: item.controller,

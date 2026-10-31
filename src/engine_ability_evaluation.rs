@@ -287,6 +287,19 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             grant.keywords
         }
+        StaticAbilityFragment::ChosenTypeKeywords(keywords) => {
+            let Some(EntryChoiceValue::CreatureType(creature_type)) = world.entry_value(source)
+            else {
+                return None;
+            };
+            if !own
+                || world.kinds(id) & 1 == 0
+                || !world.subtypes(id).has(target.card, creature_type.name())
+            {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::LiveKeywords(_, effect) => {
             if !world.live_applies(source, &effect, id) {
                 return None;
@@ -307,6 +320,16 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
+        || world.static_sources().iter().any(|&id| {
+            let source = world.object(id);
+            source.zone == Zone::Command
+                && source.card.is_emblem()
+                && source.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment, StaticAbilityFragment::ChosenTypeKeywords(_))
+                    })
+                })
+        })
         || world.static_sources().iter().any(|&id| {
             let source = world.object(id);
             source.zone == Zone::Battlefield
@@ -496,6 +519,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                         | StaticAbilityFragment::DeathBaronLord
                         | StaticAbilityFragment::KeywordGrant(..)
+                        | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit

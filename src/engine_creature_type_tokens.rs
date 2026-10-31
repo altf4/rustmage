@@ -21,6 +21,15 @@ impl Game {
         r.chosen_creature_type = Some(creature_type);
         let player = r.item.controller;
         match instruction {
+            Instruction::CreateEmblemForChosenCreatureType(factory) => {
+                let id = CardId::try_from(self.state.objects.len())
+                    .capacity("emblem object slots exhausted");
+                self.create_emblem(player, factory);
+                self.set_entry_value(
+                    self.object_ref(id),
+                    EntryChoiceValue::CreatureType(creature_type),
+                );
+            }
             Instruction::CreateTokensForChosenCreatureType { token } => {
                 let count = self
                     .state

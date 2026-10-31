@@ -113,6 +113,8 @@ pub(crate) enum StaticAbilityFragment {
     ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
+    /// Grant keywords to creatures of the source's chosen creature type.
+    ChosenTypeKeywords(Keywords),
     /// Grant keywords to controlled battlefield permanents matching a live kind mask.
     ControlledPermanentKeywords {
         kinds: u16,

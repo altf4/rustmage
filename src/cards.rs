@@ -1670,6 +1670,8 @@ pub(crate) enum Instruction {
     DrawMoved,
     GainLifeMoved,
     CreateEmblem(Card),
+    /// Choose a creature type, then create an emblem carrying that choice.
+    CreateEmblemForChosenCreatureType(Card),
     /// The controller’s next committed spell cast this turn cannot be countered.
     GrantNextSpellUncounterable,
     LoseGainedLife(PlayerSet),
