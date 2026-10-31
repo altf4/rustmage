@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "catalogue_version": "56df1a9078fa5ccfa224a2e57ba075ecf20b48c41808d262f0882279e5976529",
+  "catalogue_version": "cc1d72a7d9489ca1efb2b2c5703653ffe01858d21334afbdbd55f6d86a6956b2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2932,
-  "implemented_total": 2938,
-  "token_definitions": 146,
-  "emblem_definitions": 6,
+  "implemented_standard_cards": 2933,
+  "implemented_total": 2939,
+  "token_definitions": 147,
+  "emblem_definitions": 7,
   "adventure_definitions": 49,
   "omen_definitions": 13,
   "definition_ownership": {
@@ -19,8 +19,8 @@
     },
     "blb": {
       "total": 261,
-      "complete": 117,
-      "gated": 144
+      "complete": 118,
+      "gated": 143
     },
     "cmm": {
       "total": 1,
@@ -27066,8 +27066,8 @@
     {
       "name": "Ral, Crackling Wit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/ral_crackling_wit.rs",
       "set": "blb"
     },

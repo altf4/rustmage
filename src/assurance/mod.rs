@@ -11,6 +11,7 @@ mod interactions;
 mod issue_93_composite;
 mod issue_93_cost_pending;
 mod issue_93_loyalty;
+mod issue_93_ral;
 mod regressions;
 mod requested_earthbend;
 mod requested_full_bore;

@@ -1,0 +1,11 @@
+{
+  "name": "@emblem/blb-ral-crackling-wit",
+  "catalogue_id": 5468,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/command/emblems/RalCracklingWitEmblem.java",
+  "java_sha256": "4bcadafdbf749457ad45622479505961d74196fc6a77a6fcca5576916a5d5601",
+  "physical_metadata_sha256": "97443f36d57f68d4d31a254c1993380e3a4aa8c1fc4a0c1fb56bc26e66234e19"
+}

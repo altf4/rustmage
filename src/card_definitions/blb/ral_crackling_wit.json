@@ -3,10 +3,35 @@
   "catalogue_id": 3358,
   "oracle_id": "3c970f43-17da-4187-a084-efd53b579067",
   "facts_sha256": "8f9479cff442ebf27e5e5a751b584a8471c68d7ce7aa2c545e6608cfaf40b636",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5ccc756795d37ee3520df76c280a99ab9af7d4e72bbdb7f5c82a136d3223abc7"
   },
-  "physical_metadata_sha256": "7edbcb0e5563ca561cb5288ef1f8399ed27419c2471f76d1f409f710b0c7b4c6"
+  "physical_metadata_sha256": "7edbcb0e5563ca561cb5288ef1f8399ed27419c2471f76d1f409f710b0c7b4c6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RalCracklingWit.java",
+  "java_sha256": "5353d7ebb27ed2cbf571a1ed5ea640225031b8d6addf7161d19efc3948d62740",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/OtterProwessToken.java",
+      "sha256": "8a51feaff6d0005bb759402027e7199b4a0de1da3358c846ec9967f48d755f88"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/command/emblems/RalCracklingWitEmblem.java",
+      "sha256": "4bcadafdbf749457ad45622479505961d74196fc6a77a6fcca5576916a5d5601"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    }
+  ]
 }
