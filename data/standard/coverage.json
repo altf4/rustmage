@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "catalogue_version": "2b186dcf9d06bea1638fe53cec2e2434dbe62112aefcf02878e19efcc9f3627a",
+  "catalogue_version": "90a697e718f4d117c5839ddc7f0863d58f6aba3d276a089bb2dd495034a4916c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2935,
-  "implemented_total": 2941,
+  "implemented_standard_cards": 2936,
+  "implemented_total": 2942,
   "token_definitions": 147,
-  "emblem_definitions": 7,
+  "emblem_definitions": 8,
   "adventure_definitions": 49,
   "omen_definitions": 13,
   "definition_ownership": {
@@ -57,8 +57,8 @@
     },
     "eoe": {
       "total": 259,
-      "gated": 151,
-      "complete": 108
+      "gated": 150,
+      "complete": 109
     },
     "fdn": {
       "total": 427,
@@ -35498,8 +35498,8 @@
     {
       "name": "Tezzeret, Cruel Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/tezzeret_cruel_captain.rs",
       "set": "eoe"
     },

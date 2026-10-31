@@ -446,6 +446,16 @@ impl Game {
             }
         }
     }
+    pub(super) fn animate_noncreature_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
+        for target in &item.targets {
+            if self.same_target_object(*target)
+                && let Some(object) = target.object
+                && !self.is_creature(object.card)
+            {
+                self.change_object_form(object, spec, AnimationTypeMode::AddCreature);
+            }
+        }
+    }
     pub(super) fn change_object_form(
         &mut self,
         object: ObjectRef,

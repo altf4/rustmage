@@ -5169,6 +5169,9 @@ impl Game {
                     self.animate_source_with_ability_if_noncreature(&item, spec, kind)
                 }
                 Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),
+                Instruction::AnimateNoncreatureTargets(spec) => {
+                    self.animate_noncreature_targets(&item, spec)
+                }
                 Instruction::AddArtifactToTargets => self.add_artifact_to_targets(&item),
                 Instruction::ChangeSourceCreatureForm(spec) => self.change_source_form(
                     &item,
@@ -7201,6 +7204,11 @@ impl Game {
                     kinds,
                     kind,
                     amount,
+                }
+                | Instruction::PutCountersOnTargetAllKinds {
+                    kinds,
+                    kind,
+                    amount,
                 } => {
                     let changes = item
                         .targets
@@ -7211,10 +7219,15 @@ impl Game {
                             };
                             (self.same_target_object(*bound)
                                 && self.on_battlefield(id)
-                                && self.current_kinds(id) & kinds != 0)
-                                .then(|| {
-                                    (self.object_ref(id), Counters::of(kind, u64::from(amount)))
+                                && if matches!(
+                                    instruction,
+                                    Instruction::PutCountersOnTargetAllKinds { .. }
+                                ) {
+                                    self.current_kinds(id) & kinds == kinds
+                                } else {
+                                    self.current_kinds(id) & kinds != 0
                                 })
+                            .then(|| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
                         })
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);

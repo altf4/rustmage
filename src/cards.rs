@@ -1868,6 +1868,7 @@ pub(crate) enum Instruction {
         kind: crate::engine::SelfGrantedAbilityKind,
     },
     AnimateTargets(AnimationSpec),
+    AnimateNoncreatureTargets(AnimationSpec),
     /// Add artifact without also granting creature or changing other characteristics.
     AddArtifactToTargets,
     /// Change creature subtypes, base stats and keywords without adding a card type.
@@ -2236,6 +2237,11 @@ pub(crate) enum Instruction {
         amount: u16,
     },
     PutCountersOnTargetKinds {
+        kinds: u16,
+        kind: CounterKind,
+        amount: u32,
+    },
+    PutCountersOnTargetAllKinds {
         kinds: u16,
         kind: CounterKind,
         amount: u32,

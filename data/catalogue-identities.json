@@ -5474,6 +5474,7 @@
     0,
     0,
     10,
+    0,
     0
   ],
   "aliases": [
@@ -5652,6 +5653,10 @@
     [
       "@emblem/blb-ral-crackling-wit",
       5468
+    ],
+    [
+      "@emblem/eoe-tezzeret-cruel-captain",
+      5469
     ],
     [
       "@emblem/fra-ajani-resolute",
@@ -29023,6 +29028,9 @@
     },
     {
       "oracle_text": "Instant and sorcery spells you cast have storm."
+    },
+    {
+      "oracle_text": "At the beginning of combat on your turn, put three +1/+1 counters on target artifact you control. If it's not a creature, it becomes a 0/0 Robot artifact creature."
     }
   ],
   "creature_types": [
@@ -185373,6 +185381,33 @@
       "path": "synthetic/emblem_blb_ral_crackling_wit.rs",
       "category": "emblem",
       "name": "@emblem/blb-ral-crackling-wit",
+      "type_line": "",
+      "kind": 0,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5469,
+      "module": "card_5469",
+      "path": "synthetic/emblem_eoe_tezzeret_cruel_captain.rs",
+      "category": "emblem",
+      "name": "@emblem/eoe-tezzeret-cruel-captain",
       "type_line": "",
       "kind": 0,
       "set": "synthetic",
