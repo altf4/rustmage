@@ -1,23 +1,21 @@
-//! Provisional whole-card scenario; admission remains gated on payment projection.
+//! Whole-card scenario for Ashiok and its life-payment replacement.
 use super::big_helpers::{cast as paid_cast, checked, settle as finish};
 use super::*;
 
-fn gated_ashiok(g: &mut Game, player: Player, zone: Zone) -> CardId {
-    let id = put(g, player, "Bear Cub", zone);
-    g.state.objects[id as usize].card = Card::from_name("Ashiok, Wicked Manipulator").unwrap();
+fn put_ashiok(g: &mut Game, player: Player, zone: Zone) -> CardId {
+    let id = put(g, player, "Ashiok, Wicked Manipulator", zone);
     if zone == Zone::Battlefield {
         g.state.objects[id as usize].counters.loyalty = 5;
-        g.register_battlefield_sources(id);
     }
     id
 }
 
 #[test]
-fn ashiok_wicked_manipulator_provisional_card() {
+fn ashiok_wicked_manipulator_full_card() {
     let nightmare = Card::from_name("@token/woe-ashiok-nightmare").unwrap();
     for player in [Player::P0, Player::P1] {
         let mut loot = scenario(player);
-        let ashiok = gated_ashiok(&mut loot, player, Zone::Hand);
+        let ashiok = put_ashiok(&mut loot, player, Zone::Hand);
         paid_cast(&mut loot, ashiok, None, &[]);
         finish(&mut loot);
         assert_eq!(loot.counter_count(ashiok, CounterKind::Loyalty), 5);
@@ -42,7 +40,7 @@ fn ashiok_wicked_manipulator_provisional_card() {
         assert_eq!(loot.object_view(other).zone, Zone::Hand);
 
         let mut payment = scenario(player);
-        gated_ashiok(&mut payment, player, Zone::Battlefield);
+        put_ashiok(&mut payment, player, Zone::Battlefield);
         let dredger = put(&mut payment, player, "Treasure Dredger", Zone::Battlefield);
         let top = payment.top_library_card(player).unwrap();
         checked(
@@ -65,7 +63,7 @@ fn ashiok_wicked_manipulator_provisional_card() {
         // Funding must account for the first replaced payment before checking
         // whether the enclosing ability's remaining life cost is payable.
         let mut funded = scenario(player);
-        gated_ashiok(&mut funded, player, Zone::Battlefield);
+        put_ashiok(&mut funded, player, Zone::Battlefield);
         let dredger = put(&mut funded, player, "Treasure Dredger", Zone::Battlefield);
         let town = put(&mut funded, player, "Starting Town", Zone::Battlefield);
         funded.state.players[player.index()].life = 1;
@@ -104,7 +102,7 @@ fn ashiok_wicked_manipulator_provisional_card() {
         );
 
         let mut tokens = scenario(player);
-        let ashiok = gated_ashiok(&mut tokens, player, Zone::Battlefield);
+        let ashiok = put_ashiok(&mut tokens, player, Zone::Battlefield);
         checked(
             &mut tokens,
             Action::AnnounceActivate {
@@ -135,7 +133,7 @@ fn ashiok_wicked_manipulator_provisional_card() {
         }
 
         let mut ultimate = scenario(player);
-        let ashiok = gated_ashiok(&mut ultimate, player, Zone::Battlefield);
+        let ashiok = put_ashiok(&mut ultimate, player, Zone::Battlefield);
         ultimate.state.objects[ashiok as usize].counters.loyalty = 7;
         put(&mut ultimate, player, "Bear Cub", Zone::Exile);
         put(&mut ultimate, player, "Shock", Zone::Exile);

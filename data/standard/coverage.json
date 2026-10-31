@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "58b340a31a4c5c313a10bd519b288506b68c3b5a364bcb78e049621c4c4c1883",
+  "catalogue_version": "854f80e90a360b4cc5b098edf39c40fdf164053ea831537ea3030c863830ed4d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2945,
-  "implemented_total": 2951,
-  "token_definitions": 151,
+  "implemented_standard_cards": 2946,
+  "implemented_total": 2952,
+  "token_definitions": 152,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
   "omen_definitions": 13,
@@ -190,8 +190,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 140,
-      "gated": 118
+      "complete": 141,
+      "gated": 117
     },
     "znr": {
       "total": 1,
@@ -2130,8 +2130,8 @@
     {
       "name": "Ashiok, Wicked Manipulator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/ashiok_wicked_manipulator.rs",
       "set": "woe"
     },

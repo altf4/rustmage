@@ -1,5 +1,4 @@
-// Pinned Oracle/XMage behavior. Gated while life-payment projections and replay
-// are integrated with the replacement effect.
+// Pinned Oracle/XMage behavior.
 const fn loyalty(amount: i32) -> ActivationCost {
     ActivationCost {
         loyalty: Some(amount),

@@ -602,7 +602,7 @@ impl Game {
                 return true;
             }
             // The still-entering objects are excluded from library replacement.
-            self.state.entry_batch = Some(batch.clone());
+            self.state.entry_batch = Some(Box::new(batch.clone()));
             self.pay_life(payment.player, payment.amount);
             self.state.entry_batch = None;
         }
