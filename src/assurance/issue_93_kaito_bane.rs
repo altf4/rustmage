@@ -1,5 +1,5 @@
 //! Provisional whole-card gameplay for the still-gated Kaito implementation.
-use super::big_helpers::{checked, settle as finish};
+use super::big_helpers::{cast as paid_cast, checked, settle as finish};
 use super::*;
 
 #[test]
@@ -7,6 +7,15 @@ fn kaito_bane_of_nightmares_full_card() {
     let kaito = Card::from_name("Kaito, Bane of Nightmares").unwrap();
     let emblem = Card::from_name("@emblem/dsk-kaito-bane-of-nightmares").unwrap();
     for player in [Player::P0, Player::P1] {
+        let mut casted = scenario(player);
+        let cast_card = put(&mut casted, player, "Bear Cub", Zone::Hand);
+        casted.state.objects[cast_card as usize].card = kaito;
+        paid_cast(&mut casted, cast_card, None, &[]);
+        finish(&mut casted);
+        assert_eq!(casted.object_view(cast_card).zone, Zone::Battlefield);
+        assert_eq!(casted.counter_count(cast_card, CounterKind::Loyalty), 4);
+        assert_eq!(stats(&casted, cast_card), (3, 4));
+
         let mut g = scenario(player);
         // The card remains gated while the shared rules are being validated.
         let hand = put(&mut g, player, "Bear Cub", Zone::Hand);
@@ -72,7 +81,9 @@ fn kaito_bane_of_nightmares_full_card() {
         );
         assert_eq!(stats(&g, hand), (4, 5));
 
-        surveil.lose_life(player.other(), 1);
+        let shock = put(&mut surveil, player, "Shock", Zone::Hand);
+        paid_cast(&mut surveil, shock, None, &[Target::Player(player.other())]);
+        finish(&mut surveil);
         let before = surveil.hand_count(player);
         checked(
             &mut surveil,

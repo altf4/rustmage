@@ -531,9 +531,10 @@ pub(super) trait CharacteristicWorld {
 
     fn counter_subtype_keywords(&self, id: CardId) -> Keywords {
         let object = self.object(id);
-        if object.zone != Zone::Battlefield || self.kinds(id) & 1 == 0 {
+        if object.zone != Zone::Battlefield {
             return Keywords::NONE;
         }
+        let creature = self.kinds(id) & 1 != 0;
         let mut result = Keywords::NONE;
         for group in object.card.static_ability_groups() {
             for fragment in group.fragments {
@@ -548,6 +549,7 @@ pub(super) trait CharacteristicWorld {
                     keywords,
                     ..
                 } = *fragment
+                    && creature
                     && self.counter_count(id, kind) >= minimum
                 {
                     result = result.union(keywords);

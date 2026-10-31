@@ -26,7 +26,7 @@ const fn loyalty(amount: i32) -> ActivationCost {
     }
 }
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
+    effect: Effect::Permanent,
     static_groups: GROUPS,
     extras: &CardExtras {
         starting_loyalty: 4,
@@ -42,7 +42,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             cycling: false,
             cost: loyalty(1),
             targets: TargetPlan::NONE,
-            program: &[Instruction::CreateEmblem(Card(5473))],
+            program: &[Instruction::CreateEmblem(Card(5476))],
             sorcery: true,
             once_per_turn: false,
         },
