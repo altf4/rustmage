@@ -1,15 +1,13 @@
-//! Provisional whole-card gameplay for the still-gated Kaito implementation.
+//! Kaito’s printed abilities through ordinary gameplay.
 use super::big_helpers::{cast as paid_cast, checked, settle as finish};
 use super::*;
 
 #[test]
 fn kaito_bane_of_nightmares_full_card() {
-    let kaito = Card::from_name("Kaito, Bane of Nightmares").unwrap();
     let emblem = Card::from_name("@emblem/dsk-kaito-bane-of-nightmares").unwrap();
     for player in [Player::P0, Player::P1] {
         let mut casted = scenario(player);
-        let cast_card = put(&mut casted, player, "Bear Cub", Zone::Hand);
-        casted.state.objects[cast_card as usize].card = kaito;
+        let cast_card = put(&mut casted, player, "Kaito, Bane of Nightmares", Zone::Hand);
         paid_cast(&mut casted, cast_card, None, &[]);
         finish(&mut casted);
         assert_eq!(casted.object_view(cast_card).zone, Zone::Battlefield);
@@ -17,9 +15,7 @@ fn kaito_bane_of_nightmares_full_card() {
         assert_eq!(stats(&casted, cast_card), (3, 4));
 
         let mut g = scenario(player);
-        // The card remains gated while the shared rules are being validated.
-        let hand = put(&mut g, player, "Bear Cub", Zone::Hand);
-        g.state.objects[hand as usize].card = kaito;
+        let hand = put(&mut g, player, "Kaito, Bane of Nightmares", Zone::Hand);
         let attacker = put(&mut g, player, "Bear Cub", Zone::Battlefield);
         g.state.step = Step::Blockers;
         g.state.attackers.push(AttackDeclaration {

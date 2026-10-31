@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "catalogue_version": "aaee7b9843567b6df5ef141aac604911ffe35283889b9d5af8a1dfeb4abf0ef5",
+  "catalogue_version": "04ea041e788fd54b4e38ee3e50a97b98fcbba518f33c350cbf0a6d1a32f52b08",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2942,
-  "implemented_total": 2948,
+  "implemented_standard_cards": 2944,
+  "implemented_total": 2950,
   "token_definitions": 150,
-  "emblem_definitions": 10,
+  "emblem_definitions": 11,
   "adventure_definitions": 49,
   "omen_definitions": 13,
   "definition_ownership": {
@@ -37,8 +37,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 78,
-      "gated": 186
+      "complete": 79,
+      "gated": 185
     },
     "ecc": {
       "total": 7,
@@ -131,8 +131,8 @@
     },
     "otj": {
       "total": 264,
-      "complete": 94,
-      "gated": 170
+      "complete": 95,
+      "gated": 169
     },
     "pspl": {
       "total": 1,
@@ -18650,8 +18650,8 @@
     {
       "name": "Kaito, Bane of Nightmares",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/kaito_bane_of_nightmares.rs",
       "set": "dsk"
     },
@@ -24210,8 +24210,8 @@
     {
       "name": "Oko, the Ringleader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/oko_the_ringleader.rs",
       "set": "otj"
     },

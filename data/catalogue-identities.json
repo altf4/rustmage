@@ -5481,6 +5481,7 @@
     9,
     16,
     16,
+    0,
     0
   ],
   "aliases": [
@@ -5663,6 +5664,10 @@
     [
       "@emblem/dft-chandra-spark-hunter",
       5471
+    ],
+    [
+      "@emblem/dsk-kaito-bane-of-nightmares",
+      5476
     ],
     [
       "@emblem/ecl-oko-shadowmoor",
@@ -29089,6 +29094,9 @@
     },
     {
       "oracle_text": "Creatures you control of the chosen type get +3/+3 and have vigilance and hexproof."
+    },
+    {
+      "oracle_text": "Ninjas you control get +1/+1."
     }
   ],
   "creature_types": [
@@ -185651,6 +185659,33 @@
       "name": "@emblem/ecl-oko-shadowmoor",
       "type_line": "",
       "kind": 0,
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5476,
+      "module": "card_5476",
+      "path": "synthetic/emblem_dsk_kaito_bane_of_nightmares.rs",
+      "category": "emblem",
+      "name": "@emblem/dsk-kaito-bane-of-nightmares",
+      "type_line": "",
+      "kind": 0,
+      "set": "synthetic",
       "oracle_id": null,
       "facts_sha256": null,
       "mana_cost": "",
