@@ -1,8 +1,4 @@
-"""Small deterministic checks of the public binding; card rules live in Rust tests.
-
-Every case starts at an explicit decision. No case simulates a game or searches
-for a draw, and only the snapshot test repeats an action.
-"""
+"""Small deterministic checks of the public binding and planeswalker actions."""
 import ctypes
 import json
 from pathlib import Path
@@ -29,6 +25,75 @@ def state(observation):
 
 
 class BindingContractTests(unittest.TestCase):
+    def test_planeswalker_loyalty_through_public_actions(self):
+        # The fixed opening has four Plains and three Ajanis. Freeform keeps the
+        # public fixture deterministic without a special game-state constructor.
+        decks = [["Plains"] * 14 + ["Ajani, Outland Chaperone"] * 6,
+                 ["Plains"] * 20]
+        with Game(decks, seed=37, deck_rules="Freeform") as handle:
+            observation = handle.observe("P0")
+
+            def choose(kind, **fields):
+                nonlocal observation
+                observation = handle.observe(observation["actor"])
+                action = next((action for action in observation["actions"]
+                               if action["kind"] == kind
+                               and all(action.get(key) == value for key, value in fields.items())), None)
+                self.assertIsNotNone(action, (kind, fields, observation["decision"]))
+                observation = handle.step(observation, observation["actions"].index(action))
+
+            def advance_until(predicate):
+                nonlocal observation
+                for _ in range(100):
+                    observation = handle.observe(observation["actor"])
+                    if predicate(observation):
+                        return
+                    kinds = {action["kind"] for action in observation["actions"]}
+                    for kind in ("Keep", "FinishOpeningHand", "FinishAttackers", "Discard", "Pass"):
+                        if kind in kinds:
+                            choose(kind)
+                            break
+                    else:
+                        self.fail(f"unexpected decision: {observation['decision']}")
+                self.fail("fixed planeswalker fixture did not reach its decision")
+
+            for turn in (1, 3, 5):
+                advance_until(lambda view: view["actor"] == view["active"] == "P0"
+                              and view["turn"] == turn and view["step"] == "Main1")
+                choose("PlayLand")
+            for _ in range(3):
+                choose("TapMana")
+            walker = next(obj["id"] for obj in observation["objects"]
+                          if obj["card"] == "Ajani, Outland Chaperone" and obj["zone"] == "Hand")
+            choose("AnnounceCast", card=walker)
+            choose("PayCosts")
+            advance_until(lambda view: any(obj["id"] == walker and obj["zone"] == "Battlefield"
+                                           for obj in view["objects"]))
+            before = handle.observe("P0")
+            ajani = next(obj for obj in before["objects"] if obj["id"] == walker)
+            self.assertEqual(ajani["counters"]["loyalty"], 3)
+            action = next(action for action in before["actions"]
+                          if action["kind"] == "AnnounceActivate"
+                          and action["card"] == walker and action["ability"] == 0)
+            snapshot = handle.snapshot()
+            with handle.clone() as branch:
+                raw = branch.act(before, action)
+                observation = handle.step(before, before["actions"].index(action))
+                self.assertEqual(state(raw), state(observation))
+            choose("PayCosts")
+            ajani = next(obj for obj in handle.observe("P0")["objects"] if obj["id"] == walker)
+            self.assertEqual(ajani["counters"]["loyalty"], 4)
+            advance_until(lambda view: any(obj["card"] == "@token/c48e9e904360e4cee1deeed8"
+                                           and obj["zone"] == "Battlefield" for obj in view["objects"]))
+            current = handle.observe("P0")
+            self.assertFalse(any(action["kind"] == "AnnounceActivate" and action["card"] == walker
+                                 for action in current["actions"]))
+            handle.restore(snapshot)
+            restored = handle.observe("P0")
+            ajani = next(obj for obj in restored["objects"] if obj["id"] == walker)
+            self.assertEqual(ajani["counters"]["loyalty"], 3)
+            self.assertIn(action, restored["actions"])
+
     def test_owned_branch_survives_parent_close(self):
         parent = game()
         self.addCleanup(parent.close)
