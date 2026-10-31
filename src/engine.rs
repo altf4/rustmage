@@ -995,6 +995,7 @@ struct PlayerState {
     equip_activated_this_turn: bool,
     cards_drawn_this_turn: u64,
     scried_or_surveilled_this_turn: bool,
+    committed_crime_this_turn: bool,
     loyalty_ability_activated_this_turn: bool,
     legend_rule_ignored_this_turn: bool,
     noncombat_damage_this_turn: bool,
@@ -1198,6 +1199,10 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub target_controller_lki: Option<Box<Vec<(ObjectRef, Player)>>>,
+    /// Qualification captured at initial target selection, committed only
+    /// after the spell is cast or the ability is put on the stack.
+    #[serde(skip)]
+    pub(crate) crime_qualifying_target: bool,
     /// Internal exact departure facts for a relational card-type target constraint.
     #[serde(skip)]
     #[allow(clippy::box_collection)]
@@ -1300,6 +1305,7 @@ impl SpellView {
     /// Keep uncommitted target declarations private in viewer projections.
     pub(super) fn redact_uncommitted_targets(&mut self) {
         self.targets.clear();
+        self.crime_qualifying_target = false;
         self.target_type_slots = None;
         self.target_allocations = None;
         self.target_controller_lki = None;
@@ -2641,6 +2647,8 @@ pub struct PlayerView {
     pub cards_drawn_this_turn: u64,
     /// Whether this player completed a positive scry or surveil this turn.
     pub scried_or_surveilled_this_turn: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub committed_crime_this_turn: bool,
     pub loyalty_ability_activated_this_turn: bool,
     pub legend_rule_ignored_this_turn: bool,
     pub noncombat_damage_this_turn: bool,
@@ -3258,6 +3266,7 @@ impl Game {
             equip_activated_this_turn: false,
             cards_drawn_this_turn: 0,
             scried_or_surveilled_this_turn: false,
+            committed_crime_this_turn: false,
             loyalty_ability_activated_this_turn: false,
             legend_rule_ignored_this_turn: false,
             noncombat_damage_this_turn: false,
@@ -6485,6 +6494,7 @@ impl Game {
                 let mut item = self.cast_item(actor, card, payment);
                 if let Some(target) = target {
                     let bound = self.bind_target(target);
+                    item.crime_qualifying_target |= self.crime_target(item.controller, bound);
                     self.target_becomes_bound(&item, bound);
                     item.targets.push(bound);
                 }
@@ -6502,6 +6512,7 @@ impl Game {
                 self.begin_direct_activation_on_stack(&mut item);
                 if let Some(target) = target {
                     let bound = self.bind_target(target);
+                    item.crime_qualifying_target |= self.crime_target(item.controller, bound);
                     self.state
                         .stack
                         .iter_mut()
@@ -6790,8 +6801,10 @@ impl Game {
             Action::ChooseTargetCardType { target, type_mask } => {
                 let mut bound = self.bind_target(target);
                 let item = self.state.announcing.as_ref().unwrap().item.clone();
+                let crime = self.crime_target(item.controller, bound);
                 self.target_becomes_bound(&item, bound);
                 let announcement = self.state.announcing.as_mut().unwrap();
+                announcement.item.crime_qualifying_target |= crime;
                 bound.group = announcement.group;
                 announcement
                     .item
@@ -6813,8 +6826,10 @@ impl Game {
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
                 let item = self.state.announcing.as_ref().unwrap().item.clone();
+                let crime = self.crime_target(item.controller, bound);
                 self.target_becomes_bound(&item, bound);
                 let announcement = self.state.announcing.as_mut().unwrap();
+                announcement.item.crime_qualifying_target |= crime;
                 bound.group = announcement.group;
                 announcement.item.targets.push(bound);
                 if announcement
@@ -8594,6 +8609,7 @@ impl Game {
             player.equip_activated_this_turn = false;
             player.cards_drawn_this_turn = 0;
             player.scried_or_surveilled_this_turn = false;
+            player.committed_crime_this_turn = false;
             player.loyalty_ability_activated_this_turn = false;
             player.noncombat_damage_last_turn = player.noncombat_damage_this_turn;
             player.noncombat_damage_this_turn = false;
@@ -9575,6 +9591,7 @@ impl Game {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 scried_or_surveilled_this_turn: s.players[i].scried_or_surveilled_this_turn,
+                committed_crime_this_turn: s.players[i].committed_crime_this_turn,
                 loyalty_ability_activated_this_turn: s.players[i]
                     .loyalty_ability_activated_this_turn,
                 legend_rule_ignored_this_turn: s.players[i].legend_rule_ignored_this_turn,

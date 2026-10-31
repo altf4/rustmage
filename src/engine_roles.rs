@@ -98,6 +98,7 @@ impl Game {
         reflexive.kind = StackKind::TriggeredAbility { ability };
         reflexive.is_copy = false;
         reflexive.targets.clear();
+        reflexive.crime_qualifying_target = false;
         reflexive.target_type_slots = None;
         reflexive.mode = None;
         if let Some((_, program)) = reflexive.program()

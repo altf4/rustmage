@@ -1877,6 +1877,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            crime_qualifying_target: false,
             target_kinds_lki: None,
             target_type_slots: None,
             reflexive_subject: None,

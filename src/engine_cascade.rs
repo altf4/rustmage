@@ -24,6 +24,7 @@ impl Game {
         trigger.id = self.next_stack_id();
         trigger.kind = StackKind::TriggeredAbility { ability };
         trigger.targets.clear();
+        trigger.crime_qualifying_target = false;
         trigger.target_type_slots = None;
         trigger.mode = None;
         trigger.cast_event = spell.actual_cast_event().map(Box::new);

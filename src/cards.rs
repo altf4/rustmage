@@ -1047,6 +1047,8 @@ pub(crate) enum Instruction {
     RemoveCreatureCounterThenDraw,
     /// One simultaneous creation event, with all original recipes frozen first.
     CopyControlledNontokenCreaturesNonlegendary,
+    /// Simultaneously copy each other controlled nonland permanent.
+    CopyOtherControlledNonlands,
     CopyTargetPlayersCreaturesWithConditionalSacrifice,
     /// Preserve all copiable values except the legendary supertype.
     CreateNonlegendaryCopyTokens {
@@ -3534,6 +3536,7 @@ pub(crate) enum StepGuard {
     Attacked,
     CreatureDied,
     OpponentLostLife,
+    CommittedCrimeThisTurn,
     GainedLife,
     ScriedOrSurveilledThisTurn,
     LoyaltyAbilityActivatedThisTurn,

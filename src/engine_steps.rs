@@ -111,6 +111,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            crime_qualifying_target: false,
             target_kinds_lki: None,
             gift: None,
             reflexive_subject: None,
@@ -418,6 +419,7 @@ impl Game {
             StepGuard::OpponentLostLife => {
                 return self.state.players[player.other().index()].life_lost_this_turn > 0;
             }
+            StepGuard::CommittedCrimeThisTurn => return p.committed_crime_this_turn,
             StepGuard::SourceTapped => {
                 return if self.on_battlefield(source.card) && self.object_ref(source.card) == source
                 {

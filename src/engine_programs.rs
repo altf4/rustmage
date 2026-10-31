@@ -1184,6 +1184,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            crime_qualifying_target: false,
             target_kinds_lki: None,
             target_type_slots: None,
             reflexive_subject: None,
@@ -1297,6 +1298,7 @@ impl Game {
             slot.source_counter_lki = item.source_counter_lki;
         }
         let completed = slot.clone();
+        self.record_committed_crime(&item);
         self.committed_activation_observers(&completed);
     }
 
@@ -1322,6 +1324,7 @@ impl Game {
             self.complete_prepared_cast(object);
         }
         self.register_stack_graveyard_exile(&item);
+        self.record_committed_crime(&item);
         self.committed_activation_observers(&item);
         self.state.stack.push(item);
         let Some((caster, card, _)) = cast else {
@@ -2893,6 +2896,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     delayed.mode = None;
                     delayed.cast = None;
@@ -2958,6 +2962,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     delayed.mode = None;
                     delayed.cast = None;
@@ -2974,6 +2979,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     self.state
                         .delayed_artifact_copies
@@ -3191,6 +3197,7 @@ impl Game {
                             delayed.id = self.next_stack_id();
                             delayed.kind = StackKind::TriggeredAbility { ability };
                             delayed.targets.clear();
+                            delayed.crime_qualifying_target = false;
                             delayed.target_type_slots = None;
                             delayed.mode = None;
                             delayed.cast = None;
@@ -4790,6 +4797,9 @@ impl Game {
                 }
                 Instruction::CopyControlledNontokenCreaturesNonlegendary => {
                     self.copy_controlled_nontoken_creatures_nonlegendary(item.controller);
+                }
+                Instruction::CopyOtherControlledNonlands => {
+                    self.copy_other_controlled_nonlands(&item);
                 }
                 Instruction::CreateTemporaryArtifactCopy => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
