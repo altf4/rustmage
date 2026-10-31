@@ -375,10 +375,10 @@ impl Game {
             return;
         }
         let ids: Vec<_> = f.selected.iter().map(|r| r.card).collect();
-        let events = if f.destination == LibraryPickDestination::Hand {
-            self.move_objects_raw(&ids, Zone::Hand)
-        } else {
-            Vec::new()
+        let events = match f.destination {
+            LibraryPickDestination::Hand => self.move_objects_raw(&ids, Zone::Hand),
+            LibraryPickDestination::Exile => self.move_objects_raw(&ids, Zone::Exile),
+            _ => Vec::new(),
         };
         if f.destination == LibraryPickDestination::Hideaway {
             let events = self.move_objects_raw(&ids, Zone::Exile);
@@ -491,6 +491,11 @@ impl Game {
             LibraryRemainder::Graveyard => {
                 let ids: Vec<_> = f.remaining.iter().map(|r| r.card).collect();
                 let events = self.move_objects_raw(&ids, Zone::Graveyard);
+                self.finish_zone_events(&events, &[]);
+            }
+            LibraryRemainder::Hand => {
+                let ids: Vec<_> = f.remaining.iter().map(|r| r.card).collect();
+                let events = self.move_objects_raw(&ids, Zone::Hand);
                 self.finish_zone_events(&events, &[]);
             }
             LibraryRemainder::BottomAny | LibraryRemainder::BottomRandom => {
@@ -642,9 +647,11 @@ impl Game {
                 LibraryPickDestination::BattlefieldTapped => "battlefield_tapped",
                 LibraryPickDestination::Top => "top",
                 LibraryPickDestination::Hideaway => "hideaway",
+                LibraryPickDestination::Exile => "exile",
             },
             remainder: match f.spec.remainder {
                 LibraryRemainder::Graveyard => "graveyard",
+                LibraryRemainder::Hand => "hand",
                 LibraryRemainder::Shuffle => "shuffle",
                 LibraryRemainder::BottomAny => "bottom_any",
                 LibraryRemainder::BottomRandom => "bottom_random",

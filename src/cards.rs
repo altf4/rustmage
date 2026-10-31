@@ -647,6 +647,7 @@ pub(crate) enum LibraryRemainder {
     /// Shuffle the entire library after selected entries finish.
     Shuffle,
     Graveyard,
+    Hand,
     BottomAny,
     BottomRandom,
 }
@@ -690,6 +691,7 @@ pub(crate) enum LibraryPickDestination {
     BattlefieldTapped,
     LandsTappedRestHand,
     Hideaway,
+    Exile,
     Hand,
     Battlefield,
     Top,
@@ -1125,6 +1127,11 @@ pub(crate) enum Instruction {
     ExileTopPlayScaled {
         amount: AmountValue,
         next_turn: bool,
+    },
+    /// Exile that many cards from each indicated player's library, with no play permission.
+    ExileTopLibrary {
+        players: PlayerSet,
+        amount: AmountValue,
     },
     SearchDifferentNames(SearchSpec),
     /// Distinct-name search capped by the triggering entry's chosen X.
@@ -2598,6 +2605,7 @@ pub(crate) enum StatValue {
         name: &'static str,
     },
     GreatestManaValue(CountFilter),
+    TotalManaValue(CountFilter),
     DistinctNames(CountFilter),
     DistinctManaValues(CountFilter),
     CountUnion(&'static [CountFilter]),

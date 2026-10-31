@@ -1,0 +1,10 @@
+{
+  "name": "@token/woe-ashiok-nightmare",
+  "catalogue_id": 5478,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/AshiokWickedManipulatorNightmareToken.java",
+  "java_sha256": "276c0ec2640c1095d58351e75255a0571c93a55634b6d7b5c65f620e5d9ab35b"
+}

@@ -819,7 +819,7 @@ impl Game {
         if let EffectChoiceKind::DiscardOrLife(amount) = spec.kind
             && a.additional_life
         {
-            self.lose_life(a.item.controller, i128::from(amount));
+            self.pay_life(a.item.controller, i128::from(amount));
             a.additional_paid = true;
             return;
         }

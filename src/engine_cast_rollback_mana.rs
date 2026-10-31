@@ -554,7 +554,7 @@ impl Game {
                     .failed = true;
                 return true;
             }
-            self.lose_life(player, amount);
+            self.pay_life(player, amount);
         }
         self.commit_entries(batch);
         true

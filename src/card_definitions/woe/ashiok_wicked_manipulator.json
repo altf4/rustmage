@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3906d69e5076f29f94f75988136a7a7f5bd2644339d8d4363150d2112298992f"
   },
-  "physical_metadata_sha256": "890e4c8b1088cc5846ab1d89d183d809a08aa2365e280272e0df546e19f95088"
+  "physical_metadata_sha256": "890e4c8b1088cc5846ab1d89d183d809a08aa2365e280272e0df546e19f95088",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AshiokWickedManipulator.java",
+  "java_sha256": "f6a9527a347cb8c7ab26ab160e52ff32e50ffed3fb0c654d34f2e214325c3cf2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/AshiokWickedManipulatorNightmareToken.java",
+      "sha256": "276c0ec2640c1095d58351e75255a0571c93a55634b6d7b5c65f620e5d9ab35b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/TotalCardsExiledOwnedManaValue.java",
+      "sha256": "1ae40f57e9a4c5ce2041b882b566594b1dbcc772de808b829ff348e8c7fab7a0"
+    }
+  ]
 }

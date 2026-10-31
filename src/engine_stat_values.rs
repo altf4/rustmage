@@ -421,6 +421,26 @@ impl Game {
                     .max()
                     .unwrap_or(0),
             ),
+            StatValue::TotalManaValue(filter) => objects()
+                .filter(|&(id, o)| {
+                    Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
+                })
+                .try_fold(0i128, |total, (id, object)| {
+                    // Face-down cards in exile have no mana cost, even when
+                    // their owner is permitted to look at the underlying face.
+                    let hidden = object.zone == Zone::Exile
+                        && self.state.linked_choices.as_ref().is_some_and(|choices| {
+                            choices.hidden.iter().any(|(_, reference, _)| {
+                                reference.card == id && reference.generation == object.generation
+                            })
+                        });
+                    total.checked_add(if hidden {
+                        0
+                    } else {
+                        i128::from(mana_value(id))
+                    })
+                })
+                .capacity("total mana value exhausted"),
             StatValue::GraveyardCardTypes => objects()
                 .filter(|(_, o)| o.zone == Zone::Graveyard && o.is_card())
                 .fold(0u16, |mask, (_, o)| mask | o.card.kind_mask())
