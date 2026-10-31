@@ -8,12 +8,16 @@ fn owned_step(g: &mut Game, action: Action) {
     let parent = g.clone();
     let mut indexed = parent.clone();
     drop(parent);
+    let checkpoint = indexed.snapshot();
     indexed.apply_index(player, revision, index).unwrap();
     act(g, action);
     assert_eq!(g.snapshot(), indexed.snapshot());
-    let checkpoint = indexed.snapshot();
+    let expected = indexed.snapshot();
     indexed.restore(&checkpoint).unwrap();
-    assert_eq!(indexed.snapshot(), checkpoint);
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    assert_eq!(indexed.snapshot(), expected);
 }
 
 fn owned_pay(g: &mut Game) {
