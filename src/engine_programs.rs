@@ -278,11 +278,11 @@ impl Game {
                 .iter()
                 .map(|&id| self.object_ref(id))
                 .collect::<Vec<_>>();
-            if let Some(Some(receipt)) = &frozen {
-                if receipt.exiled.as_ref() != Some(&references) {
-                    self.fail_frozen_mana_replay();
-                    return;
-                }
+            if let Some(Some(receipt)) = &frozen
+                && receipt.exiled.as_ref() != Some(&references)
+            {
+                self.fail_frozen_mana_replay();
+                return;
             }
             if cards.len() == count {
                 self.record_cast_mana_life_payment(player, amount, Some(references));
