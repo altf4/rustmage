@@ -4893,6 +4893,12 @@ impl Card {
     }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
         #[cfg(test)]
+        if self == Card::from_name("Fanatical Firebrand").unwrap()
+            && issue_93_copy_cost_fixture::enabled()
+        {
+            return issue_93_copy_cost_fixture::abilities();
+        }
+        #[cfg(test)]
         if self == Card::test_index(5437) && sacrifice_mana_fixture::enabled() {
             return sacrifice_mana_fixture::abilities();
         }
@@ -5285,6 +5291,43 @@ pub(crate) mod issue_93_mana_counter_fixture {
             2 if loot || devotee => Some(CounterKind::PlusOne),
             _ => None,
         }
+    }
+}
+
+/// Synthetic self-sacrifice source-copy ability for announcement LKI tests.
+#[cfg(test)]
+pub(crate) mod issue_93_copy_cost_fixture {
+    use super::*;
+    std::thread_local! { static ENABLED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) }; }
+    pub(crate) struct Guard;
+    impl Guard {
+        pub(crate) fn new() -> Self {
+            ENABLED.with(|enabled| assert!(!enabled.replace(true)));
+            Self
+        }
+    }
+    impl Drop for Guard {
+        fn drop(&mut self) {
+            ENABLED.with(|enabled| enabled.set(false));
+        }
+    }
+    pub(super) fn enabled() -> bool { ENABLED.with(|enabled| enabled.get()) }
+    pub(super) fn abilities() -> &'static [ActivatedAbility] {
+        &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            cycling: false,
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                colored: [0; 6], generic: 0, alternatives: &[], additional: None,
+                mana_component: false, tap: false, sacrifice: true, exile_self: false,
+                discard: false, life: 0, remove: None, loyalty: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateCopyToken { subject: Subject::Source, amount: 1 }],
+            sorcery: false,
+            once_per_turn: false,
+        }]
     }
 }
 

@@ -1251,6 +1251,52 @@ impl Game {
         true
     }
 
+    /// Put a direct activated ability on the stack before paying its costs.
+    pub(super) fn begin_direct_activation_on_stack(&mut self, item: &mut SpellView) {
+        self.capture_transform_stack_serial(item);
+        self.state.stack.push(item.clone());
+    }
+
+    /// Complete an already-announced direct activation without inserting it twice.
+    pub(super) fn finish_direct_activation_on_stack(&mut self, item: SpellView) {
+        if let StackKind::ActivatedAbility { ability } = item.kind
+            && !item.is_copy
+            && item
+                .source
+                .is_some_and(|source| source.card.activation(ability).is_equip())
+        {
+            self.state.players[item.controller.index()].equip_activated_this_turn = true;
+        }
+        let source_still_exact = item.source.is_some_and(|source| {
+            self.state
+                .objects
+                .get(source.id as usize)
+                .is_some_and(|object| object.generation == source.object.generation)
+        });
+        let slot = self
+            .state
+            .stack
+            .iter_mut()
+            .find(|entry| entry.id == item.id)
+            .expect("announced activation remains on the stack while costs are paid");
+        assert_eq!(
+            slot.source.map(|source| source.object),
+            item.source.map(|source| source.object)
+        );
+        // Departure and event walkers update the on-stack packet while the
+        // cost executor temporarily owns a local packet. Keep those facts and
+        // copy back only the fields that payment itself owns.
+        slot.loyalty_counters_paid = item.loyalty_counters_paid;
+        slot.source_counter_payment = item.source_counter_payment;
+        slot.mana_tap_bonus = item.mana_tap_bonus;
+        slot.source_move = item.source_move;
+        if source_still_exact {
+            slot.source_counter_lki = item.source_counter_lki;
+        }
+        let completed = slot.clone();
+        self.committed_activation_observers(&completed);
+    }
+
     /// A spell becomes cast only after every declaration and cost is complete.
     /// Completed insertion paths share this hook; abilities never count as casts.
     pub(super) fn push_stack_item(&mut self, mut item: SpellView) {

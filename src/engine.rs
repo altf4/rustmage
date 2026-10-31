@@ -1297,6 +1297,14 @@ pub struct SpellView {
 }
 
 impl SpellView {
+    /// Keep uncommitted target declarations private in viewer projections.
+    pub(super) fn redact_uncommitted_targets(&mut self) {
+        self.targets.clear();
+        self.target_type_slots = None;
+        self.target_allocations = None;
+        self.target_controller_lki = None;
+        self.target_kinds_lki = None;
+    }
     fn needs_source_copy_lki(&self) -> bool {
         // Some legacy event packets carry no corresponding typed ability.
         match self.kind {
@@ -6488,12 +6496,26 @@ impl Game {
                 counter_payment,
             } => {
                 let mut item = self.activation_item(actor, card, ability);
+                self.begin_direct_activation_on_stack(&mut item);
                 if let Some(target) = target {
                     let bound = self.bind_target(target);
+                    self.state
+                        .stack
+                        .iter_mut()
+                        .find(|entry| entry.id == item.id)
+                        .expect("direct activation on stack")
+                        .targets
+                        .push(bound);
                     self.target_becomes_bound(&item, bound);
                     item.targets.push(bound);
                 }
                 item.allocate_single_target();
+                self.state
+                    .stack
+                    .iter_mut()
+                    .find(|entry| entry.id == item.id)
+                    .expect("direct activation on stack")
+                    .target_allocations = item.target_allocations.clone();
                 if let Some(phase) = self.pay_activation(&mut item, payment, counter_payment) {
                     self.suspend_activation_payment(
                         item,
@@ -6502,7 +6524,7 @@ impl Game {
                         activations::ActivationPaymentCompletion::DirectStack,
                     );
                 } else {
-                    self.push_stack_item(item);
+                    self.finish_direct_activation_on_stack(item);
                     self.state.passes = 0;
                 }
             }
@@ -9731,20 +9753,34 @@ impl Game {
             stack: s
                 .stack
                 .iter()
-                .map(|item| self.spell_with_current_abilities(item))
+                .map(|item| {
+                    let mut view = self.spell_with_current_abilities(item);
+                    if s.activation_payment.as_ref().is_some_and(|payment| {
+                        payment.item.id == item.id
+                            && !self.shares_information(viewer, payment.item.controller)
+                    }) {
+                        view.redact_uncommitted_targets();
+                    }
+                    view
+                })
                 .chain(s.activation_payment.iter().filter_map(|payment| {
                     matches!(
                         payment.completion,
-                        activations::ActivationPaymentCompletion::DirectStack
-                            | activations::ActivationPaymentCompletion::Crew(_)
+                        activations::ActivationPaymentCompletion::Crew(_)
                             | activations::ActivationPaymentCompletion::Saddle(_)
                     )
-                    .then(|| self.spell_with_current_abilities(&payment.item))
+                    .then(|| {
+                        let mut view = self.spell_with_current_abilities(&payment.item);
+                        if !self.shares_information(viewer, payment.item.controller) {
+                            view.redact_uncommitted_targets();
+                        }
+                        view
+                    })
                 }))
                 .collect(),
             uncounterable_spell_ids: self.uncounterable_spell_ids_view(),
             retarget: self.retarget_view(),
-            target_amount: self.target_amount_choice(),
+            target_amount: owns_choice.then(|| self.target_amount_choice()).flatten(),
             delayed_spell_copies: self.delayed_spell_copy_view(),
             resolving: s
                 .resolving
@@ -9765,9 +9801,8 @@ impl Game {
                 .map_or_else(Vec::new, |rows| rows.clone()),
             announcing: s.announcing.as_ref().map(|announcement| {
                 let mut item = self.spell_with_current_abilities(&announcement.item);
-                if !owns_choice {
-                    item.targets.clear();
-                    item.target_type_slots = None;
+                if !self.shares_information(viewer, announcement.item.controller) {
+                    item.redact_uncommitted_targets();
                 }
                 item
             }),

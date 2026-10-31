@@ -171,7 +171,7 @@ impl Game {
                 self.resume_activation_announcement(payment.item);
             }
             ActivationPaymentCompletion::DirectStack => {
-                self.push_stack_item(payment.item);
+                self.finish_direct_activation_on_stack(payment.item);
                 self.state.passes = 0;
             }
             ActivationPaymentCompletion::DirectMana {
