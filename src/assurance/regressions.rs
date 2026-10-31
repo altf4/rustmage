@@ -2491,6 +2491,7 @@ fn schema185_rejects_owned_bonus_nested_packets_receipts_and_rollback() {
                 mountain_bonus: 1,
                 quality: None,
                 spent_lots: Vec::new(),
+                counter_costs: Vec::new(),
                 entries: Vec::new(),
                 entry_life: [0; 2],
                 moves: Vec::new(),

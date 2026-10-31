@@ -9736,6 +9736,8 @@ impl Game {
                     matches!(
                         payment.completion,
                         activations::ActivationPaymentCompletion::DirectStack
+                            | activations::ActivationPaymentCompletion::Crew(_)
+                            | activations::ActivationPaymentCompletion::Saddle(_)
                     )
                     .then(|| self.spell_with_current_abilities(&payment.item))
                 }))

@@ -157,7 +157,7 @@ impl Game {
             }
         }
     }
-    pub(super) fn restore_activation_observer_use(&mut self, item: &SpellView) {
+    pub(super) fn restore_retained_trigger_use(&mut self, item: &SpellView) {
         let StackKind::TriggeredAbility { ability } = item.kind else {
             return;
         };
@@ -165,14 +165,7 @@ impl Game {
             return;
         };
         let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
-        if matches!(
-            condition.event(),
-            TriggerCondition::CreatureAbilityActivated
-                | TriggerCondition::LoyaltyAbilityActivated
-                | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
-                | TriggerCondition::OpponentLoyaltyAbilityActivated
-        ) && condition.once_per_turn()
-        {
+        if condition.once_per_turn() {
             let used = TriggerUse {
                 source: identity.object,
                 ability,

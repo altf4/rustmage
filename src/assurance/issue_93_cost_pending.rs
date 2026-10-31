@@ -53,6 +53,14 @@ fn loyalty_activation_waits_for_counter_replacement_choice() {
                     .iter()
                     .any(|item| item.source.is_some_and(|s| s.id == observer))
             );
+            if direct {
+                for viewer in [player, player.other()] {
+                    assert!(g.observe(viewer).stack.iter().any(|item| {
+                        item.source.is_some_and(|source| source.id == walker)
+                    }));
+                }
+            }
+            crate::engine::assurance::contracts::branch_contract(g.clone());
             let checkpoint = g.snapshot();
             while g
                 .legal_actions()
@@ -89,7 +97,7 @@ fn creature_activation_observer_waits_for_counter_cost_replacements() {
                 "Jessica Jones, Private Eye",
                 Zone::Battlefield,
             );
-            let observer = put(&mut g, player, "Elrond, Moon Reader", Zone::Battlefield);
+            let observer = put(&mut g, player, "Elrond, Moon-Reader", Zone::Battlefield);
             put(
                 &mut g,
                 player,

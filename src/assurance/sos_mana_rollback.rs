@@ -65,6 +65,182 @@ fn fail(g: &mut Game, silver: CardId) {
     assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
 }
 #[test]
+fn retained_exhaust_mana_activation_keeps_its_use_history() {
+    for p in [Player::P0, Player::P1] {
+        for keep in [false, true] {
+            let (mut g, silver, enemy, prison) = setup(p);
+            let loot = put(&mut g, p, "Loot, the Pathfinder", Zone::Battlefield);
+            // Keep Loot from replacing Silverquill as the casualty candidate.
+            g.state.objects[loot as usize].growth.power = -2;
+            let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 1, 0];
+            propose(&mut g, spell, prison, enemy);
+            checked(
+                &mut g,
+                Action::ActivateMana {
+                    card: loot,
+                    ability: 0,
+                    payment: [0, 0, 0, 0, 1, 0],
+                    counter_payment: Counters::default(),
+                    production: [0, 0, 0, 0, 3, 0],
+                },
+            );
+            assert_ne!(g.object_view(loot).exhausted_abilities & 1, 0);
+            fail(&mut g, silver);
+            crate::engine::assurance::contracts::branch_contract(g.clone());
+            checked(&mut g, Action::ChooseManaRollback { keep });
+            assert_eq!(g.object_view(loot).tapped, keep);
+            assert_eq!(g.object_view(loot).exhausted_abilities & 1 != 0, keep);
+        }
+    }
+}
+#[test]
+fn retained_mana_replays_synthetic_counter_cost_replacements() {
+    let _fixture = crate::cards::issue_93_mana_counter_fixture::Guard::new();
+    for p in [Player::P0, Player::P1] {
+        for (keep, doc_first) in [(false, false), (false, true), (true, false), (true, true)] {
+            let (mut g, silver, enemy, prison) = setup(p);
+            let loot = put(&mut g, p, "Loot, the Pathfinder", Zone::Battlefield);
+            g.state.objects[loot as usize].growth.power = -2;
+            let doc = put(
+                &mut g,
+                p,
+                "Doc Samson, Super Psychiatrist",
+                Zone::Battlefield,
+            );
+            g.state.objects[doc as usize].growth.power = -3;
+            let loading = put(&mut g, p, "Loading Zone", Zone::Battlefield);
+            let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 1, 0];
+            propose(&mut g, spell, prison, enemy);
+            checked(
+                &mut g,
+                Action::ActivateMana {
+                    card: loot,
+                    ability: 0,
+                    payment: [0, 0, 0, 0, 1, 0],
+                    counter_payment: Counters::default(),
+                    production: [0, 0, 0, 0, 3, 0],
+                },
+            );
+            assert!(matches!(g.state.pending, Pending::Replacement { .. }));
+            assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 0, 0]);
+            let first = if doc_first { doc } else { loading };
+            choose(
+                &mut g,
+                |a| matches!(a, Action::ChooseReplacement { source, .. } if source.card == first),
+            );
+            while g
+                .legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseReplacement { .. }))
+            {
+                choose(&mut g, |a| matches!(a, Action::ChooseReplacement { .. }));
+            }
+            let amount = if doc_first { 4 } else { 3 };
+            assert_eq!(g.counter_count(loot, CounterKind::Stun), amount);
+            fail(&mut g, silver);
+            // Synthetic boundary: an earlier reversal may restore counters
+            // before this retained event is considered. Merely observing the
+            // choice must reject overflow without panicking or mutating state.
+            if !keep && !doc_first {
+                let mut boundary = g.clone();
+                boundary.add_counter(loot, CounterKind::Stun, u64::MAX);
+                assert!(!boundary.observe(p).mana_rollback.unwrap().can_keep);
+                assert!(
+                    !boundary
+                        .legal_actions()
+                        .contains(&Action::ChooseManaRollback { keep: true })
+                );
+                reject(&mut boundary, Action::ChooseManaRollback { keep: true });
+            }
+            crate::engine::assurance::contracts::branch_contract(g.clone());
+            checked(&mut g, Action::ChooseManaRollback { keep });
+            assert_eq!(
+                g.counter_count(loot, CounterKind::Stun),
+                if keep { amount } else { 0 }
+            );
+            assert_eq!(g.object_view(loot).exhausted_abilities & 1 != 0, keep);
+        }
+    }
+}
+#[test]
+fn retained_counter_cost_does_not_consume_an_unrecorded_once_trigger() {
+    let _fixture = crate::cards::issue_93_mana_counter_fixture::Guard::with_plus_one();
+    for p in [Player::P0, Player::P1] {
+        let (mut g, silver, enemy, prison) = setup(p);
+        let loot = put(&mut g, p, "Loot, the Pathfinder", Zone::Battlefield);
+        g.state.objects[loot as usize].growth.power = -3;
+        let devotee = put(&mut g, p, "Abzan Devotee", Zone::Battlefield);
+        g.state.objects[devotee as usize].growth.power = -3;
+        let ant = put(&mut g, p, "Ant-Man, Colony Commander", Zone::Battlefield);
+        g.state.objects[ant as usize].growth.power = -2;
+        let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 1, 0];
+        propose(&mut g, spell, prison, enemy);
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: devotee,
+                ability: 0,
+                payment: [0, 0, 0, 0, 1, 0],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        assert!(
+            g.state
+                .pending_triggers
+                .iter()
+                .any(|item| item.source.is_some_and(|s| s.id == ant))
+        );
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: loot,
+                ability: 0,
+                payment: [0, 0, 0, 0, 1, 0],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 3, 0],
+            },
+        );
+        fail(&mut g, silver);
+        checked(&mut g, Action::ChooseManaRollback { keep: false });
+        checked(&mut g, Action::ChooseManaRollback { keep: true });
+        assert_eq!(g.counter_count(loot, CounterKind::PlusOne), 1);
+        assert!(
+            !g.state
+                .triggered_this_turn
+                .iter()
+                .any(|used| used.source.card == ant)
+        );
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .chain(&g.state.stack)
+                .any(|item| item.source.is_some_and(|s| s.id == ant))
+        );
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: devotee,
+                ability: 0,
+                payment: [0, 0, 0, 0, 1, 0],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        assert!(
+            g.state
+                .pending_triggers
+                .iter()
+                .chain(&g.state.stack)
+                .any(|item| item.source.is_some_and(|s| s.id == ant))
+        );
+    }
+}
+#[test]
 fn sos_mana_rollback_converter_cannot_keep_mana_without_its_paid_producer() {
     for p in [Player::P0, Player::P1] {
         for (keep_forest, keep_prism) in [(false, false), (true, false), (true, true)] {
@@ -267,3 +443,41 @@ mod gandalf_flameshape_tests;
 
 #[path = "fra_cruel_history_extra.rs"]
 mod fra_cruel_history_extra;
+#[test]
+fn retained_counter_cost_keeps_outcome_when_prohibition_returns() {
+    let _fixture = crate::cards::issue_93_mana_counter_fixture::Guard::new();
+    let _sacrifice = crate::cards::sacrifice_mana_fixture::Guard::new();
+    for p in [Player::P0, Player::P1] {
+        let (mut g, silver, enemy, prison) = setup(p);
+        let loot = put(&mut g, p, "Loot, the Pathfinder", Zone::Battlefield);
+        g.state.objects[loot as usize].growth.power = -2;
+        // Gated Blossombind is injected into an established Aura fixture.
+        let aura = put(&mut g, p, "Pacifism", Zone::Battlefield);
+        g.state.objects[aura as usize].card = Card::from_name("Blossombind").unwrap();
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(loot));
+        assert!(replacements::counters_prohibited(&g, g.object_ref(loot)));
+        let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 1, 0];
+        propose(&mut g, spell, prison, enemy);
+        let aura_action = g.legal_actions().into_iter().find(|action| {
+            matches!(action, Action::ActivateMana { card, ability: 0, .. } if *card == aura)
+        }).expect("the synthetic Aura can be sacrificed for mana");
+        checked(&mut g, aura_action);
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: loot,
+                ability: 0,
+                payment: [0, 0, 0, 0, 1, 0],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 3, 0],
+            },
+        );
+        assert_eq!(g.counter_count(loot, CounterKind::Stun), 1);
+        fail(&mut g, silver);
+        checked(&mut g, Action::ChooseManaRollback { keep: false });
+        checked(&mut g, Action::ChooseManaRollback { keep: true });
+        assert!(replacements::counters_prohibited(&g, g.object_ref(loot)));
+        assert_eq!(g.counter_count(loot, CounterKind::Stun), 1);
+    }
+}

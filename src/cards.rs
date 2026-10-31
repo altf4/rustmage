@@ -5014,6 +5014,12 @@ impl Card {
             .map(|(_, kind)| *kind)
     }
     pub(crate) fn activation_put_counter(self, ability: u16) -> Option<(CounterKind, u64)> {
+        #[cfg(test)]
+        if ability == 0
+            && let Some(kind) = issue_93_mana_counter_fixture::counter_kind(self)
+        {
+            return Some((kind, 1));
+        }
         authored::RULES[self.index()]
             .extras
             .activation_put_counters
@@ -5244,6 +5250,41 @@ impl Card {
     }
     pub(crate) fn index(self) -> usize {
         self.0 as usize
+    }
+}
+
+/// Synthetic cost overlay for testing retained mana with replacement choices.
+#[cfg(test)]
+pub(crate) mod issue_93_mana_counter_fixture {
+    use super::{Card, CounterKind};
+    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
+    pub(crate) struct Guard;
+    impl Guard {
+        pub(crate) fn new() -> Self {
+            Self::set(1)
+        }
+        pub(crate) fn with_plus_one() -> Self {
+            Self::set(2)
+        }
+        fn set(mode: u8) -> Self {
+            MODE.with(|enabled| assert_eq!(enabled.replace(mode), 0));
+            Self
+        }
+    }
+    impl Drop for Guard {
+        fn drop(&mut self) {
+            MODE.with(|enabled| enabled.set(0));
+        }
+    }
+    pub(super) fn counter_kind(card: Card) -> Option<CounterKind> {
+        let mode = MODE.with(|enabled| enabled.get());
+        let loot = card == Card::from_name("Loot, the Pathfinder").unwrap();
+        let devotee = card == Card::from_name("Abzan Devotee").unwrap();
+        match mode {
+            1 if loot => Some(CounterKind::Stun),
+            2 if loot || devotee => Some(CounterKind::PlusOne),
+            _ => None,
+        }
     }
 }
 
