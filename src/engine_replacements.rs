@@ -2232,10 +2232,9 @@ impl Game {
                 self.finish_face_up_counter_replacement();
                 if state.mode == ResumeMode::ActivationCosts
                     && self.state.activation_payment.is_some()
+                    && self.resume_activation_payment()
                 {
-                    if self.resume_activation_payment() {
-                        return self.advance_replacements(resume_program);
-                    }
+                    return self.advance_replacements(resume_program);
                 }
                 if state.mode == ResumeMode::CastCosts && self.state.announcing.is_some() {
                     self.finish_announcement();

@@ -2293,24 +2293,23 @@ impl Game {
                 ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()
-            {
-                if let Some(phase) = self.pay_activation_route(
+                && let Some(phase) = self.pay_activation_route(
                     &mut announcement.item,
                     payment,
                     announcement.counter_payment.clone(),
                     announcement.activation_cost_route,
-                ) {
-                    let item = announcement.item.clone();
-                    let route = announcement.activation_cost_route;
-                    self.state.announcing = Some(announcement);
-                    self.suspend_activation_payment(
-                        item,
-                        phase,
-                        route,
-                        activations::ActivationPaymentCompletion::Announcement,
-                    );
-                    return;
-                }
+                )
+            {
+                let item = announcement.item.clone();
+                let route = announcement.activation_cost_route;
+                self.state.announcing = Some(announcement);
+                self.suspend_activation_payment(
+                    item,
+                    phase,
+                    route,
+                    activations::ActivationPaymentCompletion::Announcement,
+                );
+                return;
             }
             self.pay_additional_cost(&mut announcement);
             announcement.additional_paid = true;

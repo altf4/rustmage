@@ -9763,20 +9763,24 @@ impl Game {
                     }
                     view
                 })
-                .chain(s.activation_payment.iter().filter_map(|payment| {
-                    matches!(
-                        payment.completion,
-                        activations::ActivationPaymentCompletion::Crew(_)
-                            | activations::ActivationPaymentCompletion::Saddle(_)
-                    )
-                    .then(|| {
-                        let mut view = self.spell_with_current_abilities(&payment.item);
-                        if !self.shares_information(viewer, payment.item.controller) {
-                            view.redact_uncommitted_targets();
-                        }
-                        view
-                    })
-                }))
+                .chain(
+                    s.activation_payment
+                        .iter()
+                        .filter(|payment| {
+                            matches!(
+                                payment.completion,
+                                activations::ActivationPaymentCompletion::Crew(_)
+                                    | activations::ActivationPaymentCompletion::Saddle(_)
+                            )
+                        })
+                        .map(|payment| {
+                            let mut view = self.spell_with_current_abilities(&payment.item);
+                            if !self.shares_information(viewer, payment.item.controller) {
+                                view.redact_uncommitted_targets();
+                            }
+                            view
+                        }),
+                )
                 .collect(),
             uncounterable_spell_ids: self.uncounterable_spell_ids_view(),
             retarget: self.retarget_view(),
