@@ -2294,24 +2294,47 @@ impl Game {
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()
             {
-                self.pay_activation_route(
+                if let Some(phase) = self.pay_activation_route(
                     &mut announcement.item,
                     payment,
                     announcement.counter_payment.clone(),
                     announcement.activation_cost_route,
-                );
+                ) {
+                    let item = announcement.item.clone();
+                    let route = announcement.activation_cost_route;
+                    self.state.announcing = Some(announcement);
+                    self.suspend_activation_payment(
+                        item,
+                        phase,
+                        route,
+                        activations::ActivationPaymentCompletion::Announcement,
+                    );
+                    return;
+                }
             }
             self.pay_additional_cost(&mut announcement);
             announcement.additional_paid = true;
         }
         if let Some(payment) = announcement.payment {
             if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
-                self.pay_activation_route(
+                if let Some(phase) = self.pay_activation_route(
                     &mut announcement.item,
                     payment,
                     announcement.counter_payment.clone(),
                     announcement.activation_cost_route,
-                );
+                ) {
+                    announcement.payment = None;
+                    let item = announcement.item.clone();
+                    let route = announcement.activation_cost_route;
+                    self.state.announcing = Some(announcement);
+                    self.suspend_activation_payment(
+                        item,
+                        phase,
+                        route,
+                        activations::ActivationPaymentCompletion::Announcement,
+                    );
+                    return;
+                }
             } else {
                 let outcome = self.spend_mana_for(
                     announcement.item.controller,
@@ -2334,6 +2357,26 @@ impl Game {
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }
+        self.finish_paid_announcement(announcement);
+    }
+
+    /// Finish the remaining external cost and announcement after an owned
+    /// activation payment resumes from a counter-replacement choice.
+    pub(super) fn resume_activation_announcement(&mut self, item: SpellView) {
+        let mut announcement = self
+            .state
+            .announcing
+            .take()
+            .expect("suspended activation announcement");
+        announcement.item = item;
+        if !announcement.additional_paid {
+            self.pay_additional_cost(&mut announcement);
+            announcement.additional_paid = true;
+        }
+        self.finish_paid_announcement(announcement);
+    }
+
+    fn finish_paid_announcement(&mut self, mut announcement: Announcement) {
         // Costs may synchronously return exiled Auras/lands. Finish their entry
         // choices before the spell becomes cast and cast observers are collected.
         announcement.payment = None;

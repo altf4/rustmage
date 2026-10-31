@@ -8,6 +8,7 @@ pub(super) enum ResumeMode {
     Program,
     Pending,
     CastCosts,
+    ActivationCosts,
     Entry,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1402,7 +1403,7 @@ impl Game {
             entry_index: None,
             private: false,
         };
-        self.stage_counter_placements(vec![placement], ResumeMode::Pending);
+        self.stage_counter_placements(vec![placement], ResumeMode::ActivationCosts);
     }
     pub(super) fn blight_cost_counters(&mut self, object: ObjectRef, amount: u16, player: Player) {
         let o = &self.state.objects[object.card as usize];
@@ -2174,6 +2175,13 @@ impl Game {
             let Some(active) = state.active.as_mut() else {
                 self.state.pending = state.resume.take().unwrap();
                 self.finish_face_up_counter_replacement();
+                if state.mode == ResumeMode::ActivationCosts
+                    && self.state.activation_payment.is_some()
+                {
+                    if self.resume_activation_payment() {
+                        return self.advance_replacements(resume_program);
+                    }
+                }
                 if state.mode == ResumeMode::CastCosts && self.state.announcing.is_some() {
                     self.finish_announcement();
                 }

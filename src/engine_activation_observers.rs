@@ -59,9 +59,22 @@ impl Game {
         }
     }
     pub(super) fn committed_activation_observers(&mut self, item: &SpellView) {
+        self.commit_activation_use(item);
         let Some(identity) = item.source else {
             return;
         };
+        if let StackKind::ActivatedAbility { ability } = item.kind
+            && !item.is_copy
+            && identity.card.activation(ability).cost.loyalty.is_some()
+        {
+            let source_zone = identity.card.activation(ability).source_zone();
+            if let Some(object) = self.state.objects.get_mut(identity.object.card as usize)
+                && object.generation == identity.object.generation
+                && object.zone == source_zone
+            {
+                object.loyalty_activated_this_turn = true;
+            }
+        }
         if let StackKind::ActivatedAbility { ability } = item.kind
             && !item.is_copy
             && identity.card.activation(ability).cost.loyalty.is_some()

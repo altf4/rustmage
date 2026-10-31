@@ -89,6 +89,7 @@ impl Game {
             .chain(&self.state.ordering_triggers)
             .chain(self.state.resolving.iter().map(|r| &r.item))
             .chain(self.state.announcing.iter().map(|a| &a.item))
+            .chain(self.state.activation_payment.iter().map(|p| &p.item))
     }
     pub(super) fn source_equipment_count(&self, source: ObjectRef) -> Option<u64> {
         (self.on_battlefield(source.card) && self.object_ref(source.card) == source).then(|| {
@@ -182,6 +183,12 @@ impl Game {
             .chain(&mut self.state.ordering_triggers)
             .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
             .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
+            .chain(
+                self.state
+                    .activation_payment
+                    .iter_mut()
+                    .map(|p| &mut p.item),
+            )
         {
             if let Some(saved) = &mut item.source_quantity_lki
                 && let Some((_, frozen)) = facts
