@@ -3,12 +3,12 @@
   "catalogue_id": 3000,
   "oracle_id": "a0c956dc-d7de-4f11-b76f-7537fbee1731",
   "facts_sha256": "0b298ab235d38a24c93c0d172827f51e3e6d778126ab1af57c29815b553791a7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ca51fbdc6762447dbdafcb681da87ffb19df23eccc2d892d017d80eb4528a716"
   },
-  "physical_metadata_sha256": "1cfffc0771b17d425d9dfceec40169e93bdc330b83a745cb3d02c8f3ea0b57d8",
+  "physical_metadata_sha256": "f8a4f84ba9cef27ec0d00d5bebfc4c09a3fe6d15943c99faf9175ebd286e9301",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/o/OkoLorwynLiege.java",
   "java_sha256": "6aa93e93256a34009d20029ae54c031a73feacdc61d7e6cd0e06e194b36887ff",
@@ -23,6 +23,5 @@
       "path": "Mage/src/main/java/mage/game/permanent/token/ElkToken.java",
       "sha256": "f634d8a0a753e49eccf5ee2d9852623f908269eca2899e407124588970ea0543"
     }
-  ],
-  "implementation": "Both faces, Elk, and the chosen-type emblem are authored but gated pending catalogue integration, execution, and review."
+  ]
 }

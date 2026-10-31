@@ -2062,6 +2062,8 @@ pub(crate) enum Instruction {
         subject: Subject,
         types: &'static [&'static str],
     },
+    /// A lasting type-changing effect, not a grant of changeling.
+    GrantAllCreatureTypes(Subject),
     /// Add a basic land subtype to the selected exact land incarnations.
     #[allow(
         dead_code,

@@ -6555,6 +6555,9 @@ impl Game {
                 Instruction::AddCreatureTypes { subject, types } => {
                     self.add_creature_types(&item, subject, types)
                 }
+                Instruction::GrantAllCreatureTypes(subject) => {
+                    self.grant_all_creature_types(&item, subject)
+                }
                 Instruction::AddBasicLandType { subject, kind } => {
                     self.add_basic_land_type(&item, subject, kind);
                 }

@@ -1,4 +1,4 @@
-// Partial back face. The chosen-type emblem remains gated.
+// Complete pinned Oracle and XMage back face.
 const fn loyalty(n: i32) -> ActivationCost {
     ActivationCost {
         colored: [0; 6],
@@ -16,7 +16,7 @@ const fn loyalty(n: i32) -> ActivationCost {
     }
 }
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
+    effect: Effect::Permanent,
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::AtStep {
             step: TriggerStep::Main1,
@@ -58,7 +58,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             cost: loyalty(-3),
             targets: TargetPlan::NONE,
             program: &[Instruction::CreateTokens {
-                token: Card(5471),
+                token: Card(5474),
                 amount: 2,
                 tapped: false,
             }],
@@ -72,7 +72,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             cycling: false,
             cost: loyalty(-6),
             targets: TargetPlan::NONE,
-            program: &[Instruction::CreateEmblemForChosenCreatureType(Card(5472))],
+            program: &[Instruction::CreateEmblemForChosenCreatureType(Card(5475))],
             sorcery: true,
             once_per_turn: false,
         },

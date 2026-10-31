@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "catalogue_version": "905562b5c4dc4d898fea8858ed306674343ab513491f7f6096fdaf5166b721a6",
+  "catalogue_version": "aaee7b9843567b6df5ef141aac604911ffe35283889b9d5af8a1dfeb4abf0ef5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2941,
-  "implemented_total": 2947,
-  "token_definitions": 149,
-  "emblem_definitions": 9,
+  "implemented_standard_cards": 2942,
+  "implemented_total": 2948,
+  "token_definitions": 150,
+  "emblem_definitions": 10,
   "adventure_definitions": 49,
   "omen_definitions": 13,
   "definition_ownership": {
@@ -47,8 +47,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 163,
-      "complete": 104
+      "gated": 162,
+      "complete": 105
     },
     "eoc": {
       "total": 8,
@@ -24202,8 +24202,8 @@
     {
       "name": "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/oko_lorwyn_liege_oko_shadowmoor_scion.rs",
       "set": "ecl"
     },

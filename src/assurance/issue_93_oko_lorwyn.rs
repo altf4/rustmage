@@ -37,7 +37,6 @@ fn pay_for_transform(g: &mut Game) {
 }
 
 #[test]
-#[ignore = "Oko remains gated pending integration and validation"]
 fn oko_lorwyn_liege_whole_card() {
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);

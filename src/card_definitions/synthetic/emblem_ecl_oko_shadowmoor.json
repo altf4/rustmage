@@ -1,12 +1,11 @@
 {
   "name": "@emblem/ecl-oko-shadowmoor",
-  "catalogue_id": 5472,
+  "catalogue_id": 5475,
   "oracle_id": null,
   "facts_sha256": null,
-  "physical_metadata_sha256": "0ee6202f3c62d20a78a5e2494c10e77bbefe6419a8af17169fd61b27d7ffffae",
-  "complete": false,
+  "physical_metadata_sha256": "a28704e1cb444822d82e67e26a8a54bf5e6cb0b93fb17fe0900d48789f42490d",
+  "complete": true,
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/command/emblems/OkoShadowmoorScionEmblem.java",
-  "java_sha256": "e0fdd47abd74ad8bbf897f9ca811fb8bcc9144ee8595c2b0bcd26b5d5a6cab8d",
-  "implementation": "Authored candidate; gated pending catalogue integration, execution, and review."
+  "java_sha256": "e0fdd47abd74ad8bbf897f9ca811fb8bcc9144ee8595c2b0bcd26b5d5a6cab8d"
 }

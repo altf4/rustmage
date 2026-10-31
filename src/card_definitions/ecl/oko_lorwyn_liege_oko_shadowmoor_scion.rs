@@ -1,4 +1,4 @@
-// Partial front-face preparation. The transform pair and back face are still gated.
+// Complete pinned Oracle and XMage front face.
 const fn loyalty(n: i32) -> ActivationCost {
     ActivationCost {
         colored: [0; 6],
@@ -16,7 +16,7 @@ const fn loyalty(n: i32) -> ActivationCost {
     }
 }
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
+    effect: Effect::Permanent,
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::AtStep {
             step: TriggerStep::Main1,
@@ -47,10 +47,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 min: 0,
                 max: 1,
             }),
-            program: &[Instruction::AddCreatureTypes {
-                subject: Subject::Targets,
-                types: CREATURE_TYPES,
-            }],
+            program: &[Instruction::GrantAllCreatureTypes(Subject::Targets)],
             sorcery: true,
             once_per_turn: false,
         },
@@ -71,6 +68,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     ],
     extras: &CardExtras {
         starting_loyalty: 3,
+        transforming_double_face: true,
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

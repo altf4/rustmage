@@ -1,9 +1,9 @@
 {
   "name": "@token/ecl-oko-elk",
-  "catalogue_id": 5471,
+  "catalogue_id": 5474,
   "oracle_id": null,
   "facts_sha256": null,
-  "physical_metadata_sha256": "f6d52a5b070c3d5b02ce0e36d2a0de40febd9e7b34641ab53e81e53e7dbd6341",
+  "physical_metadata_sha256": "72a6b3386d6dfdd22ea94aab9dceabb911baa0c9b40a3d34a6cad4b135318776",
   "complete": true,
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/ElkToken.java",

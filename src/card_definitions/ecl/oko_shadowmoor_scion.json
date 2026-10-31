@@ -1,10 +1,10 @@
 {
   "name": "Oko, Shadowmoor Scion",
-  "catalogue_id": 5470,
+  "catalogue_id": 5473,
   "oracle_id": null,
   "facts_sha256": null,
-  "physical_metadata_sha256": "87d392418f1e433d8585c0561efee26f89fa993b5650416aafcdf9b62c76671f",
-  "complete": false,
+  "physical_metadata_sha256": "d91225f8bef3cbdd3ebec813d5bca5c201a7774a16e7eb9348e65b1a5fcd5462",
+  "complete": true,
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/o/OkoLorwynLiege.java",
   "java_sha256": "6aa93e93256a34009d20029ae54c031a73feacdc61d7e6cd0e06e194b36887ff",
@@ -12,6 +12,5 @@
     "oracle_id": "a0c956dc-d7de-4f11-b76f-7537fbee1731",
     "index": 1,
     "sha256": "b4edecc90be10476d72b4f8613bc4831436a85b82f7f1257a1459ed659c00724"
-  },
-  "implementation": "Authored candidate; gated pending catalogue integration, execution, and review."
+  }
 }

@@ -5478,7 +5478,10 @@
     0,
     0,
     0,
-    9
+    9,
+    16,
+    16,
+    0
   ],
   "aliases": [
     [
@@ -5660,6 +5663,10 @@
     [
       "@emblem/dft-chandra-spark-hunter",
       5471
+    ],
+    [
+      "@emblem/ecl-oko-shadowmoor",
+      5475
     ],
     [
       "@emblem/eoe-tezzeret-cruel-captain",
@@ -6324,6 +6331,10 @@
     [
       "@token/ea4dc4a4f4dec81ce9fea75f",
       5325
+    ],
+    [
+      "@token/ecl-oko-elk",
+      5474
     ],
     [
       "@token/ee2109b8fb7bf7733ccc06cd",
@@ -19050,8 +19061,16 @@
       2999
     ],
     [
+      "Oko, Lorwyn Liege",
+      3000
+    ],
+    [
       "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
       3000
+    ],
+    [
+      "Oko, Shadowmoor Scion",
+      5473
     ],
     [
       "Oko, the Ringleader",
@@ -29032,6 +29051,12 @@
       "name": "Spirit Token",
       "subtypes": "Spirit",
       "colors": 9
+    },
+    {
+      "factory_identity": "@token/ecl-oko-elk",
+      "name": "Elk",
+      "subtypes": "Elk",
+      "colors": 16
     }
   ],
   "emblems": [
@@ -29061,6 +29086,9 @@
     },
     {
       "oracle_text": "Whenever an artifact you control enters, this emblem deals 3 damage to any target."
+    },
+    {
+      "oracle_text": "Creatures you control of the chosen type get +3/+3 and have vigilance and hexproof."
     }
   ],
   "creature_types": [
@@ -115265,7 +115293,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Oko, Lorwyn Liege",
+        "mana_cost": "{2}{U}",
+        "type_line": "Legendary Planeswalker — Oko",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": []
+      },
+      "back_face": 5473
     },
     {
       "index": 3001,
@@ -185522,6 +185566,91 @@
       "type_line": "Creature — Spirit",
       "kind": 1,
       "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5473,
+      "module": "card_5473",
+      "path": "ecl/oko_shadowmoor_scion.rs",
+      "set": "ecl",
+      "category": "back_face",
+      "name": "Oko, Shadowmoor Scion",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Planeswalker — Oko",
+      "oracle_keywords": [
+        "Mill",
+        "Transform"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 64,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 3000
+    },
+    {
+      "index": 5474,
+      "module": "card_5474",
+      "path": "synthetic/token_ecl_oko_elk.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/ecl-oko-elk",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Elk",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5475,
+      "module": "card_5475",
+      "path": "synthetic/emblem_ecl_oko_shadowmoor.rs",
+      "set": "synthetic",
+      "category": "emblem",
+      "name": "@emblem/ecl-oko-shadowmoor",
+      "type_line": "",
+      "kind": 0,
       "oracle_id": null,
       "facts_sha256": null,
       "mana_cost": "",

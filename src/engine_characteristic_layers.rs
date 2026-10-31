@@ -446,6 +446,25 @@ impl Game {
             }
         }
     }
+    pub(super) fn grant_all_creature_types(&mut self, item: &SpellView, subject: Subject) {
+        let spec = AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::All,
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::Permanent,
+        };
+        let recipients = self.keyword_subjects(item, subject);
+        for id in recipients {
+            if self.on_battlefield(id) && self.is_creature(id) {
+                self.change_object_form(
+                    self.object_ref(id),
+                    spec,
+                    AnimationTypeMode::PreserveCardTypes,
+                );
+            }
+        }
+    }
     pub(super) fn animate_noncreature_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
         for target in &item.targets {
             if self.same_target_object(*target)
