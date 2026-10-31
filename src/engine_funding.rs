@@ -344,29 +344,44 @@ fn payable<N: Copy + Into<u128>>(pool: [N; 6], required: Mana, generic: u32) -> 
 // Funding is counterfactual. Its pools can exceed the concrete mana storage
 // bound without overflowing an observation or excluding a mathematically legal plan.
 fn funding_payments(pool: [u128; 6], colored: Mana, generic: u32, mut emit: impl FnMut([u64; 6])) {
+    visit_funding_payments(pool, colored, generic, |payment| {
+        emit(payment);
+        false
+    });
+}
+
+/// Enumerate in the same order as `funding_payments`, stopping when accepted.
+fn visit_funding_payments(
+    pool: [u128; 6],
+    colored: Mana,
+    generic: u32,
+    mut emit: impl FnMut([u64; 6]) -> bool,
+) -> bool {
     if (0..6).any(|i| pool[i] < u128::from(colored[i])) {
-        return;
+        return false;
     }
     fn visit(
         i: usize,
         left: u32,
         pool: [u128; 6],
         mut paid: [u64; 6],
-        emit: &mut impl FnMut([u64; 6]),
-    ) {
+        emit: &mut impl FnMut([u64; 6]) -> bool,
+    ) -> bool {
         if i == 5 {
             if pool[i] >= u128::from(left) {
                 paid[i] += u64::from(left);
-                emit(paid);
+                return emit(paid);
             }
-            return;
+            return false;
         }
         for n in 0..=pool[i].min(u128::from(left)) as u32 {
-            let old = paid[i];
-            paid[i] = old + u64::from(n);
-            visit(i + 1, left - n, pool, paid, emit);
-            paid[i] = old;
+            paid[i] += u64::from(n);
+            if visit(i + 1, left - n, pool, paid, emit) {
+                return true;
+            }
+            paid[i] -= u64::from(n);
         }
+        false
     }
     visit(
         0,
@@ -374,7 +389,7 @@ fn funding_payments(pool: [u128; 6], colored: Mana, generic: u32, mut emit: impl
         std::array::from_fn(|i| pool[i] - u128::from(colored[i])),
         colored.map(u64::from),
         &mut emit,
-    );
+    )
 }
 /// Exact equivalents of one mana ability, with duplicate physical allocations removed.
 fn funding_cost_payments(pool: [u128; 6], cost: ActivationCost, mut emit: impl FnMut([u64; 6])) {
@@ -3964,20 +3979,16 @@ impl Game {
         };
         let mut state = FundingState::from_game(self, &goal);
         state.set_purpose(mana_lots::Purpose::Other);
-        let mut done = false;
-        funding_payments(
+        if visit_funding_payments(
             mana_lots::available(state.mana, &state.lots, state.purpose),
             goal.required,
             goal.generic,
             |payment| {
-                if !done {
-                    done = emit(Action::PayFaceUp {
-                        payment: concrete_payment(payment),
-                    });
-                }
+                emit(Action::PayFaceUp {
+                    payment: concrete_payment(payment),
+                })
             },
-        );
-        if done {
+        ) {
             return true;
         }
         for step in state.moves(&goal) {
@@ -4006,20 +4017,16 @@ impl Game {
             source: None,
         };
         let state = FundingState::from_game(self, &goal);
-        let mut done = false;
-        funding_payments(
+        if visit_funding_payments(
             mana_lots::available(state.mana, &state.lots, state.purpose),
             goal.required,
             goal.generic,
             |payment| {
-                if !done {
-                    done = emit(Action::PayPlot {
-                        payment: concrete_payment(payment),
-                    });
-                }
+                emit(Action::PayPlot {
+                    payment: concrete_payment(payment),
+                })
             },
-        );
-        if done {
+        ) {
             return true;
         }
         for step in state.moves(&goal) {
@@ -4082,20 +4089,16 @@ impl Game {
                 source: None,
             };
             let state = FundingState::from_game(self, &goal);
-            let mut done = false;
-            funding_payments(
+            if visit_funding_payments(
                 mana_lots::available(state.mana, &state.lots, state.purpose),
                 goal.required,
                 goal.generic,
                 |payment| {
-                    if !done {
-                        done = emit(Action::PayResolutionMana {
-                            payment: concrete_payment(payment),
-                        });
-                    }
+                    emit(Action::PayResolutionMana {
+                        payment: concrete_payment(payment),
+                    })
                 },
-            );
-            if done {
+            ) {
                 return true;
             }
         }
@@ -4474,20 +4477,16 @@ impl Game {
             source: None,
         };
         let state = FundingState::from_game(self, &goal);
-        let mut done = false;
-        funding_payments(
+        if visit_funding_payments(
             mana_lots::available(state.mana, &state.lots, state.purpose),
             goal.required,
             goal.generic,
             |payment| {
-                if !done {
-                    done = emit(Action::PayAttackCost {
-                        payment: concrete_payment(payment),
-                    });
-                }
+                emit(Action::PayAttackCost {
+                    payment: concrete_payment(payment),
+                })
             },
-        );
-        if done {
+        ) {
             return true;
         }
         for step in state.moves(&goal) {

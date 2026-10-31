@@ -168,6 +168,9 @@ impl Game {
                     .map(|p| p.life <= 0 || p.poison_counters >= 10 || p.attempted_empty_draw),
             ),
         };
+        // A batch observes one immutable battlefield. Reuse its layer evaluation
+        // across creatures, but rebuild it after any batch changes the world.
+        let characteristics = std::cell::OnceCell::new();
         let mut legends: [std::collections::BTreeMap<&'static str, Vec<ObjectRef>>; 2] =
             std::array::from_fn(|_| std::collections::BTreeMap::new());
         for (index, object) in self.state.objects.iter().enumerate() {
@@ -229,7 +232,8 @@ impl Game {
                     || !self.on_battlefield(target.card)
                     || self.object_ref(target.card) != target
                     || !self.is_creature(target.card)
-                    || self
+                    || characteristics
+                        .get_or_init(|| self.characteristic_query())
                         .keywords(target.card)
                         .contains(Keywords::PROTECTION_EVERYTHING))
             {
@@ -244,10 +248,11 @@ impl Game {
                     .push(self.object_ref(id));
             }
             if self.is_creature(id) {
-                let toughness = self.stats(id).toughness;
+                let query = characteristics.get_or_init(|| self.characteristic_query());
+                let toughness = query.stats(id).toughness;
                 if toughness <= 0
-                    || (!self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
-                        && (object.damage >= toughness || object.deathtouch_since_sba))
+                    || ((object.damage >= toughness || object.deathtouch_since_sba)
+                        && !query.keywords(id).contains(Keywords::INDESTRUCTIBLE))
                 {
                     batch.deaths.push(id);
                 }

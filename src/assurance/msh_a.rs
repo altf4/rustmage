@@ -3096,3 +3096,366 @@ fn msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios() {
         assert!(g.is_creature(id), "{name}");
     }
 }
+
+#[test]
+#[ignore = "manual performance comparison"]
+fn royal_treatment_sba_cost() {
+    for amount in [20, 80, 200] {
+        for treated in [false, true] {
+            let p = Player::P0;
+            let mut g = scenario(p);
+            let mut creatures = Vec::new();
+            for _ in 0..amount {
+                creatures.push(put(&mut g, p, "Bear Cub", Zone::Battlefield));
+            }
+            if treated {
+                spell(
+                    &mut g,
+                    p,
+                    "Royal Treatment",
+                    [0, 0, 0, 0, 1, 0],
+                    Some(Target::Card(creatures[0])),
+                );
+                resolved(&mut g);
+            }
+            let start = std::time::Instant::now();
+            for _ in 0..5 {
+                g.state_based_actions();
+            }
+            println!(
+                "creatures={amount} treated={treated} sba5_us={}",
+                start.elapsed().as_micros()
+            );
+        }
+    }
+}
+
+#[test]
+fn royal_treatment_sba_rechecks_effects_after_deaths_and_restore() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let lord = put(&mut g, p, "Bard's Company", Zone::Battlefield);
+        let treated = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let doomed = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let protected = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        spell(
+            &mut g,
+            p,
+            "Royal Treatment",
+            [0, 0, 0, 0, 1, 0],
+            Some(Target::Card(treated)),
+        );
+        resolved(&mut g);
+        assert_eq!(g.stats(treated).toughness, 4);
+        assert_eq!(g.stats(doomed).toughness, 3);
+        spell(
+            &mut g,
+            p,
+            "Alesha's Legacy",
+            [0, 0, 1, 0, 0, 1],
+            Some(Target::Card(protected)),
+        );
+        resolved(&mut g);
+        assert!(g.keywords(protected).contains(Keywords::INDESTRUCTIBLE));
+        g.state.objects[lord as usize].damage = 3;
+        g.state.objects[doomed as usize].damage = 3;
+        g.state.objects[treated as usize].damage = 3;
+        g.state.objects[protected as usize].damage = 3;
+        contracts::branch_contract(g.clone());
+        let saved = g.snapshot();
+        let mut branch = g.clone();
+        drop(g);
+        branch.state_based_actions();
+        assert_eq!(branch.state.objects[lord as usize].zone, Zone::Graveyard);
+        assert_eq!(branch.state.objects[doomed as usize].zone, Zone::Graveyard);
+        // The treated Bear survives the first batch, then loses the lord's bonus.
+        assert_eq!(branch.state.objects[treated as usize].zone, Zone::Graveyard);
+        assert_eq!(
+            branch.state.objects[protected as usize].zone,
+            Zone::Battlefield
+        );
+        let expected = branch.snapshot();
+        branch.restore(&saved).unwrap();
+        branch.state_based_actions();
+        assert_eq!(branch.snapshot(), expected);
+        contracts::branch_contract(branch);
+    }
+}
+
+#[test]
+fn royal_treatment_sba_full_evaluations_do_not_scale_with_creature_count() {
+    let mut evaluations = Vec::new();
+    for amount in [8, 80] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let first = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        for _ in 1..amount {
+            put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        }
+        spell(
+            &mut g,
+            p,
+            "Royal Treatment",
+            [0, 0, 0, 0, 1, 0],
+            Some(Target::Card(first)),
+        );
+        resolved(&mut g);
+        ability_evaluation::EVALUATION_COUNT.with(|count| count.set(0));
+        g.state_based_actions();
+        evaluations.push(ability_evaluation::EVALUATION_COUNT.with(|count| count.get()));
+    }
+    assert!(evaluations[0] > 0, "fixture must perform a full evaluation");
+    assert_eq!(
+        evaluations[0], evaluations[1],
+        "adding ordinary creatures must not add whole-board evaluations"
+    );
+}
+
+#[test]
+#[ignore = "manual performance comparison"]
+fn syncopate_resolution_payment_cost() {
+    for x in [10_u32, 30, 60] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        g.state.players[p.index()].mana = [x; 6];
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        act(&mut g, Action::Pass);
+        let counter = put(&mut g, p.other(), "Syncopate", Zone::Hand);
+        g.state.players[p.other().index()].mana = [0, 1, 0, 0, 0, x];
+        act(&mut g, Action::AnnounceCast { card: counter });
+        act(&mut g, Action::ChooseX { value: x });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(shock),
+            },
+        );
+        act(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 1, 0, 0, 0, x],
+            },
+        );
+        for _ in 0..8 {
+            if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::ResolutionMana { .. }));
+        assert_eq!(g.actor(), Some(p));
+        let start = std::time::Instant::now();
+        act(
+            &mut g,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, x],
+            },
+        );
+        println!("x={x} apply_payment_us={}", start.elapsed().as_micros());
+        assert_eq!(g.state.objects[shock as usize].zone, Zone::Stack);
+    }
+}
+
+#[test]
+fn syncopate_resolution_payment_order_and_owned_branches() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        act(&mut g, Action::Pass);
+        let counter = put(&mut g, p.other(), "Syncopate", Zone::Hand);
+        g.state.players[p.other().index()].mana = [0, 1, 0, 0, 0, 2];
+        act(&mut g, Action::AnnounceCast { card: counter });
+        act(&mut g, Action::ChooseX { value: 2 });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(shock),
+            },
+        );
+        act(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 1, 0, 0, 0, 2],
+            },
+        );
+        for _ in 0..8 {
+            if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::ResolutionMana { .. }));
+        g.state.players[p.index()].mana = [2, 2, 0, 0, 0, 2];
+        let payments: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter_map(|action| match action {
+                Action::PayResolutionMana { payment } => Some(payment),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(
+            payments,
+            vec![
+                [0, 0, 0, 0, 0, 2],
+                [0, 1, 0, 0, 0, 1],
+                [0, 2, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0, 1],
+                [1, 1, 0, 0, 0, 0],
+                [2, 0, 0, 0, 0, 0],
+            ]
+        );
+        reject(
+            &mut g,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, 3],
+            },
+        );
+        contracts::branch_contract(g.clone());
+        let action = Action::PayResolutionMana {
+            payment: [1, 1, 0, 0, 0, 0],
+        };
+        let index = g
+            .legal_actions()
+            .iter()
+            .position(|candidate| *candidate == action)
+            .unwrap();
+        let saved = g.snapshot();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        drop(g);
+        act(&mut raw, action.clone());
+        indexed.apply_index(p, indexed.revision(), index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.state.objects[shock as usize].zone, Zone::Stack);
+        raw.restore(&saved).unwrap();
+        act(&mut raw, action);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+    }
+}
+
+#[test]
+fn horde_copy_change_then_departure_uses_last_copiable_values() {
+    for departed in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let horde = put(&mut g, p, "Homunculus Horde", Zone::Battlefield);
+        let shuri = put(&mut g, p, "Shuri, Wakandan Inventor", Zone::Battlefield);
+        let echo = put(&mut g, p, "Echo, Perceptive Prodigy", Zone::Battlefield);
+        let archive = put(&mut g, p, "Hedron Archive", Zone::Battlefield);
+        spell(
+            &mut g,
+            p,
+            "Molten Duplication",
+            [0, 0, 0, 1, 0, 1],
+            Some(Target::Card(horde)),
+        );
+        resolved(&mut g);
+        let copied_horde = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(i, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.is_token()
+                    && g.object_view(i as CardId).name() == "Homunculus Horde")
+                    .then_some(i as CardId)
+            })
+            .unwrap();
+        activate(
+            &mut g,
+            p,
+            shuri,
+            0,
+            [0, 0, 0, 0, 0, 1],
+            &[Target::Card(copied_horde), Target::Card(archive)],
+        );
+        let shuri_ability = g.state.stack.last().unwrap().id;
+        spell(&mut g, p, "Quick Study", [0, 1, 0, 0, 0, 2], None);
+        until(&mut g, |g| {
+            g.state.pending == Pending::Priority
+                && g.state.pending_triggers.is_empty()
+                && g.state.stack.iter().any(|i| {
+                    i.source.is_some_and(|s| s.object.card == copied_horde)
+                        && matches!(i.kind, StackKind::TriggeredAbility { .. })
+                })
+        });
+        activate(
+            &mut g,
+            p,
+            echo,
+            0,
+            [0, 0, 0, 0, 0, 1],
+            &[Target::Stack(shuri_ability)],
+        );
+        until(&mut g, |g| g.observe(p).retarget.is_some());
+        act(&mut g, Action::FinishStackTargets);
+        until(&mut g, |g| {
+            g.object_view(copied_horde).name() == "Hedron Archive"
+        });
+        if departed {
+            spell(
+                &mut g,
+                p,
+                "Disenchant",
+                [1, 0, 0, 0, 0, 1],
+                Some(Target::Card(copied_horde)),
+            );
+            // The next pass resolves Disenchant, so branch across the departure itself.
+            act(&mut g, Action::Pass);
+            assert_eq!(g.state.passes, 1);
+            let actor = g.actor().unwrap();
+            let index = g
+                .legal_actions()
+                .iter()
+                .position(|action| *action == Action::Pass)
+                .unwrap();
+            let checkpoint = g.snapshot();
+            let mut indexed = g.clone();
+            let mut replay = g.clone();
+            act(&mut g, Action::Pass);
+            indexed
+                .apply_index(actor, indexed.revision(), index)
+                .unwrap();
+            assert!(!g.on_battlefield(copied_horde));
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            resolved(&mut g);
+            resolved(&mut indexed);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            replay.restore(&checkpoint).unwrap();
+            act(&mut replay, Action::Pass);
+            resolved(&mut replay);
+            assert_eq!(g.snapshot(), replay.snapshot());
+        } else {
+            resolved(&mut g);
+        }
+        let names: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| o.zone == Zone::Battlefield && o.is_token())
+            .map(|(i, _)| g.object_view(i as CardId).name().to_owned())
+            .collect();
+        eprintln!("surviving tokens: {names:?}");
+        let archive_copies = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(i, o)| {
+                o.zone == Zone::Battlefield
+                    && o.is_token()
+                    && g.object_view(*i as CardId).name() == "Hedron Archive"
+            })
+            .count();
+        assert_eq!(
+            archive_copies,
+            if departed { 1 } else { 2 },
+            "Horde must copy the source's current or last-known Hedron Archive characteristics"
+        );
+    }
+}
