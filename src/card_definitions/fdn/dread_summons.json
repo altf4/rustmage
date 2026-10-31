@@ -18,5 +18,7 @@
       "path": "Mage/src/main/java/mage/game/permanent/token/ZombieToken.java",
       "sha256": "5f597b5065b0c9b6edcef5cac9ca6a7a3018a1a7588ef4b983e700bc6a473e4d"
     }
-  ]
+  ],
+  "implementation": "Each actual milled creature card creates the pinned 2/2 black Zombie token, tapped.",
+  "rules_tests": "src/assurance/interactions.rs"
 }

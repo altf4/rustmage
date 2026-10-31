@@ -5,7 +5,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         &[
             Instruction::Mill(PlayerSet::Each, MillAmount::ChosenX),
             Instruction::CreateTokensScaled {
-                token: Card(5268),
+                token: Card(5258),
                 amount: AmountValue::MilledCreatures,
                 tapped: true,
             },
