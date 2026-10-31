@@ -300,6 +300,7 @@ impl Game {
         self.queue_manifest_deaths(events);
         self.creature_death_batch_triggers(events, death_sources);
         self.creature_cards_enter_graveyard_triggers(events);
+        self.creatures_exiled_batch_triggers(events);
         self.graveyard_departure_triggers(events, death_sources);
         self.returned_hand_triggers(events);
         for event in events {

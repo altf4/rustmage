@@ -7,6 +7,36 @@ pub(super) fn owned_bytes(sources: &Sources) -> usize {
     })
 }
 impl Game {
+    pub(super) fn crime_target(&self, player: Player, bound: BoundTarget) -> bool {
+        match bound.target {
+            Target::Player(target) => target != player,
+            Target::Card(id) => bound.object.is_some_and(|reference| {
+                self.state.objects.get(id as usize).is_some_and(|object| {
+                    self.object_ref(id) == reference
+                        && match object.zone {
+                            Zone::Battlefield => object.controller != player,
+                            Zone::Graveyard => object.owner != player,
+                            _ => false,
+                        }
+                })
+            }),
+            Target::Spell(_) | Target::Stack(_) => self
+                .bound_stack_item(&bound)
+                .is_some_and(|target| target.controller != player),
+        }
+    }
+
+    pub(super) fn record_committed_crime(&mut self, item: &SpellView) {
+        let committed = !item.is_copy
+            && match item.kind {
+                StackKind::Spell => item.cast.is_some(),
+                StackKind::ActivatedAbility { .. } | StackKind::TriggeredAbility { .. } => true,
+                _ => false,
+            };
+        if committed && item.crime_qualifying_target && !item.targets.is_empty() {
+            self.state.players[item.controller.index()].committed_crime_this_turn = true;
+        }
+    }
     pub(super) fn register_ability_target_source(&mut self, id: CardId) {
         if self.state.objects[id as usize]
             .card

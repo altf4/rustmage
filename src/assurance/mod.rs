@@ -12,7 +12,9 @@ mod issue_93_aetherspark;
 mod issue_93_ajani;
 mod issue_93_composite;
 mod issue_93_cost_pending;
+mod issue_93_kaya;
 mod issue_93_loyalty;
+mod issue_93_oko_lorwyn;
 mod issue_93_ral;
 mod regressions;
 mod requested_earthbend;
@@ -425,5 +427,7 @@ mod issue_93_tezzeret;
 
 mod issue_93_chandra;
 mod issue_93_jace_reawakened;
+mod issue_93_kaito_bane;
+mod issue_93_oko_ringleader;
 mod issue_93_quintorius_kand;
 mod issue_93_ugin;

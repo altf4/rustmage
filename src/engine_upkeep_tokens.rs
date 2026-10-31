@@ -28,6 +28,7 @@ impl Game {
         delayed.id = self.next_stack_id();
         delayed.kind = StackKind::DelayedTokenCreation { token, amount };
         delayed.targets.clear();
+        delayed.crime_qualifying_target = false;
         delayed.target_type_slots = None;
         delayed.mode = None;
         delayed.cast = None;

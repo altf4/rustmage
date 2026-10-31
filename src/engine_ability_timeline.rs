@@ -43,12 +43,14 @@ impl Card {
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
+                            | StaticAbilityFragment::SourceCounterTurnCreature { .. }
                             | StaticAbilityFragment::SourceGraveyardAllTypes { .. }
                             | StaticAbilityFragment::SourceConditionalKeywords { .. }
                             | StaticAbilityFragment::SourceCounterKeywords { .. }
                             | StaticAbilityFragment::SourcePlusOnePlacedKeywords(..)
                             | StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | StaticAbilityFragment::ChosenCreatureType
+                            | StaticAbilityFragment::ChosenTypeKeywords(..)
                             | StaticAbilityFragment::ChosenBasicLandType
                             | StaticAbilityFragment::AttachedSubtype(..)
                             | StaticAbilityFragment::AttachedLegendary

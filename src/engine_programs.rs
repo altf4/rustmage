@@ -799,6 +799,7 @@ impl Game {
                     | TriggerCondition::CardsLeaveGraveyard
                     | TriggerCondition::CreatureCardLeavesYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
+                    | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::SelfTurnedFaceUp
                     | TriggerCondition::PermanentYouControlTurnedFaceUp
@@ -1184,6 +1185,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            crime_qualifying_target: false,
             target_kinds_lki: None,
             target_type_slots: None,
             reflexive_subject: None,
@@ -1204,6 +1206,7 @@ impl Game {
             source_ability_origin: ability_origin,
             mana_copy_sources: None,
             is_copy: false,
+            ninjutsu_defender: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             return_link: None,
@@ -1234,6 +1237,7 @@ impl Game {
             source_counter_payment: None,
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
+            exiled_trigger_cards: None,
             source_counter_lki: card_quantities::counter_quantity_facts(
                 definition.triggers()[index].program,
                 |kind| source.counters.get(kind),
@@ -1293,10 +1297,12 @@ impl Game {
         slot.source_counter_payment = item.source_counter_payment;
         slot.mana_tap_bonus = item.mana_tap_bonus;
         slot.source_move = item.source_move;
+        slot.crime_qualifying_target = item.crime_qualifying_target;
         if source_still_exact {
             slot.source_counter_lki = item.source_counter_lki;
         }
         let completed = slot.clone();
+        self.record_committed_crime(&completed);
         self.committed_activation_observers(&completed);
     }
 
@@ -1322,6 +1328,7 @@ impl Game {
             self.complete_prepared_cast(object);
         }
         self.register_stack_graveyard_exile(&item);
+        self.record_committed_crime(&item);
         self.committed_activation_observers(&item);
         self.state.stack.push(item);
         let Some((caster, card, _)) = cast else {
@@ -2893,6 +2900,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     delayed.mode = None;
                     delayed.cast = None;
@@ -2958,6 +2966,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     delayed.mode = None;
                     delayed.cast = None;
@@ -2974,6 +2983,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     self.state
                         .delayed_artifact_copies
@@ -3191,6 +3201,7 @@ impl Game {
                             delayed.id = self.next_stack_id();
                             delayed.kind = StackKind::TriggeredAbility { ability };
                             delayed.targets.clear();
+                            delayed.crime_qualifying_target = false;
                             delayed.target_type_slots = None;
                             delayed.mode = None;
                             delayed.cast = None;
@@ -3984,6 +3995,17 @@ impl Game {
                         );
                     }
                     self.stage_entries(moves, None);
+                }
+                Instruction::PutHandSourceAttacking => {
+                    if let Some(source) = item.source
+                        && self.object_ref(source.id) == source.object
+                        && self.state.objects[source.id as usize].zone == Zone::Hand
+                    {
+                        let mut movement = self.entry_move(source.id, Zone::Battlefield, true);
+                        movement.controller = item.controller;
+                        movement.attacking = item.ninjutsu_defender;
+                        self.stage_entries(vec![movement], None);
+                    }
                 }
                 Instruction::ReturnSourceToBattlefield { tapped } => {
                     if self.object_ref(
@@ -4791,6 +4813,9 @@ impl Game {
                 Instruction::CopyControlledNontokenCreaturesNonlegendary => {
                     self.copy_controlled_nontoken_creatures_nonlegendary(item.controller);
                 }
+                Instruction::CopyOtherControlledNonlands => {
+                    self.copy_other_controlled_nonlands(&item);
+                }
                 Instruction::CreateTemporaryArtifactCopy => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
                         self.stage_temporary_copy_creation(
@@ -4800,6 +4825,18 @@ impl Game {
                     }
                 }
                 Instruction::BecomeCopy(spec) => self.resolve_in_place_copy(&item, spec),
+                Instruction::CopyChosenExiledTriggerCreature => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::CopyExiledTriggerCreature,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::IgnoreLegendRuleThisTurn => {
                     self.state.players[item.controller.index()].legend_rule_ignored_this_turn =
                         true;
@@ -5736,6 +5773,7 @@ impl Game {
                     }
                 }
                 Instruction::CreateTokensForChosenCreatureType { .. }
+                | Instruction::CreateEmblemForChosenCreatureType(_)
                 | Instruction::DestroyCreaturesExceptChosenType => {
                     self.state.pending = Pending::CreatureTypeChoice {
                         player: item.controller,
@@ -6553,6 +6591,9 @@ impl Game {
                 }
                 Instruction::AddCreatureTypes { subject, types } => {
                     self.add_creature_types(&item, subject, types)
+                }
+                Instruction::GrantAllCreatureTypes(subject) => {
+                    self.grant_all_creature_types(&item, subject)
                 }
                 Instruction::AddBasicLandType { subject, kind } => {
                     self.add_basic_land_type(&item, subject, kind);

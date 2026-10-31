@@ -247,7 +247,7 @@ impl FundingState<'_> {
                 | EffectChoiceKind::SacrificeAttachedEquipment
         ) || !self.sacrifice_prohibited(r.card))
             && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
-                || (self.game.sneak_attacker(self.actor, r) && self.attacking(r.card)))
+                || (self.game.ninjutsu_attacker(self.actor, r) && self.attacking(r.card)))
             && self.reference(r.card) == r
             && (r != source
                 || !matches!(

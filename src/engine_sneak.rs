@@ -14,9 +14,15 @@ pub(super) const COST: AdditionalCost = AdditionalCost {
     },
 };
 impl Game {
-    pub(super) fn sneak_attacker(&self, actor: Player, r: ObjectRef) -> bool {
+    /// Ninjutsu's unblocked attacker can be returned after blockers, including
+    /// in a combat-damage or end-of-combat priority window. Sneak's own
+    /// announcement check remains restricted to the blockers step.
+    pub(super) fn ninjutsu_attacker(&self, actor: Player, r: ObjectRef) -> bool {
         self.state.active == actor
-            && self.state.step == Step::Blockers
+            && matches!(
+                self.state.step,
+                Step::Blockers | Step::FirstStrikeDamage | Step::CombatDamage | Step::EndCombat
+            )
             && self.object_ref(r.card) == r
             && self.state.objects[r.card as usize].zone == Zone::Battlefield
             && self.state.objects[r.card as usize].controller == actor

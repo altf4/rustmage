@@ -220,6 +220,7 @@ impl Game {
             item.id = self.next_stack_id();
             item.kind = StackKind::DelayedManifestDread;
             item.targets.clear();
+            item.crime_qualifying_target = false;
             item.target_type_slots = None;
             item.mode = None;
             item.cast = None;

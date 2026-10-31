@@ -146,6 +146,7 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::CreatureCardsEnterYourGraveyard
+                    | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies
@@ -238,6 +239,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ConditionalAdditionalLandPlays { .. }
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
+                            | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }
                             | crate::cards::StaticAbilityFragment::SourceGraveyardBonus { .. }
                             | crate::cards::StaticAbilityFragment::ConditionalCreatureModifier { .. }

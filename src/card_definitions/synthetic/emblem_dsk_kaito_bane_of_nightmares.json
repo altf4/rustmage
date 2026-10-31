@@ -1,0 +1,11 @@
+{
+  "name": "@emblem/dsk-kaito-bane-of-nightmares",
+  "catalogue_id": 5476,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/command/emblems/KaitoBaneOfNightmaresEmblem.java",
+  "java_sha256": "feab4261bb69413d99e6389c73a585d11def6d83446bbfcca27209a9b3225b5f",
+  "physical_metadata_sha256": "de945c2012e135aceea0b0199718d85b87bc9aee9e6ffa53ba967d069f209810"
+}

@@ -49256,8 +49256,53 @@ pub(super) mod card_5472 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/token_lci_quintorius_spirit.rs");
 }
+pub(super) mod card_5473 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/oko_shadowmoor_scion.rs");
+}
+pub(super) mod card_5474 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_ecl_oko_elk.rs");
+}
+pub(super) mod card_5475 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/emblem_ecl_oko_shadowmoor.rs");
+}
+pub(super) mod card_5476 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/emblem_dsk_kaito_bane_of_nightmares.rs");
+}
+pub(super) mod card_5477 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_mkm_kaya_spirit.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5473] = [
+pub(super) static RULES: [&CardRules; 5478] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54731,6 +54776,11 @@ pub(super) static RULES: [&CardRules; 5473] = [
     &card_5470::RULES,
     &card_5471::RULES,
     &card_5472::RULES,
+    &card_5473::RULES,
+    &card_5474::RULES,
+    &card_5475::RULES,
+    &card_5476::RULES,
+    &card_5477::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

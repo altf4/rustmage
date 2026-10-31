@@ -108,7 +108,7 @@ impl Game {
             return false;
         }
         if spec.kind == EffectChoiceKind::ReturnUnblockedAttacker
-            && !self.sneak_attacker(actor, object)
+            && !self.ninjutsu_attacker(actor, object)
         {
             return false;
         }
@@ -856,6 +856,8 @@ impl Game {
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)
             | EffectChoiceKind::HandToTop
+            | EffectChoiceKind::ExileCardFromAnyGraveyard
+            | EffectChoiceKind::CopyExiledTriggerCreature
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileSourceAndNamed { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. }
@@ -886,12 +888,17 @@ impl Game {
             | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::DiscardLegendary => self.discard_batch(&[object.card], None),
             EffectChoiceKind::ReturnUnblockedAttacker => {
-                a.item.cast.as_mut().unwrap().sneak_defender = self
+                let defender = self
                     .state
                     .attackers
                     .iter()
                     .find(|v| v.card == object.card)
                     .and_then(|v| v.defender);
+                if let Some(cast) = &mut a.item.cast {
+                    cast.sneak_defender = defender;
+                } else {
+                    a.item.ninjutsu_defender = defender;
+                }
                 self.move_object(object.card, Zone::Hand);
             }
             EffectChoiceKind::ReturnToHand => {

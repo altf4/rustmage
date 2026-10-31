@@ -712,6 +712,11 @@ impl Game {
         };
         let graveyard_observers = if moves.iter().any(|(m, _)| m.before.zone == Zone::Graveyard) {
             self.freeze_graveyard_observers()
+        } else if moves
+            .iter()
+            .any(|(m, _)| m.before.zone == Zone::Battlefield)
+        {
+            self.freeze_exile_batch_observers()
         } else {
             None
         };

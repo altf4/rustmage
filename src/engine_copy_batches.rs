@@ -1,6 +1,25 @@
 //! Freeze every original before one simultaneous token-creation action (CR608.2f).
 use super::*;
 impl Game {
+    pub(super) fn copy_other_controlled_nonlands(&mut self, item: &SpellView) {
+        let source = item.source.map(|source| source.object);
+        let recipes = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                let reference = self.object_ref(id);
+                (object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && Some(reference) != source
+                    && self.current_kinds(id) & 2 == 0)
+                    .then(|| self.copiable_recipe(reference))
+            })
+            .collect();
+        self.stage_copy_recipes(item.controller, recipes);
+    }
     /// Freeze all originals before one simultaneous token creation event.
     pub(super) fn copy_target_players_creatures_with_conditional_sacrifice(
         &mut self,

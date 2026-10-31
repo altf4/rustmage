@@ -1877,6 +1877,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            crime_qualifying_target: false,
             target_kinds_lki: None,
             target_type_slots: None,
             reflexive_subject: None,
@@ -1890,6 +1891,7 @@ impl Game {
             target_allocations: None,
             mana_copy_sources: None,
             is_copy: false,
+            ninjutsu_defender: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             return_link: None,
@@ -1938,6 +1940,7 @@ impl Game {
             source_counter_payment: None,
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
+            exiled_trigger_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
             event_player: None,
@@ -2051,6 +2054,16 @@ impl Game {
         origin_counter_cost: Option<u16>,
     ) {
         let source = item.source.expect("payment announcement has object source");
+        if matches!(item.kind, StackKind::ActivatedAbility { .. })
+            && self.state.objects[source.id as usize].zone == Zone::Hand
+            && item
+                .program()
+                .is_some_and(|(_, program)| program.contains(&Instruction::PutHandSourceAttacking))
+        {
+            // Ninjutsu reveals its exact hand object while the ability is announced.
+            // Public knowledge persists until this incarnation leaves the hand.
+            self.remember_public_hand(source.object);
+        }
         if item.cast.is_some_and(|cast| cast.face == CastFace::Back) {
             self.state.objects[source.id as usize].card = source.card;
         }

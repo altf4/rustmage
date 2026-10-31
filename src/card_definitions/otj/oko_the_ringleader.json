@@ -3,10 +3,30 @@
   "catalogue_id": 3001,
   "oracle_id": "4372b729-dc3d-4469-8fc5-811cc787d653",
   "facts_sha256": "628a7b08194cd9bf9597f269c47b47c5ddc242cc48256b49977aeb6398c909cb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0b6c5ac64ac99e73daf1161e4f12690d1abf6bf574ca220e974389736e00b6bb"
   },
-  "physical_metadata_sha256": "9e9548db5408f42043594625db1e84d9e6eaf4509f019032e1e7ea180cb13a7c"
+  "physical_metadata_sha256": "9e9548db5408f42043594625db1e84d9e6eaf4509f019032e1e7ea180cb13a7c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OkoTheRingleader.java",
+  "java_sha256": "838d685b021c93e6ff31c4880d74a11e1cadd4ba3031b1a569f1f297341a275a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CommittedCrimeWatcher.java",
+      "sha256": "ded2521df7d1f000535a2ae91f2d1ab75538c036a578af155f9f170f304c2728"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ElkToken.java",
+      "sha256": "f634d8a0a753e49eccf5ee2d9852623f908269eca2899e407124588970ea0543"
+    }
+  ]
 }

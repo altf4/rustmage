@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "catalogue_version": "905562b5c4dc4d898fea8858ed306674343ab513491f7f6096fdaf5166b721a6",
+  "catalogue_version": "58b340a31a4c5c313a10bd519b288506b68c3b5a364bcb78e049621c4c4c1883",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2941,
-  "implemented_total": 2947,
-  "token_definitions": 149,
-  "emblem_definitions": 9,
+  "implemented_standard_cards": 2945,
+  "implemented_total": 2951,
+  "token_definitions": 151,
+  "emblem_definitions": 11,
   "adventure_definitions": 49,
   "omen_definitions": 13,
   "definition_ownership": {
@@ -37,8 +37,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 78,
-      "gated": 186
+      "complete": 79,
+      "gated": 185
     },
     "ecc": {
       "total": 7,
@@ -47,8 +47,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 163,
-      "complete": 104
+      "gated": 162,
+      "complete": 105
     },
     "eoc": {
       "total": 8,
@@ -109,8 +109,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 192,
-      "complete": 72
+      "gated": 191,
+      "complete": 73
     },
     "mom": {
       "total": 1,
@@ -131,8 +131,8 @@
     },
     "otj": {
       "total": 264,
-      "complete": 94,
-      "gated": 170
+      "complete": 95,
+      "gated": 169
     },
     "pspl": {
       "total": 1,
@@ -18650,8 +18650,8 @@
     {
       "name": "Kaito, Bane of Nightmares",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/kaito_bane_of_nightmares.rs",
       "set": "dsk"
     },
@@ -18850,8 +18850,8 @@
     {
       "name": "Kaya, Spirits' Justice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/kaya_spirits_justice.rs",
       "set": "mkm"
     },
@@ -24202,16 +24202,16 @@
     {
       "name": "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/oko_lorwyn_liege_oko_shadowmoor_scion.rs",
       "set": "ecl"
     },
     {
       "name": "Oko, the Ringleader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/oko_the_ringleader.rs",
       "set": "otj"
     },

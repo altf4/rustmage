@@ -113,6 +113,8 @@ pub(crate) enum StaticAbilityFragment {
     ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
+    /// Grant keywords to creatures of the source's chosen creature type.
+    ChosenTypeKeywords(Keywords),
     /// Grant keywords to controlled battlefield permanents matching a live kind mask.
     ControlledPermanentKeywords {
         kinds: u16,
@@ -190,6 +192,16 @@ pub(crate) enum StaticAbilityFragment {
         kind: CounterKind,
         minimum: u64,
         subtype: &'static str,
+        keywords: Keywords,
+    },
+    /// On its controller's turn this source becomes a creature with this
+    /// subtype and keyword while it has the required counters. Its type change
+    /// starts in layer four; the same ability's base stats are a separate
+    /// BaseStatSetter fragment in its group.
+    SourceCounterTurnCreature {
+        kind: CounterKind,
+        minimum: u64,
+        subtypes: &'static [&'static str],
         keywords: Keywords,
     },
     /// One source-local conditional effect may span type and stat layers.

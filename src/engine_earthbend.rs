@@ -72,6 +72,7 @@ impl Game {
                 tapped: true,
             }));
             item.targets.clear();
+            item.crime_qualifying_target = false;
             item.target_type_slots = None;
             item.mode = None;
             self.state.pending_triggers.push(item);

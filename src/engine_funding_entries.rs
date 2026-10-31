@@ -323,6 +323,7 @@ impl FundingState<'_> {
             StepGuard::Attacked => state.attacked_this_turn,
             StepGuard::CreatureDied => self.creatures_died > 0,
             StepGuard::OpponentLostLife => self.lost_life(player.other()),
+            StepGuard::CommittedCrimeThisTurn => state.committed_crime_this_turn,
             StepGuard::CardExiledThisTurn => {
                 self.game.state.cards_exiled_this_turn
                     || self.resources.iter().any(|r| {

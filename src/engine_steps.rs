@@ -111,6 +111,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            crime_qualifying_target: false,
             target_kinds_lki: None,
             gift: None,
             reflexive_subject: None,
@@ -126,6 +127,7 @@ impl Game {
             target_allocations: None,
             mana_copy_sources: None,
             is_copy: false,
+            ninjutsu_defender: None,
             delayed_sacrifice: None,
             x: None,
             attachment_trigger: None,
@@ -153,6 +155,7 @@ impl Game {
             life_event: None,
             source_counter_payment: None,
             exiled_symbol_cards: None,
+            exiled_trigger_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
             event_object: None,
@@ -418,6 +421,7 @@ impl Game {
             StepGuard::OpponentLostLife => {
                 return self.state.players[player.other().index()].life_lost_this_turn > 0;
             }
+            StepGuard::CommittedCrimeThisTurn => return p.committed_crime_this_turn,
             StepGuard::SourceTapped => {
                 return if self.on_battlefield(source.card) && self.object_ref(source.card) == source
                 {

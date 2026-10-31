@@ -776,6 +776,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            crime_qualifying_target: false,
             target_kinds_lki: None,
             target_type_slots: None,
             gift: None,
@@ -797,6 +798,7 @@ impl Game {
             source_ability_origin: self.copy_ability_origin(self.object_ref(card)),
             mana_copy_sources: None,
             is_copy: false,
+            ninjutsu_defender: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             return_link: None,
@@ -830,6 +832,7 @@ impl Game {
             source_counter_payment: None,
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
+            exiled_trigger_cards: None,
             source_counter_lki: self.state.objects[card as usize]
                 .card
                 .activations()

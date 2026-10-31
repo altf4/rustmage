@@ -796,6 +796,10 @@ pub enum EffectChoiceKind {
     /// Sacrifice one controlled permanent of greatest mana value among matching kinds.
     SacrificeGreatestManaValue,
     ExileGraveyard,
+    /// During resolution, choose a card from either graveyard without targeting.
+    ExileCardFromAnyGraveyard,
+    /// Optionally choose a creature card captured by an exile-batch trigger.
+    CopyExiledTriggerCreature,
     SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
@@ -1047,6 +1051,8 @@ pub(crate) enum Instruction {
     RemoveCreatureCounterThenDraw,
     /// One simultaneous creation event, with all original recipes frozen first.
     CopyControlledNontokenCreaturesNonlegendary,
+    /// Simultaneously copy each other controlled nonland permanent.
+    CopyOtherControlledNonlands,
     CopyTargetPlayersCreaturesWithConditionalSacrifice,
     /// Preserve all copiable values except the legendary supertype.
     CreateNonlegendaryCopyTokens {
@@ -1251,6 +1257,8 @@ pub(crate) enum Instruction {
     },
     CreateTemporaryArtifactCopy,
     BecomeCopy(InPlaceCopySpec),
+    /// Copy a chosen card from the trigger's exact exile batch onto its token target.
+    CopyChosenExiledTriggerCreature,
     /// The resolving controller ignores the legend rule for the rest of this turn.
     IgnoreLegendRuleThisTurn,
     CreateCopyToken {
@@ -1670,6 +1678,8 @@ pub(crate) enum Instruction {
     DrawMoved,
     GainLifeMoved,
     CreateEmblem(Card),
+    /// Choose a creature type, then create an emblem carrying that choice.
+    CreateEmblemForChosenCreatureType(Card),
     /// The controller’s next committed spell cast this turn cannot be countered.
     GrantNextSpellUncounterable,
     LoseGainedLife(PlayerSet),
@@ -1714,6 +1724,9 @@ pub(crate) enum Instruction {
     ReturnSourceToBattlefield {
         tapped: bool,
     },
+    /// Resolve a hand activation by putting its exact source in tapped and
+    /// attacking the defender captured when its unblocked attacker was returned.
+    PutHandSourceAttacking,
     /// Return the exact graveyard source with an entry counter.
     ReturnSourceToBattlefieldWithCounter {
         tapped: bool,
@@ -2060,6 +2073,8 @@ pub(crate) enum Instruction {
         subject: Subject,
         types: &'static [&'static str],
     },
+    /// A lasting type-changing effect, not a grant of changeling.
+    GrantAllCreatureTypes(Subject),
     /// Add a basic land subtype to the selected exact land incarnations.
     #[allow(
         dead_code,
@@ -3530,6 +3545,7 @@ pub(crate) enum StepGuard {
     Attacked,
     CreatureDied,
     OpponentLostLife,
+    CommittedCrimeThisTurn,
     GainedLife,
     ScriedOrSurveilledThisTurn,
     LoyaltyAbilityActivatedThisTurn,
@@ -3644,6 +3660,8 @@ pub(crate) enum TriggerCondition {
     CreatureCardLeavesYourGraveyard,
     /// One post-event batch of creature cards entering the controller's graveyard.
     CreatureCardsEnterYourGraveyard,
+    /// One trigger for a batch exiling controlled creatures or cards from your graveyard.
+    ControlledCreaturesOrGraveyardCardsExiled,
     ReturnDeath(ReturnDeathFilter),
     /// Delayed ability carried by a produced mana unit, independent of its source.
     ManaSpentForSpell,
