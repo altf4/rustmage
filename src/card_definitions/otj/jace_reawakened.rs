@@ -30,9 +30,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             ordinal: None,
         }),
         targets: TargetPlan::NONE,
-        program: &[Instruction::CopyCastSpell {
-            prior_spells: false,
-        }],
+        program: &[Instruction::CopyPreparedCastSpell],
     }],
     activated: &[
         ActivatedAbility {
