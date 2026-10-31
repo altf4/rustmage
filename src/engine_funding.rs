@@ -2797,6 +2797,21 @@ impl Game {
     pub(super) fn preview_battle_entry(&self, movement: &entries::EntryMove) -> Option<ObjectView> {
         self.ghost_entry_preview(movement)
     }
+    pub(super) fn entry_replacement_has_subtype(
+        &self,
+        movement: &entries::EntryMove,
+        subtype: &str,
+    ) -> bool {
+        let goal = FundingGoal {
+            actor: movement.controller,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        FundingState::from_game(self, &goal).entry_replacement_has_subtype(movement, subtype)
+    }
+
     pub(super) fn ghost_entry_preview(&self, movement: &entries::EntryMove) -> Option<ObjectView> {
         let goal = FundingGoal {
             actor: movement.controller,
