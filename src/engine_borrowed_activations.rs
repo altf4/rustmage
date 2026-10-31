@@ -447,6 +447,9 @@ impl Game {
         for descriptor in &descriptors {
             let ability = descriptor.rules();
             let readiness = self.activation_readiness(actor, ability);
+            if activations::pure_loyalty_placement_prohibited(self, descriptor.source, &readiness) {
+                continue;
+            }
             if ability.cost.loyalty.is_some() && loyalty_used {
                 continue;
             }

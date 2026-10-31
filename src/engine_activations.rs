@@ -11,6 +11,26 @@ impl ActivatedAbility {
     }
 }
 
+/// A pure loyalty activation has no mana-payment window in which to remove a
+/// counter prohibition. Composite costs need their funding world evaluated at
+/// the eventual payment point instead of applying this early restriction.
+pub(super) fn pure_loyalty_placement_prohibited<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    ability: &ActivatedAbility,
+) -> bool {
+    ability.cost.loyalty.is_some_and(|change| change > 0)
+        && !ability.cost.mana_component
+        && ability.cost.additional.is_none()
+        && !ability.cost.tap
+        && !ability.cost.sacrifice
+        && !ability.cost.exile_self
+        && !ability.cost.discard
+        && ability.cost.life == 0
+        && ability.cost.remove.is_none()
+        && replacements::counters_prohibited(world, source)
+}
+
 /// Starting restriction reads the same object overlay in actual and funding worlds.
 pub(super) fn graveyard_cards_at_least<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
@@ -252,7 +272,8 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         let readiness = self.activation_readiness(actor, ability);
-        !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+        !pure_loyalty_placement_prohibited(self, self.object_ref(card), &readiness)
+            && !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && (!ability.cost.sacrifice
                 || !ability_world::CharacteristicWorld::sacrifice_prohibited(self, card))
             && self.printed_abilities_available(card)
