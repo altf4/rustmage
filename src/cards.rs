@@ -1072,6 +1072,8 @@ pub(crate) enum Instruction {
     UpToTargets(AmountValue),
     OfferMiracleCast(ManaCost),
     Cascade,
+    /// Exile until a nonland card at or below this value; cast it or take it.
+    Discover(u16),
     CreateCopyTokenForPlayer {
         subject: Subject,
         amount: u16,
@@ -3676,6 +3678,8 @@ pub(crate) enum TriggerCondition {
     DuringOpponentsTurn(&'static TriggerCondition),
     /// Cast-event origin qualification, independent of spell payment method.
     CastFromHand(&'static TriggerCondition),
+    /// This cast originated in exile, as recorded at announcement.
+    CastFromExile(&'static TriggerCondition),
     OncePerTurn(&'static TriggerCondition),
     /// Qualification checked only when the event occurs.
     When {
@@ -3910,6 +3914,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
+            | Self::CastFromExile(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_treasure_mana(),
@@ -3923,10 +3928,26 @@ impl TriggerCondition {
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
+            | Self::CastFromExile(event)
             | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_hand_cast(),
+            _ => false,
+        }
+    }
+    pub(crate) fn requires_exile_cast(self) -> bool {
+        match self {
+            Self::CastFromExile(_) => true,
+            Self::InZone { event, .. }
+            | Self::Granted(event)
+            | Self::OncePerTurn(event)
+            | Self::DuringOpponentsTurn(event)
+            | Self::CastFromHand(event)
+            | Self::TreasureManaSpent(event)
+            | Self::ManaSpent { event, .. }
+            | Self::When { event, .. }
+            | Self::InterveningIf { event, .. } => event.requires_exile_cast(),
             _ => false,
         }
     }
@@ -3937,6 +3958,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
+            | Self::CastFromExile(event)
             | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
@@ -3954,6 +3976,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::CastFromHand(e)
+            | Self::CastFromExile(e)
             | Self::TreasureManaSpent(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. } => e.mana_spent_rule(),
@@ -3968,6 +3991,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::CastFromHand(e)
+            | Self::CastFromExile(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
             | Self::TreasureManaSpent(e)
@@ -3980,6 +4004,7 @@ impl TriggerCondition {
             Self::DuringOpponentsTurn(_) => true,
             Self::InZone { event, .. }
             | Self::CastFromHand(event)
+            | Self::CastFromExile(event)
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::TreasureManaSpent(event)
@@ -3997,6 +4022,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
+            | Self::CastFromExile(event)
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::TreasureManaSpent(event)
@@ -4014,7 +4040,8 @@ impl TriggerCondition {
             | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::DuringOpponentsTurn(event)
-            | Self::CastFromHand(event) => event.once_per_turn(),
+            | Self::CastFromHand(event)
+            | Self::CastFromExile(event) => event.once_per_turn(),
             _ => false,
         }
     }

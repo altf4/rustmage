@@ -770,7 +770,9 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
-                    TriggerCondition::CastFromHand(_) => unreachable!("unwrapped event"),
+                    TriggerCondition::CastFromHand(_) | TriggerCondition::CastFromExile(_) => {
+                        unreachable!("unwrapped event")
+                    }
                     TriggerCondition::SelfEntersIfCast => same && event.was_cast,
                     TriggerCondition::SelfNontokenEnters => same && !entered.is_token(),
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
@@ -1537,6 +1539,12 @@ impl Game {
                         CastRelation::Any => true,
                     };
                     if related
+                        && (!ability.condition.requires_exile_cast()
+                            || stack.is_some_and(|i| {
+                                self.state.stack[i]
+                                    .cast
+                                    .is_some_and(|c| c.origin == Zone::Exile)
+                            }))
                         && (!ability.condition.requires_hand_cast()
                             || stack.is_some_and(|i| {
                                 self.state.stack[i]
@@ -2792,6 +2800,11 @@ impl Game {
                 }
                 Instruction::Cascade => {
                     if self.start_cascade(&item) {
+                        return;
+                    }
+                }
+                Instruction::Discover(amount) => {
+                    if self.start_discover(&item, amount) {
                         return;
                     }
                 }
