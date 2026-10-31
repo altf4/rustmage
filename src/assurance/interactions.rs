@@ -680,3 +680,79 @@ fn indestructible_survives_destroy_and_menace_requires_two_blockers() {
     );
     act(&mut g, Action::FinishBlockers);
 }
+
+#[test]
+fn bug_hunt_giada_does_not_apply_to_valkyries_return_effect() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Valkyrie's Call", Zone::Battlefield);
+    put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let murder = put(&mut g, p, "Murder", Zone::Hand);
+    cast(&mut g, murder, Some(Target::Card(bear)));
+    settle(&mut g);
+    assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+    assert!(g.has_subtype(bear, "Angel"));
+    assert_eq!(
+        g.counter_count(bear, CounterKind::PlusOne),
+        1,
+        "only Valkyrie's Call's counter applies"
+    );
+}
+
+#[test]
+fn giada_valkyrie_return_separates_entry_replacement_from_angel_trigger() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            let mut g = scenario(p);
+            put(&mut g, p, "Valkyrie's Call", Zone::Battlefield);
+            put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+            let observer = put(&mut g, p, "Youthful Valkyrie", Zone::Battlefield);
+            if doubled {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let before = g.object_ref(bear);
+            let murder = put(&mut g, p, "Murder", Zone::Hand);
+            cast(&mut g, murder, Some(Target::Card(bear)));
+            act(&mut g, Action::Pass);
+            let actor = g.actor().unwrap();
+            let index = g
+                .legal_actions()
+                .iter()
+                .position(|action| *action == Action::Pass)
+                .unwrap();
+            let checkpoint = g.snapshot();
+            let mut indexed = g.clone();
+            let mut replay = g.clone();
+            act(&mut g, Action::Pass);
+            indexed
+                .apply_index(actor, indexed.revision(), index)
+                .unwrap();
+            big_helpers::settle(&mut g);
+            big_helpers::settle(&mut indexed);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            replay.restore(&checkpoint).unwrap();
+            act(&mut replay, Action::Pass);
+            big_helpers::settle(&mut replay);
+            assert_eq!(g.snapshot(), replay.snapshot());
+            assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+            assert_ne!(g.object_ref(bear), before);
+            assert!(g.has_subtype(bear, "Angel"));
+            assert!(g.keywords(bear).contains(Keywords::FLYING));
+            let factor = if doubled { 2 } else { 1 };
+            assert_eq!(g.counter_count(bear, CounterKind::PlusOne), factor);
+            assert_eq!(
+                g.counter_count(observer, CounterKind::PlusOne),
+                factor,
+                "the post-entry Angel type triggers Youthful Valkyrie"
+            );
+            // Printed Angels still receive Giada's replacement for all three Angels.
+            g.state.players[p.index()].mana = [8; 6];
+            let angel = put(&mut g, p, "Serra Angel", Zone::Hand);
+            cast(&mut g, angel, None);
+            big_helpers::settle(&mut g);
+            assert_eq!(g.counter_count(angel, CounterKind::PlusOne), 3 * factor);
+        }
+    }
+}

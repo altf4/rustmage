@@ -972,10 +972,10 @@ impl FundingState<'_> {
                                 && m.controller == provider.controller
                                 && m.before.reference != self.reference(id)
                                 && if m.ghost_vacuum_after.is_some() {
-                                    self.preview_entry_view(m)
+                                    self.preview_entry_view(&m.replacement_preview())
                                         .is_some_and(|view| view.has_subtype(subtype))
                                 } else {
-                                    Game::entry_choice_subtypes(m).has(m.before.card, subtype)
+                                    Game::entry_replacement_subtypes(m).has(m.before.card, subtype)
                                 }
                             {
                                 m.counters.add(CounterKind::PlusOne, count)
@@ -1026,15 +1026,16 @@ impl FundingState<'_> {
                         controller: m.controller,
                         protector: m.battle_protector,
                         subtypes: if m.ghost_vacuum_after.is_some() {
-                            self.preview_entry_view(m).map_or_else(
-                                || Game::entry_choice_subtypes(m),
-                                |view| view.granted_subtypes,
-                            )
+                            self.preview_entry_view(&m.replacement_preview())
+                                .map_or_else(
+                                    || Game::entry_replacement_subtypes(m),
+                                    |view| view.granted_subtypes,
+                                )
                         } else {
-                            Game::entry_choice_subtypes(m)
+                            Game::entry_replacement_subtypes(m)
                         },
                         kind: if m.ghost_vacuum_after.is_some() {
-                            self.preview_entry_view(m)
+                            self.preview_entry_view(&m.replacement_preview())
                                 .map_or_else(|| m.entry_kinds(), |view| view.kinds)
                         } else {
                             m.entry_kinds()
@@ -1045,7 +1046,7 @@ impl FundingState<'_> {
                                 m.controller,
                                 m.before.card,
                             ) {
-                            self.preview_entry_view(m)
+                            self.preview_entry_view(&m.replacement_preview())
                                 .map_or(m.before.power, |view| view.power)
                         } else {
                             m.before.power
@@ -1067,7 +1068,7 @@ impl FundingState<'_> {
             {
                 let mut movement = m.clone();
                 movement.counters = placement.amount.clone();
-                if let Some(view) = self.preview_entry_view(&movement) {
+                if let Some(view) = self.preview_entry_view(&movement.replacement_preview()) {
                     refreshed.subtypes = view.granted_subtypes;
                     refreshed.kind = view.kinds;
                     refreshed.power = view.power;
@@ -2382,6 +2383,64 @@ mod loyalty_incarnation_tests {
             );
             assert!(world.object(walker).loyalty_activated_this_turn);
             assert_eq!(g.snapshot(), saved);
+        }
+    }
+}
+
+#[cfg(test)]
+mod valkyrie_return_replacement_tests {
+    use super::*;
+    use crate::engine::assurance::big_helpers::{named, setup};
+
+    #[test]
+    fn projected_valkyrie_return_does_not_make_giada_apply_early() {
+        for player in [Player::P0, Player::P1] {
+            for doubled in [false, true] {
+                let game = &mut setup(player);
+                let call = named(game, player, "Valkyrie's Call", Zone::Battlefield);
+                named(game, player, "Giada, Font of Hope", Zone::Battlefield);
+                if doubled {
+                    named(game, player, "Doubling Season", Zone::Battlefield);
+                }
+                let bear = named(game, player, "Bear Cub", Zone::Graveyard);
+                let saved = game.snapshot();
+                let mut movement =
+                    entries::EntryMove::from_view(game.object_view(bear), Zone::Battlefield, false);
+                movement.return_modification = Some((ReturnKind::Angel, game.object_ref(call)));
+                movement.effect_counter = Some((CounterKind::PlusOne, 1));
+                let goal = FundingGoal {
+                    actor: player,
+                    required: [0; 6],
+                    generic: 0,
+                    reserve: None,
+                    source: None,
+                };
+                let mut world = FundingState::from_game(game, &goal);
+                if !world.resources.iter().any(|resource| resource.id == bear) {
+                    world.resources.push(Resource {
+                        id: bear,
+                        attacking: false,
+                        object: game.state.objects[bear as usize].clone(),
+                    });
+                }
+                let mut seen = false;
+                world.visit_entry_moves(vec![movement], true, None, &mut |projected| {
+                    seen = true;
+                    assert_eq!(projected.object(bear).zone, Zone::Battlefield);
+                    assert_eq!(
+                        projected.counter_count(bear, CounterKind::PlusOne),
+                        if doubled { 2 } else { 1 }
+                    );
+                    assert!(
+                        projected
+                            .subtypes(bear)
+                            .has(projected.object(bear).card, "Angel")
+                    );
+                    false
+                });
+                assert!(seen);
+                assert_eq!(game.snapshot(), saved);
+            }
         }
     }
 }

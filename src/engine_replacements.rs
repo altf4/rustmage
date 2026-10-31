@@ -2392,7 +2392,9 @@ impl Game {
                             ))
                     {
                         movement.counters = p.amount.clone();
-                        if let Some(view) = self.ghost_entry_preview(&movement) {
+                        if let Some(view) =
+                            self.ghost_entry_preview(&movement.replacement_preview())
+                        {
                             p.subtypes = view.granted_subtypes;
                             p.kind = view.kinds;
                             p.power = view.power;
