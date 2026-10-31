@@ -19,6 +19,7 @@ mod issue_93_loyalty;
 mod issue_93_oko_lorwyn;
 mod issue_93_ral;
 mod regressions;
+mod requested_airbend_core;
 mod requested_bovine_intervention;
 mod requested_earthbend;
 mod requested_freebooter;
@@ -61,7 +62,11 @@ fn scenario(p: Player) -> Game {
 fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
     assert!(
-        card.is_supported() || name == "Ghost Vacuum" || name == "Pyrrhic Strike",
+        card.is_supported()
+            || name == "Ghost Vacuum"
+            || name == "Pyrrhic Strike"
+            || name == "Airbender Ascension"
+            || name == "Appa, Steadfast Guardian",
         "unsupported fixture {name}"
     );
     let id = g.state.objects.len() as CardId;

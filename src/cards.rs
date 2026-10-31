@@ -2170,6 +2170,8 @@ pub(crate) enum Instruction {
     /// Counter; a successfully exiled permanent card gains a lasting free cast.
     CounterPermanentExileCast,
     Exile,
+    /// Exile valid targets and grant each actual exiled card's owner a {2} alternate cast.
+    AirbendTargets,
     ExileTargetsForModifiedCast,
     ExileTargetsPlay {
         next_turn: bool,

@@ -19,6 +19,9 @@ pub struct ExilePlayPermission {
     /// This origin permission requires the free alternative, not a paid cast.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub without_paying_mana_cost: bool,
+    /// A distinct permission to cast for {2} instead of its mana cost.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub airbend: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requires_subtype: Option<&'static str>,
 }
@@ -86,6 +89,7 @@ impl Game {
         self.state.exile_permissions.iter().any(|p| {
             !p.life_instead_of_mana
                 && !p.without_paying_mana_cost
+                && !p.airbend
                 && p.player == player
                 && p.object == self.object_ref(card)
                 && p.expiry.active(self.state.turn)
@@ -97,6 +101,7 @@ impl Game {
             || self.can_play_adventure(player, card)
             || self.state.exile_permissions.iter().any(|p| {
                 !p.without_paying_mana_cost
+                    && !p.airbend
                     && p.player == player
                     && p.object == self.object_ref(card)
                     && p.expiry.active(self.state.turn)
@@ -206,6 +211,7 @@ impl Game {
                 exile_on_graveyard: false,
                 life_instead_of_mana: false,
                 without_paying_mana_cost: false,
+                airbend: false,
                 requires_subtype: None,
             },
         );
@@ -534,6 +540,7 @@ impl Game {
                 exile_on_graveyard: false,
                 life_instead_of_mana: false,
                 without_paying_mana_cost: true,
+                airbend: false,
                 requires_subtype: None,
             },
         );
@@ -633,6 +640,7 @@ impl Game {
                     exile_on_graveyard: false,
                     life_instead_of_mana: false,
                     without_paying_mana_cost: false,
+                    airbend: false,
                     requires_subtype: Some(subtype),
                 },
             );
@@ -671,4 +679,106 @@ pub(super) fn threshold_linked_source_available<W: ability_world::Characteristic
                 )
             },
         )
+}
+
+impl Game {
+    pub(super) fn configure_airbend_cast(item: &mut SpellView, flash_surcharge: bool) {
+        let cast = item.cast.as_mut().expect("cast information");
+        cast.method = CastMethod::Airbend;
+        cast.flash_surcharge = flash_surcharge;
+        cast.spend_any_mana = false;
+        cast.exile_on_graveyard = false;
+        cast.stash_origin = false;
+        if item.source.expect("cast source").card.x_symbols() > 0 {
+            item.x = Some(0);
+        }
+    }
+    pub(super) fn has_airbend_permission(&self, player: Player, card: CardId) -> bool {
+        self.state.objects[card as usize].zone == Zone::Exile
+            && self.state.exile_permissions.iter().any(|row| {
+                row.airbend
+                    && row.player == player
+                    && row.object == self.object_ref(card)
+                    && row.expiry.active(self.state.turn)
+                    && self.exile_permission_guard(row)
+            })
+    }
+    pub(super) fn grant_airbend_permission(&mut self, player: Player, object: ObjectRef) {
+        if self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+            || self.state.objects[object.card as usize].is_token()
+            || self.state.objects[object.card as usize].is_spell_copy()
+        {
+            return;
+        }
+        if self.has_airbend_permission(player, object.card) {
+            return;
+        }
+        let at = self
+            .state
+            .exile_permissions
+            .partition_point(|row| row.object.card < object.card);
+        self.state.exile_permissions.insert(
+            at,
+            ExilePlayPermission {
+                object,
+                player,
+                expiry: ExilePlayExpiry::WhileExiled,
+                spend_any_mana: false,
+                cast_only: true,
+                exile_on_graveyard: false,
+                life_instead_of_mana: false,
+                without_paying_mana_cost: false,
+                airbend: true,
+                requires_subtype: None,
+            },
+        );
+    }
+    pub(super) fn visit_airbend_casts(
+        &self,
+        player: Player,
+        card: CardId,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        if !self.has_airbend_permission(player, card)
+            || self.state.objects[card as usize].is_token()
+        {
+            return false;
+        }
+        let physical = self.state.objects[card as usize].card;
+        for face in [
+            CastFace::Normal,
+            CastFace::Adventure,
+            CastFace::Omen,
+            CastFace::Back,
+        ] {
+            let definition = match face {
+                CastFace::Normal => Some(physical),
+                CastFace::Adventure => physical.adventure_spell(),
+                CastFace::Omen => physical.omen_spell(),
+                CastFace::Back => physical.back_face(),
+            };
+            if !definition.is_some_and(|d| !d.is_land()) {
+                continue;
+            }
+            for flash_surcharge in [false, true] {
+                if self.permitted_cast_available(
+                    player,
+                    card,
+                    CastMethod::Airbend,
+                    face,
+                    sorcery,
+                    flash_surcharge,
+                ) && emit(Action::AnnounceAirbend {
+                    card,
+                    face,
+                    flash_surcharge,
+                }) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
 }

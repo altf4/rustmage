@@ -814,7 +814,13 @@ impl Game {
                 .and_then(|a| a.item.cast.map(|cast| cast.origin))
                 .unwrap_or(self.state.objects[card as usize].zone)
                 == Zone::Hand;
-        source.spend_any_mana = self.exile_cast_modifiers(actor, card).0
+        let airbend_announcement = self.state.announcing.as_ref().is_some_and(|a| {
+            a.item.source.is_some_and(|source| source.id == card)
+                && a.item
+                    .cast
+                    .is_some_and(|cast| cast.method == CastMethod::Airbend)
+        });
+        source.spend_any_mana = (!airbend_announcement && self.exile_cast_modifiers(actor, card).0)
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item
                     .source

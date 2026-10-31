@@ -214,6 +214,7 @@ impl Game {
         let card = match *action {
             Action::AnnounceCast { card }
             | Action::AnnounceExile { card }
+            | Action::AnnounceAirbend { card, .. }
             | Action::AnnounceExileLife { card, .. }
             | Action::AnnounceExileFree { card, .. }
             | Action::AnnounceFlashSurcharge { card }

@@ -162,6 +162,12 @@ impl Game {
                     .warp_cost()
                     .expect("fixed Warp cost");
             }
+            if a.item.cast.is_some_and(|c| c.method == CastMethod::Airbend) {
+                return ManaCost {
+                    colored: [0; 6],
+                    generic: 2,
+                };
+            }
             if a.item.cast.is_some_and(|c| {
                 matches!(
                     c.method,

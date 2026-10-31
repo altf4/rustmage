@@ -6054,6 +6054,7 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::AirbendTargets => self.airbend_targets(&item),
                 Instruction::ExileTargetsForModifiedCast => {
                     self.exile_targets_for_modified_cast(&item)
                 }

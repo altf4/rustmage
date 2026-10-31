@@ -1703,6 +1703,78 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
     true
 }
 
+// Airbend adds an exact alternate-cost exile permission and public cast action.
+// Old traces can be compared only while no airbend consumer or right is present.
+fn prior_schema197_state_supported(state: &State) -> bool {
+    state.objects.iter().all(|object| {
+        !matches!(
+            object.card.identity(),
+            "Airbender Ascension" | "Appa, Steadfast Guardian"
+        )
+    }) && state
+        .exile_permissions
+        .iter()
+        .all(|permission| !permission.airbend)
+        && state
+            .stack
+            .iter()
+            .chain(&state.pending_triggers)
+            .chain(&state.ordering_triggers)
+            .all(|item| {
+                item.cast
+                    .is_none_or(|cast| cast.method != CastMethod::Airbend)
+            })
+        && state.announcing.as_ref().is_none_or(|announcement| {
+            announcement
+                .item
+                .cast
+                .is_none_or(|cast| cast.method != CastMethod::Airbend)
+        })
+        && state
+            .cast_rollback
+            .as_ref()
+            .is_none_or(|rollback| prior_schema197_state_supported(&rollback.before))
+}
+fn project_prior_schema197(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::String(text)
+                if matches!(text.as_str(), "Airbend" | "AnnounceAirbend") =>
+            {
+                Err("airbend cast has no schema 196 representation".into())
+            }
+            serde_json::Value::Array(rows) => rows.iter().try_for_each(check),
+            serde_json::Value::Object(fields) => {
+                if fields.contains_key("airbend") || fields.contains_key("AnnounceAirbend") {
+                    return Err("airbend permission has no schema 196 representation".into());
+                }
+                fields.values().try_for_each(check)
+            }
+            _ => Ok(()),
+        }
+    }
+    check(&serde_json::from_str(input).map_err(|e| e.to_string())?)?;
+    Ok(input.to_owned())
+}
+
+#[test]
+fn prior_schema197_rejects_airbend_rights_and_actions() {
+    let ordinary = r#"[{"action":"Pass","object":true}]"#;
+    assert_eq!(project_prior_schema197(ordinary).unwrap(), ordinary);
+    for value in [
+        r#"[{"action":"AnnounceAirbend"}]"#,
+        r#"[{"method":"Airbend"}]"#,
+        r#"[{"exile_permissions":[{"airbend":true}]}]"#,
+    ] {
+        assert!(project_prior_schema197(value).is_err());
+    }
+    let mut game = scenario(Player::P0);
+    assert!(prior_schema197_state_supported(&game.state));
+    let card = put(&mut game, Player::P0, "Bear Cub", Zone::Exile);
+    game.grant_airbend_permission(Player::P0, game.object_ref(card));
+    assert!(!prior_schema197_state_supported(&game.state));
+}
+
 /// Outside-entry replacement choices and continuations have no schema-191
 /// representation. Keep all outside-owned states conservative until their
 /// complete future behavior has an equivalent old-contract proof.
@@ -4158,7 +4230,7 @@ fn prior_schema184_state_supported(state: &State) -> bool {
 
 #[test]
 fn schema184_preserves_old_bytes_and_rejects_changed_card_and_paid_offer() {
-    assert_eq!(OBSERVATION_SCHEMA, 196);
+    assert_eq!(OBSERVATION_SCHEMA, 197);
     let old = r#"[{"resolution_free_casts":{"paid":null},"other":true}]"#;
     assert_eq!(project_prior_schema184(old).unwrap(), old);
     for card in ["Chandra, Torch of Defiance", "@emblem/fra-chandra-torch"] {
@@ -6957,7 +7029,18 @@ fn trace_candidate_with_prepared_observation_audit(
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 196) {
+    if schema_projection.is_some_and(|schema| schema < 197) {
+        if !prior_schema197_state_supported(&g.state) {
+            projection_error =
+                Some("owned airbend state cannot be projected to schema 196".to_owned());
+        } else {
+            match project_prior_schema197(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 196) {
         if !prior_schema196_state_supported(&g.state) {
             projection_error = Some(
                 "owned Ashiok or life-payment state cannot be projected to schema 195".to_owned(),

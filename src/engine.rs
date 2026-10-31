@@ -676,6 +676,7 @@ define_actions! {
         card: CardId,
     },
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceAirbend { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceDisguise { card: CardId },
@@ -1058,6 +1059,7 @@ pub enum CastMethod {
     GraveyardCounterCost,
     Free,
     ExileLife,
+    Airbend,
     GrantedFlashback,
     Flashback,
     Harmonize,
@@ -4541,6 +4543,7 @@ impl Game {
                             self.can_play_exiled(actor, card)
                                 || self.has_exile_life_permission(actor, card)
                                 || self.has_exile_free_permission(actor, card)
+                                || self.has_airbend_permission(actor, card)
                                 || self.plotted_cast_available(actor, card)
                         }
                         _ => false,
@@ -4709,6 +4712,11 @@ impl Game {
                     }
                     if !casting_prohibited
                         && self.visit_exile_free_casts(actor, card, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if !casting_prohibited
+                        && self.visit_airbend_casts(actor, card, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -6210,6 +6218,16 @@ impl Game {
                 item.cast.as_mut().unwrap().method = CastMethod::GrantedFlashback;
                 item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
                 self.state.objects[card as usize].flashback = true;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceAirbend {
+                card,
+                face,
+                flash_surcharge,
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                Self::configure_airbend_cast(&mut item, flash_surcharge);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceExileLife {

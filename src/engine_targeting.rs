@@ -69,6 +69,10 @@ impl Announcement {
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Miracle => self.miracle_cost,
+            CastMethod::Airbend => Some(ManaCost {
+                colored: [0; 6],
+                generic: 2,
+            }),
             CastMethod::Disguise => Some(ManaCost {
                 colored: [0; 6],
                 generic: 3,
@@ -137,6 +141,7 @@ impl Announcement {
                             .mana_alternative_replaces_additional(cost)
                     }),
                     CastMethod::ExileLife
+                    | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
                     | CastMethod::Miracle => {
@@ -260,6 +265,18 @@ impl Announcement {
                     .expect("announcement has object source")
                     .card
                     .flashback_cost_options()
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Airbend) =>
+            {
+                std::iter::once(ManaCost {
+                    colored: [0; 6],
+                    generic: 2,
+                })
+                .chain([].iter().copied())
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| {

@@ -147,6 +147,7 @@ impl Game {
                     exile_on_graveyard: false,
                     life_instead_of_mana: false,
                     without_paying_mana_cost: false,
+                    airbend: false,
                     requires_subtype: None,
                 },
             );
