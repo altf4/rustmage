@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ac6d6a1e47da5614d3d9c0597501a83d0d9c10d816a024ae054c37aa10586ab5",
+  "catalogue_version": "be9de51cb85fe8690f0cf947e31de54541ce3d3870e0543f323e28d3eb07cea3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2950,
-  "implemented_total": 2956,
+  "implemented_standard_cards": 2951,
+  "implemented_total": 2957,
   "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -37,8 +37,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 79,
-      "gated": 185
+      "complete": 80,
+      "gated": 184
     },
     "ecc": {
       "total": 7,
@@ -13954,8 +13954,8 @@
     {
       "name": "Get Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/get_out.rs",
       "set": "dsk"
     },

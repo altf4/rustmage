@@ -22,6 +22,7 @@ mod requested_bovine_intervention;
 mod requested_earthbend;
 mod requested_freebooter;
 mod requested_full_bore;
+mod requested_get_out;
 mod requested_ghost;
 mod requested_hunters_talent;
 mod requested_inevitable_defeat;
