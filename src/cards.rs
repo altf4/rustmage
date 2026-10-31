@@ -664,6 +664,8 @@ pub(crate) enum LibrarySelectionFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibrarySelectionCount {
     Fixed(u16),
+    /// Any number of the eligible cards in the looked group.
+    All,
     /// One uniformly random eligible card, without a player selection.
     RandomOne,
     Lessons,
