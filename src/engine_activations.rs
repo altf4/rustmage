@@ -19,8 +19,25 @@ pub(super) fn pure_loyalty_placement_prohibited<W: ability_world::Characteristic
     source: ObjectRef,
     ability: &ActivatedAbility,
 ) -> bool {
+    !ability.cost.mana_component && simple_loyalty_placement_prohibited(world, source, ability)
+}
+
+/// Whether this simple mana-bearing loyalty cost cannot currently place its
+/// counters. Funding must re-evaluate this in each projected payment world.
+pub(super) fn mana_loyalty_placement_prohibited<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    ability: &ActivatedAbility,
+) -> bool {
+    ability.cost.mana_component && simple_loyalty_placement_prohibited(world, source, ability)
+}
+
+fn simple_loyalty_placement_prohibited<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    ability: &ActivatedAbility,
+) -> bool {
     ability.cost.loyalty.is_some_and(|change| change > 0)
-        && !ability.cost.mana_component
         && ability.cost.additional.is_none()
         && !ability.cost.tap
         && !ability.cost.sacrifice
@@ -497,6 +514,9 @@ impl Game {
                     // A direct action cannot declare which optional whole-cost
                     // route it pays; expose the explicit announcement instead.
                     if self.first_equip_zero_available(actor, ability) {
+                        return false;
+                    }
+                    if mana_loyalty_placement_prohibited(self, self.object_ref(card), ability) {
                         return false;
                     }
                     if object

@@ -8,6 +8,7 @@ mod fra_complete_games;
 mod fra_coverage_gaps;
 mod fra_way_loyalty_foundation;
 mod interactions;
+mod issue_93_composite;
 mod issue_93_loyalty;
 mod regressions;
 mod requested_earthbend;

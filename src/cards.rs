@@ -4897,6 +4897,10 @@ impl Card {
             return sacrifice_mana_fixture::abilities();
         }
         #[cfg(test)]
+        if self == Card::test_index(470) && sacrifice_mana_fixture::enabled() {
+            return sacrifice_mana_fixture::abilities();
+        }
+        #[cfg(test)]
         if self == Card::JacePlaneswalkerToken && composite_loyalty_fixture::enabled() {
             return composite_loyalty_fixture::abilities();
         }
@@ -4968,6 +4972,16 @@ impl Card {
         self,
         ability: u16,
     ) -> Option<TargetActivationReduction> {
+        #[cfg(test)]
+        if self == Card::JacePlaneswalkerToken
+            && ability == 0
+            && composite_loyalty_fixture::target_discount()
+        {
+            return Some(TargetActivationReduction {
+                rule: TargetRule::Creature,
+                generic: 1,
+            });
+        }
         authored::RULES[self.index()]
             .extras
             .activation_target_reductions
@@ -5297,6 +5311,12 @@ pub(crate) mod composite_loyalty_fixture {
         pub(crate) fn with_mana_two_counters() -> Self {
             Self::set(3)
         }
+        pub(crate) fn with_mana_positive() -> Self {
+            Self::set(4)
+        }
+        pub(crate) fn with_mana_positive_target() -> Self {
+            Self::set(5)
+        }
         fn set(mode: u8) -> Self {
             MODE.with(|value| {
                 assert_eq!(value.replace(mode), 0);
@@ -5312,10 +5332,15 @@ pub(crate) mod composite_loyalty_fixture {
     pub(super) fn enabled() -> bool {
         MODE.with(|value| value.get() != 0)
     }
+    pub(super) fn target_discount() -> bool {
+        MODE.with(|value| value.get() == 5)
+    }
     pub(super) fn abilities() -> &'static [ActivatedAbility] {
         match MODE.with(|value| value.get()) {
             2 => MANA_ABILITIES,
             3 => TWO_COUNTER_ABILITIES,
+            4 => POSITIVE_MANA_ABILITIES,
+            5 => POSITIVE_MANA_TARGET_ABILITIES,
             _ => ABILITIES,
         }
     }
@@ -5360,6 +5385,27 @@ pub(crate) mod composite_loyalty_fixture {
     const ABILITIES: &[ActivatedAbility] = &[ability(false, 1)];
     const MANA_ABILITIES: &[ActivatedAbility] = &[ability(true, 1)];
     const TWO_COUNTER_ABILITIES: &[ActivatedAbility] = &[ability(true, 2)];
+    const POSITIVE_MANA_ABILITIES: &[ActivatedAbility] = &[ActivatedAbility {
+        cost: ActivationCost {
+            colored: [0; 6],
+            generic: 1,
+            alternatives: &[],
+            additional: None,
+            mana_component: true,
+            tap: false,
+            sacrifice: false,
+            exile_self: false,
+            discard: false,
+            life: 0,
+            remove: None,
+            loyalty: Some(1),
+        },
+        ..ability(false, 0)
+    }];
+    const POSITIVE_MANA_TARGET_ABILITIES: &[ActivatedAbility] = &[ActivatedAbility {
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+        ..POSITIVE_MANA_ABILITIES[0]
+    }];
 }
 
 #[cfg(test)]
