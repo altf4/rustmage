@@ -421,3 +421,5 @@ mod fra_mixed_zone_cost_tests;
 mod issue_93_elspeth;
 
 mod issue_93_tezzeret;
+
+mod issue_93_ugin;

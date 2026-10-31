@@ -1560,6 +1560,10 @@ impl Game {
                                         self.state.objects[source.id as usize].is_spell_copy()
                                     })
                             })
+                        } else if filter == CastFilter::Colorless {
+                            stack
+                                .and_then(|i| self.state.stack[i].source)
+                                .map_or(card.colors() == 0, |source| source.facts.colors == 0)
                         } else {
                             self.cast_filter_matches_value(
                                 spell_owner,

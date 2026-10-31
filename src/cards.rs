@@ -714,6 +714,8 @@ pub(crate) struct LibrarySelectionEffect {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
     Any,
+    Colorless,
+    Nonland,
     ManaValue { minimum: u64, maximum: u64 },
     AnyOf(&'static [SearchFilter]),
     AllOf(&'static [SearchFilter]),
@@ -732,6 +734,8 @@ impl SearchFilter {
     pub(crate) fn matches(self, card: Card) -> bool {
         match self {
             Self::Any => true,
+            Self::Colorless => card.colors() == 0,
+            Self::Nonland => !card.is_land(),
             Self::ManaValue { minimum, maximum } => {
                 (minimum..=maximum).contains(&card.fixed_mana_value())
             }
@@ -759,6 +763,8 @@ pub enum SearchDestination {
     HandOrGraveyard,
     /// Face-up exile linked to this exact source incarnation, without an automatic return.
     LinkedExile,
+    /// Exile the found cards and allow their controller to cast them free this turn.
+    ExileFreeThisTurn,
     Graveyard,
     /// Shuffle, then put the selected cards on top (last selected uppermost).
     Top,
@@ -3325,6 +3331,7 @@ pub(crate) enum CastFilter {
     SourceChosenManaValueParity,
     PermanentAdventure,
     Any,
+    Colorless,
     Creature,
     Noncreature,
     /// Historical qualifying cast ordinal, evaluated only with the actual caster.
@@ -3369,6 +3376,7 @@ impl CastFilter {
     pub(crate) fn matches_mana_value(self, card: Card, mana_value: u64) -> bool {
         match self {
             Self::Any => true,
+            Self::Colorless => card.colors() == 0,
             Self::HasX => card.x_symbols() > 0,
             Self::PermanentAdventure => {
                 card.adventure_spell().is_some()
