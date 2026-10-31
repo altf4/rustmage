@@ -1,5 +1,4 @@
-// Pinned Oracle and XMage source recorded beside this file. Gated until the
-// crime commit boundaries and multi-copy interactions have been validated.
+// Complete Oracle and pinned XMage behavior; admission awaits gameplay validation.
 const fn loyalty(amount: i32) -> ActivationCost {
     ActivationCost {
         loyalty: Some(amount),
@@ -7,7 +6,7 @@ const fn loyalty(amount: i32) -> ActivationCost {
     }
 }
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
+    effect: Effect::Permanent,
     extras: &CardExtras {
         starting_loyalty: 3,
         ..CardExtras::EMPTY

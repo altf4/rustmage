@@ -1,22 +1,21 @@
-//! Provisional whole-card scenario while Oko and crime history remain gated.
+//! Oko’s printed abilities through normal legal actions and owned replay.
 use super::big_helpers::{cast as paid_cast, checked, settle as finish};
 use super::*;
 
-fn gated_oko(g: &mut Game, player: Player) -> CardId {
-    let id = put(g, player, "Bear Cub", Zone::Battlefield);
-    g.state.objects[id as usize].card = Card::from_name("Oko, the Ringleader").unwrap();
-    g.state.objects[id as usize].counters.loyalty = 3;
-    g.register_battlefield_sources(id);
+fn cast_oko(g: &mut Game, player: Player) -> CardId {
+    let id = put(g, player, "Oko, the Ringleader", Zone::Hand);
+    paid_cast(g, id, None, &[]);
+    finish(g);
+    assert_eq!(g.counter_count(id, CounterKind::Loyalty), 3);
     id
 }
 
 #[test]
-fn oko_ringleader_full_card_provisional() {
-    let elk = Card::from_name("@token/otj-oko-elk").unwrap();
+fn oko_ringleader_full_card() {
+    let elk = Card::from_name("@token/ecl-oko-elk").unwrap();
     for player in [Player::P0, Player::P1] {
         for crime in [false, true] {
             let mut g = scenario(player);
-            let oko = gated_oko(&mut g, player);
             let shock = put(&mut g, player, "Shock", Zone::Hand);
             let target = if crime { player.other() } else { player };
             paid_cast(&mut g, shock, None, &[Target::Player(target)]);
@@ -25,6 +24,7 @@ fn oko_ringleader_full_card_provisional() {
                 g.observe(player).players[player.index()].committed_crime_this_turn,
                 crime
             );
+            let oko = cast_oko(&mut g, player);
             checked(
                 &mut g,
                 Action::AnnounceActivate {
@@ -38,7 +38,7 @@ fn oko_ringleader_full_card_provisional() {
             assert_eq!(g.hand_count(player), usize::from(crime));
         }
         let mut tokens = scenario(player);
-        let oko = gated_oko(&mut tokens, player);
+        let oko = cast_oko(&mut tokens, player);
         checked(
             &mut tokens,
             Action::AnnounceActivate {
@@ -60,7 +60,7 @@ fn oko_ringleader_full_card_provisional() {
         assert!(tokens.has_subtype(elk_id, "Elk"));
 
         let mut combat = scenario(player);
-        let oko = gated_oko(&mut combat, player);
+        let oko = cast_oko(&mut combat, player);
         let bear = put(&mut combat, player, "Bear Cub", Zone::Battlefield);
         combat.begin_step(Step::BeginCombat);
         combat.give_priority();
@@ -81,7 +81,7 @@ fn oko_ringleader_full_card_provisional() {
         assert_eq!(combat.object_view(oko).card.name(), "Oko, the Ringleader");
 
         let mut copies = scenario(player);
-        let oko = gated_oko(&mut copies, player);
+        let oko = cast_oko(&mut copies, player);
         copies.state.objects[oko as usize].counters.loyalty = 5;
         let bear = put(&mut copies, player, "Bear Cub", Zone::Battlefield);
         let land = put(&mut copies, player, "Forest", Zone::Battlefield);
