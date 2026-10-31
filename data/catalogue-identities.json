@@ -5484,7 +5484,8 @@
     0,
     0,
     5,
-    4
+    4,
+    1
   ],
   "aliases": [
     [
@@ -6450,6 +6451,10 @@
     [
       "@token/mowu",
       5436
+    ],
+    [
+      "@token/msc-bovine-ox",
+      5479
     ],
     [
       "@token/msh-alien",
@@ -29084,6 +29089,12 @@
       "name": "Nightmare Token",
       "subtypes": "Nightmare",
       "colors": 4
+    },
+    {
+      "factory_identity": "@token/msc-bovine-ox",
+      "name": "Ox Token",
+      "subtypes": "Ox",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -185762,6 +185773,33 @@
       "category": "token",
       "name": "@token/woe-ashiok-nightmare",
       "type_line": "Creature — Nightmare",
+      "kind": 1,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5479,
+      "module": "card_5479",
+      "path": "synthetic/token_msc_bovine_ox.rs",
+      "category": "token",
+      "name": "@token/msc-bovine-ox",
+      "type_line": "Creature — Ox",
       "kind": 1,
       "set": "synthetic",
       "oracle_id": null,

@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "d88cc9fb858b9279ed5b2da07447258f192f9fff58aad7df24d068db9fa0fa9b",
+  "catalogue_version": "9a6e72bc4efda85145a74b9ed16a9b7b4dc010e5b6fd5c63fbab4c592510954a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2947,
-  "implemented_total": 2953,
-  "token_definitions": 152,
+  "implemented_standard_cards": 2948,
+  "implemented_total": 2954,
+  "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
   "omen_definitions": 13,
@@ -118,8 +118,8 @@
     },
     "msc": {
       "total": 68,
-      "complete": 44,
-      "gated": 24
+      "complete": 45,
+      "gated": 23
     },
     "msh": {
       "total": 273,
@@ -4354,8 +4354,8 @@
     {
       "name": "Bovine Intervention",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/bovine_intervention.rs",
       "set": "msc"
     },
