@@ -146,6 +146,7 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::CreatureCardsEnterYourGraveyard
+                    | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies

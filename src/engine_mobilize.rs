@@ -294,6 +294,7 @@ impl Game {
                 source_counter_payment: None,
                 loyalty_counters_paid: 0,
                 exiled_symbol_cards: None,
+                exiled_trigger_cards: None,
                 source_counter_lki: None,
                 source_quantity_lki: None,
                 event_player: None,

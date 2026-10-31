@@ -19,5 +19,5 @@
       "sha256": "f49b3d6ef029f4358080ba87595c6b9a4049af48e18ac4f6a716440746b66ceb"
     }
   ],
-  "implementation": "Partial typed preparation only: +2 and -2 drafted; exile-batch trigger and Spirit creation remain unsupported. The physical card stays gated."
+  "implementation": "All printed abilities and the exile-batch copy continuation are authored candidates; the physical card remains gated pending catalogue integration, execution, and review."
 }

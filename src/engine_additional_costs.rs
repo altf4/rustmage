@@ -857,6 +857,7 @@ impl Game {
             | EffectChoiceKind::EmpowerJace(_)
             | EffectChoiceKind::HandToTop
             | EffectChoiceKind::ExileCardFromAnyGraveyard
+            | EffectChoiceKind::CopyExiledTriggerCreature
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileSourceAndNamed { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. }

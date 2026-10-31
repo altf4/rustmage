@@ -832,6 +832,7 @@ impl Game {
             source_counter_payment: None,
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
+            exiled_trigger_cards: None,
             source_counter_lki: self.state.objects[card as usize]
                 .card
                 .activations()

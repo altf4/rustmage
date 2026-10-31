@@ -1195,6 +1195,10 @@ pub struct SpellView {
         reason = "Rare owned cost results use one pointer in ordinary packets"
     )]
     pub exiled_symbol_cards: Option<Box<Vec<ObjectRef>>>,
+    /// Exact public card incarnations captured by an exile-batch trigger.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub exiled_trigger_cards: Option<Box<Vec<ObjectRef>>>,
     /// Allocated only after a targeted permanent departs; these are public facts.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
@@ -1417,7 +1421,9 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.exiled_symbol_cards.as_ref().map_or(0, |r| {
+        self.exiled_trigger_cards.as_ref().map_or(0, |r| {
+            std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+        }) + self.exiled_symbol_cards.as_ref().map_or(0, |r| {
             std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
         }) + self
             .self_granted_activation
@@ -4336,7 +4342,8 @@ impl Game {
                             | EffectChoiceKind::TapPermanents(_)
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
                             EffectChoiceKind::ExileSourceAndNamed { .. }
-                            | EffectChoiceKind::ExileCardFromAnyGraveyard => {
+                            | EffectChoiceKind::ExileCardFromAnyGraveyard
+                            | EffectChoiceKind::CopyExiledTriggerCreature => {
                                 Action::SelectResolutionExile { object }
                             }
                             EffectChoiceKind::HandPlot { .. } => {
@@ -7441,11 +7448,13 @@ impl Game {
         }) {
             return None;
         }
-        let graveyard_observers = plans
-            .iter()
-            .any(|(view, _)| view.zone == Zone::Graveyard)
-            .then(|| self.freeze_graveyard_observers())
-            .flatten();
+        let graveyard_observers = if plans.iter().any(|(view, _)| view.zone == Zone::Graveyard) {
+            self.freeze_graveyard_observers()
+        } else if plans.iter().any(|(view, _)| view.zone == Zone::Battlefield) {
+            self.freeze_exile_batch_observers()
+        } else {
+            None
+        };
         let returned_hand_observers = plans
             .iter()
             .any(|(view, plan)| view.zone == Zone::Battlefield && plan.destination == Zone::Hand)
@@ -7564,6 +7573,7 @@ impl Game {
             .filter_map(|(&sacrifice, (_, plan))| (!plan.prevented).then_some(sacrifice))
             .collect();
         self.food_sacrifice_triggers(&actual, &sources);
+        let graveyard_observers = self.freeze_exile_batch_observers();
         let mut events: Vec<_> = plans
             .into_iter()
             .map(|(before, plan)| {
@@ -7573,7 +7583,10 @@ impl Game {
                     false,
                     Counters::default(),
                     EntryIdentity::default(),
-                    ZoneObservers::default(),
+                    ZoneObservers {
+                        graveyard: graveyard_observers.clone(),
+                        ..ZoneObservers::default()
+                    },
                 )
             })
             .collect();
@@ -7613,6 +7626,8 @@ impl Game {
             .any(|&id| self.state.objects[id as usize].zone == Zone::Graveyard)
         {
             self.freeze_graveyard_observers()
+        } else if ids.iter().any(|&id| self.on_battlefield(id)) {
+            self.freeze_exile_batch_observers()
         } else {
             None
         };
@@ -7873,6 +7888,8 @@ impl Game {
             };
         let graveyard_observers = if before.zone == Zone::Graveyard {
             self.freeze_graveyard_observers()
+        } else if before.zone == Zone::Battlefield {
+            self.freeze_exile_batch_observers()
         } else {
             None
         };

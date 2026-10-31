@@ -12,6 +12,7 @@ mod issue_93_aetherspark;
 mod issue_93_ajani;
 mod issue_93_composite;
 mod issue_93_cost_pending;
+mod issue_93_kaya;
 mod issue_93_loyalty;
 mod issue_93_oko_lorwyn;
 mod issue_93_ral;

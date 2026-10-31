@@ -1,0 +1,11 @@
+{
+  "name": "@token/mkm-kaya-spirit",
+  "catalogue_id": 5477,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "physical_metadata_sha256": "819c3f50bc1c5e8425caf34efb076f2f195965f6369ca9dffee6c2fd2fb6fa2a",
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/WhiteBlackSpiritToken.java",
+  "java_sha256": "f49b3d6ef029f4358080ba87595c6b9a4049af48e18ac4f6a716440746b66ceb"
+}

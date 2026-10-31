@@ -798,6 +798,8 @@ pub enum EffectChoiceKind {
     ExileGraveyard,
     /// During resolution, choose a card from either graveyard without targeting.
     ExileCardFromAnyGraveyard,
+    /// Optionally choose a creature card captured by an exile-batch trigger.
+    CopyExiledTriggerCreature,
     SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
@@ -1255,6 +1257,8 @@ pub(crate) enum Instruction {
     },
     CreateTemporaryArtifactCopy,
     BecomeCopy(InPlaceCopySpec),
+    /// Copy a chosen card from the trigger's exact exile batch onto its token target.
+    CopyChosenExiledTriggerCreature,
     /// The resolving controller ignores the legend rule for the rest of this turn.
     IgnoreLegendRuleThisTurn,
     CreateCopyToken {
@@ -3656,6 +3660,8 @@ pub(crate) enum TriggerCondition {
     CreatureCardLeavesYourGraveyard,
     /// One post-event batch of creature cards entering the controller's graveyard.
     CreatureCardsEnterYourGraveyard,
+    /// One trigger for a batch exiling controlled creatures or cards from your graveyard.
+    ControlledCreaturesOrGraveyardCardsExiled,
     ReturnDeath(ReturnDeathFilter),
     /// Delayed ability carried by a produced mana unit, independent of its source.
     ManaSpentForSpell,

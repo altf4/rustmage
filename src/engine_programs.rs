@@ -799,6 +799,7 @@ impl Game {
                     | TriggerCondition::CardsLeaveGraveyard
                     | TriggerCondition::CreatureCardLeavesYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
+                    | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::SelfTurnedFaceUp
                     | TriggerCondition::PermanentYouControlTurnedFaceUp
@@ -1236,6 +1237,7 @@ impl Game {
             source_counter_payment: None,
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
+            exiled_trigger_cards: None,
             source_counter_lki: card_quantities::counter_quantity_facts(
                 definition.triggers()[index].program,
                 |kind| source.counters.get(kind),
@@ -4822,6 +4824,18 @@ impl Game {
                     }
                 }
                 Instruction::BecomeCopy(spec) => self.resolve_in_place_copy(&item, spec),
+                Instruction::CopyChosenExiledTriggerCreature => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::CopyExiledTriggerCreature,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::IgnoreLegendRuleThisTurn => {
                     self.state.players[item.controller.index()].legend_rule_ignored_this_turn =
                         true;

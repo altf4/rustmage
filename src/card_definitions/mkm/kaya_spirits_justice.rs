@@ -27,6 +27,23 @@ const OPPONENT_CREATURE: TargetRule = TargetRule::Object {
 };
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Unsupported,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled,
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
+            base: &TargetRule::Object {
+                zone: TargetZone::Battlefield,
+                kinds: 0,
+                relation: 0,
+                other: false,
+                nonland: false,
+                tapped: false,
+                min_mana: 0,
+                max_mana: u32::MAX,
+            },
+            predicate: &TargetPredicate::Token,
+        })),
+        program: &[Instruction::CopyChosenExiledTriggerCreature],
+    }],
     activated: &[
         ActivatedAbility {
             exhaust: false,
@@ -54,6 +71,21 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     optional_skip: None,
                 },
             ],
+            sorcery: true,
+            once_per_turn: false,
+        },
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: loyalty(1),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateTokens {
+                token: Card(5477),
+                amount: 1,
+                tapped: false,
+            }],
             sorcery: true,
             once_per_turn: false,
         },

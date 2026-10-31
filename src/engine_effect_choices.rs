@@ -114,6 +114,22 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if choice.kind == EffectChoiceKind::CopyExiledTriggerCreature {
+            return o.zone == Zone::Exile
+                && o.is_card()
+                && self.object_ref(object.card) == object
+                && self.current_kinds(object.card) & 1 != 0
+                && self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .exiled_trigger_cards
+                    .as_ref()
+                    .is_some_and(|cards| cards.contains(&object))
+                && !choice.selected[player.index()].contains(&object);
+        }
         if choice.kind == EffectChoiceKind::ExileCardFromAnyGraveyard {
             return o.zone == Zone::Graveyard
                 && o.is_card()
@@ -1149,7 +1165,30 @@ impl Game {
             }
             return false;
         }
-        if let EffectChoiceKind::ExileSourceAndNamed { amount, .. } = choice.kind {
+        if choice.kind == EffectChoiceKind::CopyExiledTriggerCreature {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            if let Some(&card) = choice.selected[item.controller.index()].first()
+                && self.object_ref(card.card) == card
+                && self.state.objects[card.card as usize].zone == Zone::Exile
+                && let Some(recipient) = item.targets.iter().find_map(|bound| {
+                    if self.same_target_object(*bound) {
+                        bound.object.filter(|r| {
+                            self.on_battlefield(r.card)
+                                && self.state.objects[r.card as usize].is_token()
+                        })
+                    } else {
+                        None
+                    }
+                })
+            {
+                let mut recipe = CopyRecipe::new(self.state.objects[card.card as usize].card);
+                recipe.overrides = Some(CopyOverrides {
+                    keywords: Keywords::FLYING,
+                    ..CopyOverrides::NONE
+                });
+                self.apply_temporary_copy(recipient, recipe, CopyDeadline::EndOfTurn);
+            }
+        } else if let EffectChoiceKind::ExileSourceAndNamed { amount, .. } = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             let selected = &choice.selected[item.controller.index()];
             // Validate every component before committing any movement. An
