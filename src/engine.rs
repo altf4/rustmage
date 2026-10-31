@@ -1297,6 +1297,61 @@ pub struct SpellView {
 }
 
 impl SpellView {
+    fn needs_source_copy_lki(&self) -> bool {
+        // Some legacy event packets carry no corresponding typed ability.
+        match self.kind {
+            StackKind::TriggeredAbility { ability }
+                if self
+                    .trigger_definition()
+                    .triggers()
+                    .get(ability as usize)
+                    .is_none() =>
+            {
+                return false;
+            }
+            StackKind::ActivatedAbility { ability }
+                if self
+                    .source
+                    .expect("activated ability has source")
+                    .card
+                    .activations()
+                    .get(ability as usize)
+                    .is_none() =>
+            {
+                return false;
+            }
+            _ => {}
+        }
+        let copies_source = |program: &[Instruction]| {
+            program.iter().any(|instruction| {
+                matches!(
+                    instruction,
+                    Instruction::CreateNonlegendaryCopyTokens {
+                        subject: Subject::Source,
+                        ..
+                    } | Instruction::CreateCopyToken {
+                        subject: Subject::Source,
+                        ..
+                    } | Instruction::CreateCopyTokenForPlayer {
+                        subject: Subject::Source,
+                        ..
+                    } | Instruction::CreateCopyTokenWithExceptions {
+                        subject: Subject::Source,
+                        ..
+                    } | Instruction::CreateCounteredCopyToken {
+                        subject: Subject::Source,
+                        ..
+                    }
+                )
+            })
+        };
+        // A trigger can be waiting for its mode choice when its source leaves.
+        self.program()
+            .is_some_and(|(_, program)| copies_source(program))
+            || self
+                .modes()
+                .is_some_and(|modes| modes.iter().any(|mode| copies_source(mode.program)))
+    }
     fn needs_target_controller_lki(&self) -> bool {
         self.needs_target_relation_lki(TargetGroupConstraint::DifferentControllers)
     }
@@ -8081,17 +8136,7 @@ impl Game {
                         DamageFacts::from_view(&before);
                     // Opt-in copy continuations read the last battlefield blueprint,
                     // not the blueprint from when the ability originally triggered.
-                    if item.program().is_some_and(|(_, program)| {
-                        program.iter().any(|instruction| {
-                            matches!(
-                                instruction,
-                                Instruction::CreateNonlegendaryCopyTokens {
-                                    subject: Subject::Source,
-                                    ..
-                                }
-                            )
-                        })
-                    }) {
+                    if item.needs_source_copy_lki() {
                         let recipe = before
                             .copy_recipe
                             .unwrap_or_else(|| CopyRecipe::new(before.card));

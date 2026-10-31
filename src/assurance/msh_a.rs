@@ -3335,3 +3335,127 @@ fn syncopate_resolution_payment_order_and_owned_branches() {
         assert_eq!(raw.snapshot(), indexed.snapshot());
     }
 }
+
+#[test]
+fn horde_copy_change_then_departure_uses_last_copiable_values() {
+    for departed in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let horde = put(&mut g, p, "Homunculus Horde", Zone::Battlefield);
+        let shuri = put(&mut g, p, "Shuri, Wakandan Inventor", Zone::Battlefield);
+        let echo = put(&mut g, p, "Echo, Perceptive Prodigy", Zone::Battlefield);
+        let archive = put(&mut g, p, "Hedron Archive", Zone::Battlefield);
+        spell(
+            &mut g,
+            p,
+            "Molten Duplication",
+            [0, 0, 0, 1, 0, 1],
+            Some(Target::Card(horde)),
+        );
+        resolved(&mut g);
+        let copied_horde = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(i, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.is_token()
+                    && g.object_view(i as CardId).name() == "Homunculus Horde")
+                    .then_some(i as CardId)
+            })
+            .unwrap();
+        activate(
+            &mut g,
+            p,
+            shuri,
+            0,
+            [0, 0, 0, 0, 0, 1],
+            &[Target::Card(copied_horde), Target::Card(archive)],
+        );
+        let shuri_ability = g.state.stack.last().unwrap().id;
+        spell(&mut g, p, "Quick Study", [0, 1, 0, 0, 0, 2], None);
+        until(&mut g, |g| {
+            g.state.pending == Pending::Priority
+                && g.state.pending_triggers.is_empty()
+                && g.state.stack.iter().any(|i| {
+                    i.source.is_some_and(|s| s.object.card == copied_horde)
+                        && matches!(i.kind, StackKind::TriggeredAbility { .. })
+                })
+        });
+        activate(
+            &mut g,
+            p,
+            echo,
+            0,
+            [0, 0, 0, 0, 0, 1],
+            &[Target::Stack(shuri_ability)],
+        );
+        until(&mut g, |g| g.observe(p).retarget.is_some());
+        act(&mut g, Action::FinishStackTargets);
+        until(&mut g, |g| {
+            g.object_view(copied_horde).name() == "Hedron Archive"
+        });
+        if departed {
+            spell(
+                &mut g,
+                p,
+                "Disenchant",
+                [1, 0, 0, 0, 0, 1],
+                Some(Target::Card(copied_horde)),
+            );
+            // The next pass resolves Disenchant, so branch across the departure itself.
+            act(&mut g, Action::Pass);
+            assert_eq!(g.state.passes, 1);
+            let actor = g.actor().unwrap();
+            let index = g
+                .legal_actions()
+                .iter()
+                .position(|action| *action == Action::Pass)
+                .unwrap();
+            let checkpoint = g.snapshot();
+            let mut indexed = g.clone();
+            let mut replay = g.clone();
+            act(&mut g, Action::Pass);
+            indexed
+                .apply_index(actor, indexed.revision(), index)
+                .unwrap();
+            assert!(!g.on_battlefield(copied_horde));
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            resolved(&mut g);
+            resolved(&mut indexed);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            replay.restore(&checkpoint).unwrap();
+            act(&mut replay, Action::Pass);
+            resolved(&mut replay);
+            assert_eq!(g.snapshot(), replay.snapshot());
+        } else {
+            resolved(&mut g);
+        }
+        let names: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| o.zone == Zone::Battlefield && o.is_token())
+            .map(|(i, _)| g.object_view(i as CardId).name().to_owned())
+            .collect();
+        eprintln!("surviving tokens: {names:?}");
+        let archive_copies = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(i, o)| {
+                o.zone == Zone::Battlefield
+                    && o.is_token()
+                    && g.object_view(*i as CardId).name() == "Hedron Archive"
+            })
+            .count();
+        assert_eq!(
+            archive_copies,
+            if departed { 1 } else { 2 },
+            "Horde must copy the source's current or last-known Hedron Archive characteristics"
+        );
+    }
+}
