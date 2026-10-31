@@ -360,7 +360,15 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     .then(|| evaluate_abilities(world))
 }
 
+// Tests count full evaluations to guard the cost of whole-board scans.
+#[cfg(test)]
+std::thread_local! {
+    pub(super) static EVALUATION_COUNT: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+}
+
 pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> AbilityEvaluation {
+    #[cfg(test)]
+    EVALUATION_COUNT.with(|count| count.set(count.get() + 1));
     let game = world.game();
     let mut effects = Vec::new();
     let mut groups = Vec::new();

@@ -3096,3 +3096,117 @@ fn msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios() {
         assert!(g.is_creature(id), "{name}");
     }
 }
+
+#[test]
+#[ignore = "manual performance comparison"]
+fn royal_treatment_sba_cost() {
+    for amount in [20, 80, 200] {
+        for treated in [false, true] {
+            let p = Player::P0;
+            let mut g = scenario(p);
+            let mut creatures = Vec::new();
+            for _ in 0..amount {
+                creatures.push(put(&mut g, p, "Bear Cub", Zone::Battlefield));
+            }
+            if treated {
+                spell(
+                    &mut g,
+                    p,
+                    "Royal Treatment",
+                    [0, 0, 0, 0, 1, 0],
+                    Some(Target::Card(creatures[0])),
+                );
+                resolved(&mut g);
+            }
+            let start = std::time::Instant::now();
+            for _ in 0..5 {
+                g.state_based_actions();
+            }
+            println!(
+                "creatures={amount} treated={treated} sba5_us={}",
+                start.elapsed().as_micros()
+            );
+        }
+    }
+}
+
+#[test]
+fn royal_treatment_sba_rechecks_effects_after_deaths_and_restore() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let lord = put(&mut g, p, "Bard's Company", Zone::Battlefield);
+        let treated = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let doomed = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let protected = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        spell(
+            &mut g,
+            p,
+            "Royal Treatment",
+            [0, 0, 0, 0, 1, 0],
+            Some(Target::Card(treated)),
+        );
+        resolved(&mut g);
+        assert_eq!(g.stats(treated).toughness, 4);
+        assert_eq!(g.stats(doomed).toughness, 3);
+        spell(
+            &mut g,
+            p,
+            "Alesha's Legacy",
+            [0, 0, 1, 0, 0, 1],
+            Some(Target::Card(protected)),
+        );
+        resolved(&mut g);
+        assert!(g.keywords(protected).contains(Keywords::INDESTRUCTIBLE));
+        g.state.objects[lord as usize].damage = 3;
+        g.state.objects[doomed as usize].damage = 3;
+        g.state.objects[treated as usize].damage = 3;
+        g.state.objects[protected as usize].damage = 3;
+        contracts::branch_contract(g.clone());
+        let saved = g.snapshot();
+        let mut branch = g.clone();
+        drop(g);
+        branch.state_based_actions();
+        assert_eq!(branch.state.objects[lord as usize].zone, Zone::Graveyard);
+        assert_eq!(branch.state.objects[doomed as usize].zone, Zone::Graveyard);
+        // The treated Bear survives the first batch, then loses the lord's bonus.
+        assert_eq!(branch.state.objects[treated as usize].zone, Zone::Graveyard);
+        assert_eq!(
+            branch.state.objects[protected as usize].zone,
+            Zone::Battlefield
+        );
+        let expected = branch.snapshot();
+        branch.restore(&saved).unwrap();
+        branch.state_based_actions();
+        assert_eq!(branch.snapshot(), expected);
+        contracts::branch_contract(branch);
+    }
+}
+
+#[test]
+fn royal_treatment_sba_full_evaluations_do_not_scale_with_creature_count() {
+    let mut evaluations = Vec::new();
+    for amount in [8, 80] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let first = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        for _ in 1..amount {
+            put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        }
+        spell(
+            &mut g,
+            p,
+            "Royal Treatment",
+            [0, 0, 0, 0, 1, 0],
+            Some(Target::Card(first)),
+        );
+        resolved(&mut g);
+        ability_evaluation::EVALUATION_COUNT.with(|count| count.set(0));
+        g.state_based_actions();
+        evaluations.push(ability_evaluation::EVALUATION_COUNT.with(|count| count.get()));
+    }
+    assert!(evaluations[0] > 0, "fixture must perform a full evaluation");
+    assert_eq!(
+        evaluations[0], evaluations[1],
+        "adding ordinary creatures must not add whole-board evaluations"
+    );
+}
