@@ -680,3 +680,353 @@ fn indestructible_survives_destroy_and_menace_requires_two_blockers() {
     );
     act(&mut g, Action::FinishBlockers);
 }
+
+#[test]
+fn bug_hunt_giada_does_not_apply_to_valkyries_return_effect() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Valkyrie's Call", Zone::Battlefield);
+    put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let murder = put(&mut g, p, "Murder", Zone::Hand);
+    cast(&mut g, murder, Some(Target::Card(bear)));
+    settle(&mut g);
+    assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+    assert!(g.has_subtype(bear, "Angel"));
+    assert_eq!(
+        g.counter_count(bear, CounterKind::PlusOne),
+        1,
+        "only Valkyrie's Call's counter applies"
+    );
+}
+
+#[test]
+fn giada_valkyrie_return_separates_entry_replacement_from_angel_trigger() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            let mut g = scenario(p);
+            put(&mut g, p, "Valkyrie's Call", Zone::Battlefield);
+            put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+            let observer = put(&mut g, p, "Youthful Valkyrie", Zone::Battlefield);
+            if doubled {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let before = g.object_ref(bear);
+            let murder = put(&mut g, p, "Murder", Zone::Hand);
+            cast(&mut g, murder, Some(Target::Card(bear)));
+            act(&mut g, Action::Pass);
+            let actor = g.actor().unwrap();
+            let index = g
+                .legal_actions()
+                .iter()
+                .position(|action| *action == Action::Pass)
+                .unwrap();
+            let checkpoint = g.snapshot();
+            let mut indexed = g.clone();
+            let mut replay = g.clone();
+            act(&mut g, Action::Pass);
+            indexed
+                .apply_index(actor, indexed.revision(), index)
+                .unwrap();
+            big_helpers::settle(&mut g);
+            big_helpers::settle(&mut indexed);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            replay.restore(&checkpoint).unwrap();
+            act(&mut replay, Action::Pass);
+            big_helpers::settle(&mut replay);
+            assert_eq!(g.snapshot(), replay.snapshot());
+            assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+            assert_ne!(g.object_ref(bear), before);
+            assert!(g.has_subtype(bear, "Angel"));
+            assert!(g.keywords(bear).contains(Keywords::FLYING));
+            let factor = if doubled { 2 } else { 1 };
+            assert_eq!(g.counter_count(bear, CounterKind::PlusOne), factor);
+            assert_eq!(
+                g.counter_count(observer, CounterKind::PlusOne),
+                factor,
+                "the post-entry Angel type triggers Youthful Valkyrie"
+            );
+            // Printed Angels still receive Giada's replacement for all three Angels.
+            g.state.players[p.index()].mana = [8; 6];
+            let angel = put(&mut g, p, "Serra Angel", Zone::Hand);
+            cast(&mut g, angel, None);
+            big_helpers::settle(&mut g);
+            assert_eq!(g.counter_count(angel, CounterKind::PlusOne), 3 * factor);
+        }
+    }
+}
+
+#[test]
+fn bug_hunt_giada_counts_skrull_static_types_on_entry() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+    put(&mut g, p, "Bear Cub", Zone::Graveyard);
+    put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+    let skrull = put(&mut g, p, "Undercover Skrull", Zone::Hand);
+    cast(&mut g, skrull, None);
+    settle(&mut g);
+    assert_eq!(g.object_view(skrull).zone, Zone::Battlefield);
+    assert!(g.has_subtype(skrull, "Angel"));
+    assert_eq!(
+        g.counter_count(skrull, CounterKind::PlusOne),
+        1,
+        "Giada counts the entering Skrull as an Angel"
+    );
+    assert_eq!(stats(&g, skrull), (4, 4));
+}
+
+#[test]
+fn giada_skrull_graveyard_threshold_and_owned_branches() {
+    for p in [Player::P0, Player::P1] {
+        for own in 0..=2 {
+            let mut g = scenario(p);
+            put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+            for _ in 0..own {
+                put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            }
+            for _ in 0..2 {
+                put(&mut g, p.other(), "Grizzly Bears", Zone::Graveyard);
+            }
+            let skrull = put(&mut g, p, "Undercover Skrull", Zone::Hand);
+            cast(&mut g, skrull, None);
+            act(&mut g, Action::Pass);
+            let actor = g.actor().unwrap();
+            let index = g
+                .legal_actions()
+                .iter()
+                .position(|a| *a == Action::Pass)
+                .unwrap();
+            let checkpoint = g.snapshot();
+            let mut indexed = g.clone();
+            let mut replay = g.clone();
+            act(&mut g, Action::Pass);
+            indexed
+                .apply_index(actor, indexed.revision(), index)
+                .unwrap();
+            big_helpers::settle(&mut g);
+            big_helpers::settle(&mut indexed);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            replay.restore(&checkpoint).unwrap();
+            act(&mut replay, Action::Pass);
+            big_helpers::settle(&mut replay);
+            assert_eq!(g.snapshot(), replay.snapshot());
+            let eligible = own >= 2;
+            assert_eq!(g.has_subtype(skrull, "Angel"), eligible);
+            assert_eq!(
+                g.counter_count(skrull, CounterKind::PlusOne),
+                u64::from(eligible)
+            );
+            assert_eq!(stats(&g, skrull), if eligible { (4, 4) } else { (1, 1) });
+        }
+    }
+}
+
+#[test]
+fn giada_skrull_return_does_not_count_itself_in_graveyard() {
+    for p in [Player::P0, Player::P1] {
+        for other_creatures in [1, 2] {
+            let mut g = scenario(p);
+            put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+            for _ in 0..other_creatures {
+                put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            }
+            let skrull = put(&mut g, p, "Undercover Skrull", Zone::Graveyard);
+            let reanimate = put(&mut g, p, "Zombify", Zone::Hand);
+            cast(&mut g, reanimate, Some(Target::Card(skrull)));
+            big_helpers::settle(&mut g);
+            let eligible = other_creatures >= 2;
+            assert_eq!(g.object_view(skrull).zone, Zone::Battlefield);
+            assert_eq!(g.has_subtype(skrull, "Angel"), eligible);
+            assert_eq!(
+                g.counter_count(skrull, CounterKind::PlusOne),
+                u64::from(eligible)
+            );
+        }
+    }
+}
+
+#[test]
+fn giada_still_counts_printed_and_changeling_angels() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+        let changeling = put(&mut g, p, "Barkform Harvester", Zone::Hand);
+        cast(&mut g, changeling, None);
+        big_helpers::settle(&mut g);
+        assert!(g.has_subtype(changeling, "Angel"));
+        assert_eq!(g.counter_count(changeling, CounterKind::PlusOne), 1);
+        g.state.players[p.index()].mana = [8; 6];
+        let angel = put(&mut g, p, "Serra Angel", Zone::Hand);
+        cast(&mut g, angel, None);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.counter_count(angel, CounterKind::PlusOne), 2);
+    }
+}
+
+#[test]
+fn bug_hunt_dread_summons_counts_only_creatures_actually_milled() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Library);
+    let colossus = put(&mut g, p, "Darksteel Colossus", Zone::Library);
+    let spell = put(&mut g, p, "Dread Summons", Zone::Hand);
+    act(&mut g, Action::AnnounceCast { card: spell });
+    act(&mut g, Action::ChooseX { value: 2 });
+    pay(&mut g);
+    settle(&mut g);
+    assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+    assert_eq!(g.object_view(colossus).zone, Zone::Library);
+    let tokens: Vec<_> = g
+        .observe(p)
+        .objects
+        .into_iter()
+        .filter(|o| o.zone == Zone::Battlefield && o.is_token())
+        .collect();
+    assert_eq!(tokens.len(), 1);
+    assert!(tokens[0].tapped);
+    assert_eq!(
+        (tokens[0].power, tokens[0].toughness),
+        (2, 2),
+        "Dread Summons creates a 2/2 Zombie"
+    );
+    assert!(tokens[0].has_subtype("Zombie"));
+}
+
+#[test]
+fn dread_summons_mills_both_players_and_creates_tapped_zombies_owned_by_caster() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            let mut g = scenario(p);
+            if doubled {
+                put(&mut g, p, "Doubling Season", Zone::Battlefield);
+            }
+            let hidden = g.state.players[p.index()].library[0];
+            let bear = put(&mut g, p, "Bear Cub", Zone::Library);
+            let colossus = put(&mut g, p, "Darksteel Colossus", Zone::Library);
+            let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Library);
+            let spell = put(&mut g, p, "Dread Summons", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseX { value: 2 });
+            reject(&mut g, Action::PayCosts { payment: [0; 6] });
+            pay(&mut g);
+            act(&mut g, Action::Pass);
+            let actor = g.actor().unwrap();
+            let index = g
+                .legal_actions()
+                .iter()
+                .position(|a| *a == Action::Pass)
+                .unwrap();
+            let checkpoint = g.snapshot();
+            let mut indexed = g.clone();
+            let mut replay = g.clone();
+            act(&mut g, Action::Pass);
+            indexed
+                .apply_index(actor, indexed.revision(), index)
+                .unwrap();
+            big_helpers::settle(&mut g);
+            big_helpers::settle(&mut indexed);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            replay.restore(&checkpoint).unwrap();
+            act(&mut replay, Action::Pass);
+            big_helpers::settle(&mut replay);
+            assert_eq!(g.snapshot(), replay.snapshot());
+            assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(colossus).zone, Zone::Library);
+            let tokens: Vec<_> = g
+                .observe(p)
+                .objects
+                .into_iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.is_token())
+                .collect();
+            assert_eq!(tokens.len(), if doubled { 4 } else { 2 });
+            for token in tokens {
+                assert_eq!(token.owner, p);
+                assert_eq!(token.controller, p);
+                assert!(token.tapped);
+                assert_eq!((token.power, token.toughness, token.colors), (2, 2, 4));
+                assert!(token.has_subtype("Zombie"));
+                assert!(!token.has_subtype("Rat"));
+            }
+            let opponent_view = g.observe(p.other());
+            assert!(
+                opponent_view
+                    .objects
+                    .iter()
+                    .any(|o| o.id == bear && o.zone == Zone::Graveyard)
+            );
+            assert!(
+                !opponent_view
+                    .objects
+                    .iter()
+                    .any(|o| o.id == hidden && o.zone == Zone::Library)
+            );
+        }
+    }
+}
+
+#[test]
+fn dread_summons_zero_and_exile_replacements_make_no_tokens() {
+    for p in [Player::P0, Player::P1] {
+        for exile in [false, true] {
+            let mut g = scenario(p);
+            if exile {
+                put(&mut g, p, "Rest in Peace", Zone::Battlefield);
+            }
+            let own = put(&mut g, p, "Bear Cub", Zone::Library);
+            let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Library);
+            let libraries = [
+                g.state.players[0].library.clone(),
+                g.state.players[1].library.clone(),
+            ];
+            let spell = put(&mut g, p, "Dread Summons", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(
+                &mut g,
+                Action::ChooseX {
+                    value: u32::from(exile),
+                },
+            );
+            pay(&mut g);
+            big_helpers::settle(&mut g);
+            if exile {
+                assert_eq!(g.object_view(own).zone, Zone::Exile);
+                assert_eq!(g.object_view(enemy).zone, Zone::Exile);
+            } else {
+                assert_eq!(g.state.players[0].library, libraries[0]);
+                assert_eq!(g.state.players[1].library, libraries[1]);
+            }
+            assert!(
+                !g.state
+                    .objects
+                    .iter()
+                    .any(|o| o.zone == Zone::Battlefield && o.is_token())
+            );
+        }
+    }
+}
+
+#[test]
+fn dread_summons_zombies_receive_death_baron_bonus() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Death Baron", Zone::Battlefield);
+        put(&mut g, p.other(), "Bear Cub", Zone::Library);
+        let spell = put(&mut g, p, "Dread Summons", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, Action::ChooseX { value: 1 });
+        pay(&mut g);
+        big_helpers::settle(&mut g);
+        let token = g
+            .observe(p)
+            .objects
+            .into_iter()
+            .find(|o| o.zone == Zone::Battlefield && o.is_token())
+            .unwrap();
+        assert!(token.tapped && token.has_subtype("Zombie"));
+        assert_eq!((token.power, token.toughness), (3, 3));
+        assert!(token.keywords.contains(Keywords::DEATHTOUCH));
+    }
+}
