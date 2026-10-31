@@ -135,6 +135,12 @@ impl Game {
             .map(|&id| self.object_ref(id))
             .collect();
         if remaining.is_empty() {
+            if spec.remainder == LibraryRemainder::Shuffle {
+                if self.state.players[owner.index()].library.len() > 1 {
+                    self.forget_library_top(owner);
+                }
+                self.shuffle_library_cards(owner);
+            }
             return false;
         }
         let eligible: Vec<_> = remaining
@@ -172,6 +178,7 @@ impl Game {
         };
         let requested = match spec.count {
             LibrarySelectionCount::Fixed(n) => usize::from(n),
+            LibrarySelectionCount::All => eligible.len(),
             LibrarySelectionCount::RandomOne => 1,
             LibrarySelectionCount::Lessons => {
                 if grave().filter(|o| o.card.has_subtype("Lesson")).count() >= 3 {
