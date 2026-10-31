@@ -207,6 +207,33 @@ fn direct_sacrifice_preserves_stack_source_copy_lki() {
         );
     }
 }
+
+#[test]
+fn prepaid_optional_activation_keeps_its_paid_loyalty_when_no_targets_exist() {
+    let _fixture = crate::cards::issue_93_copy_cost_fixture::Guard::prepaid();
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::JacePlaneswalkerToken;
+        g.add_counter(source, CounterKind::Loyalty, 3);
+        let action = Action::BeginActivate {
+            card: source,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+        };
+        assert!(g.legal_actions().contains(&action));
+        act(&mut g, action);
+        assert_ne!(g.object_view(source).zone, Zone::Battlefield);
+        let ability = g
+            .state
+            .stack
+            .iter()
+            .find(|item| item.source.is_some_and(|s| s.id == source))
+            .unwrap();
+        assert_eq!(ability.loyalty_counters_paid, 1);
+    }
+}
 #[test]
 fn direct_loyalty_target_queues_ward_and_declining_counters_the_ability() {
     for player in [Player::P0, Player::P1] {

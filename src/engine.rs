@@ -6592,7 +6592,7 @@ impl Game {
                             activations::ActivationPaymentCompletion::AlreadyOnStack,
                         );
                     } else {
-                        self.committed_activation_observers(&item);
+                        self.finish_direct_activation_on_stack(item);
                     }
                 }
             }

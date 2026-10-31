@@ -186,14 +186,7 @@ impl Game {
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
             ActivationPaymentCompletion::AlreadyOnStack => {
-                let slot = self
-                    .state
-                    .stack
-                    .iter_mut()
-                    .find(|item| item.id == payment.item.id)
-                    .expect("prepaid activation remains on the stack");
-                *slot = payment.item.clone();
-                self.committed_activation_observers(&payment.item);
+                self.finish_direct_activation_on_stack(payment.item);
             }
             ActivationPaymentCompletion::Crew(context) => {
                 self.finish_paid_crew(payment.item, context);

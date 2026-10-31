@@ -4899,6 +4899,10 @@ impl Card {
             return issue_93_copy_cost_fixture::abilities();
         }
         #[cfg(test)]
+        if self == Card::JacePlaneswalkerToken && issue_93_copy_cost_fixture::prepaid_enabled() {
+            return issue_93_copy_cost_fixture::prepaid_abilities();
+        }
+        #[cfg(test)]
         if self == Card::test_index(5437) && sacrifice_mana_fixture::enabled() {
             return sacrifice_mana_fixture::abilities();
         }
@@ -5298,36 +5302,91 @@ pub(crate) mod issue_93_mana_counter_fixture {
 #[cfg(test)]
 pub(crate) mod issue_93_copy_cost_fixture {
     use super::*;
-    std::thread_local! { static ENABLED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) }; }
+    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
     pub(crate) struct Guard;
     impl Guard {
         pub(crate) fn new() -> Self {
-            ENABLED.with(|enabled| assert!(!enabled.replace(true)));
+            MODE.with(|mode| assert_eq!(mode.replace(1), 0));
+            Self
+        }
+        pub(crate) fn prepaid() -> Self {
+            MODE.with(|mode| assert_eq!(mode.replace(2), 0));
             Self
         }
     }
     impl Drop for Guard {
         fn drop(&mut self) {
-            ENABLED.with(|enabled| enabled.set(false));
+            MODE.with(|mode| mode.set(0));
         }
     }
-    pub(super) fn enabled() -> bool { ENABLED.with(|enabled| enabled.get()) }
-    pub(super) fn abilities() -> &'static [ActivatedAbility] {
+    pub(super) fn enabled() -> bool {
+        MODE.with(|mode| mode.get() == 1)
+    }
+    pub(super) fn prepaid_enabled() -> bool {
+        MODE.with(|mode| mode.get() == 2)
+    }
+    pub(super) const fn abilities() -> &'static [ActivatedAbility] {
         &[ActivatedAbility {
             exhaust: false,
             guard: ActivationGuard::Always,
             cycling: false,
             origin: ActivationOrigin::Battlefield,
             cost: ActivationCost {
-                colored: [0; 6], generic: 0, alternatives: &[], additional: None,
-                mana_component: false, tap: false, sacrifice: true, exile_self: false,
-                discard: false, life: 0, remove: None, loyalty: None,
+                colored: [0; 6],
+                generic: 0,
+                alternatives: &[],
+                additional: None,
+                mana_component: false,
+                tap: false,
+                sacrifice: true,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: None,
             },
             targets: TargetPlan::NONE,
-            program: &[Instruction::CreateCopyToken { subject: Subject::Source, amount: 1 }],
+            program: &[Instruction::CreateCopyToken {
+                subject: Subject::Source,
+                amount: 1,
+            }],
             sorcery: false,
             once_per_turn: false,
         }]
+    }
+    pub(super) fn prepaid_abilities() -> &'static [ActivatedAbility] {
+        const PREPAID: &[ActivatedAbility] = &[ActivatedAbility {
+            cost: ActivationCost {
+                colored: [0; 6],
+                generic: 0,
+                alternatives: &[],
+                additional: None,
+                mana_component: false,
+                tap: false,
+                sacrifice: true,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: Some(-1),
+            },
+            targets: TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Object {
+                    zone: TargetZone::Battlefield,
+                    kinds: 1,
+                    relation: 1,
+                    other: false,
+                    nonland: false,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: u32::MAX,
+                },
+                min: 0,
+                max: 2,
+            }),
+            ..abilities()[0]
+        }];
+        PREPAID
     }
 }
 
