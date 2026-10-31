@@ -18,6 +18,7 @@ mod issue_93_oko_lorwyn;
 mod issue_93_ral;
 mod regressions;
 mod requested_earthbend;
+mod requested_freebooter;
 mod requested_full_bore;
 mod requested_ghost;
 mod requested_hunters_talent;

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "854f80e90a360b4cc5b098edf39c40fdf164053ea831537ea3030c863830ed4d",
+  "catalogue_version": "d88cc9fb858b9279ed5b2da07447258f192f9fff58aad7df24d068db9fa0fa9b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2946,
-  "implemented_total": 2952,
+  "implemented_standard_cards": 2947,
+  "implemented_total": 2953,
   "token_definitions": 152,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -100,8 +100,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 178,
-      "complete": 95
+      "gated": 177,
+      "complete": 96
     },
     "m19": {
       "total": 2,
@@ -15154,8 +15154,8 @@
     {
       "name": "Greedy Freebooter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/greedy_freebooter.rs",
       "set": "lci"
     },
