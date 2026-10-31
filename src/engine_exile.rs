@@ -325,7 +325,9 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter(|(_, o)| {
-                    (o.zone == Zone::Battlefield && !o.card.triggers().is_empty())
+                    (matches!(o.zone, Zone::Battlefield | Zone::Command)
+                        && (o.zone == Zone::Battlefield || o.card.is_emblem())
+                        && !o.card.triggers().is_empty())
                         || (o.zone == Zone::Graveyard
                             && o.card
                                 .triggers()

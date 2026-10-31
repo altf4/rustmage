@@ -425,3 +425,4 @@ mod issue_93_tezzeret;
 
 mod issue_93_ugin;
 mod issue_93_jace_reawakened;
+mod issue_93_chandra;
