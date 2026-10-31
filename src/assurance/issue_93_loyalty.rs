@@ -72,6 +72,21 @@ fn positive_loyalty_cost_cannot_be_paid_when_counters_are_prohibited() {
             | Action::BeginActivate { card, ability: 0, .. } if *card == walker)));
 
         let snapshot = g.snapshot();
+        // Suppressing the Aura's abilities removes its prohibition without
+        // changing either object's incarnation or the stored loyalty history.
+        let mut blank = g.activation_item(player, walker, 0);
+        blank.targets = vec![BoundTarget {
+            group: 0,
+            target: Target::Card(aura),
+            object: Some(g.object_ref(aura)),
+        }];
+        g.remove_target_abilities_until_end_of_turn(&blank);
+        assert!(!replacements::counters_prohibited(&g, object));
+        assert!(g.legal_actions().contains(&positive));
+        assert!(g.legal_actions().contains(&granted));
+        g.restore(&snapshot).unwrap();
+        assert!(replacements::counters_prohibited(&g, object));
+        reject(&mut g, positive.clone());
         for _ in 0..2 {
             g.move_object(aura, Zone::Graveyard);
             assert!(g.legal_actions().contains(&positive));
