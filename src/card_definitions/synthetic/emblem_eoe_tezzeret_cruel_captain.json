@@ -1,0 +1,11 @@
+{
+  "name": "@emblem/eoe-tezzeret-cruel-captain",
+  "catalogue_id": 5469,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/command/emblems/TezzeretCruelCaptainEmblem.java",
+  "java_sha256": "7d540def47a81ceee6c7651ab9c4eb5b6f8ce3ed15b729e4cf8cdaa31f658630",
+  "physical_metadata_sha256": "d0126aa234caaf7a3b9e99ecfebe36da836a1bdb902287489b8e48712f2e99a0"
+}

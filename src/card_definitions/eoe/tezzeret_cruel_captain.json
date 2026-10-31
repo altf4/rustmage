@@ -3,10 +3,20 @@
   "catalogue_id": 4412,
   "oracle_id": "0eb11b2d-a397-48da-a0f3-9f0f83f42282",
   "facts_sha256": "e03ed91efeceff67780bf18b2e7125d79db19620f29f94f94cb9d6c03c9e294c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b8ab2b9eb2f09cf1f4aa87c8e87cc69834c2530fe4e01f1f76f65968af96b9d6"
   },
-  "physical_metadata_sha256": "4ff583b49a9eae7b21f1e4d13e9011395726efc85c82d2861bfb62a7911eb4b8"
+  "physical_metadata_sha256": "4ff583b49a9eae7b21f1e4d13e9011395726efc85c82d2861bfb62a7911eb4b8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TezzeretCruelCaptain.java",
+  "java_sha256": "7bee986962e9143e59a6b62060df0efabaaf39af34ad680cb0fba87d7d18e90f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/command/emblems/TezzeretCruelCaptainEmblem.java",
+      "sha256": "7d540def47a81ceee6c7651ab9c4eb5b6f8ce3ed15b729e4cf8cdaa31f658630"
+    }
+  ]
 }

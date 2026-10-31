@@ -419,3 +419,5 @@ mod fra_emrakul_ward_independent_tests;
 mod fra_mixed_zone_cost_tests;
 
 mod issue_93_elspeth;
+
+mod issue_93_tezzeret;

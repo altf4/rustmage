@@ -20127,6 +20127,14 @@
     "journal": "d2b5ed4d948d6929",
     "observations": "51a2803f8a50e9ce"
   },
+  "Tezzeret, Cruel Captain": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "903e360914c6c94c",
+    "observations": "e3848c61c53e5230"
+  },
   "Thalia, the Survivor": {
     "root": "main",
     "status": "completed",
