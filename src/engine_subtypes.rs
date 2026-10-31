@@ -1016,6 +1016,16 @@ impl Game {
 
 impl Game {
     pub(super) fn entry_choice_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
+        Self::entry_subtypes(m, true)
+    }
+
+    /// CR 614.12: a return effect created simultaneously with entry does not
+    /// yet exist when choosing how that permanent enters.
+    pub(super) fn entry_replacement_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
+        Self::entry_subtypes(m, false)
+    }
+
+    fn entry_subtypes(m: &entries::EntryMove, include_return_effect: bool) -> GrantedSubtypes {
         if m.food_return.is_some() {
             return GrantedSubtypes::food_only();
         }
@@ -1044,7 +1054,7 @@ impl Game {
         if m.ghost_vacuum_after.is_some() && m.before.kinds & CREATURE_OR_KINDRED != 0 {
             result.insert("Spirit");
         }
-        if m.before.kinds & CREATURE_OR_KINDRED != 0 {
+        if include_return_effect && m.before.kinds & CREATURE_OR_KINDRED != 0 {
             match m.return_modification.map(|(kind, _)| kind) {
                 Some(ReturnKind::Angel) => result.insert("Angel"),
                 Some(ReturnKind::Demon) => result.insert("Demon"),

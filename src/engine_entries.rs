@@ -94,6 +94,13 @@ pub(super) struct EntryBatch {
     pub tap_next: usize,
 }
 impl EntryMove {
+    /// View the event before a return instruction's simultaneous effect starts.
+    pub(super) fn replacement_preview(&self) -> Self {
+        let mut movement = self.clone();
+        movement.return_modification = None;
+        movement
+    }
+
     pub(super) fn choose_projected_battle_protector(&mut self, kinds: u16, siege: bool) {
         self.battle_protector =
             if self.destination == Zone::Battlefield && kinds & crate::cards::BATTLE_KIND != 0 {
@@ -1124,15 +1131,16 @@ impl Game {
                     controller: m.controller,
                     protector: m.battle_protector,
                     subtypes: if m.ghost_vacuum_after.is_some() {
-                        self.ghost_entry_preview(&m).map_or_else(
-                            || Self::entry_choice_subtypes(&m),
-                            |view| view.granted_subtypes,
-                        )
+                        self.ghost_entry_preview(&m.replacement_preview())
+                            .map_or_else(
+                                || Self::entry_replacement_subtypes(&m),
+                                |view| view.granted_subtypes,
+                            )
                     } else {
-                        Self::entry_choice_subtypes(&m)
+                        Self::entry_replacement_subtypes(&m)
                     },
                     kind: if m.ghost_vacuum_after.is_some() {
-                        self.ghost_entry_preview(&m)
+                        self.ghost_entry_preview(&m.replacement_preview())
                             .map_or_else(|| m.entry_kinds(), |view| view.kinds)
                     } else {
                         m.entry_kinds()
@@ -1140,7 +1148,7 @@ impl Game {
                     power: if m.ghost_vacuum_after.is_some()
                         || replacements::entry_power_sensitive(self, m.controller, m.before.card)
                     {
-                        self.ghost_entry_preview(&m)
+                        self.ghost_entry_preview(&m.replacement_preview())
                             .map_or(m.before.power, |view| view.power)
                     } else {
                         m.before.power
@@ -1580,10 +1588,10 @@ impl Game {
                             && movement.controller == source.controller
                             && movement.before.reference != self.object_ref(id)
                             && if movement.ghost_vacuum_after.is_some() {
-                                self.ghost_entry_preview(movement)
+                                self.ghost_entry_preview(&movement.replacement_preview())
                                     .is_some_and(|view| view.has_subtype(subtype))
                             } else {
-                                Self::entry_choice_subtypes(movement)
+                                Self::entry_replacement_subtypes(movement)
                                     .has(movement.before.card, subtype)
                             }
                         {
