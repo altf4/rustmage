@@ -714,6 +714,8 @@ pub(crate) struct LibrarySelectionEffect {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
     Any,
+    Colorless,
+    Nonland,
     ManaValue { minimum: u64, maximum: u64 },
     AnyOf(&'static [SearchFilter]),
     AllOf(&'static [SearchFilter]),
@@ -732,6 +734,8 @@ impl SearchFilter {
     pub(crate) fn matches(self, card: Card) -> bool {
         match self {
             Self::Any => true,
+            Self::Colorless => card.colors() == 0,
+            Self::Nonland => !card.is_land(),
             Self::ManaValue { minimum, maximum } => {
                 (minimum..=maximum).contains(&card.fixed_mana_value())
             }
@@ -759,6 +763,8 @@ pub enum SearchDestination {
     HandOrGraveyard,
     /// Face-up exile linked to this exact source incarnation, without an automatic return.
     LinkedExile,
+    /// Exile the found cards and allow their controller to cast them free this turn.
+    ExileFreeThisTurn,
     Graveyard,
     /// Shuffle, then put the selected cards on top (last selected uppermost).
     Top,
@@ -819,6 +825,10 @@ pub enum EffectChoiceKind {
         tapped: bool,
     },
     HandExileCopy,
+    /// Exile a nonland card in hand and mark the resulting exile object plotted.
+    HandPlot {
+        maximum: u32,
+    },
     HandLand {
         tapped: bool,
     },
@@ -1062,6 +1072,8 @@ pub(crate) enum Instruction {
     UpToTargets(AmountValue),
     OfferMiracleCast(ManaCost),
     Cascade,
+    /// Exile until a nonland card at or below this value; cast it or take it.
+    Discover(u16),
     CreateCopyTokenForPlayer {
         subject: Subject,
         amount: u16,
@@ -1158,6 +1170,10 @@ pub(crate) enum Instruction {
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
     CopyNextInstantSorcery {
+        ability: u16,
+    },
+    /// Create a source-independent delayed trigger for every spell cast this turn.
+    CopySpellsThisTurn {
         ability: u16,
     },
     ScheduleSacrificedArtifactCopy {
@@ -2450,6 +2466,8 @@ pub(crate) enum AmountValue {
     )]
     DamageEventAmount,
     DamageReceivedAmount,
+    /// Damage dealt by the equipped creature in one completed combat batch.
+    CreatureCombatDamageAmount,
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
@@ -3325,6 +3343,7 @@ pub(crate) enum CastFilter {
     SourceChosenManaValueParity,
     PermanentAdventure,
     Any,
+    Colorless,
     Creature,
     Noncreature,
     /// Historical qualifying cast ordinal, evaluated only with the actual caster.
@@ -3369,6 +3388,7 @@ impl CastFilter {
     pub(crate) fn matches_mana_value(self, card: Card, mana_value: u64) -> bool {
         match self {
             Self::Any => true,
+            Self::Colorless => card.colors() == 0,
             Self::HasX => card.x_symbols() > 0,
             Self::PermanentAdventure => {
                 card.adventure_spell().is_some()
@@ -3658,6 +3678,8 @@ pub(crate) enum TriggerCondition {
     DuringOpponentsTurn(&'static TriggerCondition),
     /// Cast-event origin qualification, independent of spell payment method.
     CastFromHand(&'static TriggerCondition),
+    /// This cast originated in exile, as recorded at announcement.
+    CastFromExile(&'static TriggerCondition),
     OncePerTurn(&'static TriggerCondition),
     /// Qualification checked only when the event occurs.
     When {
@@ -3892,6 +3914,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
+            | Self::CastFromExile(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_treasure_mana(),
@@ -3905,10 +3928,26 @@ impl TriggerCondition {
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
+            | Self::CastFromExile(event)
             | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_hand_cast(),
+            _ => false,
+        }
+    }
+    pub(crate) fn requires_exile_cast(self) -> bool {
+        match self {
+            Self::CastFromExile(_) => true,
+            Self::InZone { event, .. }
+            | Self::Granted(event)
+            | Self::OncePerTurn(event)
+            | Self::DuringOpponentsTurn(event)
+            | Self::CastFromHand(event)
+            | Self::TreasureManaSpent(event)
+            | Self::ManaSpent { event, .. }
+            | Self::When { event, .. }
+            | Self::InterveningIf { event, .. } => event.requires_exile_cast(),
             _ => false,
         }
     }
@@ -3919,6 +3958,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
+            | Self::CastFromExile(event)
             | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
@@ -3936,6 +3976,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::CastFromHand(e)
+            | Self::CastFromExile(e)
             | Self::TreasureManaSpent(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. } => e.mana_spent_rule(),
@@ -3950,6 +3991,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::CastFromHand(e)
+            | Self::CastFromExile(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
             | Self::TreasureManaSpent(e)
@@ -3962,6 +4004,7 @@ impl TriggerCondition {
             Self::DuringOpponentsTurn(_) => true,
             Self::InZone { event, .. }
             | Self::CastFromHand(event)
+            | Self::CastFromExile(event)
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::TreasureManaSpent(event)
@@ -3979,6 +4022,7 @@ impl TriggerCondition {
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
+            | Self::CastFromExile(event)
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::TreasureManaSpent(event)
@@ -3996,7 +4040,8 @@ impl TriggerCondition {
             | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::DuringOpponentsTurn(event)
-            | Self::CastFromHand(event) => event.once_per_turn(),
+            | Self::CastFromHand(event)
+            | Self::CastFromExile(event) => event.once_per_turn(),
             _ => false,
         }
     }
@@ -5117,6 +5162,9 @@ impl Card {
     }
     pub(crate) fn cast_graveyard_minimum(self) -> u8 {
         authored::rules(self).map_or(0, |r| r.extras.cast_graveyard_minimum)
+    }
+    pub(crate) fn cast_after_first_three_turns(self) -> bool {
+        authored::rules(self).is_some_and(|r| r.extras.cast_after_first_three_turns)
     }
     pub(crate) fn cast_timing_guard(self) -> StepGuard {
         authored::rules(self).map_or(StepGuard::Always, |r| r.extras.cast_timing_guard)

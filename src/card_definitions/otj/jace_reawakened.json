@@ -3,10 +3,40 @@
   "catalogue_id": 2247,
   "oracle_id": "cbd483b5-5554-43ed-a729-535d01b0d5d3",
   "facts_sha256": "51e8e23613399a6630d16e4bc1ee055b3c34bcec779cf2db8d236b8f2a3aaa5b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "23171be4fa4b9c5577c17879ac0a5e5561fabaec75dbf541412663f9f07fa6b9"
   },
-  "physical_metadata_sha256": "97da521ad642a34a087cf0d4663efd85b9a48f1aa07a77b67262148ff32241b6"
+  "physical_metadata_sha256": "97da521ad642a34a087cf0d4663efd85b9a48f1aa07a77b67262148ff32241b6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JaceReawakened.java",
+  "java_sha256": "a609362a24c8de442b12c126abdd42cfe7472bf817f70fb0add8e13e96b08e3e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MayExileCardFromHandPlottedEffect.java",
+      "sha256": "8f21d0121c8cceea6a0d3e3f40df375c087d7ae61f198d881b6dd27b3a8906b7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CantCastDuringFirstThreeTurnsEffect.java",
+      "sha256": "366ba701041a652d2ac8888397f1e13f7aacd9387fbaff008f670dd926b76e55"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    }
+  ]
 }

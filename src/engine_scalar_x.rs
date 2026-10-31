@@ -466,6 +466,12 @@ impl Game {
                     .amount
             }
             AmountValue::DamageEventAmount => item.damage_event.expect("saved damage event").amount,
+            AmountValue::CreatureCombatDamageAmount => {
+                item.creature_combat_event
+                    .as_ref()
+                    .expect("equipped combat damage event")
+                    .amount
+            }
             AmountValue::PaidSourceCounterQuantity(kind) => item
                 .source_counter_payment
                 .filter(|payment| payment.paid && payment.kind == kind)

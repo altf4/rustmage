@@ -866,6 +866,7 @@ impl Game {
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandExileCopy
+            | EffectChoiceKind::HandPlot { .. }
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }

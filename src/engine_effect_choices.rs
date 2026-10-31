@@ -188,6 +188,7 @@ impl Game {
             EffectChoiceKind::Discard
                 | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
+                | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
@@ -204,6 +205,7 @@ impl Game {
             EffectChoiceKind::Discard
                 | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
+                | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
@@ -232,6 +234,9 @@ impl Game {
                             })
                     }
                     EffectChoiceKind::HandExileCopy => o.card.is_creature() || o.card.is_artifact(),
+                    EffectChoiceKind::HandPlot { maximum } => {
+                        !o.card.is_land() && o.card.fixed_mana_value() <= u64::from(maximum)
+                    }
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
                     _ => true,
                 };
@@ -893,6 +898,7 @@ impl Game {
                     kind,
                     EffectChoiceKind::SacrificeOrDiscard { .. }
                         | EffectChoiceKind::HandExileCopy
+                        | EffectChoiceKind::HandPlot { .. }
                         | EffectChoiceKind::HandCreature
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
@@ -910,6 +916,7 @@ impl Game {
                     kind,
                     EffectChoiceKind::SacrificeOrDiscard { .. }
                         | EffectChoiceKind::HandExileCopy
+                        | EffectChoiceKind::HandPlot { .. }
                         | EffectChoiceKind::HandCreature
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
@@ -1008,6 +1015,19 @@ impl Game {
                 .collect();
             self.forget_library_top(player);
             let events = self.move_objects_raw(&ids, Zone::Library);
+            self.finish_zone_events(&events, &[]);
+            return false;
+        }
+        if matches!(choice.kind, EffectChoiceKind::HandPlot { .. }) {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let reference = choice.selected[player.index()][0];
+            self.state.resolving.as_mut().unwrap().choice = None;
+            let events = self.move_objects_raw(&[reference.card], Zone::Exile);
+            for event in &events {
+                if event.moved && event.destination == Zone::Exile {
+                    self.remember_plotted(player, event.after);
+                }
+            }
             self.finish_zone_events(&events, &[]);
             return false;
         }
@@ -1440,6 +1460,7 @@ impl Game {
                 | EffectChoiceKind::SacrificeOrDiscard { .. }
                 | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
+                | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }

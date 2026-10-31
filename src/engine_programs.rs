@@ -770,7 +770,9 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
-                    TriggerCondition::CastFromHand(_) => unreachable!("unwrapped event"),
+                    TriggerCondition::CastFromHand(_) | TriggerCondition::CastFromExile(_) => {
+                        unreachable!("unwrapped event")
+                    }
                     TriggerCondition::SelfEntersIfCast => same && event.was_cast,
                     TriggerCondition::SelfNontokenEnters => same && !entered.is_token(),
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
@@ -1537,6 +1539,12 @@ impl Game {
                         CastRelation::Any => true,
                     };
                     if related
+                        && (!ability.condition.requires_exile_cast()
+                            || stack.is_some_and(|i| {
+                                self.state.stack[i]
+                                    .cast
+                                    .is_some_and(|c| c.origin == Zone::Exile)
+                            }))
                         && (!ability.condition.requires_hand_cast()
                             || stack.is_some_and(|i| {
                                 self.state.stack[i]
@@ -1560,6 +1568,10 @@ impl Game {
                                         self.state.objects[source.id as usize].is_spell_copy()
                                     })
                             })
+                        } else if filter == CastFilter::Colorless {
+                            stack
+                                .and_then(|i| self.state.stack[i].source)
+                                .map_or(card.colors() == 0, |source| source.facts.colors == 0)
                         } else {
                             self.cast_filter_matches_value(
                                 spell_owner,
@@ -2791,6 +2803,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::Discover(amount) => {
+                    if self.start_discover(&item, amount) {
+                        return;
+                    }
+                }
                 Instruction::PrepareSource => self.prepare_permanent(
                     item.source
                         .expect("instruction requires an object source")
@@ -2972,6 +2989,9 @@ impl Game {
                     }
                 }
                 Instruction::CopyNextInstantSorcery { ability } => {
+                    self.remember_next_spell_copy(&item, ability)
+                }
+                Instruction::CopySpellsThisTurn { ability } => {
                     self.remember_next_spell_copy(&item, ability)
                 }
                 Instruction::ExileTargetsCopyFreeWithBudget { mana_value } => {

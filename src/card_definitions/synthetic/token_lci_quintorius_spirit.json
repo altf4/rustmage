@@ -1,0 +1,11 @@
+{
+  "name": "@token/lci-quintorius-spirit",
+  "catalogue_id": 5472,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Spirit32Token.java",
+  "java_sha256": "f04a6f47b6332ce0fcc8ea172d1ee35b174ccba2118bbd3befe317b2f4edcc39",
+  "physical_metadata_sha256": "e8d1f4c7ab5a2df4b4b5e8bf56c39dd74319bf8eb4bee2f71c0b427558fc3f68"
+}

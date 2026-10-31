@@ -95,6 +95,12 @@ impl Game {
                 CastRelation::Any => true,
             };
             if !related
+                || (ability.condition.requires_exile_cast()
+                    && !stack.is_some_and(|i| {
+                        self.state.stack[i]
+                            .cast
+                            .is_some_and(|c| c.origin == Zone::Exile)
+                    }))
                 || !source.grant_available(
                     grant.grantor,
                     grant.granting_card,

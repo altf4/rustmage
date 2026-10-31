@@ -175,7 +175,9 @@ impl Game {
                     SearchDestination::HandOrGraveyard => {
                         unreachable!("destination chosen before movement")
                     }
-                    SearchDestination::LinkedExile => Zone::Exile,
+                    SearchDestination::LinkedExile | SearchDestination::ExileFreeThisTurn => {
+                        Zone::Exile
+                    }
                     SearchDestination::Hand => Zone::Hand,
                     SearchDestination::Graveyard => Zone::Graveyard,
                     SearchDestination::Battlefield => Zone::Battlefield,
@@ -197,6 +199,9 @@ impl Game {
                     destination == Zone::Battlefield && choice.spec.tapped,
                 );
                 movement.reveal_hand = choice.spec.reveal && destination == Zone::Hand;
+                if choice.spec.destination == SearchDestination::ExileFreeThisTurn {
+                    movement.exile_free_until_end = Some(player);
+                }
                 movement
             })
             .collect();

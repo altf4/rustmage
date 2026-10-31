@@ -24,6 +24,12 @@ impl Game {
             ids.push(top);
         }
         let events = self.move_objects_raw(&ids, Zone::Exile);
+        let moved = events
+            .iter()
+            .filter(|event| event.moved && event.destination == Zone::Exile)
+            .count();
+        self.state.resolving.as_mut().unwrap().moved_count =
+            Some(u64::try_from(moved).capacity("exiled card count exhausted"));
         for event in &events {
             if event.moved
                 && event.destination == Zone::Exile
