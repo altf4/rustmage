@@ -765,7 +765,7 @@ impl FundingState<'_> {
                 }
                 let mut w = self.clone();
                 if pay {
-                    w.pay_projected_life(m.controller, cost)
+                    w.pay_projected_life(m.controller, cost, &moves)
                 }
                 let mut next = moves.clone();
                 next[event.index].life_paid = Some(pay);
@@ -797,7 +797,62 @@ impl FundingState<'_> {
         }
         false
     }
-    fn pay_projected_life(&mut self, player: Player, n: u32) {
+    pub(super) fn pay_projected_life(
+        &mut self,
+        player: Player,
+        n: u32,
+        entering: &[entries::EntryMove],
+    ) {
+        if n == 0 {
+            return;
+        }
+        let applies = self.life_replacement_possible
+            && self.static_sources().iter().copied().any(|id| {
+                let source = self.object(id);
+                source.zone == Zone::Battlefield
+                    && source.controller == player
+                    && self.printed_abilities_available(id)
+                    && source.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
+                            )
+                        })
+                    })
+            });
+        if applies {
+            let cards = self.game.state.players[player.index()]
+                .library
+                .iter()
+                .rev()
+                .copied()
+                .filter(|&id| {
+                    let object = self.object(id);
+                    object.zone == Zone::Library
+                        && object.is_card()
+                        && !entering.iter().any(|m| {
+                            !m.skipped
+                                && m.destination == Zone::Battlefield
+                                && m.before.zone == Zone::Library
+                                && m.before.reference == self.reference(id)
+                        })
+                })
+                .take(n as usize)
+                .map(|id| self.reference(id))
+                .collect::<Vec<_>>();
+            if cards.len() == n as usize {
+                let mut result = None;
+                self.cost_departures(&cards, Zone::Exile, &mut |world| {
+                    result = Some(world.clone());
+                    true
+                });
+                if let Some(world) = result {
+                    *self = world;
+                    return;
+                }
+            }
+        }
         self.life_lost[player.index()] |= n > 0;
         if player == self.actor {
             self.life -= i128::from(n)
@@ -920,7 +975,7 @@ impl FundingState<'_> {
                 }
                 let mut w = self.clone();
                 if pay {
-                    w.pay_projected_life(m.controller, cost)
+                    w.pay_projected_life(m.controller, cost, &moves)
                 }
                 let mut next = moves.clone();
                 next[at].life_paid = Some(pay);
@@ -1677,11 +1732,12 @@ impl Game {
                     };
                     (i, cost)
                 });
+                let entering = batch.moves.clone();
                 let m = &mut batch.moves[index];
                 m.life_paid = Some(*pay);
                 m.tapped |= !*pay;
                 if *pay {
-                    world.pay_projected_life(m.controller, cost)
+                    world.pay_projected_life(m.controller, cost, &entering)
                 }
                 if payment.is_some() {
                     batch.tap_events[batch.tap_next].payment = None;
@@ -2018,7 +2074,7 @@ mod projected_life_loss_tests {
             let world = FundingState::from_game(&g, &goal);
             assert!(!world.entry_guard(StepGuard::OpponentLostLife, &movement));
             let mut branch = world.clone();
-            branch.pay_projected_life(p.other(), 1);
+            branch.pay_projected_life(p.other(), 1, &[]);
             branch.other_life += 1;
             assert_eq!(branch.life(p.other()), world.life(p.other()));
             assert!(branch.entry_guard(StepGuard::OpponentLostLife, &movement));

@@ -216,8 +216,7 @@ impl Game {
             movement.tapped = true;
         }
         if pay {
-            self.record_cast_mana_entry_life(player, cost);
-            self.lose_life(player, i128::from(cost));
+            self.pay_life(player, i128::from(cost));
         }
         true
     }

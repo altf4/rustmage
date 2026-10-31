@@ -375,7 +375,7 @@ impl Game {
             .take()
             .unwrap();
         if pay {
-            self.lose_life(request.payer, i128::from(request.life.unwrap()));
+            self.pay_life(request.payer, i128::from(request.life.unwrap()));
         } else if let Some(victim) = request.victim {
             self.counter_stack_item(victim, false);
         }
@@ -396,7 +396,7 @@ impl Game {
         if let Some(payment) = payment {
             self.spend_mana(request.payer, payment);
             if let Some(life) = request.life {
-                self.lose_life(request.payer, i128::from(life));
+                self.pay_life(request.payer, i128::from(life));
             }
             let r = self.state.resolving.as_ref().unwrap();
             if let Some(

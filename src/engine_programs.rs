@@ -211,6 +211,90 @@ impl Game {
         self.life_lost_event(player, amount);
     }
 
+    /// Pay a life cost, as distinct from an instruction that causes life loss.
+    pub(super) fn pay_life(&mut self, player: Player, amount: i128) {
+        if amount <= 0 {
+            return;
+        }
+        let frozen = self.take_frozen_mana_life_payment();
+        if let Some(None) = frozen {
+            return;
+        }
+        if let Some(Some(receipt)) = &frozen {
+            if receipt.player != player || receipt.amount != amount {
+                self.fail_frozen_mana_replay();
+                return;
+            }
+            if receipt.exiled.is_none() {
+                self.lose_life(player, amount);
+                return;
+            }
+        }
+        let applies = self.state.static_sources.iter().copied().any(|id| {
+            let source = &self.state.objects[id as usize];
+            source.zone == Zone::Battlefield
+                && source.controller == player
+                && self.printed_abilities_available(id)
+                && source.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(
+                            fragment,
+                            StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
+                        )
+                    })
+                })
+        });
+        if applies || frozen.is_some() {
+            let excluded = self
+                .state
+                .entry_batch
+                .as_ref()
+                .map(|batch| {
+                    batch
+                        .moves
+                        .iter()
+                        .filter(|movement| {
+                            !movement.skipped
+                                && movement.destination == Zone::Battlefield
+                                && movement.before.zone == Zone::Library
+                        })
+                        .map(|movement| movement.before.reference)
+                        .collect::<Vec<_>>()
+                })
+                .unwrap_or_default();
+            let count = usize::try_from(amount).unwrap_or(usize::MAX);
+            let cards = self.state.players[player.index()]
+                .library
+                .iter()
+                .rev()
+                .copied()
+                .filter(|&id| {
+                    self.state.objects[id as usize].is_card()
+                        && !excluded.contains(&self.object_ref(id))
+                })
+                .take(count)
+                .collect::<Vec<_>>();
+            let references = cards
+                .iter()
+                .map(|&id| self.object_ref(id))
+                .collect::<Vec<_>>();
+            if let Some(Some(receipt)) = &frozen
+                && receipt.exiled.as_ref() != Some(&references)
+            {
+                self.fail_frozen_mana_replay();
+                return;
+            }
+            if cards.len() == count {
+                self.record_cast_mana_life_payment(player, amount, Some(references));
+                let events = self.move_objects_raw(&cards, Zone::Exile);
+                self.finish_zone_events(&events, &[]);
+                return;
+            }
+        }
+        self.record_cast_mana_life_payment(player, amount, None);
+        self.lose_life(player, amount);
+    }
+
     pub(super) fn lose_life_unobserved(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
             return;
@@ -5395,6 +5479,15 @@ impl Game {
                     let count = self.item_amount(amount, &item);
                     self.exile_top_play(item.controller, count, next_turn);
                 }
+                Instruction::ExileTopLibrary { players, amount } => {
+                    let count = self.item_amount(amount, &item);
+                    let ids = self
+                        .program_players(players, &item)
+                        .flat_map(|player| exile::top_library_cards(self, player, count))
+                        .collect::<Vec<_>>();
+                    let events = self.move_objects_raw(&ids, Zone::Exile);
+                    self.finish_zone_events(&events, &[]);
+                }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, u128::from(amount), next_turn);
                 }
@@ -6268,8 +6361,20 @@ impl Game {
                     }
                 }
                 Instruction::LoseLife(set, amount) => {
+                    // These paired instructions represent an accepted payment,
+                    // while ordinary LoseLife remains an unreplaced loss.
+                    let life_payment = resolution.pc >= 2
+                        && matches!(
+                            resolution.program[resolution.pc - 2],
+                            Instruction::MayPayOpponentLife { .. }
+                                | Instruction::MayPayControllerLife { .. }
+                        );
                     for player in self.program_players(set, &item) {
-                        self.lose_life(player, i128::from(amount));
+                        if life_payment {
+                            self.pay_life(player, i128::from(amount));
+                        } else {
+                            self.lose_life(player, i128::from(amount));
+                        }
                     }
                 }
                 Instruction::UntapPlayerCreatures(players) => {

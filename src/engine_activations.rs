@@ -942,7 +942,7 @@ impl Game {
         let cost: ActivationCost = definition.cost;
         self.record_cast_mana_activation(item, payment, &counter_payment);
         self.spend_mana_for(item.controller, payment, self.purpose_for_item(item));
-        self.lose_life(item.controller, i128::from(cost.life));
+        self.pay_life(item.controller, i128::from(cost.life));
         let object = &mut self.state.objects[source.id as usize];
         if object.generation != source.object.generation || object.zone != definition.source_zone()
         {

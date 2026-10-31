@@ -251,7 +251,7 @@ impl Game {
                 self.finish_announcement();
             }
             CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
-                self.lose_life(a.item.controller, i128::from(amount));
+                self.pay_life(a.item.controller, i128::from(amount));
                 let c = a.cast_costs.as_mut().unwrap();
                 c.clauses[usize::from(index)].paid = true;
                 c.active = None;

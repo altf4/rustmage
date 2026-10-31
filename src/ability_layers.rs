@@ -55,6 +55,8 @@ pub(crate) enum StaticAbilityFragment {
     GraveyardCardsCannotBeExiled,
     /// Replace a controlled permanent's move to a graveyard with no move.
     PreventControlledPermanentGraveyardMove,
+    /// Replace this controller's life payments with top-library exile when possible.
+    ReplaceLifePaymentWithLibraryExile,
     /// During combat no spells or nonmana activated abilities may be started.
     NoSpellsOrNonmanaDuringCombat,
 

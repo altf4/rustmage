@@ -539,8 +539,7 @@ impl FundingState<'_> {
                 CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
                     if amount == 0 || self.life >= i128::from(amount) {
                         let mut next = self.clone();
-                        next.life -= i128::from(amount);
-                        next.life_lost[next.actor.index()] |= amount > 0;
+                        next.pay_projected_life(next.actor, amount, &[]);
                         if next.complete_cost_rows(&later, &rest) {
                             return true;
                         }
@@ -971,8 +970,7 @@ impl FundingState<'_> {
         if let EffectChoiceKind::DiscardOrLife(life) = spec.kind {
             if !c.exact && self.life >= i128::from(life) {
                 let mut next = self.clone();
-                next.life -= i128::from(life);
-                next.life_lost[next.actor.index()] |= life > 0;
+                next.pay_projected_life(next.actor, life, &[]);
                 if next.complete_cost_rows(later, remaining) {
                     return true;
                 }
