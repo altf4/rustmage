@@ -49,7 +49,7 @@ class BindingContractTests(unittest.TestCase):
                     if predicate(observation):
                         return
                     kinds = {action["kind"] for action in observation["actions"]}
-                    for kind in ("Keep", "FinishOpeningHand", "FinishAttackers", "Pass"):
+                    for kind in ("Keep", "FinishOpeningHand", "FinishAttackers", "Discard", "Pass"):
                         if kind in kinds:
                             choose(kind)
                             break
