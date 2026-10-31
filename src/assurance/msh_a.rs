@@ -3210,3 +3210,128 @@ fn royal_treatment_sba_full_evaluations_do_not_scale_with_creature_count() {
         "adding ordinary creatures must not add whole-board evaluations"
     );
 }
+
+#[test]
+#[ignore = "manual performance comparison"]
+fn syncopate_resolution_payment_cost() {
+    for x in [10_u32, 30, 60] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        g.state.players[p.index()].mana = [x; 6];
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        act(&mut g, Action::Pass);
+        let counter = put(&mut g, p.other(), "Syncopate", Zone::Hand);
+        g.state.players[p.other().index()].mana = [0, 1, 0, 0, 0, x];
+        act(&mut g, Action::AnnounceCast { card: counter });
+        act(&mut g, Action::ChooseX { value: x });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(shock),
+            },
+        );
+        act(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 1, 0, 0, 0, x],
+            },
+        );
+        for _ in 0..8 {
+            if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::ResolutionMana { .. }));
+        assert_eq!(g.actor(), Some(p));
+        let start = std::time::Instant::now();
+        act(
+            &mut g,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, x],
+            },
+        );
+        println!("x={x} apply_payment_us={}", start.elapsed().as_micros());
+        assert_eq!(g.state.objects[shock as usize].zone, Zone::Stack);
+    }
+}
+
+#[test]
+fn syncopate_resolution_payment_order_and_owned_branches() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        act(&mut g, Action::Pass);
+        let counter = put(&mut g, p.other(), "Syncopate", Zone::Hand);
+        g.state.players[p.other().index()].mana = [0, 1, 0, 0, 0, 2];
+        act(&mut g, Action::AnnounceCast { card: counter });
+        act(&mut g, Action::ChooseX { value: 2 });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(shock),
+            },
+        );
+        act(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 1, 0, 0, 0, 2],
+            },
+        );
+        for _ in 0..8 {
+            if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::ResolutionMana { .. }));
+        g.state.players[p.index()].mana = [2, 2, 0, 0, 0, 2];
+        let payments: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter_map(|action| match action {
+                Action::PayResolutionMana { payment } => Some(payment),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(
+            payments,
+            vec![
+                [0, 0, 0, 0, 0, 2],
+                [0, 1, 0, 0, 0, 1],
+                [0, 2, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0, 1],
+                [1, 1, 0, 0, 0, 0],
+                [2, 0, 0, 0, 0, 0],
+            ]
+        );
+        reject(
+            &mut g,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, 3],
+            },
+        );
+        contracts::branch_contract(g.clone());
+        let action = Action::PayResolutionMana {
+            payment: [1, 1, 0, 0, 0, 0],
+        };
+        let index = g
+            .legal_actions()
+            .iter()
+            .position(|candidate| *candidate == action)
+            .unwrap();
+        let saved = g.snapshot();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        drop(g);
+        act(&mut raw, action.clone());
+        indexed.apply_index(p, indexed.revision(), index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.state.objects[shock as usize].zone, Zone::Stack);
+        raw.restore(&saved).unwrap();
+        act(&mut raw, action);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+    }
+}
