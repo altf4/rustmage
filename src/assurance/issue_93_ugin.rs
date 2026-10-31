@@ -1,5 +1,5 @@
 //! Ugin's printed abilities through paid actions and owned replay.
-use super::big_helpers::{cast as paid_cast, checked, settle as finish};
+use super::big_helpers::{checked, settle as finish};
 use super::*;
 
 #[test]
@@ -8,7 +8,8 @@ fn ugin_eye_of_the_storms_full_card() {
         let mut g = scenario(player);
         let walker = put(&mut g, player, "Ugin, Eye of the Storms", Zone::Hand);
         let victim = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
-        paid_cast(&mut g, walker, None, &[]);
+        checked(&mut g, Action::AnnounceCast { card: walker });
+        pay(&mut g);
         g.prepare_triggers();
         checked(
             &mut g,
@@ -23,8 +24,9 @@ fn ugin_eye_of_the_storms_full_card() {
         assert_eq!(g.object_view(victim).zone, Zone::Exile);
         assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 7);
         let next = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
-        let artifact = put(&mut g, player, "Aerial Doombot", Zone::Hand);
-        paid_cast(&mut g, artifact, None, &[]);
+        let artifact = put(&mut g, player, "Adventuring Gear", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: artifact });
+        pay(&mut g);
         g.prepare_triggers();
         checked(
             &mut g,
@@ -80,7 +82,7 @@ fn ugin_eye_of_the_storms_full_card() {
             Zone::Battlefield,
         );
         search.state.objects[walker as usize].counters.loyalty = 11;
-        let colorless = put(&mut search, player, "Aerial Doombot", Zone::Library);
+        let colorless = put(&mut search, player, "Adventuring Gear", Zone::Library);
         let colored = put(&mut search, player, "Bear Cub", Zone::Library);
         let land = put(&mut search, player, "Forest", Zone::Library);
         checked(

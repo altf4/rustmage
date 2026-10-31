@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "3598d18bbf26721c0e0b57b542b76275ddabce28029eaac5a245208bc2895749",
+  "catalogue_version": "905562b5c4dc4d898fea8858ed306674343ab513491f7f6096fdaf5166b721a6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2937,
-  "implemented_total": 2943,
-  "token_definitions": 148,
+  "implemented_standard_cards": 2941,
+  "implemented_total": 2947,
+  "token_definitions": 149,
   "emblem_definitions": 9,
   "adventure_definitions": 49,
   "omen_definitions": 13,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 96,
-      "gated": 163
+      "complete": 97,
+      "gated": 162
     },
     "dsk": {
       "total": 264,
@@ -100,8 +100,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 179,
-      "complete": 94
+      "gated": 178,
+      "complete": 95
     },
     "m19": {
       "total": 2,
@@ -131,8 +131,8 @@
     },
     "otj": {
       "total": 264,
-      "complete": 93,
-      "gated": 171
+      "complete": 94,
+      "gated": 170
     },
     "pspl": {
       "total": 1,
@@ -163,8 +163,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 121,
-      "gated": 143
+      "complete": 122,
+      "gated": 142
     },
     "tla": {
       "total": 278,
@@ -18178,8 +18178,8 @@
     {
       "name": "Jace Reawakened",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/jace_reawakened.rs",
       "set": "otj"
     },
@@ -26770,8 +26770,8 @@
     {
       "name": "Quintorius Kand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/quintorius_kand.rs",
       "set": "lci"
     },
@@ -35538,8 +35538,8 @@
     {
       "name": "The Aetherspark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/the_aetherspark.rs",
       "set": "dft"
     },
@@ -38106,8 +38106,8 @@
     {
       "name": "Ugin, Eye of the Storms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/ugin_eye_of_the_storms.rs",
       "set": "tdm"
     },

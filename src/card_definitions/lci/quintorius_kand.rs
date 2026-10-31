@@ -68,7 +68,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     max_mana: u32::MAX,
                 },
                 min: 0,
-                max: u16::MAX,
+                max: usize::MAX,
             }),
             program: &[
                 Instruction::ExileTargetsPlay { next_turn: false },

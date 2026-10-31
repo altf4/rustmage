@@ -1124,7 +1124,7 @@ fn prior_schema190_state_supported(state: &State) -> bool {
 fn schema194_new_card(card: Card) -> bool {
     matches!(
         card.identity(),
-        "Ugin, Eye of the Storms" | "Jace Reawakened" | "The Aetherspark"
+        "Ugin, Eye of the Storms" | "Jace Reawakened" | "The Aetherspark" | "Quintorius Kand"
     )
 }
 
@@ -1616,7 +1616,10 @@ fn project_prior_schema194(input: &str) -> Result<String, String> {
             }
             serde_json::Value::Array(rows) => rows.iter().try_for_each(check),
             serde_json::Value::Object(fields) => {
-                if fields.contains_key("HandPlot") || fields.contains_key("ExileFreeThisTurn") {
+                if fields.contains_key("HandPlot")
+                    || fields.contains_key("ExileFreeThisTurn")
+                    || fields.contains_key("discovered")
+                {
                     return Err(
                         "new plotted-hand or free-exile choice has no schema 193 representation"
                             .into(),

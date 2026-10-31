@@ -70,6 +70,9 @@ fn jace_reawakened_full_card() {
         );
         next_turn(&mut plot);
         next_turn(&mut plot);
+        while plot.state.step != Step::Main1 {
+            checked(&mut plot, Action::Pass);
+        }
         assert!(
             plot.legal_actions()
                 .contains(&Action::AnnouncePlotted { card: creature })

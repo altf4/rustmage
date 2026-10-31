@@ -9,7 +9,7 @@ const COLORED_PERMANENT: TargetSpec = TargetSpec {
     rule: TargetRule::Filtered {
         base: &TargetRule::Object {
             zone: TargetZone::Battlefield,
-            kinds: 1 | 2 | 16 | 32 | 64 | 256,
+            kinds: 0,
             relation: -1,
             other: false,
             nonland: false,
