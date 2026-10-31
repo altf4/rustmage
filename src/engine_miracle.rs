@@ -30,12 +30,14 @@ struct Protection {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct MiracleState {
     choice: Option<RevealChoice>,
+    remaining_choices: VecDeque<RevealChoice>,
     draws: VecDeque<DrawRequest>,
     protection: Vec<Protection>,
 }
 pub(super) fn owned_bytes(data: &Option<Box<MiracleState>>) -> usize {
     data.as_ref().map_or(0, |s| {
         std::mem::size_of::<MiracleState>()
+            + s.remaining_choices.len() * std::mem::size_of::<RevealChoice>()
             + s.draws.len() * std::mem::size_of::<DrawRequest>()
             + s.protection
                 .iter()
@@ -83,8 +85,7 @@ impl Game {
         }
         let object = self.object_ref(card);
         let definition = self.state.objects[card as usize].card;
-        let mut provider = false;
-        let mut grant = None;
+        let mut choices = VecDeque::new();
         for &id in &self.state.static_sources {
             let source = self.object_view(id);
             if source.zone != Zone::Battlefield
@@ -96,34 +97,38 @@ impl Game {
             for group in source.card.static_ability_groups() {
                 for fragment in group.fragments {
                     if let StaticAbilityFragment::HandMiracle { filter, ability } = *fragment {
-                        provider = true;
-                        if grant.is_none()
-                            && filter.matches(definition)
-                            && self.state.objects[card as usize].zone == Zone::Hand
-                        {
-                            grant = Some((
-                                AttachmentTriggerView {
-                                    grantor: source.reference,
-                                    granting_card: source.card,
-                                    recipient: object,
-                                    defender: None,
-                                    granted: true,
-                                    origin: source.copied_grant_origin(),
-                                },
-                                ability,
-                            ));
-                        }
+                        let grant = (filter.matches(definition)
+                            && self.state.objects[card as usize].zone == Zone::Hand)
+                            .then(|| {
+                                (
+                                    AttachmentTriggerView {
+                                        grantor: source.reference,
+                                        granting_card: source.card,
+                                        recipient: object,
+                                        defender: None,
+                                        granted: true,
+                                        origin: source.copied_grant_origin(),
+                                    },
+                                    ability,
+                                )
+                            });
+                        // Keep one private slot per public grant, even when its
+                        // filter rejects the hidden card. Otherwise the number
+                        // of decisions would reveal that card's eligibility.
+                        choices.push_back(RevealChoice {
+                            player,
+                            object,
+                            grant,
+                        });
                     }
                 }
             }
         }
-        // The same first-draw decision exists for an ineligible hidden card.
-        if provider {
-            self.state.miracle.get_or_insert_default().choice = Some(RevealChoice {
-                player,
-                object,
-                grant,
-            });
+        if let Some(choice) = choices.pop_front() {
+            let state = self.state.miracle.get_or_insert_default();
+            debug_assert!(state.choice.is_none() && state.remaining_choices.is_empty());
+            state.choice = Some(choice);
+            state.remaining_choices = choices;
             self.state.pending = Pending::MiracleReveal { player };
         }
     }
@@ -248,6 +253,13 @@ impl Game {
             );
             source.cast = None;
             self.queue_granted_spell_trigger(&source, grant, ability);
+        }
+        // Every grant gets its own immediate reveal choice. Do not resume the
+        // enclosing draw or put triggers on the stack between these choices.
+        let state = self.state.miracle.as_mut().unwrap();
+        if let Some(next) = state.remaining_choices.pop_front() {
+            state.choice = Some(next);
+            return;
         }
         loop {
             let next = self.state.miracle.as_mut().unwrap().draws.pop_front();

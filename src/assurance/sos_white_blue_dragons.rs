@@ -568,3 +568,216 @@ fn sos_dragon_miracle_ability_loss_first_draw_only_and_observed_policy() {
         assert!(g.observe(p).miracle.is_none());
     }
 }
+
+#[test]
+fn bug_hunt_multiple_lorehold_miracle_instances_can_be_revealed_independently() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Lorehold, the Historian", Zone::Battlefield);
+    let copy_spell = put(&mut g, p, "Multiversal Incursion", Zone::Hand);
+    big_helpers::cast(&mut g, copy_spell, None, &[]);
+    big_helpers::settle(&mut g);
+    let dragons = g
+        .state
+        .objects
+        .iter()
+        .filter(|o| {
+            o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.card.name() == "Lorehold, the Historian"
+        })
+        .count();
+    assert_eq!(dragons, 2);
+    let drawn = put(&mut g, p, "Shock", Zone::Library);
+    draw_spell(&mut g, p, "Divination");
+    assert_eq!(g.observe(p).miracle.unwrap().object.card, drawn);
+    big_helpers::checked(&mut g, Action::RevealMiracle);
+    assert!(
+        matches!(g.state.pending, Pending::MiracleReveal { .. }),
+        "second miracle instance should offer its own reveal: {:?}",
+        g.state.pending
+    );
+}
+
+fn two_lorehold_miracle_draw(p: Player) -> (Game, CardId, CardId) {
+    let mut g = scenario(p);
+    let original = put(&mut g, p, "Lorehold, the Historian", Zone::Battlefield);
+    let copy_spell = put(&mut g, p, "Multiversal Incursion", Zone::Hand);
+    big_helpers::cast(&mut g, copy_spell, None, &[]);
+    big_helpers::settle(&mut g);
+    let second_draw = put(&mut g, p, "Forest", Zone::Library);
+    let first = put(&mut g, p, "Group Project", Zone::Library);
+    draw_spell(&mut g, p, "Divination");
+    assert_eq!(g.observe(p).miracle.unwrap().object.card, first);
+    (g, original, second_draw)
+}
+
+#[test]
+fn multiple_miracle_choices_are_independent_and_defer_draws() {
+    for p in [Player::P0, Player::P1] {
+        for first_reveal in [false, true] {
+            for second_reveal in [false, true] {
+                let (mut g, _, second_draw) = two_lorehold_miracle_draw(p);
+                let first = g.observe(p).miracle.unwrap().object;
+                contracts::branch_contract(g.clone());
+                big_helpers::checked(
+                    &mut g,
+                    if first_reveal {
+                        Action::RevealMiracle
+                    } else {
+                        Action::DeclineMiracle
+                    },
+                );
+                assert!(matches!(g.state.pending, Pending::MiracleReveal { .. }));
+                assert_eq!(g.observe(p).miracle.unwrap().object, first);
+                assert!(g.observe(p.other()).miracle.is_none());
+                assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+                assert_eq!(g.state.objects[second_draw as usize].zone, Zone::Library);
+                assert_eq!(g.state.pending_triggers.len(), usize::from(first_reveal));
+                contracts::branch_contract(g.clone());
+                big_helpers::checked(
+                    &mut g,
+                    if second_reveal {
+                        Action::RevealMiracle
+                    } else {
+                        Action::DeclineMiracle
+                    },
+                );
+                assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
+                assert_eq!(g.state.objects[second_draw as usize].zone, Zone::Hand);
+                let triggers: Vec<_> = g
+                    .state
+                    .stack
+                    .iter()
+                    .chain(&g.state.pending_triggers)
+                    .chain(&g.state.ordering_triggers)
+                    .filter(|item| {
+                        item.attachment_trigger.as_ref().is_some_and(|grant| {
+                            grant.recipient == first
+                                && grant.granting_card.name() == "Lorehold, the Historian"
+                        })
+                    })
+                    .collect();
+                assert_eq!(
+                    triggers.len(),
+                    usize::from(first_reveal) + usize::from(second_reveal)
+                );
+                if triggers.len() == 2 {
+                    assert_ne!(triggers[0].id, triggers[1].id);
+                    assert_ne!(
+                        triggers[0].attachment_trigger.as_ref().unwrap().grantor,
+                        triggers[1].attachment_trigger.as_ref().unwrap().grantor
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn multiple_miracle_hidden_ineligible_draw_has_equal_private_decisions() {
+    for p in [Player::P0, Player::P1] {
+        let mut left = scenario(p);
+        put(&mut left, p, "Lorehold, the Historian", Zone::Battlefield);
+        let copy_spell = put(&mut left, p, "Multiversal Incursion", Zone::Hand);
+        big_helpers::cast(&mut left, copy_spell, None, &[]);
+        big_helpers::settle(&mut left);
+        put(&mut left, p, "Forest", Zone::Library);
+        put(&mut left, p, "Shock", Zone::Library);
+        let mut right = left.clone();
+        let n = right.state.players[p.index()].library.len();
+        right.state.players[p.index()].library.swap(n - 1, n - 2);
+        draw_spell(&mut left, p, "Divination");
+        draw_spell(&mut right, p, "Divination");
+        for choice in 0..2 {
+            assert_eq!(
+                serde_json::to_value(left.observe(p.other())).unwrap(),
+                serde_json::to_value(right.observe(p.other())).unwrap()
+            );
+            assert!(left.observe(p).miracle.unwrap().can_reveal);
+            assert!(!right.observe(p).miracle.unwrap().can_reveal);
+            reject(&mut right, Action::RevealMiracle);
+            big_helpers::checked(&mut left, Action::DeclineMiracle);
+            big_helpers::checked(&mut right, Action::DeclineMiracle);
+            if choice == 0 {
+                assert_eq!(left.state.players[p.index()].cards_drawn_this_turn, 1);
+                assert_eq!(right.state.players[p.index()].cards_drawn_this_turn, 1);
+                assert!(matches!(left.state.pending, Pending::MiracleReveal { .. }));
+                assert!(matches!(right.state.pending, Pending::MiracleReveal { .. }));
+            }
+        }
+        assert_eq!(
+            serde_json::to_value(left.observe(p.other())).unwrap(),
+            serde_json::to_value(right.observe(p.other())).unwrap()
+        );
+        assert_eq!(left.state.players[p.index()].cards_drawn_this_turn, 2);
+        assert_eq!(right.state.players[p.index()].cards_drawn_this_turn, 2);
+    }
+}
+
+#[test]
+fn multiple_miracle_triggers_survive_providers_and_offer_two_casts() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, original, _) = two_lorehold_miracle_draw(p);
+        let drawn = g.observe(p).miracle.unwrap().object;
+        big_helpers::checked(&mut g, Action::RevealMiracle);
+        big_helpers::checked(&mut g, Action::RevealMiracle);
+        g.prepare_triggers();
+        while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut g, |action| matches!(action, Action::PutTrigger { .. }));
+        }
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .filter(|item| item
+                    .attachment_trigger
+                    .as_ref()
+                    .is_some_and(|grant| grant.recipient == drawn))
+                .count(),
+            2
+        );
+        let providers: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                (object.zone == Zone::Battlefield
+                    && object.card.name() == "Lorehold, the Historian")
+                    .then_some(id as CardId)
+            })
+            .collect();
+        assert_eq!(providers.len(), 2);
+        assert!(providers.contains(&original));
+        for provider in providers {
+            g.state.players[p.index()].mana = [8; 6];
+            let bounce = put(&mut g, p, "Unsummon", Zone::Hand);
+            big_helpers::cast(&mut g, bounce, None, &[Target::Card(provider)]);
+            for _ in 0..8 {
+                if !g.on_battlefield(provider) {
+                    break;
+                }
+                big_helpers::checked(&mut g, Action::Pass);
+            }
+            assert!(!g.on_battlefield(provider));
+        }
+        offer(&mut g);
+        assert_eq!(
+            g.state.resolution_free_casts.as_ref().unwrap().remaining[0],
+            drawn
+        );
+        big_helpers::checked(&mut g, Action::FinishResolutionCasts);
+        offer(&mut g);
+        assert_eq!(
+            g.state.resolution_free_casts.as_ref().unwrap().remaining[0],
+            drawn
+        );
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        assert_eq!(free_card(&mut g, CastFace::Normal), drawn);
+        pay(&mut g);
+        assert_eq!(g.object_view(drawn.card).zone, Zone::Stack);
+        big_helpers::checked(&mut g, Action::FinishResolutionCasts);
+        big_helpers::settle(&mut g);
+    }
+}
