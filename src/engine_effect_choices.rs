@@ -114,6 +114,12 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if choice.kind == EffectChoiceKind::ExileCardFromAnyGraveyard {
+            return o.zone == Zone::Graveyard
+                && o.is_card()
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object);
+        }
         if matches!(choice.kind, EffectChoiceKind::DiscardedLand { .. }) {
             return self.state.resolving.as_ref().unwrap().item.controller == player
                 && self.object_ref(object.card) == object
@@ -1224,7 +1230,9 @@ impl Game {
             }
         } else if matches!(
             choice.kind,
-            EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileGreatestManaValue
+            EffectChoiceKind::ExileGraveyard
+                | EffectChoiceKind::ExileCardFromAnyGraveyard
+                | EffectChoiceKind::ExileGreatestManaValue
         ) || matches!(choice.kind, EffectChoiceKind::TapPermanents(_))
         {
             let ids: Vec<_> = choice
@@ -1234,7 +1242,9 @@ impl Game {
                 .collect();
             if matches!(
                 choice.kind,
-                EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileGreatestManaValue
+                EffectChoiceKind::ExileGraveyard
+                    | EffectChoiceKind::ExileCardFromAnyGraveyard
+                    | EffectChoiceKind::ExileGreatestManaValue
             ) {
                 let events = self.move_objects_raw(&ids, Zone::Exile);
                 self.finish_zone_events(&events, &[]);

@@ -856,6 +856,7 @@ impl Game {
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)
             | EffectChoiceKind::HandToTop
+            | EffectChoiceKind::ExileCardFromAnyGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileSourceAndNamed { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. }

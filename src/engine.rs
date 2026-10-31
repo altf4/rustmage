@@ -4335,7 +4335,8 @@ impl Game {
                             | EffectChoiceKind::ExileGraveyard
                             | EffectChoiceKind::TapPermanents(_)
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
-                            EffectChoiceKind::ExileSourceAndNamed { .. } => {
+                            EffectChoiceKind::ExileSourceAndNamed { .. }
+                            | EffectChoiceKind::ExileCardFromAnyGraveyard => {
                                 Action::SelectResolutionExile { object }
                             }
                             EffectChoiceKind::HandPlot { .. } => {

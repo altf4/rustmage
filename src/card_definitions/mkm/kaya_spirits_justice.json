@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3e8432f129f329196bf72df2facfec0263d16f517f2ffe6412a19548cfa5958a"
   },
-  "physical_metadata_sha256": "3d5fed493a8896d98936155a5d244c947c1f6f01467a0b6bf3319974ff1a3eb9"
+  "physical_metadata_sha256": "3d5fed493a8896d98936155a5d244c947c1f6f01467a0b6bf3319974ff1a3eb9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KayaSpiritsJustice.java",
+  "java_sha256": "0a665c595996d60bafbaf307985b784e5612b89f5bf64acf65154dda13a447de",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/WhiteBlackSpiritToken.java",
+      "sha256": "f49b3d6ef029f4358080ba87595c6b9a4049af48e18ac4f6a716440746b66ceb"
+    }
+  ],
+  "implementation": "Partial typed preparation only: +2 and -2 drafted; exile-batch trigger and Spirit creation remain unsupported. The physical card stays gated."
 }

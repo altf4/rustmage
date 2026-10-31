@@ -796,6 +796,8 @@ pub enum EffectChoiceKind {
     /// Sacrifice one controlled permanent of greatest mana value among matching kinds.
     SacrificeGreatestManaValue,
     ExileGraveyard,
+    /// During resolution, choose a card from either graveyard without targeting.
+    ExileCardFromAnyGraveyard,
     SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
