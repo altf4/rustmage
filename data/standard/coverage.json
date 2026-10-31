@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "eb16b79834ae12cfcd4e0ac24b085fe3e64a73bbc176f72b64e57a08a3043181",
+  "catalogue_version": "43f9a011119d6dec798cdbe9c5c635c83a43a2b1cb3096a5aecff76c7cabe882",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2949,
-  "implemented_total": 2955,
+  "implemented_standard_cards": 2950,
+  "implemented_total": 2956,
   "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -100,8 +100,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 177,
-      "complete": 96
+      "gated": 176,
+      "complete": 97
     },
     "m19": {
       "total": 2,
@@ -28106,8 +28106,8 @@
     {
       "name": "Restless Reef",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/restless_reef.rs",
       "set": "lci"
     },

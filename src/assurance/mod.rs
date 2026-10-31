@@ -7,6 +7,7 @@ mod contracts;
 mod fra_complete_games;
 mod fra_coverage_gaps;
 mod fra_way_loyalty_foundation;
+mod hartford_restless_reef;
 mod interactions;
 mod issue_93_aetherspark;
 mod issue_93_ajani;

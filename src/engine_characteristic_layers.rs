@@ -449,6 +449,21 @@ impl Game {
     pub(super) fn animate_source(&mut self, item: &SpellView, spec: AnimationSpec) {
         self.change_source_form(item, spec, AnimationTypeMode::AddCreature);
     }
+    pub(super) fn animate_source_colored(
+        &mut self,
+        item: &SpellView,
+        spec: AnimationSpec,
+        colors: u8,
+    ) {
+        if let Some(source) = item.source {
+            self.change_object_form_colored(
+                source.object,
+                spec,
+                AnimationTypeMode::AddCreature,
+                Some(colors),
+            );
+        }
+    }
     pub(super) fn change_source_form(
         &mut self,
         item: &SpellView,
@@ -520,6 +535,15 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
+        self.change_object_form_colored(object, spec, type_mode, None);
+    }
+    fn change_object_form_colored(
+        &mut self,
+        object: ObjectRef,
+        spec: AnimationSpec,
+        type_mode: AnimationTypeMode,
+        colors: Option<u8>,
+    ) {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }
@@ -532,7 +556,7 @@ impl Game {
             preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),
             food_only: false,
             artifact_noncreature: false,
-            colors: None,
+            colors,
             creature_types: match spec.creature_types {
                 AnimationCreatureTypes::Named(t) => Some(t),
                 _ => None,

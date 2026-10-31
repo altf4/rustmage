@@ -5306,6 +5306,9 @@ impl Game {
                     self.damage_event_object_controller(&item, amount);
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::AnimateSourceColored(spec, colors) => {
+                    self.animate_source_colored(&item, spec, colors)
+                }
                 Instruction::AnimateSourceWithAbilityIfNoncreature { spec, kind } => {
                     self.animate_source_with_ability_if_noncreature(&item, spec, kind)
                 }

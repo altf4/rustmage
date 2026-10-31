@@ -1899,6 +1899,7 @@ pub(crate) enum Instruction {
     /// Surveil one, returning noncreature nonland cards actually moved to the graveyard.
     SurveilOneReturnNoncreatureNonland,
     AnimateSource(AnimationSpec),
+    AnimateSourceColored(AnimationSpec, u8),
     AnimateSourceWithAbilityIfNoncreature {
         spec: AnimationSpec,
         kind: crate::engine::SelfGrantedAbilityKind,
