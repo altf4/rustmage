@@ -310,3 +310,43 @@ fn ghost_vacuum_sequential_counter_replacements_preserve_entering_characteristic
         assert_eq!(g.stats(angel).power, 1 + i128::from(plus));
     }
 }
+
+#[test]
+fn ghost_vacuum_simultaneous_giada_entries_use_controller_and_prior_angels() {
+    for player in [Player::P0, Player::P1] {
+        for owner in [player, player.other()] {
+            let mut game = scenario(player);
+            let vacuum = put(&mut game, player, "Ghost Vacuum", Zone::Battlefield);
+            put(&mut game, player, "Giada, Font of Hope", Zone::Battlefield);
+            let skrull = put(&mut game, owner, "Undercover Skrull", Zone::Graveyard);
+            let angel = put(&mut game, player, "Serra Angel", Zone::Graveyard);
+            vacuum_exile(&mut game, vacuum, skrull);
+            vacuum_exile(&mut game, vacuum, angel);
+            // Skrull's ability checks the new controller's graveyard.
+            put(&mut game, player, "Bear Cub", Zone::Graveyard);
+            put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+            big_helpers::checked(
+                &mut game,
+                Action::AnnounceActivate {
+                    card: vacuum,
+                    ability: 1,
+                    counter_payment: Counters::default(),
+                },
+            );
+            pay(&mut game);
+            big_helpers::settle(&mut game);
+            for id in [skrull, angel] {
+                assert_eq!(game.object_view(id).zone, Zone::Battlefield);
+                assert_eq!(game.object_view(id).controller, player);
+                assert!(game.has_subtype(id, "Angel"));
+                assert_eq!(
+                    game.counter_count(id, CounterKind::PlusOne),
+                    1,
+                    "only Giada was an Angel before both entrants"
+                );
+                assert_eq!(game.counter_count(id, CounterKind::Flying), 1);
+            }
+            assert_eq!(game.object_view(skrull).owner, owner);
+        }
+    }
+}

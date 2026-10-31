@@ -223,6 +223,31 @@ impl FundingState<'_> {
         })
     }
     pub(super) fn preview_entry_view(&self, movement: &entries::EntryMove) -> Option<ObjectView> {
+        self.with_entry_preview(movement, |world| {
+            characteristic_query::CharacteristicQuery::in_world(world)
+                .object_view(movement.before.id)
+        })
+    }
+
+    /// Replacement selection uses existing effects and the entrant's own
+    /// static abilities, but not an effect created simultaneously by its return.
+    pub(super) fn entry_replacement_has_subtype(
+        &self,
+        movement: &entries::EntryMove,
+        subtype: &str,
+    ) -> bool {
+        self.with_entry_preview(&movement.replacement_preview(), |world| {
+            let id = movement.before.id;
+            world.subtypes(id).has(world.object(id).card, subtype)
+        })
+        .unwrap_or(false)
+    }
+
+    fn with_entry_preview<T>(
+        &self,
+        movement: &entries::EntryMove,
+        mut inspect: impl FnMut(&Self) -> T,
+    ) -> Option<T> {
         if movement.skipped || movement.destination != Zone::Battlefield {
             return None;
         }
@@ -241,10 +266,7 @@ impl FundingState<'_> {
         };
         let mut result = None;
         seed.commit_projected_entries(vec![movement.clone()], &order, &mut |world| {
-            result = Some(
-                characteristic_query::CharacteristicQuery::in_world(world)
-                    .object_view(movement.before.id),
-            );
+            result = Some(inspect(world));
             true
         });
         result
@@ -971,12 +993,7 @@ impl FundingState<'_> {
                                 && m.destination == Zone::Battlefield
                                 && m.controller == provider.controller
                                 && m.before.reference != self.reference(id)
-                                && if m.ghost_vacuum_after.is_some() {
-                                    self.preview_entry_view(&m.replacement_preview())
-                                        .is_some_and(|view| view.has_subtype(subtype))
-                                } else {
-                                    Game::entry_replacement_subtypes(m).has(m.before.card, subtype)
-                                }
+                                && self.entry_replacement_has_subtype(m, subtype)
                             {
                                 m.counters.add(CounterKind::PlusOne, count)
                             }
@@ -2436,6 +2453,77 @@ mod valkyrie_return_replacement_tests {
                             .subtypes(bear)
                             .has(projected.object(bear).card, "Angel")
                     );
+                    false
+                });
+                assert!(seen);
+                assert_eq!(game.snapshot(), saved);
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod skrull_entry_replacement_tests {
+    use super::*;
+    use crate::engine::assurance::big_helpers::{named, setup};
+
+    #[test]
+    fn projected_giada_skrull_entry_uses_post_move_graveyard_and_existing_angels() {
+        for player in [Player::P0, Player::P1] {
+            for other_creatures in [1, 2] {
+                let game = &mut setup(player);
+                named(game, player, "Giada, Font of Hope", Zone::Battlefield);
+                for _ in 0..other_creatures {
+                    named(game, player, "Bear Cub", Zone::Graveyard);
+                }
+                let skrull = named(game, player, "Undercover Skrull", Zone::Graveyard);
+                let angel = named(game, player, "Serra Angel", Zone::Hand);
+                let saved = game.snapshot();
+                let goal = FundingGoal {
+                    actor: player,
+                    required: [0; 6],
+                    generic: 0,
+                    reserve: None,
+                    source: None,
+                };
+                let mut world = FundingState::from_game(game, &goal);
+                for id in [skrull, angel] {
+                    if !world.resources.iter().any(|resource| resource.id == id) {
+                        world.resources.push(Resource {
+                            id,
+                            attacking: false,
+                            object: game.state.objects[id as usize].clone(),
+                        });
+                    }
+                }
+                let moves = vec![
+                    entries::EntryMove::from_view(
+                        game.object_view(skrull),
+                        Zone::Battlefield,
+                        false,
+                    ),
+                    entries::EntryMove::from_view(
+                        game.object_view(angel),
+                        Zone::Battlefield,
+                        false,
+                    ),
+                ];
+                let mut seen = false;
+                world.visit_entry_moves(moves, true, None, &mut |projected| {
+                    seen = true;
+                    let eligible = other_creatures >= 2;
+                    assert_eq!(
+                        projected.counter_count(skrull, CounterKind::PlusOne),
+                        u64::from(eligible)
+                    );
+                    assert_eq!(
+                        projected
+                            .subtypes(skrull)
+                            .has(projected.object(skrull).card, "Angel"),
+                        eligible
+                    );
+                    // The two entrants are simultaneous: only Giada was already an Angel.
+                    assert_eq!(projected.counter_count(angel, CounterKind::PlusOne), 1);
                     false
                 });
                 assert!(seen);

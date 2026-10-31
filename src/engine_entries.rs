@@ -1587,13 +1587,7 @@ impl Game {
                             && !movement.skipped
                             && movement.controller == source.controller
                             && movement.before.reference != self.object_ref(id)
-                            && if movement.ghost_vacuum_after.is_some() {
-                                self.ghost_entry_preview(&movement.replacement_preview())
-                                    .is_some_and(|view| view.has_subtype(subtype))
-                            } else {
-                                Self::entry_replacement_subtypes(movement)
-                                    .has(movement.before.card, subtype)
-                            }
+                            && self.entry_replacement_has_subtype(movement, subtype)
                         {
                             movement.counters.add(
                                 CounterKind::PlusOne,

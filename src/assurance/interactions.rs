@@ -756,3 +756,111 @@ fn giada_valkyrie_return_separates_entry_replacement_from_angel_trigger() {
         }
     }
 }
+
+#[test]
+fn bug_hunt_giada_counts_skrull_static_types_on_entry() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+    put(&mut g, p, "Bear Cub", Zone::Graveyard);
+    put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+    let skrull = put(&mut g, p, "Undercover Skrull", Zone::Hand);
+    cast(&mut g, skrull, None);
+    settle(&mut g);
+    assert_eq!(g.object_view(skrull).zone, Zone::Battlefield);
+    assert!(g.has_subtype(skrull, "Angel"));
+    assert_eq!(
+        g.counter_count(skrull, CounterKind::PlusOne),
+        1,
+        "Giada counts the entering Skrull as an Angel"
+    );
+    assert_eq!(stats(&g, skrull), (4, 4));
+}
+
+#[test]
+fn giada_skrull_graveyard_threshold_and_owned_branches() {
+    for p in [Player::P0, Player::P1] {
+        for own in 0..=2 {
+            let mut g = scenario(p);
+            put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+            for _ in 0..own {
+                put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            }
+            for _ in 0..2 {
+                put(&mut g, p.other(), "Grizzly Bears", Zone::Graveyard);
+            }
+            let skrull = put(&mut g, p, "Undercover Skrull", Zone::Hand);
+            cast(&mut g, skrull, None);
+            act(&mut g, Action::Pass);
+            let actor = g.actor().unwrap();
+            let index = g
+                .legal_actions()
+                .iter()
+                .position(|a| *a == Action::Pass)
+                .unwrap();
+            let checkpoint = g.snapshot();
+            let mut indexed = g.clone();
+            let mut replay = g.clone();
+            act(&mut g, Action::Pass);
+            indexed
+                .apply_index(actor, indexed.revision(), index)
+                .unwrap();
+            big_helpers::settle(&mut g);
+            big_helpers::settle(&mut indexed);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            replay.restore(&checkpoint).unwrap();
+            act(&mut replay, Action::Pass);
+            big_helpers::settle(&mut replay);
+            assert_eq!(g.snapshot(), replay.snapshot());
+            let eligible = own >= 2;
+            assert_eq!(g.has_subtype(skrull, "Angel"), eligible);
+            assert_eq!(
+                g.counter_count(skrull, CounterKind::PlusOne),
+                u64::from(eligible)
+            );
+            assert_eq!(stats(&g, skrull), if eligible { (4, 4) } else { (1, 1) });
+        }
+    }
+}
+
+#[test]
+fn giada_skrull_return_does_not_count_itself_in_graveyard() {
+    for p in [Player::P0, Player::P1] {
+        for other_creatures in [1, 2] {
+            let mut g = scenario(p);
+            put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+            for _ in 0..other_creatures {
+                put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            }
+            let skrull = put(&mut g, p, "Undercover Skrull", Zone::Graveyard);
+            let reanimate = put(&mut g, p, "Zombify", Zone::Hand);
+            cast(&mut g, reanimate, Some(Target::Card(skrull)));
+            big_helpers::settle(&mut g);
+            let eligible = other_creatures >= 2;
+            assert_eq!(g.object_view(skrull).zone, Zone::Battlefield);
+            assert_eq!(g.has_subtype(skrull, "Angel"), eligible);
+            assert_eq!(
+                g.counter_count(skrull, CounterKind::PlusOne),
+                u64::from(eligible)
+            );
+        }
+    }
+}
+
+#[test]
+fn giada_still_counts_printed_and_changeling_angels() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Giada, Font of Hope", Zone::Battlefield);
+        let changeling = put(&mut g, p, "Barkform Harvester", Zone::Hand);
+        cast(&mut g, changeling, None);
+        big_helpers::settle(&mut g);
+        assert!(g.has_subtype(changeling, "Angel"));
+        assert_eq!(g.counter_count(changeling, CounterKind::PlusOne), 1);
+        g.state.players[p.index()].mana = [8; 6];
+        let angel = put(&mut g, p, "Serra Angel", Zone::Hand);
+        cast(&mut g, angel, None);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.counter_count(angel, CounterKind::PlusOne), 2);
+    }
+}
