@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ca51fbdc6762447dbdafcb681da87ffb19df23eccc2d892d017d80eb4528a716"
   },
-  "physical_metadata_sha256": "10ef5709d60c4fd3843faddf2bd348dc793b1c0368d5aca9d995723984990aa3"
+  "physical_metadata_sha256": "10ef5709d60c4fd3843faddf2bd348dc793b1c0368d5aca9d995723984990aa3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OkoLorwynLiege.java",
+  "java_sha256": "6aa93e93256a34009d20029ae54c031a73feacdc61d7e6cd0e06e194b36887ff",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/command/emblems/OkoShadowmoorScionEmblem.java",
+      "sha256": "e0fdd47abd74ad8bbf897f9ca811fb8bcc9144ee8595c2b0bcd26b5d5a6cab8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ElkToken.java",
+      "sha256": "f634d8a0a753e49eccf5ee2d9852623f908269eca2899e407124588970ea0543"
+    }
+  ],
+  "implementation": "Partial front-face typed preparation; the physical card remains gated until face identities, the back face, Elk token, and chosen-type emblem are implemented and validated."
 }
