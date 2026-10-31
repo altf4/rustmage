@@ -785,6 +785,24 @@ impl Game {
         ability: u16,
         definition: &ActivatedAbility,
     ) {
+        if !self.start_activation_payment(item, payment, counter_payment, ability, definition) {
+            return;
+        }
+        self.pay_activation_loyalty(item, definition);
+        self.pay_activation_tap(item, ability, definition);
+        self.pay_activation_source_counter(item);
+        self.finish_activation_source_costs(item, definition);
+    }
+
+    /// Apply the receipt and removal phases exactly once, before placements.
+    fn start_activation_payment(
+        &mut self,
+        item: &mut SpellView,
+        payment: Mana,
+        counter_payment: Counters,
+        ability: u16,
+        definition: &ActivatedAbility,
+    ) -> bool {
         let source = item.source.expect("activated ability has an object source");
         let cost: ActivationCost = definition.cost;
         self.record_cast_mana_activation(item, payment, &counter_payment);
@@ -802,7 +820,7 @@ impl Game {
                     && cost.loyalty.is_none(),
                 "unpaid source cost"
             );
-            return;
+            return false;
         }
         let external_planeswalker_grant = item.attachment_trigger.as_ref().is_some_and(|event| {
             event.granted
@@ -849,6 +867,13 @@ impl Game {
                 paid: true,
             });
         }
+        true
+    }
+
+    /// Pay the signed loyalty cost as one counter event.
+    fn pay_activation_loyalty(&mut self, item: &SpellView, definition: &ActivatedAbility) {
+        let source = item.source.expect("activated ability has an object source");
+        let cost = definition.cost;
         if let Some(change) = cost.loyalty {
             self.state.objects[source.id as usize].loyalty_activated_this_turn = true;
             if change < 0 {
@@ -865,6 +890,18 @@ impl Game {
                 );
             }
         }
+    }
+
+    /// Tap is a distinct cost phase: a later counter replacement choice must
+    /// not repeat the tap event when payment resumes.
+    fn pay_activation_tap(
+        &mut self,
+        item: &mut SpellView,
+        ability: u16,
+        definition: &ActivatedAbility,
+    ) {
+        let source = item.source.expect("activated ability has an object source");
+        let cost = definition.cost;
         // Capture the tap event before a subsequent sacrifice/discard/exile
         // changes the source incarnation. All other paid source costs are set.
         if cost.tap {
@@ -879,6 +916,11 @@ impl Game {
                 self.tap_objects(&[grant.grantor.card]);
             }
         }
+    }
+
+    /// A typed source-counter cost is a separate placement event from loyalty.
+    fn pay_activation_source_counter(&mut self, item: &SpellView) {
+        let source = item.source.expect("activated ability has an object source");
         let StackKind::ActivatedAbility {
             ability: definition_index,
         } = item.kind
@@ -888,6 +930,16 @@ impl Game {
         if let Some((kind, amount)) = source.card.activation_put_counter(definition_index) {
             self.activation_cost_counters(source.object, kind, amount, item.controller);
         }
+    }
+
+    /// Refresh cost facts and perform departure costs after counter placements.
+    fn finish_activation_source_costs(
+        &mut self,
+        item: &mut SpellView,
+        definition: &ActivatedAbility,
+    ) {
+        let source = item.source.expect("activated ability has an object source");
+        let cost = definition.cost;
         self.refresh_local_source_counter_quantities(item);
         // Costs and real mana activations may briefly reach the threshold before
         // the same payment sacrifices its source. Speculative planning never does.
