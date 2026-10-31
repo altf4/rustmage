@@ -3,10 +3,35 @@
   "catalogue_id": 4417,
   "oracle_id": "483c747a-b602-4747-95bc-72c2c17ed509",
   "facts_sha256": "acb50a009f6688a1dcdbec3a47fdfdfa83f083579bec6521e0abe70f4997dd98",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "56a40fa8e707c1792941982bb8c1c6451f8808c95c6d57bd84a3421b09aa0f03"
   },
-  "physical_metadata_sha256": "77f81d7e69c50da97d9b6736954c7adaa574d5ba4f029abb865c5b42e603a9c5"
+  "physical_metadata_sha256": "77f81d7e69c50da97d9b6736954c7adaa574d5ba4f029abb865c5b42e603a9c5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheAetherspark.java",
+  "java_sha256": "c1a9dbe55b2d29476a31602c8595c8470978e3fd94de4f52690f606cf14cf121",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageEquippedTriggeredAbility.java",
+      "sha256": "2539d94a6e829ab2ec07824e34b32cb65664a1358a45b2f8eafed6abe1cbb9c8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    }
+  ]
 }

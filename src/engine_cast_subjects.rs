@@ -92,6 +92,31 @@ impl Game {
     }
 
     pub(super) fn can_attack_defender(&self, attacker: CardId, defender: CombatDefender) -> bool {
+        if let CombatDefender::Planeswalker(walker) | CombatDefender::Battle(walker) = defender {
+            let object = &self.state.objects[walker.card as usize];
+            if object.zone == Zone::Battlefield
+                && self.object_ref(walker.card) == walker
+                && object.attached_to.is_some_and(|recipient| {
+                    self.on_battlefield(recipient.card)
+                        && self.object_ref(recipient.card) == recipient
+                        && self.is_creature(recipient.card)
+                })
+                && object.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment,
+                        crate::cards::StaticAbilityFragment::AttachedCreaturePreventsSourceAttack)
+                    })
+                })
+                && self.continuous_fragment_available(walker.card, |fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::AttachedCreaturePreventsSourceAttack
+                    )
+                })
+            {
+                return false;
+            }
+        }
         let CombatDefender::Player(player) = defender else {
             return true;
         };

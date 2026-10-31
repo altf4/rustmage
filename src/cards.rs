@@ -2464,6 +2464,8 @@ pub(crate) enum AmountValue {
     )]
     DamageEventAmount,
     DamageReceivedAmount,
+    /// Damage dealt by the equipped creature in one completed combat batch.
+    CreatureCombatDamageAmount,
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
