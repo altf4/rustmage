@@ -1331,10 +1331,33 @@ impl Game {
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
             exiled_trigger_cards: None,
-            source_counter_lki: card_quantities::counter_quantity_facts(
-                definition.triggers()[index].program,
-                |kind| source.counters.get(kind),
-            ),
+            source_counter_lki: {
+                let mut facts = card_quantities::counter_quantity_facts(
+                    definition.triggers()[index].program,
+                    |kind| source.counters.get(kind),
+                );
+                // An intervening-if may read a counter even when its program
+                // does not. Track that kind on the ordinary trigger packet so
+                // a departure freezes the exact source's last known value.
+                if let TriggerCondition::InterveningIf {
+                    guard:
+                        StepGuard::Expression {
+                            value: StatValue::SourceCounters(kind),
+                            ..
+                        },
+                    ..
+                } = condition
+                {
+                    let rows = facts.get_or_insert_with(Default::default);
+                    if !rows.iter().any(|row| row.kind == kind) {
+                        rows.push(card_quantities::SourceCounterQuantityView {
+                            kind,
+                            count: source.counters.get(kind),
+                        });
+                    }
+                }
+                facts
+            },
             event_player: None,
             event_object: None,
             manifest_event: None,

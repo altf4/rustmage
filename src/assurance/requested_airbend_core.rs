@@ -540,3 +540,310 @@ fn airbend_redirected_stack_spell_moves_to_battlefield_without_cast_right() {
         TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|v| v.set(None));
     }
 }
+
+#[test]
+fn ascension_end_step_guard_uses_counter_lki_after_paid_source_departure_and_reentry() {
+    for player in [Player::P0, Player::P1] {
+        for (below_threshold, reenter) in
+            [(false, false), (false, true), (true, false), (true, true)]
+        {
+            let mut game = scenario(player);
+            let ascension = put(&mut game, player, "Airbender Ascension", Zone::Battlefield);
+            let target = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+            let disenchant = put(&mut game, player.other(), "Disenchant", Zone::Hand);
+            game.add_counter(ascension, CounterKind::Quest, 4);
+            game.begin_step(Step::End);
+            await_target(&mut game, Target::Card(target));
+            checked(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            finish_targets(&mut game);
+            let trigger = game
+                .state
+                .stack
+                .iter()
+                .find(|item| item.source.is_some_and(|source| source.id == ascension))
+                .unwrap();
+            assert_eq!(
+                trigger
+                    .source_counter_lki
+                    .as_ref()
+                    .unwrap()
+                    .iter()
+                    .find(|fact| fact.kind == CounterKind::Quest)
+                    .unwrap()
+                    .count,
+                4
+            );
+            if below_threshold {
+                game.pay_counters(ascension, &Counters::of(CounterKind::Quest, 1));
+            }
+            // Pass priority normally; the opponent pays for a real Disenchant.
+            while game.actor() != Some(player.other()) {
+                checked(&mut game, Action::Pass);
+            }
+            super::big_helpers::cast(&mut game, disenchant, None, &[Target::Card(ascension)]);
+            for _ in 0..8 {
+                if game.object_view(ascension).zone == Zone::Graveyard {
+                    break;
+                }
+                checked(&mut game, Action::Pass);
+            }
+            assert_eq!(game.object_view(ascension).zone, Zone::Graveyard);
+            let old_ascension = game.object_ref(ascension);
+            if reenter {
+                game.move_object(ascension, Zone::Battlefield);
+                assert_ne!(game.object_ref(ascension), old_ascension);
+                // A new incarnation cannot supply counters to the old trigger.
+                game.add_counter(
+                    ascension,
+                    CounterKind::Quest,
+                    if below_threshold { 7 } else { 0 },
+                );
+            }
+            let before_target = game.object_ref(target);
+            let before = game.snapshot();
+            let mut branch = game.clone();
+            super::big_helpers::settle(&mut game);
+            super::big_helpers::settle(&mut branch);
+            assert_eq!(game.snapshot(), branch.snapshot());
+            assert_eq!(game.object_view(target).zone, Zone::Battlefield);
+            assert_eq!(game.object_ref(target) != before_target, !below_threshold);
+            branch.restore(&before).unwrap();
+            super::big_helpers::settle(&mut branch);
+            assert_eq!(branch.snapshot(), game.snapshot());
+        }
+    }
+}
+
+fn ally_count(game: &Game, owner: Player) -> usize {
+    game.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(index, object)| {
+            object.zone == Zone::Battlefield
+                && object.controller == owner
+                && object.is_token()
+                && game.has_subtype(*index as CardId, "Ally")
+        })
+        .count()
+}
+
+#[test]
+fn ascension_entry_filters_end_step_timing_and_owner_return() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let ascension = put(&mut game, player, "Airbender Ascension", Zone::Hand);
+        super::big_helpers::cast(&mut game, ascension, None, &[]);
+        super::big_helpers::settle(&mut game); // no creatures: optional ETB target is zero
+        let foreign = put(&mut game, player.other(), "Bear Cub", Zone::Hand);
+        game.move_object(foreign, Zone::Battlefield);
+        super::big_helpers::settle(&mut game);
+        let land = put(&mut game, player, "Forest", Zone::Hand);
+        game.move_object(land, Zone::Battlefield);
+        super::big_helpers::settle(&mut game);
+        assert_eq!(game.counter_count(ascension, CounterKind::Quest), 0);
+        let own = put(&mut game, player, "Llanowar Elves", Zone::Hand);
+        game.move_object(own, Zone::Battlefield);
+        super::big_helpers::settle(&mut game);
+        assert_eq!(game.counter_count(ascension, CounterKind::Quest), 1);
+        game.add_counter(ascension, CounterKind::Quest, 2);
+        game.begin_step(Step::End);
+        super::big_helpers::settle(&mut game);
+        assert_eq!(game.object_view(own).zone, Zone::Battlefield);
+        assert_eq!(game.counter_count(ascension, CounterKind::Quest), 3);
+        game.add_counter(ascension, CounterKind::Quest, 1);
+        game.state.active = player.other();
+        game.state.priority = player.other();
+        game.begin_step(Step::End);
+        super::big_helpers::settle(&mut game);
+        assert_eq!(game.counter_count(ascension, CounterKind::Quest), 4);
+        let reference = game.object_ref(foreign);
+        game.change_controller(reference, player);
+        game.state.active = player;
+        game.state.priority = player;
+        game.begin_step(Step::End);
+        await_target(&mut game, Target::Card(foreign));
+        let enemy = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        checked(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(foreign),
+            },
+        );
+        finish_targets(&mut game);
+        let prior = game.object_ref(foreign);
+        super::big_helpers::settle(&mut game);
+        assert_ne!(game.object_ref(foreign), prior);
+        assert_eq!(game.object_view(foreign).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(foreign).controller, player.other());
+        assert_eq!(game.object_view(foreign).owner, player.other());
+    }
+}
+
+#[test]
+fn appa_flash_flying_owned_rights_token_ceasing_and_source_departure() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player.other());
+        let artifact = put(
+            &mut game,
+            player.other(),
+            "Soul-Guide Lantern",
+            Zone::Battlefield,
+        );
+        let reference = game.object_ref(artifact);
+        game.change_controller(reference, player);
+        let land = put(&mut game, player, "Forest", Zone::Battlefield);
+        let token_card = Card::from_name("@token/6318fca926ee864ca3aad7f8").unwrap();
+        game.create_tokens(player, token_card, 1, false);
+        let token = game
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(id, object)| {
+                (object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.is_token()
+                    && object.card == token_card)
+                    .then_some(id as CardId)
+            })
+            .unwrap();
+        let appa = put(&mut game, player, "Appa, Steadfast Guardian", Zone::Hand);
+        let murder = put(&mut game, player.other(), "Murder", Zone::Hand);
+        checked(&mut game, Action::Pass); // opponent's turn, pass to Appa's controller
+        super::big_helpers::cast(&mut game, appa, None, &[]);
+        await_target(&mut game, Target::Card(artifact));
+        assert_eq!(stats(&game, appa), (3, 4));
+        assert!(game.keywords(appa).contains(Keywords::FLYING));
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(land),
+            },
+        );
+        checked(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(artifact),
+            },
+        );
+        checked(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(token),
+            },
+        );
+        finish_targets(&mut game);
+        while game.actor() != Some(player.other()) {
+            checked(&mut game, Action::Pass);
+        }
+        super::big_helpers::cast(&mut game, murder, None, &[Target::Card(appa)]);
+        for _ in 0..8 {
+            if game.object_view(appa).zone == Zone::Graveyard {
+                break;
+            }
+            checked(&mut game, Action::Pass);
+        }
+        assert_eq!(game.object_view(appa).zone, Zone::Graveyard);
+        super::big_helpers::settle(&mut game);
+        assert_eq!(game.object_view(artifact).zone, Zone::Exile);
+        assert!(game.has_airbend_permission(player.other(), artifact));
+        assert!(!game.has_airbend_permission(player, artifact));
+        assert!(
+            !game
+                .state
+                .exile_permissions
+                .iter()
+                .any(|row| row.object.card == token)
+        );
+        assert_ne!(game.object_view(token).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn appa_cast_trigger_tracks_cast_origin_controller_and_survives_countering() {
+    for player in [Player::P0, Player::P1] {
+        for (caster, from_exile, countered) in [
+            (player, true, true),
+            (player, false, false),
+            (player.other(), true, false),
+        ] {
+            let mut game = scenario(caster);
+            put(
+                &mut game,
+                player,
+                "Appa, Steadfast Guardian",
+                Zone::Battlefield,
+            );
+            let shock = put(
+                &mut game,
+                caster,
+                "Shock",
+                if from_exile { Zone::Exile } else { Zone::Hand },
+            );
+            let counter =
+                countered.then(|| put(&mut game, caster.other(), "Counterspell", Zone::Hand));
+            if from_exile {
+                game.grant_exile_play_permission(caster, game.object_ref(shock), false);
+                checked(&mut game, Action::AnnounceExile { card: shock });
+            } else {
+                checked(&mut game, Action::AnnounceCast { card: shock });
+            }
+            checked(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Player(caster.other()),
+                },
+            );
+            let payment = game
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut game, payment);
+            if let Some(counter) = counter {
+                game.prepare_triggers();
+                while game.actor() != Some(caster.other()) {
+                    checked(&mut game, Action::Pass);
+                }
+                super::big_helpers::cast(&mut game, counter, None, &[Target::Spell(shock)]);
+            }
+            super::big_helpers::settle(&mut game);
+            assert_eq!(
+                ally_count(&game, player),
+                usize::from(caster == player && from_exile)
+            );
+            if countered {
+                assert_eq!(game.object_view(shock).zone, Zone::Graveyard);
+            }
+            if caster == player && from_exile {
+                let ally = game
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .find_map(|(id, object)| {
+                        (object.zone == Zone::Battlefield
+                            && object.controller == player
+                            && object.is_token()
+                            && game.has_subtype(id as CardId, "Ally"))
+                        .then_some(id as CardId)
+                    })
+                    .unwrap();
+                assert_eq!(stats(&game, ally), (1, 1));
+                assert_eq!(game.state.objects[ally as usize].card.colors(), 1);
+            }
+        }
+    }
+}
