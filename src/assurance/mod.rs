@@ -23,6 +23,7 @@ mod requested_freebooter;
 mod requested_full_bore;
 mod requested_ghost;
 mod requested_hunters_talent;
+mod requested_inevitable_defeat;
 mod requested_pyrrhic_strike;
 
 fn scenario(p: Player) -> Game {

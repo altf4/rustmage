@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9a6e72bc4efda85145a74b9ed16a9b7b4dc010e5b6fd5c63fbab4c592510954a",
+  "catalogue_version": "eb16b79834ae12cfcd4e0ac24b085fe3e64a73bbc176f72b64e57a08a3043181",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2948,
-  "implemented_total": 2954,
+  "implemented_standard_cards": 2949,
+  "implemented_total": 2955,
   "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -163,8 +163,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 122,
-      "gated": 142
+      "complete": 123,
+      "gated": 141
     },
     "tla": {
       "total": 278,
@@ -17466,8 +17466,8 @@
     {
       "name": "Inevitable Defeat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/inevitable_defeat.rs",
       "set": "tdm"
     },
