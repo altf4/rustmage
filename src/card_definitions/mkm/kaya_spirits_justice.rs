@@ -1,4 +1,4 @@
-// Partial typed preparation; gated until the exile-batch trigger and Spirit token work.
+// Complete Oracle and pinned XMage implementation.
 const fn loyalty(n: i32) -> ActivationCost {
     ActivationCost {
         colored: [0; 6],
@@ -26,7 +26,7 @@ const OPPONENT_CREATURE: TargetRule = TargetRule::Object {
     max_mana: u32::MAX,
 };
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
+    effect: Effect::Permanent,
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled,
         targets: TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
@@ -103,7 +103,11 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     max: 1,
                 },
             ]),
-            program: &[Instruction::Exile],
+            program: &[
+                Instruction::Exile,
+                Instruction::SelectGroup(1),
+                Instruction::Exile,
+            ],
             sorcery: true,
             once_per_turn: false,
         },

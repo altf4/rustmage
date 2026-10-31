@@ -1297,11 +1297,12 @@ impl Game {
         slot.source_counter_payment = item.source_counter_payment;
         slot.mana_tap_bonus = item.mana_tap_bonus;
         slot.source_move = item.source_move;
+        slot.crime_qualifying_target = item.crime_qualifying_target;
         if source_still_exact {
             slot.source_counter_lki = item.source_counter_lki;
         }
         let completed = slot.clone();
-        self.record_committed_crime(&item);
+        self.record_committed_crime(&completed);
         self.committed_activation_observers(&completed);
     }
 

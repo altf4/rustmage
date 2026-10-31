@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "04ea041e788fd54b4e38ee3e50a97b98fcbba518f33c350cbf0a6d1a32f52b08",
+  "catalogue_version": "58b340a31a4c5c313a10bd519b288506b68c3b5a364bcb78e049621c4c4c1883",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2944,
-  "implemented_total": 2950,
-  "token_definitions": 150,
+  "implemented_standard_cards": 2945,
+  "implemented_total": 2951,
+  "token_definitions": 151,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
   "omen_definitions": 13,
@@ -109,8 +109,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 192,
-      "complete": 72
+      "gated": 191,
+      "complete": 73
     },
     "mom": {
       "total": 1,
@@ -18850,8 +18850,8 @@
     {
       "name": "Kaya, Spirits' Justice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/kaya_spirits_justice.rs",
       "set": "mkm"
     },

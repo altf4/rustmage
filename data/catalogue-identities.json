@@ -5482,7 +5482,8 @@
     16,
     16,
     0,
-    0
+    0,
+    5
   ],
   "aliases": [
     [
@@ -6440,6 +6441,10 @@
     [
       "@token/lci-quintorius-spirit",
       5472
+    ],
+    [
+      "@token/mkm-kaya-spirit",
+      5477
     ],
     [
       "@token/mowu",
@@ -29062,6 +29067,12 @@
       "name": "Elk",
       "subtypes": "Elk",
       "colors": 16
+    },
+    {
+      "factory_identity": "@token/mkm-kaya-spirit",
+      "name": "Spirit",
+      "subtypes": "Spirit",
+      "colors": 5
     }
   ],
   "emblems": [
@@ -185690,6 +185701,35 @@
       "facts_sha256": null,
       "mana_cost": "",
       "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5477,
+      "module": "card_5477",
+      "path": "synthetic/token_mkm_kaya_spirit.rs",
+      "category": "token",
+      "name": "@token/mkm-kaya-spirit",
+      "type_line": "Creature — Spirit",
+      "kind": 1,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [
+        "Flying"
+      ],
       "standard_legal": false,
       "legendary": false,
       "basic": false,

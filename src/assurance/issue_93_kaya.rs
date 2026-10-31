@@ -1,4 +1,4 @@
-//! Kaya's complete printed abilities; enable after admission and integration.
+//! Kaya’s printed abilities through ordinary actions.
 use super::big_helpers::{cast as paid_cast, checked, settle as finish};
 use super::*;
 
@@ -33,7 +33,6 @@ fn finish_token_copy(g: &mut Game, token: CardId, exiled: CardId) {
 }
 
 #[test]
-#[ignore = "Kaya remains gated pending integration and validation"]
 fn kaya_spirits_justice_whole_card() {
     let spirit = Card::from_name("@token/mkm-kaya-spirit").unwrap();
     for player in [Player::P0, Player::P1] {
