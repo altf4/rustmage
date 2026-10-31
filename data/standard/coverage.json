@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "be9de51cb85fe8690f0cf947e31de54541ce3d3870e0543f323e28d3eb07cea3",
+  "catalogue_version": "fd2923845d7fe54033b3fd94705782d6d6bc53c521951cd8e1816da13c61b4a7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2951,
-  "implemented_total": 2957,
+  "implemented_standard_cards": 2953,
+  "implemented_total": 2959,
   "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -57,8 +57,8 @@
     },
     "eoe": {
       "total": 259,
-      "gated": 150,
-      "complete": 109
+      "gated": 149,
+      "complete": 110
     },
     "fdn": {
       "total": 427,
@@ -109,8 +109,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 191,
-      "complete": 73
+      "gated": 190,
+      "complete": 74
     },
     "mom": {
       "total": 1,
@@ -7474,8 +7474,8 @@
     {
       "name": "Cryogen Relic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/cryogen_relic.rs",
       "set": "eoe"
     },
@@ -39130,8 +39130,8 @@
     {
       "name": "Vengeful Tracker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/vengeful_tracker.rs",
       "set": "mkm"
     },

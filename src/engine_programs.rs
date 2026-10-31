@@ -656,6 +656,7 @@ impl Game {
                         && !matches!(
                             ability.condition.event(),
                             TriggerCondition::Sacrificed { .. }
+                                | TriggerCondition::SacrificedByOpponent { .. }
                         )
                     {
                         continue;
@@ -716,11 +717,18 @@ impl Game {
                                     .iter()
                                     .any(|subtype| event.before.has_subtype(subtype))
                         }
-                        TriggerCondition::Sacrificed {
-                            filter: f,
-                            own_turn,
-                        } => {
-                            event.sacrificed_by == Some(source.controller)
+                        TriggerCondition::Sacrificed { filter: f, .. }
+                        | TriggerCondition::SacrificedByOpponent { filter: f } => {
+                            let (player, own_turn) = match ability.condition.event() {
+                                TriggerCondition::Sacrificed { own_turn, .. } => {
+                                    (source.controller, own_turn)
+                                }
+                                TriggerCondition::SacrificedByOpponent { .. } => {
+                                    (source.controller.other(), false)
+                                }
+                                _ => unreachable!(),
+                            };
+                            event.sacrificed_by == Some(player)
                                 && (!own_turn || self.state.active == source.controller)
                                 && (!f.source_only || source.reference == event.before.reference)
                                 && (!f.other || source.reference != event.before.reference)
@@ -922,6 +930,7 @@ impl Game {
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }
+                    | TriggerCondition::SacrificedByOpponent { .. }
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }

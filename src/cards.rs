@@ -3805,6 +3805,10 @@ pub(crate) enum TriggerCondition {
         filter: SacrificeFilter,
         own_turn: bool,
     },
+    /// An opponent sacrifices a permanent matching its pre-departure characteristics.
+    SacrificedByOpponent {
+        filter: SacrificeFilter,
+    },
     CreatureDiesWithMaximumStat {
         relation: CastRelation,
         maximum: i32,
