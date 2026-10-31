@@ -5472,6 +5472,8 @@
     0,
     2,
     0,
+    0,
+    10,
     0
   ],
   "aliases": [
@@ -5646,6 +5648,10 @@
     [
       "@emblem/775571b10b62868058a6d841",
       5333
+    ],
+    [
+      "@emblem/blb-ral-crackling-wit",
+      5468
     ],
     [
       "@emblem/fra-ajani-resolute",
@@ -6198,6 +6204,10 @@
     [
       "@token/bat_2_1_black_flying",
       5344
+    ],
+    [
+      "@token/blb-ral-otter",
+      5467
     ],
     [
       "@token/blood",
@@ -28984,6 +28994,12 @@
       "name": "Illusion Token",
       "subtypes": "Illusion",
       "colors": 2
+    },
+    {
+      "factory_identity": "@token/blb-ral-otter",
+      "name": "Otter Token",
+      "subtypes": "Otter",
+      "colors": 10
     }
   ],
   "emblems": [
@@ -29004,6 +29020,9 @@
     },
     {
       "oracle_text": "Whenever you cast a spell, draw a card."
+    },
+    {
+      "oracle_text": "Instant and sorcery spells you cast have storm."
     }
   ],
   "creature_types": [
@@ -185298,6 +185317,62 @@
       "path": "synthetic/emblem_fra_chandra_chill.rs",
       "category": "emblem",
       "name": "@emblem/fra-chandra-chill",
+      "type_line": "",
+      "kind": 0,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5467,
+      "module": "card_5467",
+      "path": "synthetic/token_blb_ral_otter.rs",
+      "category": "token",
+      "name": "@token/blb-ral-otter",
+      "type_line": "Creature — Otter",
+      "kind": 1,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [
+        "Prowess"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5468,
+      "module": "card_5468",
+      "path": "synthetic/emblem_blb_ral_crackling_wit.rs",
+      "category": "emblem",
+      "name": "@emblem/blb-ral-crackling-wit",
       "type_line": "",
       "kind": 0,
       "set": "synthetic",

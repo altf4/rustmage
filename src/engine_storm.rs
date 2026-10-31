@@ -33,7 +33,8 @@ impl Game {
         let mut grants = Vec::new();
         for &id in &self.state.static_sources {
             let source = &self.state.objects[id as usize];
-            if source.zone != Zone::Battlefield
+            if !(source.zone == Zone::Battlefield
+                || source.zone == Zone::Command && source.card.is_emblem())
                 || source.controller != spell.controller
                 || !source.card.has_storm_grant()
                 || !self.printed_abilities_available(id)

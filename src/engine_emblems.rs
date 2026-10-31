@@ -28,6 +28,8 @@ impl Game {
             class_level: 1,
             attached_to: None,
         });
-        self.register_battlefield_sources(id);
+        // Emblems supply abilities from the command zone; they did not enter
+        // the battlefield and must not appear in its entry history.
+        self.register_battlefield_providers(id);
     }
 }
