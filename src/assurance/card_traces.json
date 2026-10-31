@@ -2511,6 +2511,14 @@
     "journal": "743149a52668b143",
     "observations": "e2abb9879ef01af3"
   },
+  "Bovine Intervention": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "fae424dc01ad1ac5",
+    "observations": "cd58b37b32936839"
+  },
   "Bramble Familiar": {
     "root": "main",
     "status": "completed",
@@ -4126,6 +4134,14 @@
     "zone": "Battlefield",
     "journal": "d93bff198ef2a3df",
     "observations": "fa401498885d4f66"
+  },
+  "Cryogen Relic": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "d93bff198ef2a3df",
+    "observations": "22a2c0ef308e9892"
   },
   "Cryotheory Adept": {
     "root": "main",
@@ -7871,6 +7887,14 @@
     "journal": "fae424dc01ad1ac5",
     "observations": "322d6ad3323aa0e4"
   },
+  "Get Out": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "4ed43f16692600fc",
+    "observations": "8c71982091d57c14"
+  },
   "Getaway Barrel": {
     "root": "main",
     "status": "completed",
@@ -8646,6 +8670,14 @@
     "zone": "Battlefield",
     "journal": "0fccf4cdd9b9200d",
     "observations": "bd69ef31ab734d3c"
+  },
+  "Greedy Freebooter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7def026c1597d7ae",
+    "observations": "2b032abd274b7c3e"
   },
   "Green Goblin, Revenant": {
     "root": "main",
@@ -9990,6 +10022,14 @@
     "zone": "Graveyard",
     "journal": "f333841d9222d4cf",
     "observations": "0a1da91e94fb2279"
+  },
+  "Inevitable Defeat": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "3242521e134ac8ad",
+    "observations": "282489a745abff61"
   },
   "Infernal Vessel": {
     "root": "main",
@@ -15998,6 +16038,14 @@
     "zone": "Battlefield",
     "journal": "da4528e6e02cf76f",
     "observations": "a1b1742cadec9a7f"
+  },
+  "Restless Reef": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "f5e39175da91d818"
   },
   "Restoration Magic": {
     "root": "main",
@@ -22094,6 +22142,14 @@
     "zone": "Battlefield",
     "journal": "a4c714aeb662e85f",
     "observations": "2b34677db792cdf4"
+  },
+  "Vengeful Tracker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "135f448861198bb0"
   },
   "Venom Connoisseur": {
     "root": "main",
