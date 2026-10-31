@@ -3,10 +3,13 @@
   "catalogue_id": 4738,
   "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
   "facts_sha256": "8d9f58967c0259e54d14f4d31538b641b7d9f53a2f2b6cf28bf30f81d780524b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3e1e2fcf8459e3b5cc0839197786b76b0a94b777cbe69187155d16e966014282"
   },
-  "physical_metadata_sha256": "84b72e73e0435c3d9f271f0b2cf1654817bbd5ec53a7f9d71cd7a9fe6345fb86"
+  "physical_metadata_sha256": "84b72e73e0435c3d9f271f0b2cf1654817bbd5ec53a7f9d71cd7a9fe6345fb86",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UginEyeOfTheStorms.java",
+  "java_sha256": "cb965a07de883a5842a7f39152857603aa7fb61c0095d2cc22a5a8ecaafc4389"
 }

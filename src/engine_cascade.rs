@@ -6,6 +6,9 @@ pub struct CascadeView {
     pub controller: Player,
     pub maximum_mana_value: u64,
     pub exiled: Vec<ObjectRef>,
+    /// Discover puts this card into its owner's hand if it was not cast.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discovered: Option<ObjectRef>,
 }
 
 impl Game {
@@ -80,6 +83,19 @@ impl Game {
             .cast_event
             .as_ref()
             .map_or_else(|| item.mana_value(), |event| event.mana_value);
+        self.start_cascade_or_discover(item, maximum, false)
+    }
+
+    pub(super) fn start_discover(&mut self, item: &SpellView, amount: u16) -> bool {
+        self.start_cascade_or_discover(item, u64::from(amount) + 1, true)
+    }
+
+    fn start_cascade_or_discover(
+        &mut self,
+        item: &SpellView,
+        maximum: u64,
+        discover: bool,
+    ) -> bool {
         let mut exiled = Vec::new();
         let mut eligible = None;
         while let Some(card) = self.top_library_card(item.controller) {
@@ -105,6 +121,7 @@ impl Game {
             controller: item.controller,
             maximum_mana_value: maximum,
             exiled,
+            discovered: if discover { eligible } else { None },
         }));
         if let Some(object) = eligible {
             self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
@@ -137,6 +154,12 @@ impl Game {
         let Some(rows) = self.state.resolving.as_mut().and_then(|r| r.cascade.take()) else {
             return;
         };
+        if let Some(object) = rows.discovered
+            && self.object_ref(object.card) == object
+            && self.state.objects[object.card as usize].zone == Zone::Exile
+        {
+            self.move_object(object.card, Zone::Hand);
+        }
         let mut cards: Vec<_> = rows
             .exiled
             .iter()

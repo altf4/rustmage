@@ -66,6 +66,8 @@ pub(crate) enum StaticAbilityFragment {
     AttackWithoutDefenderIfScried,
     /// Controlled creatures may attack despite defender.
     ControlledAttackWithoutDefender,
+    /// This source cannot be attacked while attached to a creature.
+    AttachedCreaturePreventsSourceAttack,
     /// Controlled creatures with greater toughness assign combat damage using toughness.
     ControlledCombatDamageByGreaterToughness,
     /// This source assigns combat damage using the magnitude of negative power.

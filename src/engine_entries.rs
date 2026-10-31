@@ -45,6 +45,7 @@ pub(super) struct EntryMove {
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
+    pub exile_free_until_end: Option<Player>,
     /// A played library land is public throughout its pre-entry special action.
     /// Its actual origin remains Library; unrelated library entries stay private.
     pub public_origin: bool,
@@ -158,6 +159,7 @@ impl EntryMove {
             attacking: None,
             skipped: false,
             reveal_hand: false,
+            exile_free_until_end: None,
             public_origin: false,
             life_paid: None,
             offspring_paid: false,
@@ -904,6 +906,12 @@ impl Game {
             {
                 self.state.objects[event.after.card as usize].cast_for_warp = event.was_cast;
                 self.register_warp_exile(&event, controller);
+            }
+            if let Some(player) = movement.exile_free_until_end
+                && event.moved
+                && event.destination == Zone::Exile
+            {
+                self.grant_exile_free_permission_until_end(player, event.after);
             }
             events.push(event);
         }

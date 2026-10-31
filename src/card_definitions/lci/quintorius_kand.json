@@ -3,10 +3,25 @@
   "catalogue_id": 3321,
   "oracle_id": "91babc5f-ebeb-4894-8c35-b0f60249cb80",
   "facts_sha256": "91c3cf61f4349fdafac376f9d8a1e45aaafc83ac67a2ef1a3a265b0f673d0512",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bc2fb52cb1ac4997f9c44317454f8114a81f81b7a1b5ad1d6f1c9b202c2adffd"
   },
-  "physical_metadata_sha256": "0554913c86a8d3d82fa94b3ea7b0db97068de5c949b0058b166538db3013c35c"
+  "physical_metadata_sha256": "0554913c86a8d3d82fa94b3ea7b0db97068de5c949b0058b166538db3013c35c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuintoriusKand.java",
+  "java_sha256": "871cc5bb20d5aa7c078ef002eda82687d4644dbc42d50065def794313e836422",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/DiscoverEffect.java",
+      "sha256": "39448e5fb17f2a788a8ecf4801c5f2eec86916d9c29a46cac22478b401a6f392"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Spirit32Token.java",
+      "sha256": "f04a6f47b6332ce0fcc8ea172d1ee35b174ccba2118bbd3befe317b2f4edcc39"
+    }
+  ]
 }

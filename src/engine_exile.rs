@@ -485,18 +485,37 @@ impl Game {
             })
     }
     pub(super) fn grant_exile_free_permission(&mut self, player: Player, object: ObjectRef) {
+        self.grant_exile_free_permission_with_expiry(player, object, ExilePlayExpiry::WhileExiled);
+    }
+    pub(super) fn grant_exile_free_permission_until_end(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+    ) {
+        self.grant_exile_free_permission_with_expiry(
+            player,
+            object,
+            ExilePlayExpiry::Turn(self.state.turn),
+        );
+    }
+    fn grant_exile_free_permission_with_expiry(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        expiry: ExilePlayExpiry,
+    ) {
         if self.object_ref(object.card) != object
             || self.state.objects[object.card as usize].zone != Zone::Exile
             || self.state.objects[object.card as usize].is_token()
         {
             return;
         }
-        if self
-            .state
-            .exile_permissions
-            .iter()
-            .any(|p| p.object == object && p.player == player && p.without_paying_mana_cost)
-        {
+        if self.state.exile_permissions.iter().any(|p| {
+            p.object == object
+                && p.player == player
+                && p.without_paying_mana_cost
+                && p.expiry == expiry
+        }) {
             return;
         }
         let at = self
@@ -508,7 +527,7 @@ impl Game {
             ExilePlayPermission {
                 object,
                 player,
-                expiry: ExilePlayExpiry::WhileExiled,
+                expiry,
                 spend_any_mana: false,
                 cast_only: true,
                 exile_on_graveyard: false,

@@ -78,6 +78,8 @@ fn deck(i: usize) -> Vec<Card> {
 fn matches(c: Card, f: SearchFilter) -> bool {
     match f {
         SearchFilter::Any => true,
+        SearchFilter::Colorless => c.colors() == 0,
+        SearchFilter::Nonland => !c.is_land(),
         SearchFilter::ManaValue { minimum, maximum } => {
             (minimum..=maximum).contains(&c.fixed_mana_value())
         }

@@ -51,22 +51,25 @@ impl Game {
         let pending = self.state.plot.as_mut().unwrap().payment.take().unwrap();
         self.spend_mana(pending.controller, payment);
         let event = self.move_object(pending.object.card, Zone::Exile);
-        let cards = &mut self.state.plot.as_mut().unwrap().cards;
-        cards
-            .try_reserve(1)
-            .capacity("plotted permission allocation exhausted");
-        let at = cards.partition_point(|p| p.object.card < event.after.card);
-        cards.insert(
-            at,
-            PlottedCard {
-                object: event.after,
-                owner: pending.controller,
-                plotted_turn: self.state.turn,
-            },
-        );
+        self.remember_plotted(pending.controller, event.after);
         self.state.pending = Pending::Priority;
         self.state.priority = pending.controller;
         self.state.passes = 0;
+    }
+    pub(super) fn remember_plotted(&mut self, owner: Player, object: ObjectRef) {
+        let cards = &mut self.state.plot.get_or_insert_with(Default::default).cards;
+        cards
+            .try_reserve(1)
+            .capacity("plotted permission allocation exhausted");
+        let at = cards.partition_point(|p| p.object.card < object.card);
+        cards.insert(
+            at,
+            PlottedCard {
+                object,
+                owner,
+                plotted_turn: self.state.turn,
+            },
+        );
     }
     pub(super) fn remove_plotted(&mut self, object: ObjectRef) {
         if let Some(p) = self.state.plot.as_mut() {

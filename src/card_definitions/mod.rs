@@ -165,6 +165,8 @@ pub(super) struct CardExtras {
     pub spell_cannot_be_copied: bool,
     /// Minimum cards in the caster's graveyard after this spell leaves its origin.
     pub cast_graveyard_minimum: u8,
+    /// Cannot cast this spell during the caster's first three turns.
+    pub cast_after_first_three_turns: bool,
     pub prepared_spell: Option<Card>,
     pub enters_prepared: bool,
     pub prepared_identity: Option<&'static str>,
@@ -277,6 +279,7 @@ impl CardExtras {
         life_x_cost: false,
         spell_cannot_be_copied: false,
         cast_graveyard_minimum: 0,
+        cast_after_first_three_turns: false,
         prepared_spell: None,
         enters_prepared: false,
         prepared_identity: None,

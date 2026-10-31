@@ -15,15 +15,44 @@ impl Game {
             let Some(recipient) = source.attached_to else {
                 continue;
             };
-            if !events
-                .iter()
-                .any(|e| e.amount > 0 && e.combat && e.source.reference == recipient)
+            if !self.on_battlefield(recipient.card)
+                || self.object_ref(recipient.card) != recipient
+                || !self.is_creature(recipient.card)
             {
                 continue;
             }
+            let amount = events
+                .iter()
+                .filter(|e| e.amount > 0 && e.combat && e.source.reference == recipient)
+                .fold(0u128, |total, e| {
+                    total
+                        .checked_add(e.amount as u128)
+                        .capacity("equipped combat damage exhausted")
+                });
+            if amount == 0 {
+                continue;
+            }
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::AttachedDealtCombatDamage {
-                    self.queue_trigger(&source, index);
+                if ability.condition.event() == TriggerCondition::AttachedDealtCombatDamage
+                    && self.queue_trigger(&source, index)
+                    && ability.program.iter().any(|instruction| {
+                        matches!(
+                            instruction,
+                            Instruction::PutCountersScaled {
+                                amount: AmountValue::CreatureCombatDamageAmount,
+                                ..
+                            }
+                        )
+                    })
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .creature_combat_event = Some(Box::new(CreatureCombatEventView {
+                        dealer: recipient,
+                        amount,
+                    }));
                 }
             }
         }

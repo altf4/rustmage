@@ -516,6 +516,7 @@ impl Game {
             | AmountValue::SourceEquipmentCount
             | AmountValue::LifeEventAmount
             | AmountValue::DamageEventAmount
+            | AmountValue::CreatureCombatDamageAmount
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,
             AmountValue::CardsDiscardedThisTurn => {
