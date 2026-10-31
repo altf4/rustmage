@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Run the bounded public binding contract and retain per-test timing evidence.
 
-The smoke/full names are compatibility aliases for the same small suite. Card
-rules belong to the native suite; adding a Python card rollout increases JSON
-and ctypes work without improving the native rule assertion.
+The smoke/full names are compatibility aliases for the same small suite. Native
+tests cover card rules; one bounded Python fixture exercises planeswalker actions.
 """
 import argparse
 import json
