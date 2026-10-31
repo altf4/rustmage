@@ -5475,6 +5475,8 @@
     0,
     10,
     0,
+    0,
+    0,
     0
   ],
   "aliases": [
@@ -5653,6 +5655,10 @@
     [
       "@emblem/blb-ral-crackling-wit",
       5468
+    ],
+    [
+      "@emblem/dft-chandra-spark-hunter",
+      5471
     ],
     [
       "@emblem/eoe-tezzeret-cruel-captain",
@@ -6293,6 +6299,10 @@
     [
       "@token/df2e2ec30d1a4752cb0232b9",
       5321
+    ],
+    [
+      "@token/dft-chandra-vehicle",
+      5470
     ],
     [
       "@token/drake_2_2_blue_flying",
@@ -29005,6 +29015,12 @@
       "name": "Otter Token",
       "subtypes": "Otter",
       "colors": 10
+    },
+    {
+      "factory_identity": "@token/dft-chandra-vehicle",
+      "name": "Vehicle Token",
+      "subtypes": "Vehicle",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -29031,6 +29047,9 @@
     },
     {
       "oracle_text": "At the beginning of combat on your turn, put three +1/+1 counters on target artifact you control. If it's not a creature, it becomes a 0/0 Robot artifact creature."
+    },
+    {
+      "oracle_text": "Whenever an artifact you control enters, this emblem deals 3 damage to any target."
     }
   ],
   "creature_types": [
@@ -185408,6 +185427,60 @@
       "path": "synthetic/emblem_eoe_tezzeret_cruel_captain.rs",
       "category": "emblem",
       "name": "@emblem/eoe-tezzeret-cruel-captain",
+      "type_line": "",
+      "kind": 0,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5470,
+      "module": "card_5470",
+      "path": "synthetic/token_dft_chandra_vehicle.rs",
+      "category": "token",
+      "name": "@token/dft-chandra-vehicle",
+      "type_line": "Artifact — Vehicle",
+      "kind": 16,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5471,
+      "module": "card_5471",
+      "path": "synthetic/emblem_dft_chandra_spark_hunter.rs",
+      "category": "emblem",
+      "name": "@emblem/dft-chandra-spark-hunter",
       "type_line": "",
       "kind": 0,
       "set": "synthetic",

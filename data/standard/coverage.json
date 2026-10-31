@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "catalogue_version": "90a697e718f4d117c5839ddc7f0863d58f6aba3d276a089bb2dd495034a4916c",
+  "catalogue_version": "3598d18bbf26721c0e0b57b542b76275ddabce28029eaac5a245208bc2895749",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2936,
-  "implemented_total": 2942,
-  "token_definitions": 147,
-  "emblem_definitions": 8,
+  "implemented_standard_cards": 2937,
+  "implemented_total": 2943,
+  "token_definitions": 148,
+  "emblem_definitions": 9,
   "adventure_definitions": 49,
   "omen_definitions": 13,
   "definition_ownership": {
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 95,
-      "gated": 164
+      "complete": 96,
+      "gated": 163
     },
     "dsk": {
       "total": 264,
@@ -5930,8 +5930,8 @@
     {
       "name": "Chandra, Spark Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/chandra_spark_hunter.rs",
       "set": "dft"
     },
