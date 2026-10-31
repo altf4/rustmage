@@ -1686,3 +1686,41 @@ fn lute_spell_mana_does_not_fund_emrakul_hand_activation() {
         assert!(!g.object_view(forest).tapped);
     }
 }
+
+#[test]
+fn funding_payment_visitor_stops_and_preserves_complete_order() {
+    let pool = [2_u128, 1, 0, 0, 0, 2];
+    let colored = [1, 0, 0, 0, 0, 0];
+    let expected = vec![
+        [1, 0, 0, 0, 0, 2],
+        [1, 1, 0, 0, 0, 1],
+        [2, 0, 0, 0, 0, 1],
+        [2, 1, 0, 0, 0, 0],
+    ];
+    let mut all = Vec::new();
+    assert!(!visit_funding_payments(pool, colored, 2, |payment| {
+        all.push(payment);
+        false
+    }));
+    assert_eq!(all, expected);
+    for stop in [0, 2] {
+        let mut visited = Vec::new();
+        assert!(visit_funding_payments(pool, colored, 2, |payment| {
+            visited.push(payment);
+            visited.len() == stop + 1
+        }));
+        assert_eq!(visited, expected[..=stop]);
+    }
+    let mut zero = Vec::new();
+    assert!(!visit_funding_payments([0; 6], [0; 6], 0, |payment| {
+        zero.push(payment);
+        false
+    }));
+    assert_eq!(zero, vec![[0; 6]]);
+    assert!(!visit_funding_payments([0; 6], colored, 0, |_| panic!(
+        "unpayable"
+    )));
+    assert!(!visit_funding_payments([0; 6], [0; 6], 1, |_| panic!(
+        "unpayable"
+    )));
+}
