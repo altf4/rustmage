@@ -1723,6 +1723,9 @@ fn schema197_new_card(card: Card) -> bool {
             | "Spring-Loaded Sawblades // Bladewheel Chariot"
             | "Spring-Loaded Sawblades"
             | "Bladewheel Chariot"
+            | "The Enigma Jewel // Locus of Enlightenment"
+            | "The Enigma Jewel"
+            | "Locus of Enlightenment"
             | "Avatar's Wrath"
             | "Aang's Iceberg"
             | "Aang, Swift Savior // Aang and La, Ocean's Fury"
@@ -1756,6 +1759,7 @@ fn schema197_facts_supported(facts: &DamageFacts) -> bool {
 /// overlays. Reference-only and numeric fields cannot contain the new rules.
 fn schema197_packet_supported(item: &SpellView) -> bool {
     if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema197(&json).is_ok())
+        || item.craft_materials.is_some()
         || item.source_less_rule.is_some()
         || item.source.is_none_or(|source| {
             schema197_new_card(source.card) || !schema197_facts_supported(&source.facts)
@@ -1805,18 +1809,20 @@ fn schema197_packet_supported(item: &SpellView) -> bool {
     }
     // Retained copied or inherited packets can keep craft behavior after the
     // original source has left, even when its physical identity is different.
-    if matches!(item.kind, StackKind::ActivatedAbility { .. })
-        && item.program().is_some_and(|(_, program)| {
-            program.iter().any(|instruction| {
-                matches!(
-                    instruction,
-                    Instruction::ReturnCraftedSourceTransformed
-                        | Instruction::PreventTargetActivationsWhileTapped
-                        | Instruction::PutSourceThirdFromTop
-                )
-            })
+    if matches!(
+        item.kind,
+        StackKind::ActivatedAbility { .. } | StackKind::TriggeredAbility { .. }
+    ) && item.program().is_some_and(|(_, program)| {
+        program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::ReturnCraftedSourceTransformed
+                    | Instruction::PreventTargetActivationsWhileTapped
+                    | Instruction::PutSourceThirdFromTop
+                    | Instruction::CopyCapturedActivatedAbility
+            )
         })
-    {
+    }) {
         return false;
     }
     if let Some(event) = &item.event_object {
@@ -1850,7 +1856,7 @@ fn schema197_packet_supported(item: &SpellView) -> bool {
 fn prior_schema197_state_supported(state: &State) -> bool {
     state.mana_lots.as_ref().is_none_or(|mana| {
         let safe = |quality: &mana_lots::Quality| {
-            quality.restriction != mana_lots::ManaRestrictionView::CastFromExile
+            !matches!(quality.restriction, mana_lots::ManaRestrictionView::CastFromExile | mana_lots::ManaRestrictionView::AbilityActivation)
                 && quality.copy_source.as_ref().is_none_or(|source| !schema197_new_card(source.card) && !schema197_new_card(source.definition) && schema197_facts_supported(&source.facts))
         };
         mana.trace.is_none() && mana.replay.is_none() && mana.choice.is_none()
@@ -1906,6 +1912,7 @@ fn prior_schema197_state_supported(state: &State) -> bool {
             rows.iter()
                 .all(|row| row.definition.is_none_or(|card| !schema197_new_card(card)))
         })
+        && state.borrowed_links.as_ref().is_none_or(|rows| rows.iter().all(|row| !row.once_per_turn))
         && state.temporary_abilities.as_ref().is_none_or(|rows| {
             rows.iter()
                 .all(|row| !schema197_new_card(row.granting_card))
@@ -2019,6 +2026,12 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
                         | "Spring-Loaded Sawblades // Bladewheel Chariot"
                         | "Spring-Loaded Sawblades"
                         | "Bladewheel Chariot"
+                        | "The Enigma Jewel // Locus of Enlightenment"
+                        | "The Enigma Jewel"
+                        | "Locus of Enlightenment"
+                        | "FinishCraftMaterials"
+                        | "ExileCraftNonlands"
+                        | "AbilityActivation"
                         | "ExileControlledOrGraveyard"
                         | "ExileControlled"
                         | "CraftSource"
@@ -2046,6 +2059,11 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
                     "ExileControlled",
                     "CraftSource",
                     "PreventActivationsUntilUntapped",
+                    "FinishCraftMaterials",
+                    "ExileCraftNonlands",
+                    "AbilityActivation",
+                    "craft_materials",
+                    "acquired_once_per_turn",
                     "prohibit_opponent_nonhand_casts",
                     "waterbend_choice",
                     "ChooseWaterbender",
@@ -2062,6 +2080,43 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
     }
     check(&serde_json::from_str(input).map_err(|e| e.to_string())?)?;
     Ok(input.to_owned())
+}
+
+#[test]
+fn prior_schema197_rejects_jewel_costs_and_owned_acquisitions() {
+    for value in [
+        r#"{"card":"The Enigma Jewel // Locus of Enlightenment"}"#,
+        r#"{"card":"Locus of Enlightenment"}"#,
+        r#"{"kind":"FinishCraftMaterials"}"#,
+        r#"{"kind":{"ExileCraftNonlands":4}}"#,
+        r#"{"restriction":"AbilityActivation"}"#,
+        r#"{"craft_materials":[]}"#,
+        r#"{"acquired_once_per_turn":true}"#,
+    ] {
+        assert!(project_prior_schema197(value).is_err());
+    }
+    let mut game = scenario(Player::P0);
+    let bow = put(&mut game, Player::P0, "Short Bow", Zone::Battlefield);
+    let donor = put(&mut game, Player::P0, "Forest", Zone::Exile);
+    let source = game.object_ref(bow);
+    let exiled = game.object_ref(donor);
+    let mut packet = game.activation_item(Player::P0, bow, 0);
+    packet.craft_materials = Some(Box::new(vec![exiled]));
+    game.state.stack.push(packet);
+    assert!(!prior_schema197_state_supported(&game.state));
+    game.state.stack.pop();
+    game.state
+        .borrowed_links
+        .get_or_insert_default()
+        .push(borrowed_activations::Link {
+            source,
+            origin: None,
+            exiled,
+            first_slot: 0,
+            width: 1,
+            once_per_turn: true,
+        });
+    assert!(!prior_schema197_state_supported(&game.state));
 }
 
 #[test]

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "69665a1ba6aead3d22d3dc797eae76c342d6594dead1905b83b08000e36ebd38",
+  "catalogue_version": "726880777f81106f44357acba706c61b52983da7f14cf5545d7ca21c116bf0ba",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2968,
-  "implemented_total": 2974,
+  "implemented_standard_cards": 2969,
+  "implemented_total": 2975,
   "token_definitions": 154,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -100,8 +100,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 174,
-      "complete": 99
+      "gated": 173,
+      "complete": 100
     },
     "m19": {
       "total": 2,
@@ -35746,8 +35746,8 @@
     {
       "name": "The Enigma Jewel // Locus of Enlightenment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/the_enigma_jewel_locus_of_enlightenment.rs",
       "set": "lci"
     },
