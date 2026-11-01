@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "824fa990de98f0cd63f443281c404c55070bc9583778b5f5c58fe7193fc300f8",
+  "catalogue_version": "4a83bfe166ceb2edbb5c146ce2257f9424535b99408899642749fc934eb741d3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2982,
-  "implemented_total": 2988,
+  "implemented_standard_cards": 2985,
+  "implemented_total": 2991,
   "token_definitions": 155,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -57,8 +57,8 @@
     },
     "eoe": {
       "total": 259,
-      "gated": 148,
-      "complete": 111
+      "gated": 146,
+      "complete": 113
     },
     "fdn": {
       "total": 427,
@@ -131,8 +131,8 @@
     },
     "otj": {
       "total": 264,
-      "complete": 96,
-      "gated": 168
+      "complete": 97,
+      "gated": 167
     },
     "pspl": {
       "total": 1,
@@ -13834,8 +13834,8 @@
     {
       "name": "Gene Pollinator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/gene_pollinator.rs",
       "set": "eoe"
     },
@@ -20362,8 +20362,8 @@
     {
       "name": "Lively Dirge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/lively_dirge.rs",
       "set": "otj"
     },
@@ -40050,8 +40050,8 @@
     {
       "name": "Warmaker Gunship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/warmaker_gunship.rs",
       "set": "eoe"
     },

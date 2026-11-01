@@ -86,9 +86,6 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
         card.is_supported()
             || name == "Leatherhead, Swamp Stalker"
             || name == "Jeskai Revelation"
-            || name == "Gene Pollinator"
-            || name == "Warmaker Gunship"
-            || name == "Lively Dirge"
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
