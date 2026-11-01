@@ -1,11 +1,10 @@
 # Fast card and interaction assurance
 
-The test suite is organized around observable card behavior and common rules
-interactions. It replaces the accumulated development tests rather than
-retaining a second legacy suite. Tests arrange a small deterministic game state,
-perform the relevant legal actions, and assert the result. A focused scenario
-should finish in milliseconds; long self-play runs and broad mutation suites
-belong in explicit investigation or benchmarking commands.
+The original 3,014 cases are retained in the `legacy` integration target under
+`tests/legacy/`. Card definitions compile by set and tests link the cached engine
+library. New set cases should use their own integration target and shared
+`tests/support/mod.rs` helpers. See [build-architecture.md](build-architecture.md)
+for package boundaries and engine-first implementation.
 
 Card cases should establish concrete printed outcomes: damage amount and legal
 targets, movement between zones, token characteristics, counters, life changes,
@@ -36,15 +35,13 @@ large card cross-products. A necessary complete-game test must have a fixed
 action ceiling and stop when the intended assertion has been established. Do
 not add a new bot to reach a state that an existing scenario helper can arrange.
 
-The native runner compiles the library test executable once and records a
-flushed start/finish event for every exact test. Every scenario has a 10-second
-wall-clock cap and the entire native execution suite has a 30-second cap; both
-are independent of compilation. Inspect `report/native.json` for build versus
-execution time and `report/native.jsonl` to locate a stalled scenario. The
-Python binding suite has a five-second execution budget and a 15-second
-worker timeout. The full CI validation workload has a nine-minute limit. A failing timeout terminates the process
-tree before cleanup, so it cannot leave a background compiler consuming deleted
-inputs.
+The native runner compiles integration targets once and runs one serial process
+per target, checking every selected test's result. It enforces a 45-second case
+cap and 240-second full-suite execution cap, separately from compilation; these
+match the existing enlarged-suite acceptance limits. Inspect `native.json` for
+compilation and execution times and the `native-execution-*.log` files for the
+current case. Timeout handling terminates descendants before returning. The
+Python binding worker and overall validator retain their separate budgets.
 
 Run normal acceptance through the resource guard automatically:
 
@@ -53,7 +50,7 @@ python3 scripts/link_catalogue.py
 python3 scripts/validate.py --release --python smoke
 ```
 
-To run the native suite alone while retaining per-test timings:
+To run the native suite alone with separate compilation and execution timings:
 
 ```sh
 python3 scripts/run_native_tests.py \
@@ -111,7 +108,7 @@ resolution. The longest accepted trace uses 15 actions; the limit is 64 and the
 fixture object ceiling is 192. A missing cast, unresolved decision or exceeded
 budget fails. No card is silently skipped.
 
-`src/assurance/oracle_cases.json` records independently pinned Oracle text, stats,
+`tests/legacy/assurance/oracle_cases.json` records independently pinned Oracle text, stats,
 keyword expectations, damage/draw/pump values and total printed cost for the
 simple families. Central interaction cases exercise keyword rules, colored
 costs, stack responses, target invalidation, ward, aura suppression, trample and
@@ -120,7 +117,7 @@ private searches and adventure/omen origins. One fixed complete game has a
 256-action ceiling. Expensive owned/raw/index/restore checks run at five
 representative decision roots rather than on every card action.
 
-`src/assurance/card_traces.json` captures the unchanged production engine's
+`tests/legacy/assurance/card_traces.json` captures the unchanged production engine's
 single-card cast/entry behavior, including action-journal and both-player final
 observation digests, named fixture, action count, status and final zone. These
 are regression baselines, not independent proof that every printed obligation
@@ -143,14 +140,14 @@ for the changed rule. Then record a candidate under the persistent cache:
 
 ```sh
 RUSTMAGE_RECORD_CARD_TRACES="$HOME/.cache/rustmage-card-traces-candidate.json" \
-  python3 scripts/resource_guard.py -- cargo test --lib \
+  python3 scripts/resource_guard.py -- cargo test --test legacy \
   engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces \
   -- --exact
 ```
 
 The recording run still compares with the committed baseline and fails on drift.
 After the process terminates, inspect the changed rows and copy the reviewed
-candidate to `src/assurance/card_traces.json`. Ordinary validation never updates
+candidate to `tests/legacy/assurance/card_traces.json`. Ordinary validation never updates
 baselines. Set `CARGO_TARGET_DIR` under `~/.cache` when doing local development
 builds, and keep logs/reports there. Refreshing fingerprints alone is insufficient
 review evidence for a changed card rule.
@@ -179,5 +176,5 @@ The modal-face schema141 cohort records prior140 with every existing Power-up,
 counter-placement history and keyword field intact. New optional face/transform
 fields are omitted on inherited roots, so the previous-schema export changes only
 that version and must exactly match all2453 inherited full traces. That development test module was retired by the bounded MSH rebuild; current
-Monica interactions are in `src/assurance/msh_c.rs`. The historical physical
+Monica interactions are in `tests/legacy/assurance/msh_c.rs`. The historical physical
 trace and immutable comparison hashes remain in `msh-faces-core-evidence.json`.

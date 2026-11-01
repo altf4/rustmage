@@ -9,15 +9,46 @@ interfaces and validation commands. Resolve repository paths from the active
 checkout. Locate XMage through `RUSTMAGE_XMAGE_SOURCE`, or use a sibling `mage`
 checkout; the shared source resolver also handles linked Git worktrees.
 
-## Finish engine dependencies first
+## Audit and finish the engine before authoring cards
 
-Inspect main, active branches, issues and open PRs before starting a batch.
-Preserve useful work. Identify shared rules missing from the selected cards and
-finish the relevant core implementations and their reviews before expanding the
-batch. Keep unrelated prepared card work parked in its own worktree. A core rule
-is finished when its meaningful interaction tests pass and its change has been
-reviewed on the set branch, not when its happy path compiles. Include these
-dependencies in the single completed-set PR. Keep the all-Standard goal open.
+Use the workspace boundary deliberately: `crates/engine/` contains shared rules
+and state; `src/card_definitions/<set>/` compiles through a separate generated set
+crate; integration tests link those libraries. Users still depend only on
+`rustmage`. Read `docs/build-architecture.md` for the current package and test
+commands. On older checkouts, use their documented paths and commands; cache
+reuse across this boundary requires the split to be present. Do not move card
+behavior or catalogue/name tables into the engine.
+
+Inspect main, active branches, issues and open PRs before starting a set. Read the
+whole selected set's Oracle/XMage evidence before beginning card implementation.
+Map every printed obligation to existing engine support or a concrete engine
+change: typed instructions, costs, targets, modes, keywords, triggers, replacements,
+faces/tokens, legality/privacy, queued state, rollback and necessary performance
+improvements. Include interactions between the set's mechanics in this audit.
+Record the complete dependency list in the set's tracking issue; prioritize shared
+work that unlocks multiple cards. A missing engine feature is a blocker, not a
+reason to begin a partial card definition.
+
+Implement **all identified engine fixes and improvements first**. Finish their
+focused rules/contract tests and required reviews on the set branch before
+starting the card-authoring phase. Keep unrelated prepared cards parked. Include
+these engine commits in the single completed-set PR. A core rule is finished when
+its meaningful interaction tests pass and it is reviewed, not when a happy path
+compiles. Catalogue registration alone does not complete a card.
+
+Then prepare the set's metadata/linkage, regenerate it with
+`python3 scripts/link_catalogue.py`, and warm the engine with the same profile,
+feature set and guarded Cargo target that card tests will use. Freeze that engine
+baseline while implementing the set's typed card files and tests. Ordinary card,
+provenance, admission and name-metadata changes should rebuild the relevant set,
+assembly and test target while reusing the engine. Never add generated per-card
+IDs, admission arrays or new card-specific branches to the engine merely to wire
+up a definition. Check Cargo freshness records when this reuse is uncertain.
+
+If card authoring reveals a genuinely missed engine dependency, return to the
+engine phase: record and finish the shared fix, validate/review it, and rewarm the
+cache before resuming dependent cards. Do not interleave speculative engine
+changes with large parallel card batches. Keep the all-Standard goal open.
 
 ## Select complete-card work
 
@@ -68,7 +99,8 @@ progress tracker in `README.md`, reflecting the final verified supported-card
 counts and set completion status.
 
 Assign agents disjoint card
-files and test modules; give a shared mechanic one owner. State each batch's
+files and integration-test targets; give a shared mechanic one owner. Begin
+parallel card authorship only after the engine checkpoint above. State each batch's
 base revision, source pins, dependencies and definition ownership. Let the
 integrator regenerate derived module links and catalogue artifacts instead of
 having every author edit a central generator. Keep the linker metadata-only.
@@ -98,7 +130,8 @@ Choose validation by changed behavior and integration state, not card count:
 
 - **Author loop:** after a coherent card family or mechanic change, run its focused
   rules tests and relevant existing regressions through the resource guard, using
-  one reusable development target per worktree under `~/.cache`. A five-card work
+  one reusable development target per worktree under `~/.cache`. Select the
+  relevant integration test target so unrelated card tests need not recompile. A five-card work
   chunk, agent handoff or progress update does not trigger full validation.
 - **Shared-rule checkpoint:** test the mechanic and its affected consumers/contracts
   before expanding dependent card work. Broaden to native assurance when impact is

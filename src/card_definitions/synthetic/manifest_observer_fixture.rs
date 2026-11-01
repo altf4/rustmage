@@ -1,5 +1,5 @@
 // Only compiled into tests. This incomplete synthetic fixture is never admitted.
-#[cfg(test)]
+#[cfg(feature = "test-support")]
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 3),
     triggers: &[
@@ -30,7 +30,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     },
     ..CardRules::EMPTY
 };
-#[cfg(not(test))]
+#[cfg(not(feature = "test-support"))]
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Unsupported,
     ..CardRules::EMPTY

@@ -25,6 +25,13 @@ canonical paths and emits only module links and catalogue tables. It never
 selects behavior from wording. The Rust compiler checks typed definitions and
 rejects complete cards with Unsupported behavior or mismatched modal-cost tables.
 
+The linker emits a separate internal crate for each canonical definition owner.
+Shared types and rule processing live in `crates/engine/src/`; catalogue, name and
+admission data stay in the public assembly. Audit all engine dependencies for a
+set, finish and validate those changes first, then implement cards against that
+cached engine. Add new set scenarios as separate integration targets using
+`tests/support/mod.rs`. See [build-architecture.md](build-architecture.md).
+
 The directory's set code identifies the canonical definition owner; a reprint
 shares that definition. Ownership counts in the coverage report do not prove
 complete membership of a set. Full-set acceptance must reconcile all printings,

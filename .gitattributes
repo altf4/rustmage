@@ -1,2 +1,6 @@
 data/standard/*.json linguist-generated=true
 src/generated/*.rs linguist-generated=true
+crates/cards/*/src/lib.rs linguist-generated=true
+crates/cards/*/Cargo.toml linguist-generated=true
+
+crates/engine/src/catalogue_accessors.rs linguist-generated=true

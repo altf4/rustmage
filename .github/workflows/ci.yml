@@ -61,6 +61,7 @@ jobs:
             echo "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
             echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
             echo "XDG_CACHE_HOME=$HOME/.cache/rustmage-ci"
+            echo "CARGO_TARGET_DIR=$HOME/.cache/rustmage-ci/rustmage-targets/ci"
             echo "RUSTMAGE_XMAGE_SOURCE=$RUNNER_TEMP/mage"
           } >> "$GITHUB_ENV"
           rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal --component rustfmt --component clippy
@@ -74,6 +75,8 @@ jobs:
             ~/.cargo/registry/cache
             ~/.cargo/registry/src
           key: cargo-downloads-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            cargo-downloads-${{ runner.os }}-
 
       - name: Fetch pinned XMage source objects
         if: steps.scope.outputs.code == 'true'
@@ -92,14 +95,22 @@ jobs:
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ~/.cache/rustmage-ci/rustmage-targets
-          key: rustmage-targets-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('Cargo.lock', 'Cargo.toml', '.cargo/config.toml', 'scripts/rustc_guard.py') }}-${{ github.sha }}
+          key: rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-${{ github.sha }}
           restore-keys: |
-            rustmage-targets-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('Cargo.lock', 'Cargo.toml', '.cargo/config.toml', 'scripts/rustc_guard.py') }}-
+            rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-
+
+      - name: Restore timestamps of verified unchanged compile inputs
+        if: steps.scope.outputs.code == 'true'
+        run: python3 scripts/build_cache.py restore --target-dir "$CARGO_TARGET_DIR"
 
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
         timeout-minutes: 33
         run: python3 scripts/validate.py --release --python smoke --timeout 1800 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+
+      - name: Record compile inputs for the next compatible cache
+        if: success() && steps.scope.outputs.code == 'true'
+        run: python3 scripts/build_cache.py save --target-dir "$CARGO_TARGET_DIR"
 
       - name: Stop any remaining build processes
         if: always() && steps.scope.outputs.code == 'true'

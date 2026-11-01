@@ -1,0 +1,12 @@
+# Generated package linkage; edit src/card_definitions/woe/.
+[package]
+name = "rustmage-cards-woe"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+[lib]
+test = false
+doctest = false
+[dependencies]
+rustmage-core = { path = "../../engine", version = "=0.1.0" }

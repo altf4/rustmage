@@ -12,6 +12,16 @@ Catalogue entries or partial card implementations do not satisfy it.
   printed obligation works. No LLM participates during gameplay.
 - Use disjoint card files and isolated worktrees for parallel authors. Regenerate
   catalogue/module-link artifacts at integration. Avoid manual generated edits.
+- Keep the Cargo boundaries: shared rules/state in `crates/engine/`, authored
+  card files in `src/card_definitions/<set>/` compiled by generated per-set crates,
+  and card scenarios in separate integration-test targets. Consumers declare only
+  `rustmage`; ship one native library. Never add card definitions or mutable
+  catalogue/name/admission data to the engine's compilation.
+- Before implementing a set, audit all its cards and identify every engine fix,
+  shared mechanic and necessary engine improvement. Implement, test and review
+  those changes first; then regenerate linkage, warm a stable guarded test cache,
+  and implement cards against that engine. Return to the engine phase when a
+  missed dependency appears, then revalidate and rewarm before dependent cards.
 - Use GitHub issues and PRs. Require two independent nonauthor reviews of the final
   published batch, excluding reviewers' authored ancestors.
 - Test actual rules interactions, legality/privacy, transactional failures and
@@ -27,6 +37,7 @@ Catalogue entries or partial card implementations do not satisfy it.
   measured implementation/simulation throughput. Keep the full goal open until
   entire-pool behavior, interactions and performance are verified.
 
+- Reuse warm Cargo outputs; do not run clean builds during routine work.
 - Resource safety: run Cargo through `python3 scripts/resource_guard.py -- cargo ...`.
   Routine validation enters this runner automatically. It enforces one build
   across worktrees, one Cargo job/test thread, and a shared 6 GiB memory cgroup

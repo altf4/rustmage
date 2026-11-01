@@ -1,3 +1,8 @@
+[workspace]
+members = ["crates/engine", "crates/test-access", "crates/cards/*"]
+default-members = ["."]
+resolver = "3"
+
 [package]
 name = "rustmage"
 version = "0.1.0"
@@ -7,8 +12,57 @@ description = "Deterministic, branchable Magic simulation for reinforcement lear
 
 [lib]
 crate-type = ["rlib", "cdylib"]
+test = false
+doctest = false
 
 [dependencies]
+rustmage-core = { path = "crates/engine", version = "=0.1.0" }
+# BEGIN GENERATED SET DEPENDENCIES
+rustmage-cards-afr = { path = "crates/cards/afr", version = "=0.1.0" }
+rustmage-cards-big = { path = "crates/cards/big", version = "=0.1.0" }
+rustmage-cards-blb = { path = "crates/cards/blb", version = "=0.1.0" }
+rustmage-cards-cmm = { path = "crates/cards/cmm", version = "=0.1.0" }
+rustmage-cards-ddg = { path = "crates/cards/ddg", version = "=0.1.0" }
+rustmage-cards-dft = { path = "crates/cards/dft", version = "=0.1.0" }
+rustmage-cards-dsk = { path = "crates/cards/dsk", version = "=0.1.0" }
+rustmage-cards-ecc = { path = "crates/cards/ecc", version = "=0.1.0" }
+rustmage-cards-ecl = { path = "crates/cards/ecl", version = "=0.1.0" }
+rustmage-cards-eoc = { path = "crates/cards/eoc", version = "=0.1.0" }
+rustmage-cards-eoe = { path = "crates/cards/eoe", version = "=0.1.0" }
+rustmage-cards-fdn = { path = "crates/cards/fdn", version = "=0.1.0" }
+rustmage-cards-fin = { path = "crates/cards/fin", version = "=0.1.0" }
+rustmage-cards-fra = { path = "crates/cards/fra", version = "=0.1.0" }
+rustmage-cards-frc = { path = "crates/cards/frc", version = "=0.1.0" }
+rustmage-cards-hob = { path = "crates/cards/hob", version = "=0.1.0" }
+rustmage-cards-hoc = { path = "crates/cards/hoc", version = "=0.1.0" }
+rustmage-cards-inr = { path = "crates/cards/inr", version = "=0.1.0" }
+rustmage-cards-jmp = { path = "crates/cards/jmp", version = "=0.1.0" }
+rustmage-cards-lcc = { path = "crates/cards/lcc", version = "=0.1.0" }
+rustmage-cards-lci = { path = "crates/cards/lci", version = "=0.1.0" }
+rustmage-cards-legacy = { path = "crates/cards/legacy", version = "=0.1.0" }
+rustmage-cards-m19 = { path = "crates/cards/m19", version = "=0.1.0" }
+rustmage-cards-mkm = { path = "crates/cards/mkm", version = "=0.1.0" }
+rustmage-cards-mom = { path = "crates/cards/mom", version = "=0.1.0" }
+rustmage-cards-msc = { path = "crates/cards/msc", version = "=0.1.0" }
+rustmage-cards-msh = { path = "crates/cards/msh", version = "=0.1.0" }
+rustmage-cards-one = { path = "crates/cards/one", version = "=0.1.0" }
+rustmage-cards-otj = { path = "crates/cards/otj", version = "=0.1.0" }
+rustmage-cards-pspl = { path = "crates/cards/pspl", version = "=0.1.0" }
+rustmage-cards-rix = { path = "crates/cards/rix", version = "=0.1.0" }
+rustmage-cards-soc = { path = "crates/cards/soc", version = "=0.1.0" }
+rustmage-cards-sos = { path = "crates/cards/sos", version = "=0.1.0" }
+rustmage-cards-spm = { path = "crates/cards/spm", version = "=0.1.0" }
+rustmage-cards-synthetic = { path = "crates/cards/synthetic", version = "=0.1.0" }
+rustmage-cards-tdc = { path = "crates/cards/tdc", version = "=0.1.0" }
+rustmage-cards-tdm = { path = "crates/cards/tdm", version = "=0.1.0" }
+rustmage-cards-tla = { path = "crates/cards/tla", version = "=0.1.0" }
+rustmage-cards-tle = { path = "crates/cards/tle", version = "=0.1.0" }
+rustmage-cards-tmc = { path = "crates/cards/tmc", version = "=0.1.0" }
+rustmage-cards-tmt = { path = "crates/cards/tmt", version = "=0.1.0" }
+rustmage-cards-w17 = { path = "crates/cards/w17", version = "=0.1.0" }
+rustmage-cards-woe = { path = "crates/cards/woe", version = "=0.1.0" }
+rustmage-cards-znr = { path = "crates/cards/znr", version = "=0.1.0" }
+# END GENERATED SET DEPENDENCIES
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["arbitrary_precision"] }
 
@@ -18,8 +72,8 @@ debug = false
 incremental = false
 
 [profile.test]
-# Rules scenarios need fast execution without release LTO or full optimization.
-opt-level = 1
+# Compile the engine once; bounded scenarios prioritize fast edit/test cycles.
+opt-level = 0
 lto = false
 debug = false
 incremental = false
@@ -28,3 +82,26 @@ incremental = false
 lto = "thin"
 codegen-units = 1
 
+
+[dev-dependencies]
+rustmage-cards-synthetic = { path = "crates/cards/synthetic", version = "=0.1.0", features = ["test-support"] }
+rustmage-core = { path = "crates/engine", version = "=0.1.0", features = ["test-support"] }
+
+# Optimize the stable runtime once; keep card definitions and test bodies cheap.
+[profile.test.package.rustmage-core]
+opt-level = 1
+[profile.test.package."*"]
+opt-level = 1
+
+[[bin]]
+name = "rustmage"
+path = "src/bin/rustmage.rs"
+test = false
+[[bin]]
+name = "coverage"
+path = "src/bin/coverage.rs"
+test = false
+[[bin]]
+name = "benchmark"
+path = "src/bin/benchmark.rs"
+test = false

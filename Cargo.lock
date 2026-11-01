@@ -36,8 +36,378 @@ dependencies = [
 name = "rustmage"
 version = "0.1.0"
 dependencies = [
+ "rustmage-cards-afr",
+ "rustmage-cards-big",
+ "rustmage-cards-blb",
+ "rustmage-cards-cmm",
+ "rustmage-cards-ddg",
+ "rustmage-cards-dft",
+ "rustmage-cards-dsk",
+ "rustmage-cards-ecc",
+ "rustmage-cards-ecl",
+ "rustmage-cards-eoc",
+ "rustmage-cards-eoe",
+ "rustmage-cards-fdn",
+ "rustmage-cards-fin",
+ "rustmage-cards-fra",
+ "rustmage-cards-frc",
+ "rustmage-cards-hob",
+ "rustmage-cards-hoc",
+ "rustmage-cards-inr",
+ "rustmage-cards-jmp",
+ "rustmage-cards-lcc",
+ "rustmage-cards-lci",
+ "rustmage-cards-legacy",
+ "rustmage-cards-m19",
+ "rustmage-cards-mkm",
+ "rustmage-cards-mom",
+ "rustmage-cards-msc",
+ "rustmage-cards-msh",
+ "rustmage-cards-one",
+ "rustmage-cards-otj",
+ "rustmage-cards-pspl",
+ "rustmage-cards-rix",
+ "rustmage-cards-soc",
+ "rustmage-cards-sos",
+ "rustmage-cards-spm",
+ "rustmage-cards-synthetic",
+ "rustmage-cards-tdc",
+ "rustmage-cards-tdm",
+ "rustmage-cards-tla",
+ "rustmage-cards-tle",
+ "rustmage-cards-tmc",
+ "rustmage-cards-tmt",
+ "rustmage-cards-w17",
+ "rustmage-cards-woe",
+ "rustmage-cards-znr",
+ "rustmage-core",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "rustmage-cards-afr"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-big"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-blb"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-cmm"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-ddg"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-dft"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-dsk"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-ecc"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-ecl"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-eoc"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-eoe"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-fdn"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-fin"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-fra"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-frc"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-hob"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-hoc"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-inr"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-jmp"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-lcc"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-lci"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-legacy"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-m19"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-mkm"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-mom"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-msc"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-msh"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-one"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-otj"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-pspl"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-rix"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-soc"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-sos"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-spm"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-synthetic"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-tdc"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-tdm"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-tla"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-tle"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-tmc"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-tmt"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-w17"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-woe"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-cards-znr"
+version = "0.1.0"
+dependencies = [
+ "rustmage-core",
+]
+
+[[package]]
+name = "rustmage-core"
+version = "0.1.0"
+dependencies = [
+ "rustmage-test-access",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "rustmage-test-access"
+version = "0.1.0"
+dependencies = [
+ "quote",
+ "syn",
 ]
 
 [[package]]

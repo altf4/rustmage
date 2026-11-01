@@ -112,7 +112,7 @@ def main(argv=None):
         ('card format', ['rustfmt', '--edition', '2024', '--check',
                          *[str(p) for p in sorted((ROOT/'src/card_definitions').rglob('*.rs'))]], 45),
         ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 30),
-        ('clippy', ['cargo', 'clippy', '--all-targets', '--', '-D', 'warnings'], 180),
+        ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'], 180),
         # A 56-game FRA workload can approach 30 seconds on CI; the enlarged
         # catalogue also needs more than 120 seconds of serialized execution.
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
