@@ -1703,43 +1703,252 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
     true
 }
 
-// Airbend adds an exact alternate-cost exile permission and public cast action.
-// Old traces can be compared only while no airbend consumer or right is present.
-fn prior_schema197_state_supported(state: &State) -> bool {
-    state.objects.iter().all(|object| {
-        !matches!(
-            object.card.identity(),
-            "Airbender Ascension" | "Appa, Steadfast Guardian"
-        )
-    }) && state
-        .exile_permissions
-        .iter()
-        .all(|permission| !permission.airbend)
-        && state
-            .stack
-            .iter()
-            .chain(&state.pending_triggers)
-            .chain(&state.ordering_triggers)
-            .all(|item| {
-                item.cast
-                    .is_none_or(|cast| cast.method != CastMethod::Airbend)
-            })
-        && state.announcing.as_ref().is_none_or(|announcement| {
-            announcement
-                .item
-                .cast
-                .is_none_or(|cast| cast.method != CastMethod::Airbend)
-        })
-        && state
-            .cast_rollback
-            .as_ref()
-            .is_none_or(|rollback| prior_schema197_state_supported(&rollback.before))
+fn schema197_new_card(card: Card) -> bool {
+    matches!(
+        card.identity(),
+        "Airbender Ascension" | "Appa, Steadfast Guardian"
+    )
 }
+
+fn schema197_recipe_supported(recipe: &CopyRecipe) -> bool {
+    if schema197_new_card(recipe.definition) {
+        return false;
+    }
+    match recipe.faces {
+        Some(copies::CopyFaces::Double {
+            physical_front,
+            front,
+            back,
+            ..
+        }) => ![physical_front, front, back]
+            .into_iter()
+            .any(schema197_new_card),
+        _ => true,
+    }
+}
+
+fn schema197_facts_supported(facts: &DamageFacts) -> bool {
+    // Schema 180 already represents additive Construct and other subtype facts.
+    !schema197_new_card(facts.card)
+}
+
+/// Inspect all packet fields carrying card definitions, recipes or LKI subtype
+/// overlays. Reference-only and numeric fields cannot contain the new rules.
+fn schema197_packet_supported(item: &SpellView) -> bool {
+    if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema197(&json).is_ok())
+        || item.source_less_rule.is_some()
+        || item.source.is_none_or(|source| {
+            schema197_new_card(source.card) || !schema197_facts_supported(&source.facts)
+        })
+        || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema197_new_card(token))
+        || item
+            .source_copy_recipe
+            .as_deref()
+            .is_some_and(|r| !schema197_recipe_supported(r))
+        || item
+            .captured_artifact_copy
+            .as_deref()
+            .is_some_and(|r| !schema197_recipe_supported(r))
+        || item
+            .attachment_trigger
+            .as_ref()
+            .is_some_and(|v| schema197_new_card(v.granting_card))
+        || item
+            .delayed_sacrifice
+            .as_ref()
+            .is_some_and(|v| schema197_new_card(v.source_card))
+        || item
+            .delayed_warp_exile
+            .as_ref()
+            .is_some_and(|v| schema197_new_card(v.source_card))
+        || item
+            .cast_event
+            .as_ref()
+            .is_some_and(|v| schema197_new_card(v.card))
+        || item
+            .cast
+            .and_then(|v| v.physical_card)
+            .is_some_and(schema197_new_card)
+        || item.mana_copy_sources.as_ref().is_some_and(|sources| {
+            sources.iter().any(|(v, _)| {
+                schema197_new_card(v.card)
+                    || schema197_new_card(v.definition)
+                    || !schema197_facts_supported(&v.facts)
+            })
+        })
+        || item
+            .copy_event
+            .as_ref()
+            .is_some_and(|event| !schema197_packet_supported(&event.spell))
+    {
+        return false;
+    }
+    if let Some(event) = &item.event_object {
+        if event
+            .subtype_lki
+            .as_ref()
+            .is_some_and(|facts| !schema197_facts_supported(facts))
+        {
+            return false;
+        }
+        match &event.facts {
+            event_objects::EventObjectFacts::DamageActor(source)
+                if !schema197_facts_supported(&source.facts) =>
+            {
+                return false;
+            }
+            event_objects::EventObjectFacts::Copiable(recipe)
+                if !schema197_recipe_supported(recipe) =>
+            {
+                return false;
+            }
+            _ => {}
+        }
+    }
+    true
+}
+
+/// Outside-entry replacement choices and continuations have no schema-196
+/// representation. Keep all outside-owned states conservative until their
+/// complete future behavior has an equivalent old-contract proof.
+fn prior_schema197_state_supported(state: &State) -> bool {
+    state.exile_permissions.iter().all(|permission| !permission.airbend)
+        && !state
+        .objects
+        .iter()
+        .any(|object| schema197_new_card(object.card))
+        && state.outside_game.as_ref().is_none_or(|outside| {
+            !outside
+                .pools
+                .iter()
+                .flatten()
+                .copied()
+                .any(schema197_new_card)
+                && outside.choice.is_none()
+                && outside.pending_entry.is_none()
+        })
+        && state.announcing.is_none()
+        && state.mana_announcement_stack.is_none()
+        && state.replacements.is_none()
+        && state.copy_recipes.as_ref().is_none_or(|rows| {
+            rows.iter()
+                .all(|row| schema197_recipe_supported(&row.recipe))
+        })
+        && state.temporary_copies.as_ref().is_none_or(|rows| {
+            rows.iter().all(|row| {
+                !schema197_new_card(row.physical_card)
+                    && row
+                        .original_recipe
+                        .as_ref()
+                        .is_none_or(schema197_recipe_supported)
+                    && row
+                        .layers
+                        .iter()
+                        .all(|layer| schema197_recipe_supported(&layer.value.recipe))
+            })
+        })
+        && state.borrowed_slots.as_ref().is_none_or(|rows| {
+            rows.iter()
+                .all(|row| row.definition.is_none_or(|card| !schema197_new_card(card)))
+        })
+        && state.temporary_abilities.as_ref().is_none_or(|rows| {
+            rows.iter()
+                .all(|row| !schema197_new_card(row.granting_card))
+        })
+        && state.self_granted_abilities.as_ref().is_none_or(|rows| {
+            rows.iter()
+                .all(|row| !schema197_new_card(row.granting_card))
+        })
+        && state.resolving.is_none()
+        && state.entry_batch.is_none()
+        && state
+            .zone_rules
+            .as_ref()
+            .is_none_or(|rules| !rules.has_checkpoint())
+        // Mana rollback owns frozen life-payment receipts and pre-action state.
+        // Reject the whole continuation until old-schema equivalence is proven.
+        && state.cast_rollback.is_none()
+        && {
+            state
+                .stack
+                .iter()
+                .chain(&state.pending_triggers)
+                .chain(&state.ordering_triggers)
+                .chain(
+                    state
+                        .delayed_artifact_copies
+                        .as_deref()
+                        .into_iter()
+                        .flatten(),
+                )
+                .chain(
+                    state
+                        .delayed_attack_this_turn
+                        .as_deref()
+                        .into_iter()
+                        .flatten(),
+                )
+                .chain(
+                    state
+                        .delayed_opponent_attack_until_next_turn
+                        .as_deref()
+                        .into_iter()
+                        .flatten(),
+                )
+                .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
+                .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
+                .chain(
+                    state
+                        .stack_copy_data
+                        .as_ref()
+                        .into_iter()
+                        .flat_map(|s| s.packets()),
+                )
+                .chain(
+                    state
+                        .paradigm
+                        .as_ref()
+                        .into_iter()
+                        .flat_map(|s| s.packets()),
+                )
+                .chain(
+                    state
+                        .delayed_returns
+                        .as_deref()
+                        .into_iter()
+                        .flatten()
+                        .map(|r| &r.item),
+                )
+                .chain(
+                    state
+                        .earthbend_returns
+                        .as_deref()
+                        .into_iter()
+                        .flatten()
+                        .map(|r| &r.item),
+                )
+                .chain(
+                    state
+                        .manifest
+                        .as_ref()
+                        .into_iter()
+                        .flat_map(|s| s.deaths.iter().map(|d| &d.source)),
+                )
+                .all(schema197_packet_supported)
+        }
+}
+
 fn project_prior_schema197(input: &str) -> Result<String, String> {
     fn check(value: &serde_json::Value) -> Result<(), String> {
         match value {
             serde_json::Value::String(text)
-                if matches!(text.as_str(), "Airbend" | "AnnounceAirbend") =>
+                if matches!(
+                    text.as_str(),
+                    "Airbend"
+                        | "AnnounceAirbend"
+                        | "Airbender Ascension"
+                        | "Appa, Steadfast Guardian"
+                ) =>
             {
                 Err("airbend cast has no schema 196 representation".into())
             }
@@ -1773,6 +1982,76 @@ fn prior_schema197_rejects_airbend_rights_and_actions() {
     let card = put(&mut game, Player::P0, "Bear Cub", Zone::Exile);
     game.grant_airbend_permission(Player::P0, game.object_ref(card));
     assert!(!prior_schema197_state_supported(&game.state));
+}
+
+#[test]
+fn prior_schema197_rejects_copied_ascension_trigger_after_source_departs() {
+    use super::big_helpers::checked;
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let target = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+        let destroy = put(&mut game, player.other(), "Disenchant", Zone::Hand);
+        let ascension = Card::from_name("Airbender Ascension").unwrap();
+        game.apply_temporary_copy(
+            game.object_ref(source),
+            CopyRecipe::new(ascension),
+            CopyDeadline::EndOfTurn,
+        );
+        game.add_counter(source, CounterKind::Quest, 4);
+        assert!(!prior_schema197_state_supported(&game.state));
+        game.begin_step(Step::End);
+        for _ in 0..40 {
+            if game.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(target),
+            }) {
+                break;
+            }
+            checked(&mut game, Action::Pass);
+        }
+        checked(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        if game.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut game, Action::FinishTargets);
+        }
+        while game.actor() != Some(player.other()) {
+            checked(&mut game, Action::Pass);
+        }
+        super::big_helpers::cast(&mut game, destroy, None, &[Target::Card(source)]);
+        for _ in 0..8 {
+            if game.object_view(source).zone == Zone::Graveyard {
+                break;
+            }
+            checked(&mut game, Action::Pass);
+        }
+        assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+        assert!(
+            game.state
+                .objects
+                .iter()
+                .all(|object| !schema197_new_card(object.card))
+        );
+        assert!(
+            game.state
+                .stack
+                .iter()
+                .any(|item| item.source.is_some_and(|origin| origin.card == ascension))
+        );
+        assert!(!prior_schema197_state_supported(&game.state));
+        let snapshot = game.snapshot();
+        let mut branch = game.clone();
+        assert!(!prior_schema197_state_supported(&branch.state));
+        super::big_helpers::settle(&mut game);
+        assert!(prior_schema197_state_supported(&game.state));
+        branch.restore(&snapshot).unwrap();
+        assert!(!prior_schema197_state_supported(&branch.state));
+        super::big_helpers::settle(&mut branch);
+        assert_eq!(branch.snapshot(), game.snapshot());
+    }
 }
 
 /// Outside-entry replacement choices and continuations have no schema-191
