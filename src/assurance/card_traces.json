@@ -3839,6 +3839,14 @@
     "journal": "4324aa4c9fd9325c",
     "observations": "da50217cb097def5"
   },
+  "Consult the Star Charts": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "0956c936a7e2af2a",
+    "observations": "f87a405e78b25cbb"
+  },
   "Consumed by Greed": {
     "root": "main",
     "status": "completed",
@@ -4494,6 +4502,14 @@
     "zone": "Battlefield",
     "journal": "ce93789b5fa64c9f",
     "observations": "750f29313614b0ad"
+  },
+  "Day of Black Sun": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "a4ef6dd4eaf1ac91",
+    "observations": "7f1d71444094f54b"
   },
   "Day of Judgment": {
     "root": "main",
@@ -7215,6 +7231,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "d786dc97e4160813"
   },
+  "Floodpits Drowner": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "07646b7206cb9db0",
+    "observations": "b9afe265e644577c"
+  },
   "Flourishing Grapple": {
     "root": "main",
     "status": "completed",
@@ -7886,6 +7910,14 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "6f5528f0620a1b86"
+  },
+  "Gene Pollinator": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "d96ad4ca883f316e",
+    "observations": "4ddd6e8d669ea91a"
   },
   "Genemorph Imago": {
     "root": "main",
@@ -11654,6 +11686,14 @@
     "zone": "Graveyard",
     "journal": "003be1531ac06bfc",
     "observations": "611f47c3c68266f4"
+  },
+  "Lively Dirge": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "905bfd295709c3df",
+    "observations": "842cbd981bce6b1b"
   },
   "Living History": {
     "root": "main",
@@ -16431,6 +16471,14 @@
     "journal": "edefc4c98e7914f7",
     "observations": "09a51922d5ab3ba2"
   },
+  "Riverchurn Monument": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "c8849704dd40b7a8"
+  },
   "Riverguard's Reflexes": {
     "root": "main",
     "status": "completed",
@@ -21199,6 +21247,14 @@
     "journal": "fbf59b9629dd7802",
     "observations": "fc189ce03c4e6e05"
   },
+  "Tishana's Tidebinder": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "7cab70b24f8e18ec",
+    "observations": "1d95aa3f1577ed8a"
+  },
   "Titan's Grave": {
     "root": "main",
     "status": "completed",
@@ -21342,6 +21398,14 @@
     "zone": "Battlefield",
     "journal": "a0e420e69a0470d9",
     "observations": "b0a92a93b2e4457e"
+  },
+  "Torch the Tower": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "6c41bf171e298313",
+    "observations": "3549ea46b0a9d0e5"
   },
   "Torpor Orb": {
     "root": "main",
@@ -21974,6 +22038,14 @@
     "zone": "Graveyard",
     "journal": "317441358ec23b90",
     "observations": "d93442b008173c62"
+  },
+  "United Battlefront": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "e9c53cabd2dfb9d3",
+    "observations": "0e2828db329f0569"
   },
   "United Front": {
     "root": "main",
@@ -22863,6 +22935,14 @@
     "journal": "f603a7ee3f8f226e",
     "observations": "05465ef580b3ad39"
   },
+  "Warmaker Gunship": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "226f842a70b990f1",
+    "observations": "83793ef5eaced5c3"
+  },
   "Warren Elder": {
     "root": "main",
     "status": "completed",
@@ -23094,6 +23174,14 @@
     "zone": "Battlefield",
     "journal": "369e21e33100375d",
     "observations": "d42e4ab62f143872"
+  },
+  "Webstrike Elite": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ff91f79bc3502b45",
+    "observations": "1e835f4e8863e6b2"
   },
   "Weftblade Enhancer": {
     "root": "main",

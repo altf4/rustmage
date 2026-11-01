@@ -3,7 +3,7 @@
   "catalogue_id": 5486,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "b01a6993bd0892c756e1c171ac24138f675347b65c4854a2fd6c0b6eec528dd9",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/MonasteryMentorToken.java",

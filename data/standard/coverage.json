@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4a83bfe166ceb2edbb5c146ce2257f9424535b99408899642749fc934eb741d3",
+  "catalogue_version": "a4eb4b451ba9173b66b0ee23f11c146566c27db6758580311d75ac23dcd937db",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2985,
-  "implemented_total": 2991,
+  "implemented_standard_cards": 2987,
+  "implemented_total": 2993,
   "token_definitions": 155,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -163,8 +163,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 125,
-      "gated": 139
+      "complete": 126,
+      "gated": 138
     },
     "tla": {
       "total": 278,
@@ -181,8 +181,8 @@
     },
     "tmt": {
       "total": 189,
-      "gated": 123,
-      "complete": 66
+      "gated": 122,
+      "complete": 67
     },
     "w17": {
       "total": 1,
@@ -18378,8 +18378,8 @@
     {
       "name": "Jeskai Revelation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/jeskai_revelation.rs",
       "set": "tdm"
     },
@@ -19922,8 +19922,8 @@
     {
       "name": "Leatherhead, Swamp Stalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leatherhead_swamp_stalker.rs",
       "set": "tmt"
     },
