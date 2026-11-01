@@ -254,7 +254,7 @@ impl Game {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
                 if ability.condition.event() == TriggerCondition::PermanentCardsEnterYourGraveyard {
-                    self.queue_trigger_from(&source, index, grant.clone().map(Box::new));
+                    self.queue_trigger_from(&source, index, grant.map(Box::new));
                 }
             }
         }
