@@ -6646,6 +6646,34 @@ impl Game {
                         }
                     }
                 }
+                Instruction::DamageEachPlayerPerNonbasicLand => {
+                    let source = self.program_damage_source(&item);
+                    let events: Vec<_> = [Player::P0, Player::P1]
+                        .into_iter()
+                        .map(|player| {
+                            let amount = self
+                                .state
+                                .objects
+                                .iter()
+                                .enumerate()
+                                .filter(|(id, object)| {
+                                    object.zone == Zone::Battlefield
+                                        && object.controller == player
+                                        && self.current_kinds(*id as CardId) & 2 != 0
+                                        && !object.card.is_basic_land()
+                                })
+                                .count();
+                            DamageEvent {
+                                preventable: true,
+                                source,
+                                target: Target::Player(player),
+                                amount: amount as i128,
+                                combat: false,
+                            }
+                        })
+                        .collect();
+                    self.apply_damage_batch(&events);
+                }
                 Instruction::Damage(_)
                 | Instruction::DamageScaled(_)
                 | Instruction::DamagePlayers(_, _)

@@ -149,6 +149,7 @@ pub(crate) enum StaticAbilityFragment {
     },
     LifeGainAdditional(u16),
     CantGainLife,
+    DamageCantBePrevented,
     NoMaximumHandSize,
     MaximumHandSize(u16),
     AdditionalLandPlays(u16),

@@ -5488,7 +5488,8 @@
     1,
     1,
     2,
-    0
+    0,
+    4
   ],
   "aliases": [
     [
@@ -6238,6 +6239,10 @@
     [
       "@token/blb-ral-otter",
       5467
+    ],
+    [
+      "@token/blb-vren-rat",
+      5483
     ],
     [
       "@token/blood",
@@ -29122,6 +29127,12 @@
       "name": "Ox Token",
       "subtypes": "Ox",
       "colors": 1
+    },
+    {
+      "factory_identity": "@token/blb-vren-rat",
+      "name": "Rat Token",
+      "subtypes": "Rat",
+      "colors": 4
     }
   ],
   "emblems": [
@@ -185990,6 +186001,33 @@
       ],
       "generic": 0,
       "face_parent": 22
+    },
+    {
+      "index": 5483,
+      "module": "card_5483",
+      "path": "synthetic/token_blb_vren_rat.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/blb-vren-rat",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Rat",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

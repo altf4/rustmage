@@ -3,10 +3,26 @@
   "catalogue_id": 4949,
   "oracle_id": "1216900e-93e3-41a4-b354-9c81938639c2",
   "facts_sha256": "5f9584e585749c20931b3358504000e62d24c7790b525691aa48292bfae4dec6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "55f88836541c4abe393aac3062719f141eab5f823ecc746fa76fb6ba12ad07e7"
   },
-  "physical_metadata_sha256": "601f013d1516b594632995c864213f728655b8f0cfded5ce9006fb17a47b8ab5"
+  "physical_metadata_sha256": "601f013d1516b594632995c864213f728655b8f0cfded5ce9006fb17a47b8ab5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VrenTheRelentless.java",
+  "java_sha256": "92991b20449626b4ea28dd1acd244bfac90772e9aff6deb0b602e1c00ddd4ec0",
+  "rules_tests": "src/assurance/hartford_replacements.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/CreaturesAreExiledOnDeathReplacementEffect.java",
+      "sha256": "370b0b2b0e837ba61f178b316482c96d6714f065fea91fddf3e839f0e2c7cb97"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/VrenRatToken.java",
+      "sha256": "f2d264fce6e6b657e190734c026a39a511c0d8b9c35b3f97538d31ce83397939"
+    }
+  ]
 }

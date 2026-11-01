@@ -515,6 +515,9 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::OpponentCreaturesExiledThisTurn => u128::from(
+                self.state.players[owner.other().index()].controlled_creatures_exiled_this_turn,
+            ),
             AmountValue::ControllerHandDeficit(n) => {
                 u128::from(n).saturating_sub(self.hand_count(owner) as u128)
             }

@@ -1012,6 +1012,7 @@ struct PlayerState {
     card_left_graveyard_this_turn: bool,
     controlled_creature_died_this_turn: bool,
     controlled_creatures_died_this_turn: u64,
+    controlled_creatures_exiled_this_turn: u64,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
     life_lost_this_turn: u128,
@@ -2644,6 +2645,10 @@ pub struct PlayerCounterAmountView {
     pub count: u64,
 }
 
+fn is_zero_u64(value: &u64) -> bool {
+    *value == 0
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub enduring_story: bool,
@@ -2677,6 +2682,8 @@ pub struct PlayerView {
     pub cards_library_to_graveyard_this_turn: u64,
     pub card_left_graveyard_this_turn: bool,
     pub controlled_creature_died_this_turn: bool,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub controlled_creatures_exiled_this_turn: u64,
     pub life_gain_events_this_turn: u64,
     pub life_gained_this_turn: u128,
     pub life_lost_this_turn: u128,
@@ -3300,6 +3307,7 @@ impl Game {
             card_left_graveyard_this_turn: false,
             controlled_creature_died_this_turn: false,
             controlled_creatures_died_this_turn: 0,
+            controlled_creatures_exiled_this_turn: 0,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
@@ -8134,6 +8142,13 @@ impl Game {
             self.forget_solved_case(before.reference);
             self.forget_graveyard_type_source(before.reference);
         }
+        if before.zone == Zone::Battlefield && destination == Zone::Exile && before.is_creature() {
+            let count = &mut self.state.players[before.controller.index()]
+                .controlled_creatures_exiled_this_turn;
+            *count = count
+                .checked_add(1)
+                .capacity("exiled creature history exhausted");
+        }
         if before.zone == Zone::Battlefield
             && destination == Zone::Graveyard
             && before.is_creature()
@@ -8677,6 +8692,7 @@ impl Game {
             player.card_left_graveyard_this_turn = false;
             player.controlled_creature_died_this_turn = false;
             player.controlled_creatures_died_this_turn = 0;
+            player.controlled_creatures_exiled_this_turn = 0;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
@@ -8939,11 +8955,37 @@ impl Game {
         }
     }
 
+    fn damage_prevention_prohibited(&self) -> bool {
+        self.state.damage_prevention_prohibited
+            || self.state.static_sources.iter().any(|&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::DamageCantBePrevented
+                            )
+                        })
+                    })
+                    && self
+                        .characteristic_query()
+                        .continuous_fragment_available(id, |fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::DamageCantBePrevented
+                            )
+                        })
+            })
+    }
+
     fn commit_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
             event.preventable
-                && !self.state.damage_prevention_prohibited
+                && !self.damage_prevention_prohibited()
                 && ((event.combat
                     && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
                         || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO))))
@@ -9364,7 +9406,7 @@ impl Game {
                     .any(|&active| active)
                     .then_some(roles.prohibit_opponent_nonhand_casts)
             }),
-            damage_prevention_prohibited: s.damage_prevention_prohibited,
+            damage_prevention_prohibited: self.damage_prevention_prohibited(),
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
             zone_reveals: self.zone_reveals(),
@@ -9674,6 +9716,8 @@ impl Game {
                     .cards_library_to_graveyard_this_turn,
                 card_left_graveyard_this_turn: s.players[i].card_left_graveyard_this_turn,
                 controlled_creature_died_this_turn: s.players[i].controlled_creature_died_this_turn,
+                controlled_creatures_exiled_this_turn: s.players[i]
+                    .controlled_creatures_exiled_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
                 life_lost_this_turn: s.players[i].life_lost_this_turn,

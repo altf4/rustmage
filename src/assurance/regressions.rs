@@ -1706,7 +1706,10 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
 fn schema197_new_card(card: Card) -> bool {
     matches!(
         card.identity(),
-        "Airbender Ascension"
+        "Sunspine Lynx"
+            | "Vren, the Relentless"
+            | "@token/blb-vren-rat"
+            | "Airbender Ascension"
             | "Bloodghast"
             | "Enduring Curiosity"
             | "Appa, Steadfast Guardian"
@@ -1843,7 +1846,8 @@ fn schema197_packet_supported(item: &SpellView) -> bool {
 /// representation. Keep all outside-owned states conservative until their
 /// complete future behavior has an equivalent old-contract proof.
 fn prior_schema197_state_supported(state: &State) -> bool {
-    state.exile_permissions.iter().all(|permission| !permission.airbend)
+    state.players.iter().all(|player| player.controlled_creatures_exiled_this_turn == 0)
+        && state.exile_permissions.iter().all(|permission| !permission.airbend)
         && state.roles.as_ref().is_none_or(|roles| {
             !roles.prohibit_opponent_nonhand_casts.iter().any(|&active| active)
                 && roles.animations.iter().all(|row| !row.enchantment_noncreature)
@@ -1982,7 +1986,10 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
             serde_json::Value::String(text)
                 if matches!(
                     text.as_str(),
-                    "Airbend"
+                    "Sunspine Lynx"
+                        | "Vren, the Relentless"
+                        | "@token/blb-vren-rat"
+                        | "Airbend"
                         | "AnnounceAirbend"
                         | "Airbender Ascension"
                         | "Appa, Steadfast Guardian"
@@ -2015,6 +2022,7 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
             serde_json::Value::Array(rows) => rows.iter().try_for_each(check),
             serde_json::Value::Object(fields) => {
                 if [
+                    "controlled_creatures_exiled_this_turn",
                     "airbend",
                     "enchantment_noncreature",
                     "AnnounceAirbend",
@@ -2050,6 +2058,10 @@ fn prior_schema197_rejects_airbend_rights_and_actions() {
         r#"[{"exile_permissions":[{"airbend":true}]}]"#,
         r#"[{"card":"Requiting Hex"}]"#,
         r#"[{"card":"Moonshadow"}]"#,
+        r#"[{"card":"Sunspine Lynx"}]"#,
+        r#"[{"card":"Vren, the Relentless"}]"#,
+        r#"[{"card":"@token/blb-vren-rat"}]"#,
+        r#"[{"controlled_creatures_exiled_this_turn":1}]"#,
         r#"[{"card":"Bloodghast"}]"#,
         r#"[{"card":"Enduring Curiosity"}]"#,
         r#"[{"enchantment_noncreature":true}]"#,

@@ -3,10 +3,26 @@
   "catalogue_id": 4248,
   "oracle_id": "479adf64-f42c-4cb6-bf25-648c044bca8b",
   "facts_sha256": "8401ee10f9c035551b22467b0c4c4fcd1b8cdef7bbd7ec8f10ff72567641b10c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d3ff99325445d3e497868bea55229e1e269ef896132ff8e4dbe385d0f00f6b81"
   },
-  "physical_metadata_sha256": "24160960e3e3f06a8c34b7cf9ea47f44d6897a0ace507da7eb3c02ea8a3b1b76"
+  "physical_metadata_sha256": "24160960e3e3f06a8c34b7cf9ea47f44d6897a0ace507da7eb3c02ea8a3b1b76",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SunspineLynx.java",
+  "java_sha256": "8a9a8b7e4555603693b811a1c305f543b746354ffb23143750083c95495ccac5",
+  "rules_tests": "src/assurance/hartford_replacements.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CantGainLifeAllEffect.java",
+      "sha256": "61c61069573641bc716ee655e0f81b7df63bb33e8978dae13f44279fe76ef822"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/DamageCantBePreventedEffect.java",
+      "sha256": "8394f3bd2353e3bf2d937528da4a4b32c13db60b16cfba7a91339864322568e9"
+    }
+  ]
 }
