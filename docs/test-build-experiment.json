@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "scope": "Isolated crate-split prototype; same 91 scenarios and 186 admitted physical cards. Full catalogue and 5487 definitions retained.",
+  "scenario_count": 91,
+  "physical_card_count": 186,
+  "profiles": {
+    "opt_level": 0,
+    "debug": false,
+    "incremental": false,
+    "jobs": 1,
+    "test_threads": 1
+  },
+  "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+  "clean_build": false,
+  "third_party_dependencies": "Cached in every timed sample; all non-project compiler artifacts verified fresh.",
+  "case_and_card_check": "Same test names and exact same admitted physical card-ID set in each corresponding scenario, checked against prior benchmark.",
+  "prior_old": {
+    "median_rebuild_seconds": 26.331787572002213,
+    "median_execution_seconds": 1.4953348109993385,
+    "combined_medians_seconds": 27.82712238300155
+  },
+  "prior_new": {
+    "median_rebuild_seconds": 24.576894865000213,
+    "median_execution_seconds": 0.3152288729979773,
+    "combined_medians_seconds": 24.89212373799819
+  },
+  "workloads": {
+    "engine-edit": {
+      "monolith": {
+        "compile_seconds": 24.722490234998986,
+        "execution_seconds": 0.41541311999753816,
+        "total_seconds": 25.137903354996524
+      },
+      "split": {
+        "compile_seconds": 26.028946421996807,
+        "execution_seconds": 0.41544677400088403,
+        "total_seconds": 26.444488045999606
+      },
+      "speedup": 0.9505914166789576,
+      "time_reduction_percent": -5.197667731280298
+    },
+    "card-edit": {
+      "monolith": {
+        "compile_seconds": 24.5247244830025,
+        "execution_seconds": 0.36513992600521306,
+        "total_seconds": 24.889864409007714
+      },
+      "split": {
+        "compile_seconds": 5.8290586899966,
+        "execution_seconds": 0.46568723000382306,
+        "total_seconds": 6.2944914840045385
+      },
+      "speedup": 3.9542295787129813,
+      "time_reduction_percent": 74.71062364756578
+    },
+    "test-edit": {
+      "monolith": {
+        "compile_seconds": 24.73685244099761,
+        "execution_seconds": 0.3151703670009738,
+        "total_seconds": 25.052022807998583
+      },
+      "split": {
+        "compile_seconds": 1.8696439190025558,
+        "execution_seconds": 0.4151733949984191,
+        "total_seconds": 2.3358355119999032
+      },
+      "speedup": 10.725080032090727,
+      "time_reduction_percent": 90.67606025309014
+    }
+  },
+  "timed_samples_per_workload": 3,
+  "ordering": "Alternating monolith/split pairs; identity tracing disabled during timed runs.",
+  "validation": {
+    "benchmark_runs": 20,
+    "cases_passed_per_run": 91,
+    "reproduced_from_saved_generator": true,
+    "reproduced_per_scenario_identities_match": true,
+    "single_dependency_rust_consumer": true,
+    "python_binding_tests_passed": 3,
+    "dynamic_dependencies": [
+      "libgcc_s.so.1",
+      "libc.so.6",
+      "ld-linux-x86-64.so.2"
+    ]
+  },
+  "limits": [
+    "Warm-engine benefit applies to card and test edits. Engine edits invalidate dependent crates.",
+    "No new cold-dependency or clean build was run.",
+    "Prototype retains generated identity constants/name metadata in engine; admitting new catalogue identities can still invalidate it.",
+    "Prototype exposes engine internals to preserve unchanged test bodies. A production migration needs a narrow test-support API.",
+    "This does not establish final all-3007-card CI time or complete the backfill."
+  ]
+}
