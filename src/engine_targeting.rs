@@ -69,6 +69,10 @@ impl Announcement {
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Miracle => self.miracle_cost,
+            CastMethod::Mayhem => self
+                .item
+                .source
+                .and_then(|source| source.card.mayhem_cost()),
             CastMethod::Airbend => Some(ManaCost {
                 colored: [0; 6],
                 generic: 2,
@@ -144,7 +148,8 @@ impl Announcement {
                     | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
-                    | CastMethod::Miracle => {
+                    | CastMethod::Miracle
+                    | CastMethod::Mayhem => {
                         self.fixed_alternative_cost()
                             .is_some_and(|base| self.cost.is_some_and(|cost| cost != base))
                             && self
@@ -237,6 +242,15 @@ impl Announcement {
                         .expect("fixed Warp cost"),
                 )
                 .chain([].iter().copied())
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|cast| cast.method == CastMethod::Mayhem) =>
+            {
+                std::iter::once(self.fixed_alternative_cost().expect("mayhem cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell
                 if self

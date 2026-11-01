@@ -86,11 +86,6 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
     assert!(
         card.is_supported()
-            || name == "Inti, Seneschal of the Sun"
-            || name == "Monument to Endurance"
-            || name == "Obsessive Pursuit"
-            || name == "Cool but Rude"
-            || name == "Wan Shi Tong, Librarian"
             || name == "Carnage, Crimson Chaos"
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
