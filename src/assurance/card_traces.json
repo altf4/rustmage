@@ -31,6 +31,22 @@
     "journal": "bd3c64b64d7436cc",
     "observations": "394317dc536f0fb2"
   },
+  "Aang's Iceberg": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "0386c07dd2d7047f",
+    "observations": "02a6964e433674fe"
+  },
+  "Aang, Swift Savior // Aang and La, Ocean's Fury": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "e0dcaf1a2a757135",
+    "observations": "45e4053fce78b71f"
+  },
   "Aatchik, Emerald Radian": {
     "root": "main",
     "status": "completed",
@@ -317,7 +333,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "a4570c800d9dee1d",
-    "observations": "7ab2e19b09c15f31"
+    "observations": "08e0bc06e8f4f67d"
   },
   "Agent 13, Sharon Carter": {
     "root": "main",
@@ -733,7 +749,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "98b13c155f66a3d8",
-    "observations": "96b8a621aea078fd"
+    "observations": "cf0a4ef374b64fb5"
   },
   "Angry Rabble": {
     "root": "main",
@@ -949,7 +965,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "fb30b9aae5fd6ce5",
-    "observations": "01000abd580cd4d1"
+    "observations": "249f35b0fab93c2d"
   },
   "Archive Arbiter": {
     "root": "main",
@@ -1279,6 +1295,14 @@
     "journal": "21c94e12108ffb3f",
     "observations": "97e8042b3302ae36"
   },
+  "Avatar's Wrath": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Exile",
+    "journal": "964746e5019d2bda",
+    "observations": "d2bafbab64385ea9"
+  },
   "Avenger of the Fallen": {
     "root": "main",
     "status": "completed",
@@ -1461,7 +1485,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "fa7acc0a2d642341",
-    "observations": "745199e0491de0b2"
+    "observations": "f3df115e72c81294"
   },
   "Banner of Kinship": {
     "root": "main",
@@ -1885,7 +1909,7 @@
     "decisions": 4,
     "zone": "Graveyard",
     "journal": "157c935ef8d4f416",
-    "observations": "04f30e608ea1c8df"
+    "observations": "fbfedecf32415ff7"
   },
   "Biblioplex Tomekeeper": {
     "root": "main",
@@ -2477,7 +2501,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "9f62160805ccbd0f",
-    "observations": "5ca6559f621c59c1"
+    "observations": "227e369846313bf1"
   },
   "Botanical Sanctum": {
     "root": "main",
@@ -3661,7 +3685,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "e52ccec308bcae2d",
-    "observations": "f2e9a055728b2e61"
+    "observations": "d22c13d6bd8a9a81"
   },
   "Comet Crawler": {
     "root": "main",
@@ -4125,7 +4149,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "1216047830cdf0c0",
-    "observations": "bc05af28269076f9"
+    "observations": "673fc8e6ae83f631"
   },
   "Cruel Calculations": {
     "root": "main",
@@ -4485,7 +4509,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "b7e7e5a03884f6a4",
-    "observations": "18fa69fb2e559161"
+    "observations": "ec4593774a8c0c51"
   },
   "Dazzling Angel": {
     "root": "main",
@@ -4557,7 +4581,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "adcea180f71f0045",
-    "observations": "acad0ad50b8f69dd"
+    "observations": "37530856aefe40b5"
   },
   "Death to Our Enemies": {
     "root": "main",
@@ -4773,7 +4797,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "82dcf8f746583c3e",
-    "observations": "f7705329f0d708b3"
+    "observations": "f29292d6b5d383c1"
   },
   "Devoted Duelist": {
     "root": "main",
@@ -4789,7 +4813,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "b86a4c82f414ca3c",
-    "observations": "8df408f21850100b"
+    "observations": "53e3d1a9acc00fd3"
   },
   "Dewdrop Cure": {
     "root": "main",
@@ -5477,7 +5501,7 @@
     "decisions": 8,
     "zone": "Battlefield",
     "journal": "028721361c2f224a",
-    "observations": "0712e680332425e4"
+    "observations": "d039783fa901b2de"
   },
   "Duskwatch Hunter": {
     "root": "main",
@@ -5893,7 +5917,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "61211ece6607d080",
-    "observations": "bf9b07aa746a0c44"
+    "observations": "dc3f235c9582f960"
   },
   "Elspeth, Storm Slayer": {
     "root": "main",
@@ -6101,7 +6125,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "8c6432a78f6c1783",
-    "observations": "e9b9b594501e317d"
+    "observations": "ac7e531073628001"
   },
   "Enduring Curiosity": {
     "root": "main",
@@ -6189,7 +6213,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "8540225fb8fddd66",
-    "observations": "1adacf552f07aa0e"
+    "observations": "0a015a38dcbb505c"
   },
   "Epic Fight": {
     "root": "main",
@@ -6285,7 +6309,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "e52ccec308bcae2d",
-    "observations": "6385e54a749bf2d9"
+    "observations": "09a17c1c9742f431"
   },
   "Essence Channeler": {
     "root": "main",
@@ -6485,7 +6509,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "89f55824ce2c1087",
-    "observations": "a5e0d55a7afc8de3"
+    "observations": "0e665441f5b7e009"
   },
   "Extract a Confession": {
     "root": "main",
@@ -6765,7 +6789,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "9f62160805ccbd0f",
-    "observations": "c5bdfe04f9afd061"
+    "observations": "1d7221be4b65e9bd"
   },
   "Feed the Swarm": {
     "root": "main",
@@ -6909,7 +6933,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "afe38ae8ff25fb1e",
-    "observations": "c400c3f12e3580cd"
+    "observations": "330048bcd4346279"
   },
   "Fight On!": {
     "root": "main",
@@ -7261,7 +7285,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "cd1b3c90e11194aa",
-    "observations": "d8b9fa54ddd93e85"
+    "observations": "55635bc4af4a7783"
   },
   "Foolish Fate": {
     "root": "main",
@@ -8181,7 +8205,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "baa222c24e122f80",
-    "observations": "e652a48b0c5dc1d8"
+    "observations": "127f30a3eeb695e2"
   },
   "Gleaming Barrier": {
     "root": "main",
@@ -8325,7 +8349,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "30229628b5a8887d",
-    "observations": "95824feef489a4a5"
+    "observations": "f34101985a5e80c1"
   },
   "Go Nuts!": {
     "root": "main",
@@ -8645,7 +8669,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "89f55824ce2c1087",
-    "observations": "87fd3987ea3e18d1"
+    "observations": "ddb039365566a3f9"
   },
   "Gravpack Monoist": {
     "root": "main",
@@ -9085,7 +9109,7 @@
     "decisions": 8,
     "zone": "Battlefield",
     "journal": "9defd513e996310f",
-    "observations": "bf9a70c4c2ce6be6"
+    "observations": "9ee553f3dd4dbe14"
   },
   "Hare Apparent": {
     "root": "main",
@@ -9341,7 +9365,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "494877ed6604677c",
-    "observations": "cd4ac042fa23b2cf"
+    "observations": "cca50d102d541437"
   },
   "Herald of Eternal Dawn": {
     "root": "main",
@@ -10069,7 +10093,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "3242521e134ac8ad",
-    "observations": "cd19ccebe45cd9f3"
+    "observations": "2ebf7e38fee2b5b9"
   },
   "Infernal Vessel": {
     "root": "main",
@@ -12221,7 +12245,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "fa7acc0a2d642341",
-    "observations": "ba27f25a44aefe8c"
+    "observations": "38c4bae244e15e4a"
   },
   "Malamet Brawler": {
     "root": "main",
@@ -12581,7 +12605,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "fa7acc0a2d642341",
-    "observations": "daf40ed3e79946a2"
+    "observations": "eccbcb1555deead8"
   },
   "Memory Vessel": {
     "root": "main",
@@ -13421,7 +13445,7 @@
     "decisions": 7,
     "zone": "Graveyard",
     "journal": "d4dfe3932b13add7",
-    "observations": "47ff45ffff9d84b4"
+    "observations": "ce03052216453b2a"
   },
   "Murky Sewer": {
     "root": "main",
@@ -13525,7 +13549,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "fa7acc0a2d642341",
-    "observations": "3c92510de3e36172"
+    "observations": "9906ee1c589de2d8"
   },
   "Namazu Trader": {
     "root": "main",
@@ -13549,7 +13573,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "78e29c105007a1c0",
-    "observations": "dcd2571223b4c451"
+    "observations": "97ab3d1dab862be1"
   },
   "Nasty Little Rabbit": {
     "root": "main",
@@ -13813,7 +13837,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "e220d2d8ed862e41",
-    "observations": "0384ce63017544e4"
+    "observations": "5b5fc5b1eea8c760"
   },
   "Nova Hellkite": {
     "root": "main",
@@ -13893,7 +13917,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "e52ccec308bcae2d",
-    "observations": "767b596ec1069861"
+    "observations": "177e7a9e5859e4dd"
   },
   "Obyra's Attendants": {
     "root": "main",
@@ -14277,7 +14301,7 @@
     "decisions": 4,
     "zone": "Graveyard",
     "journal": "0d39482255511c19",
-    "observations": "97059b7b90847767"
+    "observations": "45a1a20f0c5bfb67"
   },
   "Ovika, Enigma Goliath": {
     "root": "main",
@@ -14669,7 +14693,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "bb30569d891e578e",
-    "observations": "f88098aa16a712f9"
+    "observations": "c58c0ea31e72b3f1"
   },
   "Piranha Fly": {
     "root": "main",
@@ -15373,7 +15397,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "f385416f7e57ec16",
-    "observations": "14ebb4e6b62c2261"
+    "observations": "6fe4acfa5dda1081"
   },
   "Quicksilver, Brash Blur": {
     "root": "main",
@@ -15749,7 +15773,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "5da146b74684ef4f",
-    "observations": "751457edada95813"
+    "observations": "414ab4c292fb2acd"
   },
   "Razorkin Hordecaller": {
     "root": "main",
@@ -15925,7 +15949,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "cc34d57d7975d152",
-    "observations": "f8a9355e0edc71f7"
+    "observations": "aa602dd658a130a9"
   },
   "Regal Bunnicorn": {
     "root": "main",
@@ -16229,7 +16253,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "fae424dc01ad1ac5",
-    "observations": "94ad728bce135da5"
+    "observations": "ecec60511affe7a9"
   },
   "Rig for War": {
     "root": "main",
@@ -17189,7 +17213,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "e52ccec308bcae2d",
-    "observations": "b9ade3fe531c9489"
+    "observations": "89a20d18f738c1e1"
   },
   "Scorching Shot": {
     "root": "main",
@@ -17301,7 +17325,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "8d8adc6a011de577",
-    "observations": "ad46ba65e307bd8e"
+    "observations": "3663814e6ff8039c"
   },
   "Sear": {
     "root": "main",
@@ -17637,7 +17661,7 @@
     "decisions": 8,
     "zone": "Battlefield",
     "journal": "248f35ba62224722",
-    "observations": "2a059d598e8fc534"
+    "observations": "d644b43df05cb902"
   },
   "Shepherding Spirits": {
     "root": "main",
@@ -18269,7 +18293,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "443885f5322dfa00",
-    "observations": "0869b7add79883a8"
+    "observations": "5e8b4ab14a3b6fe2"
   },
   "Solve for Disappointment": {
     "root": "main",
@@ -18885,7 +18909,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "b27f67a12052dc79",
-    "observations": "7759dcd0a06d3552"
+    "observations": "a29229987340ab6e"
   },
   "Static Snare": {
     "root": "main",
@@ -18893,7 +18917,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "a0f047f38ebb7293",
-    "observations": "0124d204ac93defa"
+    "observations": "423d7780cfabcb86"
   },
   "Stature, Size Shifter": {
     "root": "main",
@@ -19229,7 +19253,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "fa7acc0a2d642341",
-    "observations": "2c193bfa09779b6a"
+    "observations": "c076700b02189e9c"
   },
   "Stormshriek Feral": {
     "root": "main",
@@ -19535,6 +19559,14 @@
     "journal": "a4c714aeb662e85f",
     "observations": "a7123e6eaec69938"
   },
+  "Sunspine Lynx": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "f1b842e14bcfd6ff",
+    "observations": "a9e00195f23d8a10"
+  },
   "Super Intelligence": {
     "root": "main",
     "status": "completed",
@@ -19573,7 +19605,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "baa222c24e122f80",
-    "observations": "59588f9eb335cade"
+    "observations": "d93b90e0e2570d7e"
   },
   "Super-Adaptoid": {
     "root": "main",
@@ -19605,7 +19637,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "bb30569d891e578e",
-    "observations": "ea3902600822f53d"
+    "observations": "38b0072f8bb99049"
   },
   "Supper for Spiders": {
     "root": "main",
@@ -19693,7 +19725,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "4806c991b143e9c4",
-    "observations": "6e66c941287f8f40"
+    "observations": "ece547afe5de0fa6"
   },
   "Suspicious Shambler": {
     "root": "main",
@@ -19901,7 +19933,7 @@
     "decisions": 7,
     "zone": "Graveyard",
     "journal": "c10b483f1ce1dd54",
-    "observations": "227529da58d8365f"
+    "observations": "8ec0e56287d46aed"
   },
   "Tam's Resistance": {
     "root": "main",
@@ -21349,7 +21381,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "fa7acc0a2d642341",
-    "observations": "b8cc3e59d639ff12"
+    "observations": "d0753b473a0f498c"
   },
   "Traumatic Critique": {
     "root": "main",
@@ -22397,7 +22429,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "276e7cb4d6371856",
-    "observations": "7985be7bb18f7a07"
+    "observations": "b7370711e055fa1b"
   },
   "Vindictive Warden": {
     "root": "main",
@@ -22647,6 +22679,14 @@
     "journal": "18aa1ef32e1bebfc",
     "observations": "e8bebf0d0951c026"
   },
+  "Vren, the Relentless": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3c38242be96ca09d",
+    "observations": "ee0dde6f146f90b4"
+  },
   "Vulture, Scheming Scavenger": {
     "root": "main",
     "status": "completed",
@@ -22677,7 +22717,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "89f55824ce2c1087",
-    "observations": "6f0c42bc1da829e1"
+    "observations": "6ffe84bc54c567d1"
   },
   "Wanderbrine Preacher": {
     "root": "main",
@@ -22973,7 +23013,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "fa7acc0a2d642341",
-    "observations": "241fa3a194b1e872"
+    "observations": "ac7186800930157c"
   },
   "Web-Shooters": {
     "root": "main",
@@ -23053,7 +23093,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "ce57e4b004f4d918",
-    "observations": "abbdac177ba68a86"
+    "observations": "79afd9bc86f7ba44"
   },
   "White Lotus Reinforcements": {
     "root": "main",
@@ -23213,7 +23253,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "00c0e57fa500fda7",
-    "observations": "6537a521b0304ccd"
+    "observations": "7418f76d1483a849"
   },
   "Wilt-Leaf Liege": {
     "root": "main",
@@ -23437,7 +23477,7 @@
     "decisions": 6,
     "zone": "Exile",
     "journal": "ccff665985c9cdf2",
-    "observations": "1167c8ced3fd438f"
+    "observations": "15e3bdb9d07c6e4f"
   },
   "Worldsoul's Rage": {
     "root": "main",

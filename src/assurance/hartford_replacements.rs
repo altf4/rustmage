@@ -69,6 +69,12 @@ fn vren_tracks_preentry_and_replaced_exiles_and_creates_scaling_rats() {
             g.state.players[p.other().index()].controlled_creatures_exiled_this_turn,
             2
         );
+        for viewer in [p, p.other()] {
+            assert_eq!(
+                g.observe(viewer).players[p.other().index()].controlled_creatures_exiled_this_turn,
+                2
+            );
+        }
         g.begin_step(Step::End);
         settle(&mut g);
         let rats: Vec<_> = g
