@@ -38,6 +38,7 @@ mod issue_93_loyalty;
 mod issue_93_oko_lorwyn;
 mod issue_93_ral;
 mod regressions;
+mod schema198;
 mod requested_aang;
 mod requested_airbend_core;
 mod requested_bovine_intervention;
