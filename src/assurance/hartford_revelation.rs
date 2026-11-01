@@ -40,8 +40,10 @@ fn revelation_returns_spell_or_permanent_and_completes_all_five_effects() {
                 .iter()
                 .enumerate()
                 .filter_map(|(id, o)| {
-                    (o.zone == Zone::Battlefield && o.controller == player && o.card == Card(5486))
-                        .then_some(id as CardId)
+                    (o.zone == Zone::Battlefield
+                        && o.controller == player
+                        && o.card == Card::from_name("@token/tdm-monk-prowess").unwrap())
+                    .then_some(id as CardId)
                 })
                 .collect();
             assert_eq!(monks.len(), 2);
