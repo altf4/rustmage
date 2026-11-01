@@ -75,6 +75,14 @@ fn perilous_snare_starts_persistent_speed_and_grants_its_activation_only_at_four
             assert_eq!(g.state.players[p.index()].speed, speed);
         }
         assert!(additional_costs::has_craft_activated_ability(&g, snare));
+        // next_turn stops at the new upkeep; this activation needs a main phase.
+        for _ in 0..20 {
+            if g.state.step == Step::Main1 {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        assert_eq!(g.state.step, Step::Main1);
         let source = g.object_ref(snare);
         let action = Action::AnnounceSourceGrant { source, ability: 0 };
         let mut off_turn = g.clone();
