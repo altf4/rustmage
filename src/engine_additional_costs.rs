@@ -1070,6 +1070,14 @@ impl Game {
             }
             EffectChoiceKind::Sacrifice => {
                 if a.item.program().is_some_and(|(_, program)| {
+                    program
+                        .iter()
+                        .any(|i| matches!(i, Instruction::SearchSacrificedManaValue { .. }))
+                }) {
+                    a.item.sacrificed_mana_value =
+                        Some(Box::new(self.object_mana_value(object.card)));
+                }
+                if a.item.program().is_some_and(|(_, program)| {
                     program.iter().any(|i| {
                         matches!(
                             i,

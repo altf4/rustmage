@@ -104,6 +104,22 @@ impl Game {
             })
             .collect()
     }
+    pub(super) fn exile_battlefield_until_source_leaves(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+    ) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let objects = self
+            .battlefield_group(item, filters)
+            .into_iter()
+            .map(|id| self.object_ref(id))
+            .collect::<Vec<_>>();
+        self.exile_objects_until_source_leaves(source.object, &objects);
+    }
+
     pub(super) fn move_battlefield_group(
         &mut self,
         item: &SpellView,

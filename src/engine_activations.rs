@@ -849,6 +849,7 @@ impl Game {
             event_object: None,
             manifest_event: None,
             sacrificed_toughness: None,
+            sacrificed_mana_value: None,
             sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,
 

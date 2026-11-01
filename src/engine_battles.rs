@@ -80,6 +80,7 @@ impl Game {
             event_object: None,
             manifest_event: None,
             sacrificed_toughness: None,
+            sacrificed_mana_value: None,
             sacrificed_power: None,
 
             targets: Vec::new(),

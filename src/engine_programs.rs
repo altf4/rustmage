@@ -1383,6 +1383,7 @@ impl Game {
             source_quantity_lki: self
                 .source_quantity_facts(definition.triggers()[index].program, source),
             sacrificed_toughness: None,
+            sacrificed_mana_value: None,
             sacrificed_power: None,
             source_attachment: source.attached_to,
 
@@ -5535,6 +5536,37 @@ impl Game {
                     self.state.pending = Pending::EffectSearch { player };
                     return;
                 }
+                Instruction::SearchSacrificedManaValue { kinds, increment } => {
+                    let Some(value) = item.sacrificed_mana_value.as_deref().copied() else {
+                        continue;
+                    };
+                    let value = value
+                        .checked_add(u64::from(increment))
+                        .expect("sacrifice search mana value");
+                    self.state.resolving.as_mut().unwrap().search =
+                        Some(Box::new(search::SearchChoice {
+                            spec: SearchSpec {
+                                filter: crate::SearchFilter::KindsManaValue {
+                                    kinds,
+                                    minimum: value,
+                                    maximum: value,
+                                },
+                                maximum: 1,
+                                destination: crate::SearchDestination::Battlefield,
+                                tapped: false,
+                                reveal: false,
+                            },
+                            minimum: 0,
+                            different_names: false,
+                            selected: Vec::new(),
+                            battlefield: None,
+                            destination_pending: false,
+                        }));
+                    self.state.pending = Pending::EffectSearch {
+                        player: item.controller,
+                    };
+                    return;
+                }
                 Instruction::CaptureSearchResult => {
                     self.state.resolving.as_mut().unwrap().search_result =
                         Some(Box::new(search::SearchResult::default()));
@@ -6198,6 +6230,12 @@ impl Game {
                     self.exile_targets_play(&item, true, true, true)
                 }
                 Instruction::ExileUntilSourceLeaves => self.exile_until_source_leaves(&item),
+                Instruction::ExileBattlefieldUntilSourceLeaves { filters } => {
+                    self.exile_battlefield_until_source_leaves(&item, filters)
+                }
+                Instruction::LinkedExileToGraveyardTokens { token } => {
+                    self.linked_exile_to_graveyard_tokens(&item, token)
+                }
                 Instruction::ExileAndCaptureAttachedCopy => {
                     self.exile_and_capture_attached_copy(&item)
                 }

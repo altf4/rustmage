@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d79a844fbace5a4b07416dae2a275a36948a8f5a84ccebbde7d85755a7271ae3"
   },
-  "physical_metadata_sha256": "f1d484c21b09eef29e0ecde5077a094a16198fdb65b31aae5c89f38c169a9917"
+  "physical_metadata_sha256": "f1d484c21b09eef29e0ecde5077a094a16198fdb65b31aae5c89f38c169a9917",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PinnacleStarcage.java",
+  "java_sha256": "22db214de463e2f7c26108e8be56ac07de6983c4610f5342b8072b33b4f8f3f3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/OnLeaveReturnExiledAbility.java",
+      "sha256": "5b62cf341bee369a87d667c2431aa2bdf252f167e84793aca73e04a2ceee1822"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/RobotToken.java",
+      "sha256": "4fb6db3bd46f1327a540499edabeaa4f1faf2668a60596007c13cbadec582fa0"
+    }
+  ]
 }

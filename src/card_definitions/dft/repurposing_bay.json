@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9cca23bb14c58058f377dd5b69a353220ddd5a329ed7c13242991738fc98dacb"
   },
-  "physical_metadata_sha256": "7ea0e295c3dc62f2eb8066427588d97b2c6e43b1e8967bdf59164d3ddbd5310e"
+  "physical_metadata_sha256": "7ea0e295c3dc62f2eb8066427588d97b2c6e43b1e8967bdf59164d3ddbd5310e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RepurposingBay.java",
+  "java_sha256": "f18ab927da9eec4c2a757868d0b2c5554c3191bef57b7bd89fa8ee15e31005f0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    }
+  ]
 }

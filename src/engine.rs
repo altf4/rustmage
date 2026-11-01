@@ -1314,6 +1314,9 @@ pub struct SpellView {
     pub manifest_event: Option<Box<ManifestDreadEvent>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_toughness: Option<Box<i128>>,
+    /// Mana value frozen before an additional sacrifice cost changes the object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sacrificed_mana_value: Option<Box<u64>>,
     /// Last-known power of the successfully sacrificed permanent for a reflexive ability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_power: Option<Box<i128>>,
@@ -1529,6 +1532,10 @@ impl SpellView {
                 .sacrificed_toughness
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<i128>())
+            + self
+                .sacrificed_mana_value
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<u64>())
             + self
                 .sacrificed_power
                 .as_ref()

@@ -289,6 +289,33 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    pub(super) fn linked_exile_to_graveyard_tokens(&mut self, item: &SpellView, token: Card) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let ids = self
+            .state
+            .exile_links
+            .iter()
+            .filter(|link| {
+                link.source == source.object
+                    && self.object_ref(link.exiled.card) == link.exiled
+                    && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
+                    && self.state.objects[link.exiled.card as usize].is_card()
+            })
+            .map(|link| link.exiled.card)
+            .collect::<Vec<_>>();
+        let events = self.move_objects_raw(&ids, Zone::Graveyard);
+        let count = events
+            .iter()
+            .filter(|e| e.moved && e.destination == Zone::Graveyard)
+            .count();
+        self.finish_zone_events(&events, &[]);
+        if count > 0 {
+            self.create_tokens(item.controller, token, count as u128, false);
+        }
+    }
+
     pub(super) fn finish_zone_events(
         &mut self,
         events: &[ZoneChange],

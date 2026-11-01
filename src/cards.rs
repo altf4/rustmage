@@ -729,7 +729,15 @@ pub enum SearchFilter {
     Any,
     Colorless,
     Nonland,
-    ManaValue { minimum: u64, maximum: u64 },
+    ManaValue {
+        minimum: u64,
+        maximum: u64,
+    },
+    KindsManaValue {
+        kinds: u16,
+        minimum: u64,
+        maximum: u64,
+    },
     AnyOf(&'static [SearchFilter]),
     AllOf(&'static [SearchFilter]),
     Name(&'static str),
@@ -751,6 +759,14 @@ impl SearchFilter {
             Self::Nonland => !card.is_land(),
             Self::ManaValue { minimum, maximum } => {
                 (minimum..=maximum).contains(&card.fixed_mana_value())
+            }
+            Self::KindsManaValue {
+                kinds,
+                minimum,
+                maximum,
+            } => {
+                card.kind_mask() & kinds != 0
+                    && (minimum..=maximum).contains(&card.fixed_mana_value())
             }
             Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
             Self::AllOf(filters) => filters.iter().all(|filter| filter.matches(card)),
@@ -1992,6 +2008,11 @@ pub(crate) enum Instruction {
         haste_at: Option<u32>,
     },
     Search(SearchSpec),
+    /// Qualified battlefield search using the frozen mana value of a paid sacrifice.
+    SearchSacrificedManaValue {
+        kinds: u16,
+        increment: u16,
+    },
     /// Search up to the damage actually dealt to the source in this trigger event.
     SearchDamageReceived(SearchSpec),
     /// Choose hidden hand/library search zones, then find up to one card.
@@ -2247,6 +2268,13 @@ pub(crate) enum Instruction {
     },
     ExileTargetsAndTopPlayForOwners,
     ExileUntilSourceLeaves,
+    ExileBattlefieldUntilSourceLeaves {
+        filters: &'static [BattlefieldFilter],
+    },
+    /// Count only linked cards actually moved to a graveyard, then create tokens.
+    LinkedExileToGraveyardTokens {
+        token: Card,
+    },
     /// Freeze copiable values before a successful linked exile; wait for immediate returns.
     ExileAndCaptureAttachedCopy,
     /// Apply the captured blueprint to the Aura's current exact attached creature.
