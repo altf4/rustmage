@@ -76,6 +76,8 @@ pub(crate) enum StaticAbilityFragment {
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Add one to a controller draw instruction while their hand has at most one card.
+    AdditionalDrawWithAtMostOneCard,
     /// Increase opponents' noncreature spell costs by generic mana.
     OpponentNoncreatureSpellTax(u32),
     /// Generic cost per creature declared attacking this source's controller.

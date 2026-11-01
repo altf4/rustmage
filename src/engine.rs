@@ -54,7 +54,7 @@ mod miracle;
 #[path = "engine_storm.rs"]
 mod storm;
 pub use cascade::CascadeView;
-pub use miracle::MiracleChoiceView;
+pub use miracle::{DrawReplacementView, MiracleChoiceView};
 #[path = "engine_paradigm.rs"]
 mod paradigm;
 pub use paradigm::{ParadigmView, ResolvedSpellNameView};
@@ -539,6 +539,7 @@ define_actions! {
     FinishEvidence,
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
+    ChooseDrawReplacement { source: ObjectRef },
     ChooseSelfCounterReplacement { effect: u16 },
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
     ChooseDamageEvent { index: u32 },
@@ -2920,6 +2921,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_choice: Option<outside_choices::OutsideChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub draw_replacement: Option<DrawReplacementView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_entry_replacement: Option<OutsideEntryReplacementView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owned_outside: Option<[Option<Vec<Card>>; 2]>,
@@ -4553,6 +4556,18 @@ impl Game {
                 }
             }
             Pending::MiracleReveal { player } => {
+                if let Some(order) = self.draw_replacement_view() {
+                    for source in order
+                        .additional_sources
+                        .into_iter()
+                        .chain(order.doubling_sources)
+                    {
+                        if emit(Action::ChooseDrawReplacement { source }) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
                 if self
                     .miracle_choice_view(player)
                     .is_some_and(|v| v.can_reveal)
@@ -5947,6 +5962,7 @@ impl Game {
             }
             Action::ChooseOutsideSelfReplacement { effect } => self.choose_outside_self(effect),
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
+            Action::ChooseDrawReplacement { source } => self.choose_draw_replacement(source),
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
             }
@@ -9636,6 +9652,9 @@ impl Game {
             turn: s.turn,
             step: s.step,
             decision: match s.pending {
+                Pending::MiracleReveal { .. } if self.draw_replacement_view().is_some() => {
+                    "draw_replacement"
+                }
                 Pending::MiracleReveal { .. } => "miracle_reveal",
                 Pending::ResolutionCasts { .. } => "resolution_casts",
                 Pending::ManaLotSpend { .. } => "mana_lot_spend",
@@ -9854,6 +9873,7 @@ impl Game {
                 .as_ref()
                 .and_then(|r| r.cascade.as_deref().cloned()),
             miracle: self.miracle_choice_view(viewer),
+            draw_replacement: self.draw_replacement_view(),
             resolution_free_casts: s
                 .resolution_free_casts
                 .as_deref()

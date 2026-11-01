@@ -96,3 +96,73 @@ fn winternight_harmonize_taps_a_creature_reduces_cost_and_exiles() {
         assert_eq!(g.hand_count(p), 1);
     }
 }
+
+#[test]
+fn quantum_warp_entry_draws_two_then_exiles_with_next_turn_permission() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = put(&mut g, p, "Quantum Riddler", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 1];
+        checked(&mut g, Action::AnnounceWarp { card: source });
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), 2);
+        assert_eq!((g.stats(source).power, g.stats(source).toughness), (4, 6));
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        big_helpers::next_turn(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        assert!(g.can_cast_warped(p, source));
+    }
+}
+
+#[test]
+fn quantum_replaces_the_whole_draw_instruction_once_per_source() {
+    for p in [Player::P0, Player::P1] {
+        for (hand, riddlers, expected) in [(0, 1, 4), (1, 2, 5), (2, 1, 3)] {
+            let mut g = setup(p);
+            for _ in 0..hand {
+                put(&mut g, p, "Island", Zone::Hand);
+            }
+            for _ in 0..riddlers {
+                put(&mut g, p, "Quantum Riddler", Zone::Battlefield);
+            }
+            g.draw_many_interruptible(p, 3);
+            assert_eq!(g.hand_count(p), hand + expected);
+        }
+    }
+}
+
+#[test]
+fn quantum_and_bard_single_draw_order_is_owned_and_multi_draw_order_is_outer_first() {
+    for p in [Player::P0, Player::P1] {
+        for quantum_first in [false, true] {
+            let mut g = setup(p);
+            let quantum = put(&mut g, p, "Quantum Riddler", Zone::Battlefield);
+            let bard = put(&mut g, p, "Bard, King of Dale", Zone::Battlefield);
+            g.draw_many_interruptible(p, 1);
+            assert_eq!(g.observe(p.other()).decision, "draw_replacement");
+            assert_eq!(
+                g.observe(p)
+                    .draw_replacement
+                    .as_ref()
+                    .unwrap()
+                    .additional_sources,
+                vec![g.object_ref(quantum)]
+            );
+            let source = g.object_ref(if quantum_first { quantum } else { bard });
+            checked(&mut g, Action::ChooseDrawReplacement { source });
+            assert_eq!(g.hand_count(p), if quantum_first { 4 } else { 3 });
+        }
+        let mut g = setup(p);
+        put(&mut g, p, "Quantum Riddler", Zone::Battlefield);
+        put(&mut g, p, "Bard, King of Dale", Zone::Battlefield);
+        g.draw_many_interruptible(p, 3);
+        assert_eq!(g.hand_count(p), 8);
+    }
+}

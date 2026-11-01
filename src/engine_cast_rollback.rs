@@ -197,6 +197,7 @@ impl Game {
                         | Action::ChooseEntryReplacement { .. }
                         | Action::ChooseEntryTimestamp { .. }
                         | Action::ChooseReplacement { .. }
+                        | Action::ChooseDrawReplacement { .. }
                         | Action::ChooseSelfCounterReplacement { .. }
                         | Action::ChooseZoneReplacement { .. }
                 )

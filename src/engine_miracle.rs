@@ -14,11 +14,25 @@ struct RevealChoice {
     object: ObjectRef,
     grant: Option<(AttachmentTriggerView, u16)>,
 }
+#[derive(Clone, Debug, Serialize)]
+pub struct DrawReplacementView {
+    pub player: Player,
+    pub additional_sources: Vec<ObjectRef>,
+    pub doubling_sources: Vec<ObjectRef>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct DrawOrder {
+    request: DrawRequest,
+    additional: Vec<ObjectRef>,
+    doublers: Vec<ObjectRef>,
+}
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct DrawRequest {
     player: Player,
     amount: u128,
     replaced: bool,
+    batch_checked: bool,
+    excluded_doublers: Vec<ObjectRef>,
     /// Resolving spell which owns this request, if it remembers actual draws.
     remembering: Option<u64>,
 }
@@ -30,6 +44,7 @@ struct Protection {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct MiracleState {
     choice: Option<RevealChoice>,
+    draw_order: Option<DrawOrder>,
     remaining_choices: VecDeque<RevealChoice>,
     draws: VecDeque<DrawRequest>,
     protection: Vec<Protection>,
@@ -38,7 +53,17 @@ pub(super) fn owned_bytes(data: &Option<Box<MiracleState>>) -> usize {
     data.as_ref().map_or(0, |s| {
         std::mem::size_of::<MiracleState>()
             + s.remaining_choices.len() * std::mem::size_of::<RevealChoice>()
-            + s.draws.len() * std::mem::size_of::<DrawRequest>()
+            + s.draws
+                .iter()
+                .map(|r| {
+                    std::mem::size_of::<DrawRequest>()
+                        + r.excluded_doublers.len() * std::mem::size_of::<ObjectRef>()
+                })
+                .sum::<usize>()
+            + s.draw_order.as_ref().map_or(0, |r| {
+                (r.additional.len() + r.doublers.len() + r.request.excluded_doublers.len())
+                    * std::mem::size_of::<ObjectRef>()
+            })
             + s.protection
                 .iter()
                 .map(|r| {
@@ -64,7 +89,7 @@ impl Game {
         self.state
             .miracle
             .as_ref()
-            .is_some_and(|s| s.choice.is_some())
+            .is_some_and(|s| s.choice.is_some() || s.draw_order.is_some())
     }
     pub(super) fn miracle_choice_view(&self, viewer: Player) -> Option<MiracleChoiceView> {
         let choice = self.state.miracle.as_ref()?.choice.as_ref()?;
@@ -145,31 +170,64 @@ impl Game {
         replaced: bool,
         remembering: Option<u64>,
     ) {
-        let attempts = amount.min(self.library_card_count(player) as u128 + 1);
+        self.perform_draw_request(DrawRequest {
+            player,
+            amount,
+            replaced,
+            remembering,
+            batch_checked: false,
+            excluded_doublers: Vec::new(),
+        });
+    }
+    fn perform_draw_request(&mut self, mut request: DrawRequest) {
         if self.miracle_choice_pending() {
             self.state
                 .miracle
                 .as_mut()
                 .unwrap()
                 .draws
-                .push_back(DrawRequest {
-                    player,
-                    amount: attempts,
-                    replaced,
-                    remembering,
-                });
+                .push_back(request);
             return;
         }
+        let player = request.player;
+        if !request.replaced && !request.batch_checked && request.amount > 0 {
+            let additional = self.quantum_draw_sources(player);
+            let doublers = if request.amount == 1 && !additional.is_empty() {
+                self.doubled_draw_sources(player).collect::<Vec<_>>()
+            } else {
+                Vec::new()
+            };
+            // CR121.2a/616.1g: a multi-draw instruction is modified before its
+            // individual draws. For a single draw, the affected player can
+            // choose which overlapping replacement changes the event first.
+            if request.amount == 1 && !additional.is_empty() && !doublers.is_empty() {
+                self.state.miracle.get_or_insert_default().draw_order = Some(DrawOrder {
+                    request,
+                    additional,
+                    doublers,
+                });
+                self.state.pending = Pending::MiracleReveal { player };
+                return;
+            }
+            request.amount = request
+                .amount
+                .checked_add(additional.len() as u128)
+                .capacity("draw replacement quantity exhausted");
+            request.batch_checked = true;
+        }
+        let attempts = request
+            .amount
+            .min(self.library_card_count(player) as u128 + 1);
         for index in 0..attempts {
-            let count = if replaced {
+            let count = if request.replaced {
                 1
             } else {
-                self.replaced_draw_count(player)
+                self.replaced_draw_count_excluding(player, &request.excluded_doublers)
             };
             let count = count.min(self.library_card_count(player) as u128 + 1);
             for child in 0..count {
                 if self.draw_one_unreplaced(player)
-                    && let Some(id) = remembering
+                    && let Some(id) = request.remembering
                 {
                     let resolving = self
                         .state
@@ -197,10 +255,8 @@ impl Game {
                             .unwrap()
                             .draws
                             .push_front(DrawRequest {
-                                player,
                                 amount: remaining,
-                                replaced,
-                                remembering,
+                                ..request.clone()
                             });
                     }
                     let children = count - child - 1;
@@ -211,16 +267,45 @@ impl Game {
                             .unwrap()
                             .draws
                             .push_front(DrawRequest {
-                                player,
                                 amount: children,
                                 replaced: true,
-                                remembering,
+                                ..request.clone()
                             });
                     }
                     return;
                 }
             }
         }
+    }
+    pub(super) fn draw_replacement_view(&self) -> Option<DrawReplacementView> {
+        let order = self.state.miracle.as_ref()?.draw_order.as_ref()?;
+        Some(DrawReplacementView {
+            player: order.request.player,
+            additional_sources: order.additional.clone(),
+            doubling_sources: order.doublers.clone(),
+        })
+    }
+    pub(super) fn choose_draw_replacement(&mut self, source: ObjectRef) {
+        let order = self
+            .state
+            .miracle
+            .as_mut()
+            .unwrap()
+            .draw_order
+            .take()
+            .unwrap();
+        let mut request = order.request;
+        if order.doublers.contains(&source) {
+            request.amount = 2;
+            request.excluded_doublers.push(source);
+        }
+        request.amount = request
+            .amount
+            .checked_add(order.additional.len() as u128)
+            .capacity("draw replacement quantity exhausted");
+        request.batch_checked = true;
+        self.perform_draw_request(request);
+        self.finish_pending_draws();
     }
     pub(super) fn defer_draw_protection(
         &mut self,
@@ -261,12 +346,18 @@ impl Game {
             state.choice = Some(next);
             return;
         }
+        self.finish_pending_draws();
+    }
+    fn finish_pending_draws(&mut self) {
+        if self.miracle_choice_pending() {
+            return;
+        }
         loop {
             let next = self.state.miracle.as_mut().unwrap().draws.pop_front();
             let Some(next) = next else {
                 break;
             };
-            self.draw_requests(next.player, next.amount, next.replaced, next.remembering);
+            self.perform_draw_request(next);
             if self.miracle_choice_pending() {
                 return;
             }

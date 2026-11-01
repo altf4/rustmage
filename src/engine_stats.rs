@@ -211,6 +211,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                             | crate::cards::StaticAbilityFragment::Storied
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
+                            | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
