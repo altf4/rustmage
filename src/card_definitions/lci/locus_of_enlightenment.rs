@@ -1,4 +1,4 @@
-// Gated until the variable craft transaction and linked materials are complete.
+// Authored from pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
     triggers: &[TriggeredAbility {

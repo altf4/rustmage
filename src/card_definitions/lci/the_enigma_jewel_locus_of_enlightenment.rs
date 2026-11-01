@@ -1,4 +1,4 @@
-// Gated: the variable craft cost and transformed face are not yet implemented.
+// Authored from pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
     entry: EntryTapped::Always,

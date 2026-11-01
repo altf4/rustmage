@@ -76,8 +76,6 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
             || name == "Braided Net"
-            || name == "The Enigma Jewel"
-            || name == "Locus of Enlightenment"
             || name == "@test/manifest-observer",
         "unsupported fixture {name}"
     );
