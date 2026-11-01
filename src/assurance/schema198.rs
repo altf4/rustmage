@@ -220,8 +220,8 @@ pub(super) fn prior_schema198_state_supported(state: &State) -> bool {
     {
         return false;
     }
-    if let Some(mana) = &state.mana_lots {
-        if mana.trace.is_some()
+    if state.mana_lots.as_ref().is_some_and(|mana| {
+        mana.trace.is_some()
             || mana.replay.is_some()
             || mana.choice.is_some()
             || mana.prepared.is_some()
@@ -238,22 +238,20 @@ pub(super) fn prior_schema198_state_supported(state: &State) -> bool {
                 .announcement_quality
                 .as_ref()
                 .is_some_and(|(_, q)| !wire_supported(q))
-        {
-            return false;
-        }
+    }) {
+        return false;
     }
-    if let Some(resolving) = &state.resolving {
-        if resolving
+    if state.resolving.as_ref().is_some_and(|resolving| {
+        resolving
             .search
             .as_ref()
-            .is_some_and(|s| !wire_supported(&s.spec))
+            .is_some_and(|search| !wire_supported(&search.spec))
             || resolving
                 .choice
                 .as_ref()
-                .is_some_and(|c| !wire_supported(&c.kind))
-        {
-            return false;
-        }
+                .is_some_and(|choice| !wire_supported(&choice.kind))
+    }) {
+        return false;
     }
     state
         .stack
