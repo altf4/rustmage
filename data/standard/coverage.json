@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fd5f6f020e7a6d2028a0225baf8a5b2c28a751a390dd55bfc2b964174ac4389c",
+  "catalogue_version": "a52284336d5107e6b48ad9dd53da9bf3f8bfe26fb09b2a741b1fe81fcd163ef9",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2976,
-  "implemented_total": 2982,
+  "implemented_standard_cards": 2977,
+  "implemented_total": 2983,
   "token_definitions": 154,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -37,8 +37,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 81,
-      "gated": 183
+      "complete": 82,
+      "gated": 182
     },
     "ecc": {
       "total": 7,
@@ -12714,8 +12714,8 @@
     {
       "name": "Floodpits Drowner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/floodpits_drowner.rs",
       "set": "dsk"
     },
