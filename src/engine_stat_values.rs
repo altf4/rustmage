@@ -300,6 +300,9 @@ impl Game {
                     life_lost,
                 ) >= i128::from(minimum),
             ),
+            StatValue::PermanentsSacrificedThisTurn => {
+                i128::from(self.state.players[owner.index()].permanents_sacrificed_this_turn)
+            }
             StatValue::SpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].spells_cast_this_turn)
             }

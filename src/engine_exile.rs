@@ -32,6 +32,7 @@ pub enum ExilePlayExpiry {
     Turn(u32),
     EndOfNextTurn,
     StartOfNextTurn(Player),
+    StartOfNextEndStep(Player),
 }
 impl ExilePlayExpiry {
     pub(super) fn active(self, turn: u32) -> bool {
@@ -180,6 +181,22 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    pub(super) fn exile_top_play_until_next_end_step(&mut self, player: Player, amount: u16) {
+        let ids = top_library_cards(self, player, u128::from(amount));
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.grant_exile_play_permission(player, event.after, false);
+                for row in &mut self.state.exile_permissions {
+                    if row.player == player && row.object == event.after {
+                        row.expiry = ExilePlayExpiry::StartOfNextEndStep(player);
+                    }
+                }
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
     pub(super) fn grant_exile_play_permission(
         &mut self,
         player: Player,
@@ -322,6 +339,16 @@ impl Game {
         death_sources: &[ObjectView],
     ) {
         self.refresh_enduring_stories();
+        for event in events {
+            if event.moved
+                && let Some(player) = event.sacrificed_by
+            {
+                let count = &mut self.state.players[player.index()].permanents_sacrificed_this_turn;
+                *count = count
+                    .checked_add(1)
+                    .capacity("permanent sacrifice history exhausted");
+            }
+        }
         if events
             .iter()
             .any(|event| event.moved && event.before.zone == Zone::Battlefield)

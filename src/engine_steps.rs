@@ -46,6 +46,9 @@ impl Game {
             self.precombat_lore_counters();
         }
         if step == Step::End {
+            self.state
+                .exile_permissions
+                .retain(|row| row.expiry != ExilePlayExpiry::StartOfNextEndStep(self.state.active));
             self.queue_copy_end_step_abilities();
             self.queue_delayed_sacrifices();
             if let Some(items) = self.state.delayed_artifact_copies.take() {

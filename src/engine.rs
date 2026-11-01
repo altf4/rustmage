@@ -1012,6 +1012,7 @@ struct PlayerState {
     noncombat_damage_last_turn: bool,
     drew_in_own_draw_step: bool,
     cards_discarded_this_turn: u64,
+    permanents_sacrificed_this_turn: u64,
     cards_library_to_graveyard_this_turn: u64,
     card_left_graveyard_this_turn: bool,
     controlled_creature_died_this_turn: bool,
@@ -2695,6 +2696,8 @@ pub struct PlayerView {
     pub noncombat_damage_this_turn: bool,
     pub noncombat_damage_last_turn: bool,
     pub cards_discarded_this_turn: u64,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub permanents_sacrificed_this_turn: u64,
     /// Number of actual library-to-graveyard moves this turn, without card identities.
     pub cards_library_to_graveyard_this_turn: u64,
     pub card_left_graveyard_this_turn: bool,
@@ -3324,6 +3327,7 @@ impl Game {
             noncombat_damage_last_turn: false,
             drew_in_own_draw_step: false,
             cards_discarded_this_turn: 0,
+            permanents_sacrificed_this_turn: 0,
             cards_library_to_graveyard_this_turn: 0,
             card_left_graveyard_this_turn: false,
             controlled_creature_died_this_turn: false,
@@ -8760,6 +8764,7 @@ impl Game {
             player.noncombat_damage_last_turn = player.noncombat_damage_this_turn;
             player.noncombat_damage_this_turn = false;
             player.cards_discarded_this_turn = 0;
+            player.permanents_sacrificed_this_turn = 0;
             player.cards_library_to_graveyard_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
             player.controlled_creature_died_this_turn = false;
@@ -9788,6 +9793,7 @@ impl Game {
                 noncombat_damage_this_turn: s.players[i].noncombat_damage_this_turn,
                 noncombat_damage_last_turn: s.players[i].noncombat_damage_last_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
+                permanents_sacrificed_this_turn: s.players[i].permanents_sacrificed_this_turn,
                 cards_library_to_graveyard_this_turn: s.players[i]
                     .cards_library_to_graveyard_this_turn,
                 card_left_graveyard_this_turn: s.players[i].card_left_graveyard_this_turn,

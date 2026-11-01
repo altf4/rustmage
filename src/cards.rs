@@ -1617,6 +1617,8 @@ pub(crate) enum Instruction {
         amount: u16,
         next_turn: bool,
     },
+    /// Exile cards with paid play permission until the controller next begins an end step.
+    ExileTopPlayUntilNextEndStep(u16),
     ExileTopPlay {
         amount: u16,
         next_turn: bool,
@@ -2677,6 +2679,7 @@ pub(crate) enum StatValue {
     TappedCount(CountFilter),
     Not(&'static StatValue),
     CardsDrawnThisTurn,
+    PermanentsSacrificedThisTurn,
     ControllerHandSize,
     /// Number of distinct basic land types among lands the controller controls.
     ControllerDomain,

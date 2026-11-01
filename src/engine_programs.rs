@@ -5659,6 +5659,9 @@ impl Game {
                     let events = self.move_objects_raw(&ids, Zone::Exile);
                     self.finish_zone_events(&events, &[]);
                 }
+                Instruction::ExileTopPlayUntilNextEndStep(amount) => {
+                    self.exile_top_play_until_next_end_step(item.controller, amount);
+                }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, u128::from(amount), next_turn);
                 }

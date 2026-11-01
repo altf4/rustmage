@@ -67,7 +67,6 @@ impl Game {
         excluded: &[ObjectRef],
     ) -> u128 {
         self.doubled_draw_sources(player)
-            .into_iter()
             .filter(|source| !excluded.contains(source))
             .fold(1u128, |count, _| {
                 count
