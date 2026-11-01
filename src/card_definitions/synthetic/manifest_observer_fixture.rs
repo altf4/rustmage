@@ -18,6 +18,11 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::NONE,
             program: &[],
         },
+        TriggeredAbility {
+            condition: TriggerCondition::SelfExiledWhileCrafting,
+            targets: TargetPlan::NONE,
+            program: &[],
+        },
     ],
     ..CardRules::EMPTY
 };

@@ -1,6 +1,35 @@
 //! Exact source identity for a craft ability's exile-cost return.
 use super::*;
 
+#[test]
+fn craft_exile_event_is_owned_by_the_departing_permanents_controller() {
+    for player in [Player::P0, Player::P1] {
+        for (origin, destination, actor, expected) in [
+            (Zone::Battlefield, Zone::Exile, player, 1),
+            (Zone::Battlefield, Zone::Exile, player.other(), 0),
+            (Zone::Battlefield, Zone::Graveyard, player, 0),
+            (Zone::Graveyard, Zone::Exile, player, 0),
+        ] {
+            let mut g = scenario(player);
+            let id = put(&mut g, player, "@test/manifest-observer", origin);
+            let checkpoint = g.snapshot();
+            let event = g.move_object(id, destination);
+            g.craft_exile_triggers(&event, actor);
+            assert_eq!(g.state.pending_triggers.len(), expected);
+            if expected == 1 {
+                let movement = g.state.pending_triggers[0].source_move.as_ref().unwrap();
+                assert_eq!(movement.before, event.before.reference);
+                assert_eq!(movement.after, event.after);
+            }
+            let after = g.snapshot();
+            g.restore(&checkpoint).unwrap();
+            let event = g.move_object(id, destination);
+            g.craft_exile_triggers(&event, actor);
+            assert_eq!(g.snapshot(), after);
+        }
+    }
+}
+
 pub(super) fn begin_craft(g: &mut Game, source: CardId, ability: u16) {
     big_helpers::checked(
         g,

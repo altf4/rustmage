@@ -914,7 +914,10 @@ impl Game {
             | EffectChoiceKind::DiscardOrLife(_)
             | EffectChoiceKind::SacrificeAttachedEquipment => unreachable!(),
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
-                self.move_object(object.card, Zone::Exile);
+                let event = self.move_object(object.card, Zone::Exile);
+                if a.ordered_craft() {
+                    self.craft_exile_triggers(&event, a.item.controller);
+                }
             }
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)

@@ -283,6 +283,7 @@ impl Game {
                 a.item.source_tapped = view.tapped;
                 a.item.source_attachment = view.attached_to;
                 let event = self.move_object(source.id, Zone::Exile);
+                self.craft_exile_triggers(&event, a.item.controller);
                 a.item.source_move = Some(Box::new(TriggerSourceMoveView {
                     before: event.before.reference,
                     after: event.after,

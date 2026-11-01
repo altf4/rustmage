@@ -3696,6 +3696,9 @@ pub(crate) enum TriggerCondition {
     PermanentCardsEnterYourGraveyard,
     /// One trigger for a batch exiling controlled creatures or cards from your graveyard.
     ControlledCreaturesOrGraveyardCardsExiled,
+    /// This permanent was exiled from the battlefield while its controller
+    /// was activating a craft ability.
+    SelfExiledWhileCrafting,
     ReturnDeath(ReturnDeathFilter),
     /// Delayed ability carried by a produced mana unit, independent of its source.
     ManaSpentForSpell,

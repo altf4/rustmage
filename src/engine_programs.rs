@@ -893,6 +893,7 @@ impl Game {
                     | TriggerCondition::PermanentCardsEnterYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
                     | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
+                    | TriggerCondition::SelfExiledWhileCrafting
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::SelfTurnedFaceUp
                     | TriggerCondition::PermanentYouControlTurnedFaceUp
@@ -1108,6 +1109,21 @@ impl Game {
         event: &ZoneChange,
     ) -> bool {
         self.queue_zone_trigger_from(source, index, event, None)
+    }
+
+    pub(super) fn craft_exile_triggers(&mut self, event: &ZoneChange, actor: Player) {
+        if !event.moved
+            || event.before.zone != Zone::Battlefield
+            || event.destination != Zone::Exile
+            || event.before.controller != actor
+        {
+            return;
+        }
+        for (index, ability) in event.before.card.triggers().iter().enumerate() {
+            if ability.condition.event() == TriggerCondition::SelfExiledWhileCrafting {
+                self.queue_zone_trigger(&event.before, index, event);
+            }
+        }
     }
 
     pub(super) fn queue_zone_trigger_from(

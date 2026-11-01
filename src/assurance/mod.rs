@@ -70,7 +70,8 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
-            || name == "Braided Net",
+            || name == "Braided Net"
+            || name == "@test/manifest-observer",
         "unsupported fixture {name}"
     );
     let id = g.state.objects.len() as CardId;
