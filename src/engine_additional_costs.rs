@@ -45,6 +45,27 @@ impl Game {
         source: ObjectRef,
         object: ObjectRef,
     ) -> bool {
+        self.additional_candidate_inner(spec, actor, source, object, false)
+    }
+    /// A mana ability may remove a current graveyard-exile prohibition before
+    /// this nonmana cost is actually paid. Funding proves that continuation.
+    fn additional_candidate_for_funding(
+        &self,
+        spec: AdditionalCost,
+        actor: Player,
+        source: ObjectRef,
+        object: ObjectRef,
+    ) -> bool {
+        self.additional_candidate_inner(spec, actor, source, object, true)
+    }
+    fn additional_candidate_inner(
+        &self,
+        spec: AdditionalCost,
+        actor: Player,
+        source: ObjectRef,
+        object: ObjectRef,
+        projected: bool,
+    ) -> bool {
         let Some(o) = self.state.objects.get(object.card as usize) else {
             return false;
         };
@@ -53,7 +74,8 @@ impl Game {
         {
             return false;
         }
-        if spec.kind == EffectChoiceKind::ExileControlledOrGraveyard
+        if !projected
+            && spec.kind == EffectChoiceKind::ExileControlledOrGraveyard
             && ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, object.card)
         {
             return false;
@@ -412,6 +434,9 @@ impl Game {
         let Some(spec) = spec else {
             return self.can_fund(goal);
         };
+        if spec.kind == EffectChoiceKind::ExileControlledOrGraveyard {
+            return self.preview_ordered_craft(goal, spec);
+        }
         let source = goal.source.as_ref().expect("activation source").0;
         if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
             let purpose = self.funding_purpose(&goal);
@@ -449,7 +474,7 @@ impl Game {
         }
         self.state.objects.iter().enumerate().any(|(id, _)| {
             let object = self.object_ref(id as CardId);
-            self.additional_candidate(spec, goal.actor, source, object)
+            self.additional_candidate_for_funding(spec, goal.actor, source, object)
                 && self.can_fund(FundingGoal {
                     reserve: Some((object, spec)),
                     ..goal.clone()
@@ -571,7 +596,7 @@ impl Game {
                 &selected,
             );
         }
-        if !self.additional_candidate(
+        if !self.additional_candidate_for_funding(
             spec,
             a.item.controller,
             a.item

@@ -113,6 +113,40 @@ impl Game {
         }
         placed
     }
+    /// A source move has no target and never publishes a target-movement payload.
+    pub(super) fn put_source_third_from_top(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return };
+        let reference = source.object;
+        if !self.on_battlefield(reference.card) || self.object_ref(reference.card) != reference {
+            return;
+        }
+        let owner = self.state.objects[reference.card as usize].owner;
+        let token = self.state.objects[reference.card as usize].is_token();
+        let previous_top = self.public_library_top(owner);
+        let second = self.state.players[owner.index()]
+            .library
+            .iter()
+            .enumerate()
+            .rev()
+            .filter(|(_, id)| self.state.objects[**id as usize].is_card())
+            .nth(1)
+            .map(|(index, _)| index);
+        let event = self.move_object(reference.card, Zone::Library);
+        if !event.moved || event.destination != Zone::Library || token {
+            return;
+        }
+        let library = &mut self.state.players[owner.index()].library;
+        assert_eq!(library.pop(), Some(reference.card));
+        library.insert(second.unwrap_or(0), reference.card);
+        if let Some(prior) = previous_top
+            && self.top_library_card(owner) == Some(prior.card)
+            && self.object_ref(prior.card) == prior
+        {
+            self.remember_library_top(owner, prior);
+        } else if self.top_library_card(owner) == Some(reference.card) {
+            self.remember_library_top(owner, event.after);
+        }
+    }
     pub(super) fn start_target_library(&mut self, item: &SpellView, second_from_top: bool) -> bool {
         self.start_target_library_inner(item, second_from_top, None)
     }

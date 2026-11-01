@@ -2308,7 +2308,8 @@ impl Game {
         // External discard precedes source sacrifice so it captures battlefield
         // observers. External sacrifice follows source tap/mana costs: the chosen
         // object may itself be this ability's source. No priority is granted.
-        if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
+        if !announcement.ordered_craft()
+            && matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
             && !announcement.additional_paid
         {
             if announcement.additional_cost().is_some_and(|spec| {
@@ -2345,7 +2346,13 @@ impl Game {
             announcement.additional_paid = true;
         }
         if let Some(payment) = announcement.payment {
-            if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
+            if announcement.ordered_craft() {
+                self.spend_mana_for(
+                    announcement.item.controller,
+                    payment,
+                    self.purpose_for_item(&announcement.item),
+                );
+            } else if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
                 if let Some(phase) = self.pay_activation_route(
                     &mut announcement.item,
                     payment,

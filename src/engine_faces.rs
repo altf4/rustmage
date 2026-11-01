@@ -157,7 +157,7 @@ impl Game {
         {
             return;
         }
-        let Some(back) = source.card.back_face() else {
+        let Some(back) = self.state.objects[object.card as usize].card.back_face() else {
             return;
         };
         let mut entry = self.entry_move(object.card, Zone::Battlefield, false);

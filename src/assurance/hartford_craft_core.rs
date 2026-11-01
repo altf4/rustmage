@@ -1,6 +1,45 @@
 //! Exact source identity for a craft ability's exile-cost return.
 use super::*;
 
+pub(super) fn begin_craft(g: &mut Game, source: CardId, ability: u16) {
+    big_helpers::checked(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    big_helpers::checked(g, Action::BeginOrderedCosts);
+}
+pub(super) fn craft_clause(g: &mut Game, clause: CastCostClause) {
+    let index = g
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| row.clause == clause && !row.paid)
+        .unwrap() as u16;
+    big_helpers::checked(g, Action::ChooseCastCost { clause: index });
+}
+pub(super) fn craft_material(g: &mut Game, material: CardId) {
+    craft_clause(g, CastCostClause::Additional);
+    let object = g.object_ref(material);
+    big_helpers::checked(g, Action::ChooseAdditionalCost { object });
+}
+pub(super) fn craft_mana(g: &mut Game) {
+    craft_clause(g, CastCostClause::Mana);
+    pay(g);
+}
+pub(super) fn craft_source(g: &mut Game) {
+    craft_clause(g, CastCostClause::CraftSource);
+}
+
 fn exile_packet(g: &mut Game, source: CardId, controller: Player) -> SpellView {
     let mut packet = g.activation_item(controller, source, 0);
     let event = g.move_object(source, Zone::Exile);
@@ -130,5 +169,68 @@ fn craft_graveyard_material_cannot_be_exiled_through_a_prohibition() {
         assert!(!g.additional_candidate(cost, player, g.object_ref(source), grave_ref));
         assert!(!g.can_fund(goal));
         TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn craft_funding_can_remove_the_prohibitor_with_a_mana_ability() {
+    use crate::engine::ability_world::TEST_EXILE_PROHIBITOR;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
+        }
+    }
+    let _reset = Reset;
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let grave = put(&mut g, player, "Short Bow", Zone::Graveyard);
+        g.create_tokens(player, Card::test_index(5302), 1, false);
+        big_helpers::settle(&mut g);
+        let provider = g
+            .state
+            .objects
+            .iter()
+            .position(|o| o.card == Card::test_index(5302) && o.zone == Zone::Battlefield)
+            .unwrap() as CardId;
+        TEST_EXILE_PROHIBITOR.with(|p| p.set(Some(g.object_ref(provider))));
+        g.state.players[player.index()].mana = [0; 6];
+        let cost = AdditionalCost {
+            kind: EffectChoiceKind::ExileControlledOrGraveyard,
+            filter: SacrificeFilter {
+                keywords: Keywords::NONE,
+                source_only: false,
+                kinds: 16,
+                nonland: false,
+                other: true,
+                tokens: None,
+                artifact_enchantment_or_token: false,
+                subtype: None,
+            },
+        };
+        let goal = FundingGoal {
+            actor: player,
+            required: [1, 0, 0, 0, 0, 0],
+            generic: 0,
+            reserve: Some((g.object_ref(grave), cost)),
+            source: None,
+        };
+        assert!(g.can_fund(goal));
+        TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
+    }
+}
+
+#[test]
+fn craft_return_does_not_transform_a_nondoublefaced_source_copy() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let physical = put(&mut g, player, "Short Bow", Zone::Battlefield);
+        let mut packet = exile_packet(&mut g, physical, player);
+        // A copied or borrowed ability retains its immutable donor definition.
+        packet.source.as_mut().unwrap().card = Card::from_name("Oko, Lorwyn Liege").unwrap();
+        let before = g.snapshot();
+        g.return_crafted_source_transformed(&packet);
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.object_view(physical).zone, Zone::Exile);
     }
 }

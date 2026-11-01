@@ -1,16 +1,56 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Pinned Oracle/XMage candidate; gated pending craft rules proof.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Permanent,
     keywords: Keywords::FLASH,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 1,
+            relation: 1,
+            other: false,
+            nonland: false,
+            tapped: true,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        }),
+        program: &[Instruction::Damage(5)],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            colored: [1, 0, 0, 0, 0, 0],
+            generic: 3,
+            alternatives: &[],
+            additional: Some(AdditionalCost {
+                kind: EffectChoiceKind::ExileControlledOrGraveyard,
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 16,
+                    nonland: false,
+                    other: true,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            }),
+            mana_component: true,
+            tap: false,
+            sacrifice: false,
+            exile_self: true,
+            discard: false,
+            life: 0,
+            remove: None,
+            loyalty: None,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ReturnCraftedSourceTransformed],
+        sorcery: true,
+        once_per_turn: false,
+    }],
     ..CardRules::EMPTY
 };

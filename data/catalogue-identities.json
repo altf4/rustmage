@@ -5485,7 +5485,9 @@
     0,
     5,
     4,
-    1
+    1,
+    1,
+    2
   ],
   "aliases": [
     [
@@ -8361,6 +8363,10 @@
       437
     ],
     [
+      "Bladewheel Chariot",
+      5480
+    ],
+    [
       "Blanchwood Armor",
       438
     ],
@@ -8717,8 +8723,16 @@
       520
     ],
     [
+      "Braided Net",
+      521
+    ],
+    [
       "Braided Net // Braided Quipu",
       521
+    ],
+    [
+      "Braided Quipu",
+      5481
     ],
     [
       "Brainstorm",
@@ -23583,6 +23597,10 @@
     [
       "Spring Splasher",
       4071
+    ],
+    [
+      "Spring-Loaded Sawblades",
+      4072
     ],
     [
       "Spring-Loaded Sawblades // Bladewheel Chariot",
@@ -44561,7 +44579,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Braided Net",
+        "mana_cost": "{2}{U}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": []
+      },
+      "back_face": 5481
     },
     {
       "index": 522,
@@ -145925,7 +145959,25 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Spring-Loaded Sawblades",
+        "mana_cost": "{1}{W}",
+        "type_line": "Artifact",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Flash"
+        ]
+      },
+      "back_face": 5480
     },
     {
       "index": 4073,
@@ -185819,6 +185871,64 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5480,
+      "module": "card_5480",
+      "path": "lci/bladewheel_chariot.rs",
+      "set": "lci",
+      "category": "back_face",
+      "name": "Bladewheel Chariot",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact — Vehicle",
+      "oracle_keywords": [
+        "Crew"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 4072
+    },
+    {
+      "index": 5481,
+      "module": "card_5481",
+      "path": "lci/braided_quipu.rs",
+      "set": "lci",
+      "category": "back_face",
+      "name": "Braided Quipu",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 521
     }
   ]
 }

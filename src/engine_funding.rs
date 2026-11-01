@@ -984,16 +984,12 @@ impl<'g> FundingState<'g> {
                     })
             })
             && goal.reserve.is_none_or(|(r, spec)| {
-                (spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
-                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
-                        self, r.card,
-                    ))
-                    && (!matches!(
-                        spec.kind,
-                        EffectChoiceKind::Sacrifice
-                            | EffectChoiceKind::SacrificeDifferentNames(_)
-                            | EffectChoiceKind::SacrificeAttachedEquipment
-                    ) || !self.sacrifice_prohibited(r.card))
+                (!matches!(
+                    spec.kind,
+                    EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificeDifferentNames(_)
+                        | EffectChoiceKind::SacrificeAttachedEquipment
+                ) || !self.sacrifice_prohibited(r.card))
                     && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
                         || self.game.ninjutsu_attacker(goal.actor, r)
                             && ability_world::CharacteristicWorld::attacking(self, r.card))
@@ -2705,6 +2701,13 @@ impl<'g> FundingState<'g> {
             )
         }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
             && mana_loyalty_placement_payable(self, goal)
+            && goal.reserve.is_none_or(|(reference, spec)| {
+                spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
+                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                        self,
+                        reference.card,
+                    )
+            })
             && self.complete_funding_continuation(goal)
         {
             return true;
@@ -3026,6 +3029,13 @@ impl Game {
             adjusted.required,
             adjusted.generic,
         ) && mana_loyalty_placement_payable(self, &goal)
+            && goal.reserve.is_none_or(|(reference, spec)| {
+                spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
+                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                        self,
+                        reference.card,
+                    )
+            })
         {
             return true;
         }
@@ -3714,21 +3724,22 @@ impl Game {
                             0
                         })
                         .capacity("activation cost exhausted"),
-                    source: Some((
-                        announcement
-                            .item
-                            .source
-                            .expect("cost announcement has object source")
-                            .object,
-                        ability,
-                        announcement.counter_payment.clone(),
-                        announcement
-                            .item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card,
-                        announcement.item.borrowed_slot,
-                    )),
+                    source: (!announcement.ordered_craft() || !announcement.craft_source_paid())
+                        .then_some((
+                            announcement
+                                .item
+                                .source
+                                .expect("cost announcement has object source")
+                                .object,
+                            ability,
+                            announcement.counter_payment.clone(),
+                            announcement
+                                .item
+                                .source
+                                .expect("cost announcement has object source")
+                                .card,
+                            announcement.item.borrowed_slot,
+                        )),
                 }
             }
             StackKind::TriggeredAbility { .. }
@@ -3941,6 +3952,7 @@ impl Game {
             .item
             .cast
             .is_some_and(|c| c.method == CastMethod::Harmonize || c.blight == Some(true))
+            || announcement.ordered_craft()
             || announcement
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_))))

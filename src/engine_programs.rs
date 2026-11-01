@@ -3491,6 +3491,7 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::PutSourceThirdFromTop => self.put_source_third_from_top(&item),
                 Instruction::ChooseManaValueParityDestroyOthers => {
                     self.state.pending = Pending::ManaValueParity {
                         player: item.controller,
@@ -3937,6 +3938,9 @@ impl Game {
                     self.resolve_delayed_return(&item)
                 }
                 Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
+                Instruction::PreventTargetActivationsWhileTapped => {
+                    self.prevent_target_activations_until_untapped(&item);
+                }
                 Instruction::ReturnSourceFromFirstPublicZoneToHand => {
                     self.return_source_from_first_public_zone_to_hand(&item);
                 }

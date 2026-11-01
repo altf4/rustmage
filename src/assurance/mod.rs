@@ -8,9 +8,11 @@ mod fra_complete_games;
 mod fra_coverage_gaps;
 mod fra_way_loyalty_foundation;
 mod hartford_blight;
+mod hartford_braided_net;
 mod hartford_craft_core;
 mod hartford_restless_reef;
 mod hartford_sacrifice;
+mod hartford_sawblades;
 mod interactions;
 mod issue_93_aetherspark;
 mod issue_93_ajani;
@@ -64,7 +66,11 @@ fn scenario(p: Player) -> Game {
 fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
     assert!(
-        card.is_supported() || name == "Ghost Vacuum" || name == "Pyrrhic Strike",
+        card.is_supported()
+            || name == "Ghost Vacuum"
+            || name == "Pyrrhic Strike"
+            || name == "Spring-Loaded Sawblades"
+            || name == "Braided Net",
         "unsupported fixture {name}"
     );
     let id = g.state.objects.len() as CardId;

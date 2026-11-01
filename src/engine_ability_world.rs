@@ -436,16 +436,24 @@ pub(super) trait CharacteristicWorld {
     }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
-        target.zone == Zone::Battlefield
-            && self.kinds(id) & (1 | 16 | 32) != 0
-            && self.static_sources().iter().any(|&source| {
-                let provider = self.object(source);
-                provider.zone == Zone::Battlefield
-                    && provider.controller == self.game().state.active
-                    && provider.controller != actor
-                    && provider.card.static_cast_restriction() & 2 != 0
-                    && self.printed_abilities_available(source)
-            })
+        (target.zone == Zone::Battlefield
+            && self.roles().is_some_and(|roles| {
+                roles.source_linked_effects.iter().any(|row| {
+                    row.kind == SourceLinkedEffectKind::PreventActivationsUntilUntapped
+                        && row.recipient == self.reference(id)
+                        && source_linked_effects::active(self, row)
+                })
+            }))
+            || target.zone == Zone::Battlefield
+                && self.kinds(id) & (1 | 16 | 32) != 0
+                && self.static_sources().iter().any(|&source| {
+                    let provider = self.object(source);
+                    provider.zone == Zone::Battlefield
+                        && provider.controller == self.game().state.active
+                        && provider.controller != actor
+                        && provider.card.static_cast_restriction() & 2 != 0
+                        && self.printed_abilities_available(source)
+                })
     }
     fn harnessed(&self, id: CardId) -> bool {
         self.object(id).zone == Zone::Battlefield

@@ -12,6 +12,8 @@ pub enum SourceLinkedEffectKind {
     GrantTwoColorlessUntilSourceCast,
     PreventDamageBy,
     PreventUntap,
+    /// Source-independent prohibition ending at the recipient’s first untap.
+    PreventActivationsUntilUntapped,
     Control,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -30,6 +32,7 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
         row.kind,
         SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
             | SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+            | SourceLinkedEffectKind::PreventActivationsUntilUntapped
     ) || (world.object(row.source.card).zone == Zone::Battlefield
         && world.reference(row.source.card) == row.source))
         && (row.kind == SourceLinkedEffectKind::PreventDamageBy
@@ -37,6 +40,8 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
                 && world.reference(row.recipient.card) == row.recipient))
         && (row.kind != SourceLinkedEffectKind::PreventUntap
             || world.object(row.source.card).controller == row.controller)
+        && (row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
+            || world.object(row.recipient.card).tapped)
 }
 impl Game {
     pub(super) fn resolve_source_linked_effect(
@@ -302,6 +307,42 @@ impl Game {
             self.refresh_copy_grant_availability();
         }
     }
+    pub(super) fn prevent_target_activations_until_untapped(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return };
+        let recipients: Vec<_> = self
+            .keyword_subjects(item, Subject::Targets)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id) && self.state.objects[id as usize].tapped)
+            .map(|id| self.object_ref(id))
+            .collect();
+        if recipients.is_empty() {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        for recipient in recipients {
+            self.state
+                .roles
+                .as_mut()
+                .unwrap()
+                .source_linked_effects
+                .push(SourceLinkedEffectView {
+                    source: source.object,
+                    recipient,
+                    controller: item.controller,
+                    kind: SourceLinkedEffectKind::PreventActivationsUntilUntapped,
+                    timestamp,
+                });
+        }
+    }
+
+    pub(super) fn forget_untapped_activation_locks(&mut self, untapped: &[ObjectRef]) {
+        if let Some(state) = &mut self.state.roles {
+            state.source_linked_effects.retain(|row| {
+                row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
+                    || !untapped.contains(&row.recipient)
+            });
+        }
+    }
     pub(super) fn forget_source_linked_effects(&mut self, reference: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
             state.source_linked_effects.retain(|row| {
@@ -310,6 +351,7 @@ impl Game {
                         row.kind,
                         SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
                             | SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+                            | SourceLinkedEffectKind::PreventActivationsUntilUntapped
                     ))
                     && (row.recipient != reference
                         || row.kind == SourceLinkedEffectKind::PreventDamageBy)

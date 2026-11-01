@@ -1728,6 +1728,8 @@ pub(crate) enum Instruction {
     },
     ReturnSourceToHand(TargetZone),
     ReturnSourceFromFirstPublicZoneToHand,
+    /// Stop a targeted permanent’s activated abilities until its next actual untap.
+    PreventTargetActivationsWhileTapped,
     /// Return the exact resulting graveyard card captured from this death event.
     ReturnEventCardToHand,
     /// Return the exact death-event card tapped under its owner’s control.
@@ -2221,6 +2223,8 @@ pub(crate) enum Instruction {
     /// Its owner chooses top or bottom; successful top movement deals damage.
     OwnerLibraryTopOrBottomDamage(u16),
     OwnerLibrarySecondFromTop,
+    /// Put the exact live source in its owner’s library below its top two cards.
+    PutSourceThirdFromTop,
     ChooseManaValueParityDestroyOthers,
     /// Shuffle even when the exact source permanent has left (CR701.24c).
     ShuffleSourceIntoOwnerLibrary,
