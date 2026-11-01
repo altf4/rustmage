@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "93829e41cc0376418564aa1a4eda5eb9712ab11d477dc6313e01f0d7fcd807a5",
+  "catalogue_version": "69665a1ba6aead3d22d3dc797eae76c342d6594dead1905b83b08000e36ebd38",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2966,
-  "implemented_total": 2972,
+  "implemented_standard_cards": 2968,
+  "implemented_total": 2974,
   "token_definitions": 154,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -109,8 +109,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 190,
-      "complete": 74
+      "gated": 189,
+      "complete": 75
     },
     "mom": {
       "total": 1,
@@ -153,8 +153,8 @@
     },
     "spm": {
       "total": 134,
-      "complete": 43,
-      "gated": 91
+      "complete": 44,
+      "gated": 90
     },
     "tdc": {
       "total": 15,
@@ -17754,8 +17754,8 @@
     {
       "name": "Interdimensional Web Watch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/interdimensional_web_watch.rs",
       "set": "spm"
     },
@@ -24714,8 +24714,8 @@
     {
       "name": "Outrageous Robbery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/outrageous_robbery.rs",
       "set": "mkm"
     },

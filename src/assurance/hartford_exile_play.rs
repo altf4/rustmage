@@ -8,6 +8,13 @@ fn robbery_exiles_opponent_cards_privately_and_grants_persistent_play() {
         let land = put(&mut g, p.other(), "Island", Zone::Library);
         let creature = put(&mut g, p.other(), "Bear Cub", Zone::Library);
         let robbery = put(&mut g, p, "Outrageous Robbery", Zone::Hand);
+        let mut no_black = g.clone();
+        no_black.state.players[p.index()].mana = [8, 8, 0, 8, 8, 8];
+        assert!(
+            !no_black
+                .legal_actions()
+                .contains(&Action::AnnounceCast { card: robbery })
+        );
         checked(&mut g, Action::AnnounceCast { card: robbery });
         checked(&mut g, Action::ChooseX { value: 2 });
         checked(
