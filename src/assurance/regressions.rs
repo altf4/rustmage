@@ -2328,11 +2328,18 @@ fn prior_schema197_rejects_copied_ascension_trigger_after_source_departs() {
         let mut branch = game.clone();
         assert!(!prior_schema197_state_supported(&branch.state));
         super::big_helpers::settle(&mut game);
-        assert!(prior_schema197_state_supported(&game.state));
+        // The blink's exile history remains public for the rest of the turn.
+        assert_eq!(
+            game.state.players[player.index()].controlled_creatures_exiled_this_turn,
+            1
+        );
+        assert!(!prior_schema197_state_supported(&game.state));
         branch.restore(&snapshot).unwrap();
         assert!(!prior_schema197_state_supported(&branch.state));
         super::big_helpers::settle(&mut branch);
         assert_eq!(branch.snapshot(), game.snapshot());
+        super::big_helpers::next_turn(&mut game);
+        assert!(prior_schema197_state_supported(&game.state));
     }
 }
 
