@@ -5489,7 +5489,8 @@
     1,
     2,
     0,
-    4
+    4,
+    2
   ],
   "aliases": [
     [
@@ -17205,6 +17206,10 @@
       2534
     ],
     [
+      "Locus of Enlightenment",
+      5484
+    ],
+    [
       "Locust Spray",
       2535
     ],
@@ -25163,6 +25168,10 @@
     [
       "The Endstone",
       4442
+    ],
+    [
+      "The Enigma Jewel",
+      4443
     ],
     [
       "The Enigma Jewel // Locus of Enlightenment",
@@ -156587,7 +156596,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "The Enigma Jewel",
+        "mana_cost": "{U}",
+        "type_line": "Legendary Artifact",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": []
+      },
+      "back_face": 5484
     },
     {
       "index": 4444,
@@ -186028,6 +186053,34 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5484,
+      "module": "card_5484",
+      "path": "lci/locus_of_enlightenment.rs",
+      "set": "lci",
+      "category": "back_face",
+      "name": "Locus of Enlightenment",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Artifact",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 4443
     }
   ]
 }

@@ -1,6 +1,9 @@
 //! Activated abilities inherited from exact linked exile incarnations.
 use super::ability_world::CharacteristicWorld;
 use super::*;
+fn is_false(value: &bool) -> bool {
+    !*value
+}
 /// Acquisition identifiers are separate from public ability slots. Both are
 /// allocated monotonically within an exact source incarnation.
 pub(super) const DONOR_SLOT_WIDTH: u64 = 1;
@@ -34,6 +37,10 @@ pub struct BorrowedAbilityView {
     pub ability: u16,
     pub slot: u64,
     pub used: bool,
+    /// The acquisition limits this ability to once per turn independently of
+    /// any restriction printed on the donor.
+    #[serde(skip_serializing_if = "is_false")]
+    pub acquired_once_per_turn: bool,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Use {
@@ -401,6 +408,7 @@ impl Game {
                 ability: a.ability,
                 slot: a.slot,
                 used: a.used,
+                acquired_once_per_turn: a.once_per_turn,
             })
             .collect()
     }

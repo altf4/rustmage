@@ -161,6 +161,7 @@ impl Game {
             return;
         };
         let mut entry = self.entry_move(object.card, Zone::Battlefield, false);
+        entry.craft_materials = item.craft_materials.clone();
         entry.controller = self.state.objects[object.card as usize].owner;
         entry.source_before = Some(Box::new(entry.before.clone()));
         entry.before.card = back;

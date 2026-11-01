@@ -530,6 +530,7 @@ define_actions! {
     KeepPermanentType { object: ObjectRef },
     ChooseZoneReplacement { effect: ZoneReplacementKind },
     FinishStackTargets,
+    FinishCraftMaterials,
     AllocateTargetAmount { amount: u32 },
     RestoreStackTarget { index: u32 },
     SetStackTarget { index: u32, target: Target },
@@ -1203,6 +1204,10 @@ pub struct SpellView {
         reason = "Rare owned cost results use one pointer in ordinary packets"
     )]
     pub exiled_symbol_cards: Option<Box<Vec<ObjectRef>>>,
+    /// Exact exile incarnations paid as materials of this craft activation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub craft_materials: Option<Box<Vec<ObjectRef>>>,
     /// Exact public card incarnations captured by an exile-batch trigger.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
@@ -1432,6 +1437,8 @@ impl SpellView {
         self.exiled_trigger_cards.as_ref().map_or(0, |r| {
             std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
         }) + self.exiled_symbol_cards.as_ref().map_or(0, |r| {
+            std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+        }) + self.craft_materials.as_ref().map_or(0, |r| {
             std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
         }) + self
             .self_granted_activation
@@ -4411,6 +4418,9 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                if self.craft_material_selection_complete() && emit(Action::FinishCraftMaterials) {
+                    return true;
+                }
                 if self.additional_life_available() && emit(Action::ChooseAdditionalLife) {
                     return true;
                 }
@@ -5968,6 +5978,7 @@ impl Game {
                 ability,
             } => self.announce_planeswalker_grant(source, grantor, ability),
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::FinishCraftMaterials => self.finish_graveyard_symbol_cost(),
             Action::ChooseAdditionalLife => self.choose_additional_life(),
             Action::FinishGraveyardSymbolCost => self.finish_graveyard_symbol_cost(),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),

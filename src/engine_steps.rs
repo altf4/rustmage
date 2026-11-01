@@ -155,6 +155,7 @@ impl Game {
             life_event: None,
             source_counter_payment: None,
             exiled_symbol_cards: None,
+            craft_materials: None,
             exiled_trigger_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,

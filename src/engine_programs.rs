@@ -885,6 +885,7 @@ impl Game {
                     | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
                     | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CreatureAbilityActivated
+                    | TriggerCondition::NonmanaAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                     | TriggerCondition::OpponentLoyaltyAbilityActivated
@@ -1347,6 +1348,7 @@ impl Game {
             source_counter_payment: None,
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
+            craft_materials: None,
             exiled_trigger_cards: None,
             source_counter_lki: {
                 let mut facts = card_quantities::counter_quantity_facts(
@@ -2325,6 +2327,7 @@ impl Game {
 
     pub(super) fn resolve_top(&mut self) {
         let mut item = self.state.stack.pop().unwrap();
+        self.retain_departing_activation_for_triggers(&item);
         // Radiation has an intervening-if condition at trigger and resolution.
         if let StackKind::InherentRule {
             rule: SourceLessRule::Radiation,
@@ -5118,6 +5121,11 @@ impl Game {
                 }
                 Instruction::CopyTargetAbility { group } => {
                     if self.copy_target_ability(&item, group) {
+                        return;
+                    }
+                }
+                Instruction::CopyCapturedActivatedAbility => {
+                    if self.copy_captured_activated_ability(&item) {
                         return;
                     }
                 }

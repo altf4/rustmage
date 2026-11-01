@@ -518,6 +518,8 @@ pub(crate) enum ManaRestriction {
     ChosenCreatureSpellOrActivation,
     EquipmentSpellOrEquip,
     CreatureActivation,
+    /// Only costs of activating abilities, including mana abilities.
+    AbilityActivation,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaSpellBonus {
@@ -802,6 +804,8 @@ pub enum EffectChoiceKind {
     ExileGraveyard,
     /// Craft material: an artifact you control or an artifact card in your graveyard.
     ExileControlledOrGraveyard,
+    /// Craft with at least this many nonlands that have activated abilities.
+    ExileCraftNonlands(u16),
     /// Internal projected route for a controlled battlefield material.
     ExileControlled,
     /// During resolution, choose a card from either graveyard without targeting.
@@ -900,7 +904,10 @@ impl AdditionalCost {
     /// The hand route has its own printed restriction; the permanent filter
     /// applies only to the sacrifice route.
     pub(crate) fn in_zone(mut self, zone: Zone) -> Self {
-        if self.kind == EffectChoiceKind::ExileControlledOrGraveyard {
+        if matches!(
+            self.kind,
+            EffectChoiceKind::ExileControlledOrGraveyard | EffectChoiceKind::ExileCraftNonlands(_)
+        ) {
             match zone {
                 Zone::Battlefield => self.kind = EffectChoiceKind::ExileControlled,
                 Zone::Graveyard => self.kind = EffectChoiceKind::ExileGraveyard,
@@ -1519,6 +1526,9 @@ pub(crate) enum Instruction {
     CopyTargetAbility {
         group: u16,
     },
+    /// Copy the nonmana activated ability captured by this trigger, if it
+    /// remains on the stack, with optional new targets.
+    CopyCapturedActivatedAbility,
     FlipCoinsSkipTurns {
         coins: u16,
     },
@@ -3701,6 +3711,8 @@ pub(crate) enum TriggerCondition {
     SelfCast,
     /// The controller actually activates an ability of a creature permanent.
     CreatureAbilityActivated,
+    /// The controller activated a nonmana ability.
+    NonmanaAbilityActivated,
     /// The controller committed an activation of a loyalty ability.
     LoyaltyAbilityActivated,
     /// Committed loyalty activation paid at least this many loyalty counters.

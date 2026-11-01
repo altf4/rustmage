@@ -24,6 +24,7 @@ pub enum ManaRestrictionView {
     CreatureSpellOrActivation(CreatureType),
     EquipmentSpellOrEquip,
     CreatureActivation,
+    AbilityActivation,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaSpellBonusView {
@@ -131,6 +132,7 @@ impl Quality {
                     ManaRestrictionView::EquipmentSpellOrEquip
                 }
                 ManaRestriction::CreatureActivation => ManaRestrictionView::CreatureActivation,
+                ManaRestriction::AbilityActivation => ManaRestrictionView::AbilityActivation,
                 ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
                 ManaRestriction::ExceptNonArtifactSpells => {
                     ManaRestrictionView::ExceptNonArtifactSpells
@@ -199,6 +201,7 @@ impl Quality {
             ManaRestrictionView::CreatureActivation => {
                 matches!(purpose, Purpose::Activation(facts) if facts.kinds & CREATURE_KIND != 0)
             }
+            ManaRestrictionView::AbilityActivation => matches!(purpose, Purpose::Activation(_)),
             ManaRestrictionView::ArtifactSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
             }

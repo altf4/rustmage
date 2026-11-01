@@ -81,6 +81,39 @@ fn delayed_copy_all_spells(item: &SpellView) -> bool {
     )
 }
 impl Game {
+    /// Retain the final characteristics of an activated ability for triggers
+    /// that refer to it after it leaves the stack. These packets are owned, so
+    /// rollback and copied triggers keep the same last-known targets.
+    pub(super) fn retain_departing_activation_for_triggers(&mut self, departed: &SpellView) {
+        if !matches!(departed.kind, StackKind::ActivatedAbility { .. }) {
+            return;
+        }
+        let retain = |packet: &mut SpellView| {
+            if let Some(event) = packet.copy_event.as_mut()
+                && event.spell.id == departed.id
+            {
+                event.spell = departed.clone();
+            }
+        };
+        for packet in self
+            .state
+            .stack
+            .iter_mut()
+            .chain(&mut self.state.pending_triggers)
+            .chain(&mut self.state.ordering_triggers)
+        {
+            retain(packet);
+        }
+        if let Some(copies) = self.state.stack_copy_data.as_mut() {
+            for packet in &mut copies.delayed {
+                retain(packet);
+            }
+            if let Some(retarget) = &mut copies.retarget {
+                retain(&mut retarget.item);
+                retain(&mut retarget.template);
+            }
+        }
+    }
     pub(super) fn stack_target_rule_matches(
         &self,
         rule: TargetRule,
@@ -597,6 +630,35 @@ impl Game {
         else {
             return false;
         };
+        let mut copy = template.clone();
+        copy.id = self.next_stack_id();
+        copy.controller = item.controller;
+        copy.is_copy = true;
+        self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
+            item: copy,
+            template,
+            remaining: 0,
+            victim: None,
+        });
+        self.advance_copy_targets()
+    }
+    pub(super) fn copy_captured_activated_ability(&mut self, item: &SpellView) -> bool {
+        let Some(event) = item.copy_event.as_ref() else {
+            return false;
+        };
+        let template = self
+            .state
+            .stack
+            .iter()
+            .find(|candidate| {
+                candidate.id == event.spell.id
+                    && matches!(candidate.kind, StackKind::ActivatedAbility { .. })
+            })
+            .cloned()
+            .unwrap_or_else(|| event.spell.clone());
+        if !matches!(template.kind, StackKind::ActivatedAbility { .. }) {
+            return false;
+        }
         let mut copy = template.clone();
         copy.id = self.next_stack_id();
         copy.controller = item.controller;

@@ -253,7 +253,15 @@ impl FundingState<'_> {
         {
             return false;
         }
-        let craft = spec.kind == EffectChoiceKind::ExileControlledOrGraveyard;
+        let craft = matches!(
+            spec.kind,
+            EffectChoiceKind::ExileControlledOrGraveyard | EffectChoiceKind::ExileCraftNonlands(_)
+        );
+        if matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_))
+            && !additional_costs::has_craft_activated_ability(self, r.card)
+        {
+            return false;
+        }
         let spec = spec.in_zone(o.zone);
         (!craft || !CharacteristicWorld::graveyard_exile_prohibited(self, r.card))
             && (!matches!(
@@ -1040,6 +1048,10 @@ impl FundingState<'_> {
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileControlled
             | EffectChoiceKind::ExileControlledOrGraveyard => destination = Zone::Exile,
+            EffectChoiceKind::ExileCraftNonlands(n) => {
+                destination = Zone::Exile;
+                amount = usize::from(n);
+            }
             EffectChoiceKind::ExileGraveyardCards(n) => {
                 destination = Zone::Exile;
                 amount = usize::from(n);
@@ -1121,13 +1133,20 @@ impl FundingState<'_> {
         at: usize,
         selected: &mut Vec<ObjectRef>,
     ) -> bool {
-        let enough = evidence_min.map_or(selected.len() == amount, |(minimum, color)| {
-            selected
-                .iter()
-                .map(|r| cost_weight(self.object(r.card).card, color))
-                .sum::<u128>()
-                >= minimum
-        });
+        let enough = evidence_min.map_or(
+            if matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_)) {
+                selected.len() >= amount
+            } else {
+                selected.len() == amount
+            },
+            |(minimum, color)| {
+                selected
+                    .iter()
+                    .map(|r| cost_weight(self.object(r.card).card, color))
+                    .sum::<u128>()
+                    >= minimum
+            },
+        );
         if enough {
             if remaining.is_empty() {
                 return true;
@@ -1150,7 +1169,11 @@ impl FundingState<'_> {
                 return true;
             }
         }
-        if c.exact || evidence_min.is_none() && selected.len() >= amount {
+        if c.exact
+            || evidence_min.is_none()
+                && selected.len() >= amount
+                && !matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_))
+        {
             return false;
         }
         for i in at..candidates.len() {

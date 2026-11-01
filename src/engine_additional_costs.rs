@@ -1,6 +1,49 @@
 //! Owned mandatory spell and activation costs, chosen after targets and paid before cast completion.
 use super::*;
 
+/// A craft material is tested in its current zone, including abilities gained
+/// or removed on the battlefield. Activation permission is not relevant.
+pub(super) fn has_craft_activated_ability<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> bool {
+    let object = world.object(id);
+    let printed = object.zone != Zone::Battlefield || world.printed_abilities_available(id);
+    let card = world.definition(id);
+    let layered_grant = object.zone == Zone::Battlefield
+        && ability_evaluation::evaluate_if_needed(world).is_some_and(|evaluation| {
+            let current = &evaluation.result.objects[id as usize];
+            current.grants.iter().any(|grant| match grant.kind {
+                ability_order::GrantedAbilityKind::Template(index) => {
+                    grant.granting_card.grants_activation(index)
+                }
+                _ => false,
+            }) || world
+                .game()
+                .state
+                .self_granted_abilities
+                .as_ref()
+                .is_some_and(|rows| {
+                    rows.iter().any(|row| {
+                        row.recipient == world.reference(id)
+                            && matches!(row.kind, SelfGrantedAbilityKind::Activated { .. })
+                            && current.self_grants.contains(&row.timestamp)
+                    })
+                })
+        });
+    (printed
+        && (card.mana_color().is_some()
+            || card.activations().iter().enumerate().any(|(index, _)| {
+                !card.self_granted_activation_template(index as u16)
+                    && !card.grants_activation(index as u16)
+                    && !card.legacy_subtype_mana_activation(index as u16)
+            })))
+        || (object.zone == Zone::Battlefield
+            && (layered_grant
+                || !world.granted_mana(id).is_empty()
+                || !borrowed_activations::abilities(world, id).is_empty()))
+}
+
 /// Evaluate the complete cost in the actual or projected characteristic world.
 pub(super) fn legendary_name_match<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
@@ -38,6 +81,20 @@ fn tap_cost_reserves_source(goal: &FundingGoal, object: ObjectRef) -> bool {
 }
 
 impl Game {
+    pub(super) fn craft_material_selection_complete(&self) -> bool {
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
+        let Some(AdditionalCost {
+            kind: EffectChoiceKind::ExileCraftNonlands(minimum),
+            ..
+        }) = a.additional_cost()
+        else {
+            return false;
+        };
+        let selected = a.additional_group.as_deref().map_or(&[][..], Vec::as_slice);
+        selected.len() >= usize::from(minimum) && self.cast_cost_group_fundable(selected, true)
+    }
     pub(super) fn additional_candidate(
         &self,
         spec: AdditionalCost,
@@ -75,8 +132,17 @@ impl Game {
             return false;
         }
         if !projected
-            && spec.kind == EffectChoiceKind::ExileControlledOrGraveyard
+            && matches!(
+                spec.kind,
+                EffectChoiceKind::ExileControlledOrGraveyard
+                    | EffectChoiceKind::ExileCraftNonlands(_)
+            )
             && ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, object.card)
+        {
+            return false;
+        }
+        if matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_))
+            && !has_craft_activated_ability(self, object.card)
         {
             return false;
         }
@@ -434,7 +500,10 @@ impl Game {
         let Some(spec) = spec else {
             return self.can_fund(goal);
         };
-        if spec.kind == EffectChoiceKind::ExileControlledOrGraveyard {
+        if matches!(
+            spec.kind,
+            EffectChoiceKind::ExileControlledOrGraveyard | EffectChoiceKind::ExileCraftNonlands(_)
+        ) {
             return self.preview_ordered_craft(goal, spec);
         }
         let source = goal.source.as_ref().expect("activation source").0;
@@ -506,6 +575,7 @@ impl Game {
                 EffectChoiceKind::TapPermanents(_)
                     | EffectChoiceKind::ExileGraveyardCards(_)
                     | EffectChoiceKind::ExileGraveyardSymbols { .. }
+                    | EffectChoiceKind::ExileCraftNonlands(_)
                     | EffectChoiceKind::SacrificeDifferentNames(_)
             ) {
                 let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
@@ -640,6 +710,7 @@ impl Game {
         if matches!(
             a.additional_cost().unwrap().kind,
             EffectChoiceKind::ExileGraveyardSymbols { .. }
+                | EffectChoiceKind::ExileCraftNonlands(_)
         ) {
             a.additional_group.get_or_insert_default().push(object);
             return;
@@ -722,6 +793,37 @@ impl Game {
                         .card,
                 ),
             );
+        }
+        if let EffectChoiceKind::ExileCraftNonlands(minimum) = spec.kind {
+            let group = a
+                .additional_group
+                .as_deref()
+                .expect("selected craft materials");
+            assert!(group.len() >= usize::from(minimum));
+            let source = a.item.source.expect("craft source").object;
+            assert!(group.iter().all(|&object| self.additional_candidate(
+                spec,
+                a.item.controller,
+                source,
+                object
+            )));
+            let events = self.move_objects_raw(
+                &group.iter().map(|r| r.card).collect::<Vec<_>>(),
+                Zone::Exile,
+            );
+            a.item.craft_materials = Some(Box::new(
+                events
+                    .iter()
+                    .filter(|event| event.moved && event.destination == Zone::Exile)
+                    .map(|event| event.after)
+                    .collect(),
+            ));
+            self.finish_zone_events(&events, &[]);
+            for event in &events {
+                self.craft_exile_triggers(event, a.item.controller);
+            }
+            a.additional_paid = true;
+            return;
         }
         if let EffectChoiceKind::ExileGraveyardSymbols { color, minimum } = spec.kind {
             let group = a.additional_group.as_deref().unwrap();
@@ -911,6 +1013,7 @@ impl Game {
             | EffectChoiceKind::ForageOrBlack
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::ExileControlledOrGraveyard
+            | EffectChoiceKind::ExileCraftNonlands(_)
             | EffectChoiceKind::DiscardOrLife(_)
             | EffectChoiceKind::SacrificeAttachedEquipment => unreachable!(),
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {

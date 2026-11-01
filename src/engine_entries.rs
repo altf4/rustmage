@@ -12,6 +12,8 @@ pub(super) struct EntryMove {
     pub zone_plan: Option<zone_replacements::Plan>,
     /// Original source-zone view when this entry is projected using another face.
     pub source_before: Option<Box<ObjectView>>,
+    /// Exact material exile incarnations attached to this craft return.
+    pub craft_materials: Option<Box<Vec<ObjectRef>>>,
     /// Physical card hidden behind face-down entry characteristics.
     pub manifest_original: Option<Card>,
     pub manifest_known: bool,
@@ -142,6 +144,7 @@ impl EntryMove {
             battle_protector: None,
             before,
             source_before: None,
+            craft_materials: None,
             zone_plan: None,
             destination,
             tapped,
@@ -202,6 +205,10 @@ impl EntryBatch {
                         + m.source_before
                             .as_ref()
                             .map_or(0, |v| std::mem::size_of::<ObjectView>() + v.owned_bytes())
+                        + m.craft_materials.as_ref().map_or(0, |v| {
+                            std::mem::size_of::<Vec<ObjectRef>>()
+                                + v.len() * std::mem::size_of::<ObjectRef>()
+                        })
                 })
                 .sum::<usize>()
             + self
@@ -786,6 +793,27 @@ impl Game {
                 },
             );
             if event.moved && event.destination == Zone::Battlefield {
+                if let Some(materials) = movement.craft_materials.as_deref() {
+                    for &exiled in materials {
+                        if self.object_ref(exiled.card) != exiled
+                            || self.state.objects[exiled.card as usize].zone != Zone::Exile
+                            || !self.state.objects[exiled.card as usize].is_card()
+                        {
+                            continue;
+                        }
+                        let first_slot = graveyard_borrowing::next_slot(self, event.after);
+                        self.state.borrowed_links.get_or_insert_default().push(
+                            borrowed_activations::Link {
+                                source: event.after,
+                                origin: None,
+                                exiled,
+                                first_slot,
+                                width: borrowed_activations::DONOR_SLOT_WIDTH,
+                                once_per_turn: true,
+                            },
+                        );
+                    }
+                }
                 if let Some(item) = &movement.delayed_return_exile {
                     self.register_delayed_return_exile(item, event.after);
                 }
