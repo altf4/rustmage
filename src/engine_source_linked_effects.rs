@@ -5,6 +5,8 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum SourceLinkedEffectKind {
     RemoveAbilities,
+    /// Type replacement and blue mana grant, ending at the captured controller's next turn.
+    LandUntilControllerNextTurn,
     /// Source-independent removal lasting until cleanup.
     RemoveAbilitiesUntilEndOfTurn,
     GrantHexproof,
@@ -454,5 +456,33 @@ impl Game {
         let sources = self.death_trigger_sources();
         let events = self.move_objects_raw(&ids, Zone::Graveyard);
         self.finish_zone_events(&events, &sources);
+    }
+    pub(super) fn source_land_until_next_turn(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let mut effect = item.clone();
+        effect.targets = vec![BoundTarget {
+            group: 0,
+            target: Target::Card(source.id),
+            object: Some(source.object),
+        }];
+        self.resolve_source_linked_effect(
+            &effect,
+            SourceLinkedEffectKind::LandUntilControllerNextTurn,
+        );
+    }
+    pub(super) fn expire_source_land_forms(&mut self, player: Player) {
+        let changed = self.state.roles.as_mut().is_some_and(|roles| {
+            let before = roles.source_linked_effects.len();
+            roles.source_linked_effects.retain(|row| {
+                row.kind != SourceLinkedEffectKind::LandUntilControllerNextTurn
+                    || row.controller != player
+            });
+            before != roles.source_linked_effects.len()
+        });
+        if changed {
+            self.refresh_copy_grant_availability();
+        }
     }
 }

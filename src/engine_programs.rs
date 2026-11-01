@@ -4994,6 +4994,9 @@ impl Game {
                 Instruction::CopyOtherControlledNonlands => {
                     self.copy_other_controlled_nonlands(&item);
                 }
+                Instruction::BecomeSourceLandUntilNextTurn => {
+                    self.source_land_until_next_turn(&item)
+                }
                 Instruction::CreateCopyWithDelayedSacrifice => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
                         self.stage_temporary_copy_creation(&item, recipe);

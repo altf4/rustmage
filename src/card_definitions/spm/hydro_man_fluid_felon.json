@@ -3,10 +3,35 @@
   "catalogue_id": 2113,
   "oracle_id": "a93a8edf-2879-4cae-b3b9-b46298270823",
   "facts_sha256": "289bf17a505967da65d3f293d831911363eaad18ddd4513aeeda2872446d4f4e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a5b95d222928f9069e2826fda2cefaa62bff0f2747bcc28bf45b92ed9953b7c6"
   },
-  "physical_metadata_sha256": "5d5a1939fd8138ac10e544f6406cd7d4e0ccdc33c18559e79b76c3de5794a57e"
+  "physical_metadata_sha256": "5d5a1939fd8138ac10e544f6406cd7d4e0ccdc33c18559e79b76c3de5794a57e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HydroManFluidFelon.java",
+  "java_sha256": "b3f1853a231a34af54ab765b28914196db61aed94c470f992de4e95a8dfd452a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BlueManaAbility.java",
+      "sha256": "8b0ffaec3d6002607e0a62e142031604a31556313e44830d9ad44026872cdf1f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+      "sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceMatchesFilterCondition.java",
+      "sha256": "30cc4e1338f78c1c24ceb55906ae9deeb24423c0bd057e236fa20def3c14d9ee"
+    }
+  ]
 }

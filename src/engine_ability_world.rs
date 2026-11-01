@@ -805,8 +805,11 @@ pub(super) trait CharacteristicWorld {
         if self.has_ability_removal()
             || self.roles().is_some_and(|roles| {
                 roles.source_linked_effects.iter().any(|row| {
-                    row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
-                        && source_linked_effects::active(self, row)
+                    matches!(
+                        row.kind,
+                        SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+                            | SourceLinkedEffectKind::LandUntilControllerNextTurn
+                    ) && source_linked_effects::active(self, row)
                 })
             })
         {

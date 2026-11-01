@@ -377,6 +377,11 @@ impl Game {
                 return self.put_counter_on_source_this_turn(source, player);
             }
             StepGuard::YourTurn => return self.state.active == player,
+            StepGuard::SourceCreature => {
+                return self.on_battlefield(source.card)
+                    && self.object_ref(source.card) == source
+                    && self.is_creature(source.card);
+            }
             StepGuard::SourcePowerAtLeast(minimum) => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source

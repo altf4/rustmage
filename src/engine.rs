@@ -8680,6 +8680,7 @@ impl Game {
         if let Some(roles) = &mut self.state.roles {
             roles.prohibit_opponent_nonhand_casts[self.state.active.index()] = false;
         }
+        self.expire_source_land_forms(self.state.active);
         self.expire_next_turn_stats(self.state.active);
         self.expire_next_turn_keywords(self.state.active);
         let active = self.state.active.index();

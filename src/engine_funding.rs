@@ -2084,6 +2084,16 @@ impl<'g> FundingState<'g> {
                     })
                     .count();
                 total = total.saturating_add((grants as u128).saturating_mul(2));
+                let blue = self
+                    .roles()
+                    .into_iter()
+                    .flat_map(|roles| &roles.source_linked_effects)
+                    .filter(|row| {
+                        row.kind == SourceLinkedEffectKind::LandUntilControllerNextTurn
+                            && row.recipient == self.reference(resource.id)
+                    })
+                    .count();
+                total = total.saturating_add(blue as u128);
             }
             if !object.tapped {
                 // Overcount all possible tap sources; subtype may change during funding.
@@ -2195,6 +2205,16 @@ impl<'g> FundingState<'g> {
                     })
                     .count();
                 upper[5] = upper[5].saturating_add((grants as u128).saturating_mul(2));
+                let blue = self
+                    .roles()
+                    .into_iter()
+                    .flat_map(|roles| &roles.source_linked_effects)
+                    .filter(|row| {
+                        row.kind == SourceLinkedEffectKind::LandUntilControllerNextTurn
+                            && row.recipient == self.reference(resource.id)
+                    })
+                    .count();
+                upper[1] = upper[1].saturating_add(blue as u128);
             }
             if !object.tapped {
                 upper[3] = upper[3].saturating_add(u128::from(

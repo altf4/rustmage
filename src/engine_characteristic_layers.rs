@@ -88,6 +88,22 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .filter(move |row| Some(row.object) == recipient)
 }
 
+fn land_forms<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> impl Iterator<Item = &SourceLinkedEffectView> {
+    let recipient = world.reference(id);
+    world
+        .roles()
+        .into_iter()
+        .flat_map(|roles| &roles.source_linked_effects)
+        .filter(move |row| {
+            row.kind == SourceLinkedEffectKind::LandUntilControllerNextTurn
+                && row.recipient == recipient
+                && source_linked_effects::active(world, row)
+        })
+}
+
 fn source_counter_turn_creature<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
@@ -145,6 +161,7 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
             None
         }
     }));
+    events.extend(land_forms(world, id).map(|row| (row.timestamp, true)));
     events.sort_by_key(|event| event.0);
     events
 }
@@ -172,6 +189,7 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
         && source_counter_turn_creature(world, id).is_none()
+        && land_forms(world, id).next().is_none()
     {
         if world
             .game()
@@ -205,6 +223,7 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
     if let Some((timestamp, _)) = source_counter_turn_creature(world, id) {
         changes.push((timestamp, 1, true));
     }
+    changes.extend(land_forms(world, id).map(|row| (row.timestamp, 2, false)));
     for row in animations(world, id) {
         if row.food_only {
             changes.push((row.timestamp, 16, false));
@@ -353,6 +372,7 @@ pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
         && source_counter_turn_creature(world, id).is_none()
+        && land_forms(world, id).next().is_none()
     {
         return Vec::new();
     }
@@ -380,6 +400,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
     {
         changes.push((timestamp, SubtypeChange::Named(types, false)));
     }
+    changes.extend(land_forms(world, id).map(|row| (row.timestamp, SubtypeChange::LandOnly)));
     changes.extend(animations(world, id).filter_map(|row| {
         if row.food_only {
             return Some((row.timestamp, SubtypeChange::FoodOnly));

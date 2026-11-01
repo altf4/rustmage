@@ -362,6 +362,11 @@ impl FundingState<'_> {
                 source,
                 player,
             ),
+            StepGuard::SourceCreature => {
+                self.reference(source.card) == source
+                    && self.object(source.card).zone == Zone::Battlefield
+                    && CharacteristicWorld::kinds(self, source.card) & 1 != 0
+            }
             StepGuard::SourcePowerAtLeast(n) => {
                 self.reference(source.card) == source
                     && self.object(source.card).zone == Zone::Battlefield

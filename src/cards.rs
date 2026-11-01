@@ -1328,6 +1328,7 @@ pub(crate) enum Instruction {
     CreateTemporaryArtifactCopy,
     /// A normal token copy with source-independent next-end-step sacrifice.
     CreateCopyWithDelayedSacrifice,
+    BecomeSourceLandUntilNextTurn,
     BecomeCopy(InPlaceCopySpec),
     /// Copy a chosen card from the trigger's exact exile batch onto its token target.
     CopyChosenExiledTriggerCreature,
@@ -3673,6 +3674,7 @@ pub(crate) enum StepGuard {
     SourceReceivedCounterThisTurn,
     YourTurn,
     SourcePowerAtLeast(u16),
+    SourceCreature,
     SourceToughnessAtMost(u16),
     Outlaw,
     Always,

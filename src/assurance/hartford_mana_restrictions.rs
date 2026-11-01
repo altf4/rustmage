@@ -114,3 +114,89 @@ fn fire_crystal_reduces_red_spells_and_copies_with_independent_delayed_sacrifice
         assert!(g.observe(p).delayed_sacrifices.is_empty());
     }
 }
+
+#[test]
+fn hydro_blue_growth_and_land_mana_form_expire_at_its_controllers_next_turn() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let hydro = put(&mut g, p, "Hydro-Man, Fluid Felon", Zone::Battlefield);
+        let opt = put(&mut g, p, "Opt", Zone::Hand);
+        paid_cast(&mut g, opt, None, &[]);
+        settle(&mut g);
+        assert_eq!(stats(&g, hydro), (3, 3));
+        g.state.objects[hydro as usize].tapped = true;
+        next_turn(&mut g);
+        assert_eq!(g.state.active, p.other());
+        assert_eq!(g.current_kinds(hydro), 2);
+        assert!(!g.has_subtype(hydro, "Elemental"));
+        assert!(!g.has_subtype(hydro, "Villain"));
+        assert!(!g.object_view(hydro).tapped);
+        if g.actor() != Some(p) {
+            checked(&mut g, Action::Pass);
+        }
+        g.state.players[p.index()].mana = [0; 6];
+        let second = put(&mut g, p, "Opt", Zone::Hand);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: second })
+        );
+        let grantor = g.object_ref(hydro);
+        checked(
+            &mut g,
+            Action::TapGrantedMana {
+                card: hydro,
+                grantor,
+                production: [0, 1, 0, 0, 0, 0],
+            },
+        );
+        paid_cast(&mut g, second, None, &[]);
+        assert!(
+            !g.state
+                .pending_triggers
+                .iter()
+                .any(|item| item.source.is_some_and(|source| source.id == hydro))
+        );
+        settle(&mut g);
+        assert_eq!(
+            g.state.objects[hydro as usize].growth,
+            Stats {
+                power: 0,
+                toughness: 0
+            }
+        );
+        next_turn(&mut g);
+        assert_eq!(g.state.active, p);
+        assert_eq!(g.current_kinds(hydro), 1);
+        assert!(g.has_subtype(hydro, "Elemental"));
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::TapGrantedMana { card, .. } if *card == hydro))
+        );
+        // The intervening-if also rechecks the creature condition on resolution.
+        let mut changed = scenario(p);
+        let other = put(&mut changed, p, "Hydro-Man, Fluid Felon", Zone::Battlefield);
+        let spell = put(&mut changed, p, "Opt", Zone::Hand);
+        paid_cast(&mut changed, spell, None, &[]);
+        let trigger = changed
+            .state
+            .pending_triggers
+            .iter()
+            .chain(changed.state.stack.iter())
+            .find(|item| {
+                item.source.is_some_and(|source| source.id == other)
+                    && matches!(item.kind, StackKind::TriggeredAbility { .. })
+            })
+            .unwrap()
+            .clone();
+        changed.source_land_until_next_turn(&trigger);
+        settle(&mut changed);
+        assert_eq!(
+            changed.state.objects[other as usize].growth,
+            Stats {
+                power: 0,
+                toughness: 0
+            }
+        );
+    }
+}
