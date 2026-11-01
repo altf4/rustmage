@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5b2c85d1b09f45d06c941d1952808bca4d41273a33972565c7114d9662c3c0cf",
+  "catalogue_version": "fd5f6f020e7a6d2028a0225baf8a5b2c28a751a390dd55bfc2b964174ac4389c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2974,
-  "implemented_total": 2980,
+  "implemented_standard_cards": 2976,
+  "implemented_total": 2982,
   "token_definitions": 154,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -57,8 +57,8 @@
     },
     "eoe": {
       "total": 259,
-      "gated": 149,
-      "complete": 110
+      "gated": 148,
+      "complete": 111
     },
     "fdn": {
       "total": 427,
@@ -163,8 +163,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 124,
-      "gated": 140
+      "complete": 125,
+      "gated": 139
     },
     "tla": {
       "total": 278,
@@ -6890,8 +6890,8 @@
     {
       "name": "Consult the Star Charts",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/consult_the_star_charts.rs",
       "set": "eoe"
     },
@@ -38482,8 +38482,8 @@
     {
       "name": "United Battlefront",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/united_battlefront.rs",
       "set": "tdm"
     },

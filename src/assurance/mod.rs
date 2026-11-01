@@ -12,6 +12,7 @@ mod hartford_braided_net;
 mod hartford_craft_core;
 mod hartford_exile_play;
 mod hartford_grave_exile;
+mod hartford_library_selection;
 mod hartford_replacements;
 mod hartford_restless_reef;
 mod hartford_returns;

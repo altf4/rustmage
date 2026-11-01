@@ -3,10 +3,40 @@
   "catalogue_id": 4785,
   "oracle_id": "892a83a0-a3cb-4cfb-9106-4008e4e75c0f",
   "facts_sha256": "92870afcf9e98926d636deb77df3c7041ce3fec876a06be3ccc16bac7393ff12",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d375aa7fd8676a9d204f619a8c629ca1b8b3d238e8fb8cb2762a1b3d3f16107b"
   },
-  "physical_metadata_sha256": "adefdc29bc6a10d2987fdf71368c78e5d4112781493d1eda21b0ad02230a226f"
+  "physical_metadata_sha256": "adefdc29bc6a10d2987fdf71368c78e5d4112781493d1eda21b0ad02230a226f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnitedBattlefront.java",
+  "java_sha256": "ac6b4fd1933c9c5e00880275cb3dfed03481bb3adb0ee5373c89c361c903b090",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+      "sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/PutCards.java",
+      "sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+    }
+  ]
 }
