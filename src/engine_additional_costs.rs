@@ -1030,6 +1030,7 @@ impl Game {
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
+            | EffectChoiceKind::GraveyardCreatures { .. }
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)
