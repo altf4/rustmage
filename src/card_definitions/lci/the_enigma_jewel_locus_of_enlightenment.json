@@ -48,5 +48,6 @@
       "path": "Mage/src/main/java/mage/abilities/mana/builder/common/ActivatedAbilityManaBuilder.java",
       "sha256": "5e3d352765c77caf9ff18b8b1738d63e867238acad62818d22d515ef364e7cb5"
     }
-  ]
+  ],
+  "rules_tests": "src/assurance/hartford_transforming_faces.rs"
 }

@@ -52,5 +52,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         sorcery: true,
         once_per_turn: false,
     }],
+    extras: &CardExtras {
+        transforming_double_face: true,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
