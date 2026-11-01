@@ -8,5 +8,50 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "19565ad2937baa15618d118f1cea93a6b8cdb91a863a370a4db0ec595cd1f8e1"
   },
-  "physical_metadata_sha256": "3438adb4ad320375be7c15492f5a7009f011e08a29235e863fb6d54371d35d30"
+  "physical_metadata_sha256": "3438adb4ad320375be7c15492f5a7009f011e08a29235e863fb6d54371d35d30",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FloodpitsDrowner.java",
+  "java_sha256": "776532a8cc06ce961fdb18806dc1caa2e7dee1329a9b0c7e4d1d62dcbebfb876",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ]
 }

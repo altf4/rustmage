@@ -2259,6 +2259,8 @@ pub(crate) enum Instruction {
     /// Shuffle even when the exact source permanent has left (CR701.24c).
     ShuffleSourceIntoOwnerLibrary,
     ShuffleTargetIntoLibrary,
+    /// Shuffle the live source and valid target into their owners' libraries together.
+    ShuffleSourceAndTargetIntoLibraries,
     ShuffleGraveyardIntoLibrary,
     DoubleTargetPower,
     DrawAndProtectCounterCreatures,

@@ -32,6 +32,7 @@ mod requested_aang;
 mod requested_airbend_core;
 mod requested_bovine_intervention;
 mod requested_earthbend;
+mod requested_floodpits_drowner;
 mod requested_freebooter;
 mod requested_full_bore;
 mod requested_get_out;
@@ -77,6 +78,7 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     assert!(
         card.is_supported()
             || name == "Ghost Vacuum"
+            || name == "Floodpits Drowner"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
             || name == "Braided Net"

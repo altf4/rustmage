@@ -97,6 +97,35 @@ impl Game {
         self.forget_library_top(owner);
         self.shuffle_library_cards(owner);
     }
+    pub(super) fn shuffle_source_and_target_into_libraries(&mut self, item: &SpellView) {
+        let mut ids = Vec::new();
+        if let Some(source) = item.source
+            && self.object_ref(source.id) == source.object
+            && self.on_battlefield(source.id)
+        {
+            ids.push(source.id);
+        }
+        for bound in &item.targets {
+            if self.valid_library_target(item, *bound)
+                && let Target::Card(id) = bound.target
+                && !ids.contains(&id)
+            {
+                ids.push(id);
+            }
+        }
+        let mut owners = [false; 2];
+        for id in &ids {
+            owners[self.state.objects[*id as usize].owner.index()] = true;
+        }
+        let events = self.move_objects_raw(&ids, Zone::Library);
+        self.finish_zone_events(&events, &[]);
+        for player in [Player::P0, Player::P1] {
+            if owners[player.index()] {
+                self.forget_library_top(player);
+                self.shuffle_library_cards(player);
+            }
+        }
+    }
     pub(super) fn shuffle_target_into_library(&mut self, item: &SpellView) {
         let Some(source) = item.source else {
             return;

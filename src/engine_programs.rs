@@ -3492,6 +3492,9 @@ impl Game {
                     }
                 }
                 Instruction::ShuffleTargetIntoLibrary => self.shuffle_target_into_library(&item),
+                Instruction::ShuffleSourceAndTargetIntoLibraries => {
+                    self.shuffle_source_and_target_into_libraries(&item)
+                }
                 Instruction::MultiplyTargetStats { factor } => {
                     self.multiply_target_stats(&item, factor)
                 }
