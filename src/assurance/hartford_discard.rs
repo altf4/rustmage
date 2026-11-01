@@ -27,11 +27,12 @@ fn token_count(g: &Game, p: Player, name: &str) -> usize {
     g.state
         .objects
         .iter()
-        .filter(|o| {
+        .enumerate()
+        .filter(|(id, o)| {
             o.zone == Zone::Battlefield
                 && o.controller == p
                 && o.is_token()
-                && o.card.name() == name
+                && g.has_subtype(*id as CardId, name)
         })
         .count()
 }
@@ -172,11 +173,11 @@ fn obsessive_counts_prior_sacrifices_and_clue_costs_then_scales_the_attack_rewar
             .objects
             .iter()
             .enumerate()
-            .find(|(_, o)| {
+            .find(|(id, o)| {
                 o.zone == Zone::Battlefield
                     && o.controller == p
                     && o.is_token()
-                    && o.card.name() == "Clue"
+                    && g.has_subtype(*id as CardId, "Clue")
             })
             .unwrap()
             .0 as CardId;

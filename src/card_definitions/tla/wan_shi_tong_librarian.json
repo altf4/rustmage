@@ -8,7 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "36fcb98fca0f49cb009076f17f7959dbe11f26b97bed8b85e8a6a44822c49323"
   },
-  "physical_metadata_sha256": "4943cd6c7e78e77cfeb4e6b50462ce8d5a27ccc6ffc14c9fb6b58c5ee38fcfee",
+  "physical_metadata_sha256": "c36f6b2742a5bcd62d69388228fc866f9773ad07266cd8581cc63b4fa614dac4",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/w/WanShiTongLibrarian.java",
   "java_sha256": "a7634e9c51b26bdf6bf6fe11bdb44f823f513cbb265fd3b4e225092b6b234517",
