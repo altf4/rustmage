@@ -41,5 +41,12 @@
     "normal_engine_features": [],
     "private_game_state_rejected": "E0616",
     "additional_rust_shared_libraries": false
-  }
+  },
+  "full_checkout_confirmation": {
+    "inputs": 12709,
+    "includes_tsv": true,
+    "all_artifacts_fresh": true,
+    "compile_check_seconds": 0.2150203859928297
+  },
+  "infrastructure_contracts": 22
 }

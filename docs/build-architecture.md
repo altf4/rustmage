@@ -118,8 +118,8 @@ The retained 3,014-case harness compiled after a card edit in **24.57s** and aft
 an individual test edit in **21.37s** (three-sample medians, cached dependencies).
 Cargo confirmed that card edits reused the engine and every other set, and test
 edits reused all production crates. A final-source confirmation measured 24.52s
-and 21.51s respectively. A simulated checkout timestamp change followed by
-content-verified restoration left the whole harness fresh (0.16s Cargo check).
+and 21.51s respectively. A complete simulated checkout of all 12,709 inputs, including embedded TSV data,
+followed by content-verified restoration left all artifacts fresh (0.22s Cargo check).
 These are compilation measurements; samples execute one existing focused case.
 Full-suite execution is recorded separately by acceptance. No clean builds ran.
 See [build-split-results.json](build-split-results.json) for controls and evidence.

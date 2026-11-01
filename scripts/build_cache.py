@@ -39,9 +39,10 @@ def inputs(root):
             continue
         name = os.fsdecode(raw)
         path = root/name
+        # include_str!/include_bytes! accept any extension. Tracking every regular
+        # repository input avoids silently missing TSV or future binary assets.
         if (path.is_file() and not path.is_symlink()
-                and path.resolve().is_relative_to(root.resolve())
-                and (path.suffix in {'.rs', '.json', '.toml', '.lock', '.txt'})):
+                and path.resolve().is_relative_to(root.resolve())):
             yield name, path
 
 

@@ -100,6 +100,8 @@ if __name__ == '__main__':
     suite = unittest.TestSuite([
         unittest.defaultTestLoader.loadTestsFromTestCase(AssuranceRunnerTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(ValidatorTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(CacheInputTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(WorkspaceCatalogueTests),
     ])
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(0 if result.wasSuccessful() and result.testsRun > 0 and not result.skipped else 1)

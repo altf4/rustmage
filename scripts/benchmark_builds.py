@@ -127,11 +127,11 @@ def main():
             compile('test-'+str(repeat), 'test')
         case.write_bytes(backups[case])
         compile('restore-test', 'test')
-        # Simulate a fresh checkout of an unchanged engine file. Content checks,
+        # Simulate a fresh checkout of every input, including embedded assets. Content checks,
         # not timestamp guesses, authorize restoring its previous input time.
         result['cache_save'] = build_cache.save(ROOT, target)
-        engine = ROOT/'crates/engine/src/engine.rs'
-        os.utime(engine, None)
+        for _, path in build_cache.inputs(ROOT):
+            os.utime(path, None)
         result['cache_restore'] = build_cache.restore(ROOT, target)
         compile('checkout-cache', 'fresh')
         result['medians'] = {kind: statistics.median(
