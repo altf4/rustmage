@@ -5487,7 +5487,8 @@
     4,
     1,
     1,
-    2
+    2,
+    0
   ],
   "aliases": [
     [
@@ -6591,12 +6592,20 @@
       19
     ],
     [
+      "Aang and La, Ocean's Fury",
+      5482
+    ],
+    [
       "Aang's Iceberg",
       20
     ],
     [
       "Aang's Journey",
       21
+    ],
+    [
+      "Aang, Swift Savior",
+      22
     ],
     [
       "Aang, Swift Savior // Aang and La, Ocean's Fury",
@@ -30371,7 +30380,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Aang, Swift Savior",
+        "mana_cost": "{1}{W}{U}",
+        "type_line": "Legendary Creature — Human Avatar Ally",
+        "colored": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Flash",
+          "Flying",
+          "Airbend",
+          "Waterbend"
+        ]
+      },
+      "back_face": 5482
     },
     {
       "index": 23,
@@ -185929,6 +185959,37 @@
       ],
       "generic": 0,
       "face_parent": 521
+    },
+    {
+      "index": 5482,
+      "module": "card_5482",
+      "path": "tla/aang_and_la_ocean_s_fury.rs",
+      "set": "tla",
+      "category": "back_face",
+      "name": "Aang and La, Ocean's Fury",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar Spirit Ally",
+      "oracle_keywords": [
+        "Reach",
+        "Trample"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 22
     }
   ]
 }

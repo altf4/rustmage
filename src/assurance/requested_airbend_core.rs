@@ -11,6 +11,100 @@ fn airbend_action(card: CardId) -> Action {
 }
 
 #[test]
+fn mass_airbend_excludes_only_the_exact_creature_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut game = scenario(p);
+        let kept = put(&mut game, p, "Bear Cub", Zone::Battlefield);
+        let yours = put(&mut game, p, "Llanowar Elves", Zone::Battlefield);
+        let theirs = put(&mut game, p.other(), "Bear Cub", Zone::Battlefield);
+        let land = put(&mut game, p, "Forest", Zone::Battlefield);
+        let except = game.object_ref(kept);
+        let before = game.snapshot();
+        let mut branch = game.clone();
+        game.airbend_other_creatures(Some(except));
+        branch.airbend_other_creatures(Some(except));
+        assert_eq!(game.snapshot(), branch.snapshot());
+        assert_eq!(game.object_view(kept).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+        assert!(game.has_airbend_permission(p, yours));
+        assert!(game.has_airbend_permission(p.other(), theirs));
+        game.restore(&before).unwrap();
+        game.move_object(kept, Zone::Hand);
+        game.move_object(kept, Zone::Battlefield);
+        game.airbend_other_creatures(Some(except));
+        assert!(game.has_airbend_permission(p, kept));
+    }
+}
+
+#[test]
+fn avatars_wrath_keeps_target_airbends_others_and_restricts_opponent_until_next_turn() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = super::big_helpers::setup(player);
+        let wrath = put(&mut game, player, "Avatar's Wrath", Zone::Hand);
+        let kept = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let yours = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+        let theirs = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let hand = put(&mut game, opponent, "Llanowar Elves", Zone::Hand);
+        let land = put(&mut game, opponent, "Forest", Zone::Hand);
+        super::big_helpers::cast(&mut game, wrath, None, &[Target::Card(kept)]);
+        super::big_helpers::settle(&mut game);
+        assert_eq!(game.object_view(wrath).zone, Zone::Exile);
+        assert_eq!(game.object_view(kept).zone, Zone::Battlefield);
+        assert!(game.has_airbend_permission(player, yours));
+        assert!(game.has_airbend_permission(opponent, theirs));
+        assert!(game.nonhand_cast_prohibited(opponent));
+        assert!(!game.nonhand_cast_prohibited(player));
+        game.state.active = opponent;
+        game.state.priority = opponent;
+        game.state.pending = Pending::Priority;
+        assert!(!game.legal_actions().contains(&airbend_action(theirs)));
+        assert!(
+            game.legal_actions()
+                .contains(&Action::AnnounceCast { card: hand })
+        );
+        assert!(
+            game.legal_actions()
+                .contains(&Action::PlayLand { card: land })
+        );
+        let snapshot = game.snapshot();
+        let branch = game.clone();
+        game.state.active = player;
+        game.begin_turn();
+        assert!(!game.nonhand_cast_prohibited(opponent));
+        game.state.active = opponent;
+        game.state.priority = opponent;
+        game.state.step = Step::Main1;
+        assert!(game.legal_actions().contains(&airbend_action(theirs)));
+        game.restore(&snapshot).unwrap();
+        assert_eq!(game.snapshot(), branch.snapshot());
+        assert!(game.nonhand_cast_prohibited(opponent));
+    }
+}
+
+#[test]
+fn avatars_wrath_without_target_exiles_all_creatures_but_a_countered_wrath_does_nothing() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = super::big_helpers::setup(player);
+        let wrath = put(&mut game, player, "Avatar's Wrath", Zone::Hand);
+        let creature = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        super::big_helpers::cast(&mut game, wrath, None, &[]);
+        super::big_helpers::settle(&mut game);
+        assert!(game.has_airbend_permission(player.other(), creature));
+        assert_eq!(game.object_view(wrath).zone, Zone::Exile);
+
+        let mut game = super::big_helpers::setup(player);
+        let wrath = put(&mut game, player, "Avatar's Wrath", Zone::Hand);
+        let creature = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        super::big_helpers::cast(&mut game, wrath, None, &[Target::Card(creature)]);
+        game.move_object(creature, Zone::Hand);
+        super::big_helpers::settle(&mut game);
+        assert_eq!(game.object_view(wrath).zone, Zone::Graveyard);
+        assert!(!game.nonhand_cast_prohibited(player.other()));
+    }
+}
+
+#[test]
 fn airbend_owner_pays_two_and_permission_expires_on_zone_change() {
     for owner in [Player::P0, Player::P1] {
         let mut g = scenario(owner);

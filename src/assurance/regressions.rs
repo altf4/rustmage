@@ -1718,6 +1718,10 @@ fn schema197_new_card(card: Card) -> bool {
             | "Spring-Loaded Sawblades // Bladewheel Chariot"
             | "Spring-Loaded Sawblades"
             | "Bladewheel Chariot"
+            | "Avatar's Wrath"
+            | "Aang's Iceberg"
+            | "Aang, Swift Savior // Aang and La, Ocean's Fury"
+            | "Aang and La, Ocean's Fury"
     )
 }
 
@@ -1841,7 +1845,8 @@ fn schema197_packet_supported(item: &SpellView) -> bool {
 fn prior_schema197_state_supported(state: &State) -> bool {
     state.exile_permissions.iter().all(|permission| !permission.airbend)
         && state.roles.as_ref().is_none_or(|roles| {
-            roles.animations.iter().all(|row| !row.enchantment_noncreature)
+            !roles.prohibit_opponent_nonhand_casts.iter().any(|&active| active)
+                && roles.animations.iter().all(|row| !row.enchantment_noncreature)
                 && roles.source_linked_effects.iter().all(|row| {
                 row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
             })
@@ -1995,6 +2000,14 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
                         | "ExileControlled"
                         | "CraftSource"
                         | "PreventActivationsUntilUntapped"
+                        | "Avatar's Wrath"
+                        | "Aang's Iceberg"
+                        | "Aang, Swift Savior // Aang and La, Ocean's Fury"
+                        | "Aang, Swift Savior"
+                        | "Aang and La, Ocean's Fury"
+                        | "BeginWaterbend"
+                        | "ChooseWaterbender"
+                        | "waterbend"
                 ) =>
             {
                 Err("airbend cast has no schema 196 representation".into())
@@ -2009,6 +2022,9 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
                     "ExileControlled",
                     "CraftSource",
                     "PreventActivationsUntilUntapped",
+                    "prohibit_opponent_nonhand_casts",
+                    "waterbend_choice",
+                    "ChooseWaterbender",
                 ]
                 .iter()
                 .any(|key| fields.contains_key(*key))
@@ -2037,10 +2053,22 @@ fn prior_schema197_rejects_airbend_rights_and_actions() {
         r#"[{"card":"Bloodghast"}]"#,
         r#"[{"card":"Enduring Curiosity"}]"#,
         r#"[{"enchantment_noncreature":true}]"#,
+        r#"[{"prohibit_opponent_nonhand_casts":[true,false]}]"#,
     ] {
         assert!(project_prior_schema197(value).is_err());
     }
     let mut game = scenario(Player::P0);
+    assert!(prior_schema197_state_supported(&game.state));
+    game.state
+        .roles
+        .get_or_insert_default()
+        .prohibit_opponent_nonhand_casts[0] = true;
+    assert!(!prior_schema197_state_supported(&game.state));
+    game.state
+        .roles
+        .as_mut()
+        .unwrap()
+        .prohibit_opponent_nonhand_casts[0] = false;
     assert!(prior_schema197_state_supported(&game.state));
     let card = put(&mut game, Player::P0, "Bear Cub", Zone::Exile);
     game.grant_airbend_permission(Player::P0, game.object_ref(card));

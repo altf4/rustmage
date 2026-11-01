@@ -5158,7 +5158,9 @@ impl Game {
                 } => self.add_extra_turn(item.controller, power_up_prohibited),
                 Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
-                Instruction::ActivationX | Instruction::SourceCounterCost { .. } => (),
+                Instruction::ActivationX
+                | Instruction::SourceCounterCost { .. }
+                | Instruction::WaterbendCost(_) => (),
                 Instruction::RemoveCreatureCounterThenDraw => {
                     if self.start_resolution_counter_payment(&item) {
                         return;
@@ -6128,6 +6130,20 @@ impl Game {
                     return;
                 }
                 Instruction::AirbendTargets => self.airbend_targets(&item),
+                Instruction::AirbendOtherCreatures => {
+                    let exception = item.targets.iter().find_map(|target| {
+                        self.same_target_object(*target)
+                            .then_some(target.object)
+                            .flatten()
+                    });
+                    self.airbend_other_creatures(exception);
+                }
+                Instruction::ProhibitOpponentNonhandCastsUntilNextTurn => {
+                    self.state
+                        .roles
+                        .get_or_insert_default()
+                        .prohibit_opponent_nonhand_casts[item.controller.index()] = true;
+                }
                 Instruction::ExileTargetsForModifiedCast => {
                     self.exile_targets_for_modified_cast(&item)
                 }
@@ -7429,6 +7445,20 @@ impl Game {
                             self.set_counters(id, Counters::default());
                         }
                     }
+                }
+                Instruction::PutCountersOnTappedControlledCreatures { kind, amount } => {
+                    let changes = (0..self.state.objects.len())
+                        .map(|id| id as CardId)
+                        .filter(|&id| {
+                            let object = &self.state.objects[id as usize];
+                            object.zone == Zone::Battlefield
+                                && object.controller == item.controller
+                                && object.tapped
+                                && self.current_kinds(id) & 1 != 0
+                        })
+                        .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::PutCountersOnTargetGroup {
                     group,

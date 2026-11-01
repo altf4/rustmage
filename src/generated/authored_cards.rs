@@ -49337,8 +49337,17 @@ pub(super) mod card_5481 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/lci/braided_quipu.rs");
 }
+pub(super) mod card_5482 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/tla/aang_and_la_ocean_s_fury.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5482] = [
+pub(super) static RULES: [&CardRules; 5483] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54821,6 +54830,7 @@ pub(super) static RULES: [&CardRules; 5482] = [
     &card_5479::RULES,
     &card_5480::RULES,
     &card_5481::RULES,
+    &card_5482::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

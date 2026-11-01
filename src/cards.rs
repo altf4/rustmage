@@ -1029,6 +1029,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// Marks the printed waterbend component of an activation cost.
+    WaterbendCost(u16),
     /// Increase the exact source permanent to this Class level.
     GainClassLevel(u8),
     /// First half of amass: create an Army only if none is controlled.
@@ -2193,6 +2195,10 @@ pub(crate) enum Instruction {
     Exile,
     /// Exile valid targets and grant each actual exiled card's owner a {2} alternate cast.
     AirbendTargets,
+    /// Airbend all creatures except the selected exact target, if any.
+    AirbendOtherCreatures,
+    /// Opponents may cast only from their hands until this controller's next turn.
+    ProhibitOpponentNonhandCastsUntilNextTurn,
     ExileTargetsForModifiedCast,
     ExileTargetsPlay {
         next_turn: bool,
@@ -2290,6 +2296,11 @@ pub(crate) enum Instruction {
     SnapshotDoubleCreatures(CreatureFilter),
     PutCounters {
         subject: Subject,
+        kind: CounterKind,
+        amount: u32,
+    },
+    /// Place counters simultaneously on the current controlled tapped creatures.
+    PutCountersOnTappedControlledCreatures {
         kind: CounterKind,
         amount: u32,
     },
@@ -4234,6 +4245,14 @@ pub(crate) struct ActivatedAbility {
 }
 
 impl ActivatedAbility {
+    /// The first marker identifies the generic component that can be paid by
+    /// tapping artifacts or creatures. It has no effect during resolution.
+    pub(crate) fn waterbend_cost(&self) -> u16 {
+        match self.program.first() {
+            Some(Instruction::WaterbendCost(amount)) => *amount,
+            _ => 0,
+        }
+    }
     /// Existing typed equip slots are exactly the battlefield AttachSource program.
     /// Entry attachments, channel and animation programs are different abilities.
     pub(crate) fn is_equip(&self) -> bool {

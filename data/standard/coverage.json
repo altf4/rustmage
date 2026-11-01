@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "cdbfaedbccff85f1f1936cecbe66d9837b69c4483831e44664c87c374c513eb4",
+  "catalogue_version": "c6591bd289776ac36a344baa2a8ce31b0f006e91d1981479fff8b77aeb6a5f27",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2961,
-  "implemented_total": 2967,
+  "implemented_standard_cards": 2964,
+  "implemented_total": 2970,
   "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -168,8 +168,8 @@
     },
     "tla": {
       "total": 278,
-      "gated": 182,
-      "complete": 96
+      "complete": 99,
+      "gated": 179
     },
     "tle": {
       "total": 5,
@@ -362,8 +362,8 @@
     {
       "name": "Aang's Iceberg",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/aang_s_iceberg.rs",
       "set": "tla"
     },
@@ -378,8 +378,8 @@
     {
       "name": "Aang, Swift Savior // Aang and La, Ocean's Fury",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/aang_swift_savior_aang_and_la_ocean_s_fury.rs",
       "set": "tla"
     },
@@ -2434,8 +2434,8 @@
     {
       "name": "Avatar's Wrath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/avatar_s_wrath.rs",
       "set": "tla"
     },

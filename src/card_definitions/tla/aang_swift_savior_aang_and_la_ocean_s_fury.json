@@ -3,10 +3,46 @@
   "catalogue_id": 22,
   "oracle_id": "cbf09050-39d0-463b-96db-9e22011ae0d8",
   "facts_sha256": "8bf460980a4d1740931d332ede32ad1106ad7048af498b58b68f529de788635f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e809b347d2d3acb5e29ca9818f4cb4f8606c4246d399f1e477a67e5d89dc67a4"
   },
-  "physical_metadata_sha256": "ec6fb043fa047afaad239be1f01b45c868cc49b12c03eac6fc83756a904c1b17"
+  "physical_metadata_sha256": "cf0ce8915d2389441a546bbc2fb0e7db388a84fede02c49257caa6e0df12162f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AangSwiftSavior.java",
+  "java_sha256": "abc3d211d9116dd262b0692005d2756911a4b720f4317c7da8f01a31b40bf81e",
+  "rules_tests": "src/assurance/requested_aang.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/WaterbendCost.java",
+      "sha256": "216fa6e097077e73b5fcc3a1e71fe59ef6d16d27dd33681202db95643b7c451b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AirbendTargetEffect.java",
+      "sha256": "debe8f731f2374241dda2d23cbcc2a5feba816ebbf4e1d7b48845faa983cdcec"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java",
+      "sha256": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    }
+  ]
 }

@@ -65,6 +65,7 @@ pub(super) struct FundingState<'g> {
     copy_recipes: copies::Rows,
     counter_placement_history: counter_placement_history::Rows,
     convoke: bool,
+    waterbend: u16,
     power_sensitive: bool,
     creatures_died: u64,
     controlled_creatures_died: [u64; 2],
@@ -570,10 +571,8 @@ impl<'g> FundingState<'g> {
 
     fn set_purpose(&mut self, purpose: mana_lots::Purpose) {
         self.purpose = purpose;
-        let mana_lots::Purpose::Spell(spell) = purpose else {
-            return;
-        };
-        if !improvise::potential(self, spell.card) {
+        let needs_improvise_resources = matches!(purpose, mana_lots::Purpose::Spell(spell) if improvise::potential(self, spell.card));
+        if self.waterbend == 0 && !needs_improvise_resources {
             return;
         }
         for (id, _) in self.game.state.objects.iter().enumerate() {
@@ -595,7 +594,7 @@ impl<'g> FundingState<'g> {
         matches!(self.purpose, mana_lots::Purpose::Spell(spell) if improvise::available(self, self.actor, spell.card))
     }
     fn has_contributions(&self) -> bool {
-        self.convoke || self.improvise_available()
+        self.convoke || self.improvise_available() || self.waterbend != 0
     }
     fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
@@ -645,6 +644,12 @@ impl<'g> FundingState<'g> {
         }
     }
     fn from_game_with_convoke(game: &'g Game, goal: &FundingGoal, convoke: bool) -> Self {
+        let waterbend = goal
+            .source
+            .as_ref()
+            .map_or(0, |(_, index, _, definition, _)| {
+                definition.activation(*index).waterbend_cost()
+            });
         // A prerequisite need not itself produce mana (e.g. a changeling for
         // Mox Jasper). Keep only relevant owned witnesses, including removable
         // mana sources, so virtual sacrifices invalidate later guarded moves.
@@ -810,6 +815,7 @@ impl<'g> FundingState<'g> {
                 }),
             game,
             convoke,
+            waterbend,
             power_sensitive,
             creatures_died: game.state.creatures_died_this_turn,
             controlled_creatures_died: game
@@ -2095,7 +2101,8 @@ impl<'g> FundingState<'g> {
                 }) {
                     total = total.saturating_add(1);
                 }
-                if (self.convoke && self.kinds(resource) & 1 != 0)
+                if (self.waterbend != 0 && self.kinds(resource) & (1 | 16) != 0)
+                    || (self.convoke && self.kinds(resource) & 1 != 0)
                     || matches!(self.purpose, mana_lots::Purpose::Spell(spell) if improvise::potential(self, spell.card))
                 {
                     total = total.saturating_add(1);
@@ -2605,6 +2612,9 @@ impl<'g> FundingState<'g> {
             >= u128::from(goal.generic)
     }
     fn convoke_masks(&self) -> [u64; 32] {
+        if self.waterbend != 0 {
+            return waterbend::masks(self, self.actor, self.waterbend, &[]);
+        }
         improvise::masks(
             self,
             self.actor,
@@ -3770,7 +3780,10 @@ impl Game {
         }
         if !matches!(
             self.state.pending,
-            Pending::PayCosts { .. } | Pending::Convoke { .. } | Pending::Improvise { .. }
+            Pending::PayCosts { .. }
+                | Pending::Convoke { .. }
+                | Pending::Improvise { .. }
+                | Pending::Waterbend { .. }
         ) {
             return None;
         }
@@ -3781,7 +3794,7 @@ impl Game {
                     .is_none_or(|i| c.clauses[usize::from(i)].clause != CastCostClause::Mana)
         }) && !matches!(
             self.state.pending,
-            Pending::Convoke { .. } | Pending::Improvise { .. }
+            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Waterbend { .. }
         ) {
             return None;
         }
@@ -3978,7 +3991,8 @@ impl Game {
                         .expect("cost announcement has object source")
                         .card,
                 ));
-        if (convoke || artifact)
+        let waterbend = self.item_waterbend(&announcement.item) != 0;
+        if (convoke || artifact || waterbend)
             && (if state.has_ordered_convoke() {
                 state.cost_completion()
             } else {
@@ -3993,7 +4007,8 @@ impl Game {
                 )
             })
             && ((convoke && emit(Action::BeginConvoke))
-                || (artifact && emit(Action::BeginImprovise)))
+                || (artifact && emit(Action::BeginImprovise))
+                || (waterbend && emit(Action::BeginWaterbend)))
         {
             return true;
         }
@@ -4203,7 +4218,10 @@ impl Game {
             return;
         }
         let (goal, convoke, evidence) = match self.state.pending {
-            Pending::PayCosts { .. } | Pending::Convoke { .. } | Pending::Improvise { .. } => {
+            Pending::PayCosts { .. }
+            | Pending::Convoke { .. }
+            | Pending::Improvise { .. }
+            | Pending::Waterbend { .. } => {
                 let a = self.state.announcing.as_ref().unwrap();
                 (
                     self.funding_goal(a),

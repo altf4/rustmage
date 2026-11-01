@@ -185,9 +185,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     35
                 }
             }
-            Action::BeginConvoke | Action::BeginImprovise | Action::BeginOrderedCosts => 40,
+            Action::BeginConvoke
+            | Action::BeginImprovise
+            | Action::BeginWaterbend
+            | Action::BeginOrderedCosts => 40,
             Action::ChooseConvoker { .. }
             | Action::ChooseImproviser { .. }
+            | Action::ChooseWaterbender { .. }
             | Action::ChooseHarmonizer { .. } => 50,
             Action::ChooseMobilizeDefender { .. } | Action::ChooseHandDefender { .. } => 50,
             Action::PutHandCreature { .. }

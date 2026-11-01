@@ -273,6 +273,8 @@ mod proliferate;
 mod storied;
 #[path = "engine_trigger_multiplicity.rs"]
 mod trigger_multiplicity;
+#[path = "engine_waterbend.rs"]
+mod waterbend;
 pub use improvise::ImproviseChoiceView;
 #[path = "engine_damage_triggers.rs"]
 mod damage_triggers;
@@ -289,6 +291,7 @@ mod keyword_counters;
 #[path = "engine_live_counters.rs"]
 mod live_counters;
 pub use convoke::{ConvokeChoiceView, ConvokeContribution, ConvokePaymentView};
+pub use waterbend::WaterbendChoiceView;
 #[path = "engine_resolution_mana.rs"]
 mod resolution_mana;
 use funding::FundingGoal;
@@ -543,8 +546,10 @@ define_actions! {
     BeginConvoke,
     ChooseHarmonizer { object: Option<ObjectRef> },
     BeginImprovise,
+    BeginWaterbend,
     BeginOrderedCosts,
     ChooseImproviser { object: ObjectRef },
+    ChooseWaterbender { object: ObjectRef },
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
     ChooseToken { token: Card },
@@ -2035,6 +2040,9 @@ enum Pending {
     Improvise {
         player: Player,
     },
+    Waterbend {
+        player: Player,
+    },
     Convoke {
         player: Player,
     },
@@ -2952,6 +2960,8 @@ pub struct Observation {
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prohibit_opponent_nonhand_casts: Option<[bool; 2]>,
     pub damage_prevention_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
@@ -2970,6 +2980,8 @@ pub struct Observation {
     pub convoke_choice: Option<ConvokeChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub improvise_choice: Option<ImproviseChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub waterbend_choice: Option<WaterbendChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_artifact_copies: Vec<SpellView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -3543,6 +3555,7 @@ impl Game {
             | Pending::Harmonize { player }
             | Pending::Convoke { player }
             | Pending::Improvise { player }
+            | Pending::Waterbend { player }
             | Pending::Mobilize { player }
             | Pending::BlightIntent { player }
             | Pending::BlightPayment { player }
@@ -4062,7 +4075,7 @@ impl Game {
                     return true;
                 }
             }
-            Pending::Convoke { .. } | Pending::Improvise { .. } => {
+            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Waterbend { .. } => {
                 if self.visit_convoke_actions(&mut emit) {
                     return true;
                 }
@@ -4524,7 +4537,7 @@ impl Game {
                 if self.visit_graveyard_permanent_plays(
                     actor,
                     sorcery,
-                    casting_prohibited,
+                    casting_prohibited || self.nonhand_cast_prohibited(actor),
                     &mut emit,
                 ) {
                     return true;
@@ -4649,7 +4662,9 @@ impl Game {
                     if obj.zone == Zone::Hand && self.hand_play_prohibited() {
                         continue;
                     }
-                    if casting_prohibited {
+                    if casting_prohibited
+                        || (obj.zone != Zone::Hand && self.nonhand_cast_prohibited(actor))
+                    {
                         if obj.card.is_land()
                             && sorcery
                             && (obj.zone == Zone::Hand
@@ -6495,8 +6510,10 @@ impl Game {
             Action::BeginConvoke => self.begin_convoke(),
             Action::ChooseHarmonizer { object } => self.choose_harmonizer(object),
             Action::BeginImprovise => self.begin_improvise(),
+            Action::BeginWaterbend => self.begin_waterbend(),
             Action::BeginOrderedCosts => self.begin_ordered_costs(),
             Action::ChooseImproviser { object } => self.choose_improviser(object),
+            Action::ChooseWaterbender { object } => self.choose_improviser(object),
             Action::ChooseConvoker {
                 object,
                 contribution,
@@ -8590,6 +8607,9 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        if let Some(roles) = &mut self.state.roles {
+            roles.prohibit_opponent_nonhand_casts[self.state.active.index()] = false;
+        }
         self.expire_next_turn_stats(self.state.active);
         self.expire_next_turn_keywords(self.state.active);
         let active = self.state.active.index();
@@ -9337,6 +9357,13 @@ impl Game {
                     .collect()
             }),
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
+            prohibit_opponent_nonhand_casts: s.roles.as_ref().and_then(|roles| {
+                roles
+                    .prohibit_opponent_nonhand_casts
+                    .iter()
+                    .any(|&active| active)
+                    .then_some(roles.prohibit_opponent_nonhand_casts)
+            }),
             damage_prevention_prohibited: s.damage_prevention_prohibited,
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
@@ -9364,6 +9391,11 @@ impl Game {
             },
             improvise_choice: if owns_choice {
                 self.improvise_choice()
+            } else {
+                None
+            },
+            waterbend_choice: if owns_choice {
+                self.waterbend_choice()
             } else {
                 None
             },
@@ -9539,6 +9571,7 @@ impl Game {
                 Pending::Harmonize { .. } => "harmonize",
                 Pending::Convoke { .. } => "convoke",
                 Pending::Improvise { .. } => "improvise",
+                Pending::Waterbend { .. } => "waterbend",
                 Pending::Mobilize { .. } => "mobilize",
                 Pending::BlightIntent { .. } => "blight_intent",
                 Pending::BlightPayment { .. } => "blight_payment",

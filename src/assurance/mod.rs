@@ -24,6 +24,7 @@ mod issue_93_loyalty;
 mod issue_93_oko_lorwyn;
 mod issue_93_ral;
 mod regressions;
+mod requested_aang;
 mod requested_airbend_core;
 mod requested_bovine_intervention;
 mod requested_earthbend;
@@ -34,6 +35,7 @@ mod requested_ghost;
 mod requested_hunters_talent;
 mod requested_inevitable_defeat;
 mod requested_pyrrhic_strike;
+mod requested_waterbend;
 
 fn scenario(p: Player) -> Game {
     let mut g = Game::new(Config {

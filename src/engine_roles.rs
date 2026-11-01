@@ -21,6 +21,8 @@ pub(super) struct RoleState {
     pub deferred_timestamps: bool,
     /// Rule effect on players, independent of a fixed creature set or its source.
     pub toughness_combat_damage: [bool; 2],
+    /// Each controller's rule lasts until that controller's next turn begins.
+    pub prohibit_opponent_nonhand_casts: [bool; 2],
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
     pub until_next_turn_stats: Vec<UntilNextTurnStatsView>,
@@ -73,6 +75,13 @@ impl RoleState {
     }
 }
 impl Game {
+    pub(super) fn nonhand_cast_prohibited(&self, player: Player) -> bool {
+        self.state
+            .roles
+            .as_ref()
+            .is_some_and(|roles| roles.prohibit_opponent_nonhand_casts[player.other().index()])
+    }
+
     pub(super) fn queue_reflexive(
         &mut self,
         item: &SpellView,

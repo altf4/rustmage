@@ -32,6 +32,20 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    /// Airbend the current creature set as one simultaneous zone-change batch.
+    /// The exception is an exact incarnation, never a reused card ID.
+    pub(super) fn airbend_other_creatures(&mut self, exception: Option<ObjectRef>) {
+        let ids: Vec<_> = (0..self.state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                self.state.objects[id as usize].zone == Zone::Battlefield
+                    && self.current_kinds(id) & 1 != 0
+                    && exception != Some(self.object_ref(id))
+            })
+            .collect();
+        self.airbend_objects(&ids);
+    }
+
     pub(super) fn exile_targets_play(
         &mut self,
         item: &SpellView,
