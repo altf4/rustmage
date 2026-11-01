@@ -6,10 +6,6 @@ pub(crate) use ability_layers::{
     StaticAbilityGroup, UntapRestriction,
 };
 
-#[cfg(test)]
-#[path = "cards_test_counter_providers.rs"]
-pub(crate) mod test_counter_providers;
-
 #[path = "card_mana_symbols.rs"]
 mod mana_symbols;
 
@@ -2909,7 +2905,7 @@ pub(crate) struct EntryCounterRule {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReplacementFilter {
     /// A creature whose current power is at most this signed threshold.
-    #[cfg_attr(not(test), allow(dead_code))]
+    #[allow(dead_code)]
     CreaturePowerAtMost(i128),
     Permanent,
     Creature,
@@ -4586,11 +4582,6 @@ fn printed_subtype(type_line: &str, subtype: &str) -> bool {
 pub type Mana = [u32; 6];
 
 impl Card {
-    #[cfg(test)]
-    pub(crate) const fn test_index(index: u16) -> Self {
-        Self(index)
-    }
-
     /// Intrinsic colors (W=1, U=2, B=4, R=8, G=16), including both hybrid halves
     /// and token colors. Unsupported multiple-face identities describe the front.
     pub(crate) fn combat_restriction(self) -> Option<CombatRestriction> {
@@ -4603,10 +4594,6 @@ impl Card {
         generated::attached_subtype(self)
     }
     pub(crate) fn replacement_effects(self) -> &'static [ReplacementSpec] {
-        #[cfg(test)]
-        if let Some((_, replacements)) = test_counter_providers::provider(self) {
-            return replacements;
-        }
         generated::replacement_effects(self)
     }
     pub fn colors(self) -> u8 {
@@ -4803,10 +4790,6 @@ impl Card {
         generated::additional_cost(self)
     }
     pub(crate) fn static_ability_groups(self) -> &'static [StaticAbilityGroup] {
-        #[cfg(test)]
-        if let Some((groups, _)) = test_counter_providers::provider(self) {
-            return groups;
-        }
         authored::rules(self).map_or_else(
             || {
                 let groups = generated::static_ability_groups(self);
@@ -4908,10 +4891,6 @@ impl Card {
         kinds & 8 != 0
     }
     pub(crate) fn effect(self) -> Effect {
-        #[cfg(test)]
-        if let Some(effect) = test_counter_providers::outside_self_spell(self) {
-            return effect;
-        }
         generated::DEFINITIONS[self.0 as usize].effect
     }
     pub(crate) fn spell_program(
@@ -5143,28 +5122,6 @@ impl Card {
         }
     }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
-        #[cfg(test)]
-        if self == Card::from_name("Fanatical Firebrand").unwrap()
-            && issue_93_copy_cost_fixture::enabled()
-        {
-            return issue_93_copy_cost_fixture::abilities();
-        }
-        #[cfg(test)]
-        if self == Card::JacePlaneswalkerToken && issue_93_copy_cost_fixture::prepaid_enabled() {
-            return issue_93_copy_cost_fixture::prepaid_abilities();
-        }
-        #[cfg(test)]
-        if self == Card::test_index(5437) && sacrifice_mana_fixture::enabled() {
-            return sacrifice_mana_fixture::abilities();
-        }
-        #[cfg(test)]
-        if self == Card::test_index(470) && sacrifice_mana_fixture::enabled() {
-            return sacrifice_mana_fixture::abilities();
-        }
-        #[cfg(test)]
-        if self == Card::JacePlaneswalkerToken && composite_loyalty_fixture::enabled() {
-            return composite_loyalty_fixture::abilities();
-        }
         generated::DEFINITIONS[self.0 as usize].activated
     }
     pub(crate) fn entry_tapped(self) -> EntryTapped {
@@ -5233,16 +5190,6 @@ impl Card {
         self,
         ability: u16,
     ) -> Option<TargetActivationReduction> {
-        #[cfg(test)]
-        if self == Card::JacePlaneswalkerToken
-            && ability == 0
-            && composite_loyalty_fixture::target_discount()
-        {
-            return Some(TargetActivationReduction {
-                rule: TargetRule::Creature,
-                generic: 1,
-            });
-        }
         authored::RULES[self.index()]
             .extras
             .activation_target_reductions
@@ -5275,12 +5222,6 @@ impl Card {
             .map(|(_, kind)| *kind)
     }
     pub(crate) fn activation_put_counter(self, ability: u16) -> Option<(CounterKind, u64)> {
-        #[cfg(test)]
-        if ability == 0
-            && let Some(kind) = issue_93_mana_counter_fixture::counter_kind(self)
-        {
-            return Some((kind, 1));
-        }
         authored::RULES[self.index()]
             .extras
             .activation_put_counters
@@ -5517,133 +5458,6 @@ impl Card {
     }
 }
 
-/// Synthetic cost overlay for testing retained mana with replacement choices.
-#[cfg(test)]
-pub(crate) mod issue_93_mana_counter_fixture {
-    use super::{Card, CounterKind};
-    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
-    pub(crate) struct Guard;
-    impl Guard {
-        pub(crate) fn new() -> Self {
-            Self::set(1)
-        }
-        pub(crate) fn with_plus_one() -> Self {
-            Self::set(2)
-        }
-        fn set(mode: u8) -> Self {
-            MODE.with(|enabled| assert_eq!(enabled.replace(mode), 0));
-            Self
-        }
-    }
-    impl Drop for Guard {
-        fn drop(&mut self) {
-            MODE.with(|enabled| enabled.set(0));
-        }
-    }
-    pub(super) fn counter_kind(card: Card) -> Option<CounterKind> {
-        let mode = MODE.with(|enabled| enabled.get());
-        let loot = card == Card::from_name("Loot, the Pathfinder").unwrap();
-        let devotee = card == Card::from_name("Abzan Devotee").unwrap();
-        match mode {
-            1 if loot => Some(CounterKind::Stun),
-            2 if loot || devotee => Some(CounterKind::PlusOne),
-            _ => None,
-        }
-    }
-}
-
-/// Synthetic self-sacrifice source-copy ability for announcement LKI tests.
-#[cfg(test)]
-pub(crate) mod issue_93_copy_cost_fixture {
-    use super::*;
-    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
-    pub(crate) struct Guard;
-    impl Guard {
-        pub(crate) fn new() -> Self {
-            MODE.with(|mode| assert_eq!(mode.replace(1), 0));
-            Self
-        }
-        pub(crate) fn prepaid() -> Self {
-            MODE.with(|mode| assert_eq!(mode.replace(2), 0));
-            Self
-        }
-    }
-    impl Drop for Guard {
-        fn drop(&mut self) {
-            MODE.with(|mode| mode.set(0));
-        }
-    }
-    pub(super) fn enabled() -> bool {
-        MODE.with(|mode| mode.get() == 1)
-    }
-    pub(super) fn prepaid_enabled() -> bool {
-        MODE.with(|mode| mode.get() == 2)
-    }
-    pub(super) const fn abilities() -> &'static [ActivatedAbility] {
-        &[ActivatedAbility {
-            exhaust: false,
-            guard: ActivationGuard::Always,
-            cycling: false,
-            origin: ActivationOrigin::Battlefield,
-            cost: ActivationCost {
-                colored: [0; 6],
-                generic: 0,
-                alternatives: &[],
-                additional: None,
-                mana_component: false,
-                tap: false,
-                sacrifice: true,
-                exile_self: false,
-                discard: false,
-                life: 0,
-                remove: None,
-                loyalty: None,
-            },
-            targets: TargetPlan::NONE,
-            program: &[Instruction::CreateCopyToken {
-                subject: Subject::Source,
-                amount: 1,
-            }],
-            sorcery: false,
-            once_per_turn: false,
-        }]
-    }
-    pub(super) fn prepaid_abilities() -> &'static [ActivatedAbility] {
-        const PREPAID: &[ActivatedAbility] = &[ActivatedAbility {
-            cost: ActivationCost {
-                colored: [0; 6],
-                generic: 0,
-                alternatives: &[],
-                additional: None,
-                mana_component: false,
-                tap: false,
-                sacrifice: true,
-                exile_self: false,
-                discard: false,
-                life: 0,
-                remove: None,
-                loyalty: Some(-1),
-            },
-            targets: TargetPlan::Single(TargetSpec {
-                rule: TargetRule::Object {
-                    zone: TargetZone::Battlefield,
-                    kinds: 1,
-                    relation: 1,
-                    other: false,
-                    nonland: false,
-                    tapped: false,
-                    min_mana: 0,
-                    max_mana: u32::MAX,
-                },
-                min: 0,
-                max: 2,
-            }),
-            ..abilities()[0]
-        }];
-        PREPAID
-    }
-}
-
 impl Serialize for Card {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         serializer.serialize_str(self.identity())
@@ -5689,190 +5503,4 @@ pub(crate) enum RoleKind {
     Sorcerer,
     Wicked,
     YoungHero,
-}
-
-/// A scoped, thread-local typed provider for exercising composite loyalty costs
-/// through the public action path. It never changes non-test gameplay.
-#[cfg(test)]
-pub(crate) mod composite_loyalty_fixture {
-    use super::*;
-    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
-    pub(crate) struct Guard;
-    impl Guard {
-        pub(crate) fn new() -> Self {
-            Self::set(1)
-        }
-        pub(crate) fn with_mana() -> Self {
-            Self::set(2)
-        }
-        pub(crate) fn with_mana_two_counters() -> Self {
-            Self::set(3)
-        }
-        pub(crate) fn with_mana_positive() -> Self {
-            Self::set(4)
-        }
-        pub(crate) fn with_mana_positive_target() -> Self {
-            Self::set(5)
-        }
-        fn set(mode: u8) -> Self {
-            MODE.with(|value| {
-                assert_eq!(value.replace(mode), 0);
-            });
-            Self
-        }
-    }
-    impl Drop for Guard {
-        fn drop(&mut self) {
-            MODE.with(|value| value.set(0));
-        }
-    }
-    pub(super) fn enabled() -> bool {
-        MODE.with(|value| value.get() != 0)
-    }
-    pub(super) fn target_discount() -> bool {
-        MODE.with(|value| value.get() == 5)
-    }
-    pub(super) fn abilities() -> &'static [ActivatedAbility] {
-        match MODE.with(|value| value.get()) {
-            2 => MANA_ABILITIES,
-            3 => TWO_COUNTER_ABILITIES,
-            4 => POSITIVE_MANA_ABILITIES,
-            5 => POSITIVE_MANA_TARGET_ABILITIES,
-            _ => ABILITIES,
-        }
-    }
-    const fn ability(mana_component: bool, amount: u16) -> ActivatedAbility {
-        ActivatedAbility {
-            exhaust: false,
-            guard: ActivationGuard::Always,
-            origin: ActivationOrigin::Battlefield,
-            cycling: false,
-            once_per_turn: false,
-            sorcery: true,
-            cost: ActivationCost {
-                colored: [0; 6],
-                generic: if mana_component { 1 } else { 0 },
-                alternatives: &[],
-                additional: Some(AdditionalCost {
-                    kind: EffectChoiceKind::RemoveCreatureCounters(amount),
-                    filter: SacrificeFilter {
-                        keywords: Keywords::NONE,
-                        source_only: false,
-                        kinds: 1,
-                        nonland: false,
-                        other: false,
-                        tokens: None,
-                        artifact_enchantment_or_token: false,
-                        subtype: None,
-                    },
-                }),
-                mana_component,
-                tap: false,
-                sacrifice: false,
-                exile_self: false,
-                discard: false,
-                life: 0,
-                remove: Some((None, 1)),
-                loyalty: Some(-1),
-            },
-            targets: TargetPlan::NONE,
-            program: &[],
-        }
-    }
-    const ABILITIES: &[ActivatedAbility] = &[ability(false, 1)];
-    const MANA_ABILITIES: &[ActivatedAbility] = &[ability(true, 1)];
-    const TWO_COUNTER_ABILITIES: &[ActivatedAbility] = &[ability(true, 2)];
-    const POSITIVE_MANA_ABILITIES: &[ActivatedAbility] = &[ActivatedAbility {
-        cost: ActivationCost {
-            colored: [0; 6],
-            generic: 1,
-            alternatives: &[],
-            additional: None,
-            mana_component: true,
-            tap: false,
-            sacrifice: false,
-            exile_self: false,
-            discard: false,
-            life: 0,
-            remove: None,
-            loyalty: Some(1),
-        },
-        ..ability(false, 0)
-    }];
-    const POSITIVE_MANA_TARGET_ABILITIES: &[ActivatedAbility] = &[ActivatedAbility {
-        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
-        ..POSITIVE_MANA_ABILITIES[0]
-    }];
-}
-
-#[cfg(test)]
-pub(crate) mod sacrifice_mana_fixture {
-    use super::*;
-    std::thread_local! { static MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
-    pub(crate) struct Guard;
-    impl Guard {
-        pub(crate) fn new() -> Self {
-            Self::set(1)
-        }
-        pub(crate) fn artifact_only() -> Self {
-            Self::set(2)
-        }
-        fn set(mode: u8) -> Self {
-            MODE.with(|v| assert_eq!(v.replace(mode), 0));
-            Self
-        }
-    }
-    impl Drop for Guard {
-        fn drop(&mut self) {
-            MODE.with(|v| v.set(0));
-        }
-    }
-    pub(super) fn enabled() -> bool {
-        MODE.with(|v| v.get() != 0)
-    }
-    const fn ability(program: &'static [Instruction]) -> ActivatedAbility {
-        ActivatedAbility {
-            exhaust: false,
-            guard: ActivationGuard::Always,
-            cycling: false,
-            origin: ActivationOrigin::Battlefield,
-            cost: ActivationCost {
-                colored: [0; 6],
-                generic: 0,
-                alternatives: &[],
-                additional: None,
-                mana_component: false,
-                tap: false,
-                sacrifice: true,
-                exile_self: false,
-                discard: false,
-                life: 0,
-                remove: None,
-                loyalty: None,
-            },
-            targets: TargetPlan::NONE,
-            program,
-            sorcery: false,
-            once_per_turn: false,
-        }
-    }
-    const ARTIFACT_ONLY: &[ActivatedAbility] =
-        &[ability(&[Instruction::AddMana(ManaProduction::Tagged {
-            production: &ManaProduction::Fixed([0, 0, 0, 0, 1, 0]),
-            quality: &ManaQuality {
-                restriction: ManaRestriction::ArtifactSpell,
-                spell_bonus: ManaSpellBonus::None,
-                retention: ManaRetention::Step,
-            },
-        })])];
-    const ORDINARY: &[ActivatedAbility] =
-        &[ability(&[Instruction::AddMana(ManaProduction::Fixed([
-            0, 0, 0, 0, 1, 0,
-        ]))])];
-    pub(super) fn abilities() -> &'static [ActivatedAbility] {
-        match MODE.with(|v| v.get()) {
-            2 => ARTIFACT_ONLY,
-            _ => ORDINARY,
-        }
-    }
 }

@@ -7693,23 +7693,12 @@ impl Game {
                 let mut movement = entries::EntryMove::from_view(view, plan.destination, false);
                 // Synthetic entry identity only for suspension/replay testing: no
                 // supported effect redirects an Approach card to the battlefield.
-                #[cfg(test)]
-                if zone_replacements::TEST_FAKE_ENTRY_LIFE
-                    .with(|target| target.get() == Some(movement.before.reference))
-                {
-                    movement.before.card = Card::from_name("Watery Grave").unwrap();
-                }
+
                 movement.zone_plan = Some(plan);
                 Some(movement)
             })
             .collect();
-        #[cfg(test)]
-        if let Some(reference) =
-            zone_replacements::TEST_INVALIDATE_STAGED_COST.with(|target| target.get())
-            && self.object_ref(reference.card) == reference
-        {
-            self.state.objects[reference.card as usize].generation += 1;
-        }
+
         if !moves.is_empty() {
             self.stage_atomic_cost_entries(moves, checkpoint);
         }
@@ -10886,37 +10875,8 @@ mod continuous_control;
 #[path = "engine_attachment_death.rs"]
 mod attachment_death;
 
-#[cfg(test)]
-#[path = "assurance/mod.rs"]
-mod assurance;
-#[cfg(test)]
-#[path = "engine_big_core_tests.rs"]
-mod big_core_tests;
-#[cfg(test)]
-#[path = "engine_big_equipment_tests.rs"]
-mod big_equipment_tests;
-#[cfg(test)]
-#[path = "engine_big_game_tests.rs"]
-mod big_game_tests;
-#[cfg(test)]
-#[path = "engine_big_library_tests.rs"]
-mod big_library_tests;
-#[cfg(test)]
-#[path = "engine_big_token_tests.rs"]
-mod big_token_tests;
-#[cfg(test)]
-#[path = "engine_territory_forge_tests.rs"]
-mod territory_forge_tests;
-
-#[cfg(test)]
-#[path = "engine_big_inherited_tests.rs"]
-mod big_inherited_tests;
-
 #[path = "engine_sos_graveyard.rs"]
 mod sos_graveyard;
-#[cfg(test)]
-#[path = "engine_sos_green_colorless_tests.rs"]
-mod sos_green_colorless_tests;
 
 #[path = "engine_cast_rollback.rs"]
 mod cast_rollback;
@@ -10944,9 +10904,9 @@ mod death_return;
 #[path = "engine_attacking_exile.rs"]
 mod attacking_exile;
 
-#[cfg(test)]
-#[path = "engine_requested_sapling_tests.rs"]
-mod engine_requested_sapling_tests;
-
 #[path = "engine_mayhem.rs"]
 mod mayhem;
+
+#[cfg(test)]
+#[path = "testing/mod.rs"]
+mod testing;

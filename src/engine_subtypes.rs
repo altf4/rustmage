@@ -1089,7 +1089,3 @@ impl Game {
         }
     }
 }
-
-#[cfg(test)]
-#[path = "engine_fra_behold_subtype_tests.rs"]
-mod engine_fra_behold_subtype_tests;

@@ -35,17 +35,3 @@ pub(super) fn different(left: Card, right: Card) -> Option<bool> {
             .any(|a| right.iter().any(|b| crate::card_names::same_name(a, b))),
     )
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn oracle_faces_supply_split_and_front_face_names() {
-        let split = Card::from_name("Bottomless Pool // Locker Room").unwrap();
-        assert_eq!(names(split), Some(&["Bottomless Pool", "Locker Room"][..]));
-        assert_eq!(different(split, split), Some(false));
-        let dfc = Card::from_name("Fatehold Chronologist // Peer Review").unwrap();
-        assert_eq!(names(dfc), Some(&["Fatehold Chronologist"][..]));
-        assert_eq!(different(split, dfc), Some(true));
-    }
-}

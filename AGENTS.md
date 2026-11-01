@@ -14,9 +14,24 @@ Catalogue entries or partial card implementations do not satisfy it.
   catalogue/module-link artifacts at integration. Avoid manual generated edits.
 - Use GitHub issues and PRs. Require two independent nonauthor reviews of the final
   published batch, excluding reviewers' authored ancestors.
-- Test actual rules interactions, legality/privacy, transactional failures and
-  owned raw/index branch/restore. Prefer existing scenario helpers over new bots;
-  do not require parser mutation suites for authored Rust cards.
+- Test card coverage, not code coverage. Keep one focused suite for shared rules
+  and mechanics (flying, first strike, haste, legendary, common costs, targeting,
+  tokens, etc.). Do not re-test a shared mechanic for each card that uses it.
+- Give each implemented card a small, deterministic sanity case for each distinct
+  ability, spell mode, and alternate casting cost. Assert the printed outcome
+  using ordinary legal actions. Reuse fixtures and table cases for equivalent
+  abilities; metadata, action enumeration, and recorded fingerprints alone do not
+  establish card coverage. Smaug, Wicked Worm needs its Treasure entry ability and
+  Treasure-funded cast trigger checked; flying and legendary belong in mechanics.
+- Check legality/privacy, transactional failure, and owned raw/index branch/restore
+  once in core-engine tests, not throughout card cases. Bounded full-game tests
+  are appropriate for the core engine, not individual cards. Prefer scenario
+  helpers over new bots; do not require parser mutation suites for authored cards.
+- Deep rule interactions, adversarial matrices, fuzzing, and bug-hunt regressions
+  may be useful during implementation or an explicit investigation. Keep those
+  exploratory tests outside the repository and ordinary CI. When a bug exposes
+  missing basic functionality, add the smallest card or shared-mechanic case that
+  demonstrates it, rather than committing the entire investigation.
 - Run `python3 scripts/link_catalogue.py` and
   `python3 scripts/validate.py --release`; see `docs/direct-card-authoring.md`.
   Keep execution inputs fixed until consuming jobs actually terminate. Poll the

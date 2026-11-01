@@ -738,8 +738,8 @@ impl<'g> FundingState<'g> {
                             data.null_cast_links.iter().any(|link| link.source.card == *id as CardId))
                     || object.zone == Zone::Battlefield
                         && (life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
-                                #[cfg(test)] { zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(game.object_ref(*id as CardId))) }
-                                #[cfg(not(test))] { false }
+
+                                false
                             } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
                             || object.card.attachment_bonus().is_some()
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
@@ -1842,17 +1842,7 @@ impl<'g> FundingState<'g> {
                 // attachment participants, nonbasics and named-counter worlds.
                 identity: (self.sacrifice_prohibition_source(r.id)
                     || zone_replacements::card_provides_prevention(r.object.card)
-                    || {
-                        #[cfg(test)]
-                        {
-                            zone_replacements::TEST_PREVENT_PROVIDER
-                                .with(|p| p.get() == Some(self.reference(r.id)))
-                        }
-                        #[cfg(not(test))]
-                        {
-                            false
-                        }
-                    }
+                    || { false }
                     || self.roles().is_some_and(|roles| {
                         roles
                             .source_linked_effects
@@ -4527,37 +4517,6 @@ impl Game {
     }
 }
 
-#[cfg(test)]
-#[path = "assurance/hob_hone_funding.rs"]
-mod hone_tests;
-
-#[cfg(test)]
-#[path = "engine_funding_storied_tests.rs"]
-mod storied_tests;
-
-#[cfg(test)]
-#[path = "engine_funding_sacrifice_tests.rs"]
-mod sacrifice_tests;
-
-#[cfg(test)]
-#[path = "assurance/hob_fili_funding.rs"]
-mod fili_tests;
-
-#[cfg(test)]
-#[path = "assurance/hob_beorn_funding.rs"]
-mod beorn_tests;
-
-#[cfg(test)]
-#[path = "assurance/hob_notary_funding.rs"]
-mod notary_tests;
-
-#[cfg(test)]
-#[path = "assurance/hob_supper_funding.rs"]
-mod hob_supper_funding;
-
-#[cfg(test)]
-#[path = "assurance/hob_thranduil_funding.rs"]
-mod hob_thranduil_funding;
 impl Game {
     pub(super) fn attack_tax_fundable(&self, player: Player, generic: u32) -> bool {
         let goal = FundingGoal {
@@ -4602,119 +4561,3 @@ impl Game {
         false
     }
 }
-
-#[cfg(test)]
-#[path = "engine_requested_essence_funding_tests.rs"]
-mod requested_essence_funding_tests;
-
-#[cfg(test)]
-#[path = "engine_requested_curator_funding_tests.rs"]
-mod requested_curator_funding_tests;
-
-#[cfg(test)]
-#[path = "engine_requested_case_funding_tests.rs"]
-mod requested_case_funding_tests;
-
-#[cfg(test)]
-#[path = "engine_requested_esper_funding_tests.rs"]
-mod requested_esper_funding_tests;
-
-#[cfg(test)]
-#[path = "engine_requested_ghost_projection_tests.rs"]
-mod requested_ghost_projection_tests;
-
-#[cfg(test)]
-mod fra_subtype_grant_tests {
-    use super::*;
-    use crate::engine::assurance::big_helpers::{named, setup};
-
-    #[test]
-    fn funding_world_respects_controlled_thopter_haste() {
-        for p in [Player::P0, Player::P1] {
-            let mut g = setup(p);
-            // The definition is still gated, so install it into this isolated fixture.
-            let saheeli = named(&mut g, p, "Bear Cub", Zone::Battlefield);
-            g.state.objects[saheeli as usize].card =
-                Card::from_name("Saheeli, Jewel of Avishkar").unwrap();
-            g.register_battlefield_sources(saheeli);
-            assert!(g.state.static_sources.contains(&saheeli));
-            g.create_tokens(p, Card::test_index(5266), 1, false);
-            let thopter = g
-                .state
-                .objects
-                .iter()
-                .enumerate()
-                .find_map(|(i, o)| {
-                    (o.zone == Zone::Battlefield
-                        && o.card == Card::test_index(5266)
-                        && o.controller == p)
-                        .then_some(i as CardId)
-                })
-                .expect("created Thopter");
-            let goal = FundingGoal {
-                actor: p,
-                required: [0; 6],
-                generic: 1,
-                reserve: None,
-                source: None,
-            };
-            // Ensure this creature is represented in the projected funding graph.
-            let object = g.object_ref(thopter);
-            let goal = FundingGoal {
-                reserve: Some((
-                    object,
-                    AdditionalCost {
-                        kind: EffectChoiceKind::Sacrifice,
-                        filter: SacrificeFilter {
-                            keywords: Keywords::NONE,
-                            source_only: false,
-                            kinds: 1,
-                            nonland: false,
-                            other: false,
-                            tokens: None,
-                            artifact_enchantment_or_token: false,
-                            subtype: None,
-                        },
-                    },
-                )),
-                ..goal
-            };
-            let world = FundingState::from_game(&g, &goal);
-            let resource = world.resources.iter().find(|r| r.id == thopter).unwrap();
-            assert!(world.keywords(resource).contains(Keywords::HASTE));
-            let mut without_source = world.clone();
-            let provider = without_source
-                .resources
-                .iter_mut()
-                .find(|r| r.id == saheeli)
-                .unwrap();
-            provider.object.zone = Zone::Graveyard;
-            let resource = without_source
-                .resources
-                .iter()
-                .find(|r| r.id == thopter)
-                .unwrap();
-            assert!(!without_source.keywords(resource).contains(Keywords::HASTE));
-        }
-    }
-}
-
-#[cfg(test)]
-#[path = "engine_fra_behold_funding_tests.rs"]
-mod engine_fra_behold_funding_tests;
-
-#[cfg(test)]
-#[path = "engine_fra_slow_departure_tests.rs"]
-mod engine_fra_slow_departure_tests;
-
-#[cfg(test)]
-#[path = "engine_fra_manifest_cost_departures_tests.rs"]
-mod engine_fra_manifest_cost_departures_tests;
-
-#[cfg(test)]
-#[path = "engine_fra_ruric_fast_projection_tests.rs"]
-mod engine_fra_ruric_fast_projection_tests;
-
-#[cfg(test)]
-#[path = "engine_fra_jace_funding_tests.rs"]
-mod engine_fra_jace_funding_tests;

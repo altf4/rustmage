@@ -67,33 +67,7 @@ pub(super) struct ZoneState {
     reveals: SharedVec<ZoneRevealView>,
     graveyard_exile_spells: SharedVec<ObjectRef>,
 }
-/// A checkpoint fixture for conservative schema projection tests.
-#[cfg(test)]
-pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) -> ZoneState {
-    ZoneState {
-        choice: Some(Box::new(Choice {
-            base: Base {
-                state: Box::new(state),
-                bytes: 0,
-                actor: owner,
-                action: Action::Pass,
-                picks: SharedVec::default(),
-            },
-            request: Request {
-                object,
-                requested: Zone::Graveyard,
-                affected: owner,
-                view: ZoneReplacementChoiceView {
-                    card: Card::Forest,
-                    owner,
-                    from: Zone::Hand,
-                    choices: vec![ZoneReplacementKind::Prevent],
-                },
-            },
-        })),
-        ..ZoneState::default()
-    }
-}
+
 #[derive(Clone, Debug, Default)]
 pub(super) struct FrozenRules {
     pub prevent: bool,
@@ -114,10 +88,7 @@ impl ZoneState {
     pub(super) fn has_checkpoint(&self) -> bool {
         self.choice.is_some() || self.replay.is_some()
     }
-    #[cfg(test)]
-    pub(super) fn schema191_passive_safe(&self, new_card: impl Fn(Card) -> bool) -> bool {
-        !self.has_checkpoint() && self.reveals.iter().all(|view| !new_card(view.card))
-    }
+
     pub fn bytes(&self) -> usize {
         let base_bytes = |base: &Base| {
             base.bytes
@@ -173,14 +144,7 @@ impl ZoneState {
                 .map_or(0, |r| std::mem::size_of::<Replay>() + base_bytes(&r.base))
     }
 }
-#[cfg(test)]
-thread_local! {
-    pub(super) static TEST_INVALIDATE_STAGED_COST: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
-    pub(super) static TEST_FAKE_ENTRY_LIFE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
-    pub(super) static TEST_REDIRECT_EXILE_TO_BATTLEFIELD: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
-    pub(super) static TEST_PREVENT_ZONE_MOVE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
-    pub(super) static TEST_PREVENT_PROVIDER: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
-}
+
 pub(super) fn card_provides_prevention(card: Card) -> bool {
     card.static_ability_groups().iter().any(|group| {
         group.fragments.iter().any(|fragment| {
@@ -362,11 +326,6 @@ impl Game {
         requested: Zone,
         rules: FrozenRules,
     ) -> Plan {
-        #[cfg(test)]
-        let test_redirect = requested == Zone::Exile
-            && TEST_REDIRECT_EXILE_TO_BATTLEFIELD
-                .with(|target| target.get() == Some(before.reference));
-        #[cfg(not(test))]
         let test_redirect = false;
         if !rules.prevent
             && !test_redirect

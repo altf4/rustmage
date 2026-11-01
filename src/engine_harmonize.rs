@@ -22,12 +22,6 @@ pub(super) fn contribution<W: CharacteristicWorld + ?Sized>(
     Some(u32::try_from(world.power(object.card).max(0)).unwrap_or(u32::MAX))
 }
 
-#[cfg(test)]
-pub(super) fn reduce(mut cost: ManaCost, amount: u32) -> ManaCost {
-    cost.generic = cost.generic.saturating_sub(amount);
-    cost
-}
-
 impl Game {
     pub(super) fn harmonize_choice_fundable(
         &self,

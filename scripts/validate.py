@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run bounded card/interaction assurance with separate build and execution timings.
+"""Run bounded card coverage with separate build and execution timings.
 
 Cargo outputs are reused by default; every run owns separate reports and immutable
 library snapshots under ~/.cache. Use --fresh only for an intentional clean build.
@@ -40,11 +40,11 @@ def source_files():
             if raw and (ROOT/os.fsdecode(raw)).is_file()}
 
 
-def snapshot_library(target, report_dir):
+def snapshot_library(target, report_dir, profile='release'):
     """Publish a copy, never a hardlink into the mutable Cargo target."""
-    source = target/'release/librustmage.so'
+    source = target/profile/'librustmage.so'
     if not source.is_file() or source.is_symlink():
-        raise RuntimeError('release build did not produce a regular librustmage.so')
+        raise RuntimeError(f'{profile} build did not produce a regular librustmage.so')
     directory = report_dir/'libraries'
     directory.mkdir()
     library = directory/source.name
@@ -61,7 +61,7 @@ def main(argv=None):
     parser.add_argument('--release', action='store_true',
                         help='also build production library and run the bounded native benchmark')
     parser.add_argument('--python', choices=['none', 'smoke', 'full'], default='none',
-                        help='run binding assurance against this run\'s release library')
+                        help='run binding contracts against this run\'s library (debug unless --release)')
     parser.add_argument('--games', type=int, default=10,
                         help='native benchmark games, only with --release (default: 10)')
     parser.add_argument('--timeout', type=float, default=600,
@@ -111,16 +111,16 @@ def main(argv=None):
         ('format', ['cargo', 'fmt', '--all', '--check'], 45),
         ('card format', ['rustfmt', '--edition', '2024', '--check',
                          *[str(p) for p in sorted((ROOT/'src/card_definitions').rglob('*.rs'))]], 45),
-        ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 30),
+        ('tool contracts', [sys.executable, 'scripts/test_tools.py'], 30),
         ('clippy', ['cargo', 'clippy', '--all-targets', '--', '-D', 'warnings'], 180),
-        # A 56-game FRA workload can approach 30 seconds on CI; the enlarged
-        # catalogue also needs more than 120 seconds of serialized execution.
-        ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
+        ('card coverage', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
-                              '--test-timeout', '45', '--suite-timeout', '240', '--compile-timeout', '900'], 1160),
+                              '--suite-timeout', '30', '--compile-timeout', '360'], 400),
     ]
-    if args.release or args.python != 'none':
+    if args.release:
         commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 360))
+    elif args.python != 'none':
+        commands.append(('binding build', ['cargo', 'build', '--lib'], 180))
     if args.release:
         commands.append(('simulation sample', [str(target/'release/benchmark'), str(args.games)], 15))
     if args.python != 'none':
@@ -147,10 +147,10 @@ def main(argv=None):
             if phase['exit']:
                 print(Path(phase['log']).read_text()[-12000:], flush=True)
                 break
-            if name == 'release build':
+            if name in ('release build', 'binding build'):
                 if active_peers():
                     raise RuntimeError('release build left active processes; preserve outputs')
-                library, digest = snapshot_library(target, report_dir)
+                library, digest = snapshot_library(target, report_dir, 'release' if args.release else 'debug')
                 report['shared_libraries'][str(library)] = digest
                 env['RUSTMAGE_LIBRARY'] = str(library)
             if name == 'simulation sample':

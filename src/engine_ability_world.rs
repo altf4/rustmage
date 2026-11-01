@@ -4,15 +4,6 @@
 use super::*;
 use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 
-#[cfg(test)]
-thread_local! {
-    /// Synthetic selective protection; no authored provider uses this fixture.
-    pub(super) static TEST_SACRIFICE_PROHIBITED_OBJECT: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
-    /// Test-only provider identity; the query still uses live control and ability layers.
-    pub(super) static TEST_SACRIFICE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
-    pub(super) static TEST_EXILE_PROHIBITOR: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
-}
-
 pub(super) trait CharacteristicWorld {
     fn power(&self, id: CardId) -> i128 {
         characteristic_query::CharacteristicQuery::in_world(self)
@@ -307,10 +298,6 @@ pub(super) trait CharacteristicWorld {
         }
     }
     fn zone_move_prevented(&self, object: ObjectRef, requested: Zone) -> bool {
-        #[cfg(test)]
-        if zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get() == Some(object)) {
-            return true;
-        }
         let target = self.object(object.card);
         if self.reference(object.card) != object
             || target.zone != Zone::Battlefield
@@ -336,11 +323,7 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .any(|group| group.fragments.iter().any(fragment))
                 && query.continuous_fragment_available(source, fragment);
-            #[cfg(test)]
-            let synthetic = zone_replacements::TEST_PREVENT_PROVIDER
-                .with(|p| p.get() == Some(self.reference(source)))
-                && self.printed_abilities_available(source);
-            #[cfg(not(test))]
+
             let synthetic = false;
             printed || synthetic
         })
@@ -356,9 +339,7 @@ pub(super) trait CharacteristicWorld {
                 )
             })
         });
-        #[cfg(test)]
-        let synthetic = TEST_SACRIFICE_PROHIBITOR.with(|p| p.get() == Some(self.reference(id)));
-        #[cfg(not(test))]
+
         let synthetic = false;
         printed || synthetic
     }
@@ -369,11 +350,7 @@ pub(super) trait CharacteristicWorld {
         if target.zone != Zone::Battlefield {
             return true;
         }
-        #[cfg(test)]
-        if TEST_SACRIFICE_PROHIBITED_OBJECT.with(|object| object.get() == Some(self.reference(id)))
-        {
-            return true;
-        }
+
         let query = characteristic_query::CharacteristicQuery::in_world(self);
         (0..self.game().state.objects.len()).any(|index| {
             let source = index as CardId;
@@ -393,11 +370,7 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .any(|group| group.fragments.iter().any(fragment))
                 && query.continuous_fragment_available(source, fragment);
-            #[cfg(test)]
-            let synthetic = TEST_SACRIFICE_PROHIBITOR
-                .with(|p| p.get() == Some(self.reference(source)))
-                && self.printed_abilities_available(source);
-            #[cfg(not(test))]
+
             let synthetic = false;
             printed || synthetic
         })
@@ -426,10 +399,7 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .any(|group| group.fragments.iter().any(fragment))
                 && query.continuous_fragment_available(source, fragment);
-            #[cfg(test)]
-            let synthetic = TEST_EXILE_PROHIBITOR.with(|p| p.get() == Some(self.reference(source)))
-                && self.printed_abilities_available(source);
-            #[cfg(not(test))]
+
             let synthetic = false;
             printed || synthetic
         })

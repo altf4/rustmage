@@ -20,12 +20,7 @@ pub(super) struct ParadigmState {
     delayed: SharedVec<SpellView>,
     ephemeral: Option<ObjectRef>,
 }
-impl ParadigmState {
-    #[cfg(test)]
-    pub(super) fn packets(&self) -> impl Iterator<Item = &SpellView> {
-        self.delayed.iter()
-    }
-}
+impl ParadigmState {}
 pub(super) fn owned_bytes(data: &Option<Box<ParadigmState>>) -> usize {
     data.as_ref().map_or(0, |data| {
         std::mem::size_of::<ParadigmState>()

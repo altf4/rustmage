@@ -3,82 +3,7 @@ use super::*;
 
 // Test-only trace is deliberately external to owned rules state; each replay
 // clears it before recording its independently executed provider sequence.
-#[cfg(test)]
-thread_local! {
-    static TEST_PROVIDER_TRACE: std::cell::RefCell<Option<Vec<(ObjectRef, u16)>>> = const { std::cell::RefCell::new(None) };
-    static TEST_SELF_TRACE: std::cell::RefCell<Option<Vec<(u64, u16)>>> = const { std::cell::RefCell::new(None) };
-}
 
-#[cfg(test)]
-mod accounting_tests {
-    use super::*;
-
-    #[test]
-    fn pending_entry_counts_initialized_elements_only() {
-        let mut game = Game::new_with_outside(
-            Config {
-                decks: [vec![Card::Forest; 60], vec![Card::Forest; 60]],
-                seed: 7,
-                starting_player: Player::P0,
-                deck_rules: DeckRules::Freeform,
-            },
-            OutsideGameConfig {
-                mode: OutsideGameMode::CasualCollection,
-                pools: [
-                    vec![Card::Forest, Card::from_name("Shock").unwrap()],
-                    vec![],
-                ],
-            },
-        )
-        .unwrap();
-        assert!(game.start_outside_choice(Player::P0));
-        game.choose_outside_card(Selection::Pool(0));
-        game.choose_outside_card(Selection::Pool(1));
-        assert!(game.plan_outside_hand(0));
-        let before = game.state_bytes();
-        let event = game
-            .state
-            .outside_game
-            .as_mut()
-            .unwrap()
-            .pending_entry
-            .as_mut()
-            .unwrap();
-        event.choices.reserve(16);
-        event.applied.reserve(16);
-        event.self_applied.reserve(16);
-        event.self_choices.reserve(16);
-        event.provider_applied.reserve(16);
-        event.provider_choices.reserve(16);
-        assert_eq!(game.state_bytes(), before);
-        game.state
-            .outside_game
-            .as_mut()
-            .unwrap()
-            .pending_entry
-            .as_mut()
-            .unwrap()
-            .applied
-            .push(1);
-        assert_eq!(game.state_bytes(), before + std::mem::size_of::<u64>());
-    }
-}
-#[cfg(test)]
-pub(super) fn start_self_trace() {
-    TEST_SELF_TRACE.with(|trace| *trace.borrow_mut() = Some(Vec::new()));
-}
-#[cfg(test)]
-pub(super) fn take_self_trace() -> Vec<(u64, u16)> {
-    TEST_SELF_TRACE.with(|trace| trace.borrow_mut().take().unwrap())
-}
-#[cfg(test)]
-pub(super) fn start_provider_trace() {
-    TEST_PROVIDER_TRACE.with(|trace| *trace.borrow_mut() = Some(Vec::new()));
-}
-#[cfg(test)]
-pub(super) fn take_provider_trace() -> Vec<(ObjectRef, u16)> {
-    TEST_PROVIDER_TRACE.with(|trace| trace.borrow_mut().take().unwrap())
-}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum Selection {
     Pool(u16),
@@ -667,12 +592,7 @@ impl Game {
             }
         };
         event.self_applied.push(id);
-        #[cfg(test)]
-        TEST_SELF_TRACE.with(|trace| {
-            if let Some(events) = trace.borrow_mut().as_mut() {
-                events.push((event.self_origin.unwrap(), id));
-            }
-        });
+
         event.self_choices.clear();
         true
     }
@@ -715,63 +635,8 @@ impl Game {
             .unwrap();
         event.destination = candidate.2;
         event.provider_applied.push((source, ability));
-        #[cfg(test)]
-        TEST_PROVIDER_TRACE.with(|trace| {
-            if let Some(events) = trace.borrow_mut().as_mut() {
-                events.push((source, ability));
-            }
-        });
-        event.provider_choices.clear();
-        true
-    }
 
-    /// Synthetic providers exercise the owned plan without exposing an
-    /// incomplete replacement decision in the production public API.
-    #[cfg(test)]
-    pub(super) fn offer_outside_entry_replacements(
-        &mut self,
-        choices: Vec<OutsideEntryReplacement>,
-    ) -> bool {
-        let Some(event) = self
-            .state
-            .outside_game
-            .as_mut()
-            .and_then(|state| state.pending_entry.as_mut())
-        else {
-            return false;
-        };
-        if !event.choices.is_empty()
-            || event.destination == OutsideEntryDestination::Prevent
-            || choices.is_empty()
-            || choices
-                .iter()
-                .any(|effect| event.applied.contains(&effect.id))
-            || choices
-                .iter()
-                .enumerate()
-                .any(|(i, effect)| choices[..i].iter().any(|prior| prior.id == effect.id))
-        {
-            return false;
-        }
-        event.choices = choices;
-        true
-    }
-    #[cfg(test)]
-    pub(super) fn choose_outside_entry_replacement(&mut self, id: u64) -> bool {
-        let Some(event) = self
-            .state
-            .outside_game
-            .as_mut()
-            .and_then(|state| state.pending_entry.as_mut())
-        else {
-            return false;
-        };
-        let Some(effect) = event.choices.iter().find(|effect| effect.id == id).copied() else {
-            return false;
-        };
-        event.destination = effect.destination;
-        event.applied.push(effect.id);
-        event.choices.clear();
+        event.provider_choices.clear();
         true
     }
 

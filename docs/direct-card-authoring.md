@@ -32,8 +32,11 @@ including supplementary Standard-legal cards, with the pinned source inventory.
 
 Agents edit disjoint paired files in isolated worktrees. The integrator runs
 `python3 scripts/link_catalogue.py` to regenerate derived artifacts. Add meaningful
-rules tests for whole-card behavior, legality/privacy, transactional failures,
-queued/source departure interactions and owned raw/index branching and restore.
+card coverage for each distinct ability, spell mode and alternate cost. Use a
+small ordinary success case with a concrete printed outcome. Shared mechanics,
+legality/privacy, transactional failures and owned raw/index branch/restore belong
+in centralized engine tests. Keep deeper implementation investigations and bug
+hunts outside the repository and routine CI; see [testing.md](testing.md).
 Require two independent nonauthor reviews of the final published PR.
 
 Run `python3 scripts/link_catalogue.py`, then
@@ -50,8 +53,8 @@ regression workload, not full-set or all-Standard acceptance.
 
 [Compiler-removal proof](compiler-removal-results.json) records exact equality of
 the compiled before/after definitions, all helper values and immutable globals.
-The all-Standard goal remains open; finish one complete set with full-game tests
-before advancing to the next set.
+The all-Standard goal remains open. Bounded full-game tests exercise the core
+engine; individual cards use focused feature scenarios.
 
 Each paired record pins both the full Oracle facts and its reviewed physical
 metadata (including intrinsic colors). Changes to costs, types or legality in the

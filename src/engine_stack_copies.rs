@@ -25,26 +25,7 @@ pub(super) struct CopyState {
     delayed: Vec<SpellView>,
     retarget: Option<Retarget>,
 }
-impl CopyState {
-    #[cfg(test)]
-    pub(super) fn test_retarget(item: SpellView, template: SpellView) -> Self {
-        Self {
-            delayed: Vec::new(),
-            retarget: Some(Retarget {
-                item,
-                template,
-                remaining: 0,
-                victim: None,
-            }),
-        }
-    }
-    #[cfg(test)]
-    pub(super) fn packets(&self) -> impl Iterator<Item = &SpellView> {
-        self.delayed
-            .iter()
-            .chain(self.retarget.iter().flat_map(|r| [&r.item, &r.template]))
-    }
-}
+impl CopyState {}
 pub(super) fn owned_bytes(state: &Option<Box<CopyState>>) -> usize {
     state.as_ref().map_or(0, |state| {
         std::mem::size_of::<CopyState>()
@@ -446,18 +427,7 @@ impl Game {
         self.state.stack_copy_data.as_mut().unwrap().delayed = retained;
         self.release_stack_copy_state();
     }
-    #[cfg(test)]
-    pub(super) fn test_capture_noninstant_prepared_cast(
-        &mut self,
-        index: usize,
-        first_trigger: usize,
-    ) {
-        let mut spell = self.state.stack[index].clone();
-        // Preserve an actual spell object and stack id, while substituting the
-        // existing prepared-face marker. Classification is explicitly non-instant.
-        spell.source.as_mut().unwrap().card = Card::test_index(5458);
-        self.capture_copy_cast_classified(spell, first_trigger, false);
-    }
+
     pub(super) fn allocate_spell_copy(
         &mut self,
         template: &SpellView,

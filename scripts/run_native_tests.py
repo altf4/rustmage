@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the library test binary once, then time each bounded rules scenario."""
+"""Build once and run the card-coverage suite in one bounded native process."""
 import argparse
 import json
 import math
@@ -121,15 +121,26 @@ def interrupted(signum, frame):
     raise KeyboardInterrupt
 
 
+def suite_results(names, output):
+    """Account for every listed test; a zero-exit or skipped suite is not a pass."""
+    tests = [dict(test=name, status=status) for name, status in
+             re.findall(r'^test (\S+) \.\.\. (ok|FAILED|ignored)$', output, re.M)]
+    success = (bool(names) and {test['test'] for test in tests} == set(names)
+               and len(tests) == len(names)
+               and all(test['status'] == 'ok' for test in tests)
+               and f'test result: ok. {len(names)} passed; 0 failed; 0 ignored;' in output)
+    return tests, success
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--target-dir', type=Path, required=True)
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--compile-timeout', type=float, default=360)
-    parser.add_argument('--test-timeout', type=float, default=10)
     parser.add_argument('--suite-timeout', type=float, default=30)
+    parser.add_argument('--filter', default='', help='run matching Rust test names for local iteration')
     args = parser.parse_args()
-    if any(not math.isfinite(v) or v <= 0 for v in (args.compile_timeout, args.test_timeout, args.suite_timeout)):
+    if any(not math.isfinite(v) or v <= 0 for v in (args.compile_timeout, args.suite_timeout)):
         parser.error('timeouts must be positive')
     if bounded_group() is None:
         os.execv(sys.executable, [sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
@@ -160,7 +171,8 @@ def main():
             raise RuntimeError(f'expected one library test binary under {target}, got {binaries}')
         binary = str(binaries[0])
         listing = args.report.with_name('native-list.log')
-        result['list'] = run_command([binary, '--list', '--format=terse'], env=env,
+        result['filter'] = args.filter
+        result['list'] = run_command([binary, args.filter, '--list', '--format=terse'], env=env,
                                      log=listing, timeout=5)
         if result['list']['exit']:
             return 1
@@ -168,32 +180,21 @@ def main():
                  if line.endswith(': test')]
         if not names:
             raise RuntimeError('the native library suite contains no tests')
-        suite_start = time.monotonic()
-        with args.report.with_suffix('.jsonl').open('w') as events:
-            for index, name in enumerate(names):
-                remaining = args.suite_timeout - (time.monotonic()-suite_start)
-                if remaining <= 0:
-                    result['budget_exceeded'] = True
-                    break
-                events.write(json.dumps(dict(event='start', test=name))+'\n')
-                events.flush()
-                test = run_command([binary, '--exact', name, '--include-ignored', '--nocapture', '--test-threads=1'],
-                                   env=env, log=args.report.with_name(f'native-{index:03}.log'),
-                                   timeout=min(args.test_timeout, remaining))
-                if test['exit'] == 0 and not re.search(r'test result: ok\. 1 passed; 0 failed; 0 ignored;', Path(test['log']).read_text()):
-                    test['exit'] = 1
-                    test['error'] = 'expected exactly one executed passing test'
-                test['test'] = name
-                result['tests'].append(test)
-                events.write(json.dumps(dict(event='finish', **test))+'\n')
-                events.flush()
-                print(f"{name}: exit={test['exit']} {test['seconds']:.3f}s", flush=True)
-                if test['exit']:
-                    break
-        result['execution_seconds'] = time.monotonic()-suite_start
+        # Starting a process for every scenario makes test count itself expensive.
+        # libtest already executes serially and identifies the currently running
+        # case in the flushed log. The outer runner bounds the entire process tree.
+        execution = run_command(
+            [binary, args.filter, '--include-ignored', '--test-threads=1'], env=env,
+            log=args.report.with_name('native-execution.log'), timeout=args.suite_timeout)
+        output = Path(execution['log']).read_text()
+        result['execution'] = execution
+        result['tests'], accounted = suite_results(names, output)
+        result['execution_seconds'] = execution['seconds']
         result['expected_tests'] = len(names)
-        result['success'] = (len(result['tests']) == len(names)
-                             and all(test['exit'] == 0 for test in result['tests']))
+        result['success'] = execution['exit'] == 0 and accounted
+        print(f"Native card coverage: {len(result['tests'])}/{len(names)} cases in {execution['seconds']:.3f}s", flush=True)
+        if not result['success']:
+            print(output[-12000:], flush=True)
         return 0 if result['success'] else 1
     except KeyboardInterrupt:
         result['interrupted'] = True

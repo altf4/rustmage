@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   tests:
-    name: Card and interaction assurance
+    name: Card coverage and shared mechanics
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     env:
@@ -96,10 +96,10 @@ jobs:
           restore-keys: |
             rustmage-targets-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('Cargo.lock', 'Cargo.toml', '.cargo/config.toml', 'scripts/rustc_guard.py') }}-
 
-      - name: Validate cards, interactions and Python API
+      - name: Validate card coverage, shared mechanics and Python API
         if: steps.scope.outputs.code == 'true'
         timeout-minutes: 33
-        run: python3 scripts/validate.py --release --python smoke --timeout 1800 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+        run: python3 scripts/validate.py --python smoke --timeout 600 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 
       - name: Stop any remaining build processes
         if: always() && steps.scope.outputs.code == 'true'

@@ -66,14 +66,7 @@ pub(super) struct ChoiceState {
 }
 impl ChoiceState {
     // Suspended interactions may own packets; the remaining bookkeeping owns only references.
-    #[cfg(test)]
-    pub(super) fn has_opaque_interaction(&self) -> bool {
-        self.hand.is_some()
-            || self.hand_library_search.is_some()
-            || self.zone_search.is_some()
-            || self.library_cast.is_some()
-            || self.deployment.is_some()
-    }
+
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.hand_library_search.as_ref().map_or(0, |_| {

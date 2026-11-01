@@ -18,8 +18,8 @@ debug = false
 incremental = false
 
 [profile.test]
-# Rules scenarios need fast execution without release LTO or full optimization.
-opt-level = 1
+# Small deterministic card cases prioritize compilation and local iteration.
+opt-level = 0
 lto = false
 debug = false
 incremental = false

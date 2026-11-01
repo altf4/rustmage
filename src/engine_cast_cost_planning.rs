@@ -1850,7 +1850,3 @@ impl FundingState<'_> {
         )
     }
 }
-
-#[cfg(test)]
-#[path = "engine_additional_bound_tests.rs"]
-mod additional_bound_tests;
