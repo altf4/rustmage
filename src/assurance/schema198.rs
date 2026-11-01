@@ -154,10 +154,11 @@ pub(super) fn prior_schema198_state_supported(state: &State) -> bool {
             .temporary_abilities
             .as_ref()
             .is_some_and(|rows| rows.iter().any(|r| new_card(r.granting_card)))
-        || state
-            .self_granted_abilities
-            .as_ref()
-            .is_some_and(|rows| rows.iter().any(|r| !wire_supported(r)))
+        || state.self_granted_abilities.as_ref().is_some_and(|rows| {
+            rows.iter().any(|row| {
+                new_card(row.granting_card) || row.kind == SelfGrantedAbilityKind::AttacksEachCombat
+            })
+        })
         || state.graveyard_borrowing.as_ref().is_some_and(|rows| {
             rows.iter()
                 .any(|r| new_card(r.provider) || new_card(r.definition))
