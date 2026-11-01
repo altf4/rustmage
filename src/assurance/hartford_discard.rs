@@ -221,7 +221,7 @@ fn obsessive_counts_prior_sacrifices_and_clue_costs_then_scales_the_attack_rewar
             g.state.players[p.index()].permanents_sacrificed_this_turn,
             0
         );
-        g.begin_step(Step::Upkeep);
+        // begin_turn already queued this upkeep's ability.
         settle(&mut g);
         assert_eq!(g.state.players[p.index()].life, life - 2);
         assert_eq!(token_count(&g, p, "Clue"), 1);

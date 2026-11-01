@@ -19,8 +19,11 @@ fn reach_target(g: &mut Game) {
 fn discard_with_thrill(g: &mut Game, p: Player, card: CardId) {
     let spell = put(g, p, "Thrill of Possibility", Zone::Hand);
     checked(g, Action::AnnounceCast { card: spell });
+    let discard = Action::ChooseAdditionalCost {
+        object: g.object_ref(card),
+    };
     for _ in 0..10 {
-        if g.legal_actions().contains(&Action::Discard { card }) {
+        if g.legal_actions().contains(&discard) {
             break;
         }
         let action = g
@@ -30,7 +33,7 @@ fn discard_with_thrill(g: &mut Game, p: Player, card: CardId) {
             .unwrap();
         checked(g, action);
     }
-    checked(g, Action::Discard { card });
+    checked(g, discard);
     while g.state.announcing.is_some() {
         let action = g
             .legal_actions()

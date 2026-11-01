@@ -247,6 +247,27 @@ impl Game {
                     && attack.defender == Some(CombatDefender::Planeswalker(defender))
             })
     }
+    fn attack_requirement_sources(&self) -> impl Iterator<Item = CardId> + '_ {
+        let grants = self
+            .state
+            .self_granted_abilities
+            .as_deref()
+            .map_or(&[][..], |rows| rows.as_slice());
+        self.state.static_sources.iter().copied().chain(
+            grants
+                .iter()
+                .enumerate()
+                .filter(move |(index, row)| {
+                    row.kind == SelfGrantedAbilityKind::AttacksEachCombat
+                        && !self.state.static_sources.contains(&row.recipient.card)
+                        && !grants[..*index].iter().any(|prior| {
+                            prior.kind == SelfGrantedAbilityKind::AttacksEachCombat
+                                && prior.recipient.card == row.recipient.card
+                        })
+                })
+                .map(|(_, row)| row.recipient.card),
+        )
+    }
     /// Maximum number of simultaneously satisfiable attack requirements. Unlimited
     /// defenders need no matching; limited planeswalkers are capacity-one slots.
     fn maximum_mandatory_attackers(&self, actor: Player) -> usize {
@@ -265,7 +286,7 @@ impl Game {
             .collect();
         let mut free = 0;
         let mut edges = Vec::new();
-        for &id in &self.state.static_sources {
+        for id in self.attack_requirement_sources() {
             if !self.attacks_each_combat(id) || !self.can_declare_attacker(actor, id) {
                 continue;
             }
@@ -342,7 +363,7 @@ impl Game {
             }
         }
         if !self.has_planeswalker_attack_limit_provider() {
-            return self.state.static_sources.iter().all(|&id| {
+            return self.attack_requirement_sources().all(|id| {
                 !self.attacks_each_combat(id)
                     || !self.can_declare_attacker(actor, id)
                     || !(if self.attack_controller_tax(actor.other()) == 0 {
