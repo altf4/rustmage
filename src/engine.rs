@@ -2805,6 +2805,8 @@ pub struct EffectChoiceView {
     pub selected: [Vec<ObjectRef>; 2],
     pub candidates: Vec<ObjectRef>,
     pub defender_choice: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inspected_cards: Option<Vec<ObjectView>>,
 }
 
 /// Public state-based choices; earlier APNAP choices stay visible to later players.
@@ -4317,6 +4319,11 @@ impl Game {
                 if choice.kind == EffectChoiceKind::RemoveCreatureCounters(1) {
                     return self.visit_resolution_counter_payments(player, &mut emit);
                 }
+                if matches!(choice.kind, EffectChoiceKind::CoverUpSearch { .. })
+                    && emit(Action::FinishSearch)
+                {
+                    return true;
+                }
                 if matches!(
                     choice.kind,
                     EffectChoiceKind::LandCards { .. }
@@ -4373,6 +4380,9 @@ impl Game {
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
                             EffectChoiceKind::ExileSourceAndNamed { .. }
                             | EffectChoiceKind::ExileCardFromAnyGraveyard
+                            | EffectChoiceKind::ExileCreatureAndGraveyard
+                            | EffectChoiceKind::CoverUpGraveyardCard
+                            | EffectChoiceKind::CoverUpSearch { .. }
                             | EffectChoiceKind::CopyExiledTriggerCreature => {
                                 Action::SelectResolutionExile { object }
                             }
@@ -4632,10 +4642,9 @@ impl Game {
                     if sorcery
                         && obj.zone == Zone::Hand
                         && !obj.is_token()
-                        && obj
-                            .card
-                            .plot_cost()
-                            .is_some_and(|cost| self.plot_can_fund(actor, cost))
+                        && obj.card.plot_cost().is_some_and(|cost| {
+                            self.plot_can_fund(actor, self.reduced_plot_cost(actor, cost))
+                        })
                         && emit(Action::AnnouncePlot { card })
                     {
                         return true;
@@ -7166,7 +7175,9 @@ impl Game {
                 }
             }
             Action::FinishSearch => {
-                if self.has_hand_library_search() {
+                if matches!(self.state.pending, Pending::EffectChoice { .. }) {
+                    self.finish_cover_up_search();
+                } else if self.has_hand_library_search() {
                     self.finish_hand_library_search()
                 } else if self.has_zone_search() {
                     self.finish_zone_search()

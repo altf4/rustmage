@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "726880777f81106f44357acba706c61b52983da7f14cf5545d7ca21c116bf0ba",
+  "catalogue_version": "4650608846647b77789f734a5642a6882f05bb3b7d602b52a6ffa38c05f8cff4",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2969,
-  "implemented_total": 2975,
+  "implemented_standard_cards": 2973,
+  "implemented_total": 2979,
   "token_definitions": 154,
   "emblem_definitions": 11,
-  "adventure_definitions": 49,
+  "adventure_definitions": 50,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -109,8 +109,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 189,
-      "complete": 75
+      "gated": 188,
+      "complete": 76
     },
     "mom": {
       "total": 1,
@@ -131,8 +131,8 @@
     },
     "otj": {
       "total": 264,
-      "complete": 95,
-      "gated": 169
+      "complete": 96,
+      "gated": 168
     },
     "pspl": {
       "total": 1,
@@ -163,8 +163,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 123,
-      "gated": 141
+      "complete": 124,
+      "gated": 140
     },
     "tla": {
       "total": 278,
@@ -190,8 +190,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 141,
-      "gated": 117
+      "complete": 142,
+      "gated": 116
     },
     "znr": {
       "total": 1,
@@ -8170,8 +8170,8 @@
     {
       "name": "Deadly Cover-Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/deadly_cover_up.rs",
       "set": "mkm"
     },
@@ -9106,8 +9106,8 @@
     {
       "name": "Doc Aurlock, Grizzled Genius",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/doc_aurlock_grizzled_genius.rs",
       "set": "otj"
     },
@@ -16042,8 +16042,8 @@
     {
       "name": "Hearth Elemental // Stoke Genius",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/hearth_elemental_stoke_genius.rs",
       "set": "woe"
     },
@@ -33658,8 +33658,8 @@
     {
       "name": "Strategic Betrayal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/strategic_betrayal.rs",
       "set": "tdm"
     },

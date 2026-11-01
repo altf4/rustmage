@@ -5490,7 +5490,8 @@
     2,
     0,
     4,
-    2
+    2,
+    8
   ],
   "aliases": [
     [
@@ -14890,6 +14891,10 @@
       1979
     ],
     [
+      "Hearth Elemental",
+      1980
+    ],
+    [
       "Hearth Elemental // Stoke Genius",
       1980
     ],
@@ -23968,6 +23973,10 @@
     [
       "Stoic Sphinx",
       4157
+    ],
+    [
+      "Stoke Genius",
+      5485
     ],
     [
       "Stolen Stark Tech",
@@ -86245,11 +86254,16 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 5,
+      "front_face": {
+        "name": "Hearth Elemental",
+        "mana_cost": "{5}{R}",
+        "type_line": "Creature — Elemental"
+      }
     },
     {
       "index": 1981,
@@ -186081,6 +186095,33 @@
       ],
       "generic": 0,
       "face_parent": 4443
+    },
+    {
+      "index": 5485,
+      "module": "card_5485",
+      "path": "synthetic/stoke_genius.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Stoke Genius",
+      "oracle_id": "f01cf0c5-0ac6-4ad3-8642-dd21c8e8563e",
+      "facts_sha256": "fd79aba74b94b76af573b89fd4621707182c79d400fe25cff69369a7adff3cb3",
+      "mana_cost": "{1}{R}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 1
     }
   ]
 }

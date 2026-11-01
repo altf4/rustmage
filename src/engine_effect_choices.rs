@@ -130,6 +130,21 @@ impl Game {
                     .is_some_and(|cards| cards.contains(&object))
                 && !choice.selected[player.index()].contains(&object);
         }
+        if choice.kind == EffectChoiceKind::CoverUpGraveyardCard {
+            return o.zone == Zone::Graveyard
+                && o.owner != player
+                && o.is_card()
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object);
+        }
+        if let EffectChoiceKind::CoverUpSearch { owner, name } = choice.kind {
+            return o.owner == owner
+                && o.is_card()
+                && matches!(o.zone, Zone::Graveyard | Zone::Hand | Zone::Library)
+                && self.object_ref(object.card) == object
+                && crate::card_names::same_name(o.card.name(), name)
+                && !choice.selected[player.index()].contains(&object);
+        }
         if choice.kind == EffectChoiceKind::ExileCardFromAnyGraveyard {
             return o.zone == Zone::Graveyard
                 && o.is_card()
@@ -986,6 +1001,12 @@ impl Game {
                 }
             }
         }
+        if matches!(choice.kind, EffectChoiceKind::CoverUpSearch { .. }) {
+            self.state.pending = Pending::EffectChoice {
+                player: self.state.resolving.as_ref().unwrap().item.controller,
+            };
+            return true;
+        }
         if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if choice.selected[player.index()].len() >= usize::from(maximum) {
@@ -1020,6 +1041,30 @@ impl Game {
                 self.state.pending = Pending::EffectChoice { player };
                 return true;
             }
+        }
+        if choice.kind == EffectChoiceKind::CoverUpGraveyardCard {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let selected = choice.selected[player.index()].first().copied();
+            if let Some(reference) = selected {
+                let owner = self.state.objects[reference.card as usize].owner;
+                let name = self.object_name(reference.card);
+                let events = self.move_objects_raw(&[reference.card], Zone::Exile);
+                self.finish_zone_events(&events, &[]);
+                let choice = self
+                    .state
+                    .resolving
+                    .as_mut()
+                    .unwrap()
+                    .choice
+                    .as_mut()
+                    .unwrap();
+                choice.kind = EffectChoiceKind::CoverUpSearch { owner, name };
+                choice.selected[player.index()].clear();
+                self.state.pending = Pending::EffectChoice { player };
+                return true;
+            }
+            self.state.resolving.as_mut().unwrap().choice = None;
+            return false;
         }
         if choice.kind == EffectChoiceKind::HandToTop {
             let choice = self
@@ -1267,6 +1312,33 @@ impl Game {
                 let player = self.state.resolving.as_ref().unwrap().item.controller;
                 self.finish_empower_jace(player, recipient, amount);
             }
+        } else if choice.kind == EffectChoiceKind::ExileCreatureAndGraveyard {
+            let item = &self.state.resolving.as_ref().unwrap().item;
+            let player = item
+                .targets
+                .iter()
+                .find_map(|bound| match bound.target {
+                    Target::Player(player) => Some(player),
+                    _ => None,
+                })
+                .expect("targeted player");
+            let mut ids: Vec<_> = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, object)| {
+                    object.zone == Zone::Graveyard && object.owner == player && object.is_card()
+                })
+                .map(|(id, _)| id as CardId)
+                .collect();
+            ids.extend(
+                choice.selected[player.index()]
+                    .iter()
+                    .map(|reference| reference.card),
+            );
+            let events = self.move_objects_raw(&ids, Zone::Exile);
+            self.finish_zone_events(&events, &[]);
         } else if matches!(
             choice.kind,
             EffectChoiceKind::ExileGraveyard
@@ -1500,6 +1572,36 @@ impl Game {
         self.run_program();
     }
 
+    pub(super) fn finish_cover_up_search(&mut self) {
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .take()
+            .unwrap();
+        let EffectChoiceKind::CoverUpSearch { owner, .. } = choice.kind else {
+            unreachable!()
+        };
+        let player = self.state.resolving.as_ref().unwrap().item.controller;
+        let ids: Vec<_> = choice.selected[player.index()]
+            .iter()
+            .map(|reference| reference.card)
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let hand_count = events
+            .iter()
+            .filter(|event| {
+                event.moved && event.destination == Zone::Exile && event.before.zone == Zone::Hand
+            })
+            .count();
+        self.finish_zone_events(&events, &[]);
+        self.forget_library_top(owner);
+        self.shuffle_library_cards(owner);
+        self.draw_many(owner, hand_count as u128);
+        self.run_program();
+    }
     pub(super) fn effect_choice_view(&self, viewer: Player) -> Option<EffectChoiceView> {
         let choice = self.state.resolving.as_ref()?.choice.as_ref()?;
         let actor = self.semantic_actor()?;
@@ -1517,6 +1619,31 @@ impl Game {
         {
             return None;
         }
+        if matches!(choice.kind, EffectChoiceKind::CoverUpSearch { .. })
+            && !self.shares_information(viewer, actor)
+        {
+            return None;
+        }
+        let inspected_cards = match choice.kind {
+            EffectChoiceKind::CoverUpSearch { owner, .. }
+                if self.shares_information(viewer, actor) =>
+            {
+                Some(
+                    self.state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, object)| {
+                            object.owner == owner
+                                && object.is_card()
+                                && matches!(object.zone, Zone::Hand | Zone::Library)
+                        })
+                        .map(|(id, _)| self.object_view(id as CardId))
+                        .collect(),
+                )
+            }
+            _ => None,
+        };
         let public_only = !self.shares_information(viewer, actor)
             && matches!(choice.kind, EffectChoiceKind::LandCards { .. });
         let candidates = self
@@ -1558,6 +1685,7 @@ impl Game {
                 candidates
             },
             defender_choice: matches!(self.state.pending, Pending::HandDefender { .. }),
+            inspected_cards,
         })
     }
 }

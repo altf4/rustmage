@@ -1706,7 +1706,9 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
 fn schema197_new_card(card: Card) -> bool {
     matches!(
         card.identity(),
-        "Outrageous Robbery"
+        "Strategic Betrayal"
+            | "Deadly Cover-Up"
+            | "Outrageous Robbery"
             | "Interdimensional Web Watch"
             | "Sunspine Lynx"
             | "Vren, the Relentless"
@@ -1730,6 +1732,9 @@ fn schema197_new_card(card: Card) -> bool {
             | "Aang's Iceberg"
             | "Aang, Swift Savior // Aang and La, Ocean's Fury"
             | "Aang and La, Ocean's Fury"
+            | "Doc Aurlock, Grizzled Genius"
+            | "Hearth Elemental // Stoke Genius"
+            | "Stoke Genius"
     )
 }
 
@@ -1867,6 +1872,7 @@ fn prior_schema197_state_supported(state: &State) -> bool {
     })
         && state.players.iter().all(|player| player.controlled_creatures_exiled_this_turn == 0)
         && state.exile_permissions.iter().all(|permission| !permission.airbend)
+        && state.plot.as_ref().is_none_or(|plot| plot.payment.is_none())
         && state.roles.as_ref().is_none_or(|roles| {
             !roles.prohibit_opponent_nonhand_casts.iter().any(|&active| active)
                 && roles.animations.iter().all(|row| !row.enchantment_noncreature)
@@ -2006,7 +2012,12 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
             serde_json::Value::String(text)
                 if matches!(
                     text.as_str(),
-                    "Outrageous Robbery"
+                    "Strategic Betrayal"
+                        | "Deadly Cover-Up"
+                        | "ExileCreatureAndGraveyard"
+                        | "CoverUpGraveyardCard"
+                        | "CoverUpSearch"
+                        | "Outrageous Robbery"
                         | "Interdimensional Web Watch"
                         | "CastFromExile"
                         | "Sunspine Lynx"
@@ -2041,6 +2052,10 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
                         | "Aang, Swift Savior // Aang and La, Ocean's Fury"
                         | "Aang, Swift Savior"
                         | "Aang and La, Ocean's Fury"
+                        | "Doc Aurlock, Grizzled Genius"
+                        | "Hearth Elemental // Stoke Genius"
+                        | "Hearth Elemental"
+                        | "Stoke Genius"
                         | "BeginWaterbend"
                         | "ChooseWaterbender"
                         | "waterbend"
@@ -2051,6 +2066,8 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
             serde_json::Value::Array(rows) => rows.iter().try_for_each(check),
             serde_json::Value::Object(fields) => {
                 if [
+                    "inspected_cards",
+                    "CoverUpSearch",
                     "controlled_creatures_exiled_this_turn",
                     "airbend",
                     "enchantment_noncreature",
@@ -2080,6 +2097,20 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
     }
     check(&serde_json::from_str(input).map_err(|e| e.to_string())?)?;
     Ok(input.to_owned())
+}
+
+#[test]
+fn prior_schema197_rejects_grave_exile_search_values() {
+    for value in [
+        r#"{"card":"Strategic Betrayal"}"#,
+        r#"{"card":"Deadly Cover-Up"}"#,
+        r#"{"kind":"ExileCreatureAndGraveyard"}"#,
+        r#"{"kind":"CoverUpGraveyardCard"}"#,
+        r#"{"kind":{"CoverUpSearch":{"owner":"P0","name":"Bear Cub"}}}"#,
+        r#"{"inspected_cards":[]}"#,
+    ] {
+        assert!(project_prior_schema197(value).is_err());
+    }
 }
 
 #[test]
@@ -2144,6 +2175,12 @@ fn prior_schema197_rejects_airbend_rights_and_actions() {
         assert!(project_prior_schema197(value).is_err());
     }
     let mut game = scenario(Player::P0);
+    assert!(prior_schema197_state_supported(&game.state));
+    let plot = put(&mut game, Player::P0, "Stagecoach Security", Zone::Hand);
+    game.begin_plot(Player::P0, plot);
+    assert!(!prior_schema197_state_supported(&game.state));
+    game.state.plot.as_mut().unwrap().payment = None;
+    game.state.pending = Pending::Priority;
     assert!(prior_schema197_state_supported(&game.state));
     game.state
         .roles

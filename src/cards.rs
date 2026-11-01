@@ -14,7 +14,7 @@ pub(crate) mod test_counter_providers;
 mod mana_symbols;
 
 use crate::capacity::CapacityExt;
-use crate::engine::{GrantedSubtypes, Zone};
+use crate::engine::{GrantedSubtypes, Player, Zone};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// Immutable additions made as part of a token-copy effect (CR707.9).
@@ -810,6 +810,13 @@ pub enum EffectChoiceKind {
     ExileControlled,
     /// During resolution, choose a card from either graveyard without targeting.
     ExileCardFromAnyGraveyard,
+    /// Targeted player chooses a creature to exile with their graveyard.
+    ExileCreatureAndGraveyard,
+    CoverUpGraveyardCard,
+    CoverUpSearch {
+        owner: Player,
+        name: &'static str,
+    },
     /// Optionally choose a creature card captured by an exile-batch trigger.
     CopyExiledTriggerCreature,
     SacrificeDifferentNames(u16),
@@ -3509,6 +3516,8 @@ impl CastFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CostTurn {
     Any,
+    /// Cast from the caster's graveyard or from exile.
+    GraveyardOrExile,
     /// Historical origin is not this caster’s hand (independent of payment).
     NonHand,
     // Parsed vocabulary; all complete own-turn bodies still have other dependencies.
@@ -3518,6 +3527,8 @@ pub(crate) enum CostTurn {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum SpellReductionAmount {
+    /// Graveyard cards that are instant or sorcery cards or have an Adventure.
+    GraveyardInstantSorceryAdventure,
     CreaturePowerCount {
         minimum: u32,
     },

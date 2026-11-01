@@ -3,10 +3,31 @@
   "catalogue_id": 996,
   "oracle_id": "04e2afbe-0c08-42bc-93e6-662066a958bf",
   "facts_sha256": "cd91980772203eefae3e04c058330170d564e54c021a16b948f4c79094930535",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d92e7ed0d583a2716a2a48d16dc8118cb51541bbb5c0025e9eeb16de3ef167c7"
   },
-  "physical_metadata_sha256": "dad4ab33bb7f144fca7a0d64d96280af7c0aa25889037620b82a0b5b9b444938"
+  "physical_metadata_sha256": "dad4ab33bb7f144fca7a0d64d96280af7c0aa25889037620b82a0b5b9b444938",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeadlyCoverUp.java",
+  "java_sha256": "f232aa0bcee3c8b1303311995a4ec7765cbf30f3ff8cd57a317276484e90cd70",
+  "rules_tests": "src/assurance/hartford_grave_exile.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchTargetGraveyardHandLibraryForCardNameAndExileEffect.java",
+      "sha256": "016001641a5c77bb2787f141b904ad653803e5b9311f49324edbaba71defc90b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+      "sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+    }
+  ]
 }

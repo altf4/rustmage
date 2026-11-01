@@ -3,10 +3,14 @@
   "catalogue_id": 4182,
   "oracle_id": "0127c13f-7b0f-44c3-8b35-97f306c5f239",
   "facts_sha256": "3a50f3b3c28dcb5a963bb4d77ca4076366e16b9795da79fae82a7812c7dd2772",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3327fdd40169f3f08c4b59f234a0a1badc0ecc1739edc527a8a966e582b21764"
   },
-  "physical_metadata_sha256": "fc290efa3f863c944514d087f95ccfcc778f2bd61fb19fef02ce86084532a15a"
+  "physical_metadata_sha256": "fc290efa3f863c944514d087f95ccfcc778f2bd61fb19fef02ce86084532a15a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StrategicBetrayal.java",
+  "java_sha256": "4c80f202800d40b73a29dd958b183b2eab54b1858bf0fecf8343494314b78251",
+  "rules_tests": "src/assurance/hartford_grave_exile.rs"
 }

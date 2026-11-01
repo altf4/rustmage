@@ -49364,8 +49364,17 @@ pub(super) mod card_5484 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/lci/locus_of_enlightenment.rs");
 }
+pub(super) mod card_5485 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/stoke_genius.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5485] = [
+pub(super) static RULES: [&CardRules; 5486] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54851,6 +54860,7 @@ pub(super) static RULES: [&CardRules; 5485] = [
     &card_5482::RULES,
     &card_5483::RULES,
     &card_5484::RULES,
+    &card_5485::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

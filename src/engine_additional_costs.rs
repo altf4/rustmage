@@ -991,6 +991,9 @@ impl Game {
             | EffectChoiceKind::EmpowerJace(_)
             | EffectChoiceKind::HandToTop
             | EffectChoiceKind::ExileCardFromAnyGraveyard
+            | EffectChoiceKind::ExileCreatureAndGraveyard
+            | EffectChoiceKind::CoverUpGraveyardCard
+            | EffectChoiceKind::CoverUpSearch { .. }
             | EffectChoiceKind::CopyExiledTriggerCreature
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileSourceAndNamed { .. }

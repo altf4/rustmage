@@ -1,16 +1,28 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from Oracle and the pinned XMage implementation.
+const REDUCTION: SpellReduction = SpellReduction {
+    source_only: false,
+    filter: CastFilter::Any,
+    amount: SpellReductionAmount::Fixed(2),
+    turn: CostTurn::GraveyardOrExile,
+    guard: StepGuard::Always,
+};
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(2, 3),
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::CostReduction(0, REDUCTION)],
+        },
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::PlotCostReduction(2)],
+        },
+    ],
+    extras: &CardExtras {
+        cost_reductions: &[REDUCTION],
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

@@ -11,6 +11,7 @@ mod hartford_blight;
 mod hartford_braided_net;
 mod hartford_craft_core;
 mod hartford_exile_play;
+mod hartford_grave_exile;
 mod hartford_replacements;
 mod hartford_restless_reef;
 mod hartford_returns;
@@ -37,6 +38,7 @@ mod requested_ghost;
 mod requested_hunters_talent;
 mod requested_inevitable_defeat;
 mod requested_pyrrhic_strike;
+mod requested_reduction;
 mod requested_waterbend;
 
 fn scenario(p: Player) -> Game {

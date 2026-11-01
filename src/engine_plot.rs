@@ -24,6 +24,23 @@ impl PlotState {
     }
 }
 impl Game {
+    pub(super) fn reduced_plot_cost(&self, actor: Player, cost: ManaCost) -> ManaCost {
+        let reduction = self.state.static_sources.iter().copied().filter(|&id| {
+            self.on_battlefield(id) && self.state.objects[id as usize].controller == actor
+        }).flat_map(|id| {
+            self.state.objects[id as usize].card.static_ability_groups().iter().flat_map(move |group| {
+                group.fragments.iter().filter_map(move |fragment| match *fragment {
+                    crate::cards::StaticAbilityFragment::PlotCostReduction(amount)
+                        if self.continuous_fragment_available(id, |candidate| matches!(candidate, crate::cards::StaticAbilityFragment::PlotCostReduction(n) if *n == amount)) => Some(amount),
+                    _ => None,
+                })
+            })
+        }).fold(0u32, u32::saturating_add);
+        ManaCost {
+            generic: cost.generic.saturating_sub(reduction),
+            ..cost
+        }
+    }
     pub(super) fn plot_payment(&self) -> Option<&PlotPaymentView> {
         self.state.plot.as_ref().and_then(|p| p.payment.as_ref())
     }
@@ -41,7 +58,10 @@ impl Game {
             object: self.object_ref(card),
             source_card: self.state.objects[card as usize].card,
             controller: actor,
-            cost: self.state.objects[card as usize].card.plot_cost().unwrap(),
+            cost: self.reduced_plot_cost(
+                actor,
+                self.state.objects[card as usize].card.plot_cost().unwrap(),
+            ),
         };
         self.state.plot.get_or_insert_with(Default::default).payment = Some(payment);
         self.state.pending = Pending::PlotPayment { player: actor };
