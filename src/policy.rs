@@ -201,6 +201,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
             | Action::SelectGraveyardReturn { .. }
+            | Action::AnnounceSourceGrant { .. }
             | Action::SelectLand { .. }
             | Action::SelectResolutionExile { .. } => 50,
             Action::ProliferatePermanent { .. } | Action::ProliferatePlayer { .. } => 50,

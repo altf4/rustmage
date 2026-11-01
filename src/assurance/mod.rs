@@ -17,6 +17,7 @@ mod hartford_grave_exile;
 mod hartford_leatherhead;
 mod hartford_library_selection;
 mod hartford_lively_dirge;
+mod hartford_mana_restrictions;
 mod hartford_removal;
 mod hartford_replacements;
 mod hartford_restless_reef;
@@ -25,6 +26,7 @@ mod hartford_revelation;
 mod hartford_riverchurn;
 mod hartford_sacrifice;
 mod hartford_sawblades;
+mod hartford_speed;
 mod hartford_suppression;
 mod interactions;
 mod issue_93_aetherspark;
@@ -51,7 +53,6 @@ mod requested_pyrrhic_strike;
 mod requested_reduction;
 mod requested_sunderflock;
 mod requested_waterbend;
-mod hartford_mana_restrictions;
 
 fn scenario(p: Player) -> Game {
     let mut g = Game::new(Config {
@@ -87,6 +88,7 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     assert!(
         card.is_supported()
             || name == "Carnage, Crimson Chaos"
+            || name == "Perilous Snare"
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"

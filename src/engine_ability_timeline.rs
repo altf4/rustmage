@@ -56,6 +56,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }

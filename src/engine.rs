@@ -562,6 +562,7 @@ define_actions! {
     SelectLand { object: ObjectRef },
     SelectGraveyardReturn { object: ObjectRef },
     FinishGraveyardReturn,
+    AnnounceSourceGrant { source: ObjectRef, ability: u16 },
     SelectResolutionExile { object: ObjectRef },
     ProliferatePermanent { object: ObjectRef },
     ProliferatePlayer { player: Player },
@@ -991,6 +992,8 @@ struct PlayerState {
     turns_started: u8,
     /// Persistent public designation; never reset by turn or zone changes.
     enduring_story: bool,
+    speed: u8,
+    speed_triggered_this_turn: bool,
     turn_facts: TurnFactsView,
     hexproof_until_end_turn: bool,
     mountain_mana_bonus: u32,
@@ -1173,6 +1176,7 @@ fn is_false(value: &bool) -> bool {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SourceLessRule {
     Radiation,
+    Speed,
 }
 
 /// Object-backed stack source, absent for inherent game-rule abilities.
@@ -1830,6 +1834,10 @@ impl SpellView {
                 rule: SourceLessRule::Radiation,
                 ..
             } => Some((TargetPlan::NONE, &[Instruction::ResolveRadiation])),
+            StackKind::InherentRule {
+                rule: SourceLessRule::Speed,
+                ..
+            } => Some((TargetPlan::NONE, &[Instruction::IncreaseSpeed])),
         }
     }
 }
@@ -2666,6 +2674,9 @@ pub struct PlayerCounterAmountView {
     pub count: u64,
 }
 
+fn is_zero_u8(value: &u8) -> bool {
+    *value == 0
+}
 fn is_zero_u64(value: &u64) -> bool {
     *value == 0
 }
@@ -2673,6 +2684,10 @@ fn is_zero_u64(value: &u64) -> bool {
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub enduring_story: bool,
+    #[serde(skip_serializing_if = "is_zero_u8")]
+    pub speed: u8,
+    #[serde(skip_serializing_if = "is_false")]
+    pub speed_triggered_this_turn: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_cast_grants: Option<PlayerCastGrantsView>,
     pub hexproof_until_end_turn: bool,
@@ -3311,6 +3326,8 @@ impl Game {
         let mut players = std::array::from_fn(|_| PlayerState {
             turns_started: 0,
             enduring_story: false,
+            speed: 0,
+            speed_triggered_this_turn: false,
             turn_facts: TurnFactsView::default(),
             hexproof_until_end_turn: false,
             mountain_mana_bonus: 0,
@@ -4668,6 +4685,12 @@ impl Game {
                     }
                     if obj.zone == Zone::Battlefield
                         && self.visit_attached_activations(card, actor, &mut emit)
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Battlefield
+                        && !self.nonmana_actions_prohibited()
+                        && self.visit_source_grants(card, actor, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -7143,6 +7166,9 @@ impl Game {
                 self.finish_proliferate();
                 self.run_program();
             }
+            Action::AnnounceSourceGrant { source, ability } => {
+                self.announce_planeswalker_grant(source, source, ability)
+            }
             Action::PutHandCreature { object }
             | Action::PutHandPermanent { object }
             | Action::PutHandLand { object }
@@ -8802,6 +8828,7 @@ impl Game {
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
+            player.speed_triggered_this_turn = false;
             player.attacked_this_turn = false;
             player.greatest_declared_attack_power_this_turn = None;
         }
@@ -9801,6 +9828,8 @@ impl Game {
             },
             players: std::array::from_fn(|i| PlayerView {
                 enduring_story: s.players[i].enduring_story,
+                speed: s.players[i].speed,
+                speed_triggered_this_turn: s.players[i].speed_triggered_this_turn,
                 turn_cast_grants: self.player_cast_grants_view(i),
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 turns_started: s.players[i].turns_started,

@@ -47,6 +47,10 @@ pub(crate) enum AdditionalTriggerScope {
 pub(crate) enum StaticAbilityFragment {
     /// Cast the exact card exiled by this source's linked hand-reveal ability at threshold.
     CastLinkedExileAtThreshold,
+    /// Initiates its controller's persistent speed designation as a state-based action.
+    StartYourEngines,
+    /// A layer-six activated-ability template granted to this source at max speed.
+    SourceMaxSpeedActivation(u16),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.

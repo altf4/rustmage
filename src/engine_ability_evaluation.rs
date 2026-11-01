@@ -134,6 +134,19 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::SourceMaxSpeedActivation(ability) => {
+            if id != source.card
+                || world.game().state.players[provider.controller.index()].speed < 4
+            {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::HarnessedTrigger(ability) => {
             if id != source.card || !world.harnessed(source.card) {
                 return None;
@@ -350,7 +363,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
             source.zone == Zone::Battlefield
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| matches!(
-                        fragment, StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
+                        fragment, StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                     ))
                 })
         })
@@ -523,6 +536,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceCounterCreature { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
+                        | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)

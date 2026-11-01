@@ -314,6 +314,16 @@ impl Game {
         if amount <= 0 {
             return;
         }
+        let active = self.state.active;
+        let designation = &mut self.state.players[active.index()];
+        if player != active
+            && designation.speed > 0
+            && designation.speed < 4
+            && !designation.speed_triggered_this_turn
+        {
+            designation.speed_triggered_this_turn = true;
+            self.queue_inherent_trigger(SourceLessRule::Speed, active);
+        }
         let sources: Vec<_> = self
             .state
             .life_sources
@@ -4559,6 +4569,19 @@ impl Game {
                         owned,
                         replacements::ResumeMode::Program,
                     );
+                }
+                Instruction::IncreaseSpeed => {
+                    let StackKind::InherentRule {
+                        rule: SourceLessRule::Speed,
+                        affected_player,
+                    } = item.kind
+                    else {
+                        unreachable!()
+                    };
+                    let speed = &mut self.state.players[affected_player.index()].speed;
+                    if *speed < 4 {
+                        *speed += 1;
+                    }
                 }
                 Instruction::ResolveRadiation => {
                     let StackKind::InherentRule {

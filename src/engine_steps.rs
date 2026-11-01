@@ -99,10 +99,14 @@ impl Game {
         {
             return;
         }
+        self.queue_inherent_trigger(SourceLessRule::Radiation, player);
+    }
+
+    pub(super) fn queue_inherent_trigger(&mut self, rule: SourceLessRule, player: Player) {
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
             source: None,
-            source_less_rule: Some(SourceLessRule::Radiation),
+            source_less_rule: Some(rule),
             target_type_slots: None,
             additional_triggers: 0,
             loyalty_counters_paid: 0,
@@ -139,7 +143,7 @@ impl Game {
             evidence_collected: false,
             id,
             kind: StackKind::InherentRule {
-                rule: SourceLessRule::Radiation,
+                rule,
                 affected_player: player,
             },
 
