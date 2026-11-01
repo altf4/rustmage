@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fd2923845d7fe54033b3fd94705782d6d6bc53c521951cd8e1816da13c61b4a7",
+  "catalogue_version": "1f0d39c16225adedf46ff77707df01317d61a7047ecca8191679977f62f30899",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2953,
-  "implemented_total": 2959,
+  "implemented_standard_cards": 2955,
+  "implemented_total": 2961,
   "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -168,8 +168,8 @@
     },
     "tla": {
       "total": 278,
-      "gated": 184,
-      "complete": 94
+      "gated": 182,
+      "complete": 96
     },
     "tle": {
       "total": 5,
@@ -1042,8 +1042,8 @@
     {
       "name": "Airbender Ascension",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/airbender_ascension.rs",
       "set": "tla"
     },
@@ -1698,8 +1698,8 @@
     {
       "name": "Appa, Steadfast Guardian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/appa_steadfast_guardian.rs",
       "set": "tla"
     },
