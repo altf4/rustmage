@@ -131,14 +131,17 @@ fn inherited_once_per_turn_limit_applies_per_donor_to_mana_and_funding() {
         let other = fixture(&mut g, p, "Forest", Zone::Exile);
         let other = g.object_ref(other);
         let reference = g.object_ref(source);
-        g.state.borrowed_links.get_or_insert_default().push(borrowed_activations::Link {
-            source: reference,
-            origin: None,
-            exiled: other,
-            first_slot: 2 * borrowed_activations::DONOR_SLOT_WIDTH,
-            width: borrowed_activations::DONOR_SLOT_WIDTH,
-            once_per_turn: false,
-        });
+        g.state
+            .borrowed_links
+            .get_or_insert_default()
+            .push(borrowed_activations::Link {
+                source: reference,
+                origin: None,
+                exiled: other,
+                first_slot: 2 * borrowed_activations::DONOR_SLOT_WIDTH,
+                width: borrowed_activations::DONOR_SLOT_WIDTH,
+                once_per_turn: false,
+            });
         checked(&mut g, action(other));
         finish(&mut g);
         g.state.objects[source as usize].tapped = false;
