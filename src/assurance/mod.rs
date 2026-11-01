@@ -78,7 +78,6 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     assert!(
         card.is_supported()
             || name == "Ghost Vacuum"
-            || name == "Floodpits Drowner"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
             || name == "Braided Net"
