@@ -604,6 +604,40 @@ impl Game {
             })
         })
     }
+    pub(super) fn exile_opponent_top_face_down_play_x(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let Some(opponent) = item.targets.iter().find_map(|target| match target.target {
+            Target::Player(player) => Some(player),
+            _ => None,
+        }) else {
+            return;
+        };
+        let ids = top_library_cards(self, opponent, u128::from(item.x.unwrap_or(0)));
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if !event.moved || event.destination != Zone::Exile {
+                continue;
+            }
+            self.state
+                .linked_choices
+                .get_or_insert_default()
+                .hidden
+                .push((source.object, event.after, 1 << item.controller.index()));
+            self.grant_exile_play_permission(item.controller, event.after, false);
+            if let Some(permission) = self
+                .state
+                .exile_permissions
+                .iter_mut()
+                .find(|p| p.player == item.controller && p.object == event.after)
+            {
+                permission.expiry = ExilePlayExpiry::WhileExiled;
+                permission.spend_any_mana = true;
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
     pub(super) fn exile_top_face_down_play(
         &mut self,
         item: &SpellView,

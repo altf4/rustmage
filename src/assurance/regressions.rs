@@ -1706,7 +1706,9 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
 fn schema197_new_card(card: Card) -> bool {
     matches!(
         card.identity(),
-        "Sunspine Lynx"
+        "Outrageous Robbery"
+            | "Interdimensional Web Watch"
+            | "Sunspine Lynx"
             | "Vren, the Relentless"
             | "@token/blb-vren-rat"
             | "Airbender Ascension"
@@ -1846,7 +1848,18 @@ fn schema197_packet_supported(item: &SpellView) -> bool {
 /// representation. Keep all outside-owned states conservative until their
 /// complete future behavior has an equivalent old-contract proof.
 fn prior_schema197_state_supported(state: &State) -> bool {
-    state.players.iter().all(|player| player.controlled_creatures_exiled_this_turn == 0)
+    state.mana_lots.as_ref().is_none_or(|mana| {
+        let safe = |quality: &mana_lots::Quality| {
+            quality.restriction != mana_lots::ManaRestrictionView::CastFromExile
+                && quality.copy_source.as_ref().is_none_or(|source| !schema197_new_card(source.card) && !schema197_new_card(source.definition) && schema197_facts_supported(&source.facts))
+        };
+        mana.trace.is_none() && mana.replay.is_none() && mana.choice.is_none()
+            && mana.prepared.is_none()
+            && mana.pools.iter().flat_map(|pool| pool.iter()).all(|lot| safe(&lot.quality))
+            && mana.effect_quality.as_ref().is_none_or(safe)
+            && mana.announcement_quality.as_ref().is_none_or(|(_, quality)| safe(quality))
+    })
+        && state.players.iter().all(|player| player.controlled_creatures_exiled_this_turn == 0)
         && state.exile_permissions.iter().all(|permission| !permission.airbend)
         && state.roles.as_ref().is_none_or(|roles| {
             !roles.prohibit_opponent_nonhand_casts.iter().any(|&active| active)
@@ -1986,7 +1999,10 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
             serde_json::Value::String(text)
                 if matches!(
                     text.as_str(),
-                    "Sunspine Lynx"
+                    "Outrageous Robbery"
+                        | "Interdimensional Web Watch"
+                        | "CastFromExile"
+                        | "Sunspine Lynx"
                         | "Vren, the Relentless"
                         | "@token/blb-vren-rat"
                         | "Airbend"
@@ -2058,6 +2074,9 @@ fn prior_schema197_rejects_airbend_rights_and_actions() {
         r#"[{"exile_permissions":[{"airbend":true}]}]"#,
         r#"[{"card":"Requiting Hex"}]"#,
         r#"[{"card":"Moonshadow"}]"#,
+        r#"[{"card":"Outrageous Robbery"}]"#,
+        r#"[{"card":"Interdimensional Web Watch"}]"#,
+        r#"[{"restriction":"CastFromExile"}]"#,
         r#"[{"card":"Sunspine Lynx"}]"#,
         r#"[{"card":"Vren, the Relentless"}]"#,
         r#"[{"card":"@token/blb-vren-rat"}]"#,

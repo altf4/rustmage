@@ -11,6 +11,7 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
     ExceptCastFromHand,
+    CastFromExile,
     ArtifactSpell,
     ExceptNonArtifactSpells,
     SubtypeSpellOrActivation(&'static str),
@@ -125,6 +126,7 @@ impl Quality {
         Self {
             restriction: match quality.restriction {
                 ManaRestriction::ExceptCastFromHand => ManaRestrictionView::ExceptCastFromHand,
+                ManaRestriction::CastFromExile => ManaRestrictionView::CastFromExile,
                 ManaRestriction::EquipmentSpellOrEquip => {
                     ManaRestrictionView::EquipmentSpellOrEquip
                 }
@@ -186,6 +188,9 @@ impl Quality {
             ManaRestrictionView::ExceptCastFromHand => {
                 !matches!(purpose, Purpose::Spell(source) if source.cast_from_hand)
             }
+            ManaRestrictionView::CastFromExile => {
+                matches!(purpose, Purpose::Spell(source) if source.cast_from_exile)
+            }
             ManaRestrictionView::EquipmentSpellOrEquip => match purpose {
                 Purpose::Spell(facts) => facts.has_subtype("Equipment"),
                 Purpose::Activation(facts) => facts.equip,
@@ -246,6 +251,7 @@ pub(super) struct Source {
     pub foreign_stash: bool,
     /// Frozen cast origin; irrelevant for abilities and non-cast payments.
     pub cast_from_hand: bool,
+    pub cast_from_exile: bool,
     pub spend_any_mana: bool,
     pub linked_mana_source: Option<(ObjectRef, Option<u64>)>,
     pub equip: bool,
@@ -265,6 +271,7 @@ impl Source {
             subtypes: world.subtypes(id),
             foreign_stash: false,
             cast_from_hand: false,
+            cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
             equip: false,
@@ -280,6 +287,7 @@ impl Source {
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
             cast_from_hand: false,
+            cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
             equip: false,
@@ -294,6 +302,7 @@ impl From<DamageFacts> for Source {
             subtypes: facts.granted_subtypes,
             foreign_stash: false,
             cast_from_hand: false,
+            cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
             equip: false,
@@ -769,6 +778,7 @@ impl Game {
                         .get(identity.object.card as usize)
                         .is_some_and(|object| object.owner == c.caster)
             });
+            source.cast_from_exile = item.cast.is_some_and(|c| c.origin == Zone::Exile);
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
             source.linked_mana_source =
                 self.threshold_linked_source(item.source.expect("object-backed packet").id);
@@ -814,6 +824,14 @@ impl Game {
                 .and_then(|a| a.item.cast.map(|cast| cast.origin))
                 .unwrap_or(self.state.objects[card as usize].zone)
                 == Zone::Hand;
+        source.cast_from_exile = self
+            .state
+            .announcing
+            .as_ref()
+            .filter(|a| a.item.source.is_some_and(|source| source.id == card))
+            .and_then(|a| a.item.cast.map(|cast| cast.origin))
+            .unwrap_or(self.state.objects[card as usize].zone)
+            == Zone::Exile;
         let airbend_announcement = self.state.announcing.as_ref().is_some_and(|a| {
             a.item.source.is_some_and(|source| source.id == card)
                 && a.item

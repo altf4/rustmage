@@ -1449,6 +1449,7 @@ impl<'g> FundingState<'g> {
                             card: object.card,
                             foreign_stash: false,
                             cast_from_hand: false,
+                            cast_from_exile: false,
                             spend_any_mana: false,
                             linked_mana_source: None,
                             equip: ability.is_equip(),
@@ -1947,7 +1948,8 @@ impl<'g> FundingState<'g> {
                 let spell_only = inert_spell_lots
                     && matches!(
                         lot.quality.restriction,
-                        mana_lots::ManaRestrictionView::ArtifactSpell
+                        mana_lots::ManaRestrictionView::CastFromExile
+                            | mana_lots::ManaRestrictionView::ArtifactSpell
                             | mana_lots::ManaRestrictionView::InstantSorcery
                             | mana_lots::ManaRestrictionView::NoncreatureSpell
                             | mana_lots::ManaRestrictionView::PlaneswalkerSpell
@@ -2400,7 +2402,7 @@ impl<'g> FundingState<'g> {
                     !matches!(fragment, StaticAbilityFragment::LandMana {
                         production: ManaProduction::Tagged { quality, .. }, ..
                     } if matches!(quality.restriction,
-                        ManaRestriction::ArtifactSpell | ManaRestriction::InstantSorcery
+                        ManaRestriction::CastFromExile | ManaRestriction::ArtifactSpell | ManaRestriction::InstantSorcery
                         | ManaRestriction::NoncreatureSpell | ManaRestriction::PlaneswalkerSpell
                         | ManaRestriction::SpellSubtype(_))
                         && !mana_lots::Quality::capture(self, id as CardId, **quality).eligible(purpose))

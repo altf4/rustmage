@@ -500,6 +500,8 @@ pub(crate) struct ChosenModifier {
 pub(crate) enum ManaRestriction {
     /// Any cost except casting a spell from a hand.
     ExceptCastFromHand,
+    /// Only spells cast from exile.
+    CastFromExile,
     /// Only the costs of casting a spell with the artifact card type.
     ArtifactSpell,
     /// Any cost except casting a spell without the artifact card type.
@@ -1082,6 +1084,7 @@ pub(crate) enum Instruction {
     /// Return the exact source incarnation exiled as an activation cost, transformed.
     ReturnCraftedSourceTransformed,
     /// Privately exile top cards; paid play remains conditional on a current subtype.
+    ExileOpponentTopFaceDownPlayX,
     ExileTopFaceDownPlay {
         amount: u16,
         subtype: &'static str,

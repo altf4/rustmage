@@ -5540,6 +5540,9 @@ impl Game {
                 Instruction::ReturnCraftedSourceTransformed => {
                     self.return_crafted_source_transformed(&item)
                 }
+                Instruction::ExileOpponentTopFaceDownPlayX => {
+                    self.exile_opponent_top_face_down_play_x(&item)
+                }
                 Instruction::ExileTopFaceDownPlay { amount, subtype } => {
                     self.exile_top_face_down_play(&item, amount, subtype)
                 }
