@@ -121,7 +121,9 @@ fn starcage_exiles_both_sides_and_converts_only_cards_that_reach_a_graveyard() {
                 .objects
                 .iter()
                 .filter(|o| {
-                    o.zone == Zone::Battlefield && o.controller == p && o.card == Card(5309)
+                    o.zone == Zone::Battlefield
+                        && o.controller == p
+                        && o.card == Card::from_name("@token/c9fd6abc12b4083149908964").unwrap()
                 })
                 .count();
             assert_eq!(robots, if replacement { 0 } else { 2 });
