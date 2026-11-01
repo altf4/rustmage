@@ -22,6 +22,7 @@ pub enum ManaRestrictionView {
     Unavailable,
     SpellSubtype(&'static str),
     CreatureSpellOrActivation(CreatureType),
+    CreatureSpell(CreatureType),
     EquipmentSpellOrEquip,
     CreatureActivation,
     AbilityActivation,
@@ -30,6 +31,7 @@ pub enum ManaRestrictionView {
 pub enum ManaSpellBonusView {
     None,
     DragonCreatureHaste,
+    Uncounterable,
     CopyRedInstantSorcery,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -83,6 +85,7 @@ impl ManaCopySource {
 pub(super) struct SpendOutcome {
     pub treasure_spent: bool,
     pub haste: bool,
+    pub uncounterable: bool,
     #[allow(clippy::box_collection)]
     pub copies: Option<Box<Vec<(ManaCopySource, u64)>>>,
 }
@@ -147,6 +150,14 @@ impl Quality {
                 ManaRestriction::SpellSubtype(subtype) => {
                     ManaRestrictionView::SpellSubtype(subtype)
                 }
+                ManaRestriction::ChosenCreatureSpell => {
+                    match world.entry_value(world.reference(source)) {
+                        Some(EntryChoiceValue::CreatureType(kind)) => {
+                            ManaRestrictionView::CreatureSpell(kind)
+                        }
+                        _ => ManaRestrictionView::Unavailable,
+                    }
+                }
                 ManaRestriction::ChosenCreatureSpellOrActivation => {
                     match world.entry_value(world.reference(source)) {
                         Some(EntryChoiceValue::CreatureType(kind)) => {
@@ -158,6 +169,7 @@ impl Quality {
             },
             spell_bonus: match quality.spell_bonus {
                 ManaSpellBonus::None => ManaSpellBonusView::None,
+                ManaSpellBonus::Uncounterable => ManaSpellBonusView::Uncounterable,
                 ManaSpellBonus::DragonCreatureHaste => ManaSpellBonusView::DragonCreatureHaste,
                 ManaSpellBonus::CopyRedInstantSorcery => ManaSpellBonusView::CopyRedInstantSorcery,
             },
@@ -225,6 +237,9 @@ impl Quality {
             ManaRestrictionView::Unavailable => false,
             ManaRestrictionView::SpellSubtype(subtype) => {
                 matches!(purpose, Purpose::Spell(facts) if facts.has_subtype(subtype))
+            }
+            ManaRestrictionView::CreatureSpell(kind) => {
+                matches!(purpose, Purpose::Spell(facts) if facts.kinds & CREATURE_KIND != 0 && facts.has_subtype(kind.name()))
             }
             ManaRestrictionView::CreatureSpellOrActivation(kind) => match purpose {
                 Purpose::Spell(facts) | Purpose::Activation(facts) => {
@@ -931,6 +946,12 @@ impl Game {
         {
             if allocation != [0; 6] && original.quality.treasure_source {
                 outcome.treasure_spent = true;
+            }
+            if allocation != [0; 6]
+                && original.quality.spell_bonus == ManaSpellBonusView::Uncounterable
+                && matches!(purpose, Purpose::Spell(_))
+            {
+                outcome.uncounterable = true;
             }
             if allocation != [0; 6] && original.quality.grants_haste(purpose) {
                 outcome.haste = true

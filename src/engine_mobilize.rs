@@ -202,7 +202,13 @@ impl Game {
             return;
         };
         let ids = tokens.iter().map(|r| r.card).collect::<Vec<_>>();
-        self.grant_keyword_effects(&ids, source.object, Keywords::HASTE);
+        // Molten Duplication grants haste independently; Fire Crystal's copies
+        // obtain haste only from its ordinary continuous battlefield ability.
+        if item.program().is_none_or(|(_, program)| {
+            !program.contains(&Instruction::CreateCopyWithDelayedSacrifice)
+        }) {
+            self.grant_keyword_effects(&ids, source.object, Keywords::HASTE);
+        }
         let id = self.next_stack_id();
         let batch = DelayedBatch {
             view: DelayedSacrificeView {

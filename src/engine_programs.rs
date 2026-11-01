@@ -4994,6 +4994,11 @@ impl Game {
                 Instruction::CopyOtherControlledNonlands => {
                     self.copy_other_controlled_nonlands(&item);
                 }
+                Instruction::CreateCopyWithDelayedSacrifice => {
+                    if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        self.stage_temporary_copy_creation(&item, recipe);
+                    }
+                }
                 Instruction::CreateTemporaryArtifactCopy => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
                         self.stage_temporary_copy_creation(

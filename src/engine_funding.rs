@@ -1955,6 +1955,7 @@ impl<'g> FundingState<'g> {
                             | mana_lots::ManaRestrictionView::NoncreatureSpell
                             | mana_lots::ManaRestrictionView::PlaneswalkerSpell
                             | mana_lots::ManaRestrictionView::SpellSubtype(_)
+                            | mana_lots::ManaRestrictionView::CreatureSpell(_)
                     );
                 if !spell_only {
                     return Some(lot.clone());
@@ -2405,7 +2406,7 @@ impl<'g> FundingState<'g> {
                     } if matches!(quality.restriction,
                         ManaRestriction::CastFromExile | ManaRestriction::ArtifactSpell | ManaRestriction::InstantSorcery
                         | ManaRestriction::NoncreatureSpell | ManaRestriction::PlaneswalkerSpell
-                        | ManaRestriction::SpellSubtype(_))
+                        | ManaRestriction::SpellSubtype(_) | ManaRestriction::ChosenCreatureSpell)
                         && !mana_lots::Quality::capture(self, id as CardId, **quality).eligible(purpose))
                 })
             }) {

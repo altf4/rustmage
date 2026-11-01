@@ -523,6 +523,7 @@ pub(crate) enum ManaRestriction {
     Unrestricted,
     SpellSubtype(&'static str),
     ChosenCreatureSpellOrActivation,
+    ChosenCreatureSpell,
     EquipmentSpellOrEquip,
     CreatureActivation,
     /// Only costs of activating abilities, including mana abilities.
@@ -532,6 +533,7 @@ pub(crate) enum ManaRestriction {
 pub(crate) enum ManaSpellBonus {
     None,
     DragonCreatureHaste,
+    Uncounterable,
     CopyRedInstantSorcery,
 }
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize)]
@@ -1324,6 +1326,8 @@ pub(crate) enum Instruction {
         life: u32,
     },
     CreateTemporaryArtifactCopy,
+    /// A normal token copy with source-independent next-end-step sacrifice.
+    CreateCopyWithDelayedSacrifice,
     BecomeCopy(InPlaceCopySpec),
     /// Copy a chosen card from the trigger's exact exile batch onto its token target.
     CopyChosenExiledTriggerCreature,

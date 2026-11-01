@@ -1878,6 +1878,9 @@ impl Game {
         }
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
+        if outcome.uncounterable {
+            self.mark_spell_uncounterable(id);
+        }
         item.cast.as_mut().unwrap().treasure_mana_spent |= outcome.treasure_spent;
         item.mana_copy_sources = outcome.copies;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
@@ -2393,6 +2396,9 @@ impl Game {
                     payment,
                     self.purpose_for_item(&announcement.item),
                 );
+                if outcome.uncounterable {
+                    self.mark_spell_uncounterable(announcement.item.id);
+                }
                 if outcome.haste {
                     self.grant_stack_keywords(
                         announcement
