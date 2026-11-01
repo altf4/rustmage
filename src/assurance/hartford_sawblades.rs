@@ -572,3 +572,27 @@ fn craft_source_first_can_end_a_material_exile_prohibition() {
         TEST_EXILE_PROHIBITOR.with(|p| p.set(None));
     }
 }
+#[test]
+fn craft_material_exile_queues_the_departing_permanents_craft_trigger() {
+    use super::hartford_craft_core::{begin_craft, craft_mana, craft_material, craft_source};
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let source = put(&mut g, player, "Spring-Loaded Sawblades", Zone::Battlefield);
+        let material = put(&mut g, player, "@test/manifest-observer", Zone::Graveyard);
+        let mut entry = g.entry_move(material, Zone::Battlefield, false);
+        entry.artifact_return = true;
+        g.stage_entries(vec![entry], None);
+        assert_ne!(g.current_kinds(material) & 16, 0);
+        begin_craft(&mut g, source, 0);
+        craft_material(&mut g, material);
+        assert_eq!(g.object_view(material).zone, Zone::Exile);
+        assert_eq!(g.state.pending_triggers.len(), 1);
+        let movement = g.state.pending_triggers[0].source_move.as_ref().unwrap();
+        assert_eq!(movement.before.card, material);
+        assert_eq!(movement.after, g.object_ref(material));
+        craft_source(&mut g);
+        craft_mana(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).card.name(), "Bladewheel Chariot");
+    }
+}
