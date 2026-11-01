@@ -6428,6 +6428,7 @@ fn schema180_audits_hidden_borrowed_slot_definitions_and_rollbacks() {
                 exiled,
                 first_slot: 0,
                 width: 1,
+                once_per_turn: false,
             });
         g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
         let slots = g.state.borrowed_slots.as_ref().unwrap();
@@ -7264,6 +7265,7 @@ fn prior_projection_rejects_hidden_retained_borrowing_state() {
                 exiled: donor_ref,
                 first_slot: 0,
                 width: 1,
+                once_per_turn: false,
             });
         assert!(game.observe(player).borrowed_abilities.is_empty());
         assert!(!prior_behold_owned_state_supported(&game));

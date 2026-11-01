@@ -1395,8 +1395,9 @@ impl<'g> FundingState<'g> {
                 if borrowed.is_some() {
                     ready_object.used_abilities = 0;
                 }
-                if borrowed.is_some_and(|a| a.used && (ability.once_per_turn || ability.exhaust))
-                    || !self.guard_available(ability.guard, entry.id, goal.actor)
+                if borrowed.is_some_and(|a| {
+                    a.used && (a.once_per_turn || ability.once_per_turn || ability.exhaust)
+                }) || !self.guard_available(ability.guard, entry.id, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         &ready_object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),

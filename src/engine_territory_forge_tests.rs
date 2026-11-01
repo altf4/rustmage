@@ -72,6 +72,79 @@ fn borrowed(g: &Game, id: CardId, index: u16) -> BorrowedAbilityView {
         .find(|a| a.source.card == id && a.ability == index)
         .unwrap()
 }
+
+#[test]
+fn inherited_once_per_turn_limit_applies_per_donor_to_mana_and_funding() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = fixture(&mut g, p, "@test/manifest-observer", Zone::Battlefield);
+        g.state.objects[source as usize].summoning_sick = false;
+        let mut donors = Vec::new();
+        for slot in 0..2 {
+            let donor = fixture(&mut g, p, "Forest", Zone::Exile);
+            let donor = g.object_ref(donor);
+            donors.push(donor);
+            let source = g.object_ref(source);
+            g.state
+                .borrowed_links
+                .get_or_insert_default()
+                .push(borrowed_activations::Link {
+                    source,
+                    origin: None,
+                    exiled: donor,
+                    first_slot: slot * borrowed_activations::DONOR_SLOT_WIDTH,
+                    width: borrowed_activations::DONOR_SLOT_WIDTH,
+                    once_per_turn: true,
+                });
+        }
+        let action = |donor| Action::AnnounceBorrowedMana {
+            card: source,
+            exiled: donor,
+            ability: u16::MAX - 5,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 1, 0],
+        };
+        checked(&mut g, action(donors[0]));
+        finish(&mut g);
+        g.state.objects[source as usize].tapped = false;
+        assert!(!g.legal_actions().contains(&action(donors[0])));
+        assert!(g.legal_actions().contains(&action(donors[1])));
+        let checkpoint = g.snapshot();
+        checked(&mut g, action(donors[1]));
+        finish(&mut g);
+        g.state.objects[source as usize].tapped = false;
+        g.state.players[p.index()].mana = [0; 6];
+        assert!(!g.can_fund(FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        }));
+        g.restore(&checkpoint).unwrap();
+        assert!(g.legal_actions().contains(&action(donors[1])));
+        next_turn(&mut g);
+        next_turn(&mut g);
+        assert!(g.legal_actions().contains(&action(donors[0])));
+        // A separately acquired borrowing effect on the same source is not
+        // constrained by the craft-linked donor's restriction.
+        let other = fixture(&mut g, p, "Forest", Zone::Exile);
+        let other = g.object_ref(other);
+        let reference = g.object_ref(source);
+        g.state.borrowed_links.get_or_insert_default().push(borrowed_activations::Link {
+            source: reference,
+            origin: None,
+            exiled: other,
+            first_slot: 2 * borrowed_activations::DONOR_SLOT_WIDTH,
+            width: borrowed_activations::DONOR_SLOT_WIDTH,
+            once_per_turn: false,
+        });
+        checked(&mut g, action(other));
+        finish(&mut g);
+        g.state.objects[source as usize].tapped = false;
+        assert!(g.legal_actions().contains(&action(other)));
+    }
+}
 fn announce(g: &mut Game, id: CardId, index: u16) {
     let b = borrowed(g, id, index);
     checked(
@@ -290,6 +363,7 @@ fn territory_forge_more_than_sixty_four_acquired_abilities_never_alias_usage() {
                     exiled,
                     first_slot: slot * borrowed_activations::DONOR_SLOT_WIDTH,
                     width: borrowed_activations::DONOR_SLOT_WIDTH,
+                    once_per_turn: false,
                 });
         }
         let descriptors = g.borrowed_ability_views();

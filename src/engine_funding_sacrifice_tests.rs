@@ -384,6 +384,7 @@ fn hob_sacrifice_funding_borrowed_activation_needs_projected_haste_before_cost()
                 exiled,
                 first_slot: 0,
                 width: 1,
+                once_per_turn: false,
             });
         let timestamp = g.next_role_timestamp();
         g.state
@@ -615,6 +616,7 @@ fn projected_borrowed_slots_match_owned_inventory_without_mutating_parent() {
                 exiled,
                 first_slot: 0,
                 width: 1,
+                once_per_turn: false,
             });
         g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
         let saved = g.snapshot();
