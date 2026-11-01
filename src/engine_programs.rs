@@ -7860,6 +7860,9 @@ impl Game {
                         .collect();
                     self.stage_entries(moves, None);
                 }
+                Instruction::ReturnToBattlefieldWithAttackTrigger(ability) => {
+                    self.return_target_with_attack_trigger(&item, ability);
+                }
                 Instruction::ReturnToBattlefieldUnderControl => {
                     let moves = item
                         .targets

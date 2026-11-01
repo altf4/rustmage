@@ -706,6 +706,7 @@ define_actions! {
         card: CardId,
     },
     AnnounceHarmonize { card: CardId },
+    AnnounceMayhem { card: CardId },
     AnnounceGraveyardBorrowedAbility { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters },
     AnnounceGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
     ActivateGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, payment: Mana, production: Mana },
@@ -1074,6 +1075,7 @@ pub enum CastMethod {
     GrantedFlashback,
     Flashback,
     Harmonize,
+    Mayhem,
     Miracle,
     Plot,
     Warp,
@@ -2368,6 +2370,7 @@ struct State {
     temporary_copies: temporary_copy::Rows,
     copy_grant_origins: copy_grant_origins::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
+    mayhem_discards: Option<SharedVec<ObjectRef>>,
     battlefield_graveyard_entries: Option<SharedVec<ObjectRef>>,
     nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
@@ -3039,6 +3042,8 @@ pub struct Observation {
     pub cards_exiled_this_turn: bool,
     pub creatures_died_this_turn: u64,
     pub graveyard_entries_this_turn: Vec<ObjectRef>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub mayhem_discards_this_turn: Vec<ObjectRef>,
     pub catalogue: &'static str,
     pub viewer: Player,
     pub revision: u64,
@@ -3427,6 +3432,7 @@ impl Game {
                 temporary_copies: None,
                 copy_grant_origins: None,
                 graveyard_entries: None,
+                mayhem_discards: None,
                 battlefield_graveyard_entries: None,
                 nightmare_cull: None,
                 stack_copy_data: None,
@@ -4995,6 +5001,20 @@ impl Game {
                             }
                         }
                     }
+                    if !casting_prohibited
+                        && self.can_cast_mayhem(actor, card)
+                        && self.permitted_cast_available(
+                            actor,
+                            card,
+                            CastMethod::Mayhem,
+                            CastFace::Normal,
+                            sorcery,
+                            false,
+                        )
+                        && emit(Action::AnnounceMayhem { card })
+                    {
+                        return true;
+                    }
                     if obj.zone == Zone::Graveyard
                         && obj.card.harmonize_cost().is_some()
                         && self.permitted_cast_available(
@@ -6435,6 +6455,14 @@ impl Game {
                     .x_symbols()
                     > 0
                 {
+                    item.x = Some(0);
+                }
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceMayhem { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::Mayhem;
+                if item.source.expect("mayhem source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
@@ -8749,6 +8777,7 @@ impl Game {
         self.state.cards_exiled_this_turn = false;
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
+        self.state.mayhem_discards = None;
         self.state.battlefield_graveyard_entries = None;
         for player in &mut self.state.players {
             player.turn_facts = TurnFactsView::default();
@@ -9645,6 +9674,10 @@ impl Game {
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             cards_exiled_this_turn: s.cards_exiled_this_turn,
             creatures_died_this_turn: s.creatures_died_this_turn,
+            mayhem_discards_this_turn: s
+                .mayhem_discards
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             graveyard_entries_this_turn: s
                 .graveyard_entries
                 .as_ref()
@@ -10404,6 +10437,9 @@ impl Game {
             + copies::owned_bytes(&s.copy_recipes)
             + temporary_copy::owned_bytes(&s.temporary_copies)
             + copy_grant_origins::owned_bytes(&s.copy_grant_origins)
+            + s.mayhem_discards.as_ref().map_or(0, |r| {
+                std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+            })
             + s.graveyard_entries.as_ref().map_or(0, |r| {
                 std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
             })
@@ -10882,3 +10918,6 @@ mod attacking_exile;
 #[cfg(test)]
 #[path = "engine_requested_sapling_tests.rs"]
 mod engine_requested_sapling_tests;
+
+#[path = "engine_mayhem.rs"]
+mod mayhem;

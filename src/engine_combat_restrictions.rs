@@ -161,6 +161,24 @@ impl Game {
     }
 
     pub(super) fn attacks_each_combat(&self, id: CardId) -> bool {
+        if self.on_battlefield(id)
+            && self
+                .state
+                .self_granted_abilities
+                .as_ref()
+                .is_some_and(|rows| {
+                    rows.iter().any(|row| {
+                        row.recipient == self.object_ref(id)
+                            && row.kind == SelfGrantedAbilityKind::AttacksEachCombat
+                            && row.expires_turn.is_none_or(|turn| turn == self.state.turn)
+                            && self
+                                .characteristic_query()
+                                .self_grant_available(row.recipient, row.timestamp)
+                    })
+                })
+        {
+            return true;
+        }
         self.on_battlefield(id)
             && self.state.objects[id as usize]
                 .card

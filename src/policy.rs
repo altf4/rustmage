@@ -331,7 +331,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceExileLife { .. }
             | Action::AnnounceExileFree { .. }
             | Action::AnnounceFlashback { .. }
-            | Action::AnnounceHarmonize { .. } => 79,
+            | Action::AnnounceHarmonize { .. }
+            | Action::AnnounceMayhem { .. } => 79,
             Action::AnnouncePlot { .. } | Action::BeginFaceUp { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }

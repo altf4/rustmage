@@ -422,6 +422,7 @@ impl Game {
                 | CastMethod::Free
                 | CastMethod::Flashback
                 | CastMethod::Harmonize
+                | CastMethod::Mayhem
                 | CastMethod::Miracle
         ) && definition.x_symbols() > 0
         {
@@ -450,6 +451,7 @@ impl Game {
                     | CastMethod::Free
                     | CastMethod::Flashback
                     | CastMethod::Harmonize
+                    | CastMethod::Mayhem
                     | CastMethod::Miracle
             )
         {

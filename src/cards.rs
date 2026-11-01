@@ -2326,6 +2326,8 @@ pub(crate) enum Instruction {
     },
     ReturnToBattlefield,
     ReturnToBattlefieldUnderControl,
+    /// Return under your control; grant attack-each-combat and a permanent triggered template.
+    ReturnToBattlefieldWithAttackTrigger(u16),
     /// Return legal target cards with an additional entry counter.
     ReturnToBattlefieldWithCounter(CounterKind),
     ReturnToBattlefieldTapped,
@@ -4752,6 +4754,9 @@ impl Card {
     }
     pub fn inset_parent(self) -> Option<Card> {
         self.adventure_parent().or_else(|| self.omen_parent())
+    }
+    pub(crate) fn mayhem_cost(self) -> Option<ManaCost> {
+        authored::rules(self).and_then(|r| r.extras.mayhem_cost)
     }
     pub(crate) fn harmonize_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|r| r.extras.harmonize_cost)

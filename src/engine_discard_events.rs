@@ -164,6 +164,7 @@ impl Game {
                 .checked_add(u64::from(count))
                 .capacity("cards discarded this turn representation exhausted");
         }
+        self.record_mayhem_discards(events);
         self.finish_zone_events(events, &[]);
         for event in events.iter().filter(|event| event.moved) {
             let player = event.before.owner;

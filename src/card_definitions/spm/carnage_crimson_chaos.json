@@ -8,5 +8,46 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5f5a2d9ea9204ac44022653160e4b56a6abbe2998026f5c9ee973e8134c1beb5"
   },
-  "physical_metadata_sha256": "ddf2ba71ebd8306270b969a5813d7d74afbad6fab90cd07fd185528b293023a3"
+  "physical_metadata_sha256": "ddf2ba71ebd8306270b969a5813d7d74afbad6fab90cd07fd185528b293023a3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CarnageCrimsonChaos.java",
+  "java_sha256": "4dc1139c7271ebecafefb7b4ef13894a655fe2e77dc0bdc51f721f525d73e238",
+  "rules_tests": "src/assurance/hartford_carnage.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MayhemAbility.java",
+      "sha256": "d366b312564c32ceadf7a3c8337c1b517edcb5ae0ede1ca54f349902411bc6d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksEachCombatStaticAbility.java",
+      "sha256": "85243fdf02d35648e569259e01a901a2b356807971b1db74bb8d27153c6ae40d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+      "sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/AttacksIfAbleSourceEffect.java",
+      "sha256": "d6230d30e62ef789a51c2584ff4b0d213f744792672d6fc99263ea6d9ba5194a"
+    }
+  ]
 }

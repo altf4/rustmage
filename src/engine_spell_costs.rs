@@ -120,6 +120,15 @@ impl Game {
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
+            if a.item.cast.is_some_and(|c| c.method == CastMethod::Mayhem) {
+                return a
+                    .item
+                    .source
+                    .expect("mayhem source")
+                    .card
+                    .mayhem_cost()
+                    .expect("mayhem cost");
+            }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Miracle) {
                 return a.miracle_cost.expect("miracle cost");
             }

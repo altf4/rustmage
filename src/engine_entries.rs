@@ -36,6 +36,8 @@ pub(super) struct EntryMove {
     pub effect_counter: Option<(CounterKind, u64)>,
     /// Timestamped ability grant after only this move actually enters.
     pub keywords_after: Option<(ObjectRef, Keywords)>,
+    /// Source-independent abilities granted only after this actual successful return.
+    pub attack_trigger_after: Option<Box<mayhem::ReturnedAbilityGrant>>,
     /// Only this surrounding return effect captures its actual public entry result.
     pub equipment_after: bool,
     /// Applied after entry observers freeze their facts, only on successful entry.
@@ -158,6 +160,7 @@ impl EntryMove {
             life_bonus: None,
             effect_counter: None,
             keywords_after: None,
+            attack_trigger_after: None,
             equipment_after: false,
             blank_with_haste_after: None,
             attach_equipment_to: None,
@@ -198,6 +201,12 @@ impl EntryBatch {
             })
             + self.discard_context.as_ref().map_or(0, |c| c.owned_bytes())
             + self.moves.len() * std::mem::size_of::<EntryMove>()
+            + self
+                .moves
+                .iter()
+                .filter(|m| m.attack_trigger_after.is_some())
+                .count()
+                * std::mem::size_of::<mayhem::ReturnedAbilityGrant>()
             + self
                 .moves
                 .iter()
@@ -755,6 +764,7 @@ impl Game {
         let mut equipment_results = Vec::new();
         let mut keyword_results = Vec::new();
         let mut ability_results = Vec::new();
+        let mut attack_trigger_results = Vec::new();
         let mut food_results = Vec::new();
         let mut artifact_results = Vec::new();
         let mut enchantment_results = Vec::new();
@@ -889,6 +899,11 @@ impl Game {
                     && let Some((source, keywords)) = movement.keywords_after
                 {
                     keyword_results.push((event.after, source, keywords));
+                }
+                if event.destination == Zone::Battlefield
+                    && let Some(grant) = movement.attack_trigger_after
+                {
+                    attack_trigger_results.push((event.after, grant));
                 }
                 if event.destination == Zone::Battlefield
                     && let Some(source) = movement.blank_with_haste_after
@@ -1065,6 +1080,9 @@ impl Game {
             if self.object_ref(recipient.card) == recipient && self.on_battlefield(recipient.card) {
                 self.grant_keyword_effects(&[recipient.card], source, keywords);
             }
+        }
+        for (recipient, grant) in attack_trigger_results {
+            self.grant_returned_attack_trigger(recipient, &grant);
         }
         for (recipient, source) in ability_results {
             self.blank_and_grant_haste(recipient, source);

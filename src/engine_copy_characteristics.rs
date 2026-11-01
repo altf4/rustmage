@@ -146,6 +146,7 @@ impl Game {
         after: ObjectRef,
         destination: Zone,
     ) {
+        self.forget_mayhem_discard(before.reference);
         // Only the resulting exact graveyard incarnation qualifies. A previous
         // Food may have been a noncreature on the battlefield, so record cards,
         // not just creature deaths; resolution checks current graveyard types.

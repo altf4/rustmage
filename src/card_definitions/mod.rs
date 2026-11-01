@@ -216,6 +216,7 @@ pub(super) struct CardExtras {
     pub sneak_cost: Option<ManaCost>,
     /// Graveyard alternative with an optional power-based creature tap.
     pub harmonize_cost: Option<ManaCost>,
+    pub mayhem_cost: Option<ManaCost>,
     pub vehicle_stats: Option<Stats>,
     pub replacement_effects: &'static [ReplacementSpec],
     pub attached_subtype: Option<&'static str>,
@@ -323,6 +324,7 @@ impl CardExtras {
         disguise_cost: None,
         sneak_cost: None,
         harmonize_cost: None,
+        mayhem_cost: None,
         vehicle_stats: None,
         replacement_effects: &[],
         attached_subtype: None,

@@ -91,6 +91,7 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
             || name == "Obsessive Pursuit"
             || name == "Cool but Rude"
             || name == "Wan Shi Tong, Librarian"
+            || name == "Carnage, Crimson Chaos"
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
@@ -479,3 +480,6 @@ mod hartford_draw;
 mod hartford_discard;
 
 mod hartford_draw_classes;
+
+#[path = "hartford_carnage.rs"]
+mod hartford_draw_carnage;
