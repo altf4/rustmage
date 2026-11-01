@@ -480,31 +480,31 @@ fn airbend_competing_prevention_and_redirect_replays_pending_choice() {
         // A synthetic battlefield-to-battlefield replacement currently hits the
         // engine's same-zone assertion. No supported real provider has that form;
         // exercise the replayed prevention branch here and a synthetic redirect below.
-        for outcome in [ZoneReplacementKind::Prevent] {
-            let action = Action::ChooseZoneReplacement { effect: outcome };
-            let index = game
-                .legal_actions()
-                .iter()
-                .position(|candidate| *candidate == action)
-                .unwrap();
-            let mut raw = game.clone();
-            let mut indexed = game.clone();
-            assert_eq!(
-                raw.apply(player.other(), action.clone()),
-                Err(Error::WrongActor)
-            );
-            assert_eq!(raw.snapshot(), pending);
-            raw.apply(player, action.clone()).unwrap();
-            indexed.apply_index(player, game.revision(), index).unwrap();
-            assert_eq!(raw.snapshot(), indexed.snapshot());
-            assert_eq!(raw.object_view(target).zone, Zone::Battlefield);
-            assert_eq!(raw.object_ref(target), reference);
-            assert!(!raw.has_airbend_permission(player, target));
-            let after = raw.snapshot();
-            raw.restore(&pending).unwrap();
-            act(&mut raw, action);
-            assert_eq!(raw.snapshot(), after);
-        }
+        let action = Action::ChooseZoneReplacement {
+            effect: ZoneReplacementKind::Prevent,
+        };
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|candidate| *candidate == action)
+            .unwrap();
+        let mut raw = game.clone();
+        let mut indexed = game.clone();
+        assert_eq!(
+            raw.apply(player.other(), action.clone()),
+            Err(Error::WrongActor)
+        );
+        assert_eq!(raw.snapshot(), pending);
+        raw.apply(player, action.clone()).unwrap();
+        indexed.apply_index(player, game.revision(), index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.object_view(target).zone, Zone::Battlefield);
+        assert_eq!(raw.object_ref(target), reference);
+        assert!(!raw.has_airbend_permission(player, target));
+        let after = raw.snapshot();
+        raw.restore(&pending).unwrap();
+        act(&mut raw, action);
+        assert_eq!(raw.snapshot(), after);
         TEST_PREVENT_ZONE_MOVE.with(|v| v.set(None));
         TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|v| v.set(None));
     }
