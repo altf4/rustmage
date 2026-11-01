@@ -42,6 +42,8 @@ pub(super) struct EntryMove {
     pub food_return: Option<Card>,
     /// Set artifact card type as it enters, preserving abilities (CR205.1a/611.2e).
     pub artifact_return: bool,
+    /// Source-independent enchantment-only form as it enters.
+    pub enchantment_return: bool,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -123,8 +125,8 @@ impl EntryMove {
     pub(super) fn entry_kinds(&self) -> u16 {
         if self.food_return.is_some() {
             16
-        } else if self.artifact_return {
-            16 | (self.before.kinds & (4 | 8))
+        } else if self.artifact_return || self.enchantment_return {
+            (if self.enchantment_return { 32 } else { 16 }) | (self.before.kinds & (4 | 8))
         } else {
             self.before.kinds
         }
@@ -156,6 +158,7 @@ impl EntryMove {
             ghost_vacuum_after: None,
             food_return: None,
             artifact_return: false,
+            enchantment_return: false,
             attacking: None,
             skipped: false,
             reveal_hand: false,
@@ -481,6 +484,7 @@ impl Game {
                 m.destination == Zone::Battlefield
                     && (m.before.card.entry_choice().is_some()
                         || !m.artifact_return
+                            && !m.enchantment_return
                             && m.before.card.aura().is_some()
                             && m.attachment.is_none()
                         || matches!(m.before.card.entry_tapped(), EntryTapped::PayLife(_))
@@ -742,6 +746,7 @@ impl Game {
         let mut ability_results = Vec::new();
         let mut food_results = Vec::new();
         let mut artifact_results = Vec::new();
+        let mut enchantment_results = Vec::new();
         let mut ghost_results = Vec::new();
         for (movement, counters) in moves {
             let entering_face = movement
@@ -826,6 +831,10 @@ impl Game {
             }
             if event.moved && event.destination == Zone::Battlefield && movement.artifact_return {
                 artifact_results.push(event.after);
+            }
+            if event.moved && event.destination == Zone::Battlefield && movement.enchantment_return
+            {
+                enchantment_results.push(event.after);
             }
             if event.moved
                 && event.destination == Zone::Battlefield
@@ -989,6 +998,12 @@ impl Game {
             let timestamp = self.next_role_timestamp();
             self.state.roles.get_or_insert_default().animations.push(
                 characteristic_layers::artifact_noncreature_form(recipient, timestamp),
+            );
+        }
+        for recipient in enchantment_results {
+            let timestamp = self.next_role_timestamp();
+            self.state.roles.get_or_insert_default().animations.push(
+                characteristic_layers::enchantment_noncreature_form(recipient, timestamp),
             );
         }
         self.refresh_controllers();
@@ -1387,6 +1402,7 @@ impl Game {
             && !m.before.card.is_emblem()
             && !m.skipped
             && (m.artifact_return
+                || m.enchantment_return
                 || m.ghost_vacuum_after.is_some()
                 || m.food_return.is_some()
                 || m.return_modification.is_some()

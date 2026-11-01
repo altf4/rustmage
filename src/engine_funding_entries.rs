@@ -986,7 +986,11 @@ impl FundingState<'_> {
             }
             return false;
         }
-        if !m.artifact_return && m.before.card.aura().is_some() && m.attachment.is_none() {
+        if !m.artifact_return
+            && !m.enchantment_return
+            && m.before.card.aura().is_some()
+            && m.attachment.is_none()
+        {
             let mut any = false;
             for r in &self.resources {
                 let target = self.reference(r.id);
@@ -1196,6 +1200,7 @@ impl FundingState<'_> {
     fn entry_has_timestamp(m: &entries::EntryMove) -> bool {
         let card = m.before.card;
         m.artifact_return
+            || m.enchantment_return
             || m.ghost_vacuum_after.is_some()
             || m.food_return.is_some()
             || m.return_modification.is_some()
@@ -1347,6 +1352,14 @@ impl FundingState<'_> {
                 p.roles
                     .animations
                     .push(characteristic_layers::artifact_noncreature_form(
+                        source, timestamp,
+                    ));
+            }
+            if m.enchantment_return {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .animations
+                    .push(characteristic_layers::enchantment_noncreature_form(
                         source, timestamp,
                     ));
             }

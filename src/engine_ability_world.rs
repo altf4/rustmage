@@ -737,6 +737,7 @@ pub(super) trait CharacteristicWorld {
             &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
+            self.life(controller.other()),
             game.state.attack_declared && self.attacking(source),
             self.has_enduring_story(controller),
             self.lost_life(controller),

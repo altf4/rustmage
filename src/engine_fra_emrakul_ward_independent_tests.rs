@@ -277,6 +277,7 @@ fn emrakul_hand_ability_fizzles_when_target_loses_land_type() {
                 preserve_card_types: false,
                 food_only: true,
                 artifact_noncreature: false,
+                enchantment_noncreature: false,
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,

@@ -1707,6 +1707,8 @@ fn schema197_new_card(card: Card) -> bool {
     matches!(
         card.identity(),
         "Airbender Ascension"
+            | "Bloodghast"
+            | "Enduring Curiosity"
             | "Appa, Steadfast Guardian"
             | "Requiting Hex"
             | "Moonshadow"
@@ -1839,7 +1841,8 @@ fn schema197_packet_supported(item: &SpellView) -> bool {
 fn prior_schema197_state_supported(state: &State) -> bool {
     state.exile_permissions.iter().all(|permission| !permission.airbend)
         && state.roles.as_ref().is_none_or(|roles| {
-            roles.source_linked_effects.iter().all(|row| {
+            roles.animations.iter().all(|row| !row.enchantment_noncreature)
+                && roles.source_linked_effects.iter().all(|row| {
                 row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
             })
         })
@@ -1978,6 +1981,8 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
                         | "AnnounceAirbend"
                         | "Airbender Ascension"
                         | "Appa, Steadfast Guardian"
+                        | "Bloodghast"
+                        | "Enduring Curiosity"
                         | "Requiting Hex"
                         | "Moonshadow"
                         | "Braided Net // Braided Quipu"
@@ -1998,6 +2003,7 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
             serde_json::Value::Object(fields) => {
                 if [
                     "airbend",
+                    "enchantment_noncreature",
                     "AnnounceAirbend",
                     "ExileControlledOrGraveyard",
                     "ExileControlled",
@@ -2028,6 +2034,9 @@ fn prior_schema197_rejects_airbend_rights_and_actions() {
         r#"[{"exile_permissions":[{"airbend":true}]}]"#,
         r#"[{"card":"Requiting Hex"}]"#,
         r#"[{"card":"Moonshadow"}]"#,
+        r#"[{"card":"Bloodghast"}]"#,
+        r#"[{"card":"Enduring Curiosity"}]"#,
+        r#"[{"enchantment_noncreature":true}]"#,
     ] {
         assert!(project_prior_schema197(value).is_err());
     }

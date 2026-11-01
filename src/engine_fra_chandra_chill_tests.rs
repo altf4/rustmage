@@ -742,6 +742,7 @@ fn echo_legally_copies_animated_chandra_loyalty_ability() {
                 preserve_card_types: false,
                 food_only: false,
                 artifact_noncreature: false,
+                enchantment_noncreature: false,
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,

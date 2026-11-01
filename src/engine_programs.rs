@@ -4075,6 +4075,27 @@ impl Game {
                 Instruction::ReturnOpponentsBattlefieldGraveyardCardsAsFood => {
                     self.return_opponents_battlefield_graveyard_as_food(&item);
                 }
+                Instruction::ReturnSourceAsEnchantment => {
+                    let returned = item
+                        .source_move
+                        .as_ref()
+                        .filter(|event| {
+                            event.before == item.source.expect("source").object
+                                && event.origin == Zone::Battlefield
+                                && event.destination == Zone::Graveyard
+                        })
+                        .map(|event| event.after);
+                    if let Some(returned) = returned
+                        && self.object_ref(returned.card) == returned
+                        && self.state.objects[returned.card as usize].zone == Zone::Graveyard
+                        && !self.state.objects[returned.card as usize].is_token()
+                    {
+                        let mut movement = self.entry_move(returned.card, Zone::Battlefield, false);
+                        movement.controller = self.state.objects[returned.card as usize].owner;
+                        movement.enchantment_return = true;
+                        self.stage_entries(vec![movement], None);
+                    }
+                }
                 Instruction::ReturnSourceAsArtifact => {
                     let returned = item
                         .source_move

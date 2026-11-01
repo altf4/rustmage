@@ -107,6 +107,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.life(owner),
+            self.life(owner.other()),
             self.state.attack_declared && self.attacking(source.card),
             self.has_enduring_story(owner),
             self.lost_life(owner),

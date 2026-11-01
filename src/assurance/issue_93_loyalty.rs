@@ -27,6 +27,7 @@ fn positive_loyalty_cost_cannot_be_paid_when_counters_are_prohibited() {
                 preserve_card_types: false,
                 food_only: false,
                 artifact_noncreature: false,
+                enchantment_noncreature: false,
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,

@@ -11,6 +11,7 @@ mod hartford_blight;
 mod hartford_braided_net;
 mod hartford_craft_core;
 mod hartford_restless_reef;
+mod hartford_returns;
 mod hartford_sacrifice;
 mod hartford_sawblades;
 mod interactions;

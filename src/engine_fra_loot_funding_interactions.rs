@@ -52,6 +52,7 @@ fn loot_borrowed_by_forge_uses_bearers_controller_and_funds_real_cast() {
                 preserve_card_types: true,
                 food_only: false,
                 artifact_noncreature: false,
+                enchantment_noncreature: false,
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,

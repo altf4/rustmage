@@ -1745,6 +1745,8 @@ pub(crate) enum Instruction {
     ReturnOpponentsBattlefieldGraveyardCardsAsFood,
     /// Return the exact death incarnation with its noncreature artifact form as it enters.
     ReturnSourceAsArtifact,
+    /// Return the exact died source under its owner as a noncreature enchantment.
+    ReturnSourceAsEnchantment,
     /// Return the exact graveyard source and legal targets together, tapped.
     ReturnSourceAndTargetsTapped,
     ReturnSourceToBattlefield {
@@ -2612,6 +2614,8 @@ pub(crate) enum StatValue {
     CreaturesDiedThisTurn,
     LifeGainedThisTurn,
     ControllerLife,
+    /// Whether the opposing player's life is at most this threshold.
+    OpponentLifeAtMost(u16),
     /// Boolean threshold relative to the rules configuration, not a printed 20.
     ControllerLifeAboveStarting {
         minimum: u16,
