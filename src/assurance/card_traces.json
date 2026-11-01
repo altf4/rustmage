@@ -2199,6 +2199,14 @@
     "journal": "17b1007f413b3222",
     "observations": "58e66068079e6b69"
   },
+  "Bloodghast": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "f329174e86c2b185",
+    "observations": "6dc5b907505b1148"
+  },
   "Bloodline Recollector // Ancestral Craving": {
     "root": "main",
     "status": "completed",
@@ -2534,6 +2542,14 @@
     "zone": "Graveyard",
     "journal": "fae424dc01ad1ac5",
     "observations": "0e177e7ed67c237b"
+  },
+  "Braided Net // Braided Quipu": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "5a37305467443acc",
+    "observations": "1cf8538ecc2720af"
   },
   "Bramble Familiar": {
     "root": "main",
@@ -6086,6 +6102,14 @@
     "zone": "Graveyard",
     "journal": "8c6432a78f6c1783",
     "observations": "e9b9b594501e317d"
+  },
+  "Enduring Curiosity": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9fb8f9361b7adf8f",
+    "observations": "d57ff400e96a1c4c"
   },
   "Engine Rat": {
     "root": "main",
@@ -18670,6 +18694,14 @@
     "zone": "Battlefield",
     "journal": "18eca4f051a75862",
     "observations": "854839cb03767c92"
+  },
+  "Spring-Loaded Sawblades // Bladewheel Chariot": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "baa222c24e122f80",
+    "observations": "cc6ba29f6e969283"
   },
   "Springbloom Druid": {
     "root": "main",
