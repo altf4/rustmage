@@ -907,6 +907,8 @@ impl Game {
                     | TriggerCondition::Ward
                     | TriggerCondition::SelfTargeted { .. }
                     | TriggerCondition::CardDrawn { .. }
+                    | TriggerCondition::LibrarySearched { .. }
+                    | TriggerCondition::BecomesClassLevel(_)
                     | TriggerCondition::SelfDiscarded
                     | TriggerCondition::SelfCycled
                     | TriggerCondition::Discarded { .. }
@@ -4836,7 +4838,18 @@ impl Game {
                             .object
                             .card
                             as usize];
+                        let changed = object.class_level != level;
                         object.class_level = level;
+                        if changed {
+                            let source = self.object_view(item.source.expect("class source").id);
+                            for (index, ability) in source.card.triggers().iter().enumerate() {
+                                if ability.condition.event()
+                                    == TriggerCondition::BecomesClassLevel(level)
+                                {
+                                    self.queue_trigger(&source, index);
+                                }
+                            }
+                        }
                     }
                 }
                 Instruction::AttachSource => {

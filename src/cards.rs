@@ -2647,6 +2647,10 @@ pub(crate) enum AmountValue {
         value: &'static AmountValue,
         factor: u16,
     },
+    Divided {
+        value: &'static AmountValue,
+        divisor: std::num::NonZeroU16,
+    },
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ResolvedStatValue {
@@ -3858,6 +3862,12 @@ pub(crate) enum TriggerCondition {
         relation: CastRelation,
         ordinal: Option<u64>,
     },
+    /// Completion of a library search, including a search that finds no card.
+    LibrarySearched {
+        relation: CastRelation,
+    },
+    /// This exact permanent has actually changed to the specified Class level.
+    BecomesClassLevel(u8),
     SelfDiscarded,
     SelfCycled,
     Discarded {

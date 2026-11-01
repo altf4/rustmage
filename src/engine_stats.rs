@@ -108,7 +108,7 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::CardDrawn { .. }
+                TriggerCondition::CardDrawn { .. } | TriggerCondition::LibrarySearched { .. }
             )
         }) {
             self.state.draw_sources.push(id);

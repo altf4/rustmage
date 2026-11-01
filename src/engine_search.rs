@@ -114,7 +114,27 @@ impl Game {
         choice.spec.destination = destination;
         self.commit_search(player);
     }
+    pub(super) fn library_searched(&mut self, player: Player) {
+        // Freeze observers before the found cards move, so a creature fetched
+        // by this search does not see the search that found it.
+        let sources = self.indexed_trigger_sources(&self.state.draw_sources);
+        for (source, grant) in sources {
+            let definition = grant.as_ref().map_or(source.card, |row| row.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
+                if let TriggerCondition::LibrarySearched { relation } = ability.condition.event()
+                    && match relation {
+                        CastRelation::You => source.controller == player,
+                        CastRelation::Opponent => source.controller != player,
+                        CastRelation::Any => true,
+                    }
+                {
+                    self.queue_trigger_from(&source, index, grant.map(Box::new));
+                }
+            }
+        }
+    }
     fn commit_search(&mut self, player: Player) {
+        self.library_searched(player);
         let choice = self
             .state
             .resolving

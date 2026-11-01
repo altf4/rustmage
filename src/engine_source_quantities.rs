@@ -17,7 +17,9 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
         match value {
             AmountValue::SourceToughness => result.0 = true,
             AmountValue::SourceEquipmentCount => result.1 = true,
-            AmountValue::Multiple { value, .. } => amount(*value, result),
+            AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => {
+                amount(*value, result)
+            }
             AmountValue::Sum(values) => {
                 for value in values {
                     amount(*value, result);

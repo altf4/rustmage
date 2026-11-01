@@ -538,6 +538,9 @@ impl Game {
                         && object.card.is_creature()
                 })
                 .count() as u128,
+            AmountValue::Divided { value, divisor } => {
+                self.item_amount(*value, item) / u128::from(divisor.get())
+            }
             AmountValue::Multiple { value, factor } => self
                 .item_amount(*value, item)
                 .checked_mul(u128::from(factor))

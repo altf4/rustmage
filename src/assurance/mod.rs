@@ -89,6 +89,8 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
             || name == "Inti, Seneschal of the Sun"
             || name == "Monument to Endurance"
             || name == "Obsessive Pursuit"
+            || name == "Cool but Rude"
+            || name == "Wan Shi Tong, Librarian"
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
@@ -475,3 +477,5 @@ mod issue_93_ashiok_wicked;
 mod hartford_draw;
 
 mod hartford_discard;
+
+mod hartford_draw_classes;

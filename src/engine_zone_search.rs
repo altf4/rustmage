@@ -146,6 +146,9 @@ impl Game {
             .zone_search
             .take()
             .unwrap();
+        if s.zones.unwrap().0 {
+            self.library_searched(s.player);
+        }
         let moves = selected
             .into_iter()
             .map(|r| {
