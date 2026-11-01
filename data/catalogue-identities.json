@@ -5484,7 +5484,15 @@
     0,
     0,
     5,
-    4
+    4,
+    1,
+    1,
+    2,
+    0,
+    4,
+    2,
+    8,
+    1
   ],
   "aliases": [
     [
@@ -6236,6 +6244,10 @@
       5467
     ],
     [
+      "@token/blb-vren-rat",
+      5483
+    ],
+    [
       "@token/blood",
       5346
     ],
@@ -6452,6 +6464,10 @@
       5436
     ],
     [
+      "@token/msc-bovine-ox",
+      5479
+    ],
+    [
       "@token/msh-alien",
       5395
     ],
@@ -6552,6 +6568,10 @@
       5342
     ],
     [
+      "@token/tdm-monk-prowess",
+      5486
+    ],
+    [
       "@token/treefolk_3_4_green_reach",
       5420
     ],
@@ -6584,12 +6604,20 @@
       19
     ],
     [
+      "Aang and La, Ocean's Fury",
+      5482
+    ],
+    [
       "Aang's Iceberg",
       20
     ],
     [
       "Aang's Journey",
       21
+    ],
+    [
+      "Aang, Swift Savior",
+      22
     ],
     [
       "Aang, Swift Savior // Aang and La, Ocean's Fury",
@@ -8356,6 +8384,10 @@
       437
     ],
     [
+      "Bladewheel Chariot",
+      5480
+    ],
+    [
       "Blanchwood Armor",
       438
     ],
@@ -8712,8 +8744,16 @@
       520
     ],
     [
+      "Braided Net",
+      521
+    ],
+    [
       "Braided Net // Braided Quipu",
       521
+    ],
+    [
+      "Braided Quipu",
+      5481
     ],
     [
       "Brainstorm",
@@ -14856,6 +14896,10 @@
       1979
     ],
     [
+      "Hearth Elemental",
+      1980
+    ],
+    [
       "Hearth Elemental // Stoke Genius",
       1980
     ],
@@ -17170,6 +17214,10 @@
     [
       "Locke Cole",
       2534
+    ],
+    [
+      "Locus of Enlightenment",
+      5484
     ],
     [
       "Locust Spray",
@@ -23580,6 +23628,10 @@
       4071
     ],
     [
+      "Spring-Loaded Sawblades",
+      4072
+    ],
+    [
       "Spring-Loaded Sawblades // Bladewheel Chariot",
       4072
     ],
@@ -23926,6 +23978,10 @@
     [
       "Stoic Sphinx",
       4157
+    ],
+    [
+      "Stoke Genius",
+      5485
     ],
     [
       "Stolen Stark Tech",
@@ -25126,6 +25182,10 @@
     [
       "The Endstone",
       4442
+    ],
+    [
+      "The Enigma Jewel",
+      4443
     ],
     [
       "The Enigma Jewel // Locus of Enlightenment",
@@ -29084,6 +29144,24 @@
       "name": "Nightmare Token",
       "subtypes": "Nightmare",
       "colors": 4
+    },
+    {
+      "factory_identity": "@token/msc-bovine-ox",
+      "name": "Ox Token",
+      "subtypes": "Ox",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/blb-vren-rat",
+      "name": "Rat Token",
+      "subtypes": "Rat",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/tdm-monk-prowess",
+      "name": "Monk Token",
+      "subtypes": "Monk",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -30342,7 +30420,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Aang, Swift Savior",
+        "mana_cost": "{1}{W}{U}",
+        "type_line": "Legendary Creature — Human Avatar Ally",
+        "colored": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Flash",
+          "Flying",
+          "Airbend",
+          "Waterbend"
+        ]
+      },
+      "back_face": 5482
     },
     {
       "index": 23,
@@ -44550,7 +44649,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Braided Net",
+        "mana_cost": "{2}{U}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": []
+      },
+      "back_face": 5481
     },
     {
       "index": 522,
@@ -57867,7 +57982,7 @@
       "colored": [
         0,
         0,
-        0,
+        2,
         0,
         0,
         0
@@ -86150,11 +86265,16 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 5,
+      "front_face": {
+        "name": "Hearth Elemental",
+        "mana_cost": "{5}{R}",
+        "type_line": "Creature — Elemental"
+      }
     },
     {
       "index": 1981,
@@ -117139,7 +117259,7 @@
       "colored": [
         0,
         0,
-        0,
+        2,
         0,
         0,
         0
@@ -145914,7 +146034,25 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Spring-Loaded Sawblades",
+        "mana_cost": "{1}{W}",
+        "type_line": "Artifact",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Flash"
+        ]
+      },
+      "back_face": 5480
     },
     {
       "index": 4073,
@@ -156483,7 +156621,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "The Enigma Jewel",
+        "mana_cost": "{U}",
+        "type_line": "Legendary Artifact",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": []
+      },
+      "back_face": 5484
     },
     {
       "index": 4444,
@@ -171339,7 +171493,7 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        2,
         0,
         0,
         0,
@@ -185770,6 +185924,233 @@
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5479,
+      "module": "card_5479",
+      "path": "synthetic/token_msc_bovine_ox.rs",
+      "category": "token",
+      "name": "@token/msc-bovine-ox",
+      "type_line": "Creature — Ox",
+      "kind": 1,
+      "set": "synthetic",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5480,
+      "module": "card_5480",
+      "path": "lci/bladewheel_chariot.rs",
+      "set": "lci",
+      "category": "back_face",
+      "name": "Bladewheel Chariot",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact — Vehicle",
+      "oracle_keywords": [
+        "Crew"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 4072
+    },
+    {
+      "index": 5481,
+      "module": "card_5481",
+      "path": "lci/braided_quipu.rs",
+      "set": "lci",
+      "category": "back_face",
+      "name": "Braided Quipu",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 521
+    },
+    {
+      "index": 5482,
+      "module": "card_5482",
+      "path": "tla/aang_and_la_ocean_s_fury.rs",
+      "set": "tla",
+      "category": "back_face",
+      "name": "Aang and La, Ocean's Fury",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar Spirit Ally",
+      "oracle_keywords": [
+        "Reach",
+        "Trample"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 22
+    },
+    {
+      "index": 5483,
+      "module": "card_5483",
+      "path": "synthetic/token_blb_vren_rat.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/blb-vren-rat",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Rat",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5484,
+      "module": "card_5484",
+      "path": "lci/locus_of_enlightenment.rs",
+      "set": "lci",
+      "category": "back_face",
+      "name": "Locus of Enlightenment",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Artifact",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "face_parent": 4443
+    },
+    {
+      "index": 5485,
+      "module": "card_5485",
+      "path": "synthetic/stoke_genius.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Stoke Genius",
+      "oracle_id": "f01cf0c5-0ac6-4ad3-8642-dd21c8e8563e",
+      "facts_sha256": "fd79aba74b94b76af573b89fd4621707182c79d400fe25cff69369a7adff3cb3",
+      "mana_cost": "{1}{R}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5486,
+      "module": "card_5486",
+      "path": "synthetic/token_tdm_monk_prowess.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/tdm-monk-prowess",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Monk",
+      "oracle_keywords": [
+        "Prowess"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [

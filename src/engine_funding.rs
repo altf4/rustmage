@@ -65,6 +65,7 @@ pub(super) struct FundingState<'g> {
     copy_recipes: copies::Rows,
     counter_placement_history: counter_placement_history::Rows,
     convoke: bool,
+    waterbend: u16,
     power_sensitive: bool,
     creatures_died: u64,
     controlled_creatures_died: [u64; 2],
@@ -570,10 +571,8 @@ impl<'g> FundingState<'g> {
 
     fn set_purpose(&mut self, purpose: mana_lots::Purpose) {
         self.purpose = purpose;
-        let mana_lots::Purpose::Spell(spell) = purpose else {
-            return;
-        };
-        if !improvise::potential(self, spell.card) {
+        let needs_improvise_resources = matches!(purpose, mana_lots::Purpose::Spell(spell) if improvise::potential(self, spell.card));
+        if self.waterbend == 0 && !needs_improvise_resources {
             return;
         }
         for (id, _) in self.game.state.objects.iter().enumerate() {
@@ -595,7 +594,7 @@ impl<'g> FundingState<'g> {
         matches!(self.purpose, mana_lots::Purpose::Spell(spell) if improvise::available(self, self.actor, spell.card))
     }
     fn has_contributions(&self) -> bool {
-        self.convoke || self.improvise_available()
+        self.convoke || self.improvise_available() || self.waterbend != 0
     }
     fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
@@ -645,6 +644,12 @@ impl<'g> FundingState<'g> {
         }
     }
     fn from_game_with_convoke(game: &'g Game, goal: &FundingGoal, convoke: bool) -> Self {
+        let waterbend = goal
+            .source
+            .as_ref()
+            .map_or(0, |(_, index, _, definition, _)| {
+                definition.activation(*index).waterbend_cost()
+            });
         // A prerequisite need not itself produce mana (e.g. a changeling for
         // Mox Jasper). Keep only relevant owned witnesses, including removable
         // mana sources, so virtual sacrifices invalidate later guarded moves.
@@ -740,7 +745,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterTurnCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -810,6 +815,7 @@ impl<'g> FundingState<'g> {
                 }),
             game,
             convoke,
+            waterbend,
             power_sensitive,
             creatures_died: game.state.creatures_died_this_turn,
             controlled_creatures_died: game
@@ -1389,8 +1395,9 @@ impl<'g> FundingState<'g> {
                 if borrowed.is_some() {
                     ready_object.used_abilities = 0;
                 }
-                if borrowed.is_some_and(|a| a.used && (ability.once_per_turn || ability.exhaust))
-                    || !self.guard_available(ability.guard, entry.id, goal.actor)
+                if borrowed.is_some_and(|a| {
+                    a.used && (a.once_per_turn || ability.once_per_turn || ability.exhaust)
+                }) || !self.guard_available(ability.guard, entry.id, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         &ready_object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
@@ -1443,6 +1450,7 @@ impl<'g> FundingState<'g> {
                             card: object.card,
                             foreign_stash: false,
                             cast_from_hand: false,
+                            cast_from_exile: false,
                             spend_any_mana: false,
                             linked_mana_source: None,
                             equip: ability.is_equip(),
@@ -1941,11 +1949,13 @@ impl<'g> FundingState<'g> {
                 let spell_only = inert_spell_lots
                     && matches!(
                         lot.quality.restriction,
-                        mana_lots::ManaRestrictionView::ArtifactSpell
+                        mana_lots::ManaRestrictionView::CastFromExile
+                            | mana_lots::ManaRestrictionView::ArtifactSpell
                             | mana_lots::ManaRestrictionView::InstantSorcery
                             | mana_lots::ManaRestrictionView::NoncreatureSpell
                             | mana_lots::ManaRestrictionView::PlaneswalkerSpell
                             | mana_lots::ManaRestrictionView::SpellSubtype(_)
+                            | mana_lots::ManaRestrictionView::CreatureSpell(_)
                     );
                 if !spell_only {
                     return Some(lot.clone());
@@ -2074,6 +2084,16 @@ impl<'g> FundingState<'g> {
                     })
                     .count();
                 total = total.saturating_add((grants as u128).saturating_mul(2));
+                let blue = self
+                    .roles()
+                    .into_iter()
+                    .flat_map(|roles| &roles.source_linked_effects)
+                    .filter(|row| {
+                        row.kind == SourceLinkedEffectKind::LandUntilControllerNextTurn
+                            && row.recipient == self.reference(resource.id)
+                    })
+                    .count();
+                total = total.saturating_add(blue as u128);
             }
             if !object.tapped {
                 // Overcount all possible tap sources; subtype may change during funding.
@@ -2095,7 +2115,8 @@ impl<'g> FundingState<'g> {
                 }) {
                     total = total.saturating_add(1);
                 }
-                if (self.convoke && self.kinds(resource) & 1 != 0)
+                if (self.waterbend != 0 && self.kinds(resource) & (1 | 16) != 0)
+                    || (self.convoke && self.kinds(resource) & 1 != 0)
                     || matches!(self.purpose, mana_lots::Purpose::Spell(spell) if improvise::potential(self, spell.card))
                 {
                     total = total.saturating_add(1);
@@ -2184,6 +2205,16 @@ impl<'g> FundingState<'g> {
                     })
                     .count();
                 upper[5] = upper[5].saturating_add((grants as u128).saturating_mul(2));
+                let blue = self
+                    .roles()
+                    .into_iter()
+                    .flat_map(|roles| &roles.source_linked_effects)
+                    .filter(|row| {
+                        row.kind == SourceLinkedEffectKind::LandUntilControllerNextTurn
+                            && row.recipient == self.reference(resource.id)
+                    })
+                    .count();
+                upper[1] = upper[1].saturating_add(blue as u128);
             }
             if !object.tapped {
                 upper[3] = upper[3].saturating_add(u128::from(
@@ -2393,9 +2424,9 @@ impl<'g> FundingState<'g> {
                     !matches!(fragment, StaticAbilityFragment::LandMana {
                         production: ManaProduction::Tagged { quality, .. }, ..
                     } if matches!(quality.restriction,
-                        ManaRestriction::ArtifactSpell | ManaRestriction::InstantSorcery
+                        ManaRestriction::CastFromExile | ManaRestriction::ArtifactSpell | ManaRestriction::InstantSorcery
                         | ManaRestriction::NoncreatureSpell | ManaRestriction::PlaneswalkerSpell
-                        | ManaRestriction::SpellSubtype(_))
+                        | ManaRestriction::SpellSubtype(_) | ManaRestriction::ChosenCreatureSpell)
                         && !mana_lots::Quality::capture(self, id as CardId, **quality).eligible(purpose))
                 })
             }) {
@@ -2605,6 +2636,9 @@ impl<'g> FundingState<'g> {
             >= u128::from(goal.generic)
     }
     fn convoke_masks(&self) -> [u64; 32] {
+        if self.waterbend != 0 {
+            return waterbend::masks(self, self.actor, self.waterbend, &[]);
+        }
         improvise::masks(
             self,
             self.actor,
@@ -2701,6 +2735,13 @@ impl<'g> FundingState<'g> {
             )
         }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
             && mana_loyalty_placement_payable(self, goal)
+            && goal.reserve.is_none_or(|(reference, spec)| {
+                spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
+                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                        self,
+                        reference.card,
+                    )
+            })
             && self.complete_funding_continuation(goal)
         {
             return true;
@@ -3022,6 +3063,13 @@ impl Game {
             adjusted.required,
             adjusted.generic,
         ) && mana_loyalty_placement_payable(self, &goal)
+            && goal.reserve.is_none_or(|(reference, spec)| {
+                spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
+                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                        self,
+                        reference.card,
+                    )
+            })
         {
             return true;
         }
@@ -3308,7 +3356,7 @@ impl Game {
             && a.item.cast.is_some_and(|c| {
                 matches!(
                     c.method,
-                    CastMethod::Free | CastMethod::Plot | CastMethod::Miracle
+                    CastMethod::Free | CastMethod::Plot | CastMethod::Miracle | CastMethod::Airbend
                 )
             })
         {
@@ -3710,21 +3758,22 @@ impl Game {
                             0
                         })
                         .capacity("activation cost exhausted"),
-                    source: Some((
-                        announcement
-                            .item
-                            .source
-                            .expect("cost announcement has object source")
-                            .object,
-                        ability,
-                        announcement.counter_payment.clone(),
-                        announcement
-                            .item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card,
-                        announcement.item.borrowed_slot,
-                    )),
+                    source: (!announcement.ordered_craft() || !announcement.craft_source_paid())
+                        .then_some((
+                            announcement
+                                .item
+                                .source
+                                .expect("cost announcement has object source")
+                                .object,
+                            ability,
+                            announcement.counter_payment.clone(),
+                            announcement
+                                .item
+                                .source
+                                .expect("cost announcement has object source")
+                                .card,
+                            announcement.item.borrowed_slot,
+                        )),
                 }
             }
             StackKind::TriggeredAbility { .. }
@@ -3755,7 +3804,10 @@ impl Game {
         }
         if !matches!(
             self.state.pending,
-            Pending::PayCosts { .. } | Pending::Convoke { .. } | Pending::Improvise { .. }
+            Pending::PayCosts { .. }
+                | Pending::Convoke { .. }
+                | Pending::Improvise { .. }
+                | Pending::Waterbend { .. }
         ) {
             return None;
         }
@@ -3766,7 +3818,7 @@ impl Game {
                     .is_none_or(|i| c.clauses[usize::from(i)].clause != CastCostClause::Mana)
         }) && !matches!(
             self.state.pending,
-            Pending::Convoke { .. } | Pending::Improvise { .. }
+            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Waterbend { .. }
         ) {
             return None;
         }
@@ -3937,6 +3989,7 @@ impl Game {
             .item
             .cast
             .is_some_and(|c| c.method == CastMethod::Harmonize || c.blight == Some(true))
+            || announcement.ordered_craft()
             || announcement
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_))))
@@ -3962,7 +4015,8 @@ impl Game {
                         .expect("cost announcement has object source")
                         .card,
                 ));
-        if (convoke || artifact)
+        let waterbend = self.item_waterbend(&announcement.item) != 0;
+        if (convoke || artifact || waterbend)
             && (if state.has_ordered_convoke() {
                 state.cost_completion()
             } else {
@@ -3977,7 +4031,8 @@ impl Game {
                 )
             })
             && ((convoke && emit(Action::BeginConvoke))
-                || (artifact && emit(Action::BeginImprovise)))
+                || (artifact && emit(Action::BeginImprovise))
+                || (waterbend && emit(Action::BeginWaterbend)))
         {
             return true;
         }
@@ -4187,7 +4242,10 @@ impl Game {
             return;
         }
         let (goal, convoke, evidence) = match self.state.pending {
-            Pending::PayCosts { .. } | Pending::Convoke { .. } | Pending::Improvise { .. } => {
+            Pending::PayCosts { .. }
+            | Pending::Convoke { .. }
+            | Pending::Improvise { .. }
+            | Pending::Waterbend { .. } => {
                 let a = self.state.announcing.as_ref().unwrap();
                 (
                     self.funding_goal(a),

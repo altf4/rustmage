@@ -230,4 +230,33 @@ impl Game {
             }
         }
     }
+    pub(super) fn permanent_cards_enter_graveyard_triggers(&mut self, events: &[ZoneChange]) {
+        let entered = std::array::from_fn::<_, 2, _>(|seat| {
+            events.iter().any(|e| {
+                e.moved
+                    && e.destination == Zone::Graveyard
+                    && e.before.zone != Zone::Graveyard
+                    && e.before.owner.index() == seat
+                    && e.was_card
+                    && self.object_ref(e.after.card) == e.after
+                    && self.state.objects[e.after.card as usize].zone == Zone::Graveyard
+                    && self.current_kinds(e.after.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
+            })
+        });
+        if !entered.iter().any(|v| *v) {
+            return;
+        }
+        let sources = self.indexed_trigger_sources(&self.state.death_sources);
+        for (source, grant) in sources {
+            if source.zone != Zone::Battlefield || !entered[source.controller.index()] {
+                continue;
+            }
+            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::PermanentCardsEnterYourGraveyard {
+                    self.queue_trigger_from(&source, index, grant.map(Box::new));
+                }
+            }
+        }
+    }
 }

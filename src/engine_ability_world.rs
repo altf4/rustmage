@@ -436,16 +436,24 @@ pub(super) trait CharacteristicWorld {
     }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
-        target.zone == Zone::Battlefield
-            && self.kinds(id) & (1 | 16 | 32) != 0
-            && self.static_sources().iter().any(|&source| {
-                let provider = self.object(source);
-                provider.zone == Zone::Battlefield
-                    && provider.controller == self.game().state.active
-                    && provider.controller != actor
-                    && provider.card.static_cast_restriction() & 2 != 0
-                    && self.printed_abilities_available(source)
-            })
+        (target.zone == Zone::Battlefield
+            && self.roles().is_some_and(|roles| {
+                roles.source_linked_effects.iter().any(|row| {
+                    row.kind == SourceLinkedEffectKind::PreventActivationsUntilUntapped
+                        && row.recipient == self.reference(id)
+                        && source_linked_effects::active(self, row)
+                })
+            }))
+            || target.zone == Zone::Battlefield
+                && self.kinds(id) & (1 | 16 | 32) != 0
+                && self.static_sources().iter().any(|&source| {
+                    let provider = self.object(source);
+                    provider.zone == Zone::Battlefield
+                        && provider.controller == self.game().state.active
+                        && provider.controller != actor
+                        && provider.card.static_cast_restriction() & 2 != 0
+                        && self.printed_abilities_available(source)
+                })
     }
     fn harnessed(&self, id: CardId) -> bool {
         self.object(id).zone == Zone::Battlefield
@@ -554,13 +562,14 @@ pub(super) trait CharacteristicWorld {
                 {
                     result = result.union(keywords);
                 }
-                if let crate::cards::StaticAbilityFragment::SourceCounterTurnCreature {
+                if let crate::cards::StaticAbilityFragment::SourceCounterCreature {
+                    own_turn,
                     kind,
                     minimum,
                     keywords,
                     ..
                 } = *fragment
-                    && object.controller == self.game().state.active
+                    && (!own_turn || object.controller == self.game().state.active)
                     && self.counter_count(id, kind) >= minimum
                 {
                     result = result.union(keywords);
@@ -729,6 +738,7 @@ pub(super) trait CharacteristicWorld {
             &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
+            self.life(controller.other()),
             game.state.attack_declared && self.attacking(source),
             self.has_enduring_story(controller),
             self.lost_life(controller),
@@ -795,8 +805,11 @@ pub(super) trait CharacteristicWorld {
         if self.has_ability_removal()
             || self.roles().is_some_and(|roles| {
                 roles.source_linked_effects.iter().any(|row| {
-                    row.kind == SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
-                        && source_linked_effects::active(self, row)
+                    matches!(
+                        row.kind,
+                        SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+                            | SourceLinkedEffectKind::LandUntilControllerNextTurn
+                    ) && source_linked_effects::active(self, row)
                 })
             })
         {

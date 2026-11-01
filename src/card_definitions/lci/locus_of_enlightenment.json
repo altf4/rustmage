@@ -1,0 +1,16 @@
+{
+  "name": "Locus of Enlightenment",
+  "catalogue_id": 5484,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "physical_metadata_sha256": "8882b46a91885228b2a1702e7255dc7a5cf4aebc812c353027b7d638a4dd010d",
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheEnigmaJewel.java",
+  "java_sha256": "229e2c3e113cf148f09d3cba2e4c77091b344d59879f3ef938500d561e2dc4e8",
+  "oracle_face": {
+    "oracle_id": "c0d2bdd9-1e68-4d3a-83f8-ec2ba440a494",
+    "index": 1,
+    "sha256": "e2fc6c45dcbb8f15a117e7e7ab1f913d68eaf2d6a91c280468a0d11b1ccf25ea"
+  }
+}

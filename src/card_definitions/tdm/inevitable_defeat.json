@@ -3,10 +3,45 @@
   "catalogue_id": 2158,
   "oracle_id": "d68439b5-7011-4b1d-a7da-14ef0f4d9994",
   "facts_sha256": "54e0d72b483962b5ee17d43888465c0f0f42255d0da29d73ab31f8ddf9364b67",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a7cd5637e8e87e589e5de0a696b6e4dafa0a09fd8ef56e933922b8f7b7d62a86"
   },
-  "physical_metadata_sha256": "f4cb5d3b6d7b212bc2de216f12fb53a67215be66c2977a5c337cf8408b7cf944"
+  "physical_metadata_sha256": "f4cb5d3b6d7b212bc2de216f12fb53a67215be66c2977a5c337cf8408b7cf944",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InevitableDefeat.java",
+  "java_sha256": "66c9bc8c794dec4715b14c8b05d2e8f608c0ccbb2aaa05dc4f3443cb9a11482e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+      "sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetControllerEffect.java",
+      "sha256": "12bf0d00a38e53030af5341f700a3727cfe8dff85ad6a4e0f406b64fe9b1d745"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    }
+  ]
 }

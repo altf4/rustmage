@@ -1703,6 +1703,651 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
     true
 }
 
+fn schema197_new_card(card: Card) -> bool {
+    matches!(
+        card.identity(),
+        "Repurposing Bay"
+            | "Pinnacle Starcage"
+            | "Gene Pollinator"
+            | "Warmaker Gunship"
+            | "Lively Dirge"
+            | "Jeskai Revelation"
+            | "Leatherhead, Swamp Stalker"
+            | "@token/tdm-monk-prowess"
+            | "Day of Black Sun"
+            | "Tishana's Tidebinder"
+            | "Riverchurn Monument"
+            | "Torch the Tower"
+            | "Webstrike Elite"
+            | "Floodpits Drowner"
+            | "Consult the Star Charts"
+            | "United Battlefront"
+            | "Sunderflock"
+            | "Strategic Betrayal"
+            | "Deadly Cover-Up"
+            | "Outrageous Robbery"
+            | "Interdimensional Web Watch"
+            | "Sunspine Lynx"
+            | "Vren, the Relentless"
+            | "@token/blb-vren-rat"
+            | "Airbender Ascension"
+            | "Bloodghast"
+            | "Enduring Curiosity"
+            | "Appa, Steadfast Guardian"
+            | "Requiting Hex"
+            | "Moonshadow"
+            | "Braided Net // Braided Quipu"
+            | "Braided Net"
+            | "Braided Quipu"
+            | "Spring-Loaded Sawblades // Bladewheel Chariot"
+            | "Spring-Loaded Sawblades"
+            | "Bladewheel Chariot"
+            | "The Enigma Jewel // Locus of Enlightenment"
+            | "The Enigma Jewel"
+            | "Locus of Enlightenment"
+            | "Avatar's Wrath"
+            | "Aang's Iceberg"
+            | "Aang, Swift Savior // Aang and La, Ocean's Fury"
+            | "Aang and La, Ocean's Fury"
+            | "Doc Aurlock, Grizzled Genius"
+            | "Hearth Elemental // Stoke Genius"
+            | "Stoke Genius"
+    )
+}
+
+fn schema197_recipe_supported(recipe: &CopyRecipe) -> bool {
+    if schema197_new_card(recipe.definition) {
+        return false;
+    }
+    match recipe.faces {
+        Some(copies::CopyFaces::Double {
+            physical_front,
+            front,
+            back,
+            ..
+        }) => ![physical_front, front, back]
+            .into_iter()
+            .any(schema197_new_card),
+        _ => true,
+    }
+}
+
+fn schema197_facts_supported(facts: &DamageFacts) -> bool {
+    // Schema 180 already represents additive Construct and other subtype facts.
+    !schema197_new_card(facts.card)
+}
+
+/// Inspect all packet fields carrying card definitions, recipes or LKI subtype
+/// overlays. Reference-only and numeric fields cannot contain the new rules.
+fn schema197_packet_supported(item: &SpellView) -> bool {
+    if !serde_json::to_string(item).is_ok_and(|json| project_prior_schema197(&json).is_ok())
+        || item.craft_materials.is_some()
+        || item.source_less_rule.is_some()
+        || item.source.is_none_or(|source| {
+            schema197_new_card(source.card) || !schema197_facts_supported(&source.facts)
+        })
+        || matches!(item.kind, StackKind::DelayedTokenCreation { token, .. } if schema197_new_card(token))
+        || item
+            .source_copy_recipe
+            .as_deref()
+            .is_some_and(|r| !schema197_recipe_supported(r))
+        || item
+            .captured_artifact_copy
+            .as_deref()
+            .is_some_and(|r| !schema197_recipe_supported(r))
+        || item
+            .attachment_trigger
+            .as_ref()
+            .is_some_and(|v| schema197_new_card(v.granting_card))
+        || item
+            .delayed_sacrifice
+            .as_ref()
+            .is_some_and(|v| schema197_new_card(v.source_card))
+        || item
+            .delayed_warp_exile
+            .as_ref()
+            .is_some_and(|v| schema197_new_card(v.source_card))
+        || item
+            .cast_event
+            .as_ref()
+            .is_some_and(|v| schema197_new_card(v.card))
+        || item
+            .cast
+            .and_then(|v| v.physical_card)
+            .is_some_and(schema197_new_card)
+        || item.mana_copy_sources.as_ref().is_some_and(|sources| {
+            sources.iter().any(|(v, _)| {
+                schema197_new_card(v.card)
+                    || schema197_new_card(v.definition)
+                    || !schema197_facts_supported(&v.facts)
+            })
+        })
+        || item
+            .copy_event
+            .as_ref()
+            .is_some_and(|event| !schema197_packet_supported(&event.spell))
+    {
+        return false;
+    }
+    // Retained copied or inherited packets can keep craft behavior after the
+    // original source has left, even when its physical identity is different.
+    if matches!(
+        item.kind,
+        StackKind::ActivatedAbility { .. } | StackKind::TriggeredAbility { .. }
+    ) && item.program().is_some_and(|(_, program)| {
+        program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::ReturnCraftedSourceTransformed
+                    | Instruction::PreventTargetActivationsWhileTapped
+                    | Instruction::PutSourceThirdFromTop
+                    | Instruction::CopyCapturedActivatedAbility
+            )
+        })
+    }) {
+        return false;
+    }
+    if let Some(event) = &item.event_object {
+        if event
+            .subtype_lki
+            .as_ref()
+            .is_some_and(|facts| !schema197_facts_supported(facts))
+        {
+            return false;
+        }
+        match &event.facts {
+            event_objects::EventObjectFacts::DamageActor(source)
+                if !schema197_facts_supported(&source.facts) =>
+            {
+                return false;
+            }
+            event_objects::EventObjectFacts::Copiable(recipe)
+                if !schema197_recipe_supported(recipe) =>
+            {
+                return false;
+            }
+            _ => {}
+        }
+    }
+    true
+}
+
+/// Outside-entry replacement choices and continuations have no schema-196
+/// representation. Keep all outside-owned states conservative until their
+/// complete future behavior has an equivalent old-contract proof.
+fn prior_schema197_state_supported(state: &State) -> bool {
+    state.mana_lots.as_ref().is_none_or(|mana| {
+        let safe = |quality: &mana_lots::Quality| {
+            !matches!(quality.restriction, mana_lots::ManaRestrictionView::CastFromExile | mana_lots::ManaRestrictionView::AbilityActivation)
+                && quality.copy_source.as_ref().is_none_or(|source| !schema197_new_card(source.card) && !schema197_new_card(source.definition) && schema197_facts_supported(&source.facts))
+        };
+        mana.trace.is_none() && mana.replay.is_none() && mana.choice.is_none()
+            && mana.prepared.is_none()
+            && mana.pools.iter().flat_map(|pool| pool.iter()).all(|lot| safe(&lot.quality))
+            && mana.effect_quality.as_ref().is_none_or(safe)
+            && mana.announcement_quality.as_ref().is_none_or(|(_, quality)| safe(quality))
+    })
+        && state.players.iter().all(|player| player.controlled_creatures_exiled_this_turn == 0)
+        && state.exile_permissions.iter().all(|permission| !permission.airbend)
+        && state.plot.as_ref().is_none_or(|plot| plot.payment.is_none())
+        && state.roles.as_ref().is_none_or(|roles| {
+            !roles.prohibit_opponent_nonhand_casts.iter().any(|&active| active)
+                && roles.animations.iter().all(|row| !row.enchantment_noncreature)
+                && roles.source_linked_effects.iter().all(|row| {
+                row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
+            })
+        })
+        && !state
+        .objects
+        .iter()
+        .any(|object| schema197_new_card(object.card))
+        && state.outside_game.as_ref().is_none_or(|outside| {
+            !outside
+                .pools
+                .iter()
+                .flatten()
+                .copied()
+                .any(schema197_new_card)
+                && outside.choice.is_none()
+                && outside.pending_entry.is_none()
+        })
+        && state.announcing.is_none()
+        && state.mana_announcement_stack.is_none()
+        && state.replacements.is_none()
+        && state.copy_recipes.as_ref().is_none_or(|rows| {
+            rows.iter()
+                .all(|row| schema197_recipe_supported(&row.recipe))
+        })
+        && state.temporary_copies.as_ref().is_none_or(|rows| {
+            rows.iter().all(|row| {
+                !schema197_new_card(row.physical_card)
+                    && row
+                        .original_recipe
+                        .as_ref()
+                        .is_none_or(schema197_recipe_supported)
+                    && row
+                        .layers
+                        .iter()
+                        .all(|layer| schema197_recipe_supported(&layer.value.recipe))
+            })
+        })
+        && state.borrowed_slots.as_ref().is_none_or(|rows| {
+            rows.iter()
+                .all(|row| row.definition.is_none_or(|card| !schema197_new_card(card)))
+        })
+        && state.borrowed_links.as_ref().is_none_or(|rows| rows.iter().all(|row| !row.once_per_turn))
+        && state.temporary_abilities.as_ref().is_none_or(|rows| {
+            rows.iter()
+                .all(|row| !schema197_new_card(row.granting_card))
+        })
+        && state.self_granted_abilities.as_ref().is_none_or(|rows| {
+            rows.iter()
+                .all(|row| !schema197_new_card(row.granting_card))
+        })
+        && state.resolving.is_none()
+        && state.entry_batch.is_none()
+        && state
+            .zone_rules
+            .as_ref()
+            .is_none_or(|rules| !rules.has_checkpoint())
+        // Mana rollback owns frozen life-payment receipts and pre-action state.
+        // Reject the whole continuation until old-schema equivalence is proven.
+        && state.cast_rollback.is_none()
+        && {
+            state
+                .stack
+                .iter()
+                .chain(&state.pending_triggers)
+                .chain(&state.ordering_triggers)
+                .chain(
+                    state
+                        .delayed_artifact_copies
+                        .as_deref()
+                        .into_iter()
+                        .flatten(),
+                )
+                .chain(
+                    state
+                        .delayed_attack_this_turn
+                        .as_deref()
+                        .into_iter()
+                        .flatten(),
+                )
+                .chain(
+                    state
+                        .delayed_opponent_attack_until_next_turn
+                        .as_deref()
+                        .into_iter()
+                        .flatten(),
+                )
+                .chain(state.delayed_main_mana.as_deref().into_iter().flatten())
+                .chain(state.delayed_upkeep_tokens.as_deref().into_iter().flatten())
+                .chain(
+                    state
+                        .stack_copy_data
+                        .as_ref()
+                        .into_iter()
+                        .flat_map(|s| s.packets()),
+                )
+                .chain(
+                    state
+                        .paradigm
+                        .as_ref()
+                        .into_iter()
+                        .flat_map(|s| s.packets()),
+                )
+                .chain(
+                    state
+                        .delayed_returns
+                        .as_deref()
+                        .into_iter()
+                        .flatten()
+                        .map(|r| &r.item),
+                )
+                .chain(
+                    state
+                        .earthbend_returns
+                        .as_deref()
+                        .into_iter()
+                        .flatten()
+                        .map(|r| &r.item),
+                )
+                .chain(
+                    state
+                        .manifest
+                        .as_ref()
+                        .into_iter()
+                        .flat_map(|s| s.deaths.iter().map(|d| &d.source)),
+                )
+                .all(schema197_packet_supported)
+        }
+}
+
+fn project_prior_schema197(input: &str) -> Result<String, String> {
+    fn check(value: &serde_json::Value) -> Result<(), String> {
+        match value {
+            serde_json::Value::String(text)
+                if matches!(
+                    text.as_str(),
+                    "Repurposing Bay"
+                        | "Pinnacle Starcage"
+                        | "Gene Pollinator"
+                        | "Warmaker Gunship"
+                        | "Lively Dirge"
+                        | "Jeskai Revelation"
+                        | "Leatherhead, Swamp Stalker"
+                        | "@token/tdm-monk-prowess"
+                        | "Day of Black Sun"
+                        | "Tishana's Tidebinder"
+                        | "Riverchurn Monument"
+                        | "Torch the Tower"
+                        | "Webstrike Elite"
+                        | "Floodpits Drowner"
+                        | "Consult the Star Charts"
+                        | "United Battlefront"
+                        | "Sunderflock"
+                        | "Strategic Betrayal"
+                        | "Deadly Cover-Up"
+                        | "ExileCreatureAndGraveyard"
+                        | "CoverUpGraveyardCard"
+                        | "CoverUpSearch"
+                        | "Outrageous Robbery"
+                        | "Interdimensional Web Watch"
+                        | "CastFromExile"
+                        | "Sunspine Lynx"
+                        | "Vren, the Relentless"
+                        | "@token/blb-vren-rat"
+                        | "Airbend"
+                        | "AnnounceAirbend"
+                        | "Airbender Ascension"
+                        | "Appa, Steadfast Guardian"
+                        | "Bloodghast"
+                        | "Enduring Curiosity"
+                        | "Requiting Hex"
+                        | "Moonshadow"
+                        | "Braided Net // Braided Quipu"
+                        | "Braided Net"
+                        | "Braided Quipu"
+                        | "Spring-Loaded Sawblades // Bladewheel Chariot"
+                        | "Spring-Loaded Sawblades"
+                        | "Bladewheel Chariot"
+                        | "The Enigma Jewel // Locus of Enlightenment"
+                        | "The Enigma Jewel"
+                        | "Locus of Enlightenment"
+                        | "FinishCraftMaterials"
+                        | "ExileCraftNonlands"
+                        | "AbilityActivation"
+                        | "ExileControlledOrGraveyard"
+                        | "ExileControlled"
+                        | "CraftSource"
+                        | "PreventActivationsUntilUntapped"
+                        | "Avatar's Wrath"
+                        | "Aang's Iceberg"
+                        | "Aang, Swift Savior // Aang and La, Ocean's Fury"
+                        | "Aang, Swift Savior"
+                        | "Aang and La, Ocean's Fury"
+                        | "Doc Aurlock, Grizzled Genius"
+                        | "Hearth Elemental // Stoke Genius"
+                        | "Hearth Elemental"
+                        | "Stoke Genius"
+                        | "BeginWaterbend"
+                        | "ChooseWaterbender"
+                        | "waterbend"
+                ) =>
+            {
+                Err("airbend cast has no schema 196 representation".into())
+            }
+            serde_json::Value::Array(rows) => rows.iter().try_for_each(check),
+            serde_json::Value::Object(fields) => {
+                if [
+                    "sacrificed_mana_value",
+                    "inspected_cards",
+                    "CoverUpSearch",
+                    "controlled_creatures_exiled_this_turn",
+                    "airbend",
+                    "enchantment_noncreature",
+                    "AnnounceAirbend",
+                    "ExileControlledOrGraveyard",
+                    "ExileControlled",
+                    "CraftSource",
+                    "PreventActivationsUntilUntapped",
+                    "FinishCraftMaterials",
+                    "ExileCraftNonlands",
+                    "AbilityActivation",
+                    "craft_materials",
+                    "acquired_once_per_turn",
+                    "prohibit_opponent_nonhand_casts",
+                    "waterbend_choice",
+                    "ChooseWaterbender",
+                ]
+                .iter()
+                .any(|key| fields.contains_key(*key))
+                {
+                    return Err("airbend permission has no schema 196 representation".into());
+                }
+                fields.values().try_for_each(check)
+            }
+            _ => Ok(()),
+        }
+    }
+    check(&serde_json::from_str(input).map_err(|e| e.to_string())?)?;
+    Ok(input.to_owned())
+}
+
+#[test]
+fn prior_schema197_rejects_grave_exile_search_values() {
+    for value in [
+        r#"{"card":"Strategic Betrayal"}"#,
+        r#"{"card":"Deadly Cover-Up"}"#,
+        r#"{"kind":"ExileCreatureAndGraveyard"}"#,
+        r#"{"kind":"CoverUpGraveyardCard"}"#,
+        r#"{"kind":{"CoverUpSearch":{"owner":"P0","name":"Bear Cub"}}}"#,
+        r#"{"inspected_cards":[]}"#,
+    ] {
+        assert!(project_prior_schema197(value).is_err());
+    }
+}
+
+#[test]
+fn prior_schema197_rejects_jewel_costs_and_owned_acquisitions() {
+    for value in [
+        r#"{"card":"The Enigma Jewel // Locus of Enlightenment"}"#,
+        r#"{"card":"Locus of Enlightenment"}"#,
+        r#"{"kind":"FinishCraftMaterials"}"#,
+        r#"{"kind":{"ExileCraftNonlands":4}}"#,
+        r#"{"restriction":"AbilityActivation"}"#,
+        r#"{"craft_materials":[]}"#,
+        r#"{"acquired_once_per_turn":true}"#,
+    ] {
+        assert!(project_prior_schema197(value).is_err());
+    }
+    let mut game = scenario(Player::P0);
+    let bow = put(&mut game, Player::P0, "Short Bow", Zone::Battlefield);
+    let donor = put(&mut game, Player::P0, "Forest", Zone::Exile);
+    let source = game.object_ref(bow);
+    let exiled = game.object_ref(donor);
+    let mut packet = game.activation_item(Player::P0, bow, 0);
+    packet.craft_materials = Some(Box::new(vec![exiled]));
+    game.state.stack.push(packet);
+    assert!(!prior_schema197_state_supported(&game.state));
+    game.state.stack.pop();
+    game.state
+        .borrowed_links
+        .get_or_insert_default()
+        .push(borrowed_activations::Link {
+            source,
+            origin: None,
+            exiled,
+            first_slot: 0,
+            width: 1,
+            once_per_turn: true,
+        });
+    assert!(!prior_schema197_state_supported(&game.state));
+}
+
+#[test]
+fn prior_schema197_rejects_airbend_rights_and_actions() {
+    let ordinary = r#"[{"action":"Pass","object":true}]"#;
+    assert_eq!(project_prior_schema197(ordinary).unwrap(), ordinary);
+    for value in [
+        r#"[{"action":"AnnounceAirbend"}]"#,
+        r#"[{"method":"Airbend"}]"#,
+        r#"[{"exile_permissions":[{"airbend":true}]}]"#,
+        r#"[{"card":"Requiting Hex"}]"#,
+        r#"[{"card":"Moonshadow"}]"#,
+        r#"[{"card":"Outrageous Robbery"}]"#,
+        r#"[{"card":"Interdimensional Web Watch"}]"#,
+        r#"[{"restriction":"CastFromExile"}]"#,
+        r#"[{"card":"Sunspine Lynx"}]"#,
+        r#"[{"card":"Vren, the Relentless"}]"#,
+        r#"[{"card":"@token/blb-vren-rat"}]"#,
+        r#"[{"controlled_creatures_exiled_this_turn":1}]"#,
+        r#"[{"card":"Bloodghast"}]"#,
+        r#"[{"card":"Enduring Curiosity"}]"#,
+        r#"[{"enchantment_noncreature":true}]"#,
+        r#"[{"prohibit_opponent_nonhand_casts":[true,false]}]"#,
+    ] {
+        assert!(project_prior_schema197(value).is_err());
+    }
+    let mut game = scenario(Player::P0);
+    assert!(prior_schema197_state_supported(&game.state));
+    let plot = put(&mut game, Player::P0, "Stagecoach Security", Zone::Hand);
+    game.begin_plot(Player::P0, plot);
+    assert!(!prior_schema197_state_supported(&game.state));
+    game.state.plot.as_mut().unwrap().payment = None;
+    game.state.pending = Pending::Priority;
+    assert!(prior_schema197_state_supported(&game.state));
+    game.state
+        .roles
+        .get_or_insert_default()
+        .prohibit_opponent_nonhand_casts[0] = true;
+    assert!(!prior_schema197_state_supported(&game.state));
+    game.state
+        .roles
+        .as_mut()
+        .unwrap()
+        .prohibit_opponent_nonhand_casts[0] = false;
+    assert!(prior_schema197_state_supported(&game.state));
+    let card = put(&mut game, Player::P0, "Bear Cub", Zone::Exile);
+    game.grant_airbend_permission(Player::P0, game.object_ref(card));
+    assert!(!prior_schema197_state_supported(&game.state));
+}
+
+#[test]
+fn prior_schema197_rejects_craft_wire_values_and_owned_locks() {
+    for value in [
+        r#"{"clause":"CraftSource"}"#,
+        r#"{"choice":"ExileControlledOrGraveyard"}"#,
+        r#"{"choice":"ExileControlled"}"#,
+        r#"{"kind":"PreventActivationsUntilUntapped"}"#,
+        r#"{"card":"Braided Net // Braided Quipu"}"#,
+        r#"{"card":"Bladewheel Chariot"}"#,
+    ] {
+        assert!(project_prior_schema197(value).is_err());
+    }
+    for name in [
+        "Braided Net",
+        "Braided Quipu",
+        "Spring-Loaded Sawblades",
+        "Bladewheel Chariot",
+    ] {
+        assert!(schema197_new_card(Card::from_name(name).unwrap()));
+    }
+    let mut game = scenario(Player::P0);
+    let id = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
+    let object = game.object_ref(id);
+    assert!(prior_schema197_state_supported(&game.state));
+    game.state
+        .roles
+        .get_or_insert_default()
+        .source_linked_effects
+        .push(SourceLinkedEffectView {
+            source: object,
+            recipient: object,
+            controller: Player::P0,
+            kind: SourceLinkedEffectKind::PreventActivationsUntilUntapped,
+            timestamp: 1,
+        });
+    assert!(!prior_schema197_state_supported(&game.state));
+}
+
+#[test]
+fn prior_schema197_rejects_copied_ascension_trigger_after_source_departs() {
+    use super::big_helpers::checked;
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let target = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+        let destroy = put(&mut game, player.other(), "Disenchant", Zone::Hand);
+        let ascension = Card::from_name("Airbender Ascension").unwrap();
+        game.apply_temporary_copy(
+            game.object_ref(source),
+            CopyRecipe::new(ascension),
+            CopyDeadline::EndOfTurn,
+        );
+        game.add_counter(source, CounterKind::Quest, 4);
+        assert!(!prior_schema197_state_supported(&game.state));
+        game.begin_step(Step::End);
+        for _ in 0..40 {
+            if game.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(target),
+            }) {
+                break;
+            }
+            checked(&mut game, Action::Pass);
+        }
+        checked(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        if game.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut game, Action::FinishTargets);
+        }
+        while game.actor() != Some(player.other()) {
+            checked(&mut game, Action::Pass);
+        }
+        super::big_helpers::cast(&mut game, destroy, None, &[Target::Card(source)]);
+        for _ in 0..8 {
+            if game.object_view(source).zone == Zone::Graveyard {
+                break;
+            }
+            checked(&mut game, Action::Pass);
+        }
+        assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+        assert!(
+            game.state
+                .objects
+                .iter()
+                .all(|object| !schema197_new_card(object.card))
+        );
+        assert!(
+            game.state
+                .stack
+                .iter()
+                .any(|item| item.source.is_some_and(|origin| origin.card == ascension))
+        );
+        assert!(!prior_schema197_state_supported(&game.state));
+        let snapshot = game.snapshot();
+        let mut branch = game.clone();
+        assert!(!prior_schema197_state_supported(&branch.state));
+        super::big_helpers::settle(&mut game);
+        // The blink's exile history remains public for the rest of the turn.
+        assert_eq!(
+            game.state.players[player.index()].controlled_creatures_exiled_this_turn,
+            1
+        );
+        assert!(!prior_schema197_state_supported(&game.state));
+        branch.restore(&snapshot).unwrap();
+        assert!(!prior_schema197_state_supported(&branch.state));
+        super::big_helpers::settle(&mut branch);
+        assert_eq!(branch.snapshot(), game.snapshot());
+        super::big_helpers::next_turn(&mut game);
+        assert!(prior_schema197_state_supported(&game.state));
+    }
+}
+
 /// Outside-entry replacement choices and continuations have no schema-191
 /// representation. Keep all outside-owned states conservative until their
 /// complete future behavior has an equivalent old-contract proof.
@@ -4158,7 +4803,7 @@ fn prior_schema184_state_supported(state: &State) -> bool {
 
 #[test]
 fn schema184_preserves_old_bytes_and_rejects_changed_card_and_paid_offer() {
-    assert_eq!(OBSERVATION_SCHEMA, 196);
+    assert_eq!(OBSERVATION_SCHEMA, 198);
     let old = r#"[{"resolution_free_casts":{"paid":null},"other":true}]"#;
     assert_eq!(project_prior_schema184(old).unwrap(), old);
     for card in ["Chandra, Torch of Defiance", "@emblem/fra-chandra-torch"] {
@@ -5917,6 +6562,7 @@ fn schema180_audits_hidden_borrowed_slot_definitions_and_rollbacks() {
                 exiled,
                 first_slot: 0,
                 width: 1,
+                once_per_turn: false,
             });
         g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
         let slots = g.state.borrowed_slots.as_ref().unwrap();
@@ -6753,6 +7399,7 @@ fn prior_projection_rejects_hidden_retained_borrowing_state() {
                 exiled: donor_ref,
                 first_slot: 0,
                 width: 1,
+                once_per_turn: false,
             });
         assert!(game.observe(player).borrowed_abilities.is_empty());
         assert!(!prior_behold_owned_state_supported(&game));
@@ -6957,7 +7604,31 @@ fn trace_candidate_with_prepared_observation_audit(
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 196) {
+    if schema_projection.is_some_and(|schema| schema < 198) {
+        if !super::schema198::prior_schema198_state_supported(&g.state) {
+            projection_error = Some(
+                "new Hartford state or opaque continuation cannot be projected to schema 197"
+                    .to_owned(),
+            );
+        } else {
+            match super::schema198::project_prior_schema198(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 197) {
+        if !prior_schema197_state_supported(&g.state) {
+            projection_error =
+                Some("owned airbend state cannot be projected to schema 196".to_owned());
+        } else {
+            match project_prior_schema197(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 196) {
         if !prior_schema196_state_supported(&g.state) {
             projection_error = Some(
                 "owned Ashiok or life-payment state cannot be projected to schema 195".to_owned(),
@@ -7353,6 +8024,17 @@ fn prior_mana_audit_detects_offered_action_identity_and_payload_changes() {
 
 #[test]
 fn supported_cards_retain_bounded_cast_and_entry_traces() {
+    // Keep the reviewed fixture external to the test binary so refreshing only
+    // trace data does not recompile the engine. Validation fingerprints this
+    // fixture and requires all inputs to remain fixed until the job ends.
+    let expected: BTreeMap<String, Trace> = serde_json::from_str(
+        &std::fs::read_to_string(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/src/assurance/card_traces.json"
+        ))
+        .expect("committed card trace baseline"),
+    )
+    .expect("valid committed card trace baseline");
     let coverage: serde_json::Value =
         serde_json::from_str(include_str!("../../data/standard/coverage.json")).unwrap();
     let actual: BTreeMap<String, Trace> = coverage["cards"]
@@ -7431,8 +8113,7 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
             // existing baseline; no historical re-recording or acceptance.
             // Observations are final only, and the historical digest is FNV64.
             if std::env::var_os("RUSTMAGE_AUDIT_PRIOR_MANA_ACTIONS").is_some() {
-                let baseline: BTreeMap<String, Trace> =
-                    serde_json::from_str(include_str!("card_traces.json")).unwrap();
+                let baseline = &expected;
                 // This report contains only trace summaries and fixed projector
                 // error messages; it never emits raw observations or hidden cards.
                 let mut exceptions: BTreeMap<String, (Trace, Option<&Trace>)> = BTreeMap::new();
@@ -7466,8 +8147,6 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
             }
         }
     }
-    let expected: BTreeMap<String, Trace> =
-        serde_json::from_str(include_str!("card_traces.json")).unwrap();
     assert_eq!(
         actual.len(),
         expected.len(),

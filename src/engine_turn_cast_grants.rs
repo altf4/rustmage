@@ -39,10 +39,13 @@ impl Game {
         rows[player.index()].next_spell_uncounterable = false;
         let id = self.state.stack[index].id;
         self.prune_uncounterable_spell_ids();
-        self.state
-            .uncounterable_spell_ids
-            .get_or_insert_with(Default::default)
-            .push(id);
+        self.mark_spell_uncounterable(id);
+    }
+    pub(super) fn mark_spell_uncounterable(&mut self, id: u64) {
+        let ids = self.state.uncounterable_spell_ids.get_or_insert_default();
+        if !ids.contains(&id) {
+            ids.push(id);
+        }
     }
     pub(super) fn prune_uncounterable_spell_ids(&mut self) {
         if let Some(ids) = &mut self.state.uncounterable_spell_ids {

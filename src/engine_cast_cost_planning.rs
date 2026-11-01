@@ -65,7 +65,20 @@ impl CostContext {
                 .as_ref()
                 .map(|c| c.remaining)
                 .or(a.total_cost)
-                .or(a.cost),
+                .or(a.cost)
+                .or_else(|| {
+                    if !a.ordered_craft() {
+                        return None;
+                    }
+                    let StackKind::ActivatedAbility { ability } = a.item.kind else {
+                        return None;
+                    };
+                    let cost = a.item.source?.card.activation(ability).cost;
+                    Some(ManaCost {
+                        colored: cost.colored,
+                        generic: cost.generic.saturating_sub(a.activation_discount),
+                    })
+                }),
             source: a
                 .item
                 .source
@@ -117,6 +130,7 @@ impl FundingState<'_> {
         for row in &c.clauses {
             match row.clause {
                 CastCostClause::Additional
+                | CastCostClause::CraftSource
                 | CastCostClause::Mana
                 | CastCostClause::Life(_)
                 | CastCostClause::AlternativeLife(_)
@@ -239,13 +253,23 @@ impl FundingState<'_> {
         {
             return false;
         }
-        let spec = spec.in_zone(o.zone);
-        (!matches!(
+        let craft = matches!(
             spec.kind,
-            EffectChoiceKind::Sacrifice
-                | EffectChoiceKind::SacrificeDifferentNames(_)
-                | EffectChoiceKind::SacrificeAttachedEquipment
-        ) || !self.sacrifice_prohibited(r.card))
+            EffectChoiceKind::ExileControlledOrGraveyard | EffectChoiceKind::ExileCraftNonlands(_)
+        );
+        if matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_))
+            && !additional_costs::has_craft_activated_ability(self, r.card)
+        {
+            return false;
+        }
+        let spec = spec.in_zone(o.zone);
+        (!craft || !CharacteristicWorld::graveyard_exile_prohibited(self, r.card))
+            && (!matches!(
+                spec.kind,
+                EffectChoiceKind::Sacrifice
+                    | EffectChoiceKind::SacrificeDifferentNames(_)
+                    | EffectChoiceKind::SacrificeAttachedEquipment
+            ) || !self.sacrifice_prohibited(r.card))
             && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
                 || (self.game.ninjutsu_attacker(self.actor, r) && self.attacking(r.card)))
             && self.reference(r.card) == r
@@ -576,6 +600,16 @@ impl FundingState<'_> {
                         if next.complete_cost_rows(&later, &rest) {
                             return true;
                         }
+                    }
+                }
+                CastCostClause::CraftSource => {
+                    if self.reference(c.source.card) == c.source
+                        && self.object(c.source.card).zone == Zone::Battlefield
+                        && self.cost_departures(&[c.source], Zone::Exile, &mut |world| {
+                            world.complete_cost_rows(&later, &rest)
+                        })
+                    {
+                        return true;
                     }
                 }
                 CastCostClause::Additional => {
@@ -1011,7 +1045,13 @@ impl FundingState<'_> {
             EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
                 amount = usize::from(n)
             }
-            EffectChoiceKind::ExileGraveyard => destination = Zone::Exile,
+            EffectChoiceKind::ExileGraveyard
+            | EffectChoiceKind::ExileControlled
+            | EffectChoiceKind::ExileControlledOrGraveyard => destination = Zone::Exile,
+            EffectChoiceKind::ExileCraftNonlands(n) => {
+                destination = Zone::Exile;
+                amount = usize::from(n);
+            }
             EffectChoiceKind::ExileGraveyardCards(n) => {
                 destination = Zone::Exile;
                 amount = usize::from(n);
@@ -1093,13 +1133,20 @@ impl FundingState<'_> {
         at: usize,
         selected: &mut Vec<ObjectRef>,
     ) -> bool {
-        let enough = evidence_min.map_or(selected.len() == amount, |(minimum, color)| {
-            selected
-                .iter()
-                .map(|r| cost_weight(self.object(r.card).card, color))
-                .sum::<u128>()
-                >= minimum
-        });
+        let enough = evidence_min.map_or(
+            if matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_)) {
+                selected.len() >= amount
+            } else {
+                selected.len() == amount
+            },
+            |(minimum, color)| {
+                selected
+                    .iter()
+                    .map(|r| cost_weight(self.object(r.card).card, color))
+                    .sum::<u128>()
+                    >= minimum
+            },
+        );
         if enough {
             if remaining.is_empty() {
                 return true;
@@ -1122,7 +1169,11 @@ impl FundingState<'_> {
                 return true;
             }
         }
-        if c.exact || evidence_min.is_none() && selected.len() >= amount {
+        if c.exact
+            || evidence_min.is_none()
+                && selected.len() >= amount
+                && !matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_))
+        {
             return false;
         }
         for i in at..candidates.len() {
@@ -1234,6 +1285,51 @@ impl FundingState<'_> {
 }
 
 impl Game {
+    /// Before an announcement exists, explore every legal order of the craft
+    /// source, material and mana costs after completing mana abilities.
+    pub(in crate::engine) fn preview_ordered_craft(
+        &self,
+        goal: FundingGoal,
+        spec: AdditionalCost,
+    ) -> bool {
+        let Some((source, _, _, _, _)) = goal.source.as_ref() else {
+            return false;
+        };
+        let purpose = self.funding_purpose(&goal);
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_purpose(purpose);
+        world.install_cost_context(Some(Box::new(CostContext {
+            actor: goal.actor,
+            source: *source,
+            source_counter_reservation: Counters::default(),
+            clauses: [
+                CastCostClause::Mana,
+                CastCostClause::CraftSource,
+                CastCostClause::Additional,
+            ]
+            .into_iter()
+            .map(|clause| CastCostRow {
+                clause,
+                paid: false,
+            })
+            .collect(),
+            active: None,
+            casualty: Vec::new(),
+            additional: Some(spec),
+            additional_life: false,
+            forage: None,
+            selected: Vec::new(),
+            exact: false,
+            counters: Vec::new(),
+            mana: Some(ManaCost {
+                colored: goal.required,
+                generic: goal.generic,
+            }),
+            teammates: Vec::new(),
+            teamwork_exact: false,
+        })));
+        world.reachable(&goal, &mut HashSet::new())
+    }
     pub(in crate::engine) fn teamwork_proposal_fundable(&self, a: &Announcement) -> bool {
         a.cost_options().any(|cost| {
             let mut choice = a.clone();

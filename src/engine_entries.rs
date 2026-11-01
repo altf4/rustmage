@@ -12,6 +12,12 @@ pub(super) struct EntryMove {
     pub zone_plan: Option<zone_replacements::Plan>,
     /// Original source-zone view when this entry is projected using another face.
     pub source_before: Option<Box<ObjectView>>,
+    /// Exact material exile incarnations attached to this craft return.
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare craft entry context retains one pointer on ordinary entries"
+    )]
+    pub craft_materials: Option<Box<Vec<ObjectRef>>>,
     /// Physical card hidden behind face-down entry characteristics.
     pub manifest_original: Option<Card>,
     pub manifest_known: bool,
@@ -30,6 +36,8 @@ pub(super) struct EntryMove {
     pub effect_counter: Option<(CounterKind, u64)>,
     /// Timestamped ability grant after only this move actually enters.
     pub keywords_after: Option<(ObjectRef, Keywords)>,
+    /// Source-independent abilities granted only after this actual successful return.
+    pub attack_trigger_after: Option<Box<mayhem::ReturnedAbilityGrant>>,
     /// Only this surrounding return effect captures its actual public entry result.
     pub equipment_after: bool,
     /// Applied after entry observers freeze their facts, only on successful entry.
@@ -42,6 +50,8 @@ pub(super) struct EntryMove {
     pub food_return: Option<Card>,
     /// Set artifact card type as it enters, preserving abilities (CR205.1a/611.2e).
     pub artifact_return: bool,
+    /// Source-independent enchantment-only form as it enters.
+    pub enchantment_return: bool,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -123,8 +133,8 @@ impl EntryMove {
     pub(super) fn entry_kinds(&self) -> u16 {
         if self.food_return.is_some() {
             16
-        } else if self.artifact_return {
-            16 | (self.before.kinds & (4 | 8))
+        } else if self.artifact_return || self.enchantment_return {
+            (if self.enchantment_return { 32 } else { 16 }) | (self.before.kinds & (4 | 8))
         } else {
             self.before.kinds
         }
@@ -140,6 +150,7 @@ impl EntryMove {
             battle_protector: None,
             before,
             source_before: None,
+            craft_materials: None,
             zone_plan: None,
             destination,
             tapped,
@@ -149,6 +160,7 @@ impl EntryMove {
             life_bonus: None,
             effect_counter: None,
             keywords_after: None,
+            attack_trigger_after: None,
             equipment_after: false,
             blank_with_haste_after: None,
             attach_equipment_to: None,
@@ -156,6 +168,7 @@ impl EntryMove {
             ghost_vacuum_after: None,
             food_return: None,
             artifact_return: false,
+            enchantment_return: false,
             attacking: None,
             skipped: false,
             reveal_hand: false,
@@ -191,6 +204,12 @@ impl EntryBatch {
             + self
                 .moves
                 .iter()
+                .filter(|m| m.attack_trigger_after.is_some())
+                .count()
+                * std::mem::size_of::<mayhem::ReturnedAbilityGrant>()
+            + self
+                .moves
+                .iter()
                 .map(|m| {
                     m.delayed_return_exile.as_ref().map_or(0, |item| {
                         std::mem::size_of::<SpellView>() + item.owned_bytes()
@@ -199,6 +218,10 @@ impl EntryBatch {
                         + m.source_before
                             .as_ref()
                             .map_or(0, |v| std::mem::size_of::<ObjectView>() + v.owned_bytes())
+                        + m.craft_materials.as_ref().map_or(0, |v| {
+                            std::mem::size_of::<Vec<ObjectRef>>()
+                                + v.len() * std::mem::size_of::<ObjectRef>()
+                        })
                 })
                 .sum::<usize>()
             + self
@@ -481,6 +504,7 @@ impl Game {
                 m.destination == Zone::Battlefield
                     && (m.before.card.entry_choice().is_some()
                         || !m.artifact_return
+                            && !m.enchantment_return
                             && m.before.card.aura().is_some()
                             && m.attachment.is_none()
                         || matches!(m.before.card.entry_tapped(), EntryTapped::PayLife(_))
@@ -740,8 +764,10 @@ impl Game {
         let mut equipment_results = Vec::new();
         let mut keyword_results = Vec::new();
         let mut ability_results = Vec::new();
+        let mut attack_trigger_results = Vec::new();
         let mut food_results = Vec::new();
         let mut artifact_results = Vec::new();
+        let mut enchantment_results = Vec::new();
         let mut ghost_results = Vec::new();
         for (movement, counters) in moves {
             let entering_face = movement
@@ -781,6 +807,27 @@ impl Game {
                 },
             );
             if event.moved && event.destination == Zone::Battlefield {
+                if let Some(materials) = movement.craft_materials.as_deref() {
+                    for &exiled in materials {
+                        if self.object_ref(exiled.card) != exiled
+                            || self.state.objects[exiled.card as usize].zone != Zone::Exile
+                            || !self.state.objects[exiled.card as usize].is_card()
+                        {
+                            continue;
+                        }
+                        let first_slot = graveyard_borrowing::next_slot(self, event.after);
+                        self.state.borrowed_links.get_or_insert_default().push(
+                            borrowed_activations::Link {
+                                source: event.after,
+                                origin: None,
+                                exiled,
+                                first_slot,
+                                width: borrowed_activations::DONOR_SLOT_WIDTH,
+                                once_per_turn: true,
+                            },
+                        );
+                    }
+                }
                 if let Some(item) = &movement.delayed_return_exile {
                     self.register_delayed_return_exile(item, event.after);
                 }
@@ -827,6 +874,10 @@ impl Game {
             if event.moved && event.destination == Zone::Battlefield && movement.artifact_return {
                 artifact_results.push(event.after);
             }
+            if event.moved && event.destination == Zone::Battlefield && movement.enchantment_return
+            {
+                enchantment_results.push(event.after);
+            }
             if event.moved
                 && event.destination == Zone::Battlefield
                 && let Some(source) = movement.ghost_vacuum_after
@@ -848,6 +899,11 @@ impl Game {
                     && let Some((source, keywords)) = movement.keywords_after
                 {
                     keyword_results.push((event.after, source, keywords));
+                }
+                if event.destination == Zone::Battlefield
+                    && let Some(grant) = movement.attack_trigger_after
+                {
+                    attack_trigger_results.push((event.after, grant));
                 }
                 if event.destination == Zone::Battlefield
                     && let Some(source) = movement.blank_with_haste_after
@@ -991,6 +1047,12 @@ impl Game {
                 characteristic_layers::artifact_noncreature_form(recipient, timestamp),
             );
         }
+        for recipient in enchantment_results {
+            let timestamp = self.next_role_timestamp();
+            self.state.roles.get_or_insert_default().animations.push(
+                characteristic_layers::enchantment_noncreature_form(recipient, timestamp),
+            );
+        }
         self.refresh_controllers();
         if let Some(item) = &batch.temporary_copy {
             let tokens = events
@@ -1018,6 +1080,9 @@ impl Game {
             if self.object_ref(recipient.card) == recipient && self.on_battlefield(recipient.card) {
                 self.grant_keyword_effects(&[recipient.card], source, keywords);
             }
+        }
+        for (recipient, grant) in attack_trigger_results {
+            self.grant_returned_attack_trigger(recipient, &grant);
         }
         for (recipient, source) in ability_results {
             self.blank_and_grant_haste(recipient, source);
@@ -1387,6 +1452,7 @@ impl Game {
             && !m.before.card.is_emblem()
             && !m.skipped
             && (m.artifact_return
+                || m.enchantment_return
                 || m.ghost_vacuum_after.is_some()
                 || m.food_return.is_some()
                 || m.return_modification.is_some()

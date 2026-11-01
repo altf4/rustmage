@@ -71,6 +71,7 @@ impl Game {
             &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.state.players[owner.index()].life,
+            self.state.players[owner.other().index()].life,
             self.state.attack_declared
                 && self.state.attackers.iter().any(|a| a.card == source.card),
             self.state.players[owner.index()].enduring_story,
@@ -95,6 +96,7 @@ impl Game {
         counter_count: &impl Fn(CardId, CounterKind) -> u64,
         has_counters: &impl Fn(CardId) -> bool,
         life: i128,
+        opponent_life: i128,
         attacking: bool,
         enduring_story: bool,
         life_lost: bool,
@@ -161,6 +163,7 @@ impl Game {
                     counter_count,
                     has_counters,
                     life,
+                    opponent_life,
                     attacking,
                     enduring_story,
                     life_lost,
@@ -291,11 +294,15 @@ impl Game {
                     counter_count,
                     has_counters,
                     life,
+                    opponent_life,
                     attacking,
                     enduring_story,
                     life_lost,
                 ) >= i128::from(minimum),
             ),
+            StatValue::PermanentsSacrificedThisTurn => {
+                i128::from(self.state.players[owner.index()].permanents_sacrificed_this_turn)
+            }
             StatValue::SpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].spells_cast_this_turn)
             }
@@ -339,6 +346,9 @@ impl Game {
                     .capacity("life gain count representation exhausted")
             }
             StatValue::ControllerLife => life,
+            StatValue::OpponentLifeAtMost(maximum) => {
+                i128::from(opponent_life <= i128::from(maximum))
+            }
             StatValue::ControllerLifeAboveStarting { minimum } => {
                 i128::from(life >= STARTING_LIFE + i128::from(minimum))
             }
@@ -460,6 +470,7 @@ impl Game {
                     counter_count,
                     has_counters,
                     life,
+                    opponent_life,
                     attacking,
                     enduring_story,
                     life_lost,
@@ -484,6 +495,7 @@ impl Game {
                         counter_count,
                         has_counters,
                         life,
+                        opponent_life,
                         attacking,
                         enduring_story,
                         life_lost,
@@ -506,6 +518,9 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::OpponentCreaturesExiledThisTurn => u128::from(
+                self.state.players[owner.other().index()].controlled_creatures_exiled_this_turn,
+            ),
             AmountValue::ControllerHandDeficit(n) => {
                 u128::from(n).saturating_sub(self.hand_count(owner) as u128)
             }
@@ -528,6 +543,7 @@ impl Game {
             | AmountValue::SacrificedPower
             | AmountValue::ReflexiveSacrificedPower
             | AmountValue::SacrificeCostPower
+            | AmountValue::TappedCostCreaturePower
             | AmountValue::TargetCreaturePower
             | AmountValue::SourceLastKnownPower
             | AmountValue::SacrificedToughness
@@ -544,6 +560,9 @@ impl Game {
             }
             AmountValue::LifeGainedThisTurn => {
                 self.state.players[owner.index()].life_gained_this_turn
+            }
+            AmountValue::Divided { value, divisor } => {
+                self.amount_value(*value, source, owner) / u128::from(divisor.get())
             }
             AmountValue::Multiple { value, factor } => self
                 .amount_value(*value, source, owner)

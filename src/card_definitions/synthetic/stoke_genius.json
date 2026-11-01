@@ -1,0 +1,44 @@
+{
+  "name": "Stoke Genius",
+  "catalogue_id": 5485,
+  "oracle_id": "f01cf0c5-0ac6-4ad3-8642-dd21c8e8563e",
+  "facts_sha256": "fd79aba74b94b76af573b89fd4621707182c79d400fe25cff69369a7adff3cb3",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "f01cf0c5-0ac6-4ad3-8642-dd21c8e8563e",
+    "index": 1,
+    "sha256": "be65ba6123b9c70aac0142b386a257bb2544ed2fdae239b55eabbd9f7abf0c00"
+  },
+  "physical_metadata_sha256": "57efc6f8fcfcd667beed6b82b9a1b6b1561216f069675f7cf468dc143e76cfbb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HearthElemental.java",
+  "java_sha256": "39eb7286cada22ff3ad381b1196a646468c56ca15daebf39e4ef80d26607c1a6",
+  "rules_tests": "src/assurance/requested_reduction.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionForEachSourceEffect.java",
+      "sha256": "47265899e05cec6a04b65519e61353b4684a7c0c1bdf6abf04af79ae4c7708eb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardHandControllerEffect.java",
+      "sha256": "eb06f3b2c08e062ab3b8cdb8257c987c02ea8c42df4f9df0e167bb550a601982"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    }
+  ]
+}

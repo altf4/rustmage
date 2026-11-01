@@ -72,6 +72,7 @@ impl Game {
             source_counter_payment: None,
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
+            craft_materials: None,
             exiled_trigger_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
@@ -79,6 +80,7 @@ impl Game {
             event_object: None,
             manifest_event: None,
             sacrificed_toughness: None,
+            sacrificed_mana_value: None,
             sacrificed_power: None,
 
             targets: Vec::new(),

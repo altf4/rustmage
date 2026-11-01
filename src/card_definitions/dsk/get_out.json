@@ -3,10 +3,35 @@
   "catalogue_id": 1719,
   "oracle_id": "b2f3c27e-b646-4449-901a-8b809cdfa84e",
   "facts_sha256": "a290c726a8d363a9b4a0d40065c298988e953a168b05616ab483da4db8b02fc8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d8553b6ba7e531436ba30d60c667b6c00e2ec987507c9e5cd03d70af718427e8"
   },
-  "physical_metadata_sha256": "f751cf9dee1cbeda0c43fe90b5516a4f63053d8424452ee8249684a6c24e20b9"
+  "physical_metadata_sha256": "f751cf9dee1cbeda0c43fe90b5516a4f63053d8424452ee8249684a6c24e20b9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GetOut.java",
+  "java_sha256": "d0834cb3c3fb8882b6f4a421b3f1f969a2655f4d683d465edb2f3b0a86272522",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

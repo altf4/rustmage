@@ -49,7 +49,8 @@ impl Game {
             }
             self.move_object(source.id, if exile { Zone::Exile } else { Zone::Graveyard });
         } else {
-            self.state.stack.remove(index);
+            let departed = self.state.stack.remove(index);
+            self.retain_departing_activation_for_triggers(&departed);
         }
         true
     }

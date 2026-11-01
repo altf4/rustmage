@@ -69,6 +69,14 @@ impl Announcement {
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Miracle => self.miracle_cost,
+            CastMethod::Mayhem => self
+                .item
+                .source
+                .and_then(|source| source.card.mayhem_cost()),
+            CastMethod::Airbend => Some(ManaCost {
+                colored: [0; 6],
+                generic: 2,
+            }),
             CastMethod::Disguise => Some(ManaCost {
                 colored: [0; 6],
                 generic: 3,
@@ -137,9 +145,11 @@ impl Announcement {
                             .mana_alternative_replaces_additional(cost)
                     }),
                     CastMethod::ExileLife
+                    | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
-                    | CastMethod::Miracle => {
+                    | CastMethod::Miracle
+                    | CastMethod::Mayhem => {
                         self.fixed_alternative_cost()
                             .is_some_and(|base| self.cost.is_some_and(|cost| cost != base))
                             && self
@@ -237,6 +247,15 @@ impl Announcement {
                 if self
                     .item
                     .cast
+                    .is_some_and(|cast| cast.method == CastMethod::Mayhem) =>
+            {
+                std::iter::once(self.fixed_alternative_cost().expect("mayhem cost"))
+                    .chain([].iter().copied())
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
                     .is_some_and(|cast| cast.method == CastMethod::Harmonize) =>
             {
                 std::iter::once(
@@ -260,6 +279,18 @@ impl Announcement {
                     .expect("announcement has object source")
                     .card
                     .flashback_cost_options()
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Airbend) =>
+            {
+                std::iter::once(ManaCost {
+                    colored: [0; 6],
+                    generic: 2,
+                })
+                .chain([].iter().copied())
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| {
@@ -613,6 +644,16 @@ impl Game {
             if item.division_total().is_some_and(|total| total > 0) {
                 spec.min = 1;
             }
+            return TargetPlan::Single(spec);
+        }
+        if let TargetPlan::Single(mut spec) = plan
+            && let TargetRule::ManaValueExactly { base, amount, .. } = spec.rule
+        {
+            spec.rule = TargetRule::ManaValueExactly {
+                base,
+                amount,
+                value: Some(u64::try_from(self.item_amount(amount, item)).unwrap_or(u64::MAX)),
+            };
             return TargetPlan::Single(spec);
         }
         if let TargetPlan::Single(mut spec) = plan
@@ -1421,6 +1462,10 @@ impl Game {
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
         match rule {
+            TargetRule::ManaValueExactly { base, value, .. } => {
+                return value.is_some_and(|value| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) == value)))
+                    && self.target_matches_without_hand(*base, controller, source, target, departing, qualification);
+            }
             TargetRule::ManaValueAtMost { base, maximum, .. } => {
                 return maximum.is_some_and(|maximum| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) <= maximum)))
                     && self.target_matches_without_hand(*base, controller, source, target, departing, qualification);
@@ -1847,6 +1892,9 @@ impl Game {
         }
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
+        if outcome.uncounterable {
+            self.mark_spell_uncounterable(id);
+        }
         item.cast.as_mut().unwrap().treasure_mana_spent |= outcome.treasure_spent;
         item.mana_copy_sources = outcome.copies;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
@@ -1940,6 +1988,7 @@ impl Game {
             source_counter_payment: None,
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
+            craft_materials: None,
             exiled_trigger_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
@@ -1947,6 +1996,7 @@ impl Game {
             event_object: None,
             manifest_event: None,
             sacrificed_toughness: None,
+            sacrificed_mana_value: None,
             sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,
 
@@ -2291,7 +2341,8 @@ impl Game {
         // External discard precedes source sacrifice so it captures battlefield
         // observers. External sacrifice follows source tap/mana costs: the chosen
         // object may itself be this ability's source. No priority is granted.
-        if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
+        if !announcement.ordered_craft()
+            && matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
             && !announcement.additional_paid
         {
             if announcement.additional_cost().is_some_and(|spec| {
@@ -2328,7 +2379,13 @@ impl Game {
             announcement.additional_paid = true;
         }
         if let Some(payment) = announcement.payment {
-            if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
+            if announcement.ordered_craft() {
+                self.spend_mana_for(
+                    announcement.item.controller,
+                    payment,
+                    self.purpose_for_item(&announcement.item),
+                );
+            } else if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
                 if let Some(phase) = self.pay_activation_route(
                     &mut announcement.item,
                     payment,
@@ -2353,6 +2410,9 @@ impl Game {
                     payment,
                     self.purpose_for_item(&announcement.item),
                 );
+                if outcome.uncounterable {
+                    self.mark_spell_uncounterable(announcement.item.id);
+                }
                 if outcome.haste {
                     self.grant_stack_keywords(
                         announcement

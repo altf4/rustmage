@@ -409,15 +409,20 @@ impl Game {
         if independent_free {
             Self::configure_exile_free_cast(&mut item, flash_surcharge);
         }
+        if method == CastMethod::Airbend {
+            Self::configure_airbend_cast(&mut item, flash_surcharge);
+        }
         if method == CastMethod::ExileLife {
             Self::configure_exile_life_cast(&mut item, flash_surcharge);
         }
         if matches!(
             method,
             CastMethod::ExileLife
+                | CastMethod::Airbend
                 | CastMethod::Free
                 | CastMethod::Flashback
                 | CastMethod::Harmonize
+                | CastMethod::Mayhem
                 | CastMethod::Miracle
         ) && definition.x_symbols() > 0
         {
@@ -442,9 +447,11 @@ impl Game {
             && !matches!(
                 method,
                 CastMethod::ExileLife
+                    | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Flashback
                     | CastMethod::Harmonize
+                    | CastMethod::Mayhem
                     | CastMethod::Miracle
             )
         {

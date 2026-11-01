@@ -9,6 +9,8 @@ pub enum CastCostClause {
     },
     Casualty(u16),
     Additional,
+    /// Exile the activated craft source as its own ordered cost component.
+    CraftSource,
     Harmonize(ObjectRef),
     Mana,
     Life(u32),
@@ -36,6 +38,36 @@ impl CastCostTransaction {
     }
 }
 impl Announcement {
+    /// The initial craft consumers have exactly a mana cost, source exile, and
+    /// one material cost. Other activation shapes retain their existing path.
+    pub(super) fn ordered_craft(&self) -> bool {
+        let StackKind::ActivatedAbility { ability } = self.item.kind else {
+            return false;
+        };
+        let Some(source) = self.item.source else {
+            return false;
+        };
+        let definition = source.card.activation(ability);
+        definition.cost.exile_self
+            && definition.cost.additional.is_some_and(|cost| {
+                matches!(
+                    cost.kind,
+                    EffectChoiceKind::ExileControlledOrGraveyard
+                        | EffectChoiceKind::ExileCraftNonlands(_)
+                )
+            })
+            && definition
+                .program
+                .contains(&Instruction::ReturnCraftedSourceTransformed)
+    }
+    pub(super) fn craft_source_paid(&self) -> bool {
+        self.cast_costs.as_ref().is_some_and(|costs| {
+            costs
+                .clauses
+                .iter()
+                .any(|row| row.clause == CastCostClause::CraftSource && row.paid)
+        })
+    }
     pub(super) fn add_cast_cost_clause(&mut self, clause: CastCostClause) {
         let costs = self.cast_costs.get_or_insert_with(Default::default);
         assert!(!costs.mana_closed, "additional cost declared after payment");
@@ -109,6 +141,10 @@ impl Announcement {
             .collect();
         for clause in casualty {
             self.add_cast_cost_clause(clause);
+        }
+        if self.ordered_craft() {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            self.add_cast_cost_clause(CastCostClause::CraftSource);
         }
         if self.cast_costs.is_some()
             && self.item.kind == StackKind::Spell
@@ -241,6 +277,27 @@ impl Game {
                     }
                 };
                 self.state.announcing = Some(a);
+            }
+            CastCostClause::CraftSource => {
+                let source = a.item.source.expect("craft has source");
+                let view = self.object_view(source.id);
+                a.item.source.as_mut().unwrap().facts = DamageFacts::from_view(&view);
+                a.item.source_keywords = view.keywords;
+                a.item.source_tapped = view.tapped;
+                a.item.source_attachment = view.attached_to;
+                let event = self.move_object(source.id, Zone::Exile);
+                self.craft_exile_triggers(&event, a.item.controller);
+                a.item.source_move = Some(Box::new(TriggerSourceMoveView {
+                    before: event.before.reference,
+                    after: event.after,
+                    origin: event.before.zone,
+                    destination: event.destination,
+                }));
+                let costs = a.cast_costs.as_mut().unwrap();
+                costs.clauses[usize::from(index)].paid = true;
+                costs.active = None;
+                self.state.announcing = Some(a);
+                self.finish_announcement();
             }
             CastCostClause::Harmonize(object) => {
                 let c = a.cast_costs.as_mut().unwrap();

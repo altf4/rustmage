@@ -529,7 +529,9 @@ impl Game {
             {
                 return true;
             }
-            if casting_prohibited {
+            if casting_prohibited
+                || (free.origin != Zone::Hand && self.nonhand_cast_prohibited(player))
+            {
                 continue;
             }
             // A paid permission permits a card's alternative disguise cost.

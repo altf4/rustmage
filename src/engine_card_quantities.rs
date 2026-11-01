@@ -15,7 +15,9 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                     kinds.push(kind);
                 }
             }
-            AmountValue::Multiple { value, .. } => amount(*value, kinds),
+            AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => {
+                amount(*value, kinds)
+            }
             AmountValue::Sum(values) => {
                 for value in values {
                     amount(*value, kinds);

@@ -7,6 +7,27 @@ mod contracts;
 mod fra_complete_games;
 mod fra_coverage_gaps;
 mod fra_way_loyalty_foundation;
+mod hartford_artifact_activations;
+mod hartford_artifact_selection;
+mod hartford_blight;
+mod hartford_braided_net;
+mod hartford_craft_core;
+mod hartford_exile_play;
+mod hartford_grave_exile;
+mod hartford_leatherhead;
+mod hartford_library_selection;
+mod hartford_lively_dirge;
+mod hartford_mana_restrictions;
+mod hartford_removal;
+mod hartford_replacements;
+mod hartford_restless_reef;
+mod hartford_returns;
+mod hartford_revelation;
+mod hartford_riverchurn;
+mod hartford_sacrifice;
+mod hartford_sawblades;
+mod hartford_speed;
+mod hartford_suppression;
 mod interactions;
 mod issue_93_aetherspark;
 mod issue_93_ajani;
@@ -17,11 +38,22 @@ mod issue_93_loyalty;
 mod issue_93_oko_lorwyn;
 mod issue_93_ral;
 mod regressions;
+mod requested_aang;
+mod requested_airbend_core;
+mod requested_bovine_intervention;
 mod requested_earthbend;
+mod requested_floodpits_drowner;
+mod requested_freebooter;
 mod requested_full_bore;
+mod requested_get_out;
 mod requested_ghost;
 mod requested_hunters_talent;
+mod requested_inevitable_defeat;
 mod requested_pyrrhic_strike;
+mod requested_reduction;
+mod requested_sunderflock;
+mod requested_waterbend;
+mod schema198;
 
 fn scenario(p: Player) -> Game {
     let mut g = Game::new(Config {
@@ -55,7 +87,12 @@ fn scenario(p: Player) -> Game {
 fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
     assert!(
-        card.is_supported() || name == "Ghost Vacuum" || name == "Pyrrhic Strike",
+        card.is_supported()
+            || name == "Ghost Vacuum"
+            || name == "Pyrrhic Strike"
+            || name == "Spring-Loaded Sawblades"
+            || name == "Braided Net"
+            || name == "@test/manifest-observer",
         "unsupported fixture {name}"
     );
     let id = g.state.objects.len() as CardId;
@@ -433,3 +470,12 @@ mod issue_93_quintorius_kand;
 mod issue_93_ugin;
 
 mod issue_93_ashiok_wicked;
+
+mod hartford_draw;
+
+mod hartford_discard;
+
+mod hartford_draw_classes;
+
+#[path = "hartford_carnage.rs"]
+mod hartford_draw_carnage;

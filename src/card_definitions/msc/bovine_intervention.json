@@ -3,10 +3,35 @@
   "catalogue_id": 519,
   "oracle_id": "7402d98f-6d58-4ff2-a0db-9eec4417a75f",
   "facts_sha256": "5574407cfbb97dbeea0e7abe17ce3b2d9de10c4e0da66f748c9e73c67a93fe69",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c471f02c2e152aa1e9af2aae19a6080421ca6de011ba1bf34180b2809b0a6836"
   },
-  "physical_metadata_sha256": "d2615c40c6f22499e92173df0f3f138e1cb8a92fc895b402104cbccdc62ba142"
+  "physical_metadata_sha256": "d2615c40c6f22499e92173df0f3f138e1cb8a92fc895b402104cbccdc62ba142",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BovineIntervention.java",
+  "java_sha256": "b512c784638a3b8c4b32e70906d011dcd6f16507655284fe33e6be8908b44080",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenControllerTargetEffect.java",
+      "sha256": "ee33348ac4782cb614e73ec2dfab077cbf80dd86c9d71f5fdb7cd45c6c0c7139"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Ox22Token.java",
+      "sha256": "4ddb967380036fe4e197d02971037539dffda014bfc87912fc8eedb3558ff5bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

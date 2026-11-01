@@ -28,6 +28,7 @@ impl Game {
                     matches!(
                         fragment,
                         F::AttachmentTrigger(_)
+                            | F::SourceMaxSpeedActivation(_)
                             | F::AttachmentActivation(_)
                             | F::ControlledPlaneswalkerActivation(_)
                             | F::ControlledPlaneswalkerAttackLimit

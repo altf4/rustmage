@@ -10,6 +10,8 @@ pub enum SelfGrantedAbilityKind {
     ControllerLandStats,
     /// Source-owned layer7c bonus, counting current controlled artifacts.
     ControllerArtifactBonus,
+    /// Source-independent granted attack requirement while this exact permanent remains.
+    AttacksEachCombat,
     /// A real immutable activated template, independently acquired per grant.
     Activated { ability: u16 },
 }
@@ -131,7 +133,11 @@ impl Game {
                 granting_card: definition,
                 kind,
                 timestamp,
-                effect_timestamp: if matches!(kind, SelfGrantedAbilityKind::Activated { .. }) {
+                effect_timestamp: if matches!(
+                    kind,
+                    SelfGrantedAbilityKind::Activated { .. }
+                        | SelfGrantedAbilityKind::AttacksEachCombat
+                ) {
                     None
                 } else {
                     Some(timestamp)

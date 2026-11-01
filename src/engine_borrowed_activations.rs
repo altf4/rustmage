@@ -1,6 +1,9 @@
 //! Activated abilities inherited from exact linked exile incarnations.
 use super::ability_world::CharacteristicWorld;
 use super::*;
+fn is_false(value: &bool) -> bool {
+    !*value
+}
 /// Acquisition identifiers are separate from public ability slots. Both are
 /// allocated monotonically within an exact source incarnation.
 pub(super) const DONOR_SLOT_WIDTH: u64 = 1;
@@ -23,6 +26,7 @@ pub(super) struct Link {
     pub exiled: ObjectRef,
     pub first_slot: u64,
     pub width: u64,
+    pub once_per_turn: bool,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct BorrowedAbilityView {
@@ -33,6 +37,10 @@ pub struct BorrowedAbilityView {
     pub ability: u16,
     pub slot: u64,
     pub used: bool,
+    /// The acquisition limits this ability to once per turn independently of
+    /// any restriction printed on the donor.
+    #[serde(skip_serializing_if = "is_false")]
+    pub acquired_once_per_turn: bool,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Use {
@@ -59,6 +67,7 @@ pub(super) struct Descriptor {
     pub ability: u16,
     pub slot: u64,
     pub used: bool,
+    pub once_per_turn: bool,
     pub(super) acquisition: u64,
 }
 impl Descriptor {
@@ -117,6 +126,7 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                 ability: index as u16,
                 slot,
                 used: false,
+                once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
             });
         }
@@ -138,6 +148,7 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                     ability: u16::MAX - 1 - color as u16,
                     slot,
                     used: false,
+                    once_per_turn: link.once_per_turn,
                     acquisition: link.first_slot,
                 });
             }
@@ -152,6 +163,7 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                 ability: u16::MAX,
                 slot,
                 used: false,
+                once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
             });
         }
@@ -293,6 +305,7 @@ impl Game {
                         exiled: event.after,
                         first_slot,
                         width,
+                        once_per_turn: false,
                     });
             }
         }
@@ -395,6 +408,7 @@ impl Game {
                 ability: a.ability,
                 slot: a.slot,
                 used: a.used,
+                acquired_once_per_turn: a.once_per_turn,
             })
             .collect()
     }
@@ -458,7 +472,8 @@ impl Game {
                 descriptor.definition,
                 descriptor.ability,
                 Some(descriptor.slot),
-            ) || descriptor.used && (ability.once_per_turn || ability.exhaust)
+            ) || descriptor.used
+                && (descriptor.once_per_turn || ability.once_per_turn || ability.exhaust)
             {
                 continue;
             }

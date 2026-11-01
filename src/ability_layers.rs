@@ -47,6 +47,10 @@ pub(crate) enum AdditionalTriggerScope {
 pub(crate) enum StaticAbilityFragment {
     /// Cast the exact card exiled by this source's linked hand-reveal ability at threshold.
     CastLinkedExileAtThreshold,
+    /// Initiates its controller's persistent speed designation as a state-based action.
+    StartYourEngines,
+    /// A layer-six activated-ability template granted to this source at max speed.
+    SourceMaxSpeedActivation(u16),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
@@ -76,6 +80,8 @@ pub(crate) enum StaticAbilityFragment {
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Add one to a controller draw instruction while their hand has at most one card.
+    AdditionalDrawWithAtMostOneCard,
     /// Increase opponents' noncreature spell costs by generic mana.
     OpponentNoncreatureSpellTax(u32),
     /// Generic cost per creature declared attacking this source's controller.
@@ -149,6 +155,7 @@ pub(crate) enum StaticAbilityFragment {
     },
     LifeGainAdditional(u16),
     CantGainLife,
+    DamageCantBePrevented,
     NoMaximumHandSize,
     MaximumHandSize(u16),
     AdditionalLandPlays(u16),
@@ -196,11 +203,12 @@ pub(crate) enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
-    /// On its controller's turn this source becomes a creature with this
-    /// subtype and keyword while it has the required counters. Its type change
+    /// This source becomes a creature with these subtypes and keywords while it
+    /// has the required counters, optionally only on its controller's turn. Its type change
     /// starts in layer four; the same ability's base stats are a separate
     /// BaseStatSetter fragment in its group.
-    SourceCounterTurnCreature {
+    SourceCounterCreature {
+        own_turn: bool,
         kind: CounterKind,
         minimum: u64,
         subtypes: &'static [&'static str],
@@ -271,6 +279,8 @@ pub(crate) enum StaticAbilityFragment {
     Replacement(u16, ReplacementSpec),
     CastTiming(u16, CastFilter),
     CostReduction(u16, SpellReduction),
+    /// Generic reduction for plotting a card from hand.
+    PlotCostReduction(u32),
     /// Generic reduction for equip activations targeting this exact permanent.
     EquipTargetReduction(u32),
     /// Optional replacement of the first equip activation's whole cost.

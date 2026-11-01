@@ -145,6 +145,10 @@ impl Game {
             .iter()
             .all(|s| self.convoke_eligible(a.item.controller, s.object))
             && (f.improvised.is_empty()
+                || self.item_waterbend(&a.item) != 0
+                    && f.improvised
+                        .iter()
+                        .all(|&r| waterbend::eligible(self, a.item.controller, r))
                 || self.item_improvise(&a.item)
                     && f.improvised
                         .iter()

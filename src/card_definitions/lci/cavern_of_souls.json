@@ -3,10 +3,25 @@
   "catalogue_id": 690,
   "oracle_id": "89ca686a-7c72-4d8f-9290-e89635624a83",
   "facts_sha256": "4b4e6ede598e1997fc88f592436e281e0c9c82d8c36555af44236e563f1e70f6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e3551d0de131be3bf5dde8d9f9b56346f76be8f4290088432c411558763ecf17"
   },
-  "physical_metadata_sha256": "5fe1c784fa8f7578c3c5cfb8154b02ea0c67661aba6e196844e532ef600f8ac5"
+  "physical_metadata_sha256": "5fe1c784fa8f7578c3c5cfb8154b02ea0c67661aba6e196844e532ef600f8ac5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CavernOfSouls.java",
+  "java_sha256": "497b437c479efbd3093369f0a2d67a9ab0be0445eebd628bc0786bfe8a2d8061",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+      "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastManaCondition.java",
+      "sha256": "2fe6eba8a8c032287e84bb56b3a9301126f3b3bc9c79ba40b63c66d7b116d47e"
+    }
+  ]
 }

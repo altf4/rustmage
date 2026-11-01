@@ -1,16 +1,39 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+// Direct typed behavior from complete pinned Oracle and XMage sources.
+const GROUPS: &[StaticAbilityGroup] = &[
+    StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::CANT_BLOCK,
+        )],
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::SourceConditionalKeywords {
+            condition: StatValue::OpponentLifeAtMost(10),
+            keywords: Keywords::HASTE,
+        }],
+    },
+];
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Creature(2, 1),
+    keywords: Keywords::CANT_BLOCK,
+    static_groups: GROUPS,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InZone {
+            zone: TargetZone::Graveyard,
+            event: &TriggerCondition::LandEntersYou,
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::May { skip: 1 },
+            Instruction::ReturnSourceToBattlefield { tapped: false },
+        ],
+    }],
+    extras: &CardExtras {
+        static_ability_groups: GROUPS,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

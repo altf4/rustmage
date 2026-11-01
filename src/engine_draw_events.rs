@@ -6,12 +6,9 @@ pub struct DrawTriggerView {
     pub ordinal: u64,
 }
 impl Game {
-    pub(super) fn replaced_draw_count(&self, player: Player) -> u128 {
-        if self.state.step == Step::Draw
-            && self.state.active == player
-            && !self.state.players[player.index()].drew_in_own_draw_step
-        {
-            return 1;
+    pub(super) fn quantum_draw_sources(&self, player: Player) -> Vec<ObjectRef> {
+        if self.hand_count(player) > 1 {
+            return Vec::new();
         }
         self.state
             .static_sources
@@ -19,6 +16,29 @@ impl Game {
             .copied()
             .filter(|&id| {
                 self.on_battlefield(id)
+                    && self.state.objects[id as usize].controller == player
+                    && self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard)))
+                    && self.continuous_fragment_available(id, |fragment| {
+                        matches!(fragment, crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard)
+                    })
+            })
+            .map(|id| self.object_ref(id))
+            .collect()
+    }
+    pub(super) fn doubled_draw_sources(
+        &self,
+        player: Player,
+    ) -> impl Iterator<Item = ObjectRef> + '_ {
+        let exempt = self.state.step == Step::Draw
+            && self.state.active == player
+            && !self.state.players[player.index()].drew_in_own_draw_step;
+        self.state
+            .static_sources
+            .iter()
+            .copied()
+            .filter(move |&id| {
+                !exempt
+                    && self.on_battlefield(id)
                     && self.state.objects[id as usize].controller == player
                     && self.state.objects[id as usize]
                         .card
@@ -39,12 +59,22 @@ impl Game {
                         )
                     })
             })
+            .map(|id| self.object_ref(id))
+    }
+    pub(super) fn replaced_draw_count_excluding(
+        &self,
+        player: Player,
+        excluded: &[ObjectRef],
+    ) -> u128 {
+        self.doubled_draw_sources(player)
+            .filter(|source| !excluded.contains(source))
             .fold(1u128, |count, _| {
                 count
                     .checked_mul(2)
                     .capacity("draw replacement quantity exhausted")
             })
     }
+
     pub(super) fn card_drawn(&mut self, player: Player) {
         if self.state.step == Step::Draw && self.state.active == player {
             self.state.players[player.index()].drew_in_own_draw_step = true;

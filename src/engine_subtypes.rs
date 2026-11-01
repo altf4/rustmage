@@ -672,10 +672,9 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
         }
     }
     if world.roles().is_some_and(|roles| {
-        roles
-            .animations
-            .iter()
-            .any(|row| row.object == reference && row.artifact_noncreature)
+        roles.animations.iter().any(|row| {
+            row.object == reference && (row.artifact_noncreature || row.enchantment_noncreature)
+        })
     }) {
         mask.card_types = Some(kinds(id, target));
     }
@@ -1062,7 +1061,7 @@ impl Game {
                 _ => {}
             }
         }
-        if m.artifact_return {
+        if m.artifact_return || m.enchantment_return {
             result.card_types = Some(m.entry_kinds());
         }
         result

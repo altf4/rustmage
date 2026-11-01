@@ -22,6 +22,9 @@ pub struct AnimationView {
     /// Set artifact card type, retaining instant/sorcery types per CR205.1a.
     #[serde(skip_serializing_if = "is_false")]
     pub artifact_noncreature: bool,
+    /// Set enchantment card type, retaining instant/sorcery types per CR205.1a.
+    #[serde(skip_serializing_if = "is_false")]
+    pub enchantment_noncreature: bool,
     pub colors: Option<u8>,
     pub creature_types: Option<&'static [&'static str]>,
     pub all_creature_types: bool,
@@ -85,12 +88,28 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .filter(move |row| Some(row.object) == recipient)
 }
 
+fn land_forms<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> impl Iterator<Item = &SourceLinkedEffectView> {
+    let recipient = world.reference(id);
+    world
+        .roles()
+        .into_iter()
+        .flat_map(|roles| &roles.source_linked_effects)
+        .filter(move |row| {
+            row.kind == SourceLinkedEffectKind::LandUntilControllerNextTurn
+                && row.recipient == recipient
+                && source_linked_effects::active(world, row)
+        })
+}
+
 fn source_counter_turn_creature<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> Option<(u64, &'static [&'static str])> {
     let object = world.object(id);
-    if object.zone != Zone::Battlefield || object.controller != world.game().state.active {
+    if object.zone != Zone::Battlefield {
         return None;
     }
     let types = object
@@ -99,12 +118,17 @@ fn source_counter_turn_creature<W: CharacteristicWorld + ?Sized>(
         .iter()
         .flat_map(|g| g.fragments)
         .find_map(|fragment| match *fragment {
-            StaticAbilityFragment::SourceCounterTurnCreature {
+            StaticAbilityFragment::SourceCounterCreature {
+                own_turn,
                 kind,
                 minimum,
                 subtypes,
                 ..
-            } if world.counter_count(id, kind) >= minimum => Some(subtypes),
+            } if (!own_turn || object.controller == world.game().state.active)
+                && world.counter_count(id, kind) >= minimum =>
+            {
+                Some(subtypes)
+            }
             _ => None,
         })?;
     let timestamp = world
@@ -129,7 +153,7 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
         })
         .collect();
     events.extend(animations(world, id).filter_map(|row| {
-        if row.food_only || row.artifact_noncreature {
+        if row.food_only || row.artifact_noncreature || row.enchantment_noncreature {
             Some((row.timestamp, false))
         } else if row.land && (!row.preserve_card_types || row.artifact) {
             Some((row.timestamp, true))
@@ -137,6 +161,7 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
             None
         }
     }));
+    events.extend(land_forms(world, id).map(|row| (row.timestamp, true)));
     events.sort_by_key(|event| event.0);
     events
 }
@@ -164,6 +189,7 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
         && source_counter_turn_creature(world, id).is_none()
+        && land_forms(world, id).next().is_none()
     {
         if world
             .game()
@@ -197,13 +223,15 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
     if let Some((timestamp, _)) = source_counter_turn_creature(world, id) {
         changes.push((timestamp, 1, true));
     }
+    changes.extend(land_forms(world, id).map(|row| (row.timestamp, 2, false)));
     for row in animations(world, id) {
         if row.food_only {
             changes.push((row.timestamp, 16, false));
             continue;
         }
-        if row.artifact_noncreature {
-            changes.push((row.timestamp, 16 | (result & (4 | 8)), false));
+        if row.artifact_noncreature || row.enchantment_noncreature {
+            let kind = if row.enchantment_noncreature { 32 } else { 16 };
+            changes.push((row.timestamp, kind | (result & (4 | 8)), false));
             continue;
         }
         let added = if row.preserve_card_types {
@@ -344,6 +372,7 @@ pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
         && source_counter_turn_creature(world, id).is_none()
+        && land_forms(world, id).next().is_none()
     {
         return Vec::new();
     }
@@ -366,16 +395,19 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             )
         })
         .collect();
-    if let Some((timestamp, types)) = source_counter_turn_creature(world, id) {
+    if let Some((timestamp, types)) = source_counter_turn_creature(world, id)
+        && !types.is_empty()
+    {
         changes.push((timestamp, SubtypeChange::Named(types, false)));
     }
+    changes.extend(land_forms(world, id).map(|row| (row.timestamp, SubtypeChange::LandOnly)));
     changes.extend(animations(world, id).filter_map(|row| {
         if row.food_only {
             return Some((row.timestamp, SubtypeChange::FoodOnly));
         }
         // Artifact-only form filters correlated subtypes against final layer-four
         // card types in the shared subtype projection; later animation may restore them.
-        if row.artifact_noncreature {
+        if row.artifact_noncreature || row.enchantment_noncreature {
             return None;
         }
         // A subtype-only form cannot give creature types to a noncreature/nonkindred.
@@ -449,6 +481,21 @@ impl Game {
     pub(super) fn animate_source(&mut self, item: &SpellView, spec: AnimationSpec) {
         self.change_source_form(item, spec, AnimationTypeMode::AddCreature);
     }
+    pub(super) fn animate_source_colored(
+        &mut self,
+        item: &SpellView,
+        spec: AnimationSpec,
+        colors: u8,
+    ) {
+        if let Some(source) = item.source {
+            self.change_object_form_colored(
+                source.object,
+                spec,
+                AnimationTypeMode::AddCreature,
+                Some(colors),
+            );
+        }
+    }
     pub(super) fn change_source_form(
         &mut self,
         item: &SpellView,
@@ -520,6 +567,15 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
+        self.change_object_form_colored(object, spec, type_mode, None);
+    }
+    fn change_object_form_colored(
+        &mut self,
+        object: ObjectRef,
+        spec: AnimationSpec,
+        type_mode: AnimationTypeMode,
+        colors: Option<u8>,
+    ) {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }
@@ -532,7 +588,8 @@ impl Game {
             preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),
             food_only: false,
             artifact_noncreature: false,
-            colors: None,
+            enchantment_noncreature: false,
+            colors,
             creature_types: match spec.creature_types {
                 AnimationCreatureTypes::Named(t) => Some(t),
                 _ => None,
@@ -569,6 +626,7 @@ impl Game {
                 preserve_card_types: false,
                 food_only: false,
                 artifact_noncreature: false,
+                enchantment_noncreature: false,
                 colors: Some(colors),
                 creature_types: Some(types),
                 all_creature_types: false,
@@ -608,6 +666,7 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         preserve_card_types: false,
         food_only: true,
         artifact_noncreature: false,
+        enchantment_noncreature: false,
         colors: None,
         creature_types: None,
         all_creature_types: false,
@@ -664,6 +723,18 @@ pub(super) fn artifact_noncreature_form(object: ObjectRef, timestamp: u64) -> An
     AnimationView {
         food_only: false,
         artifact_noncreature: true,
+        enchantment_noncreature: false,
+        preserve_card_types: false,
+        ..food_form(object, timestamp)
+    }
+}
+
+/// Source-independent CR611.2e enchantment-only form.
+pub(super) fn enchantment_noncreature_form(object: ObjectRef, timestamp: u64) -> AnimationView {
+    AnimationView {
+        food_only: false,
+        artifact_noncreature: false,
+        enchantment_noncreature: true,
         preserve_card_types: false,
         ..food_form(object, timestamp)
     }

@@ -197,6 +197,7 @@ impl Game {
                         | Action::ChooseEntryReplacement { .. }
                         | Action::ChooseEntryTimestamp { .. }
                         | Action::ChooseReplacement { .. }
+                        | Action::ChooseDrawReplacement { .. }
                         | Action::ChooseSelfCounterReplacement { .. }
                         | Action::ChooseZoneReplacement { .. }
                 )
@@ -214,6 +215,7 @@ impl Game {
         let card = match *action {
             Action::AnnounceCast { card }
             | Action::AnnounceExile { card }
+            | Action::AnnounceAirbend { card, .. }
             | Action::AnnounceExileLife { card, .. }
             | Action::AnnounceExileFree { card, .. }
             | Action::AnnounceFlashSurcharge { card }
@@ -226,6 +228,7 @@ impl Game {
             | Action::AnnounceBack { card }
             | Action::AnnouncePlotted { card }
             | Action::AnnounceHarmonize { card }
+            | Action::AnnounceMayhem { card }
             | Action::AnnounceFlashback { card }
             | Action::AnnounceGrantedFlashback { card, .. }
             | Action::AnnounceFree { card, .. }

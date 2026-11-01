@@ -11,6 +11,7 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
     ExceptCastFromHand,
+    CastFromExile,
     ArtifactSpell,
     ExceptNonArtifactSpells,
     SubtypeSpellOrActivation(&'static str),
@@ -21,13 +22,16 @@ pub enum ManaRestrictionView {
     Unavailable,
     SpellSubtype(&'static str),
     CreatureSpellOrActivation(CreatureType),
+    CreatureSpell(CreatureType),
     EquipmentSpellOrEquip,
     CreatureActivation,
+    AbilityActivation,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaSpellBonusView {
     None,
     DragonCreatureHaste,
+    Uncounterable,
     CopyRedInstantSorcery,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -81,6 +85,7 @@ impl ManaCopySource {
 pub(super) struct SpendOutcome {
     pub treasure_spent: bool,
     pub haste: bool,
+    pub uncounterable: bool,
     #[allow(clippy::box_collection)]
     pub copies: Option<Box<Vec<(ManaCopySource, u64)>>>,
 }
@@ -125,10 +130,12 @@ impl Quality {
         Self {
             restriction: match quality.restriction {
                 ManaRestriction::ExceptCastFromHand => ManaRestrictionView::ExceptCastFromHand,
+                ManaRestriction::CastFromExile => ManaRestrictionView::CastFromExile,
                 ManaRestriction::EquipmentSpellOrEquip => {
                     ManaRestrictionView::EquipmentSpellOrEquip
                 }
                 ManaRestriction::CreatureActivation => ManaRestrictionView::CreatureActivation,
+                ManaRestriction::AbilityActivation => ManaRestrictionView::AbilityActivation,
                 ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
                 ManaRestriction::ExceptNonArtifactSpells => {
                     ManaRestrictionView::ExceptNonArtifactSpells
@@ -143,6 +150,14 @@ impl Quality {
                 ManaRestriction::SpellSubtype(subtype) => {
                     ManaRestrictionView::SpellSubtype(subtype)
                 }
+                ManaRestriction::ChosenCreatureSpell => {
+                    match world.entry_value(world.reference(source)) {
+                        Some(EntryChoiceValue::CreatureType(kind)) => {
+                            ManaRestrictionView::CreatureSpell(kind)
+                        }
+                        _ => ManaRestrictionView::Unavailable,
+                    }
+                }
                 ManaRestriction::ChosenCreatureSpellOrActivation => {
                     match world.entry_value(world.reference(source)) {
                         Some(EntryChoiceValue::CreatureType(kind)) => {
@@ -154,6 +169,7 @@ impl Quality {
             },
             spell_bonus: match quality.spell_bonus {
                 ManaSpellBonus::None => ManaSpellBonusView::None,
+                ManaSpellBonus::Uncounterable => ManaSpellBonusView::Uncounterable,
                 ManaSpellBonus::DragonCreatureHaste => ManaSpellBonusView::DragonCreatureHaste,
                 ManaSpellBonus::CopyRedInstantSorcery => ManaSpellBonusView::CopyRedInstantSorcery,
             },
@@ -186,6 +202,9 @@ impl Quality {
             ManaRestrictionView::ExceptCastFromHand => {
                 !matches!(purpose, Purpose::Spell(source) if source.cast_from_hand)
             }
+            ManaRestrictionView::CastFromExile => {
+                matches!(purpose, Purpose::Spell(source) if source.cast_from_exile)
+            }
             ManaRestrictionView::EquipmentSpellOrEquip => match purpose {
                 Purpose::Spell(facts) => facts.has_subtype("Equipment"),
                 Purpose::Activation(facts) => facts.equip,
@@ -194,6 +213,7 @@ impl Quality {
             ManaRestrictionView::CreatureActivation => {
                 matches!(purpose, Purpose::Activation(facts) if facts.kinds & CREATURE_KIND != 0)
             }
+            ManaRestrictionView::AbilityActivation => matches!(purpose, Purpose::Activation(_)),
             ManaRestrictionView::ArtifactSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
             }
@@ -217,6 +237,9 @@ impl Quality {
             ManaRestrictionView::Unavailable => false,
             ManaRestrictionView::SpellSubtype(subtype) => {
                 matches!(purpose, Purpose::Spell(facts) if facts.has_subtype(subtype))
+            }
+            ManaRestrictionView::CreatureSpell(kind) => {
+                matches!(purpose, Purpose::Spell(facts) if facts.kinds & CREATURE_KIND != 0 && facts.has_subtype(kind.name()))
             }
             ManaRestrictionView::CreatureSpellOrActivation(kind) => match purpose {
                 Purpose::Spell(facts) | Purpose::Activation(facts) => {
@@ -246,6 +269,7 @@ pub(super) struct Source {
     pub foreign_stash: bool,
     /// Frozen cast origin; irrelevant for abilities and non-cast payments.
     pub cast_from_hand: bool,
+    pub cast_from_exile: bool,
     pub spend_any_mana: bool,
     pub linked_mana_source: Option<(ObjectRef, Option<u64>)>,
     pub equip: bool,
@@ -265,6 +289,7 @@ impl Source {
             subtypes: world.subtypes(id),
             foreign_stash: false,
             cast_from_hand: false,
+            cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
             equip: false,
@@ -280,6 +305,7 @@ impl Source {
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
             cast_from_hand: false,
+            cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
             equip: false,
@@ -294,6 +320,7 @@ impl From<DamageFacts> for Source {
             subtypes: facts.granted_subtypes,
             foreign_stash: false,
             cast_from_hand: false,
+            cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
             equip: false,
@@ -769,6 +796,7 @@ impl Game {
                         .get(identity.object.card as usize)
                         .is_some_and(|object| object.owner == c.caster)
             });
+            source.cast_from_exile = item.cast.is_some_and(|c| c.origin == Zone::Exile);
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
             source.linked_mana_source =
                 self.threshold_linked_source(item.source.expect("object-backed packet").id);
@@ -814,7 +842,21 @@ impl Game {
                 .and_then(|a| a.item.cast.map(|cast| cast.origin))
                 .unwrap_or(self.state.objects[card as usize].zone)
                 == Zone::Hand;
-        source.spend_any_mana = self.exile_cast_modifiers(actor, card).0
+        source.cast_from_exile = self
+            .state
+            .announcing
+            .as_ref()
+            .filter(|a| a.item.source.is_some_and(|source| source.id == card))
+            .and_then(|a| a.item.cast.map(|cast| cast.origin))
+            .unwrap_or(self.state.objects[card as usize].zone)
+            == Zone::Exile;
+        let airbend_announcement = self.state.announcing.as_ref().is_some_and(|a| {
+            a.item.source.is_some_and(|source| source.id == card)
+                && a.item
+                    .cast
+                    .is_some_and(|cast| cast.method == CastMethod::Airbend)
+        });
+        source.spend_any_mana = (!airbend_announcement && self.exile_cast_modifiers(actor, card).0)
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item
                     .source
@@ -904,6 +946,12 @@ impl Game {
         {
             if allocation != [0; 6] && original.quality.treasure_source {
                 outcome.treasure_spent = true;
+            }
+            if allocation != [0; 6]
+                && original.quality.spell_bonus == ManaSpellBonusView::Uncounterable
+                && matches!(purpose, Purpose::Spell(_))
+            {
+                outcome.uncounterable = true;
             }
             if allocation != [0; 6] && original.quality.grants_haste(purpose) {
                 outcome.haste = true

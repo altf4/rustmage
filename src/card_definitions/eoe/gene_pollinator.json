@@ -3,10 +3,30 @@
   "catalogue_id": 1704,
   "oracle_id": "0a356d04-2e86-435b-9766-27b93b468a61",
   "facts_sha256": "bfb35b805526af199f7c0db8a008deb53ce3ab670264c6010b8a501a0b0867c2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "932056a2a48838a3ee6d5cd118c54e88e00b154e3b78068211159b2f9e469f67"
   },
-  "physical_metadata_sha256": "b87c959e7c74e65d1543ab6fa43e616d1b9f2d0145e1e11c87f790b028605e54"
+  "physical_metadata_sha256": "b87c959e7c74e65d1543ab6fa43e616d1b9f2d0145e1e11c87f790b028605e54",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GenePollinator.java",
+  "java_sha256": "4984104e9a86a5a130430885a9d85bf7f29848bd367715c5d638bb45a2ac757f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    }
+  ]
 }

@@ -3,10 +3,36 @@
   "catalogue_id": 456,
   "oracle_id": "e97f9c2b-b41e-4f36-9245-77c0ac125647",
   "facts_sha256": "188fa6c2954953856a19a60429bb94815153f655c3f1aecdad661bef95650eb1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5fd85ac540184d61218a2062e2cc6bf660129df293b80c50cac1b9fe47dcced2"
   },
-  "physical_metadata_sha256": "28060a9c3295bfcb86f3e67640141df20d270f27ddb1c1d810532e3d95f6fca0"
+  "physical_metadata_sha256": "28060a9c3295bfcb86f3e67640141df20d270f27ddb1c1d810532e3d95f6fca0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/Bloodghast.java",
+  "java_sha256": "ffa59b6db05372083f8286c50c7249757c4c37974094fe4eac9a76f1a949cf8b",
+  "rules_tests": "src/assurance/hartford_returns.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBlockAbility.java",
+      "sha256": "e78337c6f4e0c6d913ed6085d1a91b4663b27f6985deb409d78303a0f565dda1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/LifeCompareCondition.java",
+      "sha256": "6cc17c2f13a46a9093c2c080007fb80f6ccb1e998a28dd0fa94e608feb0628fa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+      "sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+    }
+  ]
 }

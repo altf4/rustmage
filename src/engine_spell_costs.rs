@@ -120,6 +120,15 @@ impl Game {
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
+            if a.item.cast.is_some_and(|c| c.method == CastMethod::Mayhem) {
+                return a
+                    .item
+                    .source
+                    .expect("mayhem source")
+                    .card
+                    .mayhem_cost()
+                    .expect("mayhem cost");
+            }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Miracle) {
                 return a.miracle_cost.expect("miracle cost");
             }
@@ -161,6 +170,12 @@ impl Game {
                     .card
                     .warp_cost()
                     .expect("fixed Warp cost");
+            }
+            if a.item.cast.is_some_and(|c| c.method == CastMethod::Airbend) {
+                return ManaCost {
+                    colored: [0; 6],
+                    generic: 2,
+                };
             }
             if a.item.cast.is_some_and(|c| {
                 matches!(
@@ -374,7 +389,7 @@ impl Game {
     }
     /// Announced spells already occupy the stack; retain their actual cast origin.
     /// During nested mana abilities the enclosing announcement remains authoritative.
-    fn spell_origin_is_nonhand(&self, actor: Player, id: CardId) -> bool {
+    fn spell_origin(&self, id: CardId) -> Zone {
         let packet = self
             .state
             .announcing
@@ -388,10 +403,12 @@ impl Game {
             )
             .chain(self.state.stack.iter())
             .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == id));
-        let origin = packet
+        packet
             .and_then(|s| s.cast.map(|c| c.origin))
-            .unwrap_or(self.state.objects[id as usize].zone);
-        origin != Zone::Hand || self.state.objects[id as usize].owner != actor
+            .unwrap_or(self.state.objects[id as usize].zone)
+    }
+    fn spell_origin_is_nonhand(&self, actor: Player, id: CardId) -> bool {
+        self.spell_origin(id) != Zone::Hand || self.state.objects[id as usize].owner != actor
     }
     pub(super) fn spell_reduction(&self, actor: Player, id: CardId) -> u32 {
         u32::try_from(self.spell_reduction_at_mana_value(
@@ -423,6 +440,11 @@ impl Game {
             rule.filter.matches_mana_value(definition, mana_value)
                 && match rule.turn {
                     CostTurn::Any => true,
+                    CostTurn::GraveyardOrExile => match self.spell_origin(id) {
+                        Zone::Graveyard => recipient.owner == actor,
+                        Zone::Exile => true,
+                        _ => false,
+                    },
                     CostTurn::NonHand => self.spell_origin_is_nonhand(actor, id),
                     CostTurn::Own => self.state.active == actor,
                     CostTurn::Other => self.state.active != actor,
@@ -436,6 +458,21 @@ impl Game {
                 )
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
+            crate::cards::SpellReductionAmount::GraveyardInstantSorceryAdventure => {
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(candidate, object)| {
+                        *candidate != id as usize
+                            && object.zone == Zone::Graveyard
+                            && object.owner == actor
+                            && object.is_card()
+                            && (object.card.kind_mask() & (4 | 8) != 0
+                                || object.card.adventure_spell().is_some())
+                    })
+                    .count() as u64
+            }
             crate::cards::SpellReductionAmount::CreaturePowerCount { minimum } => {
                 self.state
                     .objects

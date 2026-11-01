@@ -1,0 +1,11 @@
+{
+  "name": "@token/blb-vren-rat",
+  "catalogue_id": 5483,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "c5a49720ebd9e8b02b7c92b920f7f0a41d190e7d523fea8b154db2fb02255d32",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/VrenRatToken.java",
+  "java_sha256": "f2d264fce6e6b657e190734c026a39a511c0d8b9c35b3f97538d31ce83397939"
+}

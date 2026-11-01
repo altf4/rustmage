@@ -3,10 +3,25 @@
   "catalogue_id": 986,
   "oracle_id": "dc857129-533c-41d1-8e8b-1c0443030d69",
   "facts_sha256": "9dc7783c48c2dc9645f7482dfbf13734161994047b437b6ca58e51ccfb8aa605",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "233b88275ae3e4e79152ef9ce52433fe4cc8d44e154f8f8f67d4cba9ed541a32"
   },
-  "physical_metadata_sha256": "555e56731a77799f49564c5556876aa37a8595b188ffef943089628882fb6503"
+  "physical_metadata_sha256": "b7b974ef740dcaa17a0e544bf56f4421385be2498e7fb15300bae00a029abe8a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DayOfBlackSun.java",
+  "java_sha256": "858a0bf3c862c6f550c1a1213fba0b0d86d387be86fefa3f24fd4168e5509ec3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAllEffect.java",
+      "sha256": "d27e324d8451b20f1e33cd26b0df6c5f50ef6d5491a6fbab576a2553aeb3de8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    }
+  ]
 }

@@ -119,6 +119,9 @@ impl Game {
             .hand_library_search
             .take()
             .unwrap();
+        if s.zones.unwrap().1 {
+            self.library_searched(s.player);
+        }
         let moves = selected
             .into_iter()
             // CR304.4/307.4: a found instant/sorcery cannot enter; it stays hidden.

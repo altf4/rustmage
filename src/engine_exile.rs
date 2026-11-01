@@ -19,6 +19,9 @@ pub struct ExilePlayPermission {
     /// This origin permission requires the free alternative, not a paid cast.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub without_paying_mana_cost: bool,
+    /// A distinct permission to cast for {2} instead of its mana cost.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub airbend: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requires_subtype: Option<&'static str>,
 }
@@ -29,6 +32,7 @@ pub enum ExilePlayExpiry {
     Turn(u32),
     EndOfNextTurn,
     StartOfNextTurn(Player),
+    StartOfNextEndStep(Player),
 }
 impl ExilePlayExpiry {
     pub(super) fn active(self, turn: u32) -> bool {
@@ -86,6 +90,7 @@ impl Game {
         self.state.exile_permissions.iter().any(|p| {
             !p.life_instead_of_mana
                 && !p.without_paying_mana_cost
+                && !p.airbend
                 && p.player == player
                 && p.object == self.object_ref(card)
                 && p.expiry.active(self.state.turn)
@@ -97,6 +102,7 @@ impl Game {
             || self.can_play_adventure(player, card)
             || self.state.exile_permissions.iter().any(|p| {
                 !p.without_paying_mana_cost
+                    && !p.airbend
                     && p.player == player
                     && p.object == self.object_ref(card)
                     && p.expiry.active(self.state.turn)
@@ -175,6 +181,22 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    pub(super) fn exile_top_play_until_next_end_step(&mut self, player: Player, amount: u16) {
+        let ids = top_library_cards(self, player, u128::from(amount));
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.grant_exile_play_permission(player, event.after, false);
+                for row in &mut self.state.exile_permissions {
+                    if row.player == player && row.object == event.after {
+                        row.expiry = ExilePlayExpiry::StartOfNextEndStep(player);
+                    }
+                }
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
     pub(super) fn grant_exile_play_permission(
         &mut self,
         player: Player,
@@ -206,6 +228,7 @@ impl Game {
                 exile_on_graveyard: false,
                 life_instead_of_mana: false,
                 without_paying_mana_cost: false,
+                airbend: false,
                 requires_subtype: None,
             },
         );
@@ -283,12 +306,49 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    pub(super) fn linked_exile_to_graveyard_tokens(&mut self, item: &SpellView, token: Card) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let ids = self
+            .state
+            .exile_links
+            .iter()
+            .filter(|link| {
+                link.source == source.object
+                    && self.object_ref(link.exiled.card) == link.exiled
+                    && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
+                    && self.state.objects[link.exiled.card as usize].is_card()
+            })
+            .map(|link| link.exiled.card)
+            .collect::<Vec<_>>();
+        let events = self.move_objects_raw(&ids, Zone::Graveyard);
+        let count = events
+            .iter()
+            .filter(|e| e.moved && e.destination == Zone::Graveyard)
+            .count();
+        self.finish_zone_events(&events, &[]);
+        if count > 0 {
+            self.create_tokens(item.controller, token, count as u128, false);
+        }
+    }
+
     pub(super) fn finish_zone_events(
         &mut self,
         events: &[ZoneChange],
         death_sources: &[ObjectView],
     ) {
         self.refresh_enduring_stories();
+        for event in events {
+            if event.moved
+                && let Some(player) = event.sacrificed_by
+            {
+                let count = &mut self.state.players[player.index()].permanents_sacrificed_this_turn;
+                *count = count
+                    .checked_add(1)
+                    .capacity("permanent sacrifice history exhausted");
+            }
+        }
         if events
             .iter()
             .any(|event| event.moved && event.before.zone == Zone::Battlefield)
@@ -300,6 +360,7 @@ impl Game {
         self.queue_manifest_deaths(events);
         self.creature_death_batch_triggers(events, death_sources);
         self.creature_cards_enter_graveyard_triggers(events);
+        self.permanent_cards_enter_graveyard_triggers(events);
         self.creatures_exiled_batch_triggers(events);
         self.graveyard_departure_triggers(events, death_sources);
         self.returned_hand_triggers(events);
@@ -534,6 +595,7 @@ impl Game {
                 exile_on_graveyard: false,
                 life_instead_of_mana: false,
                 without_paying_mana_cost: true,
+                airbend: false,
                 requires_subtype: None,
             },
         );
@@ -596,6 +658,40 @@ impl Game {
             })
         })
     }
+    pub(super) fn exile_opponent_top_face_down_play_x(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let Some(opponent) = item.targets.iter().find_map(|target| match target.target {
+            Target::Player(player) => Some(player),
+            _ => None,
+        }) else {
+            return;
+        };
+        let ids = top_library_cards(self, opponent, u128::from(item.x.unwrap_or(0)));
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if !event.moved || event.destination != Zone::Exile {
+                continue;
+            }
+            self.state
+                .linked_choices
+                .get_or_insert_default()
+                .hidden
+                .push((source.object, event.after, 1 << item.controller.index()));
+            self.grant_exile_play_permission(item.controller, event.after, false);
+            if let Some(permission) = self
+                .state
+                .exile_permissions
+                .iter_mut()
+                .find(|p| p.player == item.controller && p.object == event.after)
+            {
+                permission.expiry = ExilePlayExpiry::WhileExiled;
+                permission.spend_any_mana = true;
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
     pub(super) fn exile_top_face_down_play(
         &mut self,
         item: &SpellView,
@@ -633,6 +729,7 @@ impl Game {
                     exile_on_graveyard: false,
                     life_instead_of_mana: false,
                     without_paying_mana_cost: false,
+                    airbend: false,
                     requires_subtype: Some(subtype),
                 },
             );
@@ -671,4 +768,106 @@ pub(super) fn threshold_linked_source_available<W: ability_world::Characteristic
                 )
             },
         )
+}
+
+impl Game {
+    pub(super) fn configure_airbend_cast(item: &mut SpellView, flash_surcharge: bool) {
+        let cast = item.cast.as_mut().expect("cast information");
+        cast.method = CastMethod::Airbend;
+        cast.flash_surcharge = flash_surcharge;
+        cast.spend_any_mana = false;
+        cast.exile_on_graveyard = false;
+        cast.stash_origin = false;
+        if item.source.expect("cast source").card.x_symbols() > 0 {
+            item.x = Some(0);
+        }
+    }
+    pub(super) fn has_airbend_permission(&self, player: Player, card: CardId) -> bool {
+        self.state.objects[card as usize].zone == Zone::Exile
+            && self.state.exile_permissions.iter().any(|row| {
+                row.airbend
+                    && row.player == player
+                    && row.object == self.object_ref(card)
+                    && row.expiry.active(self.state.turn)
+                    && self.exile_permission_guard(row)
+            })
+    }
+    pub(super) fn grant_airbend_permission(&mut self, player: Player, object: ObjectRef) {
+        if self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+            || self.state.objects[object.card as usize].is_token()
+            || self.state.objects[object.card as usize].is_spell_copy()
+        {
+            return;
+        }
+        if self.has_airbend_permission(player, object.card) {
+            return;
+        }
+        let at = self
+            .state
+            .exile_permissions
+            .partition_point(|row| row.object.card < object.card);
+        self.state.exile_permissions.insert(
+            at,
+            ExilePlayPermission {
+                object,
+                player,
+                expiry: ExilePlayExpiry::WhileExiled,
+                spend_any_mana: false,
+                cast_only: true,
+                exile_on_graveyard: false,
+                life_instead_of_mana: false,
+                without_paying_mana_cost: false,
+                airbend: true,
+                requires_subtype: None,
+            },
+        );
+    }
+    pub(super) fn visit_airbend_casts(
+        &self,
+        player: Player,
+        card: CardId,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        if !self.has_airbend_permission(player, card)
+            || self.state.objects[card as usize].is_token()
+        {
+            return false;
+        }
+        let physical = self.state.objects[card as usize].card;
+        for face in [
+            CastFace::Normal,
+            CastFace::Adventure,
+            CastFace::Omen,
+            CastFace::Back,
+        ] {
+            let definition = match face {
+                CastFace::Normal => Some(physical),
+                CastFace::Adventure => physical.adventure_spell(),
+                CastFace::Omen => physical.omen_spell(),
+                CastFace::Back => physical.back_face(),
+            };
+            if !definition.is_some_and(|d| !d.is_land()) {
+                continue;
+            }
+            for flash_surcharge in [false, true] {
+                if self.permitted_cast_available(
+                    player,
+                    card,
+                    CastMethod::Airbend,
+                    face,
+                    sorcery,
+                    flash_surcharge,
+                ) && emit(Action::AnnounceAirbend {
+                    card,
+                    face,
+                    flash_surcharge,
+                }) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
 }

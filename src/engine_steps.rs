@@ -46,6 +46,9 @@ impl Game {
             self.precombat_lore_counters();
         }
         if step == Step::End {
+            self.state
+                .exile_permissions
+                .retain(|row| row.expiry != ExilePlayExpiry::StartOfNextEndStep(self.state.active));
             self.queue_copy_end_step_abilities();
             self.queue_delayed_sacrifices();
             if let Some(items) = self.state.delayed_artifact_copies.take() {
@@ -96,10 +99,14 @@ impl Game {
         {
             return;
         }
+        self.queue_inherent_trigger(SourceLessRule::Radiation, player);
+    }
+
+    pub(super) fn queue_inherent_trigger(&mut self, rule: SourceLessRule, player: Player) {
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
             source: None,
-            source_less_rule: Some(SourceLessRule::Radiation),
+            source_less_rule: Some(rule),
             target_type_slots: None,
             additional_triggers: 0,
             loyalty_counters_paid: 0,
@@ -136,7 +143,7 @@ impl Game {
             evidence_collected: false,
             id,
             kind: StackKind::InherentRule {
-                rule: SourceLessRule::Radiation,
+                rule,
                 affected_player: player,
             },
 
@@ -155,12 +162,14 @@ impl Game {
             life_event: None,
             source_counter_payment: None,
             exiled_symbol_cards: None,
+            craft_materials: None,
             exiled_trigger_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
             event_object: None,
             manifest_event: None,
             sacrificed_toughness: None,
+            sacrificed_mana_value: None,
             sacrificed_power: None,
 
             targets: Vec::new(),
@@ -375,6 +384,11 @@ impl Game {
                 return self.put_counter_on_source_this_turn(source, player);
             }
             StepGuard::YourTurn => return self.state.active == player,
+            StepGuard::SourceCreature => {
+                return self.on_battlefield(source.card)
+                    && self.object_ref(source.card) == source
+                    && self.is_creature(source.card);
+            }
             StepGuard::SourcePowerAtLeast(minimum) => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source

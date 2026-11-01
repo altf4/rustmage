@@ -10,6 +10,7 @@ impl Game {
                 matches!(
                     ability.condition.event(),
                     TriggerCondition::CreatureAbilityActivated
+                        | TriggerCondition::NonmanaAbilityActivated
                         | TriggerCondition::LoyaltyAbilityActivated
                         | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                         | TriggerCondition::OpponentLoyaltyAbilityActivated
@@ -97,6 +98,43 @@ impl Game {
         };
         if item.is_copy {
             return;
+        }
+        if identity
+            .card
+            .activation(ability_index)
+            .mana_production()
+            .is_none()
+            && !self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.replay.is_some())
+        {
+            let observers: Vec<_> = self
+                .state
+                .activation_observers
+                .as_ref()
+                .unwrap()
+                .iter()
+                .filter(|&&id| {
+                    self.on_battlefield(id)
+                        && self.state.objects[id as usize].controller == item.controller
+                })
+                .map(|&id| self.object_view(id))
+                .collect();
+            for source in observers {
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    if ability.condition.event() == TriggerCondition::NonmanaAbilityActivated
+                        && self.queue_trigger(&source, index)
+                    {
+                        self.state.pending_triggers.last_mut().unwrap().copy_event =
+                            Some(Box::new(CopyEvent {
+                                spell: item.clone(),
+                                amount: 1,
+                            }));
+                    }
+                }
+            }
         }
         // Borrowing changes the ability definition, not the actual activating object.
         // A creature CARD cycling from hand is not a creature permanent.

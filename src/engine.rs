@@ -54,7 +54,7 @@ mod miracle;
 #[path = "engine_storm.rs"]
 mod storm;
 pub use cascade::CascadeView;
-pub use miracle::MiracleChoiceView;
+pub use miracle::{DrawReplacementView, MiracleChoiceView};
 #[path = "engine_paradigm.rs"]
 mod paradigm;
 pub use paradigm::{ParadigmView, ResolvedSpellNameView};
@@ -273,6 +273,8 @@ mod proliferate;
 mod storied;
 #[path = "engine_trigger_multiplicity.rs"]
 mod trigger_multiplicity;
+#[path = "engine_waterbend.rs"]
+mod waterbend;
 pub use improvise::ImproviseChoiceView;
 #[path = "engine_damage_triggers.rs"]
 mod damage_triggers;
@@ -289,6 +291,7 @@ mod keyword_counters;
 #[path = "engine_live_counters.rs"]
 mod live_counters;
 pub use convoke::{ConvokeChoiceView, ConvokeContribution, ConvokePaymentView};
+pub use waterbend::WaterbendChoiceView;
 #[path = "engine_resolution_mana.rs"]
 mod resolution_mana;
 use funding::FundingGoal;
@@ -527,6 +530,7 @@ define_actions! {
     KeepPermanentType { object: ObjectRef },
     ChooseZoneReplacement { effect: ZoneReplacementKind },
     FinishStackTargets,
+    FinishCraftMaterials,
     AllocateTargetAmount { amount: u32 },
     RestoreStackTarget { index: u32 },
     SetStackTarget { index: u32, target: Target },
@@ -535,6 +539,7 @@ define_actions! {
     FinishEvidence,
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
+    ChooseDrawReplacement { source: ObjectRef },
     ChooseSelfCounterReplacement { effect: u16 },
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
     ChooseDamageEvent { index: u32 },
@@ -543,8 +548,10 @@ define_actions! {
     BeginConvoke,
     ChooseHarmonizer { object: Option<ObjectRef> },
     BeginImprovise,
+    BeginWaterbend,
     BeginOrderedCosts,
     ChooseImproviser { object: ObjectRef },
+    ChooseWaterbender { object: ObjectRef },
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
     ChooseToken { token: Card },
@@ -553,6 +560,9 @@ define_actions! {
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
+    SelectGraveyardReturn { object: ObjectRef },
+    FinishGraveyardReturn,
+    AnnounceSourceGrant { source: ObjectRef, ability: u16 },
     SelectResolutionExile { object: ObjectRef },
     ProliferatePermanent { object: ObjectRef },
     ProliferatePlayer { player: Player },
@@ -676,6 +686,7 @@ define_actions! {
         card: CardId,
     },
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceAirbend { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceDisguise { card: CardId },
@@ -696,6 +707,7 @@ define_actions! {
         card: CardId,
     },
     AnnounceHarmonize { card: CardId },
+    AnnounceMayhem { card: CardId },
     AnnounceGraveyardBorrowedAbility { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters },
     AnnounceGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
     ActivateGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, payment: Mana, production: Mana },
@@ -980,6 +992,8 @@ struct PlayerState {
     turns_started: u8,
     /// Persistent public designation; never reset by turn or zone changes.
     enduring_story: bool,
+    speed: u8,
+    speed_triggered_this_turn: bool,
     turn_facts: TurnFactsView,
     hexproof_until_end_turn: bool,
     mountain_mana_bonus: u32,
@@ -1002,10 +1016,12 @@ struct PlayerState {
     noncombat_damage_last_turn: bool,
     drew_in_own_draw_step: bool,
     cards_discarded_this_turn: u64,
+    permanents_sacrificed_this_turn: u64,
     cards_library_to_graveyard_this_turn: u64,
     card_left_graveyard_this_turn: bool,
     controlled_creature_died_this_turn: bool,
     controlled_creatures_died_this_turn: u64,
+    controlled_creatures_exiled_this_turn: u64,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
     life_lost_this_turn: u128,
@@ -1058,9 +1074,11 @@ pub enum CastMethod {
     GraveyardCounterCost,
     Free,
     ExileLife,
+    Airbend,
     GrantedFlashback,
     Flashback,
     Harmonize,
+    Mayhem,
     Miracle,
     Plot,
     Warp,
@@ -1158,6 +1176,7 @@ fn is_false(value: &bool) -> bool {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SourceLessRule {
     Radiation,
+    Speed,
 }
 
 /// Object-backed stack source, absent for inherent game-rule abilities.
@@ -1195,6 +1214,10 @@ pub struct SpellView {
         reason = "Rare owned cost results use one pointer in ordinary packets"
     )]
     pub exiled_symbol_cards: Option<Box<Vec<ObjectRef>>>,
+    /// Exact exile incarnations paid as materials of this craft activation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub craft_materials: Option<Box<Vec<ObjectRef>>>,
     /// Exact public card incarnations captured by an exile-batch trigger.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
@@ -1299,6 +1322,9 @@ pub struct SpellView {
     pub manifest_event: Option<Box<ManifestDreadEvent>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_toughness: Option<Box<i128>>,
+    /// Mana value frozen before an additional sacrifice cost changes the object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sacrificed_mana_value: Option<Box<u64>>,
     /// Last-known power of the successfully sacrificed permanent for a reflexive ability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_power: Option<Box<i128>>,
@@ -1425,6 +1451,8 @@ impl SpellView {
             std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
         }) + self.exiled_symbol_cards.as_ref().map_or(0, |r| {
             std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+        }) + self.craft_materials.as_ref().map_or(0, |r| {
+            std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
         }) + self
             .self_granted_activation
             .as_ref()
@@ -1512,6 +1540,10 @@ impl SpellView {
                 .sacrificed_toughness
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<i128>())
+            + self
+                .sacrificed_mana_value
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<u64>())
             + self
                 .sacrificed_power
                 .as_ref()
@@ -1802,6 +1834,10 @@ impl SpellView {
                 rule: SourceLessRule::Radiation,
                 ..
             } => Some((TargetPlan::NONE, &[Instruction::ResolveRadiation])),
+            StackKind::InherentRule {
+                rule: SourceLessRule::Speed,
+                ..
+            } => Some((TargetPlan::NONE, &[Instruction::IncreaseSpeed])),
         }
     }
 }
@@ -2031,6 +2067,9 @@ enum Pending {
         player: Player,
     },
     Improvise {
+        player: Player,
+    },
+    Waterbend {
         player: Player,
     },
     Convoke {
@@ -2339,6 +2378,7 @@ struct State {
     temporary_copies: temporary_copy::Rows,
     copy_grant_origins: copy_grant_origins::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
+    mayhem_discards: Option<SharedVec<ObjectRef>>,
     battlefield_graveyard_entries: Option<SharedVec<ObjectRef>>,
     nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
@@ -2634,9 +2674,20 @@ pub struct PlayerCounterAmountView {
     pub count: u64,
 }
 
+fn is_zero_u8(value: &u8) -> bool {
+    *value == 0
+}
+fn is_zero_u64(value: &u64) -> bool {
+    *value == 0
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub enduring_story: bool,
+    #[serde(skip_serializing_if = "is_zero_u8")]
+    pub speed: u8,
+    #[serde(skip_serializing_if = "is_false")]
+    pub speed_triggered_this_turn: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_cast_grants: Option<PlayerCastGrantsView>,
     pub hexproof_until_end_turn: bool,
@@ -2663,10 +2714,14 @@ pub struct PlayerView {
     pub noncombat_damage_this_turn: bool,
     pub noncombat_damage_last_turn: bool,
     pub cards_discarded_this_turn: u64,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub permanents_sacrificed_this_turn: u64,
     /// Number of actual library-to-graveyard moves this turn, without card identities.
     pub cards_library_to_graveyard_this_turn: u64,
     pub card_left_graveyard_this_turn: bool,
     pub controlled_creature_died_this_turn: bool,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub controlled_creatures_exiled_this_turn: u64,
     pub life_gain_events_this_turn: u64,
     pub life_gained_this_turn: u128,
     pub life_lost_this_turn: u128,
@@ -2781,6 +2836,8 @@ pub struct EffectChoiceView {
     pub selected: [Vec<ObjectRef>; 2],
     pub candidates: Vec<ObjectRef>,
     pub defender_choice: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inspected_cards: Option<Vec<ObjectView>>,
 }
 
 /// Public state-based choices; earlier APNAP choices stay visible to later players.
@@ -2885,6 +2942,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_choice: Option<outside_choices::OutsideChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub draw_replacement: Option<DrawReplacementView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_entry_replacement: Option<OutsideEntryReplacementView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owned_outside: Option<[Option<Vec<Card>>; 2]>,
@@ -2950,6 +3009,8 @@ pub struct Observation {
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prohibit_opponent_nonhand_casts: Option<[bool; 2]>,
     pub damage_prevention_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
@@ -2968,6 +3029,8 @@ pub struct Observation {
     pub convoke_choice: Option<ConvokeChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub improvise_choice: Option<ImproviseChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub waterbend_choice: Option<WaterbendChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_artifact_copies: Vec<SpellView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -2994,6 +3057,8 @@ pub struct Observation {
     pub cards_exiled_this_turn: bool,
     pub creatures_died_this_turn: u64,
     pub graveyard_entries_this_turn: Vec<ObjectRef>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub mayhem_discards_this_turn: Vec<ObjectRef>,
     pub catalogue: &'static str,
     pub viewer: Player,
     pub revision: u64,
@@ -3261,6 +3326,8 @@ impl Game {
         let mut players = std::array::from_fn(|_| PlayerState {
             turns_started: 0,
             enduring_story: false,
+            speed: 0,
+            speed_triggered_this_turn: false,
             turn_facts: TurnFactsView::default(),
             hexproof_until_end_turn: false,
             mountain_mana_bonus: 0,
@@ -3282,10 +3349,12 @@ impl Game {
             noncombat_damage_last_turn: false,
             drew_in_own_draw_step: false,
             cards_discarded_this_turn: 0,
+            permanents_sacrificed_this_turn: 0,
             cards_library_to_graveyard_this_turn: 0,
             card_left_graveyard_this_turn: false,
             controlled_creature_died_this_turn: false,
             controlled_creatures_died_this_turn: 0,
+            controlled_creatures_exiled_this_turn: 0,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
@@ -3380,6 +3449,7 @@ impl Game {
                 temporary_copies: None,
                 copy_grant_origins: None,
                 graveyard_entries: None,
+                mayhem_discards: None,
                 battlefield_graveyard_entries: None,
                 nightmare_cull: None,
                 stack_copy_data: None,
@@ -3541,6 +3611,7 @@ impl Game {
             | Pending::Harmonize { player }
             | Pending::Convoke { player }
             | Pending::Improvise { player }
+            | Pending::Waterbend { player }
             | Pending::Mobilize { player }
             | Pending::BlightIntent { player }
             | Pending::BlightPayment { player }
@@ -4060,7 +4131,7 @@ impl Game {
                     return true;
                 }
             }
-            Pending::Convoke { .. } | Pending::Improvise { .. } => {
+            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Waterbend { .. } => {
                 if self.visit_convoke_actions(&mut emit) {
                     return true;
                 }
@@ -4287,6 +4358,16 @@ impl Game {
                 if choice.kind == EffectChoiceKind::RemoveCreatureCounters(1) {
                     return self.visit_resolution_counter_payments(player, &mut emit);
                 }
+                if matches!(choice.kind, EffectChoiceKind::CoverUpSearch { .. })
+                    && emit(Action::FinishSearch)
+                {
+                    return true;
+                }
+                if matches!(choice.kind, EffectChoiceKind::GraveyardCreatures { .. })
+                    && emit(Action::FinishGraveyardReturn)
+                {
+                    return true;
+                }
                 if matches!(
                     choice.kind,
                     EffectChoiceKind::LandCards { .. }
@@ -4299,7 +4380,8 @@ impl Game {
                 if choice.skip_to.is_some()
                     && !matches!(
                         choice.kind,
-                        EffectChoiceKind::LandCards { .. }
+                        EffectChoiceKind::GraveyardCreatures { .. }
+                            | EffectChoiceKind::LandCards { .. }
                             | EffectChoiceKind::UntapLands { .. }
                             | EffectChoiceKind::DiscardedLand { .. }
                     )
@@ -4323,6 +4405,9 @@ impl Game {
                     let object = self.object_ref(index as CardId);
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
+                            EffectChoiceKind::GraveyardCreatures { .. } => {
+                                Action::SelectGraveyardReturn { object }
+                            }
                             EffectChoiceKind::AmassGoblins(_) => Action::ChooseArmy { object },
                             EffectChoiceKind::EmpowerJace(_) => Action::ChooseJace { object },
                             EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
@@ -4343,6 +4428,9 @@ impl Game {
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
                             EffectChoiceKind::ExileSourceAndNamed { .. }
                             | EffectChoiceKind::ExileCardFromAnyGraveyard
+                            | EffectChoiceKind::ExileCreatureAndGraveyard
+                            | EffectChoiceKind::CoverUpGraveyardCard
+                            | EffectChoiceKind::CoverUpSearch { .. }
                             | EffectChoiceKind::CopyExiledTriggerCreature => {
                                 Action::SelectResolutionExile { object }
                             }
@@ -4388,6 +4476,9 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                if self.craft_material_selection_complete() && emit(Action::FinishCraftMaterials) {
+                    return true;
+                }
                 if self.additional_life_available() && emit(Action::ChooseAdditionalLife) {
                     return true;
                 }
@@ -4492,6 +4583,18 @@ impl Game {
                 }
             }
             Pending::MiracleReveal { player } => {
+                if let Some(order) = self.draw_replacement_view() {
+                    for source in order
+                        .additional_sources
+                        .into_iter()
+                        .chain(order.doubling_sources)
+                    {
+                        if emit(Action::ChooseDrawReplacement { source }) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
                 if self
                     .miracle_choice_view(player)
                     .is_some_and(|v| v.can_reveal)
@@ -4522,7 +4625,7 @@ impl Game {
                 if self.visit_graveyard_permanent_plays(
                     actor,
                     sorcery,
-                    casting_prohibited,
+                    casting_prohibited || self.nonhand_cast_prohibited(actor),
                     &mut emit,
                 ) {
                     return true;
@@ -4541,6 +4644,7 @@ impl Game {
                             self.can_play_exiled(actor, card)
                                 || self.has_exile_life_permission(actor, card)
                                 || self.has_exile_free_permission(actor, card)
+                                || self.has_airbend_permission(actor, card)
                                 || self.plotted_cast_available(actor, card)
                         }
                         _ => false,
@@ -4586,6 +4690,12 @@ impl Game {
                     }
                     if obj.zone == Zone::Battlefield
                         && !self.nonmana_actions_prohibited()
+                        && self.visit_source_grants(card, actor, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Battlefield
+                        && !self.nonmana_actions_prohibited()
                         && self.visit_planeswalker_grants(card, actor, sorcery, &mut emit)
                     {
                         return true;
@@ -4598,10 +4708,9 @@ impl Game {
                     if sorcery
                         && obj.zone == Zone::Hand
                         && !obj.is_token()
-                        && obj
-                            .card
-                            .plot_cost()
-                            .is_some_and(|cost| self.plot_can_fund(actor, cost))
+                        && obj.card.plot_cost().is_some_and(|cost| {
+                            self.plot_can_fund(actor, self.reduced_plot_cost(actor, cost))
+                        })
                         && emit(Action::AnnouncePlot { card })
                     {
                         return true;
@@ -4646,7 +4755,9 @@ impl Game {
                     if obj.zone == Zone::Hand && self.hand_play_prohibited() {
                         continue;
                     }
-                    if casting_prohibited {
+                    if casting_prohibited
+                        || (obj.zone != Zone::Hand && self.nonhand_cast_prohibited(actor))
+                    {
                         if obj.card.is_land()
                             && sorcery
                             && (obj.zone == Zone::Hand
@@ -4709,6 +4820,11 @@ impl Game {
                     }
                     if !casting_prohibited
                         && self.visit_exile_free_casts(actor, card, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if !casting_prohibited
+                        && self.visit_airbend_casts(actor, card, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -4907,6 +5023,20 @@ impl Game {
                                 }
                             }
                         }
+                    }
+                    if !casting_prohibited
+                        && self.can_cast_mayhem(actor, card)
+                        && self.permitted_cast_available(
+                            actor,
+                            card,
+                            CastMethod::Mayhem,
+                            CastFace::Normal,
+                            sorcery,
+                            false,
+                        )
+                        && emit(Action::AnnounceMayhem { card })
+                    {
+                        return true;
                     }
                     if obj.zone == Zone::Graveyard
                         && obj.card.harmonize_cost().is_some()
@@ -5879,6 +6009,7 @@ impl Game {
             }
             Action::ChooseOutsideSelfReplacement { effect } => self.choose_outside_self(effect),
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
+            Action::ChooseDrawReplacement { source } => self.choose_draw_replacement(source),
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
             }
@@ -5937,6 +6068,7 @@ impl Game {
                 ability,
             } => self.announce_planeswalker_grant(source, grantor, ability),
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::FinishCraftMaterials => self.finish_graveyard_symbol_cost(),
             Action::ChooseAdditionalLife => self.choose_additional_life(),
             Action::FinishGraveyardSymbolCost => self.finish_graveyard_symbol_cost(),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
@@ -6212,6 +6344,16 @@ impl Game {
                 self.state.objects[card as usize].flashback = true;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceAirbend {
+                card,
+                face,
+                flash_surcharge,
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                Self::configure_airbend_cast(&mut item, flash_surcharge);
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnounceExileLife {
                 card,
                 face,
@@ -6336,6 +6478,14 @@ impl Game {
                     .x_symbols()
                     > 0
                 {
+                    item.x = Some(0);
+                }
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceMayhem { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::Mayhem;
+                if item.source.expect("mayhem source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
@@ -6477,8 +6627,10 @@ impl Game {
             Action::BeginConvoke => self.begin_convoke(),
             Action::ChooseHarmonizer { object } => self.choose_harmonizer(object),
             Action::BeginImprovise => self.begin_improvise(),
+            Action::BeginWaterbend => self.begin_waterbend(),
             Action::BeginOrderedCosts => self.begin_ordered_costs(),
             Action::ChooseImproviser { object } => self.choose_improviser(object),
+            Action::ChooseWaterbender { object } => self.choose_improviser(object),
             Action::ChooseConvoker {
                 object,
                 contribution,
@@ -7014,13 +7166,21 @@ impl Game {
                 self.finish_proliferate();
                 self.run_program();
             }
+            Action::AnnounceSourceGrant { source, ability } => {
+                self.announce_planeswalker_grant(source, source, ability)
+            }
             Action::PutHandCreature { object }
             | Action::PutHandPermanent { object }
             | Action::PutHandLand { object }
             | Action::ChooseArmy { object }
             | Action::ChooseJace { object }
+            | Action::SelectGraveyardReturn { object }
             | Action::SelectLand { object }
             | Action::SelectResolutionExile { object } => self.choose_effect_object(actor, object),
+            Action::FinishGraveyardReturn => {
+                self.finish_graveyard_return_selection();
+                self.run_program();
+            }
             Action::FinishLandSelection => {
                 self.finish_land_selection();
                 self.run_program();
@@ -7087,6 +7247,16 @@ impl Game {
                     && self.object_ref(choice.target.card) == choice.target
                 {
                     self.pay_counters(choice.target.card, &choice.selected);
+                    if !choice.selected.is_empty() {
+                        let resolution = self.state.resolving.as_ref().unwrap();
+                        if let Some(Instruction::MayRemoveAnySourceCounterReflexive(ability)) =
+                            resolution.program.get(resolution.pc - 1)
+                        {
+                            let ability = *ability;
+                            let item = resolution.item.clone();
+                            self.queue_reflexive(&item, ability, None);
+                        }
+                    }
                 }
                 self.run_program();
             }
@@ -7112,7 +7282,9 @@ impl Game {
                 }
             }
             Action::FinishSearch => {
-                if self.has_hand_library_search() {
+                if matches!(self.state.pending, Pending::EffectChoice { .. }) {
+                    self.finish_cover_up_search();
+                } else if self.has_hand_library_search() {
                     self.finish_hand_library_search()
                 } else if self.has_zone_search() {
                     self.finish_zone_search()
@@ -8099,6 +8271,13 @@ impl Game {
             self.forget_solved_case(before.reference);
             self.forget_graveyard_type_source(before.reference);
         }
+        if before.zone == Zone::Battlefield && destination == Zone::Exile && before.is_creature() {
+            let count = &mut self.state.players[before.controller.index()]
+                .controlled_creatures_exiled_this_turn;
+            *count = count
+                .checked_add(1)
+                .capacity("exiled creature history exhausted");
+        }
         if before.zone == Zone::Battlefield
             && destination == Zone::Graveyard
             && before.is_creature()
@@ -8572,6 +8751,10 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        if let Some(roles) = &mut self.state.roles {
+            roles.prohibit_opponent_nonhand_casts[self.state.active.index()] = false;
+        }
+        self.expire_source_land_forms(self.state.active);
         self.expire_next_turn_stats(self.state.active);
         self.expire_next_turn_keywords(self.state.active);
         let active = self.state.active.index();
@@ -8620,6 +8803,7 @@ impl Game {
         self.state.cards_exiled_this_turn = false;
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
+        self.state.mayhem_discards = None;
         self.state.battlefield_graveyard_entries = None;
         for player in &mut self.state.players {
             player.turn_facts = TurnFactsView::default();
@@ -8635,13 +8819,16 @@ impl Game {
             player.noncombat_damage_last_turn = player.noncombat_damage_this_turn;
             player.noncombat_damage_this_turn = false;
             player.cards_discarded_this_turn = 0;
+            player.permanents_sacrificed_this_turn = 0;
             player.cards_library_to_graveyard_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
             player.controlled_creature_died_this_turn = false;
             player.controlled_creatures_died_this_turn = 0;
+            player.controlled_creatures_exiled_this_turn = 0;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
+            player.speed_triggered_this_turn = false;
             player.attacked_this_turn = false;
             player.greatest_declared_attack_power_this_turn = None;
         }
@@ -8901,11 +9088,37 @@ impl Game {
         }
     }
 
+    fn damage_prevention_prohibited(&self) -> bool {
+        self.state.damage_prevention_prohibited
+            || self.state.static_sources.iter().any(|&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::DamageCantBePrevented
+                            )
+                        })
+                    })
+                    && self
+                        .characteristic_query()
+                        .continuous_fragment_available(id, |fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::DamageCantBePrevented
+                            )
+                        })
+            })
+    }
+
     fn commit_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
             event.preventable
-                && !self.state.damage_prevention_prohibited
+                && !self.damage_prevention_prohibited()
                 && ((event.combat
                     && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
                         || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO))))
@@ -8928,6 +9141,7 @@ impl Game {
             if event.amount <= 0 {
                 continue;
             }
+            self.register_damage_death_exile(event);
             self.qualify_damage_destruction(event);
             match event.target {
                 Target::Player(p) => {
@@ -9319,7 +9533,14 @@ impl Game {
                     .collect()
             }),
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
-            damage_prevention_prohibited: s.damage_prevention_prohibited,
+            prohibit_opponent_nonhand_casts: s.roles.as_ref().and_then(|roles| {
+                roles
+                    .prohibit_opponent_nonhand_casts
+                    .iter()
+                    .any(|&active| active)
+                    .then_some(roles.prohibit_opponent_nonhand_casts)
+            }),
+            damage_prevention_prohibited: self.damage_prevention_prohibited(),
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
             zone_reveals: self.zone_reveals(),
@@ -9346,6 +9567,11 @@ impl Game {
             },
             improvise_choice: if owns_choice {
                 self.improvise_choice()
+            } else {
+                None
+            },
+            waterbend_choice: if owns_choice {
+                self.waterbend_choice()
             } else {
                 None
             },
@@ -9475,6 +9701,10 @@ impl Game {
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             cards_exiled_this_turn: s.cards_exiled_this_turn,
             creatures_died_this_turn: s.creatures_died_this_turn,
+            mayhem_discards_this_turn: s
+                .mayhem_discards
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             graveyard_entries_this_turn: s
                 .graveyard_entries
                 .as_ref()
@@ -9487,6 +9717,9 @@ impl Game {
             turn: s.turn,
             step: s.step,
             decision: match s.pending {
+                Pending::MiracleReveal { .. } if self.draw_replacement_view().is_some() => {
+                    "draw_replacement"
+                }
                 Pending::MiracleReveal { .. } => "miracle_reveal",
                 Pending::ResolutionCasts { .. } => "resolution_casts",
                 Pending::ManaLotSpend { .. } => "mana_lot_spend",
@@ -9521,6 +9754,7 @@ impl Game {
                 Pending::Harmonize { .. } => "harmonize",
                 Pending::Convoke { .. } => "convoke",
                 Pending::Improvise { .. } => "improvise",
+                Pending::Waterbend { .. } => "waterbend",
                 Pending::Mobilize { .. } => "mobilize",
                 Pending::BlightIntent { .. } => "blight_intent",
                 Pending::BlightPayment { .. } => "blight_payment",
@@ -9594,6 +9828,8 @@ impl Game {
             },
             players: std::array::from_fn(|i| PlayerView {
                 enduring_story: s.players[i].enduring_story,
+                speed: s.players[i].speed,
+                speed_triggered_this_turn: s.players[i].speed_triggered_this_turn,
                 turn_cast_grants: self.player_cast_grants_view(i),
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 turns_started: s.players[i].turns_started,
@@ -9619,10 +9855,13 @@ impl Game {
                 noncombat_damage_this_turn: s.players[i].noncombat_damage_this_turn,
                 noncombat_damage_last_turn: s.players[i].noncombat_damage_last_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
+                permanents_sacrificed_this_turn: s.players[i].permanents_sacrificed_this_turn,
                 cards_library_to_graveyard_this_turn: s.players[i]
                     .cards_library_to_graveyard_this_turn,
                 card_left_graveyard_this_turn: s.players[i].card_left_graveyard_this_turn,
                 controlled_creature_died_this_turn: s.players[i].controlled_creature_died_this_turn,
+                controlled_creatures_exiled_this_turn: s.players[i]
+                    .controlled_creatures_exiled_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
                 life_lost_this_turn: s.players[i].life_lost_this_turn,
@@ -9702,6 +9941,7 @@ impl Game {
                 .as_ref()
                 .and_then(|r| r.cascade.as_deref().cloned()),
             miracle: self.miracle_choice_view(viewer),
+            draw_replacement: self.draw_replacement_view(),
             resolution_free_casts: s
                 .resolution_free_casts
                 .as_deref()
@@ -10226,6 +10466,9 @@ impl Game {
             + copies::owned_bytes(&s.copy_recipes)
             + temporary_copy::owned_bytes(&s.temporary_copies)
             + copy_grant_origins::owned_bytes(&s.copy_grant_origins)
+            + s.mayhem_discards.as_ref().map_or(0, |r| {
+                std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+            })
             + s.graveyard_entries.as_ref().map_or(0, |r| {
                 std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
             })
@@ -10704,3 +10947,6 @@ mod attacking_exile;
 #[cfg(test)]
 #[path = "engine_requested_sapling_tests.rs"]
 mod engine_requested_sapling_tests;
+
+#[path = "engine_mayhem.rs"]
+mod mayhem;

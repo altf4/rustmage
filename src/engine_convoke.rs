@@ -282,11 +282,20 @@ impl Game {
             if f.contains(object) {
                 continue;
             }
-            if a.item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .has_convoke()
+            if self.item_waterbend(&a.item) != 0
+                && f.improvised.len() < usize::from(self.item_waterbend(&a.item))
+                && waterbend::eligible(self, a.item.controller, object)
+                && self.waterbender_fundable(object)
+                && emit(Action::ChooseWaterbender { object })
+            {
+                return true;
+            }
+            if a.item.kind == StackKind::Spell
+                && a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .has_convoke()
                 && self.convoke_eligible(a.item.controller, object)
             {
                 for contribution in contributions() {
@@ -309,6 +318,27 @@ impl Game {
             }
         }
         false
+    }
+    fn waterbender_fundable(&self, object: ObjectRef) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let f = a.convoke.as_ref().unwrap();
+        let Some(generic) = f.remaining.generic.checked_sub(1) else {
+            return false;
+        };
+        let mut excluded = f.objects();
+        excluded.push(object);
+        let used = u16::try_from(excluded.len()).unwrap_or(u16::MAX);
+        let cap = self.item_waterbend(&a.item).saturating_sub(used);
+        convoke::payable_in(
+            self,
+            a.item.controller,
+            self.purpose_for_item(&a.item),
+            self.available_mana(a.item.controller, self.purpose_for_item(&a.item))
+                .map(u128::from),
+            f.remaining.colored,
+            generic,
+            &waterbend::masks(self, a.item.controller, cap, &excluded),
+        )
     }
     fn contributor_fundable(
         &self,

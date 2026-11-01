@@ -83,6 +83,14 @@ fn matches(c: Card, f: SearchFilter) -> bool {
         SearchFilter::ManaValue { minimum, maximum } => {
             (minimum..=maximum).contains(&c.fixed_mana_value())
         }
+        SearchFilter::KindsManaValue {
+            kinds,
+            minimum,
+            maximum,
+        } => {
+            matches(c, SearchFilter::Kinds(kinds))
+                && (minimum..=maximum).contains(&c.fixed_mana_value())
+        }
         SearchFilter::AnyOf(fs) => fs.iter().any(|f| matches(c, *f)),
         SearchFilter::AllOf(fs) => fs.iter().all(|f| matches(c, *f)),
         SearchFilter::Name(n) => c.name() == n,
@@ -109,6 +117,8 @@ fn matches(c: Card, f: SearchFilter) -> bool {
             (16, "Artifact"),
             (32, "Enchantment"),
             (64, "Planeswalker"),
+            (128, "Kindred"),
+            (256, "Battle"),
         ]
         .iter()
         .any(|(b, n)| {

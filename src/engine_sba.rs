@@ -299,6 +299,28 @@ impl Game {
         }
         loop {
             self.refresh_controllers();
+            for player in [Player::P0, Player::P1] {
+                if self.state.players[player.index()].speed == 0
+                    && self.state.static_sources.iter().copied().any(|id| {
+                        let object = &self.state.objects[id as usize];
+                        object.zone == Zone::Battlefield
+                            && object.controller == player
+                            && object.card.static_ability_groups().iter().any(|g| {
+                                g.fragments.iter().any(|f| {
+                                    matches!(
+                                        f,
+                                        crate::cards::StaticAbilityFragment::StartYourEngines
+                                    )
+                                })
+                            })
+                            && self.continuous_fragment_available(id, |f| {
+                                matches!(f, crate::cards::StaticAbilityFragment::StartYourEngines)
+                            })
+                    })
+                {
+                    self.state.players[player.index()].speed = 1;
+                }
+            }
             // An ineligible protector is replaced even during combat. A missing
             // protector is chosen only while no creature is attacking the Battle.
             let protectors: Vec<_> = self

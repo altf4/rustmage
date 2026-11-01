@@ -173,7 +173,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceBack { .. } => 30,
             Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
             Action::ChooseEntryTimestamp { .. } => 120,
-            Action::ChooseReplacement { .. }
+            Action::ChooseDrawReplacement { .. }
+            | Action::ChooseReplacement { .. }
             | Action::ChooseSelfCounterReplacement { .. }
             | Action::ChooseDamagePrevention { .. }
             | Action::ChooseDamageEvent { .. } => 120,
@@ -185,9 +186,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     35
                 }
             }
-            Action::BeginConvoke | Action::BeginImprovise | Action::BeginOrderedCosts => 40,
+            Action::BeginConvoke
+            | Action::BeginImprovise
+            | Action::BeginWaterbend
+            | Action::BeginOrderedCosts => 40,
             Action::ChooseConvoker { .. }
             | Action::ChooseImproviser { .. }
+            | Action::ChooseWaterbender { .. }
             | Action::ChooseHarmonizer { .. } => 50,
             Action::ChooseMobilizeDefender { .. } | Action::ChooseHandDefender { .. } => 50,
             Action::PutHandCreature { .. }
@@ -195,11 +200,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::PutHandLand { .. }
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
+            | Action::SelectGraveyardReturn { .. }
+            | Action::AnnounceSourceGrant { .. }
             | Action::SelectLand { .. }
             | Action::SelectResolutionExile { .. } => 50,
             Action::ProliferatePermanent { .. } | Action::ProliferatePlayer { .. } => 50,
             Action::FinishProliferate => 0,
-            Action::FinishLandSelection => -1,
+            Action::FinishGraveyardReturn | Action::FinishLandSelection => -1,
             Action::DeclineHandEntry => -1,
             Action::ChooseBlight { pay } => i128::from(*pay) * 40,
             Action::PayBlight { .. } => 50,
@@ -247,7 +254,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseEvidence { .. } => 50,
-            Action::FinishEvidence | Action::FinishGraveyardSymbolCost => 80,
+            Action::FinishEvidence
+            | Action::FinishGraveyardSymbolCost
+            | Action::FinishCraftMaterials => 80,
             Action::DeclineEvidence => -10,
             Action::ChooseBargain { sacrifice } => {
                 if sacrifice.is_some() {
@@ -319,10 +328,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceSneak { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnounceExile { .. }
+            | Action::AnnounceAirbend { .. }
             | Action::AnnounceExileLife { .. }
             | Action::AnnounceExileFree { .. }
             | Action::AnnounceFlashback { .. }
-            | Action::AnnounceHarmonize { .. } => 79,
+            | Action::AnnounceHarmonize { .. }
+            | Action::AnnounceMayhem { .. } => 79,
             Action::AnnouncePlot { .. } | Action::BeginFaceUp { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }

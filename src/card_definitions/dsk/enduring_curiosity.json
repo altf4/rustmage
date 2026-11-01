@@ -3,10 +3,31 @@
   "catalogue_id": 1334,
   "oracle_id": "9d2460c3-8eeb-4f35-b6f6-748c478664c7",
   "facts_sha256": "78687bfb36f5d6612a745f3325d74c7b73aafe2d51144e62fff2811cc75d0990",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cb4302a766330f037c2cd9662fc302db95fa19c58ce067289792c5981cf77886"
   },
-  "physical_metadata_sha256": "f849dcd6d20e0b038070d76de348d735116280b0211b99f42da88fa1eebc3e1a"
+  "physical_metadata_sha256": "f849dcd6d20e0b038070d76de348d735116280b0211b99f42da88fa1eebc3e1a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EnduringCuriosity.java",
+  "java_sha256": "37c9a0d86200b21f3b7a212e6470943681f109f1f53186830c2c362a93cb0cf2",
+  "rules_tests": "src/assurance/hartford_returns.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToAPlayerAllTriggeredAbility.java",
+      "sha256": "681832895f797fe69d7a2b867b51d49337624b5060efd04ab92e38e8086c2161"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EnduringGlimmerTriggeredAbility.java",
+      "sha256": "55acb994d0447472327ae37b9b37bcd2411c36ab3a507f133a848fa6ace6d83f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

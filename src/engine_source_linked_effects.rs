@@ -5,6 +5,8 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum SourceLinkedEffectKind {
     RemoveAbilities,
+    /// Type replacement and blue mana grant, ending at the captured controller's next turn.
+    LandUntilControllerNextTurn,
     /// Source-independent removal lasting until cleanup.
     RemoveAbilitiesUntilEndOfTurn,
     GrantHexproof,
@@ -12,6 +14,8 @@ pub enum SourceLinkedEffectKind {
     GrantTwoColorlessUntilSourceCast,
     PreventDamageBy,
     PreventUntap,
+    /// Source-independent prohibition ending at the recipient’s first untap.
+    PreventActivationsUntilUntapped,
     Control,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -30,6 +34,7 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
         row.kind,
         SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
             | SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+            | SourceLinkedEffectKind::PreventActivationsUntilUntapped
     ) || (world.object(row.source.card).zone == Zone::Battlefield
         && world.reference(row.source.card) == row.source))
         && (row.kind == SourceLinkedEffectKind::PreventDamageBy
@@ -37,6 +42,8 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
                 && world.reference(row.recipient.card) == row.recipient))
         && (row.kind != SourceLinkedEffectKind::PreventUntap
             || world.object(row.source.card).controller == row.controller)
+        && (row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
+            || world.object(row.recipient.card).tapped)
 }
 impl Game {
     pub(super) fn resolve_source_linked_effect(
@@ -147,6 +154,7 @@ impl Game {
                     exile_on_graveyard: false,
                     life_instead_of_mana: false,
                     without_paying_mana_cost: false,
+                    airbend: false,
                     requires_subtype: None,
                 },
             );
@@ -301,6 +309,42 @@ impl Game {
             self.refresh_copy_grant_availability();
         }
     }
+    pub(super) fn prevent_target_activations_until_untapped(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return };
+        let recipients: Vec<_> = self
+            .keyword_subjects(item, Subject::Targets)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id) && self.state.objects[id as usize].tapped)
+            .map(|id| self.object_ref(id))
+            .collect();
+        if recipients.is_empty() {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        for recipient in recipients {
+            self.state
+                .roles
+                .as_mut()
+                .unwrap()
+                .source_linked_effects
+                .push(SourceLinkedEffectView {
+                    source: source.object,
+                    recipient,
+                    controller: item.controller,
+                    kind: SourceLinkedEffectKind::PreventActivationsUntilUntapped,
+                    timestamp,
+                });
+        }
+    }
+
+    pub(super) fn forget_untapped_activation_locks(&mut self, untapped: &[ObjectRef]) {
+        if let Some(state) = &mut self.state.roles {
+            state.source_linked_effects.retain(|row| {
+                row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
+                    || !untapped.contains(&row.recipient)
+            });
+        }
+    }
     pub(super) fn forget_source_linked_effects(&mut self, reference: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
             state.source_linked_effects.retain(|row| {
@@ -309,6 +353,7 @@ impl Game {
                         row.kind,
                         SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
                             | SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
+                            | SourceLinkedEffectKind::PreventActivationsUntilUntapped
                     ))
                     && (row.recipient != reference
                         || row.kind == SourceLinkedEffectKind::PreventDamageBy)
@@ -343,5 +388,101 @@ impl std::hash::Hash for SourceLinkedEffectView {
         self.controller.index().hash(state);
         self.kind.hash(state);
         self.timestamp.hash(state);
+    }
+}
+
+impl Game {
+    pub(super) fn counter_ability_and_remove_source_abilities(&mut self, item: &SpellView) {
+        for bound in &item.targets {
+            let Some(victim) = self.bound_stack_item(bound).cloned() else {
+                continue;
+            };
+            if victim.kind == StackKind::Spell {
+                continue;
+            }
+            let recipient = victim.source.and_then(|source| {
+                (self.on_battlefield(source.object.card)
+                    && self.object_ref(source.object.card) == source.object
+                    && self.current_kinds(source.object.card) & (1 | 16 | 64) != 0)
+                    .then_some(source.object)
+            });
+            if !self.counter_stack_item(victim.id, false) {
+                continue;
+            }
+            if let Some(recipient) = recipient {
+                let mut removal = item.clone();
+                removal.targets = vec![BoundTarget {
+                    group: 0,
+                    target: Target::Card(recipient.card),
+                    object: Some(recipient),
+                }];
+                self.resolve_source_linked_effect(
+                    &removal,
+                    SourceLinkedEffectKind::RemoveAbilities,
+                );
+            }
+        }
+    }
+
+    pub(super) fn remove_abilities_then_destroy_creatures_mana_at_most(
+        &mut self,
+        item: &SpellView,
+        amount: AmountValue,
+    ) {
+        let maximum = self.item_amount(amount, item);
+        // Freeze the affected group before ability removal changes characteristics.
+        let ids: Vec<_> = (0..self.state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                self.on_battlefield(id)
+                    && self.is_creature(id)
+                    && u128::from(self.object_mana_value(id)) <= maximum
+            })
+            .collect();
+        let mut removal = item.clone();
+        removal.targets = ids
+            .iter()
+            .map(|&id| BoundTarget {
+                group: 0,
+                target: Target::Card(id),
+                object: Some(self.object_ref(id)),
+            })
+            .collect();
+        self.remove_target_abilities_until_end_of_turn(&removal);
+        let ids: Vec<_> = ids
+            .into_iter()
+            .filter(|&id| !self.effect_destruction_prevented(id))
+            .collect();
+        let sources = self.death_trigger_sources();
+        let events = self.move_objects_raw(&ids, Zone::Graveyard);
+        self.finish_zone_events(&events, &sources);
+    }
+    pub(super) fn source_land_until_next_turn(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let mut effect = item.clone();
+        effect.targets = vec![BoundTarget {
+            group: 0,
+            target: Target::Card(source.id),
+            object: Some(source.object),
+        }];
+        self.resolve_source_linked_effect(
+            &effect,
+            SourceLinkedEffectKind::LandUntilControllerNextTurn,
+        );
+    }
+    pub(super) fn expire_source_land_forms(&mut self, player: Player) {
+        let changed = self.state.roles.as_mut().is_some_and(|roles| {
+            let before = roles.source_linked_effects.len();
+            roles.source_linked_effects.retain(|row| {
+                row.kind != SourceLinkedEffectKind::LandUntilControllerNextTurn
+                    || row.controller != player
+            });
+            before != roles.source_linked_effects.len()
+        });
+        if changed {
+            self.refresh_copy_grant_availability();
+        }
     }
 }

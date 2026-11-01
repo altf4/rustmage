@@ -3,10 +3,26 @@
   "catalogue_id": 279,
   "oracle_id": "e3431dae-969c-4896-9f9e-a80e7bec4bdf",
   "facts_sha256": "9bc407d6c74e3708eece3916f9f2540467d96769e1434f7b4b8420924af67ae3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b06f8e18195f9c56f6e66ff475c04340ede2553af63a99f14e513de0bc81227b"
   },
-  "physical_metadata_sha256": "259d544abccb3c82a74245164089aaa15515896c7427198b859ab0a46d2cf6f0"
+  "physical_metadata_sha256": "259d544abccb3c82a74245164089aaa15515896c7427198b859ab0a46d2cf6f0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AvatarsWrath.java",
+  "java_sha256": "601b00761e55a398916c4876d77567942925b2d343e6760a4dde8b19c9989dc3",
+  "rules_tests": "src/assurance/requested_airbend_core.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AirbendTargetEffect.java",
+      "sha256": "debe8f731f2374241dda2d23cbcc2a5feba816ebbf4e1d7b48845faa983cdcec"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSpellEffect.java",
+      "sha256": "a7e5f14c36dc0938ad32916c58ae5c50971810fbdb26b8a69f4bfcfdd243b78c"
+    }
+  ]
 }

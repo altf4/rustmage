@@ -3,10 +3,36 @@
   "catalogue_id": 1113,
   "oracle_id": "3ca32660-bf5f-4398-bef6-a0ec8bc767cf",
   "facts_sha256": "413083aff58440f4257be051ebbefc1a4f42cba42da3d803c6adfacbedf4b80c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e2a2b1fac007ffaeecd0163fe53489fe5b8d7a6f5d9c6c6b9d4bfca2f741a20c"
   },
-  "physical_metadata_sha256": "d4657ac7127991953e2e731ac3431db5ffcbf5bc4ce04f4399b68844e188e41d"
+  "physical_metadata_sha256": "d4657ac7127991953e2e731ac3431db5ffcbf5bc4ce04f4399b68844e188e41d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DocAurlockGrizzledGenius.java",
+  "java_sha256": "5ab90891f68e8820193d4fafdffc2a8c76bec6f7ad828f2341238d679c8179c1",
+  "rules_tests": "src/assurance/requested_reduction.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/card/CastFromZonePredicate.java",
+      "sha256": "c656e76a2ab12ad6571b86d28436c3ebde0d212aeeacf0f46a2e11bee5bd8a83"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+      "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4"
+    }
+  ]
 }

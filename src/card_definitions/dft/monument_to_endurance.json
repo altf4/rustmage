@@ -3,10 +3,46 @@
   "catalogue_id": 2838,
   "oracle_id": "e69e8de4-b521-4888-8074-17f1efe2f345",
   "facts_sha256": "034ad53734cc609f80f92a70dffa96393d87fcec13361c02d93c39a76d60600f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e88d0821aa3cffefa1cc4282c27c8c352357a01ca39486e36d9fdc5f7ec42295"
   },
-  "physical_metadata_sha256": "97bf7be2c91830b8f67495e8c04bc8481b7dc0ad2aca46a8f7f4d12cfd5ed5b4"
+  "physical_metadata_sha256": "97bf7be2c91830b8f67495e8c04bc8481b7dc0ad2aca46a8f7f4d12cfd5ed5b4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MonumentToEndurance.java",
+  "java_sha256": "18bb55015854f90879a8c711d2f8d4ddd06324956393f431d59b32756f801bd1",
+  "rules_tests": "src/assurance/hartford_discard.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DiscardCardControllerTriggeredAbility.java",
+      "sha256": "1f870a3cd00c5d16bcbc51d4d6ff899f1c15221a4f522175ba3bb919e3f3d55f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+      "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+    }
+  ]
 }

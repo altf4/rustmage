@@ -10,7 +10,25 @@ impl Game {
     ) -> usize {
         // Freeze all players' top cards before moving anything. Mandatory milling
         // does as much as possible and never attempts a draw from an empty library.
+        if amount == MillAmount::RecipientGraveyard {
+            return self
+                .mill_batch_with_counts(players, |game, player| {
+                    game.state
+                        .objects
+                        .iter()
+                        .filter(|object| {
+                            object.zone == Zone::Graveyard
+                                && object.owner == player
+                                && object.is_card()
+                        })
+                        .count()
+                })
+                .iter()
+                .filter(|event| event.moved || event.shuffled_in_place)
+                .count();
+        }
         let maximum = match amount {
+            MillAmount::RecipientGraveyard => unreachable!("per-player counts handled above"),
             MillAmount::LifeEvent => usize::try_from(
                 self.state
                     .resolving
@@ -67,6 +85,14 @@ impl Game {
     }
 
     fn mill_batch_up_to(&mut self, players: &[Player], maximum: usize) -> Vec<ZoneChange> {
+        self.mill_batch_with_counts(players, |_, _| maximum)
+    }
+
+    fn mill_batch_with_counts(
+        &mut self,
+        players: &[Player],
+        maximum: impl Fn(&Self, Player) -> usize,
+    ) -> Vec<ZoneChange> {
         let ids: Vec<_> = players
             .iter()
             .flat_map(|player| {
@@ -76,7 +102,7 @@ impl Game {
                     .rev()
                     .copied()
                     .filter(|&id| self.state.objects[id as usize].is_card())
-                    .take(maximum)
+                    .take(maximum(self, *player))
             })
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Graveyard);

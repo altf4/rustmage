@@ -3,10 +3,30 @@
   "catalogue_id": 3551,
   "oracle_id": "71c714a2-baa9-4082-bc8e-ceadbea231e0",
   "facts_sha256": "646ef5abb804328a31087b3dcf0363dc7c8365384ec543ec1abfafcdcdf12183",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c9b6685199903f5b4705c63dd251f47647bb387814f341e74925873d0241c38d"
   },
-  "physical_metadata_sha256": "76eee0a442ae3f57bcc09f9a77d7fde9e876b983efe0d8f56561adefcdda809f"
+  "physical_metadata_sha256": "76eee0a442ae3f57bcc09f9a77d7fde9e876b983efe0d8f56561adefcdda809f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RiverchurnMonument.java",
+  "java_sha256": "9348a25da6a055ce1699bbcc25bbb07f8b325385f48fe8d02201bc000cd6ca4a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/EachTargetPointer.java",
+      "sha256": "47409331c6a257595e641b63cb1eefe96070813dc4c8f37ce103a9220176a190"
+    }
+  ]
 }

@@ -3,10 +3,36 @@
   "catalogue_id": 1869,
   "oracle_id": "d4a9d63a-5a8a-4f51-9e49-43d6dc3234b1",
   "facts_sha256": "891f056a13fcef98765e0942561e246cd93bb99ec915ceae021821d9c891cc08",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "99b2fbc25ec7991cf049e2cc6111ab750be691bbc6c741d295facb4f69e0e974"
   },
-  "physical_metadata_sha256": "60cbf14a3c1539b5b6d8213995207ca28877fd47f03bf6e328713bbb9bffa023"
+  "physical_metadata_sha256": "60cbf14a3c1539b5b6d8213995207ca28877fd47f03bf6e328713bbb9bffa023",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreedyFreebooter.java",
+  "java_sha256": "6d81831813fd314f9361ff305f1d552a3383d6efd1ad754c318c85eb31416069",
+  "rules_tests": "src/assurance/requested_freebooter.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    }
+  ]
 }

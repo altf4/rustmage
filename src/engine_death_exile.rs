@@ -12,6 +12,35 @@ pub struct ExileDeathReplacementView {
 }
 
 impl Game {
+    pub(super) fn register_damage_death_exile(&mut self, event: &DamageEvent) {
+        if !event
+            .source
+            .facts
+            .card
+            .spell_program(None)
+            .is_some_and(|(_, program)| program.contains(&Instruction::ExileDamagedIfDiesThisTurn))
+        {
+            return;
+        }
+        let Target::Card(id) = event.target else {
+            return;
+        };
+        if !self.on_battlefield(id) {
+            return;
+        }
+        let row = ExileDeathReplacementView {
+            object: self.object_ref(id),
+            source: event.source.reference,
+            source_card: event.source.facts.card,
+            source_controller: event.source.controller,
+            expires_turn: self.state.turn,
+        };
+        self.state
+            .death_exile_replacements
+            .get_or_insert_default()
+            .push(row);
+    }
+
     pub(super) fn register_exile_if_dies(&mut self, item: &SpellView) {
         let Some(source) = item.source else {
             return;

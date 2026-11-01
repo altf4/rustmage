@@ -3,7 +3,7 @@ use super::*;
 fn amount(value: AmountValue) -> bool {
     match value {
         AmountValue::CastSpellManaSymbols(_) => true,
-        AmountValue::Multiple { value, .. } => amount(*value),
+        AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => amount(*value),
         AmountValue::Sum(values) => values.iter().any(|v| amount(*v)),
         _ => false,
     }

@@ -3,10 +3,26 @@
   "catalogue_id": 3064,
   "oracle_id": "5b194438-6946-45dd-8d77-c9de8c115d09",
   "facts_sha256": "a3be9aad3ed455b1126d22827cf20e44a89a18d0b292b2d15087e93db6fe66d8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "839ecf7fbb01aaddf1a5e0e5699c76cb15f9e0ee2f1050713e6bc5bdd6ba03f4"
   },
-  "physical_metadata_sha256": "fb497b0f5a2b8120cf245a73eef0f17546056de1e8bc8532672f5f20c28a3d37"
+  "physical_metadata_sha256": "42b6510444566f55df1224bd8883b31ba812f0e8e1d57b33cfe52cb4d4402763",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OutrageousRobbery.java",
+  "java_sha256": "ed6d26b7b79b82b9583b85c539295bf649aa4326a1afb9f2d5ec0b6f28a3bea3",
+  "rules_tests": "src/assurance/hartford_exile_play.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileFaceDownTopNLibraryYouMayPlayAsLongAsExiledTargetEffect.java",
+      "sha256": "a6431c2ca771a0ee33ca7988b10a542b275ff39e0d0bb71a035b32b18b78a8ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileFaceDownYouMayPlayAsLongAsExiledTargetEffect.java",
+      "sha256": "cfd166a27ee23088da5be33de8d0c4e5ff22a74d27333bcdf5a587b8cbe1de65"
+    }
+  ]
 }

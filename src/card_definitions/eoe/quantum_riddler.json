@@ -3,10 +3,30 @@
   "catalogue_id": 3306,
   "oracle_id": "58582fac-4c42-4a1c-9ab1-4a892b500da4",
   "facts_sha256": "db6140e8e3dd3c1a2fe4e24253fa64cde25d2d20da6510a105340c438e6a13e5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "273fc22178df253eb670b9d9c522dac97e81c589b97c7327f6572ee34164036f"
   },
-  "physical_metadata_sha256": "99cffbf3265ec121ea19ffff49a57f768d4966f515e0c084727183ae0f637c6f"
+  "physical_metadata_sha256": "99cffbf3265ec121ea19ffff49a57f768d4966f515e0c084727183ae0f637c6f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuantumRiddler.java",
+  "java_sha256": "09bdd91a3b4a1eb12dcaf72bf0f282f6cf9ad5e8eb580958467737bc906fd3b4",
+  "rules_tests": "src/assurance/hartford_draw.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_notes": [
+    "CR121.2a and616.1g; EOE release notes: Quantum modifies the complete multi-draw instruction before individual-card replacements, and cannot apply again to its resulting draws. The XMage implementation treats every draw separately; Rust follows the Oracle obligation and official notes instead.",
+    "Official EOE release notes: https://magic.wizards.com/en/news/feature/edge-of-eternities-release-notes"
+  ]
 }

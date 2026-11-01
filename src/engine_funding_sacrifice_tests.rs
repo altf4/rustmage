@@ -384,6 +384,7 @@ fn hob_sacrifice_funding_borrowed_activation_needs_projected_haste_before_cost()
                 exiled,
                 first_slot: 0,
                 width: 1,
+                once_per_turn: false,
             });
         let timestamp = g.next_role_timestamp();
         g.state
@@ -398,6 +399,7 @@ fn hob_sacrifice_funding_borrowed_activation_needs_projected_haste_before_cost()
                 preserve_card_types: false,
                 food_only: false,
                 artifact_noncreature: false,
+                enchantment_noncreature: false,
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,
@@ -614,6 +616,7 @@ fn projected_borrowed_slots_match_owned_inventory_without_mutating_parent() {
                 exiled,
                 first_slot: 0,
                 width: 1,
+                once_per_turn: false,
             });
         g.state.borrowed_slots = borrowed_activations::refreshed_slots(&g);
         let saved = g.snapshot();
@@ -735,6 +738,7 @@ fn projected_type_transformation_funds_new_basic_type_without_live_fallback() {
                 preserve_card_types: false,
                 food_only,
                 artifact_noncreature: false,
+                enchantment_noncreature: false,
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,
@@ -1723,4 +1727,30 @@ fn funding_payment_visitor_stops_and_preserves_complete_order() {
     assert!(!visit_funding_payments([0; 6], [0; 6], 1, |_| panic!(
         "unpayable"
     )));
+}
+
+#[test]
+fn hartford_restless_reef_color_is_seen_in_speculative_funding_world() {
+    use crate::engine::ability_world::CharacteristicWorld;
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let reef = named(&mut g, p, "Restless Reef", Zone::Battlefield);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: reef,
+                ability: 2,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        let required = goal(p);
+        let mut world = FundingState::from_game(&g, &required);
+        world.prepare_entry_projection();
+        assert_eq!(g.colors(reef), 2 | 4);
+        assert_eq!(world.colors(reef), 2 | 4);
+        assert_ne!(CharacteristicWorld::kinds(&world, reef) & 2, 0);
+        assert!(world.subtypes(reef).has(world.object(reef).card, "Shark"));
+    }
 }

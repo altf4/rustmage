@@ -18,7 +18,16 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: TargetPlan::NONE,
             program: &[],
         },
+        TriggeredAbility {
+            condition: TriggerCondition::SelfExiledWhileCrafting,
+            targets: TargetPlan::NONE,
+            program: &[],
+        },
     ],
+    extras: &CardExtras {
+        borrows_exiled_activations: true,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
 #[cfg(not(test))]

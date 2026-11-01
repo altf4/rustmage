@@ -3,10 +3,30 @@
   "catalogue_id": 5028,
   "oracle_id": "48a1d55e-0b71-4724-ab2a-6d2c87e86b5b",
   "facts_sha256": "5edffad18f6e313be7cc0ec1e416fffb66fa182449a22148bc5122ae89d6c701",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "23d63ffa07c578c322e893f889c0ea3c2fa9b6b0a885d40592e1bbdf6f6785c5"
   },
-  "physical_metadata_sha256": "2a657ff646dfd334645f52f31fe5e61f51de5c975e6611332206d7318aff84aa"
+  "physical_metadata_sha256": "2a657ff646dfd334645f52f31fe5e61f51de5c975e6611332206d7318aff84aa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WebstrikeElite.java",
+  "java_sha256": "ef4ec6290266f241d3c6319447aa69e078a80e22ba0685ab39638c0a6bf3f670",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CycleTriggeredAbility.java",
+      "sha256": "a320abe58d7fe90bdd908a013cc2064ac619ccb4e2815f7748e6b54f67fc5c40"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ManaValueTargetAdjuster.java",
+      "sha256": "c9315bc9a46db9cfa1ae5eef49d75f50a03875683b6de3722e36314a2529bb71"
+    }
+  ]
 }

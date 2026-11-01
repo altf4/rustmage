@@ -112,8 +112,9 @@ impl Game {
             return Some((grant.grantor, Self::attached_tap_spec()));
         }
         if a.additional_paid
-            && a.additional_cost()
-                .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::DiscardOrLife(_)))
+            && (a.ordered_craft()
+                || a.additional_cost()
+                    .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::DiscardOrLife(_))))
         {
             return None;
         }

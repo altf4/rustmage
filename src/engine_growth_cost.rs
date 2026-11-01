@@ -17,6 +17,88 @@ impl TriggerCondition {
     }
 }
 impl Game {
+    pub(super) fn visit_source_grants(
+        &self,
+        card: CardId,
+        actor: Player,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        if self.state.players[actor.index()].speed < 4
+            || !self.state.objects[card as usize]
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|g| {
+                    g.fragments
+                        .iter()
+                        .any(|f| matches!(f, StaticAbilityFragment::SourceMaxSpeedActivation(_)))
+                })
+            || ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            || self.named_activation_prohibited(card)
+        {
+            return false;
+        }
+        let source = self.object_ref(card);
+        let view = self.object_view(card);
+        for &provider in &self.state.static_sources {
+            let giver = &self.state.objects[provider as usize];
+            if provider != card || giver.zone != Zone::Battlefield || giver.controller != actor {
+                continue;
+            }
+            let grantor = self.object_ref(provider);
+            for fragment in giver
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                let StaticAbilityFragment::SourceMaxSpeedActivation(index) = *fragment else {
+                    continue;
+                };
+                let ability = giver.card.activation(index);
+                let readiness = self.activation_readiness(actor, ability);
+                if activations::pure_loyalty_placement_prohibited(self, source, &readiness)
+                    || (ability.cost.sacrifice
+                        && CharacteristicWorld::sacrifice_prohibited(self, card))
+                    || !view.grant_available(grantor, giver.card, index, None)
+                    || !self.activation_guard_available(ability.guard, card, actor)
+                    || !Self::object_activation_available_with_kinds(
+                        &self.state.objects[card as usize],
+                        self.counter_amounts(card),
+                        self.current_kinds(card),
+                        || ability_world::CharacteristicWorld::activation_keywords(self, card),
+                        self.state.players[actor.index()].life,
+                        &readiness,
+                        usize::from(index),
+                        actor,
+                        self.loyalty_timing(card, ability, actor, sorcery),
+                    )
+                    || !self.targets_available(ability.targets, actor, source)
+                    || !self.initial_activation_target_fundable(
+                        FundingGoal {
+                            reserve: None,
+                            actor,
+                            required: ability.cost.colored,
+                            generic: ability.cost.generic,
+                            source: Some((source, index, Counters::default(), giver.card, None)),
+                        },
+                        ability.targets,
+                    )
+                {
+                    continue;
+                }
+                if emit(Action::AnnounceSourceGrant {
+                    source,
+                    ability: index,
+                }) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
     pub(super) fn visit_planeswalker_grants(
         &self,
         card: CardId,

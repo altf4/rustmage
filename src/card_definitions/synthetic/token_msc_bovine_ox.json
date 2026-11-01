@@ -1,0 +1,11 @@
+{
+  "name": "@token/msc-bovine-ox",
+  "catalogue_id": 5479,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "physical_metadata_sha256": "1dbcf7bddf56f6cb5b0013a01a12462c46e812ae1cc5862465226352bc923e4b",
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Ox22Token.java",
+  "java_sha256": "4ddb967380036fe4e197d02971037539dffda014bfc87912fc8eedb3558ff5bb"
+}

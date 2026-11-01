@@ -14,6 +14,14 @@ impl Game {
             state
                 .source_linked_effects
                 .iter()
+                .any(|row| row.kind == SourceLinkedEffectKind::PreventActivationsUntilUntapped)
+        }) {
+            return true;
+        }
+        if self.state.roles.as_ref().is_some_and(|state| {
+            state
+                .source_linked_effects
+                .iter()
                 .any(|row| row.kind == SourceLinkedEffectKind::PreventUntap)
         }) {
             return true;
@@ -158,6 +166,7 @@ impl Game {
             .into_iter()
             .filter(|r| !self.state.objects[r.card as usize].tapped)
             .collect();
+        self.forget_untapped_activation_locks(&untapped);
         self.attached_untap_triggers(&untapped);
     }
     pub(super) fn untap_active_player(&mut self) {

@@ -218,6 +218,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 ability,
                 slot,
                 used: false,
+                once_per_turn: false,
                 acquisition: row.first_slot,
             });
         }
@@ -239,6 +240,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                     ability: u16::MAX - 1 - color as u16,
                     slot,
                     used: false,
+                    once_per_turn: false,
                     acquisition: row.first_slot,
                 });
             }
@@ -253,6 +255,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 ability: u16::MAX,
                 slot,
                 used: false,
+                once_per_turn: false,
                 acquisition: row.first_slot,
             });
         }

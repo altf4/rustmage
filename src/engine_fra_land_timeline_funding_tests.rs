@@ -41,6 +41,7 @@ fn land_subtype_loss_and_regain_changes_funding_and_live_mana_together() {
                 preserve_card_types: false,
                 food_only: false,
                 artifact_noncreature: false,
+                enchantment_noncreature: false,
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,

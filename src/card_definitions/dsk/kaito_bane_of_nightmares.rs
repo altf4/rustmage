@@ -10,7 +10,8 @@ const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
     line: 1,
     first_layer: AbilityLayer::Type,
     fragments: &[
-        StaticAbilityFragment::SourceCounterTurnCreature {
+        StaticAbilityFragment::SourceCounterCreature {
+            own_turn: true,
             kind: CounterKind::Loyalty,
             minimum: 1,
             subtypes: &["Ninja"],

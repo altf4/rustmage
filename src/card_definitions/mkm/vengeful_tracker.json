@@ -3,10 +3,26 @@
   "catalogue_id": 4866,
   "oracle_id": "fe540a23-0357-44fa-8e1c-0a5c2a04cb01",
   "facts_sha256": "5201da372bed88606034e85a0bf46fd1b137b9a3f0a02aae6ee4d538ef3da904",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2b283ee2ee0aefd06799226c5dbf7fa07bd0df94071c327532b91b77c48ad86f"
   },
-  "physical_metadata_sha256": "02e9d685799c3d830d9894fc3dabfae8c570185ab4a00f3720228508ffe9e244"
+  "physical_metadata_sha256": "02e9d685799c3d830d9894fc3dabfae8c570185ab4a00f3720228508ffe9e244",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VengefulTracker.java",
+  "java_sha256": "b1614a201c004dfb663d0051504cc6e2dc4b52d7522d9bca0dd1147c54c05b83",
+  "rules_tests": "src/assurance/hartford_sacrifice.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+      "sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ]
 }

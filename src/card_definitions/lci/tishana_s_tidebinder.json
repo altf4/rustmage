@@ -3,10 +3,25 @@
   "catalogue_id": 4610,
   "oracle_id": "2993dc7d-723d-4a9b-94bd-4bb02a9f7243",
   "facts_sha256": "58c807250c9a267747c8e989c3b541a8599b8edf052076db8346a7c86ba65119",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ebbd500ef388de4706789fb58c4cc518374ae6a97366aecb300e3f7c92b80113"
   },
-  "physical_metadata_sha256": "ed885942c816bd2f7865f724278053b7abb100247f0191da698c6fac1d102173"
+  "physical_metadata_sha256": "ed885942c816bd2f7865f724278053b7abb100247f0191da698c6fac1d102173",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TishanasTidebinder.java",
+  "java_sha256": "a4d6a4e1f3048102cf755615451436c8531e25b099f1cd3464be62875764f1fd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+      "sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetActivatedOrTriggeredAbility.java",
+      "sha256": "1d83aa0018d3a33d04dfba3966f177e2e60e6a807c28bf6ac49832bad5d3bcdd"
+    }
+  ]
 }

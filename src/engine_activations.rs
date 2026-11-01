@@ -832,6 +832,7 @@ impl Game {
             source_counter_payment: None,
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
+            craft_materials: None,
             exiled_trigger_cards: None,
             source_counter_lki: self.state.objects[card as usize]
                 .card
@@ -848,6 +849,7 @@ impl Game {
             event_object: None,
             manifest_event: None,
             sacrificed_toughness: None,
+            sacrificed_mana_value: None,
             sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,
 
@@ -1107,10 +1109,13 @@ impl Game {
         }
         if cost.exile_self {
             let event = self.move_object(source.id, Zone::Exile);
-            if definition
-                .program
-                .contains(&Instruction::GrantLandManaUntilSourceCast)
-            {
+            if definition.program.iter().any(|instruction| {
+                matches!(
+                    instruction,
+                    Instruction::GrantLandManaUntilSourceCast
+                        | Instruction::ReturnCraftedSourceTransformed
+                )
+            }) {
                 item.source_move = Some(Box::new(TriggerSourceMoveView {
                     before: event.before.reference,
                     after: event.after,
@@ -1119,7 +1124,11 @@ impl Game {
                 }));
             }
         } else if cost.discard {
-            self.discard_batch(&[source.id], definition.cycling.then_some(source.object));
+            if definition.cycling {
+                self.discard_cycling(source.object, item.x);
+            } else {
+                self.discard_batch(&[source.id], None);
+            }
         } else if cost.sacrifice {
             self.sacrifice_batch(&[(item.controller, source.id)]);
         }
