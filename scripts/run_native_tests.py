@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the library test binary once, then time each bounded rules scenario."""
+"""Link integration tests against cached engine/set libraries and run serially."""
 import argparse
 import json
 import math
@@ -121,13 +121,79 @@ def interrupted(signum, frame):
     raise KeyboardInterrupt
 
 
+def suite_results(names, output):
+    tests = [dict(test=name, status=status, exit=0 if status == 'ok' else 1)
+             for name, status in re.findall(
+                 r'^test (\S+) \.\.\. (ok|FAILED|ignored)$', output, re.M)]
+    complete = (bool(names) and len(tests) == len(names)
+                and {test['test'] for test in tests} == set(names)
+                and all(test['status'] == 'ok' for test in tests)
+                and f'test result: ok. {len(names)} passed; 0 failed; 0 ignored;' in output)
+    return tests, complete
+
+
+def run_suite(command, *, env, log, timeout, test_timeout):
+    """Bound the suite and the unfinished case reported by serial libtest.
+
+    libtest flushes `test NAME ... ` before entering each case. A single process
+    avoids per-case startup overhead; the outer guard still owns descendants.
+    """
+    started = time.monotonic()
+    members_before = group_members()
+    active = None
+    active_since = started
+    timed_out_case = None
+    timed_out = False
+    with Path(log).open('w') as output:
+        process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=output,
+                                   stderr=subprocess.STDOUT, start_new_session=True)
+        try:
+            while process.poll() is None:
+                now = time.monotonic()
+                text = Path(log).read_text(errors='replace')
+                matches = list(re.finditer(r'^test (\S+) \.\.\. ', text, re.M))
+                current = None
+                if matches:
+                    last = matches[-1]
+                    if not re.match(r'(ok|FAILED|ignored)\n', text[last.end():]):
+                        current = last[1]
+                if current != active:
+                    active, active_since = current, now
+                if now-started >= timeout or (active and now-active_since >= test_timeout):
+                    timed_out = True
+                    timed_out_case = active
+                    stop_process(process, members_before)
+                    break
+                try:
+                    process.wait(timeout=0.025)
+                except subprocess.TimeoutExpired:
+                    pass
+            code = process.wait()
+            orphaned = bool(group_members() - members_before)
+            if orphaned:
+                stop_process(process, members_before)
+            if timed_out:
+                code = 124
+            elif orphaned:
+                code = code or 1
+        except BaseException:
+            stop_process(process, members_before)
+            raise
+    return dict(command=[str(arg) for arg in command], exit=code,
+                timed_out=timed_out, timed_out_case=timed_out_case,
+                orphaned_processes=orphaned, seconds=time.monotonic()-started,
+                log=str(log))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--target-dir', type=Path, required=True)
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--compile-timeout', type=float, default=360)
-    parser.add_argument('--test-timeout', type=float, default=10)
-    parser.add_argument('--suite-timeout', type=float, default=30)
+    parser.add_argument('--test-timeout', type=float, default=45)
+    parser.add_argument('--suite-timeout', type=float, default=240)
+    parser.add_argument('--test-target', help='compile only this integration target')
+    parser.add_argument('--filter', default='', help='execute matching cases in selected targets')
     args = parser.parse_args()
     if any(not math.isfinite(v) or v <= 0 for v in (args.compile_timeout, args.test_timeout, args.suite_timeout)):
         parser.error('timeouts must be positive')
@@ -143,9 +209,11 @@ def main():
     try:
         compile_log = args.report.with_name('native-compile.log')
         result['compile'] = run_command(
-            ['cargo', 'test', '--lib', '--no-run', '--message-format=json'],
+            ['cargo', 'test', '-p', 'rustmage', '--test', args.test_target or '*',
+             '--no-run', '--message-format=json'],
             env=env, log=compile_log, timeout=args.compile_timeout)
         if result['compile']['exit']:
+            print(compile_log.read_text()[-12000:], flush=True)
             return 1
         binaries = []
         for line in compile_log.read_text().splitlines():
@@ -154,46 +222,51 @@ def main():
             except json.JSONDecodeError:
                 continue
             if (message.get('reason') == 'compiler-artifact' and message.get('executable')
-                    and message.get('profile', {}).get('test')):
+                    and message.get('profile', {}).get('test')
+                    and 'test' in message.get('target', {}).get('kind', [])):
                 binaries.append(Path(message['executable']).resolve())
-        if len(binaries) != 1 or target not in binaries[0].parents:
-            raise RuntimeError(f'expected one library test binary under {target}, got {binaries}')
-        binary = str(binaries[0])
-        listing = args.report.with_name('native-list.log')
-        result['list'] = run_command([binary, '--list', '--format=terse'], env=env,
-                                     log=listing, timeout=5)
-        if result['list']['exit']:
-            return 1
-        names = [line.removesuffix(': test') for line in listing.read_text().splitlines()
-                 if line.endswith(': test')]
-        if not names:
-            raise RuntimeError('the native library suite contains no tests')
+        if not binaries or any(target not in binary.parents for binary in binaries):
+            raise RuntimeError(f'expected integration test binaries under {target}, got {binaries}')
+        result['binaries'] = []
+        expected = 0
         suite_start = time.monotonic()
-        with args.report.with_suffix('.jsonl').open('w') as events:
-            for index, name in enumerate(names):
-                remaining = args.suite_timeout - (time.monotonic()-suite_start)
-                if remaining <= 0:
-                    result['budget_exceeded'] = True
-                    break
-                events.write(json.dumps(dict(event='start', test=name))+'\n')
-                events.flush()
-                test = run_command([binary, '--exact', name, '--include-ignored', '--nocapture', '--test-threads=1'],
-                                   env=env, log=args.report.with_name(f'native-{index:03}.log'),
-                                   timeout=min(args.test_timeout, remaining))
-                if test['exit'] == 0 and not re.search(r'test result: ok\. 1 passed; 0 failed; 0 ignored;', Path(test['log']).read_text()):
-                    test['exit'] = 1
-                    test['error'] = 'expected exactly one executed passing test'
-                test['test'] = name
-                result['tests'].append(test)
-                events.write(json.dumps(dict(event='finish', **test))+'\n')
-                events.flush()
-                print(f"{name}: exit={test['exit']} {test['seconds']:.3f}s", flush=True)
-                if test['exit']:
-                    break
+        complete = True
+        for index, binary in enumerate(binaries):
+            listing = args.report.with_name(f'native-list-{index}.log')
+            listed = run_command([str(binary), args.filter, '--list', '--format=terse'],
+                                 env=env, log=listing, timeout=5)
+            if listed['exit']:
+                return 1
+            names = [line.removesuffix(': test') for line in listing.read_text().splitlines()
+                     if line.endswith(': test')]
+            if not names:
+                if args.test_target:
+                    raise RuntimeError('selected target/filter contains no tests')
+                continue
+            expected += len(names)
+            remaining = args.suite_timeout - (time.monotonic()-suite_start)
+            if remaining <= 0:
+                result['budget_exceeded'] = True
+                complete = False
+                break
+            execution = run_suite(
+                [str(binary), args.filter, '--include-ignored', '--test-threads=1'],
+                env=env, log=args.report.with_name(f'native-execution-{index}.log'),
+                timeout=remaining, test_timeout=args.test_timeout)
+            output = Path(execution['log']).read_text()
+            tests, accounted = suite_results(names, output)
+            for test in tests:
+                test['binary'] = str(binary)
+            result['tests'].extend(tests)
+            result['binaries'].append(dict(binary=str(binary), expected=len(names), execution=execution))
+            if execution['exit'] or not accounted:
+                complete = False
+                print(output[-12000:], flush=True)
+                break
         result['execution_seconds'] = time.monotonic()-suite_start
-        result['expected_tests'] = len(names)
-        result['success'] = (len(result['tests']) == len(names)
-                             and all(test['exit'] == 0 for test in result['tests']))
+        result['expected_tests'] = expected
+        result['success'] = complete and expected > 0 and len(result['tests']) == expected
+        print(f"Native assurance: {len(result['tests'])}/{expected} cases in {result['execution_seconds']:.3f}s", flush=True)
         return 0 if result['success'] else 1
     except KeyboardInterrupt:
         result['interrupted'] = True

@@ -30,7 +30,7 @@ card. Keep the mapping lightweight and reuse existing evidence formats.
 - Arrange minimal decks, boards and zones with existing scenario helpers, then
   exercise real paid legal actions. Direct state setup is a fixture convenience;
   it must not replace the action or rules event under test. Prefer the small
-  helpers in `src/assurance/mod.rs`; avoid copying the legacy
+  helpers in `tests/support/mod.rs`; avoid copying the legacy
   `big_helpers::checked` pattern that branches, serializes and replays every action.
 - Assert the actual result: damage/life totals, exact zone and incarnation, token
   characteristics, counter amounts, cost payment, timing, trigger recipients or
@@ -53,27 +53,33 @@ card. Keep the mapping lightweight and reuse existing evidence formats.
   demonstrate an outcome a bounded scenario can reach directly.
 
 Use fixed seeds, small fixtures and explicit action/loop ceilings. Prefer
-millisecond scenarios. The current native runner caps each scenario at 10 seconds
-and suite execution at 30 seconds, separately from compilation; confirm current
+millisecond scenarios. The current native runner caps each scenario at 45 seconds
+and suite execution at 240 seconds, separately from compilation; confirm current
 limits before relying on them. Split or repair slow scenarios rather than raising
 budgets or dropping obligations. Set-level complete games remain a separate,
 bounded acceptance workload.
 
 ## Use cached focused runs while authoring
 
-Cargo's test filter selects execution, not compilation of just those card files.
-It still builds the library test executable. Combine coherent source/test edits
-before a run, reuse a stable worktree-owned target, and keep the profile and build
-flags stable. Cache reuse saves avoidable rebuilds; it does not guarantee that
-editing a large crate is cheap. Check the checkout's incremental setting rather
-than promising incremental compilation when it is disabled. Avoid cycling
-profiles, feature sets or compiler flags that invalidate the cache. Any profile
-optimization needs measurements within the existing resource limits.
+The engine, per-set definitions and integration tests compile separately. Complete
+the skill's full-set engine audit, fixes and reviews before card authoring. Warm
+one guarded target with the engine's final test profile/features, then keep that
+baseline stable while writing cards. Avoid cycling profiles, feature sets or
+compiler flags. Normal card and test edits should reuse the engine; investigate
+unexpected engine recompilation rather than accepting it as routine.
+
+A test filter selects execution within a compiled integration target; it does not
+compile just one function. Put new set cases in that set's own integration target,
+reuse `tests/support/mod.rs`, and select it with `--test <target>`. Keep the original
+suite available as the `legacy` integration target. Do not put card scenarios back
+into engine unit tests or depend on the complete legacy harness from a new set
+harness. Test helpers use the internal, dev-only fixture feature; production users
+continue to declare only the `rustmage` dependency.
 
 Focused `cargo test` does not inherit the native runner's per-test timeouts. Use
 the existing process-tree-safe `run_command` helper inside the resource guard for
 a wall-clock bound. This example caps compilation plus focused execution together
-at 390 seconds; the separate 10-second scenario cap applies only to the native
+at 390 seconds; the separate 45-second scenario cap applies only to the native
 runner. Explicit action ceilings still belong in the scenarios themselves.
 
 For example, run this existing exact scenario from the active checkout; substitute
@@ -95,7 +101,7 @@ import sys
 sys.path.insert(0, 'scripts')
 from run_native_tests import run_command
 
-command = ['cargo', 'test', '--lib', sys.argv[1], '--',
+command = ['cargo', 'test', '--test', 'legacy', sys.argv[1], '--',
            '--exact', '--include-ignored', '--test-threads=1']
 result = run_command(command, env=dict(os.environ), log=Path(sys.argv[2]), timeout=390)
 print(json.dumps(result))
@@ -111,8 +117,8 @@ success with zero matching tests. Use the guarded test command with `-- --list`
 when discovering names, not as evidence that behavior passed. Keep each run's
 logs in a new directory, and inspect failures before broadening.
 
-Do not invent a `--filter` option for `scripts/run_native_tests.py`; its current
-interface runs the whole native suite. Use it at a shared-rule checkpoint when
+Use `scripts/run_native_tests.py` for the whole native suite at a shared-rule
+checkpoint when
 the affected set is broad or uncertain, retaining its bounded execution and timing
 report while reusing the same development target:
 

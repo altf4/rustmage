@@ -1,0 +1,185 @@
+//! One immutable modal additional cost; declaration and total lock precede payment.
+use super::*;
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn add_tiered_mana(mut base: ManaCost, extra: ManaCost) -> Option<ManaCost> {
+        base.generic = base.generic.checked_add(extra.generic)?;
+        for (amount, extra) in base.colored.iter_mut().zip(extra.colored) {
+            *amount = amount.checked_add(extra)?;
+        }
+        Some(base)
+    }
+    pub(super) fn selected_tiered_cost(item: &SpellView) -> Option<ManaCost> {
+        if item.kind != StackKind::Spell {
+            return None;
+        }
+        item.mode.and_then(|mode| {
+            item.source?
+                .card
+                .tiered_costs()?
+                .get(usize::from(mode))
+                .copied()
+        })
+    }
+    pub(super) fn with_tiered_mana(base: ManaCost, item: &SpellView) -> Option<ManaCost> {
+        Self::selected_tiered_cost(item)
+            .map_or(Some(base), |extra| Self::add_tiered_mana(base, extra))
+    }
+    pub(super) fn tiered_initial_fundable(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+    ) -> bool {
+        let card = self.state.objects[id as usize].card;
+        let costs = card.tiered_costs().expect("Tiered recipe");
+        let Effect::Modal(modes) = card.effect() else {
+            unreachable!("complete Tiered modal body")
+        };
+        modes.iter().zip(costs).any(|(mode, extra)| {
+            self.cast_targets_available(mode.targets, actor, self.object_ref(id))
+                && Self::add_tiered_mana(base, *extra)
+                    .is_some_and(|cost| self.spell_can_fund(actor, id, cost))
+        })
+    }
+    pub(super) fn mode_choice_fundable(&self, a: &Announcement, index: usize) -> bool {
+        let mode = &a.item.modes().expect("modal announcement")[index];
+        if a.item
+            .bounded_mode_count(index)
+            .is_some_and(|count| u32::from(count) > a.item.x.unwrap_or(0))
+            || !self.teamwork_mode_allowed(&a.item, index)
+            || !self.blight_mode_allowed(&a.item, index)
+            || !self.modal_choice_unused(&a.item, index)
+            || !self.item_targets_available(&a.item, mode.targets)
+        {
+            return false;
+        }
+        if a.item
+            .source
+            .expect("cost announcement has object source")
+            .card
+            .tiered_costs()
+            .is_none()
+        {
+            return self.announcement_target_fundable(
+                a,
+                Some(mode.targets),
+                None,
+                None,
+                None,
+                false,
+            );
+        }
+        // A prepaid compact cast cannot waive an unannounced mandatory tier.
+        if a.item.kind != StackKind::Spell || !a.pay_window {
+            return false;
+        }
+        let mut proposal = a.clone();
+        proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
+        proposal.plan = mode.targets;
+        proposal
+            .cost_options()
+            .any(|cost| self.announcement_cost_fundable(&proposal, cost))
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn shuffle_source_into_owner_library(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
+        // Ownership of a physical card cannot change. Its stable slot retains
+        // that fact after departure, while the exact ref forbids a later incarnation.
+        let owner = self.state.objects[source.id as usize].owner;
+        if self.object_ref(source.id) == source.object && self.on_battlefield(source.id) {
+            self.move_object(source.id, Zone::Library);
+        }
+        // CR701.24c requires this shuffle even if the source cannot be moved.
+        self.forget_library_top(owner);
+        self.shuffle_library_cards(owner);
+    }
+    pub(super) fn shuffle_source_and_target_into_libraries(&mut self, item: &SpellView) {
+        let mut ids = Vec::new();
+        if let Some(source) = item.source
+            && self.object_ref(source.id) == source.object
+            && self.on_battlefield(source.id)
+        {
+            ids.push(source.id);
+        }
+        for bound in &item.targets {
+            if self.valid_library_target(item, *bound)
+                && let Target::Card(id) = bound.target
+                && !ids.contains(&id)
+            {
+                ids.push(id);
+            }
+        }
+        let mut owners = [false; 2];
+        for id in &ids {
+            owners[self.state.objects[*id as usize].owner.index()] = true;
+        }
+        let events = self.move_objects_raw(&ids, Zone::Library);
+        self.finish_zone_events(&events, &[]);
+        for player in [Player::P0, Player::P1] {
+            if owners[player.index()] {
+                self.forget_library_top(player);
+                self.shuffle_library_cards(player);
+            }
+        }
+    }
+    pub(super) fn shuffle_target_into_library(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
+        for bound in &item.targets {
+            if !self.valid_library_target(item, *bound) {
+                continue;
+            }
+            let object = bound.object.expect("public targeted object");
+            let before = self.object_view(object.card);
+            let event = self.move_object(object.card, Zone::Library);
+            // CR701.24c: replacement of the move does not cancel the shuffle.
+            self.forget_library_top(before.owner);
+            self.shuffle_library_cards(before.owner);
+            if event.moved && event.destination == Zone::Library {
+                self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
+                    source: source.object,
+                    card: before.card,
+                    target_before: object,
+                    target_after: event.after,
+                    owner: before.owner,
+                    destination: LibraryDestination::Shuffle,
+                }));
+            }
+        }
+    }
+    pub(super) fn multiply_target_stats(&mut self, item: &SpellView, factor: u8) {
+        let extra = i128::from(factor)
+            .checked_sub(1)
+            .expect("positive multiplier");
+        let affected = item
+            .targets
+            .iter()
+            .filter(|bound| self.valid_library_target(item, **bound))
+            .filter_map(|bound| match bound.target {
+                Target::Card(id) if self.on_battlefield(id) => Some((id, self.stats(id))),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
+        // A resolving multiplier adds a signed snapshot delta in layer7c.
+        // Later changes are not multiplied again; base setters retain their layer.
+        for (id, stats) in affected {
+            self.state.objects[id as usize].growth += Stats {
+                power: stats
+                    .power
+                    .checked_mul(extra)
+                    .capacity("power multiplication exhausted"),
+                toughness: stats
+                    .toughness
+                    .checked_mul(extra)
+                    .capacity("toughness multiplication exhausted"),
+            };
+        }
+    }
+}

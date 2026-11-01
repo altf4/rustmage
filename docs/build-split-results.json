@@ -1,0 +1,45 @@
+{
+  "base": "e732a4bb42774fc20672dc2aad3952f9d1b57ae7",
+  "original_cases": 3014,
+  "migrated_cases": 3014,
+  "case_names_unchanged": true,
+  "case_bodies_unchanged_except_fixture_paths": true,
+  "implemented_cards": 3007,
+  "set_compilation_units": 44,
+  "compiled_cases_per_sample": 3014,
+  "profile": {
+    "test": 0,
+    "engine": 1,
+    "external_dependencies": 1,
+    "incremental": false,
+    "debug": false,
+    "jobs": 1,
+    "test_threads": 1
+  },
+  "clean_build": false,
+  "warm_up_seconds": 118.36130284100363,
+  "compile_medians": {
+    "card": 24.574462641001446,
+    "test": 21.370655388993328
+  },
+  "card_edit_reuses_engine_and_other_sets": true,
+  "test_edit_reuses_all_production_crates": true,
+  "verified_checkout_cache_compile_seconds": 0.11483671500172932,
+  "benchmark_scope": "Compilation of the entire inherited harness; execution samples run one existing Arc Reactor case. Full-suite execution is separate acceptance.",
+  "raw_evidence": "~/.cache/rustmage-build-split/",
+  "final_source_confirmation": {
+    "samples_per_edit": 1,
+    "compile_seconds": {
+      "card": 24.52483412499714,
+      "test": 21.514712537995365
+    },
+    "checkout_cache_compile_seconds": 0.16502078000485199,
+    "sources_restored": true
+  },
+  "public_api": {
+    "one_direct_dependency": true,
+    "normal_engine_features": [],
+    "private_game_state_rejected": "E0616",
+    "additional_rust_shared_libraries": false
+  }
+}

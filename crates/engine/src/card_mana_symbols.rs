@@ -1,0 +1,24 @@
+//! Immutable printed symbols, independently of payment alternatives or reductions.
+use super::{Card, ChoiceColor};
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn count(cost: &str, color: ChoiceColor) -> u64 {
+    let wanted = b"WUBRG"[color.index()];
+    cost.split('{')
+        .skip(1)
+        .filter(|part| {
+            part.split_once('}').is_some_and(|(symbol, _)| {
+                symbol
+                    .split('/')
+                    .any(|component| component.as_bytes() == [wanted])
+            })
+        })
+        .count() as u64
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Card {
+    /// Chosen immutable face mana cost, not the actual mana spent to cast it.
+    pub(crate) fn mana_symbols_of_color(self, color: ChoiceColor) -> u64 {
+        count(self.info().mana_cost, color)
+    }
+}

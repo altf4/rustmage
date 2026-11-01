@@ -1,0 +1,15 @@
+# Generated package linkage; edit src/card_definitions/synthetic/.
+[package]
+name = "rustmage-cards-synthetic"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+[lib]
+test = false
+doctest = false
+[dependencies]
+rustmage-core = { path = "../../engine", version = "=0.1.0" }
+
+[features]
+test-support = ["rustmage-core/test-support"]

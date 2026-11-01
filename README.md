@@ -33,6 +33,11 @@ Card behavior is authored directly in Rust, organized by set, and built on share
 abilities, effects, targets, and costs. XMage's implementations and authoritative
 Oracle text guide that work. Gameplay executes deterministic Rust code.
 
+The Cargo workspace keeps the shared engine, per-set definitions and integration
+tests in separate compilation units. Applications still use one `rustmage`
+dependency. See [the build architecture](docs/build-architecture.md) for cached
+card-development workflows and engine-first set implementation.
+
 To explore the project:
 
 - [Rust examples](examples/) show how to drive games and branch game state.

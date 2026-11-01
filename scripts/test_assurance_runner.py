@@ -7,14 +7,32 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from run_native_tests import active_peers, descendants, process_running, run_command
+from run_native_tests import active_peers, descendants, process_running, run_command, run_suite, suite_results
 from resource_limits import MAX_MEMORY, bounded_group
 from test_validate import ValidatorTests
+from test_build_cache import CacheInputTests
+from test_workspace_catalogue import WorkspaceCatalogueTests
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    def test_suite_requires_every_selected_case_to_execute_and_pass(self):
+        names = ['first', 'second']
+        passing = ('test first ... ok\ntest second ... ok\n'
+                   'test result: ok. 2 passed; 0 failed; 0 ignored;\n')
+        self.assertTrue(suite_results(names, passing)[1])
+        self.assertFalse(suite_results(names, passing.replace('second ... ok', 'second ... ignored'))[1])
+        self.assertFalse(suite_results(names, passing.replace('test second ... ok\n', ''))[1])
+
+    def test_serial_suite_keeps_a_per_case_timeout(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            code = "import time; print('test blocked ... ',end='',flush=True); time.sleep(20)"
+            result = run_suite([sys.executable, '-c', code], env=os.environ,
+                               log=Path(temporary)/'suite.log', timeout=3, test_timeout=0.1)
+            self.assertEqual(result['exit'], 124)
+            self.assertEqual(result['timed_out_case'], 'blocked')
+
     def test_process_exit_during_proc_read_is_treated_as_gone(self):
         # Linux can return ESRCH after opening procfs when the task exits before
         # the read; ENOENT is also possible if it exits before the open.

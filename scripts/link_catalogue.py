@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Assemble pinned metadata and direct Rust modules. Never interpret rules text."""
 import argparse, hashlib, json, re
+try:
+    from . import workspace_catalogue
+except ImportError:
+    import workspace_catalogue
 from collections import Counter, defaultdict
 from pathlib import Path
 try:
@@ -36,9 +40,13 @@ def validate_simple_mana_components(metadata, records):
 
 def load(root=ROOT):
     metadata=json.loads((root/'data/catalogue-identities.json').read_text())
+    if len(metadata['cards']) >= 65535 or any(card['index'] != i for i,card in enumerate(metadata['cards'])):
+        raise ValueError('catalogue IDs must be contiguous and leave the source-less sentinel unused')
+    if sum(card['category']=='physical' for card in metadata['cards']) != metadata['physical_count']:
+        raise ValueError('physical_count must count physical identities, not imply a contiguous prefix')
     facts={c['oracle_id']:c for c in json.loads((root/'data/standard/cards.json').read_text())['cards']}
     by_id={c['index']:c for c in metadata['cards']}
-    by_oracle={c['oracle_id']:c for c in metadata['cards'][:metadata['physical_count']] if c['oracle_id']}
+    by_oracle={c['oracle_id']:c for c in [card for card in metadata['cards'] if card['category']=='physical'] if c['oracle_id']}
     records={};fingerprint=bytearray(canonical(metadata))
     directory=root/'src/card_definitions'
     for path in sorted(directory.rglob('*.json')):
@@ -73,7 +81,7 @@ def load(root=ROOT):
             face = facts[face_pin['oracle_id']]['card_faces'][face_pin['index']]
             if hashlib.sha256(canonical(face)).hexdigest() != face_pin['sha256']: raise ValueError('Oracle face pin changed')
     validate_simple_mana_components(metadata, records)
-    fingerprint.extend((directory/'mod.rs').read_bytes())
+    fingerprint.extend((root/'crates/engine/src/card_definitions/mod.rs').read_bytes())
     return metadata,records,hashlib.sha256(fingerprint).hexdigest()
 def validate_synthetic_aliases(metadata):
     aliases = dict(metadata['aliases'])
@@ -101,13 +109,15 @@ def render(metadata,records,version):
     registry.extend(f'    &{c["module"]}::RULES,'for c in cards)
     registry.extend(['];',"pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }"])
     registry.append("pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }")
+    definition_lines={}
     lines=['// Metadata/module linkage only; card behavior lives in src/card_definitions/.',f'pub const CATALOGUE_VERSION: &str = "{version}";','#[rustfmt::skip]',f'pub(super) static COLORS: [u8; {n}] = {metadata["colors"]!r};','#[rustfmt::skip]',f'pub(super) static DEFINITIONS: [Definition; {n}] = [']
     for c in cards:
         r='authored::'+c['module']+'::RULES';complete=records[c['index']]['complete']
         c = dict(c, **c.get('front_face', {}))
         info='CardInfo { '+', '.join([f'name: {quote(c["name"])}',f'oracle_id: '+('Some('+quote(c['oracle_id'])+')'if c['oracle_id'] else 'None'),f'mana_cost: {quote(c["mana_cost"])}',f'type_line: {quote(c["type_line"])}','oracle_keywords: &['+', '.join(map(quote,c['oracle_keywords']))+']',f'standard_legal: {boolean(c["standard_legal"])}',f'legendary: {boolean(c["legendary"])}',f'implemented: {boolean(complete)}',f'keywords: {r}.keywords',f'deck_limit: {r}.deck_limit'])+' }'
         expr=[f'info: {info}',f'effect: {r}.checked_effect()'if complete else f'effect: {r}.effect',*[f'{f}: {r}.{f}'for f in ['triggers','activated','enters','entry']],f'kind: {c["kind"]}',f'basic: {boolean(c["basic"])}','mana_color: '+('None'if c['mana_color'] is None else f'Some({c["mana_color"]})'),f'colored: {c["colored"]!r}',f'generic: {c["generic"]}']
-        lines.append('    Definition { '+', '.join(expr)+' },')
+        definition_lines[c['index']]='    Definition { '+', '.join(expr)+' },'
+        lines.append(definition_lines[c['index']])
     lines+= ['];']
     for key in ['back_face','face_parent']:
         lines.append(f'pub(super) fn {key}(card: Card) -> Option<Card> {{ match card.index() {{')
@@ -135,26 +145,31 @@ def render(metadata,records,version):
     lines.append("pub(super) fn emblem_info(card: Card) -> Option<&'static EmblemInfo> { match card.index() {")
     lines.extend(f"    {c['index']} => Some(&EMBLEMS[{offset}])," for offset,c in enumerate(emblem_cards))
     lines.append("    _ => None, } }")
-    all_ids=[c['index']for c in cards[:metadata['physical_count']]if records[c['index']]['complete']]
+    all_ids=[c['index']for c in [card for card in cards if card['category']=='physical']if records[c['index']]['complete']]
     lines+=['#[allow(non_upper_case_globals)]','impl Card {','#[rustfmt::skip]',f'    pub const ALL: [Card; {len(all_ids)}] = ['+', '.join(f'Card({i})'for i in all_ids)+'];']
     lines.extend(f'    pub const {name}: Card = Card({index});'for name,index in metadata['constants'].items());lines.append('}')
     lines+=['#[rustfmt::skip]','pub const CREATURE_TYPES: &[&str] = &[',*[f'    {quote(t)},'for t in metadata['creature_types']],'];']
     for field,ty in metadata['helper_interface']:
         lines.append(f'pub(super) fn {field}(card: Card) -> {ty} {{ authored::RULES[card.index()].extras.{field} }}')
     coverage=[];sets=defaultdict(Counter)
-    for c in cards[:metadata['physical_count']]:
+    for c in [card for card in cards if card['category']=='physical']:
         complete=records[c['index']]['complete'];row=dict(name=c['name'],standard_legal=c['standard_legal'],implemented=complete,implementation='typed_rust'if complete else None,definition=records[c['index']]['relative'],set=c['set'])
         coverage.append(row)
         if c['standard_legal']:
             sets[c['set']]['total']+=1;sets[c['set']]['complete'if complete else 'gated']+=1
     report=dict(schema=1,catalogue_version=version,standard_legal_cards=sum(c['standard_legal']for c in coverage),implemented_standard_cards=sum(c['standard_legal']and c['implemented']for c in coverage),implemented_total=sum(c['implemented']for c in coverage),token_definitions=len(metadata['tokens']),emblem_definitions=len(metadata['emblems']),adventure_definitions=sum(c['category']=='adventure'for c in cards),omen_definitions=sum(c['category']=='omen'for c in cards),definition_ownership={s:dict(v)for s,v in sorted(sets.items())},cards=coverage)
-    return {ROOT/'data/outside-card-names.tsv':link_outside_names.render(),ROOT/'src/generated/catalogue.rs':'\n'.join(lines)+'\n',ROOT/'src/generated/authored_cards.rs':'\n'.join(registry)+'\n',ROOT/'data/standard/coverage.json':json.dumps(report,ensure_ascii=False,indent=2)+'\n'}
+    outputs = workspace_catalogue.render(ROOT,metadata,records,version,definition_lines,'\n'.join(lines)+'\n',json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+    outputs[ROOT/'data/outside-card-names.tsv']=link_outside_names.render()
+    return outputs
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--check',action='store_true');args=p.parse_args()
     metadata,records,version=load();outputs=render(metadata,records,version)
     stale=[str(path.relative_to(ROOT))for path,value in outputs.items()if not path.is_file()or path.read_text()!=value]
     if args.check and stale:raise SystemExit('stale metadata/module links: '+', '.join(stale))
     if not args.check:
-        for path,value in outputs.items():path.write_text(value)
+        for path,value in outputs.items():
+            path.parent.mkdir(parents=True,exist_ok=True)
+            if not path.exists() or path.read_text()!=value:path.write_text(value)
     report=json.loads(outputs[ROOT/'data/standard/coverage.json']);print(json.dumps({k:v for k,v in report.items()if k not in ['cards','definition_ownership']}))
 if __name__=='__main__':main()
