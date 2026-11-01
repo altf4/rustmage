@@ -28,6 +28,7 @@ mod hartford_sacrifice;
 mod hartford_sawblades;
 mod hartford_speed;
 mod hartford_suppression;
+mod hartford_transforming_faces;
 mod interactions;
 mod issue_93_aetherspark;
 mod issue_93_ajani;

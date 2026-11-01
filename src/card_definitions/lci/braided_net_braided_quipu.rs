@@ -76,6 +76,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         },
     ],
     extras: &CardExtras {
+        transforming_double_face: true,
         fixed_entry_counters: &[(CounterKind::Net, 3)],
         ..CardExtras::EMPTY
     },
