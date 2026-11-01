@@ -2237,6 +2237,8 @@ pub(crate) enum Instruction {
     },
     /// Move all legal target groups together, deduplicating exact incarnations.
     ReturnAllTargetsToHand,
+    /// Return every creature lacking the named subtype in one simultaneous batch.
+    ReturnCreaturesWithoutSubtype(&'static str),
     /// Freeze successful returns, then one token-creation trigger next upkeep.
     ReturnTargetsCreateNextUpkeep {
         token: Card,

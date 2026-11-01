@@ -7814,6 +7814,22 @@ impl Game {
                     }
                     self.move_target_batch(&targets, Zone::Hand);
                 }
+                Instruction::ReturnCreaturesWithoutSubtype(subtype) => {
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, object)| {
+                            object.zone == Zone::Battlefield
+                                && self.is_creature(*id as CardId)
+                                && !self.has_subtype(*id as CardId, subtype)
+                        })
+                        .map(|(id, _)| id as CardId)
+                        .collect();
+                    let events = self.move_objects_raw(&ids, Zone::Hand);
+                    self.finish_zone_events(&events, &[]);
+                }
                 Instruction::ReturnToHandDrawForSubtype(subtype) => {
                     // Capture the legal target before changing its incarnation.
                     // The subtype condition is independent of a successful move.

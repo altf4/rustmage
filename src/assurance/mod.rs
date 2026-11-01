@@ -39,6 +39,7 @@ mod requested_hunters_talent;
 mod requested_inevitable_defeat;
 mod requested_pyrrhic_strike;
 mod requested_reduction;
+mod requested_sunderflock;
 mod requested_waterbend;
 
 fn scenario(p: Player) -> Game {

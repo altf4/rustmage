@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4650608846647b77789f734a5642a6882f05bb3b7d602b52a6ffa38c05f8cff4",
+  "catalogue_version": "5b2c85d1b09f45d06c941d1952808bca4d41273a33972565c7114d9662c3c0cf",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2973,
-  "implemented_total": 2979,
+  "implemented_standard_cards": 2974,
+  "implemented_total": 2980,
   "token_definitions": 154,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -47,8 +47,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 160,
-      "complete": 107
+      "gated": 159,
+      "complete": 108
     },
     "eoc": {
       "total": 8,
@@ -34098,8 +34098,8 @@
     {
       "name": "Sunderflock",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sunderflock.rs",
       "set": "ecl"
     },
