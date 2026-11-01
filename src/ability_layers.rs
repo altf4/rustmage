@@ -201,7 +201,8 @@ pub(crate) enum StaticAbilityFragment {
     /// subtype and keyword while it has the required counters. Its type change
     /// starts in layer four; the same ability's base stats are a separate
     /// BaseStatSetter fragment in its group.
-    SourceCounterTurnCreature {
+    SourceCounterCreature {
+        own_turn: bool,
         kind: CounterKind,
         minimum: u64,
         subtypes: &'static [&'static str],

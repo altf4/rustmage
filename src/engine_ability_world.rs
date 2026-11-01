@@ -562,13 +562,14 @@ pub(super) trait CharacteristicWorld {
                 {
                     result = result.union(keywords);
                 }
-                if let crate::cards::StaticAbilityFragment::SourceCounterTurnCreature {
+                if let crate::cards::StaticAbilityFragment::SourceCounterCreature {
+                    own_turn,
                     kind,
                     minimum,
                     keywords,
                     ..
                 } = *fragment
-                    && object.controller == self.game().state.active
+                    && (!own_turn || object.controller == self.game().state.active)
                     && self.counter_count(id, kind) >= minimum
                 {
                     result = result.union(keywords);

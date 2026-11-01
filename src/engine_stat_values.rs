@@ -540,6 +540,7 @@ impl Game {
             | AmountValue::SacrificedPower
             | AmountValue::ReflexiveSacrificedPower
             | AmountValue::SacrificeCostPower
+            | AmountValue::TappedCostCreaturePower
             | AmountValue::TargetCreaturePower
             | AmountValue::SourceLastKnownPower
             | AmountValue::SacrificedToughness

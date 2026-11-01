@@ -927,6 +927,27 @@ impl Game {
                         r,
                     )
             }));
+            if a.item.program().is_some_and(|(_, program)| {
+                program.iter().any(|instruction| {
+                    matches!(
+                        instruction,
+                        Instruction::PutCountersScaled {
+                            amount: AmountValue::TappedCostCreaturePower,
+                            ..
+                        }
+                    )
+                })
+            }) {
+                let object = group[0];
+                a.item.event_object = Some(Box::new(EventObjectView {
+                    object,
+                    facts: EventObjectFacts::CreatureComparison(
+                        CreatureComparisonFacts::from_view(&self.object_view(object.card)),
+                    ),
+                    conniver_creature: None,
+                    subtype_lki: None,
+                }));
+            }
             self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
             a.additional_paid = true;
             return;

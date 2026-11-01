@@ -442,6 +442,20 @@ impl Game {
                     .unwrap_or(0)
                     .max(0) as u128
             }
+            AmountValue::TappedCostCreaturePower => {
+                let event = item.event_object.as_ref().expect("tapped cost subject");
+                let EventObjectFacts::CreatureComparison(saved) = event.facts else {
+                    unreachable!()
+                };
+                let power = if self.on_battlefield(event.object.card)
+                    && self.object_ref(event.object.card) == event.object
+                {
+                    self.stats(event.object.card).power
+                } else {
+                    saved.power
+                };
+                power.max(0) as u128
+            }
             AmountValue::TargetCreaturePower => {
                 let r = self.state.resolving.as_ref().unwrap();
                 r.target_card_facts

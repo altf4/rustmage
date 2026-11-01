@@ -93,7 +93,7 @@ fn source_counter_turn_creature<W: CharacteristicWorld + ?Sized>(
     id: CardId,
 ) -> Option<(u64, &'static [&'static str])> {
     let object = world.object(id);
-    if object.zone != Zone::Battlefield || object.controller != world.game().state.active {
+    if object.zone != Zone::Battlefield {
         return None;
     }
     let types = object
@@ -102,12 +102,17 @@ fn source_counter_turn_creature<W: CharacteristicWorld + ?Sized>(
         .iter()
         .flat_map(|g| g.fragments)
         .find_map(|fragment| match *fragment {
-            StaticAbilityFragment::SourceCounterTurnCreature {
+            StaticAbilityFragment::SourceCounterCreature {
+                own_turn,
                 kind,
                 minimum,
                 subtypes,
                 ..
-            } if world.counter_count(id, kind) >= minimum => Some(subtypes),
+            } if (!own_turn || object.controller == world.game().state.active)
+                && world.counter_count(id, kind) >= minimum =>
+            {
+                Some(subtypes)
+            }
             _ => None,
         })?;
     let timestamp = world

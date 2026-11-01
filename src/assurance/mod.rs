@@ -7,6 +7,7 @@ mod contracts;
 mod fra_complete_games;
 mod fra_coverage_gaps;
 mod fra_way_loyalty_foundation;
+mod hartford_artifact_activations;
 mod hartford_blight;
 mod hartford_braided_net;
 mod hartford_craft_core;
@@ -84,6 +85,8 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
         card.is_supported()
             || name == "Leatherhead, Swamp Stalker"
             || name == "Jeskai Revelation"
+            || name == "Gene Pollinator"
+            || name == "Warmaker Gunship"
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
