@@ -5181,6 +5181,27 @@ impl Game {
                 Instruction::DestroyCombatDamagedPlayersPermanents => {
                     self.destroy_combat_damaged_players_permanents(&item)
                 }
+                Instruction::MayRemoveAnySourceCounterReflexive(_) => {
+                    if let Some(source) = item.source
+                        && self.on_battlefield(source.object.card)
+                        && self.object_ref(source.object.card) == source.object
+                        && self.counter_amounts(source.object.card).total() > 0
+                    {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .target_counter_removal = Some(Box::new(TargetCounterRemovalView {
+                            target: source.object,
+                            maximum: 1,
+                            selected: Counters::default(),
+                        }));
+                        self.state.pending = Pending::TargetCounterRemoval {
+                            player: item.controller,
+                        };
+                        return;
+                    }
+                }
                 Instruction::RemoveUpToTargetCounters(maximum) => {
                     let target = item.targets.iter().copied().find_map(|bound| {
                         if !self.same_target_object(bound) {

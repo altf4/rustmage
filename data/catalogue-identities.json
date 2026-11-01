@@ -5491,7 +5491,8 @@
     0,
     4,
     2,
-    8
+    8,
+    1
   ],
   "aliases": [
     [
@@ -6565,6 +6566,10 @@
     [
       "@token/spirit_1_1_white_flying",
       5342
+    ],
+    [
+      "@token/tdm-monk-prowess",
+      5486
     ],
     [
       "@token/treefolk_3_4_green_reach",
@@ -29151,6 +29156,12 @@
       "name": "Rat Token",
       "subtypes": "Rat",
       "colors": 4
+    },
+    {
+      "factory_identity": "@token/tdm-monk-prowess",
+      "name": "Monk Token",
+      "subtypes": "Monk",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -186122,6 +186133,35 @@
         0
       ],
       "generic": 1
+    },
+    {
+      "index": 5486,
+      "module": "card_5486",
+      "path": "synthetic/token_tdm_monk_prowess.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/tdm-monk-prowess",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Monk",
+      "oracle_keywords": [
+        "Prowess"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

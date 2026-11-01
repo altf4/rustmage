@@ -7150,6 +7150,16 @@ impl Game {
                     && self.object_ref(choice.target.card) == choice.target
                 {
                     self.pay_counters(choice.target.card, &choice.selected);
+                    if !choice.selected.is_empty() {
+                        let resolution = self.state.resolving.as_ref().unwrap();
+                        if let Some(Instruction::MayRemoveAnySourceCounterReflexive(ability)) =
+                            resolution.program.get(resolution.pc - 1)
+                        {
+                            let ability = *ability;
+                            let item = resolution.item.clone();
+                            self.queue_reflexive(&item, ability, None);
+                        }
+                    }
                 }
                 self.run_program();
             }

@@ -2388,6 +2388,8 @@ pub(crate) enum Instruction {
     PutSourceCountersOnTargets,
     /// Choose and remove up to this many counters from one targeted permanent.
     RemoveUpToTargetCounters(u16),
+    /// Optional non-targeted source-counter removal; an actual removal queues the named reflexive trigger.
+    MayRemoveAnySourceCounterReflexive(u16),
     CreateTokensWithCounters {
         token: Card,
         amount: u16,

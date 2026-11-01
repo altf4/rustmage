@@ -12,11 +12,13 @@ mod hartford_braided_net;
 mod hartford_craft_core;
 mod hartford_exile_play;
 mod hartford_grave_exile;
+mod hartford_leatherhead;
 mod hartford_library_selection;
 mod hartford_removal;
 mod hartford_replacements;
 mod hartford_restless_reef;
 mod hartford_returns;
+mod hartford_revelation;
 mod hartford_riverchurn;
 mod hartford_sacrifice;
 mod hartford_sawblades;
@@ -80,6 +82,8 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
     assert!(
         card.is_supported()
+            || name == "Leatherhead, Swamp Stalker"
+            || name == "Jeskai Revelation"
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
