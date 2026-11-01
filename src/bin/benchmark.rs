@@ -50,6 +50,10 @@ fn main() {
     ]
     .concat();
     let archive = std::env::args().nth(2);
+    let verify = std::env::args().nth(3).is_some_and(|argument| {
+        assert_eq!(argument, "verify", "optional third argument must be verify");
+        true
+    });
     let named = archive
         .as_deref()
         .map(named_decks)
@@ -96,8 +100,33 @@ fn main() {
         while game.outcome().is_none() {
             game.legal_actions_into(&mut actions);
             let index = rustmage::policy::smoke_index(&game, &actions);
-            game.apply(game.actor().unwrap(), actions[index].clone())
-                .unwrap();
+            let actor = game.actor().unwrap();
+            let revision = game.revision();
+            let action = actions[index].clone();
+            let owned = verify.then(|| {
+                let snapshot = game.snapshot();
+                let branch = {
+                    let parent = game.clone();
+                    parent.clone()
+                };
+                (snapshot, branch)
+            });
+            game.apply(actor, action.clone()).unwrap_or_else(|error| {
+                panic!("seed {seed}, decision {count}, {action:?}: {error:?}")
+            });
+            if let Some((snapshot, mut branch)) = owned {
+                branch.apply_index(actor, revision, index).unwrap();
+                assert!(
+                    branch.snapshot() == game.snapshot(),
+                    "indexed branch diverged at seed {seed}, decision {count}"
+                );
+                branch.restore(&snapshot).unwrap();
+                branch.apply(actor, action).unwrap();
+                assert!(
+                    branch.snapshot() == game.snapshot(),
+                    "restored branch diverged at seed {seed}, decision {count}"
+                );
+            }
             count += 1;
             assert!(count < 100_000, "benchmark did not terminate naturally");
         }
@@ -111,6 +140,7 @@ fn main() {
         serde_json::json!({
             "games": games, "decisions": decisions, "seconds": elapsed,
             "decklist_archive": archive.as_deref(),
+            "owned_raw_index_restore_checks": verify,
             "deck_names": named.iter().map(|(name, _)| name).collect::<Vec<_>>(),
             "deck_rules": if archive.is_some() { "Standard" } else { "Freeform" },
             "games_per_second": games as f64 / elapsed,
@@ -118,7 +148,7 @@ fn main() {
             "max_decisions_per_game": max_game,
             "initial_state_bytes_excluding_capacity_and_allocator": root.state_bytes(),
             "clone_ns": clone_ns, "restore_ns": restore_ns,
-        "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; sampled gameplay is not complete card-interaction coverage or XMage parity"
+        "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity"
         })
     );
 }
