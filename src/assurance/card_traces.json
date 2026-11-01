@@ -4543,6 +4543,14 @@
     "journal": "f1a610695794acb5",
     "observations": "c2e98811afb1d7b6"
   },
+  "Deadly Cover-Up": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "def510b4ae7070c5",
+    "observations": "0ff169ff3c425b17"
+  },
   "Deadly Plot": {
     "root": "main",
     "status": "completed",
@@ -5094,6 +5102,14 @@
     "zone": "Battlefield",
     "journal": "87c199e3b586e2a2",
     "observations": "ff219eab6aaba620"
+  },
+  "Doc Aurlock, Grizzled Genius": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "21c94e12108ffb3f",
+    "observations": "09fe3eb238d89bda"
   },
   "Doc Ock's Henchmen": {
     "root": "main",
@@ -9271,6 +9287,14 @@
     "journal": "b43781f2834dd88f",
     "observations": "36d7d7408db192e1"
   },
+  "Hearth Elemental // Stoke Genius": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "fa023aad863dc9ad",
+    "observations": "7c1096995ecba56a"
+  },
   "Heartstring Puller": {
     "root": "main",
     "status": "completed",
@@ -10270,6 +10294,14 @@
     "zone": "Battlefield",
     "journal": "043270708979483d",
     "observations": "c3851bab6fa61788"
+  },
+  "Interdimensional Web Watch": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "77bf79854c3416e3",
+    "observations": "c39beff83eadcd89"
   },
   "Interjection": {
     "root": "main",
@@ -14238,6 +14270,14 @@
     "zone": "Graveyard",
     "journal": "543918deceb4be8c",
     "observations": "c40a025e32cf3a25"
+  },
+  "Outrageous Robbery": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "ade3f13351c9b62c",
+    "observations": "776020c1c48910f6"
   },
   "Over the Edge": {
     "root": "main",
@@ -19271,6 +19311,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "94a98e30ee916747"
   },
+  "Strategic Betrayal": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "2c1c6719c58be4ca",
+    "observations": "f3bdde98100754ee"
+  },
   "Stratosoarer": {
     "root": "main",
     "status": "completed",
@@ -19526,6 +19574,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "fc114bc26a22dd6f"
+  },
+  "Sunderflock": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "46c3ba15af5c6432",
+    "observations": "48aef2ff801eecda"
   },
   "Sundering Archaic": {
     "root": "main",
@@ -20454,6 +20510,14 @@
     "zone": "Battlefield",
     "journal": "23604f55788e7696",
     "observations": "1f736f050ddee696"
+  },
+  "The Enigma Jewel // Locus of Enlightenment": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "77fe8ec276f5ddde",
+    "observations": "cba359597308350f"
   },
   "The Great Goblin": {
     "root": "main",
