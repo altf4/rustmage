@@ -4573,12 +4573,13 @@ impl Game {
                 Instruction::IncreaseSpeed => {
                     let StackKind::InherentRule {
                         rule: SourceLessRule::Speed,
-                        affected_player,
+                        ..
                     } = item.kind
                     else {
                         unreachable!()
                     };
-                    let speed = &mut self.state.players[affected_player.index()].speed;
+                    // “Your speed” belongs to this packet's controller, including a copy.
+                    let speed = &mut self.state.players[item.controller.index()].speed;
                     if *speed < 4 {
                         *speed += 1;
                     }
