@@ -559,6 +559,8 @@ define_actions! {
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
+    SelectGraveyardReturn { object: ObjectRef },
+    FinishGraveyardReturn,
     SelectResolutionExile { object: ObjectRef },
     ProliferatePermanent { object: ObjectRef },
     ProliferatePlayer { player: Player },
@@ -4324,6 +4326,11 @@ impl Game {
                 {
                     return true;
                 }
+                if matches!(choice.kind, EffectChoiceKind::GraveyardCreatures { .. })
+                    && emit(Action::FinishGraveyardReturn)
+                {
+                    return true;
+                }
                 if matches!(
                     choice.kind,
                     EffectChoiceKind::LandCards { .. }
@@ -4336,7 +4343,8 @@ impl Game {
                 if choice.skip_to.is_some()
                     && !matches!(
                         choice.kind,
-                        EffectChoiceKind::LandCards { .. }
+                        EffectChoiceKind::GraveyardCreatures { .. }
+                            | EffectChoiceKind::LandCards { .. }
                             | EffectChoiceKind::UntapLands { .. }
                             | EffectChoiceKind::DiscardedLand { .. }
                     )
@@ -4360,6 +4368,9 @@ impl Game {
                     let object = self.object_ref(index as CardId);
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
+                            EffectChoiceKind::GraveyardCreatures { .. } => {
+                                Action::SelectGraveyardReturn { object }
+                            }
                             EffectChoiceKind::AmassGoblins(_) => Action::ChooseArmy { object },
                             EffectChoiceKind::EmpowerJace(_) => Action::ChooseJace { object },
                             EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
@@ -7082,8 +7093,13 @@ impl Game {
             | Action::PutHandLand { object }
             | Action::ChooseArmy { object }
             | Action::ChooseJace { object }
+            | Action::SelectGraveyardReturn { object }
             | Action::SelectLand { object }
             | Action::SelectResolutionExile { object } => self.choose_effect_object(actor, object),
+            Action::FinishGraveyardReturn => {
+                self.finish_graveyard_return_selection();
+                self.run_program();
+            }
             Action::FinishLandSelection => {
                 self.finish_land_selection();
                 self.run_program();

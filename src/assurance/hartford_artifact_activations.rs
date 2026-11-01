@@ -33,11 +33,13 @@ fn warmaker_damages_then_stations_using_current_power_on_both_turns() {
     for player in [Player::P0, Player::P1] {
         let mut g = setup(player);
         put(&mut g, player, "Gene Pollinator", Zone::Battlefield);
-        let target = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        put(&mut g, player.other(), "Mazemind Tome", Zone::Battlefield);
+        let target = put(&mut g, player.other(), "Fire Elemental", Zone::Battlefield);
         let ship = put(&mut g, player, "Warmaker Gunship", Zone::Hand);
         cast(&mut g, ship, None, &[]);
         settle(&mut g);
-        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(target).damage, 2);
         assert!(!g.is_creature(ship));
         let creature = put(&mut g, player, "Fire Elemental", Zone::Battlefield);
         checked(

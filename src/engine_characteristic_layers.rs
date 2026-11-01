@@ -375,7 +375,9 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             )
         })
         .collect();
-    if let Some((timestamp, types)) = source_counter_turn_creature(world, id) {
+    if let Some((timestamp, types)) = source_counter_turn_creature(world, id)
+        && !types.is_empty()
+    {
         changes.push((timestamp, SubtypeChange::Named(types, false)));
     }
     changes.extend(animations(world, id).filter_map(|row| {

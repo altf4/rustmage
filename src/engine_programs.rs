@@ -4272,6 +4272,14 @@ impl Game {
                 } => {
                     self.gain_control(&item, subject, controller);
                 }
+                Instruction::ChooseGraveyardReturn {
+                    maximum,
+                    total_mana_value,
+                } => {
+                    if self.start_graveyard_return_selection(&item, maximum, total_mana_value) {
+                        return;
+                    }
+                }
                 Instruction::ReturnGraveyardManaValue { kinds, value } => {
                     self.return_graveyard_mana_value(&item, kinds, value);
                 }

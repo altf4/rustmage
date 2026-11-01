@@ -202,6 +202,24 @@ impl Game {
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < usize::from(maximum);
         }
+        if let EffectChoiceKind::GraveyardCreatures {
+            maximum,
+            total_mana_value,
+        } = choice.kind
+        {
+            let selected = &choice.selected[player.index()];
+            let spent = selected.iter().fold(0u64, |sum, r| {
+                sum.saturating_add(self.state.objects[r.card as usize].card.fixed_mana_value())
+            });
+            return o.zone == Zone::Graveyard
+                && o.owner == player
+                && o.is_card()
+                && o.card.is_creature()
+                && self.object_ref(object.card) == object
+                && !selected.contains(&object)
+                && selected.len() < usize::from(maximum)
+                && o.card.fixed_mana_value() <= total_mana_value.saturating_sub(spent);
+        }
         if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
             return o.owner == player
                 && o.is_card()
@@ -550,6 +568,60 @@ impl Game {
             None,
         )
     }
+    pub(super) fn start_graveyard_return_selection(
+        &mut self,
+        item: &SpellView,
+        maximum: u16,
+        total_mana_value: u64,
+    ) -> bool {
+        if maximum == 0 {
+            return false;
+        }
+        self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::GraveyardCreatures {
+                maximum,
+                total_mana_value,
+            },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            0,
+            Some(0),
+            false,
+            None,
+        )
+    }
+
+    pub(super) fn finish_graveyard_return_selection(&mut self) {
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .take()
+            .unwrap();
+        let player = self.state.resolving.as_ref().unwrap().item.controller;
+        let movements = choice.selected[player.index()]
+            .iter()
+            .filter(|r| {
+                self.object_ref(r.card) == **r
+                    && self.state.objects[r.card as usize].zone == Zone::Graveyard
+                    && self.state.objects[r.card as usize].owner == player
+                    && self.state.objects[r.card as usize].is_card()
+                    && self.state.objects[r.card as usize].card.is_creature()
+            })
+            .map(|r| {
+                let mut movement = self.entry_move(r.card, Zone::Battlefield, false);
+                movement.controller = player;
+                movement
+            })
+            .collect::<Vec<_>>();
+        if !movements.is_empty() {
+            self.stage_entries(movements, None);
+        }
+    }
+
     pub(super) fn start_land_selection(
         &mut self,
         item: &SpellView,
@@ -1005,6 +1077,15 @@ impl Game {
             self.state.pending = Pending::EffectChoice {
                 player: self.state.resolving.as_ref().unwrap().item.controller,
             };
+            return true;
+        }
+        if let EffectChoiceKind::GraveyardCreatures { maximum, .. } = choice.kind {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if choice.selected[player.index()].len() >= usize::from(maximum) {
+                self.finish_graveyard_return_selection();
+                return false;
+            }
+            self.state.pending = Pending::EffectChoice { player };
             return true;
         }
         if let EffectChoiceKind::UntapLands { maximum } = choice.kind {

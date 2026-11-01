@@ -197,8 +197,8 @@ pub(crate) enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
-    /// On its controller's turn this source becomes a creature with this
-    /// subtype and keyword while it has the required counters. Its type change
+    /// This source becomes a creature with these subtypes and keywords while it
+    /// has the required counters, optionally only on its controller's turn. Its type change
     /// starts in layer four; the same ability's base stats are a separate
     /// BaseStatSetter fragment in its group.
     SourceCounterCreature {

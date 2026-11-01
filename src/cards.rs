@@ -866,6 +866,11 @@ pub enum EffectChoiceKind {
     DiscardedLand {
         tapped: bool,
     },
+    /// Non-targeted graveyard return with a shared total mana-value budget.
+    GraveyardCreatures {
+        maximum: u16,
+        total_mana_value: u64,
+    },
     LandCards {
         maximum: u32,
         tapped: bool,
@@ -1696,6 +1701,11 @@ pub(crate) enum Instruction {
     GainControl {
         subject: Subject,
         controller: PlayerSet,
+    },
+    /// Choose up to this many creature cards with a combined mana-value limit.
+    ChooseGraveyardReturn {
+        maximum: u16,
+        total_mana_value: u64,
     },
     ReturnGraveyardManaValue {
         kinds: u16,

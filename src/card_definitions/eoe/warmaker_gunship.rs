@@ -45,7 +45,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         program: &[Instruction::DamageScaled(AmountValue::Stat(
             StatValue::Count(CountFilter {
                 zone: CountZone::Battlefield,
-                relation: -1,
+                relation: 0,
                 kind: 16,
                 exclude: 0,
                 subtype: None,

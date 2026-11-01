@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a2d6299ef19f6449e0b906352e8be1144882627ea4eca35102dd24e64f126a0f"
   },
-  "physical_metadata_sha256": "1bc97f875ccfbf3a3a941a2b1023f9fbd64761e1aaf43a8cbb5398a8023c0d0a"
+  "physical_metadata_sha256": "1bc97f875ccfbf3a3a941a2b1023f9fbd64761e1aaf43a8cbb5398a8023c0d0a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LivelyDirge.java",
+  "java_sha256": "59d95a680bd8b7e16d2f6742ec387664b84555432616e842fc7cbdb89a39af2c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SpreeAbility.java",
+      "sha256": "748a9f9ee829dca76fd302165682a269a26aa7e15bfe662727af0100b5e676a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInGraveyardEffect.java",
+      "sha256": "293f025fce90b44b6e97cab08bc41ef455c1b82b444c72b46c4dd958542ae939"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ]
 }

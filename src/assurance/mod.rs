@@ -15,6 +15,7 @@ mod hartford_exile_play;
 mod hartford_grave_exile;
 mod hartford_leatherhead;
 mod hartford_library_selection;
+mod hartford_lively_dirge;
 mod hartford_removal;
 mod hartford_replacements;
 mod hartford_restless_reef;
@@ -87,6 +88,7 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
             || name == "Jeskai Revelation"
             || name == "Gene Pollinator"
             || name == "Warmaker Gunship"
+            || name == "Lively Dirge"
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"

@@ -22,6 +22,11 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
       "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
     }
   ]
 }

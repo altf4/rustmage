@@ -199,11 +199,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::PutHandLand { .. }
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
+            | Action::SelectGraveyardReturn { .. }
             | Action::SelectLand { .. }
             | Action::SelectResolutionExile { .. } => 50,
             Action::ProliferatePermanent { .. } | Action::ProliferatePlayer { .. } => 50,
             Action::FinishProliferate => 0,
-            Action::FinishLandSelection => -1,
+            Action::FinishGraveyardReturn | Action::FinishLandSelection => -1,
             Action::DeclineHandEntry => -1,
             Action::ChooseBlight { pay } => i128::from(*pay) * 40,
             Action::PayBlight { .. } => 50,
