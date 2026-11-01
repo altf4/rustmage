@@ -13215,6 +13215,14 @@
     "journal": "21b4895374b4450b",
     "observations": "2bce308c3e8d9194"
   },
+  "Moonshadow": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7def026c1597d7ae",
+    "observations": "54f3324892672786"
+  },
   "Moonstone, Harsh Mistress": {
     "root": "main",
     "status": "completed",
@@ -16006,6 +16014,14 @@
     "zone": "Graveyard",
     "journal": "bbd3528ff62c7664",
     "observations": "80dd1d1200f780cf"
+  },
+  "Requiting Hex": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "428d078086e51794",
+    "observations": "37e3a89d2bbc7beb"
   },
   "Rescue Girl, First Responder": {
     "root": "main",
