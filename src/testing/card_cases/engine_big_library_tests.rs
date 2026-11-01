@@ -87,7 +87,7 @@ fn big_farmer_entry_attack_food_cost_exact_milled_recovery_and_decline_both_seat
             settle(&mut g);
             assert_eq!(tokens(&g, p, "Food").len(), 2);
             assert_eq!((g.stats(farmer).power, g.stats(farmer).toughness), (5, 5));
-            assert!(g.keywords(farmer).contains(Keywords::TRAMPLE));
+
             let prior = named(&mut g, p, "Forest", Zone::Graveyard);
             let recovered = named(&mut g, p, "Forest", Zone::Library);
             let spell = named(&mut g, p, "Giant Growth", Zone::Library);

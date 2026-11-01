@@ -1,0 +1,2357 @@
+[
+  {
+    "id": "plain_creature_v1/attack.drain.1.1",
+    "abilities": [
+      {
+        "event": "attack",
+        "amount": 1,
+        "secondary": 1,
+        "effect": "drain"
+      }
+    ],
+    "representative": "Sanguine Syphoner",
+    "members": [
+      {
+        "card": "Sanguine Syphoner",
+        "catalogue_id": 3686,
+        "oracle_id": "b81a748b-f7a6-4ec4-8b18-40a1819745f6",
+        "type_line": "Creature \u2014 Vampire Warlock",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 3,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/attack.gain_life.2.0",
+    "abilities": [
+      {
+        "event": "attack",
+        "amount": 2,
+        "secondary": 0,
+        "effect": "gain_life"
+      }
+    ],
+    "representative": "Herald of Faith",
+    "members": [
+      {
+        "card": "Herald of Faith",
+        "catalogue_id": 2007,
+        "oracle_id": "cb97da84-1d13-4795-b68a-2bf111a50067",
+        "type_line": "Creature \u2014 Angel",
+        "kinds": 1,
+        "cost": {
+          "printed": "{3}{W}{W}",
+          "colored": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 3
+        },
+        "power": 4,
+        "toughness": 3,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Shopkeeper's Bane",
+        "catalogue_id": 3843,
+        "oracle_id": "e7572317-6bec-4fb0-81ac-76aec04f14ad",
+        "type_line": "Creature \u2014 Badger Pest",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 4,
+        "toughness": 2,
+        "keywords": [
+          "trample"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/attack.mill.1.0",
+    "abilities": [
+      {
+        "event": "attack",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "mill"
+      }
+    ],
+    "representative": "Mysterio's Phantasm",
+    "members": [
+      {
+        "card": "Mysterio's Phantasm",
+        "catalogue_id": 2896,
+        "oracle_id": "99419378-8a23-44f3-aebe-e62d6e20e877",
+        "type_line": "Creature \u2014 Illusion Villain",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 3,
+        "keywords": [
+          "flying",
+          "vigilance"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Screaming Phantom",
+        "catalogue_id": 3740,
+        "oracle_id": "d32f570a-3738-4a9d-845f-6c7892b69991",
+        "type_line": "Creature \u2014 Spirit",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/attack.surveil.1.0",
+    "abilities": [
+      {
+        "event": "attack",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "surveil"
+      }
+    ],
+    "representative": "Appendage Amalgam",
+    "members": [
+      {
+        "card": "Appendage Amalgam",
+        "catalogue_id": 189,
+        "oracle_id": "9fb95813-05e5-4aa0-bab9-53d8a071fe6a",
+        "type_line": "Enchantment Creature \u2014 Horror",
+        "kinds": 33,
+        "cost": {
+          "printed": "{2}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 3,
+        "toughness": 2,
+        "keywords": [
+          "flash"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Boulderborn Dragon",
+        "catalogue_id": 515,
+        "oracle_id": "1654cab1-0697-4547-b1fe-2d0a61385199",
+        "type_line": "Artifact Creature \u2014 Dragon",
+        "kinds": 17,
+        "cost": {
+          "printed": "{5}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 5
+        },
+        "power": 3,
+        "toughness": 3,
+        "keywords": [
+          "flying",
+          "vigilance"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Fear of Surveillance",
+        "catalogue_id": 1472,
+        "oracle_id": "52478437-bb6c-48bb-855d-54a8a4d42d18",
+        "type_line": "Enchantment Creature \u2014 Nightmare",
+        "kinds": 33,
+        "cost": {
+          "printed": "{1}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [
+          "vigilance"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Il Mheg Pixie",
+        "catalogue_id": 2133,
+        "oracle_id": "c2c47e13-b581-41a8-a4af-542557a6249a",
+        "type_line": "Creature \u2014 Faerie",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 1,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/die.draw.1.0",
+    "abilities": [
+      {
+        "event": "die",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "draw"
+      }
+    ],
+    "representative": "Buzz Bots",
+    "members": [
+      {
+        "card": "Buzz Bots",
+        "catalogue_id": 604,
+        "oracle_id": "434e720f-2bfa-49b6-a5ac-fe0c0b24764d",
+        "type_line": "Artifact Creature \u2014 Robot Insect",
+        "kinds": 17,
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 1,
+        "keywords": [
+          "flying",
+          "vigilance"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Outlaw Medic",
+        "catalogue_id": 3060,
+        "oracle_id": "637be5f7-ab39-4e3a-a5eb-c6e48fca00a9",
+        "type_line": "Creature \u2014 Human Rogue",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 3,
+        "keywords": [
+          "lifelink"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Summit Sentinel",
+        "catalogue_id": 4212,
+        "oracle_id": "e7b88da3-7dd1-45f8-b555-98ad838b2917",
+        "type_line": "Creature \u2014 Elemental Soldier",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 3,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/die.gain_life.2.0",
+    "abilities": [
+      {
+        "event": "die",
+        "amount": 2,
+        "secondary": 0,
+        "effect": "gain_life"
+      }
+    ],
+    "representative": "Grasping Longneck",
+    "members": [
+      {
+        "card": "Grasping Longneck",
+        "catalogue_id": 1849,
+        "oracle_id": "bc509d30-ceca-47ef-a574-62c021812014",
+        "type_line": "Enchantment Creature \u2014 Horror",
+        "kinds": 33,
+        "cost": {
+          "printed": "{2}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 4,
+        "toughness": 2,
+        "keywords": [
+          "reach"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/draw.counters.1.0",
+    "abilities": [
+      {
+        "event": "draw",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "counters"
+      }
+    ],
+    "representative": "Clinquant Skymage",
+    "members": [
+      {
+        "card": "Clinquant Skymage",
+        "catalogue_id": 770,
+        "oracle_id": "d9a3207a-a330-4517-967e-f37c9a9f1355",
+        "type_line": "Creature \u2014 Bird Wizard",
+        "kinds": 1,
+        "cost": {
+          "printed": "{3}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 3
+        },
+        "power": 1,
+        "toughness": 1,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Ravenhill Flock",
+        "catalogue_id": 3396,
+        "oracle_id": "7f961374-00b0-40df-83eb-9ced2bb519aa",
+        "type_line": "Creature \u2014 Bird",
+        "kinds": 1,
+        "cost": {
+          "printed": "{3}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 3
+        },
+        "power": 1,
+        "toughness": 2,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.discard_opponent.1.0",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "discard_opponent"
+      }
+    ],
+    "representative": "Burglar Rat",
+    "members": [
+      {
+        "card": "Burglar Rat",
+        "catalogue_id": 587,
+        "oracle_id": "2f807301-37df-4724-871a-08e3512b07b3",
+        "type_line": "Creature \u2014 Rat",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Hecteyes",
+        "catalogue_id": 1986,
+        "oracle_id": "7a11b4ed-430d-4ef8-b0c1-6a022f12448c",
+        "type_line": "Creature \u2014 Ooze Horror",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Rank Rat",
+        "catalogue_id": 3372,
+        "oracle_id": "64e7ef06-ba30-4b19-9d44-ca77944cc930",
+        "type_line": "Creature \u2014 Zombie Rat",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Stony-Voiced Goblins",
+        "catalogue_id": 4166,
+        "oracle_id": "d1dceaa7-d33e-4067-9e1b-8a8978a12933",
+        "type_line": "Creature \u2014 Goblin Bard",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Virus Beetle",
+        "catalogue_id": 4912,
+        "oracle_id": "e1e489f6-37e5-469e-bca3-0e9d3fc3fa95",
+        "type_line": "Artifact Creature \u2014 Insect",
+        "kinds": 17,
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.drain.2.2",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 2,
+        "secondary": 2,
+        "effect": "drain"
+      }
+    ],
+    "representative": "Glidedive Duo",
+    "members": [
+      {
+        "card": "Glidedive Duo",
+        "catalogue_id": 1776,
+        "oracle_id": "33c06c11-8d0a-45ce-adea-c9a7a8ac8779",
+        "type_line": "Creature \u2014 Bat Lizard",
+        "kinds": 1,
+        "cost": {
+          "printed": "{4}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 4
+        },
+        "power": 3,
+        "toughness": 3,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Skirmish Rhino",
+        "catalogue_id": 3893,
+        "oracle_id": "40eb7f43-7cee-41a1-a4d1-f34ee125ccd1",
+        "type_line": "Creature \u2014 Rhino",
+        "kinds": 1,
+        "cost": {
+          "printed": "{W}{B}{G}",
+          "colored": [
+            1,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "generic": 0
+        },
+        "power": 3,
+        "toughness": 4,
+        "keywords": [
+          "trample"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Sneering Shadewriter",
+        "catalogue_id": 3944,
+        "oracle_id": "21a094d6-de3d-48d4-a35d-b99617da55db",
+        "type_line": "Creature \u2014 Vampire Warlock",
+        "kinds": 1,
+        "cost": {
+          "printed": "{4}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 4
+        },
+        "power": 3,
+        "toughness": 3,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Vampire Spawn",
+        "catalogue_id": 4842,
+        "oracle_id": "33cee4b4-3d80-46f1-9223-49ed785891a1",
+        "type_line": "Creature \u2014 Vampire",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 3,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.draw.1.0",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "draw"
+      }
+    ],
+    "representative": "Helpful Hunter",
+    "members": [
+      {
+        "card": "Helpful Hunter",
+        "catalogue_id": 2002,
+        "oracle_id": "c0864adb-e9aa-40b6-91ff-a0646193e887",
+        "type_line": "Creature \u2014 Cat",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.draw_discard.1.1",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 1,
+        "secondary": 1,
+        "effect": "draw_discard"
+      }
+    ],
+    "representative": "Bellowing Crier",
+    "members": [
+      {
+        "card": "Bellowing Crier",
+        "catalogue_id": 381,
+        "oracle_id": "f2f3be8a-5ea1-47c2-8104-747f4589f5e6",
+        "type_line": "Creature \u2014 Frog Advisor",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Icewind Elemental",
+        "catalogue_id": 2126,
+        "oracle_id": "5001bf21-9dbb-4229-aeef-25805e71b832",
+        "type_line": "Creature \u2014 Elemental",
+        "kinds": 1,
+        "cost": {
+          "printed": "{4}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 4
+        },
+        "power": 3,
+        "toughness": 4,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.gain_life.2.0",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 2,
+        "secondary": 0,
+        "effect": "gain_life"
+      }
+    ],
+    "representative": "Primordial Pachyderm",
+    "members": [
+      {
+        "card": "Primordial Pachyderm",
+        "catalogue_id": 3237,
+        "oracle_id": "5ebdc1a5-e678-444b-abb8-8753558a39de",
+        "type_line": "Creature \u2014 Elephant Avatar",
+        "kinds": 1,
+        "cost": {
+          "printed": "{3}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 3
+        },
+        "power": 4,
+        "toughness": 4,
+        "keywords": [
+          "reach",
+          "trample"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.gain_life.7.0+die.draw.1.0",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 7,
+        "secondary": 0,
+        "effect": "gain_life"
+      },
+      {
+        "event": "die",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "draw"
+      }
+    ],
+    "representative": "Pelakka Wurm",
+    "members": [
+      {
+        "card": "Pelakka Wurm",
+        "catalogue_id": 3123,
+        "oracle_id": "d36075c2-de66-4202-9217-b1102a2bc14b",
+        "type_line": "Creature \u2014 Wurm",
+        "kinds": 1,
+        "cost": {
+          "printed": "{4}{G}{G}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            0
+          ],
+          "generic": 4
+        },
+        "power": 7,
+        "toughness": 7,
+        "keywords": [
+          "trample"
+        ],
+        "paragraphs": [
+          1,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.mill.2.0",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 2,
+        "secondary": 0,
+        "effect": "mill"
+      }
+    ],
+    "representative": "Scarblade Scout",
+    "members": [
+      {
+        "card": "Scarblade Scout",
+        "catalogue_id": 3711,
+        "oracle_id": "f6758e8f-5462-48a7-96d3-60d07b1563fc",
+        "type_line": "Creature \u2014 Elf Scout",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [
+          "lifelink"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Venomized Cat",
+        "catalogue_id": 4871,
+        "oracle_id": "eb54d807-624b-471e-8c44-07322003903e",
+        "type_line": "Creature \u2014 Symbiote Cat Villain",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 3,
+        "keywords": [
+          "deathtouch"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.scry.1.0",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "scry"
+      }
+    ],
+    "representative": "Glider Kids",
+    "members": [
+      {
+        "card": "Glider Kids",
+        "catalogue_id": 1777,
+        "oracle_id": "ff5ce28b-25be-4136-a7b2-8f25c08a6455",
+        "type_line": "Creature \u2014 Human Pilot Ally",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 3,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.scry.2.0",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 2,
+        "secondary": 0,
+        "effect": "scry"
+      }
+    ],
+    "representative": "Wakandan Drone Flock",
+    "members": [
+      {
+        "card": "Wakandan Drone Flock",
+        "catalogue_id": 4953,
+        "oracle_id": "282d6e61-3240-4f1e-9c2d-8ddb59b03af4",
+        "type_line": "Artifact Creature \u2014 Robot",
+        "kinds": 17,
+        "cost": {
+          "printed": "{3}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 3
+        },
+        "power": 3,
+        "toughness": 3,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.surveil.1.0",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "surveil"
+      }
+    ],
+    "representative": "Sanitation Automaton",
+    "members": [
+      {
+        "card": "Sanitation Automaton",
+        "catalogue_id": 3687,
+        "oracle_id": "be2ab552-df82-49a0-8f0b-ee66de34e1a7",
+        "type_line": "Artifact Creature \u2014 Construct",
+        "kinds": 17,
+        "cost": {
+          "printed": "{2}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Shore Lurker",
+        "catalogue_id": 3844,
+        "oracle_id": "4288ba56-ddd0-4bd9-ba61-daf03e9f2d7f",
+        "type_line": "Creature \u2014 Merfolk Scout",
+        "kinds": 1,
+        "cost": {
+          "printed": "{3}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 3
+        },
+        "power": 3,
+        "toughness": 3,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter.surveil.2.0",
+    "abilities": [
+      {
+        "event": "enter",
+        "amount": 2,
+        "secondary": 0,
+        "effect": "surveil"
+      }
+    ],
+    "representative": "A.I.M. Synthoids",
+    "members": [
+      {
+        "card": "A.I.M. Synthoids",
+        "catalogue_id": 19,
+        "oracle_id": "10916f33-aaa6-43a1-9835-b60fd061161f",
+        "type_line": "Artifact Creature \u2014 Robot Villain",
+        "kinds": 17,
+        "cost": {
+          "printed": "{2}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 1,
+        "toughness": 3,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Imperious Inkmage",
+        "catalogue_id": 2146,
+        "oracle_id": "fcd31653-4964-46a6-820c-f17e8cbaa1fa",
+        "type_line": "Creature \u2014 Orc Warlock",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{W}{B}",
+          "colored": [
+            1,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 3,
+        "toughness": 3,
+        "keywords": [
+          "vigilance"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Sterling Hound",
+        "catalogue_id": 4133,
+        "oracle_id": "3178c1f9-f644-4926-ac9a-d40e4db79955",
+        "type_line": "Artifact Creature \u2014 Dog",
+        "kinds": 17,
+        "cost": {
+          "printed": "{3}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 3
+        },
+        "power": 3,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Wreckage Wickerfolk",
+        "catalogue_id": 5122,
+        "oracle_id": "8ba5af76-2485-4fd6-bd2e-fe90d1f2691c",
+        "type_line": "Artifact Creature \u2014 Scarecrow",
+        "kinds": 17,
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 3,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter_die.mill.2.0",
+    "abilities": [
+      {
+        "event": "enter_die",
+        "amount": 2,
+        "secondary": 0,
+        "effect": "mill"
+      }
+    ],
+    "representative": "Crow of Dark Tidings",
+    "members": [
+      {
+        "card": "Crow of Dark Tidings",
+        "catalogue_id": 896,
+        "oracle_id": "a4ffe297-5e82-43f9-91a4-7aa3d8dd3b4a",
+        "type_line": "Creature \u2014 Zombie Bird",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 1,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/enter_die.surveil.1.0",
+    "abilities": [
+      {
+        "event": "enter_die",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "surveil"
+      }
+    ],
+    "representative": "Lys Alana Informant",
+    "members": [
+      {
+        "card": "Lys Alana Informant",
+        "catalogue_id": 2595,
+        "oracle_id": "b5058b5c-0359-42ec-ba9e-ae1371bb9c22",
+        "type_line": "Creature \u2014 Elf Scout",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 3,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Thawbringer",
+        "catalogue_id": 4416,
+        "oracle_id": "0863c4bc-1e3e-4ff9-8877-88d4021c85e5",
+        "type_line": "Creature \u2014 Insect Scout",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 4,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Wary Thespian",
+        "catalogue_id": 4989,
+        "oracle_id": "448cc829-1596-4aec-b180-c0c1e0566f6b",
+        "type_line": "Creature \u2014 Cat Druid",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 3,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Wary Watchdog",
+        "catalogue_id": 4990,
+        "oracle_id": "7e063f60-876a-48fe-8bc6-9888180176d1",
+        "type_line": "Creature \u2014 Dog",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 3,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/life_gained.counters.1.0",
+    "abilities": [
+      {
+        "event": "life_gained",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "counters"
+      }
+    ],
+    "representative": "Ajani's Pridemate",
+    "members": [
+      {
+        "card": "Ajani's Pridemate",
+        "catalogue_id": 114,
+        "oracle_id": "95e94dea-5ac0-4d6f-adec-ca147aee861f",
+        "type_line": "Creature \u2014 Cat Soldier",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Pest Mascot",
+        "catalogue_id": 3137,
+        "oracle_id": "b8ecddf7-ba89-40dd-9f63-5bad27dd850d",
+        "type_line": "Creature \u2014 Pest Ape",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{B}{G}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 3,
+        "keywords": [
+          "trample"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/life_gained.draw.1.0",
+    "abilities": [
+      {
+        "event": "life_gained",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "draw"
+      }
+    ],
+    "representative": "Drogskol Reaver",
+    "members": [
+      {
+        "card": "Drogskol Reaver",
+        "catalogue_id": 1190,
+        "oracle_id": "68175b49-f1e6-4b34-aad9-20d61a43d427",
+        "type_line": "Creature \u2014 Spirit",
+        "kinds": 1,
+        "cost": {
+          "printed": "{5}{W}{U}",
+          "colored": [
+            1,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 5
+        },
+        "power": 3,
+        "toughness": 5,
+        "keywords": [
+          "flying",
+          "double strike",
+          "lifelink"
+        ],
+        "paragraphs": [
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/noncreature_cast.counters.1.0",
+    "abilities": [
+      {
+        "event": "noncreature_cast",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "counters"
+      }
+    ],
+    "representative": "Boar-q-pine",
+    "members": [
+      {
+        "card": "Boar-q-pine",
+        "catalogue_id": 474,
+        "oracle_id": "551e4356-5b1f-475c-a64b-9c50ea9b0368",
+        "type_line": "Creature \u2014 Boar Porcupine",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{R}",
+          "colored": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Chandra's Emberling",
+        "catalogue_id": 713,
+        "oracle_id": "d3576617-7867-4c3d-aa31-d6742483465b",
+        "type_line": "Creature \u2014 Gremlin Elemental",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{R}",
+          "colored": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [
+          "haste"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/noncreature_cast.grow.1.1",
+    "abilities": [
+      {
+        "event": "noncreature_cast",
+        "effect": "grow",
+        "amount": 1,
+        "secondary": 1
+      }
+    ],
+    "representative": "Agent of Atlas",
+    "members": [
+      {
+        "card": "Agent of Atlas",
+        "catalogue_id": 92,
+        "oracle_id": "cd403866-bef1-413a-85e2-c86e295b3589",
+        "type_line": "Creature \u2014 Human Spy Hero",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Elementalist Adept",
+        "catalogue_id": 1284,
+        "oracle_id": "cf402270-ebc6-481b-b478-0e3acab7002a",
+        "type_line": "Creature \u2014 Human Wizard",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 1,
+        "keywords": [
+          "flash"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Iguana Parrot",
+        "catalogue_id": 2132,
+        "oracle_id": "edd3a3ea-6bde-408c-8b16-85ed3cc312b2",
+        "type_line": "Creature \u2014 Lizard Bird Pirate",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [
+          "flying",
+          "vigilance"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Jeskai Brushmaster",
+        "catalogue_id": 2269,
+        "oracle_id": "eff690a7-c2c7-4750-894c-0667d3151165",
+        "type_line": "Creature \u2014 Orc Monk",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{U}{R}{W}",
+          "colored": [
+            1,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 4,
+        "keywords": [
+          "double strike"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Kree Commandos",
+        "catalogue_id": 2412,
+        "oracle_id": "09eb988a-e2eb-42e1-a786-01be63d2263f",
+        "type_line": "Creature \u2014 Kree Soldier Villain",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 1,
+        "keywords": [
+          "flying",
+          "vigilance"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/noncreature_cast.grow.1.1+enter.surveil.2.0",
+    "abilities": [
+      {
+        "event": "noncreature_cast",
+        "effect": "grow",
+        "amount": 1,
+        "secondary": 1
+      },
+      {
+        "event": "enter",
+        "amount": 2,
+        "secondary": 0,
+        "effect": "surveil"
+      }
+    ],
+    "representative": "Lightshell Duo",
+    "members": [
+      {
+        "card": "Lightshell Duo",
+        "catalogue_id": 2500,
+        "oracle_id": "ef8fab12-d7d2-4c21-8b8c-41627048ac8b",
+        "type_line": "Creature \u2014 Rat Otter",
+        "kinds": 1,
+        "cost": {
+          "printed": "{3}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 3
+        },
+        "power": 3,
+        "toughness": 4,
+        "keywords": [],
+        "paragraphs": [
+          0,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/noncreature_cast.grow.3.0",
+    "abilities": [
+      {
+        "event": "noncreature_cast",
+        "amount": 3,
+        "secondary": 0,
+        "effect": "grow"
+      }
+    ],
+    "representative": "Crackling Cyclops",
+    "members": [
+      {
+        "card": "Crackling Cyclops",
+        "catalogue_id": 876,
+        "oracle_id": "16ab9451-f3da-4f61-8e2b-d9c84e0e5428",
+        "type_line": "Creature \u2014 Cyclops Wizard",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{R}",
+          "colored": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 0,
+        "toughness": 4,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/other_enters.gain_life.1.0",
+    "abilities": [
+      {
+        "event": "other_enters",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "gain_life"
+      }
+    ],
+    "representative": "Dazzling Angel",
+    "members": [
+      {
+        "card": "Dazzling Angel",
+        "catalogue_id": 989,
+        "oracle_id": "7de464e3-fae3-44cc-8233-776fc727c00a",
+        "type_line": "Creature \u2014 Angel",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 3,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Hinterland Sanctifier",
+        "catalogue_id": 2046,
+        "oracle_id": "d812fc6d-b96d-4986-b171-9f3feee603dc",
+        "type_line": "Creature \u2014 Rabbit Cleric",
+        "kinds": 1,
+        "cost": {
+          "printed": "{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 0
+        },
+        "power": 1,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Lifecreed Duo",
+        "catalogue_id": 2492,
+        "oracle_id": "63686c6b-9051-4002-aa8e-da8a3021330f",
+        "type_line": "Creature \u2014 Bat Bird",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 2,
+        "keywords": [
+          "flying"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Virulent Emissary",
+        "catalogue_id": 4910,
+        "oracle_id": "3d4bec90-7bbc-4385-a2b8-303c7a8d0a0f",
+        "type_line": "Creature \u2014 Elf Assassin",
+        "kinds": 1,
+        "cost": {
+          "printed": "{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 0
+        },
+        "power": 1,
+        "toughness": 1,
+        "keywords": [
+          "deathtouch"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/other_enters.grow.1.0",
+    "abilities": [
+      {
+        "event": "other_enters",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "grow"
+      }
+    ],
+    "representative": "Beast-Kin Ranger",
+    "members": [
+      {
+        "card": "Beast-Kin Ranger",
+        "catalogue_id": 361,
+        "oracle_id": "db794af5-ba2e-4b10-b213-e481e8a50432",
+        "type_line": "Creature \u2014 Elf Ranger",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 3,
+        "toughness": 3,
+        "keywords": [
+          "trample"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Crossroads Watcher",
+        "catalogue_id": 894,
+        "oracle_id": "ab5f8b8c-e3f7-4265-bbc6-814bbfd4693a",
+        "type_line": "Creature \u2014 Kithkin Ranger",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 3,
+        "toughness": 3,
+        "keywords": [
+          "trample"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/other_enters.grow.1.1",
+    "abilities": [
+      {
+        "event": "other_enters",
+        "amount": 1,
+        "secondary": 1,
+        "effect": "grow"
+      }
+    ],
+    "representative": "Loporrit Scout",
+    "members": [
+      {
+        "card": "Loporrit Scout",
+        "catalogue_id": 2554,
+        "oracle_id": "24630190-a630-4dd3-a8f7-82f129c881e3",
+        "type_line": "Creature \u2014 Rabbit Scout",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 3,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/second_draw.counters.1.0",
+    "abilities": [
+      {
+        "event": "second_draw",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "counters"
+      }
+    ],
+    "representative": "Atlantean Cavalry",
+    "members": [
+      {
+        "card": "Atlantean Cavalry",
+        "catalogue_id": 253,
+        "oracle_id": "e929b730-9aa2-49e1-9a65-50afc0fbe3e0",
+        "type_line": "Creature \u2014 Merfolk Soldier",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 3,
+        "toughness": 2,
+        "keywords": [
+          "vigilance"
+        ],
+        "paragraphs": [
+          1
+        ]
+      },
+      {
+        "card": "Erudite Wizard",
+        "catalogue_id": 1364,
+        "oracle_id": "7d4b6613-9000-4f53-9737-fe0338f3f629",
+        "type_line": "Creature \u2014 Human Wizard",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 3,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Lakeshore Apothecary",
+        "catalogue_id": 2441,
+        "oracle_id": "80bcb154-b4be-4bbd-bbc1-b116a59045b7",
+        "type_line": "Creature \u2014 Human Cleric",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 1,
+        "toughness": 2,
+        "keywords": [
+          "vigilance"
+        ],
+        "paragraphs": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/tapped.draw_discard.1.1",
+    "abilities": [
+      {
+        "event": "tapped",
+        "amount": 1,
+        "secondary": 1,
+        "effect": "draw_discard"
+      }
+    ],
+    "representative": "Mechan Navigator",
+    "members": [
+      {
+        "card": "Mechan Navigator",
+        "catalogue_id": 2697,
+        "oracle_id": "fa72c607-7eb4-41b7-9af1-f3d6c69abf09",
+        "type_line": "Artifact Creature \u2014 Robot Pilot",
+        "kinds": 17,
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 1,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      },
+      {
+        "card": "Silvergill Peddler",
+        "catalogue_id": 3873,
+        "oracle_id": "08688903-d9cc-4d57-ba91-14a8523551b9",
+        "type_line": "Creature \u2014 Merfolk Citizen",
+        "kinds": 1,
+        "cost": {
+          "printed": "{2}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        },
+        "power": 2,
+        "toughness": 3,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/tapped.gain_life.2.0",
+    "abilities": [
+      {
+        "event": "tapped",
+        "amount": 2,
+        "secondary": 0,
+        "effect": "gain_life"
+      }
+    ],
+    "representative": "Wanderbrine Preacher",
+    "members": [
+      {
+        "card": "Wanderbrine Preacher",
+        "catalogue_id": 4963,
+        "oracle_id": "4b4dcdb1-0017-494f-8d83-6706b188e575",
+        "type_line": "Creature \u2014 Merfolk Cleric",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/tapped.scry.1.0",
+    "abilities": [
+      {
+        "event": "tapped",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "scry"
+      }
+    ],
+    "representative": "Attentive Sunscribe",
+    "members": [
+      {
+        "card": "Attentive Sunscribe",
+        "catalogue_id": 258,
+        "oracle_id": "0f85714b-e731-45a3-aa65-8cd59cd48280",
+        "type_line": "Artifact Creature \u2014 Gnome",
+        "kinds": 17,
+        "cost": {
+          "printed": "{1}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "id": "plain_creature_v1/tapped.surveil.1.0",
+    "abilities": [
+      {
+        "event": "tapped",
+        "amount": 1,
+        "secondary": 0,
+        "effect": "surveil"
+      }
+    ],
+    "representative": "Starfighter Pilot",
+    "members": [
+      {
+        "card": "Starfighter Pilot",
+        "catalogue_id": 4100,
+        "oracle_id": "fd6afb5e-d99a-44a7-9af4-9f064da95d63",
+        "type_line": "Creature \u2014 Human Pilot",
+        "kinds": 1,
+        "cost": {
+          "printed": "{1}{W}",
+          "colored": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        },
+        "power": 2,
+        "toughness": 2,
+        "keywords": [],
+        "paragraphs": [
+          0
+        ]
+      }
+    ]
+  }
+]

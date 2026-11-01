@@ -104,7 +104,7 @@ fn hob_inherited_smaug_paid_creature_only_five_damage_then_flying_creature() {
         paid(&mut g, smaug, false, None, [0, 0, 0, 2, 0, 5]);
         settle(&mut g);
         assert_eq!(stats(&g, smaug), (5, 5));
-        assert!(g.keywords(smaug).contains(Keywords::FLYING));
+
         assert_eq!(g.object_view(smaug).zone, Zone::Battlefield);
         assert!(!g.can_play_adventure(p, smaug));
     }

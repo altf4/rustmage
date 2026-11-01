@@ -102,7 +102,7 @@ fn thrush_gain_is_unconditional_and_optional_basic_search_puts_top() {
                 };
             }
             settle(&mut g);
-            assert!(g.keywords(c).contains(Keywords::FLYING));
+
             assert_eq!(stats(&g, c), (1, 2));
             if accept {
                 assert_eq!(g.state.players[p.index()].library.last(), Some(&top[1]));

@@ -20,7 +20,7 @@ fn leatherhead_enters_hexproof_and_combat_removal_creates_a_separate_qualified_t
             settle(&mut g);
             assert_eq!(g.counter_count(source, CounterKind::Hexproof), 1);
             assert!(g.keywords(source).contains(Keywords::HEXPROOF));
-            assert!(g.keywords(source).contains(Keywords::TRAMPLE));
+
             if removal == Some(CounterKind::PlusOne) {
                 g.add_counter(source, CounterKind::PlusOne, 1);
             }

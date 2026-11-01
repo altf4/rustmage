@@ -1,0 +1,570 @@
+[
+  {
+    "id": "plain_normal_spell_v1/counter/creature_spell",
+    "effect": {
+      "kind": "counter",
+      "target": "creature_spell"
+    },
+    "representative": "Essence Scatter",
+    "members": [
+      {
+        "card": "Essence Scatter",
+        "catalogue_id": 1373,
+        "oracle_id": "46665089-aa3d-44c3-964d-6638dfbb5782",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/counter/noncreature_spell",
+    "effect": {
+      "kind": "counter",
+      "target": "noncreature_spell"
+    },
+    "representative": "Negate",
+    "members": [
+      {
+        "card": "Negate",
+        "catalogue_id": 2914,
+        "oracle_id": "3407fe41-fdd3-4119-8f70-4bc4590a379f",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/counter/spell",
+    "effect": {
+      "kind": "counter",
+      "target": "spell"
+    },
+    "representative": "Cancel",
+    "members": [
+      {
+        "card": "Cancel",
+        "catalogue_id": 630,
+        "oracle_id": "7d00fb28-ea6c-49a9-b4af-ffb38860a9a7",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{U}{U}",
+          "colored": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/damage/any/2",
+    "effect": {
+      "kind": "damage",
+      "amount": 2,
+      "target": "any"
+    },
+    "representative": "Shock",
+    "members": [
+      {
+        "card": "Shock",
+        "catalogue_id": 10,
+        "oracle_id": "a9d288b8-cdc1-4e55-a0c9-d6edfc95e65d",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{R}",
+          "colored": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "generic": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/damage/any/3",
+    "effect": {
+      "kind": "damage",
+      "amount": 3,
+      "target": "any"
+    },
+    "representative": "Lightning Strike",
+    "members": [
+      {
+        "card": "Lightning Strike",
+        "catalogue_id": 2497,
+        "oracle_id": "f34b9bc4-7bfe-47fd-ba23-4eeeb46026eb",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{R}",
+          "colored": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/damage/any/4",
+    "effect": {
+      "kind": "damage",
+      "amount": 4,
+      "target": "any"
+    },
+    "representative": "Flame Lash",
+    "members": [
+      {
+        "card": "Flame Lash",
+        "catalogue_id": 1540,
+        "oracle_id": "c65e804b-9222-4fa8-88d1-df06a3279f22",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{3}{R}",
+          "colored": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "generic": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/damage/creature/4",
+    "effect": {
+      "kind": "damage",
+      "amount": 4,
+      "target": "creature"
+    },
+    "representative": "Bombard",
+    "members": [
+      {
+        "card": "Bombard",
+        "catalogue_id": 491,
+        "oracle_id": "c0899c12-5462-4ff1-a9e5-d99cffa7c6cc",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{2}{R}",
+          "colored": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "generic": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/damage/creature/5",
+    "effect": {
+      "kind": "damage",
+      "amount": 5,
+      "target": "creature"
+    },
+    "representative": "Scorching Shot",
+    "members": [
+      {
+        "card": "Scorching Shot",
+        "catalogue_id": 3726,
+        "oracle_id": "e13113ba-1923-493c-a48d-ca320b7adbde",
+        "type_line": "Sorcery",
+        "cost": {
+          "printed": "{R}{R}",
+          "colored": [
+            0,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          "generic": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/destroy/creature",
+    "effect": {
+      "kind": "destroy_creature"
+    },
+    "representative": "Bilbo's Deadly Slice",
+    "members": [
+      {
+        "card": "Bilbo's Deadly Slice",
+        "catalogue_id": 408,
+        "oracle_id": "4c054431-3667-4e28-9d68-03b43447c35b",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{B}{B}",
+          "colored": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      },
+      {
+        "card": "Fell",
+        "catalogue_id": 1488,
+        "oracle_id": "8f968470-ce00-43a3-95f5-2e3fe987be19",
+        "type_line": "Sorcery",
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      },
+      {
+        "card": "Murder",
+        "catalogue_id": 2879,
+        "oracle_id": "938b4e2c-88d9-4637-bc00-e228920c9a78",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{B}{B}",
+          "colored": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/draw/controller/2",
+    "effect": {
+      "kind": "draw",
+      "amount": 2
+    },
+    "representative": "Quick Study",
+    "members": [
+      {
+        "card": "Quick Study",
+        "catalogue_id": 3312,
+        "oracle_id": "7bff8d4a-1c7d-48b8-b3e3-737dd6f01823",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{2}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/draw_discard/controller/3/1",
+    "effect": {
+      "kind": "draw_discard",
+      "cards": 3,
+      "discard": 1
+    },
+    "representative": "Ancestral Reminiscence",
+    "members": [
+      {
+        "card": "Ancestral Reminiscence",
+        "catalogue_id": 157,
+        "oracle_id": "dbfa2743-34ff-40e3-81f7-740fc08cd18a",
+        "type_line": "Sorcery",
+        "cost": {
+          "printed": "{3}{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/grow/creature/-2/-2/end_turn",
+    "effect": {
+      "kind": "grow_creature",
+      "power": -2,
+      "toughness": -2
+    },
+    "representative": "Stab",
+    "members": [
+      {
+        "card": "Stab",
+        "catalogue_id": 4083,
+        "oracle_id": "b4ee6843-bb79-4665-9763-83f656863dc5",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/grow/creature/-3/-3/end_turn",
+    "effect": {
+      "kind": "grow_creature",
+      "power": -3,
+      "toughness": -3
+    },
+    "representative": "Last Gasp",
+    "members": [
+      {
+        "card": "Last Gasp",
+        "catalogue_id": 2449,
+        "oracle_id": "a82c3860-4dd6-4ffd-aa8f-ab8df687db6c",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      },
+      {
+        "card": "Scorpion's Sting",
+        "catalogue_id": 3728,
+        "oracle_id": "7f5e5aa8-3f15-45c9-bfc8-1f4b98d2be38",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/grow/creature/-4/-4/end_turn",
+    "effect": {
+      "kind": "grow_creature",
+      "power": -4,
+      "toughness": -4
+    },
+    "representative": "Dark Deed",
+    "members": [
+      {
+        "card": "Dark Deed",
+        "catalogue_id": 964,
+        "oracle_id": "e98cd00c-b812-4c6a-81d4-e3f94b64fc58",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/grow/creature/0/-9999/end_turn",
+    "effect": {
+      "kind": "grow_creature",
+      "power": 0,
+      "toughness": -9999
+    },
+    "representative": "Overkill",
+    "members": [
+      {
+        "card": "Overkill",
+        "catalogue_id": 3069,
+        "oracle_id": "571cb4b6-b4e5-40a2-a970-42c1ab65c8a9",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{2}{B}",
+          "colored": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "generic": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/grow/creature/3/3/end_turn",
+    "effect": {
+      "kind": "grow_creature",
+      "power": 3,
+      "toughness": 3
+    },
+    "representative": "Giant Growth",
+    "members": [
+      {
+        "card": "Giant Growth",
+        "catalogue_id": 11,
+        "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/grow/creature/4/4/end_turn",
+    "effect": {
+      "kind": "grow_creature",
+      "power": 4,
+      "toughness": 4
+    },
+    "representative": "Titanic Growth",
+    "members": [
+      {
+        "card": "Titanic Growth",
+        "catalogue_id": 4614,
+        "oracle_id": "61e09dd9-7870-48c2-9177-d6abc3162692",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{1}{G}",
+          "colored": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "generic": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "plain_normal_spell_v1/return_hand/creature",
+    "effect": {
+      "kind": "return_creature"
+    },
+    "representative": "Unsummon",
+    "members": [
+      {
+        "card": "Unsummon",
+        "catalogue_id": 4804,
+        "oracle_id": "837182db-1bf3-4a2c-bd01-1af9d9873561",
+        "type_line": "Instant",
+        "cost": {
+          "printed": "{U}",
+          "colored": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "generic": 0
+        }
+      }
+    ]
+  }
+]

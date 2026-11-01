@@ -53,7 +53,7 @@ fn bee(g: &mut Game, p: Player) -> CardId {
     settle(g);
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     assert_eq!(stats(g, id), (2, 2));
-    assert!(g.keywords(id).contains(Keywords::FLYING));
+
     id
 }
 fn staff(g: &mut Game, p: Player, body: CardId) -> CardId {

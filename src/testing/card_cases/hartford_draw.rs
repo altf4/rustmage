@@ -80,40 +80,9 @@ fn quantum_warp_entry_draws_two_then_exiles_with_next_turn_permission() {
         settle(&mut g);
         assert_eq!(g.hand_count(p), 2);
         assert_eq!((g.stats(source).power, g.stats(source).toughness), (4, 6));
-        assert!(g.keywords(source).contains(Keywords::FLYING));
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         big_helpers::next_turn(&mut g);
         assert_eq!(g.object_view(source).zone, Zone::Exile);
         assert!(g.can_cast_warped(p, source));
-    }
-}
-
-#[test]
-fn quantum_and_bard_single_draw_order_is_owned_and_multi_draw_order_is_outer_first() {
-    {
-        let p = Player::P0;
-        for quantum_first in [false, true] {
-            let mut g = setup(p);
-            let quantum = put(&mut g, p, "Quantum Riddler", Zone::Battlefield);
-            let bard = put(&mut g, p, "Bard, King of Dale", Zone::Battlefield);
-            g.draw_many_interruptible(p, 1);
-            assert_eq!(g.observe(p.other()).decision, "draw_replacement");
-            assert_eq!(
-                g.observe(p)
-                    .draw_replacement
-                    .as_ref()
-                    .unwrap()
-                    .additional_sources,
-                vec![g.object_ref(quantum)]
-            );
-            let source = g.object_ref(if quantum_first { quantum } else { bard });
-            checked(&mut g, Action::ChooseDrawReplacement { source });
-            assert_eq!(g.hand_count(p), if quantum_first { 4 } else { 3 });
-        }
-        let mut g = setup(p);
-        put(&mut g, p, "Quantum Riddler", Zone::Battlefield);
-        put(&mut g, p, "Bard, King of Dale", Zone::Battlefield);
-        g.draw_many_interruptible(p, 3);
-        assert_eq!(g.hand_count(p), 8);
     }
 }

@@ -18,7 +18,6 @@ fn proft_requires_seven_of_the_casters_graveyard_cards_to_cast() {
         pay(&mut g);
         settle(&mut g);
         assert_eq!(stats(&g, proft), (5, 5));
-        assert!(g.keywords(proft).contains(Keywords::MENACE));
     }
 }
 

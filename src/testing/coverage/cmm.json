@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 2260,
+      "name": "Jazal Goldmane",
+      "oracle_id": "609d13dc-c850-4877-8ad3-e84171b58069",
+      "facts_sha256": "ec9e07e72df23f54494806528418e2386122267bffd97b85d34343961c2b94e2",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.legendary",
+          "kind": "shared",
+          "source": [],
+          "proof": {
+            "shared": "legendary"
+          }
+        },
+        {
+          "id": "face0.paragraph0.first_strike",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "First strike (This creature deals combat damage before creatures without first strike.)"
+            }
+          ],
+          "proof": {
+            "shared": "first strike"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{3}{W}{W}: Attacking creatures you control get +X/+X until end of turn, where X is the number of attacking creatures."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2260/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

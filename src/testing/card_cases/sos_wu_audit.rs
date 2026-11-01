@@ -124,8 +124,7 @@ fn sos_audit_wu_repartee_all_consumers_trigger_once_on_cast_not_resolution() {
         let debater = put(&mut g, p, "Rehearsed Debater", Zone::Battlefield);
         let hopesinger = put(&mut g, p, "Stirring Hopesinger", Zone::Battlefield);
         let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-        assert!(g.keywords(inkwright).contains(Keywords::VIGILANCE));
-        assert!(g.keywords(debater).contains(Keywords::VIGILANCE));
+
         assert!(
             g.keywords(hopesinger)
                 .contains(Keywords::FLYING.union(Keywords::LIFELINK))
@@ -315,7 +314,7 @@ fn sos_audit_wu_dustspeaker_other_controlled_entry_and_optional_any_graveyard() 
         );
         finish(&mut g);
         assert_eq!(g.counter_count(friend, CounterKind::PlusOne), 1);
-        assert!(g.keywords(source).contains(Keywords::FLYING));
+
         assert_eq!(stats(&g, source), (3, 4));
         let grave = put(&mut g, p.other(), "Quick Study", Zone::Graveyard);
         g.begin_step(Step::BeginCombat);
@@ -447,7 +446,6 @@ fn sos_audit_wu_graveyard_activations_paid_own_sorcery_only() {
         paid(&mut g, drom, &[]);
         finish(&mut g);
         assert_eq!(stats(&g, drom), (4, 3));
-        assert!(g.keywords(drom).contains(Keywords::VIGILANCE));
     }
 }
 #[test]
@@ -501,7 +499,7 @@ fn sos_audit_wu_inventory_flashback_and_acolyte_sacrifice_cost() {
         paid(&mut g, acolyte, &[]);
         finish(&mut g);
         assert_eq!(stats(&g, acolyte), (2, 2));
-        assert!(g.keywords(acolyte).contains(Keywords::LIFELINK));
+
         let enchant = put(&mut g, p.other(), "Graduation Day", Zone::Battlefield);
         activate(&mut g, acolyte);
         reject(

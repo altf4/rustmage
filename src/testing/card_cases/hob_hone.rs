@@ -35,7 +35,7 @@ fn dwalin_paid_hybrid_entry_and_attack_hone_each_own_equipment_including_unattac
             settle(&mut g);
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
             assert_eq!(stats(&g, dwalin), (2, 1));
-            assert!(g.keywords(dwalin).contains(Keywords::FIRST_STRIKE));
+
             assert_eq!(g.counter_count(blade, CounterKind::Hone), 1);
             assert_eq!(g.counter_count(spare, CounterKind::Hone), 1);
             assert_eq!(g.counter_count(enemy, CounterKind::Hone), 0);

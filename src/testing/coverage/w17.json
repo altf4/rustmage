@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 4806,
+      "name": "Untamed Hunger",
+      "oracle_id": "550abd9b-9aae-4812-9bc0-7f131d6dcde8",
+      "facts_sha256": "5e129b045db461c069cfcde92d6375190283badd7287b73e4c69f2c5c5f8ee0a",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Enchant creature"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Enchanted creature gets +2/+1 and has menace. (It can't be blocked except by two or more creatures.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    }
+  ]
+}

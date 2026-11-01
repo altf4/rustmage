@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 1648,
+      "name": "Fumigate",
+      "oracle_id": "b17ea905-0696-4e58-b564-557e87236e27",
+      "facts_sha256": "c5944ad91fe9393070c77c82074542c024910483d20ba7b4b252c154c890ac12",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Destroy all creatures. You gain 1 life for each creature destroyed this way."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3362,
+      "name": "Rampaging Baloths",
+      "oracle_id": "2d3e6549-6cc6-434f-a189-ba3b55e64c34",
+      "facts_sha256": "e48c8aca0a558bd5ab03808232d5bd66a9bffc25685b463d9aa18bafba49a311",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.trample",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Trample"
+            }
+          ],
+          "proof": {
+            "shared": "trample"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Landfall \u2014 Whenever a land you control enters, create a 4/4 green Beast creature token."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3362/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3975,
+      "name": "Soul-Guide Lantern",
+      "oracle_id": "1b5e6560-ff2e-4475-96cb-63f64c8a86db",
+      "facts_sha256": "0cea4416b6495c3befc5f88c0ff9bb1b2c02eaa710c6368cc0935405c8cabd7a",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this artifact enters, exile target card from a graveyard."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{T}, Sacrifice this artifact: Exile each opponent's graveyard."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{1}, {T}, Sacrifice this artifact: Draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3975/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4364,
+      "name": "Temple of Enlightenment",
+      "oracle_id": "89f43e27-790b-4ca1-8ba7-0882b31e0783",
+      "facts_sha256": "0c2db2facbc0fc4227dcd13f62208b1c59fb4f0d4a34cdb340a2405c85256be8",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.3/activation",
+            "member": 4364
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.3/activation",
+            "member": 4364
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {W} or {U}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.3/activation",
+            "member": 4364
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.3/activation",
+            "member": 4364
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4991,
+      "name": "Wastes",
+      "oracle_id": "05d24b0c-904a-46b6-b42a-96a4d91a0dd4",
+      "facts_sha256": "90beb0469a99b1f2fac342de16c1d718c7b1820d30bb340c53fad787a7194e75",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{T}: Add {C}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/never/none.0/mana.32/activation",
+            "member": 4991
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/never/none.0/mana.32/activation",
+            "member": 4991
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5115,
+      "name": "Worldsoul's Rage",
+      "oracle_id": "3b6ef144-bb98-4686-9718-204f1c3cf020",
+      "facts_sha256": "301bbe2a60dacc99cc912119fc4c3fa19f4aace1dd2d787e609d7ed99df1d0f7",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Worldsoul's Rage deals X damage to any target. Put up to X land cards from your hand and/or graveyard onto the battlefield tapped."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    }
+  ]
+}

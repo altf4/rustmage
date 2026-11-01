@@ -29,7 +29,7 @@ fn proxy_entry_empowers_jace_and_has_flash() {
         let p = Player::P0;
         let mut g = scenario(p);
         let proxy = put(&mut g, p, "Theorist's Proxy", Zone::Hand);
-        assert!(g.keywords(proxy).contains(Keywords::FLASH));
+
         cast(&mut g, proxy, None);
         settle(&mut g);
         let jace = g

@@ -243,7 +243,7 @@ fn sos_prepared_whole_card_bodies_and_inset_effects() {
         cast(&mut g, source, None);
         settle(&mut g);
         assert_eq!(stats(&g, source), (3, 3));
-        assert!(g.keywords(source).contains(Keywords::FLYING));
+
         let draws = g.state.players[p.index()].cards_drawn_this_turn;
         prepared_cast(&mut g, source, &[]);
         big_helpers::settle(&mut g);
@@ -280,7 +280,7 @@ fn sos_prepared_ward_counter_decline_and_attack_reprepare() {
         cast(&mut g, source, None);
         settle(&mut g);
         assert_eq!(stats(&g, source), (2, 3));
-        assert!(g.keywords(source).contains(Keywords::FLYING));
+
         assert!(!g.object_view(source).prepared);
         g.state.objects[source as usize].summoning_sick = false;
         g.state.step = Step::Attackers;
@@ -388,7 +388,7 @@ fn sos_ideation_reprepares_only_after_exact_optional_eight_card_payment() {
             cast(&mut g, source, None);
             settle(&mut g);
             assert_eq!(stats(&g, source), (5, 5));
-            assert!(g.keywords(source).contains(Keywords::FLYING));
+
             let drawn = g.state.players[p.other().index()].cards_drawn_this_turn;
             prepared_cast(&mut g, source, &[Target::Player(p.other())]);
             settle(&mut g);
@@ -799,7 +799,7 @@ fn sos_joined_hand_condition_checks_trigger_and_resolution_on_either_turn() {
             let mut g = scenario(p);
             let source = put(&mut g, p, "Joined Researchers", Zone::Battlefield);
             assert_eq!(stats(&g, source), (2, 2));
-            assert!(g.keywords(source).contains(Keywords::FIRST_STRIKE));
+
             g.state.active = active;
             g.begin_step(Step::End);
             assert!(g.state.pending_triggers.is_empty());

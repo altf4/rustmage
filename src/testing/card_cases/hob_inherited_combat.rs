@@ -221,7 +221,7 @@ fn inherited_combat_rabbit_own_combat_ferocious_rechecked_and_chief_trigger_only
             let chief = paid(&mut g, p, "The Chief Warg", [0, 0, 1, 0, 1, 2]);
             drive(&mut g);
             assert_eq!(stats(&g, chief), (3, 3));
-            assert!(g.keywords(chief).contains(Keywords::MENACE));
+
             let strong = put(&mut g, p, "Hill Giant", Zone::Battlefield);
             if qualify {
                 g.add_counter(strong, CounterKind::PlusOne, 1);
@@ -329,7 +329,7 @@ fn inherited_combat_spider_paid_reach_power_boundary_and_opponent_spell_or_abili
         let spider = paid(&mut g, p, "Old Fat Spider", [0, 0, 0, 0, 2, 4]);
         drive(&mut g);
         assert_eq!(stats(&g, spider), (6, 7));
-        assert!(g.keywords(spider).contains(Keywords::REACH));
+
         let small = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         let large = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
         assert!(!g.can_block_pair(small, spider));

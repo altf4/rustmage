@@ -1,0 +1,110 @@
+{
+  "flying": {
+    "case": "engine::testing::mechanics::flying_reach_and_vigilance",
+    "outcomes": [
+      "flying rejects a ground blocker"
+    ]
+  },
+  "reach": {
+    "case": "engine::testing::mechanics::flying_reach_and_vigilance",
+    "outcomes": [
+      "reach allows blocking a flyer"
+    ]
+  },
+  "vigilance": {
+    "case": "engine::testing::mechanics::flying_reach_and_vigilance",
+    "outcomes": [
+      "attacking does not tap the creature"
+    ]
+  },
+  "haste": {
+    "case": "engine::testing::mechanics::haste_and_summoning_sickness",
+    "outcomes": [
+      "a newly controlled creature with haste can attack"
+    ]
+  },
+  "lifelink": {
+    "case": "engine::testing::mechanics::deathtouch_and_lifelink",
+    "outcomes": [
+      "combat damage gains the controller the damage amount"
+    ]
+  },
+  "deathtouch": {
+    "case": "engine::testing::mechanics::deathtouch_and_lifelink",
+    "outcomes": [
+      "damage destroys a larger creature"
+    ]
+  },
+  "first strike": {
+    "case": "engine::testing::mechanics::first_strike_kills_before_normal_damage_and_double_strike_deals_twice",
+    "outcomes": [
+      "first strike kills a blocker before its damage"
+    ]
+  },
+  "double strike": {
+    "case": "engine::testing::mechanics::first_strike_kills_before_normal_damage_and_double_strike_deals_twice",
+    "outcomes": [
+      "an unblocked double striker deals damage twice"
+    ]
+  },
+  "trample": {
+    "case": "engine::testing::mechanics::trample_assigns_lethal_damage_then_overflows_to_the_defender",
+    "outcomes": [
+      "lethal damage goes to the blocker and remaining damage to the player"
+    ]
+  },
+  "menace": {
+    "case": "engine::testing::mechanics::menace_needs_two_blockers",
+    "outcomes": [
+      "one blocker cannot finish blocking; two can"
+    ]
+  },
+  "indestructible": {
+    "case": "engine::testing::mechanics::indestructible_survives_destruction",
+    "outcomes": [
+      "destroy does not move an indestructible permanent"
+    ]
+  },
+  "hexproof": {
+    "case": "engine::testing::mechanics::hexproof_prevents_an_opponents_targeting_but_allows_its_controller",
+    "outcomes": [
+      "opponent cannot target; controller can"
+    ]
+  },
+  "flash": {
+    "case": "engine::testing::mechanics::flash_allows_casting_during_the_opponents_turn",
+    "outcomes": [
+      "a flash creature can be cast on the opposing turn"
+    ]
+  },
+  "defender": {
+    "case": "engine::testing::mechanics::defender_prevents_attacking",
+    "outcomes": [
+      "a defender is absent from legal attackers"
+    ]
+  },
+  "changeling": {
+    "case": "engine::testing::mechanics::changeling_grants_creature_types",
+    "outcomes": [
+      "a changeling has multiple creature types but no unrelated artifact type"
+    ]
+  },
+  "cant_block": {
+    "case": "engine::testing::mechanics::cant_block_prevents_block_declaration",
+    "outcomes": [
+      "a creature with cannot block is absent from block declarations"
+    ]
+  },
+  "ward": {
+    "case": "engine::testing::mechanics::ward_accepts_payment_or_counters_the_targeting_spell",
+    "outcomes": [
+      "the cost can be paid; declining counters the targeting spell"
+    ]
+  },
+  "legendary": {
+    "case": "engine::testing::mechanics::legend_rule_keeps_one_permanent_of_the_chosen_name",
+    "outcomes": [
+      "the owner keeps one same-named legend and the other goes to the graveyard"
+    ]
+  }
+}

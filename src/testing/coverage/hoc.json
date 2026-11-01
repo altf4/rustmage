@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 321,
+      "name": "Banishing Light",
+      "oracle_id": "f28b21a6-f7ce-437a-8c5b-0423cb55cefb",
+      "facts_sha256": "31ea8a2a063dfae36b0112f5fbfcc5885bd07c0a4dd265d120ece17f29bd8535",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/321/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1299,
+      "name": "Elvish Archdruid",
+      "oracle_id": "6e2c2423-d854-4478-99e6-64f29851f026",
+      "facts_sha256": "3545a96efe123e994b056d6c54c8cb8da64ed4f05ca3e47acf8f4ea8cc96870d",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Other Elf creatures you control get +1/+1."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{T}: Add {G} for each Elf you control."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1299/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1915,
+      "name": "Guttersnipe",
+      "oracle_id": "c6bdaf76-6a03-4695-9c4b-f040e73435af",
+      "facts_sha256": "fc312b7ad109b4b02e997a8d9e45b23ac0c69c881ad2e8ca09c14c9adac3f3cf",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Whenever you cast an instant or sorcery spell, this creature deals 2 damage to each opponent."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1915/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2720,
+      "name": "Mentor of the Meek",
+      "oracle_id": "b9f4f96b-6e54-4fe6-8df7-623e0fc72409",
+      "facts_sha256": "393be7e4b9c3d4d8960a455cdbc7bfc85f3ca065e829aaabd02dad4fa0781d52",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Whenever another creature you control with power 2 or less enters, you may pay {1}. If you do, draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2720/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3576,
+      "name": "Rogue's Passage",
+      "oracle_id": "f29dc596-2121-4421-8463-15f6c2e8b9b3",
+      "facts_sha256": "a150f940b89784b7bcd7158584589a3ee93dca2ae00eedcdc8c950fb7223170a",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{T}: Add {C}."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{4}, {T}: Target creature can't be blocked this turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    }
+  ]
+}

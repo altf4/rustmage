@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 1421,
+      "name": "Fabled Passage",
+      "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54",
+      "facts_sha256": "a0ecb913d25a8f80488b27c0bf8cc42ecc8cb7078e39a0ae3cef4b9474057b55",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle. Then if you control four or more lands, untap that land."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4190,
+      "name": "Stroke of Midnight",
+      "oracle_id": "9a107e48-3d50-4941-95b1-10f2b29a4245",
+      "facts_sha256": "79af5fa42a36493ba6c7eb17482a1d7936c30d2061949a075a7cb61388e61105",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Destroy target nonland permanent. Its controller creates a 1/1 white Human creature token."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    }
+  ]
+}

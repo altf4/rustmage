@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 4884,
+      "name": "Vibrant Cityscape",
+      "oracle_id": "6a7f3e1f-6798-4644-b64c-7765f81f0938",
+      "facts_sha256": "394f5493f9287ec1a13b5f53663f85e65612b18144d27944408ef5ea15ffb5ee",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    }
+  ]
+}

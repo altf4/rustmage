@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 2476,
+      "name": "Leonin Skyhunter",
+      "oracle_id": "517c7295-8ba2-47a6-a1c6-aee722f8ca88",
+      "facts_sha256": "736c135236db68eb66d0205dbafa8395b0481f3c8c9b60820703229294e23e00",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/2476",
+            "outcomes": [
+              "literal printed cost and normal card outcome"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

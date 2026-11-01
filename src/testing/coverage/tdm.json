@@ -1,0 +1,6332 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 44,
+      "name": "Abzan Devotee",
+      "oracle_id": "3d02ee2f-b7bd-40b0-b9be-2420991b2be0",
+      "facts_sha256": "766eb3c08cfdede821de741a2e99142b7996d2547109faaabf03b9cce9b7e1c4",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{1}: Add {W}, {B}, or {G}. Activate only once each turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{2}{B}: Return this card from your graveyard to your hand."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/44/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 60,
+      "name": "Adorned Crocodile",
+      "oracle_id": "fb49c7d2-d750-4676-b90e-76e7fae70a25",
+      "facts_sha256": "2c70390a1584c51af9258f1956b0c65f447be6a1511c6d571da048b0dca12ad7",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature dies, create a 2/2 black Zombie Druid creature token."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Renew \u2014 {B}, Exile this card from your graveyard: Put a +1/+1 counter on target creature. Activate only as a sorcery."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/60/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 93,
+      "name": "Agent of Kotis",
+      "oracle_id": "584fe1e4-029d-43fe-8c9e-6995dd392d65",
+      "facts_sha256": "ab287a6bbdaf2958dce77eafe89029fd6796be96cda14ff968c988cb1239908e",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Renew \u2014 {3}{U}, Exile this card from your graveyard: Put two +1/+1 counters on target creature. Activate only as a sorcery."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/93/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 127,
+      "name": "Alesha's Legacy",
+      "oracle_id": "c4229cc8-11e5-4221-b00d-86969701e21b",
+      "facts_sha256": "16ebbabb3206b9a6577106b02cc274f6eea02303b9129b410b793db6460e9735",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Target creature you control gains deathtouch and indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 152,
+      "name": "Anafenza, Unyielding Lineage",
+      "oracle_id": "659bc01c-fa60-4d00-bdad-5bca1d2a978f",
+      "facts_sha256": "bee58602f0ba1f5d6a48799dcb36b8636678d3e3b98830c38e4cc2cf5b40ac14",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.legendary",
+          "kind": "shared",
+          "source": [],
+          "proof": {
+            "shared": "legendary"
+          }
+        },
+        {
+          "id": "face0.paragraph0.flash",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flash"
+            }
+          ],
+          "proof": {
+            "shared": "flash"
+          }
+        },
+        {
+          "id": "face0.paragraph1.first_strike",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "First strike"
+            }
+          ],
+          "proof": {
+            "shared": "first strike"
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "Whenever another nontoken creature you control dies, Anafenza endures 2. (Put two +1/+1 counters on it or create a 2/2 white Spirit creature token.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/152/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 199,
+      "name": "Arashin Sunshield",
+      "oracle_id": "1175d482-d8a2-467f-bc50-2f4b241966bb",
+      "facts_sha256": "f6ab749b513c91165a53e877fb76a0cadc0d4af0a0089ae114adf1a5bd6340af",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters, exile up to two target cards from a single graveyard."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{W}, {T}: Tap target creature."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/199/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 270,
+      "name": "Auroral Procession",
+      "oracle_id": "511d3de9-076b-4811-bddf-00623f98993f",
+      "facts_sha256": "2a320ef1830a229f0581631377abf4bf914d87cf21605637cdffdd5a4d673d94",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Return target card from your graveyard to your hand."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 281,
+      "name": "Avenger of the Fallen",
+      "oracle_id": "158d0272-a850-4399-8afa-d0caa143c3cb",
+      "facts_sha256": "2af266e857b5196d5b60af059c643bfaff411633620af84c461c1001cf5fc595",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.deathtouch",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Deathtouch"
+            }
+          ],
+          "proof": {
+            "shared": "deathtouch"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Mobilize X, where X is the number of creature cards in your graveyard. (Whenever this creature attacks, create X tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/281/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 359,
+      "name": "Bearer of Glory",
+      "oracle_id": "963947d5-5fe4-49cd-be0c-0bdb5f7bcbb6",
+      "facts_sha256": "7ee7127fde5a4fe8388519b75a91e89c5c17501db4d1cd3fa522cdef9aededf4",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "During your turn, this creature has first strike."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{4}{W}: Creatures you control get +1/+1 until end of turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/359/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 401,
+      "name": "Bewildering Blizzard",
+      "oracle_id": "84469042-d48d-409f-a2c9-047058f13bc5",
+      "facts_sha256": "979b7e8238a1c0cca44ec6af3ed8fdcfd76a6bf9b25261111a6c93f646a13980",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Draw three cards. Creatures your opponents control get -3/-0 until end of turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 455,
+      "name": "Bloodfell Caves",
+      "oracle_id": "64e29bfc-9313-4e8c-808c-bc27f6b018a6",
+      "facts_sha256": "87bcaf44b9335e6635696a3a426c20a400f738f08861700ecb8161a9c91e6a15",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.12/activation",
+            "member": 455
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.12/activation",
+            "member": 455
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {B} or {R}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.12/activation",
+            "member": 455
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.12/activation",
+            "member": 455
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 468,
+      "name": "Bloomvine Regent",
+      "oracle_id": "da1e019c-2ffb-412d-90d7-f2e5e5c44c4b",
+      "facts_sha256": "6eb5d75cc21daad767e42d6b91d908420b998ce80c88d109642f4b855c65683e",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever this creature or another Dragon you control enters, you gain 3 life."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Search your library for up to two basic Forest cards, reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle. (Also shuffle this card.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 472,
+      "name": "Blossoming Sands",
+      "oracle_id": "45429b2c-be3b-4b2e-9bab-a059ccbda8cd",
+      "facts_sha256": "f4a08f5ed04f3c8b6fee1de0d3159595ea8a3d2865e90f86ee246b3aa449102f",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.17/activation",
+            "member": 472
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.17/activation",
+            "member": 472
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {G} or {W}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.17/activation",
+            "member": 472
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.17/activation",
+            "member": 472
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 515,
+      "name": "Boulderborn Dragon",
+      "oracle_id": "1654cab1-0697-4547-b1fe-2d0a61385199",
+      "facts_sha256": "c0b071cbcf3cf8d42a1c1387ecf19331cb27208ba52ab0bbf5a0c1179e09bbc3",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, vigilance"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph0.vigilance",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, vigilance"
+            }
+          ],
+          "proof": {
+            "shared": "vigilance"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever this creature attacks, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+            }
+          ],
+          "proof": {
+            "family": "plain_creature_v1/attack.surveil.1.0",
+            "member": 515
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/515/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 834,
+      "name": "Constrictor Sage",
+      "oracle_id": "abfb7234-c5cc-4e0b-9a67-d66473f918fc",
+      "facts_sha256": "3cb9ff718a5201978e5f68d0d927509155a7900bdb4d47e4de7f8ba7833fc821",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Renew \u2014 {2}{U}, Exile this card from your graveyard: Tap target creature an opponent controls and put a stun counter on it. Activate only as a sorcery."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/834/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 845,
+      "name": "Coordinated Maneuver",
+      "oracle_id": "6ff39311-565e-4414-b32b-eb24c70b3090",
+      "facts_sha256": "c6f9465f74c56057b790e78bfe26d419dc2cc35d91cd1e6487675f66bb86e600",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Choose one \u2014"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "\u2022 Coordinated Maneuver deals damage equal to the number of creatures you control to target creature or planeswalker."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "\u2022 Destroy target enchantment."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 847,
+      "name": "Cori Mountain Monastery",
+      "oracle_id": "35c60b66-8c85-432e-90fe-99c19d21ed15",
+      "facts_sha256": "48583ac5f70562440bee8cd5ab011c33b268b910d2497b2f518f75ba4af56fbd",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped unless you control a Plains or an Island."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{T}: Add {R}."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{3}{R}, {T}: Exile the top card of your library. Until the end of your next turn, you may play that card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 848,
+      "name": "Cori Mountain Stalwart",
+      "oracle_id": "322a2d97-cf71-4bfc-b52d-f642f2d0dcbd",
+      "facts_sha256": "64ea82641012785b144f6bc35f4f5fc48f2dae1b9ca7ea110e445cc9d1bcfb58",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flurry \u2014 Whenever you cast your second spell each turn, this creature deals 2 damage to each opponent and you gain 2 life."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/848/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 904,
+      "name": "Cruel Truths",
+      "oracle_id": "2e68e3f7-b168-4541-b8a0-791a8a6ebde8",
+      "facts_sha256": "3158be1e534810f6632954f877a576789354b571b8ce6eb41ddd4e3c2bd8ecfb",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Surveil 2, then draw two cards. You lose 2 life. (To surveil 2, look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 951,
+      "name": "Dalkovan Packbeasts",
+      "oracle_id": "cdd1a043-bd47-4197-be26-e2f7d3f1d209",
+      "facts_sha256": "4c2c9cab8e51959f82d58c3b674bd7aef589d456e7fedd56ec2d0b8a98fa3ba8",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.vigilance",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Vigilance"
+            }
+          ],
+          "proof": {
+            "shared": "vigilance"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Mobilize 3 (Whenever this creature attacks, create three tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/951/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1002,
+      "name": "Death Begets Life",
+      "oracle_id": "53e86135-3b24-4618-bcc0-af4d81e672dd",
+      "facts_sha256": "b5d0aac8c93f9f828e4b81d070d5a2e026f8025e9904ea68af944a1f59c1986b",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Destroy all creatures and enchantments. Draw a card for each permanent destroyed this way."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1029,
+      "name": "Defibrillating Current",
+      "oracle_id": "5a96b93b-bae6-48fb-87f5-05f3ffcf7ba9",
+      "facts_sha256": "31b166236b406d24b482ca3b350b534debb2bd666beb3760360b11af858e9dd0",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Defibrillating Current deals 4 damage to target creature or planeswalker and you gain 2 life."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1048,
+      "name": "Descendant of Storms",
+      "oracle_id": "ca773c52-ca64-463c-99cf-e71b59d2cff7",
+      "facts_sha256": "8b06c9b62ee057f8023399b0a41d0796a137d49b8080bf58c370cd2823a65fbb",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Whenever this creature attacks, you may pay {1}{W}. If you do, it endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1048/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1064,
+      "name": "Devoted Duelist",
+      "oracle_id": "f7620c46-b3d8-4694-ac7c-a43933c86c22",
+      "facts_sha256": "5abe13498f7eced5d3802f7cfd4c4a028d28506ddd99d298b326dd3e2e25acae",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.haste",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Haste"
+            }
+          ],
+          "proof": {
+            "shared": "haste"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Flurry \u2014 Whenever you cast your second spell each turn, this creature deals 1 damage to each opponent."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1064/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1089,
+      "name": "Dirgur Island Dragon",
+      "oracle_id": "23cda76b-6e47-4922-a38d-93f7aae1eb00",
+      "facts_sha256": "694999bb9429fdb7e2646bf9936d01424d2239ffcf256be04f0d9e6c4e5884ce",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1.ward",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)"
+            }
+          ],
+          "proof": {
+            "shared": "ward"
+          }
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Tap up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1094,
+      "name": "Dismal Backwater",
+      "oracle_id": "865a2194-fca0-446e-aae3-ca475cd66e00",
+      "facts_sha256": "2818b0af8052055e32175a211055d43f9e1e1ce79c7d7aaa678c31ca55e48df7",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.6/activation",
+            "member": 1094
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.6/activation",
+            "member": 1094
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {U} or {B}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.6/activation",
+            "member": 1094
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.6/activation",
+            "member": 1094
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1096,
+      "name": "Disruptive Stormbrood",
+      "oracle_id": "ec74ae5d-1284-443c-9842-18954f8cf5a8",
+      "facts_sha256": "be2a2f7b41b1f1433922e7586aafaa177a01e8224e1b840d911612cca0267a99",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, destroy up to one target artifact or enchantment."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Destroy target creature with power 3 or less. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1154,
+      "name": "Dragon Sniper",
+      "oracle_id": "913dbce2-6805-453f-a9c3-64f1cc658627",
+      "facts_sha256": "e14ad99f5a0e28ed6dfdcd3c05facd53c557108b6a7cf56055993781a15fcf9c",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0.reach",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Reach, vigilance, deathtouch"
+            }
+          ],
+          "proof": {
+            "shared": "reach"
+          }
+        },
+        {
+          "id": "face0.paragraph0.vigilance",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Reach, vigilance, deathtouch"
+            }
+          ],
+          "proof": {
+            "shared": "vigilance"
+          }
+        },
+        {
+          "id": "face0.paragraph0.deathtouch",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Reach, vigilance, deathtouch"
+            }
+          ],
+          "proof": {
+            "shared": "deathtouch"
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1154/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1157,
+      "name": "Dragonback Assault",
+      "oracle_id": "413fb2db-f1a1-4d22-ac37-a52821d35ca2",
+      "facts_sha256": "df5df4cb227c5fd3c0bf7f8833e9a8d5e7479f5fd57d1cf59a29820bd3da14a1",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this enchantment enters, it deals 3 damage to each creature and each planeswalker."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Landfall \u2014 Whenever a land you control enters, create a 4/4 red Dragon creature token with flying."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1157/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1158,
+      "name": "Dragonback Lancer",
+      "oracle_id": "7875c063-19c3-4e6e-81d8-1a378a4e16e5",
+      "facts_sha256": "77e148fd78f138e20ac2fbb34e2c9ccf2a311590cb6f7ae2ba357a6903ad2cfa",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1158/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1167,
+      "name": "Dragonstorm Forecaster",
+      "oracle_id": "02de8fa3-ac8d-47e5-b137-d5a0b7d8e951",
+      "facts_sha256": "9af5bbe1b4ca38697b801f3e63725136b3c7be5219e306a3a0cad90b2fc3bdb3",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{2}, {T}: Search your library for a card named Dragonstorm Globe or Boulderborn Dragon, reveal it, put it into your hand, then shuffle."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1167/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1209,
+      "name": "Dusyut Earthcarver",
+      "oracle_id": "387b12b1-d8f5-487b-972f-5303b23eed5a",
+      "facts_sha256": "57434e7406ca7cc045fe70591240d5f744c9d6e60c92b6bd11fa3b3ce99ac581",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.reach",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Reach"
+            }
+          ],
+          "proof": {
+            "shared": "reach"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, it endures 3. (Put three +1/+1 counters on it or create a 3/3 white Spirit creature token.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1209/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1211,
+      "name": "Duty Beyond Death",
+      "oracle_id": "67e6ce99-4883-4713-9822-cb2334765b5b",
+      "facts_sha256": "c2a98e61509f0a926a19b15300c8911c551cd0354bd7396e248bdbe135fb27fb",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "As an additional cost to cast this spell, sacrifice a creature."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Creatures you control gain indestructible until end of turn. Put a +1/+1 counter on each creature you control. (Damage and effects that say \"destroy\" don't destroy those creatures.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1271,
+      "name": "Effortless Master",
+      "oracle_id": "185e0892-194f-43ac-853f-1e142bf8476e",
+      "facts_sha256": "c2a8ee81fc265ede1a1b911c2b34b34364390510ac1479fa4de12b35b61ba247",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.vigilance",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Vigilance"
+            }
+          ],
+          "proof": {
+            "shared": "vigilance"
+          }
+        },
+        {
+          "id": "face0.paragraph1.menace",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Menace (This creature can't be blocked except by two or more creatures.)"
+            }
+          ],
+          "proof": {
+            "shared": "menace"
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "This creature enters with two +1/+1 counters on it if you've cast two or more spells this turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1271/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1292,
+      "name": "Elspeth, Storm Slayer",
+      "oracle_id": "f78af825-023a-42e9-8374-5c52303a1417",
+      "facts_sha256": "128b61caf509aa3036a6c3f209330d0eb66fbd6bf569013ba268bc2fe31784e4",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.legendary",
+          "kind": "shared",
+          "source": [],
+          "proof": {
+            "shared": "legendary"
+          }
+        },
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "If one or more tokens would be created under your control, twice that many of those tokens are created instead."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "+1: Create a 1/1 white Soldier creature token."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "0: Put a +1/+1 counter on each creature you control. Those creatures gain flying until your next turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph3",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 3,
+              "text": "\u22123: Destroy target creature an opponent controls with mana value 3 or greater."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1292/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1354,
+      "name": "Equilibrium Adept",
+      "oracle_id": "42bf9435-02e6-428f-a93c-fe4652deb4fc",
+      "facts_sha256": "b9618bc112f54c9610230ced2513faecde4a122dca9e9150a2e418911a0355bf",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters, exile the top card of your library. Until the end of your next turn, you may play that card."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Flurry \u2014 Whenever you cast your second spell each turn, this creature gains double strike until end of turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1354/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1494,
+      "name": "Feral Deathgorger",
+      "oracle_id": "1722f814-2d4e-4d59-9b74-10ef8e89def9",
+      "facts_sha256": "dc38c809fe39c2730c30d3a3731d970ae327f2137359c467578bf65fb886ff81",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, deathtouch"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph0.deathtouch",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, deathtouch"
+            }
+          ],
+          "proof": {
+            "shared": "deathtouch"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, exile up to two target cards from a single graveyard."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Put a +1/+1 counter on up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1527,
+      "name": "Fire-Rim Form",
+      "oracle_id": "89fb21dc-4cf2-4c9a-b0ae-cc6e10277fb6",
+      "facts_sha256": "45d410168b0420ef600de60d889056f75a609c65cc1748aba2585bd87e5404d0",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flash",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flash"
+            }
+          ],
+          "proof": {
+            "shared": "flash"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Enchant creature"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "When this Aura enters, enchanted creature gains first strike until end of turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph3",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 3,
+              "text": "Enchanted creature gets +2/+0."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1573,
+      "name": "Focus the Mind",
+      "oracle_id": "695a84b5-96b0-4e48-b615-15624efab3b7",
+      "facts_sha256": "46d52bf5ecef2c7b92d959953af9260cbba32cc1808dc16b0d37329566afedbb",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This spell costs {2} less to cast if you've cast another spell this turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Draw three cards, then discard a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1601,
+      "name": "Fortress Kin-Guard",
+      "oracle_id": "fa3ed0f6-e44e-433d-80d3-824de5e6135a",
+      "facts_sha256": "06685fa4432612c1f7bd316bd1b983634fd859bfacf18ccb48f782d444e40d39",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters, it endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1601/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1622,
+      "name": "Fresh Start",
+      "oracle_id": "77f1734d-ea0b-4344-8a9e-9d1a34eb6164",
+      "facts_sha256": "a67c8a0b13309f270545872725bf4834605da9ff18ed7baa20d7a187416b8e65",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flash",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flash"
+            }
+          ],
+          "proof": {
+            "shared": "flash"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Enchant creature"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "Enchanted creature gets -5/-0 and loses all abilities."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1635,
+      "name": "Frontline Rush",
+      "oracle_id": "b80d21de-2ace-4e0d-92b2-6f0273512621",
+      "facts_sha256": "b325476bf726a3171e4a0e7975016e1b5d0500b50d4f3a0b1843d0392ab07cfd",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Choose one \u2014"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "\u2022 Create two 1/1 red Goblin creature tokens."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "\u2022 Target creature gets +X/+X until end of turn, where X is the number of creatures you control."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1860,
+      "name": "Great Arashin City",
+      "oracle_id": "f40f374b-acaf-459d-9ccd-b0b22d1a3f28",
+      "facts_sha256": "a3dd31e0d7bd6c3c55e3b600991789f3e3bda23c6af0e93bab17445d52c50e76",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped unless you control a Forest or a Plains."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{T}: Add {B}."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{1}{B}, {T}, Exile a creature card from your graveyard: Create a 1/1 white Spirit creature token."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1945,
+      "name": "Hardened Tactician",
+      "oracle_id": "ca1dc6f0-3ec2-4f62-a08a-1395201bd93f",
+      "facts_sha256": "2869dea446bbab9ba822504bd370a81cf093ccd5faf14db799c3a99f30da6e23",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{1}, Sacrifice a token: Draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1945/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2011,
+      "name": "Heritage Reclamation",
+      "oracle_id": "09955b4b-6052-4c27-8b63-9548482b3c5c",
+      "facts_sha256": "e1efdd4a58dbe5208329ff5a1019c7dddff9d16be54a278967eae91047961612",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Choose one \u2014"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "\u2022 Destroy target artifact."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "\u2022 Destroy target enchantment."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph3",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 3,
+              "text": "\u2022 Exile up to one target card from a graveyard. Draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2043,
+      "name": "Highspire Bell-Ringer",
+      "oracle_id": "6d2d250b-cdce-4075-8724-b52ad31664fb",
+      "facts_sha256": "4585cd5d6cc6654f448c774ce3e4ecfd0910c39953acafcbda5f68071bb3f8fc",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "The second spell you cast each turn costs {1} less to cast."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2098,
+      "name": "Humbling Elder",
+      "oracle_id": "013bcab8-e527-4700-82c9-4cb9cb8a4807",
+      "facts_sha256": "8b0b43040a6230ead448facac6a672a075f79ba591dde17cc740cc2a4169c4cd",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flash",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flash"
+            }
+          ],
+          "proof": {
+            "shared": "flash"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, target creature an opponent controls gets -2/-0 until end of turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2098/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2124,
+      "name": "Iceridge Serpent",
+      "oracle_id": "53f07529-c212-43e4-b5b6-086efeadda39",
+      "facts_sha256": "33bbf56d79ff82e35d01f5fdd327c1deb12e13cfab26b282539a9e2d4086295a",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters, return target creature an opponent controls to its owner's hand."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2124/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2158,
+      "name": "Inevitable Defeat",
+      "oracle_id": "d68439b5-7011-4b1d-a7da-14ef0f4d9994",
+      "facts_sha256": "54e0d72b483962b5ee17d43888465c0f0f42255d0da29d73ab31f8ddf9364b67",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This spell can't be countered."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Exile target nonland permanent. Its controller loses 3 life and you gain 3 life."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2191,
+      "name": "Inspirited Vanguard",
+      "oracle_id": "db756a16-3db6-4bde-bbc2-ecee3ee9d9d3",
+      "facts_sha256": "c8c64f4734110dabec4e4eae31eeec2b8fbde59f54046e773c17e6666c149234",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Whenever this creature enters or attacks, it endures 2. (Put two +1/+1 counters on it or create a 2/2 white Spirit creature token.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2191/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2253,
+      "name": "Jade-Cast Sentinel",
+      "oracle_id": "985192cd-ceb6-48ad-80b9-e10fc544260e",
+      "facts_sha256": "ae0f1bb85972a50a1d96dc64fbf3e48d4ff8638cdd64cd7235c42969fc4c3664",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.reach",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Reach"
+            }
+          ],
+          "proof": {
+            "shared": "reach"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{2}, {T}: Put target card from a graveyard on the bottom of its owner's library."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2253/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2269,
+      "name": "Jeskai Brushmaster",
+      "oracle_id": "eff690a7-c2c7-4750-894c-0667d3151165",
+      "facts_sha256": "ae311d036280bb1108938fb9de438f1d8f3107e6f434a2e23cca85e15f22ef4a",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0.double_strike",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Double strike"
+            }
+          ],
+          "proof": {
+            "shared": "double strike"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)"
+            }
+          ],
+          "proof": {
+            "family": "plain_creature_v1/noncreature_cast.grow.1.1",
+            "member": 2269
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2269/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2270,
+      "name": "Jeskai Devotee",
+      "oracle_id": "6dcdd313-6df7-4d44-a4cb-0346a4fdb4e1",
+      "facts_sha256": "e21b7bc05e20df3a310915135a451986175891dc003627b75975c3244b64c8c8",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flurry \u2014 Whenever you cast your second spell each turn, this creature gets +1/+1 until end of turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{1}: Add {U}, {R}, or {W}. Activate only once each turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2270/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2272,
+      "name": "Jeskai Revelation",
+      "oracle_id": "61b6b1d1-4350-41c1-ac47-835b2831f24a",
+      "facts_sha256": "e25772911df406ec463c3d0e47f1a58b2883de06d304b4b6c138d3f47c1d5038",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Return target spell or permanent to its owner's hand. Jeskai Revelation deals 4 damage to any target. Create two 1/1 white Monk creature tokens with prowess. Draw two cards. You gain 4 life."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2273,
+      "name": "Jeskai Shrinekeeper",
+      "oracle_id": "bb50b4f4-f0da-4283-821b-6d74bd20752f",
+      "facts_sha256": "86b73dc294325fca654452f973d84fcc71d0cd39fee0a928b47591ed825f991d",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, haste"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph0.haste",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, haste"
+            }
+          ],
+          "proof": {
+            "shared": "haste"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever this creature deals combat damage to a player, you gain 1 life and draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2273/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2299,
+      "name": "Jungle Hollow",
+      "oracle_id": "6de714e1-446d-4fb9-9e3d-bcd3ec6af9ca",
+      "facts_sha256": "c55f4acd0a02e4f4e57bf9b2800abc6cf6f49a36ccf82e6177936f917cb36f14",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.20/activation",
+            "member": 2299
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.20/activation",
+            "member": 2299
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {B} or {G}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.20/activation",
+            "member": 2299
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.20/activation",
+            "member": 2299
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2353,
+      "name": "Kin-Tree Nurturer",
+      "oracle_id": "ad28a1f9-8893-4693-9464-c32ed760f6b1",
+      "facts_sha256": "d3742240548b62bd4220ba75ef752c2a84e76265360a13c95870b00867190be1",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.lifelink",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Lifelink"
+            }
+          ],
+          "proof": {
+            "shared": "lifelink"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, it endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2353/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2354,
+      "name": "Kin-Tree Severance",
+      "oracle_id": "211d1c59-0111-48dd-9ff6-d03e7ff2ad5c",
+      "facts_sha256": "2209e22610c23094f34f8924204e88b058e86657ff38b491a572323e05ffa290",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Exile target permanent with mana value 3 or greater."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2389,
+      "name": "Knockout Maneuver",
+      "oracle_id": "7e4931f4-f518-4200-aad4-4ac8acf202e5",
+      "facts_sha256": "a48934db945de9f06ba2e4d5eda24ed2cc9671175af1a5eb51080e0072a9914b",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Put a +1/+1 counter on target creature you control, then it deals damage equal to its power to target creature an opponent controls."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2494,
+      "name": "Lightfoot Technique",
+      "oracle_id": "601b7481-19fc-4779-950e-883a9a22aec3",
+      "facts_sha256": "f6ac94f943c4e33195ee49b203bb0bf0dcb70d097e1b3c30e1810bf4171c6f67",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Put a +1/+1 counter on target creature. It gains flying and indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2570,
+      "name": "Loxodon Battle Priest",
+      "oracle_id": "8cf4ddb0-2a83-4d8f-b636-7ba3c81ea4ca",
+      "facts_sha256": "643fec69f3472613476a034f83703fd95e9c604822108390f3fe2f6c3c5ad7c3",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "At the beginning of combat on your turn, put a +1/+1 counter on another target creature you control."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2570/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2654,
+      "name": "Marang River Regent",
+      "oracle_id": "099b8d2c-b482-48dd-b6bc-dedf546d66c5",
+      "facts_sha256": "953cf9ea45b0bf86aa0797abfa2153f8f310d37f49632b58374ca6cefeff3926",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, return up to two other target nonland permanents to their owners' hands."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Draw three cards, then discard a card. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2661,
+      "name": "Mardu Devotee",
+      "oracle_id": "24ee57b5-a505-4264-97ca-8b8dfb12298e",
+      "facts_sha256": "0aaf40e6b72334e267705b7f7b0a9d10a69aee1d55ed13391ec52604d450ac20",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{1}: Add {R}, {W}, or {B}. Activate only once each turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2661/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2669,
+      "name": "Marshal of the Lost",
+      "oracle_id": "af762373-e159-4a36-83b5-a82b8b16fa41",
+      "facts_sha256": "8eac261ba7de268587b9ec075b11b5b42969a677592d795fd76a0ae200676e2f",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.deathtouch",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Deathtouch"
+            }
+          ],
+          "proof": {
+            "shared": "deathtouch"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever you attack, target creature gets +X/+X until end of turn, where X is the number of attacking creatures."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2669/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2734,
+      "name": "Meticulous Artisan",
+      "oracle_id": "2b2b3b16-389c-4581-b889-b8a2e76f83a2",
+      "facts_sha256": "a8c18430800e1d23d55806b8ed98cb2bd98c249b205035429df370682389c40a",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2734/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2868,
+      "name": "Mox Jasper",
+      "oracle_id": "d5fca77c-377f-41b4-a9e9-e91a89d351cc",
+      "facts_sha256": "1145563b27b060bb75c1822f863f5312f0cb4105cbe25f264898f323bf46cbb8",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.legendary",
+          "kind": "shared",
+          "source": [],
+          "proof": {
+            "shared": "legendary"
+          }
+        },
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{T}: Add one mana of any color. Activate only if you control a Dragon."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2868/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2907,
+      "name": "Narset's Rebuke",
+      "oracle_id": "247075c5-62f8-41a1-91b3-562ff0aabb30",
+      "facts_sha256": "ca57d1c33bd0bafafb6c71ad50a3064c85ccbe4d47cadb29828fedf2e81363fe",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Narset's Rebuke deals 5 damage to target creature. Add {U}{R}{W}. If that creature would die this turn, exile it instead."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2936,
+      "name": "Nightblade Brigade",
+      "oracle_id": "36d04190-7ce3-431a-b18e-3a1895ec6fc7",
+      "facts_sha256": "77aeaf649373d38735175e0054703fe58dca5cca7461d43a6f0bb5995d4f7dc1",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.deathtouch",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Deathtouch"
+            }
+          ],
+          "proof": {
+            "shared": "deathtouch"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "When this creature enters, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2936/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2959,
+      "name": "Nomad Outpost",
+      "oracle_id": "4619de7e-3d6e-4c6b-8e6e-e24db324839d",
+      "facts_sha256": "fc2a152b0da02ef329379a2425800b70fb53f6dc4fa93ffc2d4f116131e59d36",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.13/activation",
+            "member": 2959
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{T}: Add {R}, {W}, or {B}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.13/activation",
+            "member": 2959
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.13/activation",
+            "member": 2959
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3077,
+      "name": "Overwhelming Surge",
+      "oracle_id": "bc8a37f1-c36b-4d0f-82da-4558ff712565",
+      "facts_sha256": "c18737c46fb40b59d4daa6f4604593f4921d0eb20d16176b3c6afb5789adce23",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Choose one or both \u2014"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "\u2022 Overwhelming Surge deals 3 damage to target creature."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "\u2022 Destroy target noncreature artifact."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3193,
+      "name": "Poised Practitioner",
+      "oracle_id": "e08debdc-2db5-4562-8a02-4158bfc0db88",
+      "facts_sha256": "5a9a0b036b1770a5fe02e714738d6d74b9ec57dc83e05fec50df99151604570f",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flurry \u2014 Whenever you cast your second spell each turn, put a +1/+1 counter on this creature. Scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3193/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3284,
+      "name": "Purging Stormbrood",
+      "oracle_id": "5e8086d5-ea48-4555-b65a-a33d08ba4afd",
+      "facts_sha256": "1ec67c41a76b5d9c39c550c234b6c6b51985292ef25a5c2f7d54975b66502d30",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Ward\u2014Pay 2 life."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "When this creature enters, remove all counters from up to one target creature."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Target creature gets +2/+2 and gains lifelink and hexproof until end of turn. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3356,
+      "name": "Rakshasa's Bargain",
+      "oracle_id": "d87be8c6-7a1f-4db8-ada1-b1a030f03877",
+      "facts_sha256": "67924ba99e7fc7209be65a763657cc77a8e39eaf3d1805340b665707ea1bd51a",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Look at the top four cards of your library. Put two of them into your hand and the rest into your graveyard."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3419,
+      "name": "Rebellious Strike",
+      "oracle_id": "4f3d7102-f8ce-42d4-94eb-f69b695773d1",
+      "facts_sha256": "e43073fe7ba37846eec202a59088e3482ec1a87f96c7d4a6df68ce23bc7f61e9",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Target creature gets +3/+0 until end of turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3448,
+      "name": "Reigning Victor",
+      "oracle_id": "b8c5e481-371c-4999-bb2c-347a2aa33171",
+      "facts_sha256": "591ebe720a5ebd63293a6566018a2ff584d3476e329de13fc3b2c623fd5f2910",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, target creature gets +1/+0 and gains indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3469,
+      "name": "Reputable Merchant",
+      "oracle_id": "62f09a5b-d7fb-44f4-9fab-719185b735ab",
+      "facts_sha256": "634a3b1f887b43cadff3dc2f9d8c2940e00b279a3895a02473a2a743053b8560",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters or dies, put a +1/+1 counter on target creature you control."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3475,
+      "name": "Rescue Leopard",
+      "oracle_id": "d70ad04a-b940-4bb1-bcdc-408166e91723",
+      "facts_sha256": "dc38da2e3f9ab96e0a49297f2eedb3d4fa62ea73897d9b97431f278a4c641fb6",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Whenever this creature becomes tapped, you may discard a card. If you do, draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3475/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3525,
+      "name": "Riling Dawnbreaker",
+      "oracle_id": "1fc31651-70fe-4a58-9b7e-7359510bba51",
+      "facts_sha256": "bb1bece2be9eb4b9db4724e9c39a95dd8d610edb894a0337e7a835cbe5beb960",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, vigilance"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph0.vigilance",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, vigilance"
+            }
+          ],
+          "proof": {
+            "shared": "vigilance"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "At the beginning of combat on your turn, another target creature you control gets +1/+0 until end of turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Create a 2/2 white Soldier creature token. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3554,
+      "name": "Riverwalk Technique",
+      "oracle_id": "a123aab8-3f3a-4187-abcb-21a99dcf13bb",
+      "facts_sha256": "5a07429271ab7a1246c7b3e97dbcb3fa33a90ae4e2eba4cb9a4b1638994f7745",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Choose one \u2014"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "\u2022 The owner of target nonland permanent puts it on their choice of the top or bottom of their library."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "\u2022 Counter target noncreature spell."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3562,
+      "name": "Roar of Endless Song",
+      "oracle_id": "a3570093-3c16-42e7-a83d-2ff611a891b5",
+      "facts_sha256": "4843ea21f24c49bfe2e94302cfa23c069f771acc4c0c91eb04106f442493e547",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "I, II \u2014 Create a 5/5 green Elephant creature token."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "III \u2014 Double the power and toughness of each creature you control until end of turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3611,
+      "name": "Rugged Highlands",
+      "oracle_id": "6c922206-6e68-4dcd-9559-88da1074f2c4",
+      "facts_sha256": "229cf0320f309f152fce970274deb5cd20e5eabedf38738216ad6abefc770e3b",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.24/activation",
+            "member": 3611
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.24/activation",
+            "member": 3611
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {R} or {G}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.24/activation",
+            "member": 3611
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.24/activation",
+            "member": 3611
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3624,
+      "name": "Runescale Stormbrood",
+      "oracle_id": "af7db15c-93af-4c7e-a028-42181d91a923",
+      "facts_sha256": "5e041ed82ce3f81e0819b15ce6ce9b57b3a93c1acda84f9061e621a5b4fc363d",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever you cast a noncreature spell or a Dragon spell, this creature gets +2/+0 until end of turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Counter target spell with mana value 2 or less. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3651,
+      "name": "Sagu Wildling",
+      "oracle_id": "7cee6d43-5dec-4989-85ec-c635ec783ec7",
+      "facts_sha256": "3bd160839b257c931ac2e54fd931ade2538970941bf46d8b91b74bbf8980c931",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, you gain 3 life."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Search your library for a basic land card, reveal it, put it into your hand, then shuffle. (Also shuffle this card.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3658,
+      "name": "Salt Road Packbeast",
+      "oracle_id": "50261b9d-48f2-4bad-a35b-14f13b3cdd32",
+      "facts_sha256": "ba5c1caafa23fb0b705167848e1177be6cf362d39f649abe659b7a3b073233a7",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Affinity for creatures (This spell costs {1} less to cast for each creature you control.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.affinity.face0",
+          "kind": "casting_route",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Affinity for creatures (This spell costs {1} less to cast for each creature you control.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3678,
+      "name": "Sandskitter Outrider",
+      "oracle_id": "eae480fe-d9fe-4dbe-8b78-b65f398b0af3",
+      "facts_sha256": "935e0ca3f5901798d4544b65bcadcd5da1996771f7a56f8d43b0496736b9c270",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.menace",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Menace (This creature can't be blocked except by two or more creatures.)"
+            }
+          ],
+          "proof": {
+            "shared": "menace"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, it endures 2. (Put two +1/+1 counters on it or create a 2/2 white Spirit creature token.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3678/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3689,
+      "name": "Sarkhan's Resolve",
+      "oracle_id": "30f058f8-5777-4c25-b881-8f1d0ce17d3a",
+      "facts_sha256": "695437c60be8d53d3703c7865de78e3f3631b5ef47dadd9d5e68a7161cf00468",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Choose one \u2014"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "\u2022 Target creature gets +3/+3 until end of turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "\u2022 Destroy target creature with flying."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3717,
+      "name": "Scavenger Regent",
+      "oracle_id": "7e97a242-0bac-4f18-9228-e98ecca36254",
+      "facts_sha256": "8f30dc3a35d70620bf2a758f932114931a32b720d683ca1306167c0822e502f5",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Ward\u2014Discard a card."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Each non-Dragon creature gets -X/-X until end of turn. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3731,
+      "name": "Scoured Barrens",
+      "oracle_id": "d37f858e-03c8-4594-9b92-cd03699a1591",
+      "facts_sha256": "4053aab61d910da51664239329dbf26b8086df47e5ea058ef58a71ecea1b14bd",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.5/activation",
+            "member": 3731
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.5/activation",
+            "member": 3731
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {W} or {B}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.5/activation",
+            "member": 3731
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.5/activation",
+            "member": 3731
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3774,
+      "name": "Seize Opportunity",
+      "oracle_id": "d0458ffe-9a61-443f-8e80-3d2dde224a4d",
+      "facts_sha256": "1866f1d069c3b78fb1b8a5eb92dc1cafc7c7d83abaed76a77d5fab6e710b6422",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Choose one \u2014"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "\u2022 Exile the top two cards of your library. Until the end of your next turn, you may play those cards."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "\u2022 Up to two target creatures each get +2/+1 until end of turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3839,
+      "name": "Shock Brigade",
+      "oracle_id": "8676e917-17dd-4047-99c4-402f2e909e16",
+      "facts_sha256": "1ea078b25ce8be14058e2cb155fb954ccde5892d5e1597078882ba834baea5c6",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.menace",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Menace (This creature can't be blocked except by two or more creatures.)"
+            }
+          ],
+          "proof": {
+            "shared": "menace"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3839/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3841,
+      "name": "Shocking Sharpshooter",
+      "oracle_id": "fbb7735f-ec91-4ed4-b735-d94a76e68a80",
+      "facts_sha256": "07db6f64b9bcd46ca4244e5d1fe292cdb1edc592ce5c35faed71b66d076f3821",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.reach",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Reach"
+            }
+          ],
+          "proof": {
+            "shared": "reach"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever another creature you control enters, this creature deals 1 damage to target opponent."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3841/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3884,
+      "name": "Sinkhole Surveyor",
+      "oracle_id": "83a47724-b8d1-4884-9442-b62aa1510dc3",
+      "facts_sha256": "87adf8178ffed6409ccf425efa75f656c974016221173af222c63005110f6b18",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever this creature attacks, you lose 1 life and this creature endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3884/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3893,
+      "name": "Skirmish Rhino",
+      "oracle_id": "40eb7f43-7cee-41a1-a4d1-f34ee125ccd1",
+      "facts_sha256": "fe4fb2e7dfb7e00d50336c2d159c367a3a946b8b18c5f68970e0ef9f756484d0",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0.trample",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Trample"
+            }
+          ],
+          "proof": {
+            "shared": "trample"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, each opponent loses 2 life and you gain 2 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_creature_v1/enter.drain.2.2",
+            "member": 3893
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3893/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3940,
+      "name": "Snakeskin Veil",
+      "oracle_id": "1e6a24be-8281-41c1-a5ba-b68f0ef1d7b8",
+      "facts_sha256": "f60c05bc8152dc4abdc25b2f35d354f3b786a659252a8aa0bef3d42c3ebe7905",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Put a +1/+1 counter on target creature you control. It gains hexproof until end of turn. (It can't be the target of spells or abilities your opponents control.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3947,
+      "name": "Snowmelt Stag",
+      "oracle_id": "b25ccb64-e114-4d54-a07a-c8cd4560b511",
+      "facts_sha256": "1fb8fd3ea1b888adccf87faafd6f797488663fcf057a80ced2cf7cb44c126b13",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.vigilance",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Vigilance"
+            }
+          ],
+          "proof": {
+            "shared": "vigilance"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "During your turn, this creature has base power and toughness 5/2."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{5}{U}{U}: This creature can't be blocked this turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/3947/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3999,
+      "name": "Spectral Denial",
+      "oracle_id": "f8536726-993b-4100-918c-e3c7177d4c65",
+      "facts_sha256": "a2669891c70ff93c29da880c9bb5bef7e468cb51ab04ffce501849609a60d510",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This spell costs {1} less to cast for each creature you control with power 4 or greater."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Counter target spell unless its controller pays {X}."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4084,
+      "name": "Stadium Headliner",
+      "oracle_id": "d8cfa20a-343e-4661-9f5a-a8265f6917a8",
+      "facts_sha256": "671db9b3d5a1f28ffc162dd2250b307f1f8ddae4e3fe582bf18fdc8a1fce606a",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{1}{R}, Sacrifice this creature: It deals damage equal to the number of creatures you control to target creature."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4084/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4118,
+      "name": "Static Snare",
+      "oracle_id": "b5b742d2-f19b-47c9-84bd-e85d975900e6",
+      "facts_sha256": "fd337069a7b16faf6db83030cd85c484f4de8bc08e323ec7b31a9a051b6cdb10",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flash",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flash"
+            }
+          ],
+          "proof": {
+            "shared": "flash"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "This spell costs {1} less to cast for each attacking creature."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "When this enchantment enters, exile target artifact or creature an opponent controls until this enchantment leaves the battlefield."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4170,
+      "name": "Stormbeacon Blade",
+      "oracle_id": "f4b3ee43-fc01-425f-8322-29bf6d16cb3f",
+      "facts_sha256": "14eebfedaa97a8f3fa3a57b3e49b0bb90d6bef87d0fce7c76810772ffe4465eb",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Equipped creature gets +3/+0."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever equipped creature attacks, draw a card if you control three or more attacking creatures."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "Equip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4170/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4176,
+      "name": "Stormplain Detainment",
+      "oracle_id": "4ad9c550-5605-4ffe-8e27-e9f2d9ada000",
+      "facts_sha256": "2d27fed13bbbdc5ffeba34da12220a65aa1b74645820360f140e452c25f23972",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4176/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4178,
+      "name": "Stormshriek Feral",
+      "oracle_id": "e24916ff-7566-4f27-8e31-732311a4a88c",
+      "facts_sha256": "ae4bb85cb77ba5efb4a9bd6bf566c098f518489a606764afa4d39d400390e485",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, haste"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph0.haste",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying, haste"
+            }
+          ],
+          "proof": {
+            "shared": "haste"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{1}{R}: This creature gets +1/+0 until end of turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Discard a card. If you do, draw two cards. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4182,
+      "name": "Strategic Betrayal",
+      "oracle_id": "0127c13f-7b0f-44c3-8b35-97f306c5f239",
+      "facts_sha256": "3a50f3b3c28dcb5a963bb4d77ca4076366e16b9795da79fae82a7812c7dd2772",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Target opponent exiles a creature they control and their graveyard."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4208,
+      "name": "Sultai Devotee",
+      "oracle_id": "ee7b3fc0-6128-4bf6-b3e7-7371e6f93c4b",
+      "facts_sha256": "b15e50ce5f6a7c7a35bf85eb4a795757a40ef229dd5130b0e4e98e211b670e85",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.deathtouch",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Deathtouch"
+            }
+          ],
+          "proof": {
+            "shared": "deathtouch"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{1}: Add {B}, {G}, or {U}. Activate only once each turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4208/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4211,
+      "name": "Summit Intimidator",
+      "oracle_id": "b772d35a-d365-47ce-b1dd-a2ba574c74ea",
+      "facts_sha256": "689c309c7ae3c4be1049be1d9ad683fc3f8d21939530c38cb2848316d556feb6",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.reach",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Reach"
+            }
+          ],
+          "proof": {
+            "shared": "reach"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, target creature can't block this turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4211/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4271,
+      "name": "Surrak, Elusive Hunter",
+      "oracle_id": "7a0fe73f-6e08-4c9a-80e1-c2ead6cebe06",
+      "facts_sha256": "c30463b91c9ea88cd98650db3a5754880cdc9f11ae047e10a920aa4df5d8a080",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.legendary",
+          "kind": "shared",
+          "source": [],
+          "proof": {
+            "shared": "legendary"
+          }
+        },
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This spell can't be countered."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1.trample",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Trample"
+            }
+          ],
+          "proof": {
+            "shared": "trample"
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "Whenever a creature you control or a creature spell you control becomes the target of a spell or ability an opponent controls, draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4271/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4293,
+      "name": "Swiftwater Cliffs",
+      "oracle_id": "2f4ad084-2062-44c0-9975-15f100204531",
+      "facts_sha256": "6336b71c23cc0b2c2653de5565d259f91a9a81c0aa13274c19e580784bcf893e",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.10/activation",
+            "member": 4293
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.10/activation",
+            "member": 4293
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {U} or {R}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.10/activation",
+            "member": 4293
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.10/activation",
+            "member": 4293
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4375,
+      "name": "Temur Devotee",
+      "oracle_id": "e444f072-ce24-4fd1-99eb-d20d12bc119a",
+      "facts_sha256": "8033f2810b7ef85916ad7690b43d5f1b2781ef0dce090a5b597ad945d74cbcef",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.defender",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Defender"
+            }
+          ],
+          "proof": {
+            "shared": "defender"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{1}: Add {G}, {U}, or {R}. Activate only once each turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4375/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4377,
+      "name": "Temur Tawnyback",
+      "oracle_id": "889d26d6-9e6c-4cc0-8e8e-dd932f705a20",
+      "facts_sha256": "96362293448aa582f6f0fe0a081ef684fb81ed629c3b3dd2c6a8434480020863",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters, draw a card, then discard a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4547,
+      "name": "Thornwood Falls",
+      "oracle_id": "ec96cde2-f1e6-495c-94e2-3e8ae79e556c",
+      "facts_sha256": "5ebd81c56f1f374992f7adfcf3a8310d0b5f935de2bde64169799fd60211603a",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.18/activation",
+            "member": 4547
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.18/activation",
+            "member": 4547
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {G} or {U}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.18/activation",
+            "member": 4547
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.18/activation",
+            "member": 4547
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4655,
+      "name": "Tranquil Cove",
+      "oracle_id": "5d641bf6-0f93-4189-8dc1-ec7ea446dade",
+      "facts_sha256": "33707136abf946fdc5c10d480652b62b961fccec48c57a41771dfcb384edc8ab",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.3/activation",
+            "member": 4655
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.3/activation",
+            "member": 4655
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {W} or {U}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.3/activation",
+            "member": 4655
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.3/activation",
+            "member": 4655
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4723,
+      "name": "Twinmaw Stormbrood",
+      "oracle_id": "ff812a78-3fe7-47bc-9984-1c2380cff5b1",
+      "facts_sha256": "f43cf19a6517664d85a9f1a2a969144362b7265ceb5de3faf8182ce7d1bd8687",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this creature enters, you gain 5 life."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Charring Bite deals 5 damage to target creature without flying. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4738,
+      "name": "Ugin, Eye of the Storms",
+      "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
+      "facts_sha256": "8d9f58967c0259e54d14f4d31538b641b7d9f53a2f2b6cf28bf30f81d780524b",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.legendary",
+          "kind": "shared",
+          "source": [],
+          "proof": {
+            "shared": "legendary"
+          }
+        },
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When you cast this spell, exile up to one target permanent that's one or more colors."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever you cast a colorless spell, exile up to one target permanent that's one or more colors."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "+2: You gain 3 life and draw a card."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph3",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 3,
+              "text": "0: Add {C}{C}{C}."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph4",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 4,
+              "text": "\u221211: Search your library for any number of colorless nonland cards, exile them, then shuffle. Until end of turn, you may cast those cards without paying their mana costs."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4754,
+      "name": "Unburied Earthcarver",
+      "oracle_id": "75da657e-0e36-4f2a-9b81-b7eba7d8e050",
+      "facts_sha256": "2ec5da4762321c71b01e03acb9f99cea861ccbda14e9fd24149fcd21f79269f6",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{2}, Sacrifice another creature: Put a +1/+1 counter on this creature."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4754/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4769,
+      "name": "Undergrowth Leopard",
+      "oracle_id": "511fa8a3-0a65-47fc-9f3b-57eaef2698cd",
+      "facts_sha256": "b1862fb8168addcdb32368438072834077a70b34d1b9ba5321e1e4eab62c6106",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.vigilance",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Vigilance"
+            }
+          ],
+          "proof": {
+            "shared": "vigilance"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{1}, Sacrifice this creature: Destroy target artifact or enchantment."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4769/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4785,
+      "name": "United Battlefront",
+      "oracle_id": "892a83a0-a3cb-4cfb-9106-4008e4e75c0f",
+      "facts_sha256": "92870afcf9e98926d636deb77df3c7041ce3fec876a06be3ccc16bac7393ff12",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Look at the top seven cards of your library. Put up to two noncreature, nonland permanent cards with mana value 3 or less from among them onto the battlefield. Put the rest on the bottom of your library in a random order."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4793,
+      "name": "Unrooted Ancestor",
+      "oracle_id": "de5c6c9d-04a2-4287-8c6e-fdf56c411507",
+      "facts_sha256": "4acd993c79c551b2ec324f4b788f6a96be7bd3a414306ca2c5976984835babf9",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flash",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flash"
+            }
+          ],
+          "proof": {
+            "shared": "flash"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{1}, Sacrifice another creature: This creature gains indestructible until end of turn. Tap it. (Damage and effects that say \"destroy\" don't destroy it.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4793/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4927,
+      "name": "Voice of Victory",
+      "oracle_id": "b12cbda1-ac09-49eb-96b3-a4df27bc37ea",
+      "facts_sha256": "99372a3c093a7178395adb5b1a3cb65a5879dcc8e11e01744230d3cc4612738c",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Your opponents can't cast spells during your turn."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4927/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4993,
+      "name": "Watcher of the Wayside",
+      "oracle_id": "b30eafed-2755-4423-9592-c8b83c68804b",
+      "facts_sha256": "178cacfda6463b4fa1ff911f2ae3e42de88af161b8012cb2f6ed8db856959c9d",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters, target player mills two cards. You gain 2 life. (To mill two cards, a player puts the top two cards of their library into their graveyard.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4993/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5039,
+      "name": "Whirlwing Stormbrood",
+      "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+      "facts_sha256": "901be646c24b84f4c8850a8d3c484fc0c0f80c047c8041392fde08ecbed49727",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flash",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flash"
+            }
+          ],
+          "proof": {
+            "shared": "flash"
+          }
+        },
+        {
+          "id": "face0.paragraph1.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "You may cast sorcery spells and Dragon spells as though they had flash."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Put three +1/+1 counters on target creature you control. (Then shuffle this card into its owner's library.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5059,
+      "name": "Wild Ride",
+      "oracle_id": "61978202-538b-4f92-acfc-e95f4a6ce466",
+      "facts_sha256": "f9c99b0b7d1c6a111988ac1a01ddd66b0ee49a508e7c019e816e4272bf453e00",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Target creature gets +3/+0 and gains haste until end of turn."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Harmonize {4}{R} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.harmonize.face0",
+          "kind": "casting_route",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Harmonize {4}{R} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5075,
+      "name": "Wind-Scarred Crag",
+      "oracle_id": "b0af0c54-2a59-4075-8543-d41ff20c4c87",
+      "facts_sha256": "2e536f6826c2b508f3d81621829d75f7dd9d5a18306a393cf97097d5c95bce9a",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.9/activation",
+            "member": 5075
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, you gain 1 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.9/activation",
+            "member": 5075
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {R} or {W}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.9/activation",
+            "member": 5075
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/gain_life.1/mana.9/activation",
+            "member": 5075
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5078,
+      "name": "Wingblade Disciple",
+      "oracle_id": "c566317e-cd82-46c1-b506-f41256d815f6",
+      "facts_sha256": "7fa68321e9e7f14aad934dc9bbb7941814e6d0fc6cdeb9fc0efb3826c88ba4c5",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flying",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flying"
+            }
+          ],
+          "proof": {
+            "shared": "flying"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Flurry \u2014 Whenever you cast your second spell each turn, create a 1/1 white Bird creature token with flying."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/5078/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5080,
+      "name": "Wingspan Stride",
+      "oracle_id": "e75cee5d-ab02-4227-b36e-61c5d2f564a8",
+      "facts_sha256": "53e4892ce8d32057efa638b83aa20307f3d02735a5239571b6c93b693c2474b3",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Enchant creature"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Enchanted creature gets +1/+1 and has flying."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{2}{U}: Return this Aura to its owner's hand."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5088,
+      "name": "Winternight Stories",
+      "oracle_id": "d64687e4-ec37-4db2-9e60-4626c7a3b011",
+      "facts_sha256": "63f83f8afdf060db1604396f98532b2d817aafa8530943f7733ce35d0a7b4749",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Harmonize {4}{U} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)"
+            }
+          ],
+          "proof": {
+            "case": "engine::testing::card_cases::hartford_draw::winternight_harmonize_taps_a_creature_reduces_cost_and_exiles",
+            "outcomes": [
+              "a tapped two-power creature reduces the harmonize payment to three and the resolved spell is exiled"
+            ]
+          }
+        },
+        {
+          "id": "normal.discard_creature",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Draw three cards. Then discard two cards unless you discard a creature card."
+            }
+          ],
+          "proof": {
+            "case": "engine::testing::hartford::winternight_normal_cast_draws_three_then_discards_one_creature_or_two_cards",
+            "row": "card/5088/normal/creature",
+            "outcomes": [
+              "draws three then discards one creature or two cards"
+            ]
+          }
+        },
+        {
+          "id": "normal.discard_two",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Draw three cards. Then discard two cards unless you discard a creature card."
+            }
+          ],
+          "proof": {
+            "case": "engine::testing::hartford::winternight_normal_cast_draws_three_then_discards_one_creature_or_two_cards",
+            "row": "card/5088/normal/two",
+            "outcomes": [
+              "draws three then discards one creature or two cards"
+            ]
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.harmonize.face0",
+          "kind": "casting_route",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Harmonize {4}{U} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)"
+            }
+          ],
+          "proof": {
+            "case": "engine::testing::card_cases::hartford_draw::winternight_harmonize_taps_a_creature_reduces_cost_and_exiles",
+            "outcomes": [
+              "a tapped two-power creature reduces the harmonize payment to three and the resolved spell is exiled"
+            ]
+          }
+        },
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::hartford::winternight_normal_cast_draws_three_then_discards_one_creature_or_two_cards",
+            "row": "card/5088/normal/creature",
+            "outcomes": [
+              "normal hand casting draws three and discards one creature"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5117,
+      "name": "Worthy Cost",
+      "oracle_id": "0f8ebf11-b5ec-4f21-8c49-90d569b5a4c5",
+      "facts_sha256": "82d7f0d3624278304111b19e236dcb46a74186f70bafa2148a253d6c65357aeb",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "As an additional cost to cast this spell, sacrifice a creature."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Exile target creature or planeswalker."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5135,
+      "name": "Yathan Tombguard",
+      "oracle_id": "2321b4fc-6b73-4d1a-84cc-13524adb0899",
+      "facts_sha256": "925cd7c6a9f929ebf8bd9e59d05fb33518bcffa86089f6eb66de8f79254d2756",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.menace",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Menace (This creature can't be blocked except by two or more creatures.)"
+            }
+          ],
+          "proof": {
+            "shared": "menace"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Whenever a creature you control with a counter on it deals combat damage to a player, you draw a card and you lose 1 life."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/5135/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 5180,
+      "name": "Zurgo's Vanguard",
+      "oracle_id": "d6fdfd94-cef5-482c-83ed-11c5ba40abe9",
+      "facts_sha256": "8bf37b9634fa8569f14aa2788934e15d15f589628d46751e44d940d6ac26a048",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Zurgo's Vanguard's power is equal to the number of creatures you control."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/5180/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

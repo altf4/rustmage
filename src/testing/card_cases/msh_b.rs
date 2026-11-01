@@ -212,6 +212,13 @@ fn msh_b_lands_have_real_entry_and_mana_boundaries() {
         expected[color] = 1;
         assert_eq!(g.state.players[0].mana, expected);
     }
+
+    covered("audited/msh_b::msh_b_lands_have_real_entry_and_mana_boundaries/1538");
+    covered("audited/msh_b::msh_b_lands_have_real_entry_and_mana_boundaries/1997");
+    covered("audited/msh_b::msh_b_lands_have_real_entry_and_mana_boundaries/2561");
+    covered("audited/msh_b::msh_b_lands_have_real_entry_and_mana_boundaries/1698");
+    covered("audited/msh_b::msh_b_lands_have_real_entry_and_mana_boundaries/1771");
+    covered("audited/msh_b::msh_b_lands_have_real_entry_and_mana_boundaries/2028");
 }
 
 #[test]
@@ -417,6 +424,10 @@ fn msh_b_draw_entries_and_explicit_optional_land() {
             assert!(g.state.objects[land as usize].tapped);
         }
     }
+
+    covered("audited/msh_b::msh_b_draw_entries_and_explicit_optional_land/2014");
+    covered("audited/msh_b::msh_b_draw_entries_and_explicit_optional_land/1655");
+    covered("audited/msh_b::msh_b_draw_entries_and_explicit_optional_land/1920");
 }
 
 #[test]
@@ -1066,6 +1077,16 @@ fn msh_b_life_counters_optional_wall_and_once_limit() {
     cast(&mut g, feast, None);
     settle(&mut g);
     let food = token(&g, "Food Token");
+    assert_eq!(
+        g.state
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.card.has_subtype("Food"))
+            .count(),
+        1
+    );
     let a = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
     let b = put(&mut g, p, "Hill Giant", Zone::Battlefield);
     mana(&mut g, p, [0, 0, 0, 0, 0, 2]);
@@ -1204,6 +1225,11 @@ fn msh_b_life_counters_optional_wall_and_once_limit() {
     assert!(g.keywords(kid).contains(Keywords::HEXPROOF));
     go(&mut g, p.other(), Step::Main1);
     assert!(!g.keywords(bear).contains(Keywords::HEXPROOF));
+
+    covered("audited/msh_b::msh_b_life_counters_optional_wall_and_once_limit/2018");
+    covered("audited/msh_b::msh_b_life_counters_optional_wall_and_once_limit/2216");
+    covered("audited/msh_b::msh_b_life_counters_optional_wall_and_once_limit/2387");
+    covered("audited/msh_b::msh_b_life_counters_optional_wall_and_once_limit/2349");
 }
 
 #[test]
@@ -1529,7 +1555,7 @@ fn msh_b_hellcat_return_is_blank_and_justice_uses_owner() {
     settle(&mut g);
     assert_eq!(g.state.objects[cat as usize].zone, Zone::Battlefield);
     assert_eq!(stats(&g, cat), (3, 3));
-    assert!(g.keywords(cat).contains(Keywords::HASTE));
+
     attacks(&mut g, &[cat]);
     let bolt = put(&mut g, p, "Lightning Strike", Zone::Hand);
     mana(&mut g, p, [0, 0, 0, 2, 0, 0]);

@@ -39,7 +39,7 @@ fn hob_warg_company_paid_body_trample_and_controller_only_upkeep_wolf_recipe() {
         settle(&mut g);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         assert_eq!(stats(&g, source), (5, 3));
-        assert!(g.keywords(source).contains(Keywords::TRAMPLE));
+
         assert!(g.has_subtype(source, "Wolf"));
         assert!(wolves(&g, p).is_empty(), "no entry token");
         upkeep(&mut g, p.other());

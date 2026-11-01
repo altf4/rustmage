@@ -490,7 +490,7 @@ fn sos_abigale_creature_cast_prepares_and_both_hybrid_payments_work() {
             let mut g = scenario(p);
             let source = physical(&mut g, p, "Abigale, Poet Laureate");
             assert_eq!(stats(&g, source), (2, 3));
-            assert!(g.keywords(source).contains(Keywords::FLYING));
+
             assert!(!g.is_prepared(g.object_ref(source)));
             physical(&mut g, p, "Bear Cub");
             assert!(g.is_prepared(g.object_ref(source)));

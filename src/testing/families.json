@@ -460,5 +460,101 @@
     "mana_cost": "{4}{U}",
     "power": 3,
     "toughness": 9
+  },
+  {
+    "name": "Bloodghast",
+    "oracle_id": "e97f9c2b-b41e-4f36-9245-77c0ac125647",
+    "rule": "This creature can't block.\nThis creature has haste as long as an opponent has 10 or less life.\nLandfall \u2014 Whenever a land you control enters, you may return this card from your graveyard to the battlefield.",
+    "kind": "body_entry",
+    "mana_cost": "{B}{B}",
+    "power": 2,
+    "toughness": 1
+  },
+  {
+    "name": "Vren, the Relentless",
+    "oracle_id": "1216900e-93e3-41a4-b354-9c81938639c2",
+    "rule": "Ward {2}\nIf a creature an opponent controls would die, exile it instead.\nAt the beginning of each end step, create X 1/1 black Rat creature tokens with \"This token gets +1/+1 for each other Rat you control,\" where X is the number of creatures that were exiled under your opponents' control this turn.",
+    "kind": "body_entry",
+    "mana_cost": "{2}{U}{B}",
+    "power": 3,
+    "toughness": 4
+  },
+  {
+    "name": "The Fire Crystal",
+    "oracle_id": "57276db8-9d8d-4587-ae88-dfdc44343f17",
+    "rule": "Red spells you cast cost {1} less to cast.\nCreatures you control have haste.\n{4}{R}{R}, {T}: Create a token that's a copy of target creature you control. Sacrifice it at the beginning of the next end step.",
+    "kind": "permanent",
+    "mana_cost": "{2}{R}{R}"
+  },
+  {
+    "name": "Vengeful Tracker",
+    "oracle_id": "fe540a23-0357-44fa-8e1c-0a5c2a04cb01",
+    "rule": "Whenever an opponent sacrifices an artifact, this creature deals 2 damage to them.",
+    "kind": "body_entry",
+    "mana_cost": "{1}{R}",
+    "power": 2,
+    "toughness": 2
+  },
+  {
+    "name": "Elrond, Moon-Reader",
+    "oracle_id": "3f4d6f91-95ad-4687-8899-5a21a0abb49e",
+    "rule": "Whenever you activate an ability of a creature, draw a card. This ability triggers only once each turn.\n{5}{U}{U}: Exile up to two other target nonland permanents you control. Return those cards to the battlefield under their owner's control at the beginning of the next end step.",
+    "kind": "body_entry",
+    "mana_cost": "{2}{U}",
+    "power": 3,
+    "toughness": 3
+  },
+  {
+    "name": "Hall of Echoes",
+    "oracle_id": "dc0a51d4-5b7e-4987-b1fe-349fd118a625",
+    "rule": "{T}: Add {C}.\n{5}: This land becomes a copy of target creature you control until end of turn. The \"legend rule\" doesn't apply to permanents you control this turn.",
+    "kind": "land",
+    "mana_cost": "",
+    "colors": [
+      "C"
+    ]
+  },
+  {
+    "name": "Grizzly Bears",
+    "oracle_id": null,
+    "rule": "",
+    "kind": "creature",
+    "power": 2,
+    "toughness": 2,
+    "mana_cost": "{1}{G}"
+  },
+  {
+    "name": "Goblin Piker",
+    "oracle_id": null,
+    "rule": "",
+    "kind": "creature",
+    "power": 2,
+    "toughness": 1,
+    "mana_cost": "{1}{R}"
+  },
+  {
+    "name": "Hill Giant",
+    "oracle_id": null,
+    "rule": "",
+    "kind": "creature",
+    "power": 3,
+    "toughness": 3,
+    "mana_cost": "{3}{R}"
+  },
+  {
+    "name": "Lightning Bolt",
+    "oracle_id": null,
+    "rule": "",
+    "kind": "damage",
+    "amount": 3,
+    "mana_cost": "{R}"
+  },
+  {
+    "name": "Divination",
+    "oracle_id": null,
+    "rule": "",
+    "kind": "draw",
+    "amount": 2,
+    "mana_cost": "{2}{U}"
   }
 ]

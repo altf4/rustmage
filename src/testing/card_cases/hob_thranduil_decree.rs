@@ -245,7 +245,7 @@ fn hob_decree_free_flash_permanent_is_legal_on_opponent_turn_and_own_spell_can_b
         finish(&mut g);
         assert_eq!(g.object_view(card).zone, Zone::Battlefield);
         assert_eq!(g.object_view(card).controller, p);
-        assert!(g.keywords(card).contains(Keywords::FLASH));
+
         let mut g = scenario(p);
         let (card, stack) = spell(&mut g, p, "Goldvein Pick");
         decree(&mut g, p, stack);

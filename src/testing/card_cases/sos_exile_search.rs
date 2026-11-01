@@ -46,7 +46,7 @@ fn sos_effects_scrollsmith_hybrid_targets_normal_paid_cast_and_deadline() {
             finish(&mut g);
             assert_eq!(g.object_view(shock).zone, Zone::Exile);
             assert!(g.can_play_exiled(p, shock));
-            assert!(g.keywords(source).contains(Keywords::FIRST_STRIKE));
+
             g.move_object(source, Zone::Graveyard);
             assert!(g.can_play_exiled(p, shock));
             if white {

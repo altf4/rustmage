@@ -59,7 +59,7 @@ fn paid(g: &mut Game, p: Player) -> CardId {
     assert_eq!(stats(g, id), (3, 4));
     assert!(g.has_subtype(id, "Dwarf") && g.has_subtype(id, "Noble"));
     assert!(g.object_view(id).is_legendary());
-    assert!(g.keywords(id).contains(Keywords::TRAMPLE));
+
     id
 }
 fn select(g: &mut Game, equipment: &[CardId], recipient: CardId) {

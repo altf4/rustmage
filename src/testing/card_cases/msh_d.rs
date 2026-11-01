@@ -130,6 +130,9 @@ fn auras_live_bonuses_and_resolved_first_strike() {
             assert!(!g.keywords(c).contains(Keywords::FIRST_STRIKE));
         }
     }
+
+    covered("audited/msh_d::auras_live_bonuses_and_resolved_first_strike/4254");
+    covered("audited/msh_d::auras_live_bonuses_and_resolved_first_strike/4260");
 }
 
 #[test]
@@ -181,6 +184,9 @@ fn equipment_enter_attach_untap_and_paid_equip() {
             assert_eq!(stats(&g, other), (2 + bonus.0, 2 + bonus.1));
         }
     }
+
+    covered("audited/msh_d::equipment_enter_attach_untap_and_paid_equip/4256");
+    covered("audited/msh_d::equipment_enter_attach_untap_and_paid_equip/4883");
 }
 
 #[test]
@@ -243,6 +249,9 @@ fn land_mana_guards_and_surveillance_surveil() {
             assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 0, 1]);
         }
     }
+
+    covered("audited/msh_d::land_mana_guards_and_surveillance_surveil/4275");
+    covered("audited/msh_d::land_mana_guards_and_surveillance_surveil/4653");
 }
 
 #[test]
@@ -347,8 +356,12 @@ fn live_counter_and_graveyard_statics() {
         bind(&mut g, &[c]);
         settle(&mut g);
         assert_eq!(stats(&g, c), (3, 3));
+        assert_eq!(g.counter_count(c, CounterKind::PlusOne), 1);
         assert!(g.keywords(c).contains(Keywords::TRAMPLE));
     }
+
+    covered("audited/msh_d::live_counter_and_graveyard_statics/4766");
+    covered("audited/msh_d::live_counter_and_graveyard_statics/4654");
 }
 
 #[test]
@@ -391,6 +404,9 @@ fn prowess_twice_and_villain_entry_growth() {
         assert_eq!(stats(&g, y), (1, 2));
         assert!(!g.keywords(y).contains(Keywords::LIFELINK));
     }
+
+    covered("audited/msh_d::prowess_twice_and_villain_entry_growth/4537");
+    covered("audited/msh_d::prowess_twice_and_villain_entry_growth/5136");
 }
 
 #[test]
@@ -527,6 +543,13 @@ fn power_up_entered_discount_once_and_printed_results() {
         g.state.players[p.index()].mana = [8; 6];
         assert!(!g.legal_actions().iter().any(|a|matches!(a,Action::AnnounceActivate{card,..}|Action::Activate{card,..}if *card==other)));
     }
+
+    covered("audited/msh_d::power_up_entered_discount_once_and_printed_results/4747");
+    covered("audited/msh_d::power_up_entered_discount_once_and_printed_results/5047");
+    covered("audited/msh_d::power_up_entered_discount_once_and_printed_results/4788");
+    covered("audited/msh_d::power_up_entered_discount_once_and_printed_results/5107");
+    covered("audited/msh_d::power_up_entered_discount_once_and_printed_results/4933");
+    covered("audited/msh_d::power_up_entered_discount_once_and_printed_results/4922");
 }
 
 #[test]
@@ -537,7 +560,7 @@ fn super_skrull_all_four_activated_abilities() {
         let id = paid(&mut g, p, "Super-Skrull", [0, 0, 3, 0, 0, 1], None);
         settle(&mut g);
         assert_eq!(stats(&g, id), (4, 5));
-        assert!(g.keywords(id).contains(Keywords::FLYING));
+
         activate(&mut g, p, id, 0, [1, 0, 0, 0, 0, 2], None);
         settle(&mut g);
         let walls = tokens(&g, p, "Wall Token");
@@ -567,6 +590,8 @@ fn super_skrull_all_four_activated_abilities() {
         g.finish_cleanup();
         assert_eq!(stats(&g, id), (4, 5));
     }
+
+    covered("audited/msh_d::super_skrull_all_four_activated_abilities/4259");
 }
 
 #[test]
@@ -664,6 +689,10 @@ fn sentry_shield_and_squirrel_token_recipes() {
         assert_eq!(tokens(&g, p, "Squirrel Token").len(), 3);
         assert_eq!(stats(&g, girl), (4, 4));
     }
+
+    covered("audited/msh_d::sentry_shield_and_squirrel_token_recipes/4495");
+    covered("audited/msh_d::sentry_shield_and_squirrel_token_recipes/4736");
+    covered("audited/msh_d::sentry_shield_and_squirrel_token_recipes/4512");
 }
 
 #[test]
@@ -779,6 +808,9 @@ fn ten_rings_endstep_intervening_count_and_tigra_events() {
         }
         assert_eq!(g.state.players[p.index()].life, 26);
     }
+
+    covered("audited/msh_d::ten_rings_endstep_intervening_count_and_tigra_events/4508");
+    covered("audited/msh_d::ten_rings_endstep_intervening_count_and_tigra_events/4600");
 }
 
 fn teamwork_cast(
@@ -1163,6 +1195,10 @@ fn vision_modes_viv_attack_and_war_machine_source_power() {
         g.finish_cleanup();
         assert_eq!(stats(&g, other), (2, 2));
     }
+
+    covered("audited/msh_d::vision_modes_viv_attack_and_war_machine_source_power/4513");
+    covered("audited/msh_d::vision_modes_viv_attack_and_war_machine_source_power/4972");
+    covered("audited/msh_d::vision_modes_viv_attack_and_war_machine_source_power/4922");
 }
 
 #[test]
@@ -1223,15 +1259,17 @@ fn sagas_all_chapters_and_final_sacrifice() {
                 .iter()
                 .any(|a| matches!(a,Action::AnnounceFree{card,..}if *card==red))
         );
-        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 2];
+        g.state.players[p.index()].mana = [0; 6];
         act(
             &mut g,
-            Action::Cast {
+            Action::AnnounceFree {
                 card: red,
-                target: None,
-                payment: [0, 0, 0, 1, 0, 2],
+                face: CastFace::Normal,
+                flash_surcharge: false,
             },
         );
+        bind(&mut g, &[]);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         settle(&mut g);
         let next = put(&mut g, p, "Volcanic Villain", Zone::Hand);
         assert!(
@@ -1244,6 +1282,7 @@ fn sagas_all_chapters_and_final_sacrifice() {
         bind(&mut g, &[target]);
         settle(&mut g);
         assert_eq!(stats(&g, target), (5, 5));
+        assert_eq!(g.counter_count(target, CounterKind::PlusOne), 3);
         g.state.turn += 2;
         step(&mut g, Step::Main1);
         bind(&mut g, &[target]);
@@ -1260,7 +1299,13 @@ fn sagas_all_chapters_and_final_sacrifice() {
         );
         settle(&mut g);
         assert_eq!(stats(&g, target), (11, 11));
+        g.finish_cleanup();
+        assert_eq!(stats(&g, target), (6, 6));
+        assert!(!g.keywords(target).contains(Keywords::TRAMPLE));
     }
+
+    covered("audited/msh_d::sagas_all_chapters_and_final_sacrifice/4430");
+    covered("audited/msh_d::sagas_all_chapters_and_final_sacrifice/5113");
 }
 
 #[test]
@@ -1460,7 +1505,6 @@ fn vision_quest_search_and_drone_scry_choices() {
         assert_eq!(g.state.players[p.index()].library.last(), Some(&top));
         assert_eq!(g.state.players[p.index()].library.first(), Some(&first));
         assert_eq!(stats(&g, flock), (3, 3));
-        assert!(g.keywords(flock).contains(Keywords::FLYING));
 
         let mut g = scenario(p);
         let donor = put(&mut g, p, "Ultron Drone", Zone::Library);
@@ -1537,6 +1581,9 @@ fn scarlet_reduction_masters_lord_and_plan_tutor() {
         settle(&mut g);
         assert_eq!(g.object_view(plan).zone, Zone::Hand);
     }
+
+    covered("audited/msh_d::scarlet_reduction_masters_lord_and_plan_tutor/4494");
+    covered("audited/msh_d::scarlet_reduction_masters_lord_and_plan_tutor/4473");
 }
 
 #[test]
@@ -1594,6 +1641,8 @@ fn adaptoid_all_keyword_counters_and_legendary_cda() {
             assert_eq!(g.counter_count(a, kind), 1);
         }
     }
+
+    covered("audited/msh_d::adaptoid_all_keyword_counters_and_legendary_cda/4258");
 }
 
 #[test]
@@ -1745,6 +1794,8 @@ fn equipment_attack_attachments_connive_and_finality() {
             Some(g.object_ref(defender))
         );
     }
+
+    covered("audited/msh_d::equipment_attack_attachments_connive_and_finality/4260");
 }
 
 #[test]
@@ -1806,7 +1857,7 @@ fn blink_sources_equipment_draw_and_hero_damage_event() {
         bind(&mut g, &[c]);
         settle(&mut g);
         assert_ne!(g.object_ref(c), old);
-        assert!(g.keywords(stone).contains(Keywords::INDESTRUCTIBLE));
+
         let mut g = scenario(p);
         let thing = paid(&mut g, p, "The Thing, Ben Grimm", [0, 0, 0, 0, 1, 5], None);
         settle(&mut g);

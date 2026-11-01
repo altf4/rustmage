@@ -5,7 +5,40 @@ use super::*;
 mod card_cases;
 mod cards;
 mod core;
+mod creature_families;
+mod fra;
+mod hartford;
+mod hob;
+mod land_families;
 mod mechanics;
+mod normal_permanents;
+mod plain_families;
+
+pub(crate) fn fixture_json<T: serde::de::DeserializeOwned>(name: &str) -> T {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("src/testing")
+        .join(name);
+    let text = std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+    serde_json::from_str(&text).unwrap_or_else(|e| panic!("{}: {e}", path.display()))
+}
+
+pub(crate) fn covered(row: &str) {
+    use std::io::Write;
+    let Ok(path) = std::env::var("RUSTMAGE_CARD_COVERAGE_REPORT") else {
+        return;
+    };
+    let thread = std::thread::current();
+    let case = thread
+        .name()
+        .expect("coverage rows run inside a named test");
+    let mut output = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .expect("open feature coverage report");
+    writeln!(output, "{}", serde_json::json!({"case": case, "row": row}))
+        .expect("write feature coverage row");
+}
 
 fn game() -> Game {
     let mut g = Game::new(Config {
@@ -91,7 +124,7 @@ fn pay(g: &mut Game) {
 fn cast(g: &mut Game, card: CardId, targets: &[Target]) {
     act(g, Action::AnnounceCast { card });
     if matches!(g.state.pending, Pending::SpellCost { .. }) {
-        act(g, Action::ChooseSpellCost { cost: 0 });
+        choose(g, |a| matches!(a, Action::ChooseSpellCost { .. }));
     }
     for &target in targets {
         act(g, Action::ChooseTarget { target });
@@ -132,4 +165,35 @@ fn attack(g: &mut Game, card: CardId) {
 fn stats(g: &Game, id: CardId) -> (i128, i128) {
     let stats = g.stats(id);
     (stats.power, stats.toughness)
+}
+
+fn until(g: &mut Game, ready: impl Fn(&Game) -> bool) {
+    g.prepare_triggers();
+    for _ in 0..32 {
+        if ready(g) {
+            return;
+        }
+        choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    panic!("feature did not reach its decision: {:?}", g.state.pending);
+}
+fn reach(g: &mut Game, action: &Action) {
+    until(g, |g| g.legal_actions().contains(action));
+}
+fn activate(g: &mut Game, card: CardId, ability: u16, targets: &[Target]) {
+    act(
+        g,
+        Action::AnnounceActivate {
+            card,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    pay(g);
 }

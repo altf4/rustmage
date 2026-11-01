@@ -84,9 +84,6 @@ mod hartford_revelation;
 #[path = "hartford_riverchurn.rs"]
 mod hartford_riverchurn;
 
-#[path = "hartford_sacrifice.rs"]
-mod hartford_sacrifice;
-
 #[path = "hartford_sawblades.rs"]
 mod hartford_sawblades;
 
@@ -258,9 +255,6 @@ mod hob_storied;
 #[path = "hob_existing_three.rs"]
 mod hob_existing_three;
 
-#[path = "hob_bejeweled.rs"]
-mod hob_bejeweled;
-
 #[path = "hob_fili.rs"]
 mod hob_fili;
 
@@ -384,9 +378,6 @@ mod hob_desert_worm;
 #[path = "hob_bolg.rs"]
 mod hob_bolg;
 
-#[path = "hob_elrond.rs"]
-mod hob_elrond;
-
 #[path = "hob_bard.rs"]
 mod hob_bard;
 
@@ -428,9 +419,6 @@ mod hob_key_side_door;
 
 #[path = "hob_last_light.rs"]
 mod hob_last_light;
-
-#[path = "hob_notary.rs"]
-mod hob_notary;
 
 #[path = "hob_old_fat_spider.rs"]
 mod hob_old_fat_spider;
@@ -558,9 +546,6 @@ mod fra_barbs_garden;
 #[path = "fra_cruel_calculations.rs"]
 mod fra_cruel_calculations;
 
-#[path = "engine_fra_sphinxs_approach_tests.rs"]
-mod fra_sphinxs_approach_tests;
-
 #[path = "hartford_draw.rs"]
 mod hartford_draw;
 
@@ -569,9 +554,6 @@ mod hartford_discard;
 
 #[path = "hartford_draw_classes.rs"]
 mod hartford_draw_classes;
-
-#[path = "hartford_carnage.rs"]
-mod hartford_draw_carnage;
 
 #[path = "engine_big_core_tests.rs"]
 mod big_core_tests;

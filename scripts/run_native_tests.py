@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build once and run the card-coverage suite in one bounded native process."""
 import argparse
+import hashlib
 import json
 import math
 import re
@@ -17,6 +18,11 @@ else:
     from resource_limits import bounded_group
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def fixture_inputs():
+    return {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in (ROOT/'src/testing').rglob('*.json')}
 
 
 def descendants(pid):
@@ -149,7 +155,10 @@ def main():
     args.report.parent.mkdir(parents=True, exist_ok=True)
     target = args.target_dir.resolve()
     env = dict(os.environ, CARGO_TARGET_DIR=str(target), RUST_TEST_THREADS='1')
+    features = args.report.with_suffix('.features.jsonl')
+    env['RUSTMAGE_CARD_COVERAGE_REPORT'] = str(features.resolve())
     result = dict(success=False, terminal=False, tests=[])
+    inputs = fixture_inputs()
     started = time.monotonic()
     try:
         compile_log = args.report.with_name('native-compile.log')
@@ -157,6 +166,15 @@ def main():
             ['cargo', 'test', '--lib', '--no-run', '--message-format=json'],
             env=env, log=compile_log, timeout=args.compile_timeout)
         if result['compile']['exit']:
+            diagnostics = []
+            for line in compile_log.read_text().splitlines():
+                try:
+                    message = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if message.get('reason') == 'compiler-message' and message['message']['level'] == 'error':
+                    diagnostics.append(message['message']['rendered'])
+            print(('\n'.join(diagnostics) or compile_log.read_text())[-12000:], flush=True)
             return 1
         binaries = []
         for line in compile_log.read_text().splitlines():
@@ -183,12 +201,14 @@ def main():
         # Starting a process for every scenario makes test count itself expensive.
         # libtest already executes serially and identifies the currently running
         # case in the flushed log. The outer runner bounds the entire process tree.
+        features.write_text('')
         execution = run_command(
             [binary, args.filter, '--include-ignored', '--test-threads=1'], env=env,
             log=args.report.with_name('native-execution.log'), timeout=args.suite_timeout)
         output = Path(execution['log']).read_text()
         result['execution'] = execution
         result['tests'], accounted = suite_results(names, output)
+        result['features'] = [json.loads(line) for line in features.read_text().splitlines()]
         result['execution_seconds'] = execution['seconds']
         result['expected_tests'] = len(names)
         result['success'] = execution['exit'] == 0 and accounted
@@ -200,6 +220,11 @@ def main():
         result['interrupted'] = True
         return 130
     finally:
+        current_inputs = fixture_inputs()
+        result['changed_fixtures'] = sorted(path for path in inputs.keys() | current_inputs.keys()
+                                            if inputs.get(path) != current_inputs.get(path))
+        if result['changed_fixtures']:
+            result['success'] = False
         result['active_processes'] = sorted(active_peers())
         result['terminal'] = not result['active_processes']
         result['success'] = result['success'] and result['terminal']
@@ -208,6 +233,8 @@ def main():
         print(f'Native test report: {args.report}', flush=True)
         if not result['terminal']:
             raise RuntimeError('native runner left active processes; outputs preserved')
+        if result['changed_fixtures']:
+            raise RuntimeError('test fixtures changed during native execution; rerun with fixed inputs')
 
 
 if __name__ == '__main__':

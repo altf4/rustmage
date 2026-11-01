@@ -69,7 +69,7 @@ fn hob_hunt_flash_paid_body_real_death_defers_token_and_source_removal_keeps_pac
         cast(&mut g, s, None);
         finish(&mut g);
         assert_eq!(stats(&g, s), (4, 3));
-        assert!(g.keywords(s).contains(Keywords::FLASH));
+
         assert!(g.has_subtype(s, "Wolf"));
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         let v = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);

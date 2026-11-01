@@ -265,7 +265,7 @@ fn fra_phantasm_can_attack_after_its_controller_surveils() {
         let mut g = scenario(p);
         let source = put(&mut g, p, "Surveillance Phantasm", Zone::Battlefield);
         let other_defender = put(&mut g, p, "Fog Bank", Zone::Battlefield);
-        assert!(g.keywords(source).contains(Keywords::DEFENDER));
+
         assert!(!g.can_declare_attacker(p, source));
         act(
             &mut g,
@@ -281,7 +281,7 @@ fn fra_phantasm_can_attack_after_its_controller_surveils() {
         settle(&mut g);
         assert!(g.can_declare_attacker(p, source));
         assert!(!g.can_declare_attacker(p, other_defender));
-        assert!(g.keywords(source).contains(Keywords::DEFENDER));
+
         g.change_controller(g.object_ref(source), p.other());
         g.state.objects[source as usize].summoning_sick = false;
         assert!(!g.can_declare_attacker(p.other(), source));

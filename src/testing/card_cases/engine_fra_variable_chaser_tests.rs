@@ -38,7 +38,7 @@ fn variable_prepare(g: &mut Game, p: Player) -> (CardId, ObjectRef) {
             .prepared_spell()
             .unwrap()
     );
-    assert!(g.keywords(source).contains(Keywords::FLYING));
+
     (source, copy)
 }
 fn variable_wait_choice(g: &mut Game) {

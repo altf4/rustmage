@@ -5504,3 +5504,15 @@ pub(crate) enum RoleKind {
     Wicked,
     YoungHero,
 }
+
+#[cfg(test)]
+#[path = "testing/bindings.rs"]
+pub(crate) mod coverage_bindings;
+
+#[cfg(test)]
+#[path = "testing/creature_bindings.rs"]
+pub(crate) mod creature_coverage_bindings;
+
+#[cfg(test)]
+#[path = "testing/land_bindings.rs"]
+pub(crate) mod land_coverage_bindings;

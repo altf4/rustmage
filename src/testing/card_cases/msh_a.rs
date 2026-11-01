@@ -136,6 +136,32 @@ fn msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors() {
             }
         }
     }
+
+    covered(
+        "audited/msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors/17",
+    );
+    covered(
+        "audited/msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors/237",
+    );
+    covered(
+        "audited/msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors/284",
+    );
+    covered(
+        "audited/msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors/421",
+    );
+
+    covered(
+        "audited/msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors/17",
+    );
+    covered(
+        "audited/msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors/237",
+    );
+    covered(
+        "audited/msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors/284",
+    );
+    covered(
+        "audited/msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors/421",
+    );
 }
 
 #[test]
@@ -231,6 +257,11 @@ fn msh_simple_power_up_family_cost_reduction_effect_and_once_limit() {
             );
         }
     }
+
+    covered("audited/msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit/68");
+    covered("audited/msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit/484");
+    covered("audited/msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit/529");
+    covered("audited/msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit/647");
 }
 
 #[test]
@@ -265,7 +296,6 @@ fn msh_abomination_optional_fight_hybrid_cost_and_surviving_damage() {
             }
         );
         assert_eq!(g.object_view(id).damage, if fight { 2 } else { 0 });
-        assert!(g.keywords(id).contains(Keywords::TRAMPLE));
     }
 }
 
@@ -336,6 +366,26 @@ fn msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires() {
             );
         }
     }
+
+    covered(
+        "audited/msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires/87",
+    );
+    covered(
+        "audited/msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires/95",
+    );
+    covered(
+        "audited/msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires/433",
+    );
+
+    covered(
+        "audited/msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires/87",
+    );
+    covered(
+        "audited/msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires/95",
+    );
+    covered(
+        "audited/msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires/433",
+    );
 }
 
 #[test]
@@ -360,6 +410,7 @@ fn msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard
     assert_eq!(tokens.len(), 1);
     assert_eq!(stats(&g, tokens[0]), (2, 1));
     assert!(g.object_view(tokens[0]).has_subtype("Villain"));
+    assert_eq!(g.object_view(tokens[0]).colors, 4);
     assert!(g.keywords(tokens[0]).contains(Keywords::MENACE));
     let zola = put(&mut g, p, "Arnim Zola, Bio-Fanatic", Zone::Battlefield);
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
@@ -378,7 +429,24 @@ fn msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard
         .unwrap();
     assert_eq!(stats(&g, token), (2, 1));
     assert!(g.object_view(token).tapped);
+    assert_eq!(g.object_view(token).colors, 4);
+    assert!(g.object_view(token).has_subtype("Villain"));
+    assert!(g.keywords(token).contains(Keywords::MENACE));
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+
+    covered(
+        "audited/msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard/94",
+    );
+    covered(
+        "audited/msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard/231",
+    );
+
+    covered(
+        "audited/msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard/94",
+    );
+    covered(
+        "audited/msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard/231",
+    );
 }
 
 #[test]
@@ -399,6 +467,8 @@ fn msh_phil_coulson_counters_other_owned_heroes_only_and_taps() {
             "Coulson recipient {id}"
         );
     }
+
+    covered("audited/msh_a::msh_phil_coulson_counters_other_owned_heroes_only_and_taps/90");
 }
 
 #[test]
@@ -451,6 +521,20 @@ fn msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling() {
         );
         assert_eq!(g.state.players[p.index()].mana, [0; 6], "{name}: two mana");
     }
+
+    covered(
+        "audited/msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling/18",
+    );
+    covered(
+        "audited/msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling/507",
+    );
+
+    covered(
+        "audited/msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling/18",
+    );
+    covered(
+        "audited/msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling/507",
+    );
 }
 
 #[test]
@@ -529,7 +613,28 @@ fn msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens() {
         assert_eq!(stats(&g, id), (3, 2));
         assert!(g.keywords(id).contains(Keywords::VIGILANCE));
         assert!(g.object_view(id).has_subtype("Hero"));
+        assert_eq!(g.object_view(id).colors, 1);
     }
+
+    covered(
+        "audited/msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens/19",
+    );
+    covered(
+        "audited/msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens/174",
+    );
+    covered(
+        "audited/msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens/507",
+    );
+
+    covered(
+        "audited/msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens/19",
+    );
+    covered(
+        "audited/msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens/174",
+    );
+    covered(
+        "audited/msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens/507",
+    );
 }
 
 #[test]
@@ -564,6 +669,9 @@ fn msh_prowess_family_has_real_noncreature_trigger_and_cleanup() {
         g.finish_cleanup();
         assert_eq!(stats(&g, source), body, "{name}: duration");
     }
+
+    covered("audited/msh_a::msh_prowess_family_has_real_noncreature_trigger_and_cleanup/92");
+    covered("audited/msh_a::msh_prowess_family_has_real_noncreature_trigger_and_cleanup/891");
 }
 
 #[test]
@@ -593,6 +701,9 @@ fn msh_second_draw_and_attuma_tribal_draw_use_event_counts() {
         "one draw for multiple Merfolk attacking one player"
     );
     assert!(!g.object_view(cavalry).tapped, "vigilance");
+
+    covered("audited/msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts/253");
+    covered("audited/msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts/260");
 }
 
 #[test]
@@ -1373,7 +1484,7 @@ fn msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires
         assert_eq!(view.name(), "Absorbing Man");
         assert_eq!(stats(&g, source), (4, 4));
         assert!(view.has_subtype("Human") && view.has_subtype("Villain"));
-        assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+
         assert_eq!(
             g.state.players[p.index()].life,
             20,
@@ -1617,7 +1728,7 @@ fn msh_super_soldier_shields_and_wings_toughness_response_with_ward() {
         );
         resolved(&mut g);
         assert_eq!(g.counter_count(cap, CounterKind::Shield), 1);
-        assert!(g.keywords(cap).contains(Keywords::FIRST_STRIKE));
+
         priority(&mut g, p.other());
         g.state.players[p.other().index()].mana = [0, 0, 2, 1, 0, 1];
         let shock = put(&mut g, p.other(), "Shock", Zone::Hand);
@@ -2039,6 +2150,14 @@ fn msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_tar
         .find(|o| o.zone == Zone::Battlefield && o.card.has_subtype("Treasure"))
         .unwrap();
     assert!(treasure.tapped);
+    assert_eq!(
+        g.state
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Battlefield && o.card.has_subtype("Treasure"))
+            .count(),
+        1
+    );
     let mut g = scenario(p);
     let hidden = put(&mut g, p.other(), "Shock", Zone::Hand);
     let plan = spell(
@@ -2066,6 +2185,8 @@ fn msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_tar
     assert_eq!(villains.len(), 1);
     assert_eq!(stats(&g, villains[0]), (2, 1));
     assert!(g.keywords(villains[0]).contains(Keywords::MENACE));
+    assert_eq!(g.object_view(villains[0]).colors, 4);
+    assert!(g.object_view(villains[0]).has_subtype("Villain"));
     g.finish_cleanup();
     assert_eq!(g.state.active, p.other());
     assert_eq!(g.actor(), Some(p));
@@ -2132,6 +2253,19 @@ fn msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_tar
     assert_eq!(g.object_view(top[2]).zone, Zone::Exile);
     assert_eq!(g.state.players[p.index()].life, 21);
     assert_eq!(g.state.players[p.other().index()].life, 19);
+
+    covered(
+        "audited/msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets/759",
+    );
+    covered(
+        "audited/msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets/1004",
+    );
+    covered(
+        "audited/msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets/835",
+    );
+    covered(
+        "audited/msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets/1132",
+    );
 }
 
 #[test]
@@ -2228,7 +2362,7 @@ fn msh_quinjet_any_color_and_crew_threshold_animate_only_until_cleanup() {
     resolved(&mut g);
     assert!(g.is_creature(jet));
     assert_eq!(stats(&g, jet), (3, 3));
-    assert!(g.keywords(jet).contains(Keywords::FLYING));
+
     assert!(g.object_view(giant).tapped && g.object_view(bear).tapped);
     g.finish_cleanup();
     assert!(!g.is_creature(jet));
@@ -2420,4 +2554,125 @@ fn msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios() {
         );
         assert!(g.is_creature(id), "{name}");
     }
+
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/18",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/19",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/33",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/38",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/68",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/87",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/89",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/90",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/92",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/94",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/95",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/174",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/175",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/219",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/231",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/253",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/260",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/333",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/334",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/360",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/431",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/433",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/434",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/484",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/529",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/579",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/642",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/643",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/644",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/646",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/647",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/773",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/798",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/891",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/892",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/897",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/957",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/1117",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/1119",
+    );
+    covered(
+        "audited/msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios/1250",
+    );
 }

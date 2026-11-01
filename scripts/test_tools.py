@@ -9,9 +9,79 @@ import unittest
 from resource_limits import MAX_MEMORY, bounded_group
 from run_native_tests import process_running, run_command, suite_results
 from validate import sha, snapshot_library
+import card_coverage
 
 
 class ToolContracts(unittest.TestCase):
+    def test_feature_inventory_requires_real_rows_and_every_printed_paragraph(self):
+        import json
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            def write(path, value):
+                destination = root/path
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_text(json.dumps(value))
+            write('data/catalogue-identities.json', dict(physical_count=1, cards=[
+                dict(index=0, name='Fixture', oracle_id='oracle-fixture')]))
+            write('data/standard/coverage.json', dict(cards=[dict(
+                name='Fixture', implemented=True, definition='src/card_definitions/test/fixture.rs')]))
+            write('data/standard/cards.json', dict(cards=[dict(
+                name='Fixture', oracle_id='oracle-fixture', oracle_text='Draw a card.')]))
+            write('src/card_definitions/test/fixture.json', dict(facts_sha256='pinned-facts'))
+            write('src/testing/coverage/shared.json', {})
+            proof = dict(case='native::draw', row='fixture/draw', outcomes=['draws one card'])
+            entry = dict(catalogue_id=0, oracle_id='oracle-fixture', facts_sha256='pinned-facts',
+                         choices_reviewed=True, features=[dict(id='draw', proof=proof, source=[
+                             dict(face=0, paragraph=0, text='Draw a card.')])],
+                         casting_routes=[dict(id='cast.normal', proof=proof)])
+            write('src/testing/coverage/test.json', dict(schema=1, cards=[entry]))
+            native = dict(success=True, tests=[dict(test='native::draw', status='ok')],
+                          features=[dict(case='native::draw', row='fixture/draw')])
+            self.assertTrue(card_coverage.check(root, native)['success'])
+            native['features'] = []
+            self.assertFalse(card_coverage.check(root, native)['success'])
+            native['features'] = [dict(case='native::draw', row='fixture/draw')]
+            entry['features'] = []
+            write('src/testing/coverage/test.json', dict(schema=1, cards=[entry]))
+            result = card_coverage.check(root, native)
+            self.assertFalse(result['success'])
+            self.assertTrue(any(error['reason'] == 'unmapped printed paragraph' for error in result['errors']))
+
+            # A shared configuration needs all three independent witnesses:
+            # its representative outcome, this member's binding, and its cast.
+            family_id = 'plain_normal_spell_v1/draw/controller/1'
+            write('src/testing/oracle_families.json', [dict(
+                id=family_id, representative='Fixture',
+                members=[dict(card='Fixture', catalogue_id=0)])])
+            entry['features'] = [dict(id='draw', source=[
+                dict(face=0, paragraph=0, text='Draw a card.')],
+                proof=dict(family=family_id, member=0))]
+            write('src/testing/coverage/test.json', dict(schema=1, cards=[entry]))
+            gameplay = 'engine::testing::plain_families::representative_outcomes_and_each_members_normal_cast'
+            binding = 'cards::coverage_bindings::oracle_families_bind_the_engine_programs'
+            native['tests'] += [dict(test=gameplay, status='ok'), dict(test=binding, status='ok')]
+            witnesses = [dict(case=gameplay, row='family/'+family_id),
+                         dict(case=binding, row='card/0/binding/'+family_id),
+                         dict(case=gameplay, row='card/0/cast/normal')]
+            native['features'] += witnesses
+            self.assertTrue(card_coverage.check(root, native)['success'])
+            for missing in witnesses:
+                native['features'].remove(missing)
+                self.assertFalse(card_coverage.check(root, native)['success'])
+                native['features'].append(missing)
+            entry['features'][0]['proof']['member'] = 1
+            write('src/testing/coverage/test.json', dict(schema=1, cards=[entry]))
+            self.assertFalse(card_coverage.check(root, native)['success'])
+            entry['features'][0]['proof'] = dict(all=[dict(family=family_id, member=0),
+                                                     dict(shared='mechanic')])
+            write('src/testing/coverage/shared.json', dict(mechanic=dict(
+                case='native::mechanic', row='mechanic', outcomes=['shared rule outcome'])))
+            write('src/testing/coverage/test.json', dict(schema=1, cards=[entry]))
+            native['tests'].append(dict(test='native::mechanic', status='ok'))
+            self.assertFalse(card_coverage.check(root, native)['success'])
+            native['features'].append(dict(case='native::mechanic', row='mechanic'))
+            self.assertTrue(card_coverage.check(root, native)['success'])
+
     def test_builds_are_bounded_and_a_forged_flag_cannot_bypass_the_wrapper(self):
         group = bounded_group()
         self.assertIsNotNone(group, 'use scripts/resource_guard.py')

@@ -49,7 +49,7 @@ fn tetsuko_prowess_and_double_strike_apply_to_actual_noncreature_cast() {
         let p = Player::P0;
         let mut g = scenario(p);
         let tetsuko = put(&mut g, p, "Tetsuko Umezawa, Pursuer", Zone::Battlefield);
-        assert!(g.keywords(tetsuko).contains(Keywords::DOUBLE_STRIKE));
+
         let spell = put(&mut g, p, "Shock", Zone::Hand);
         cast(&mut g, spell, Some(Target::Player(p.other())));
         settle(&mut g);

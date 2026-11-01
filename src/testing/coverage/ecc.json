@@ -1,0 +1,257 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 1633,
+      "name": "Frontier Bivouac",
+      "oracle_id": "e4cf6c2f-0f1e-4980-9ef9-e4eabcae42a9",
+      "facts_sha256": "37433c2fbbd0a78ee311149a703fa143cdc69f8a8fa032ef4e9176acee54e83d",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.26/activation",
+            "member": 1633
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{T}: Add {G}, {U}, or {R}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.26/activation",
+            "member": 1633
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.26/activation",
+            "member": 1633
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1686,
+      "name": "Garruk's Uprising",
+      "oracle_id": "3127ae9b-a7a7-43ec-89d7-688f8445b33d",
+      "facts_sha256": "ffde973839942a89203fd81a6be8be7cf2a7571399d89a2eb2296c3aa38f1f13",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this enchantment enters, if you control a creature with power 4 or greater, draw a card."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Creatures you control have trample. (Each of those creatures can deal excess combat damage to the player or planeswalker it's attacking.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "Whenever a creature you control with power 4 or greater enters, draw a card."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/1686/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2874,
+      "name": "Muldrotha, the Gravetide",
+      "oracle_id": "e4625704-1d52-44e4-804f-2f45644d76ac",
+      "facts_sha256": "96ff1c21837d616e8afc0ac304910ee6ce75aef15cf2bda02b6211eef5ab9c9c",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.legendary",
+          "kind": "shared",
+          "source": [],
+          "proof": {
+            "shared": "legendary"
+          }
+        },
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "During each of your turns, you may play a land and cast a permanent spell of each permanent type from your graveyard. (If a card has multiple permanent types, choose one as you play it.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2874/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3029,
+      "name": "Opulent Palace",
+      "oracle_id": "f9e7e855-1e3b-42d3-91b0-64ba8b5b8982",
+      "facts_sha256": "c728a3ca030df99d07154e76cd62228aa71cab7d8451c7b7270b57744134ea05",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.22/activation",
+            "member": 3029
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{T}: Add {B}, {G}, or {U}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.22/activation",
+            "member": 3029
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.22/activation",
+            "member": 3029
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3679,
+      "name": "Sandsteppe Citadel",
+      "oracle_id": "544dbabd-cbfc-40da-a5ba-2fea9cddb453",
+      "facts_sha256": "fd0ff010a36e91f4312441d7703f1bfa67819ba5cd26e294d8b6e3ffacb5e086",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.21/activation",
+            "member": 3679
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{T}: Add {W}, {B}, or {G}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.21/activation",
+            "member": 3679
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/none.0/mana.21/activation",
+            "member": 3679
+          }
+        }
+      ]
+    }
+  ]
+}

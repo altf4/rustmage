@@ -65,7 +65,7 @@ fn sos_final_fractalize_replaces_creature_types_colors_and_base_before_modifiers
             assert_eq!(view.colors, 2 | 16);
             assert!(g.has_subtype(target, "Fractal"));
             assert!(!g.has_subtype(target, "Dragon"));
-            assert!(g.keywords(target).contains(Keywords::FLYING));
+
             assert_eq!(stats(&g, target), (i128::from(x) + 5, i128::from(x) + 5));
             assert_eq!(
                 g.observe(p)
@@ -98,7 +98,7 @@ fn sos_final_fractalize_preserves_artifact_keywords_and_does_not_follow_blinks()
         assert!(g.has_subtype(target, "Fractal"));
         assert!(!g.has_subtype(target, "Dragon"));
         assert_eq!(stats(&g, target), (3, 3));
-        assert!(g.keywords(target).contains(Keywords::FLYING));
+
         let blink = put(&mut g, p, "Daydream", Zone::Hand);
         big_helpers::cast(&mut g, blink, None, &[Target::Card(target)]);
         big_helpers::settle(&mut g);

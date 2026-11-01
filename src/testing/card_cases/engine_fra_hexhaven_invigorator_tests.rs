@@ -22,7 +22,7 @@ fn hexhaven_searches_up_to_damage_amount_and_puts_selected_lands_tapped() {
         let b = put(&mut g, p, "Mountain", Zone::Library);
         let c = put(&mut g, p, "Island", Zone::Library);
         let invalid = put(&mut g, p, "Bear Cub", Zone::Library);
-        assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+
         let event = DamageEvent {
             preventable: true,
             source: g.damage_source(dealer),

@@ -172,7 +172,7 @@ fn sos_audit_multi_pterafractyl_x_entry_life_and_blink_x_zero() {
             if x > 0 {
                 assert_eq!(g.counter_count(source, CounterKind::PlusOne), u64::from(x));
                 assert_eq!(stats(&g, source), (1 + i128::from(x), i128::from(x)));
-                assert!(g.keywords(source).contains(Keywords::FLYING));
+
                 let blink = put(&mut g, p, "Daydream", Zone::Hand);
                 cast_paid(&mut g, blink, &[Target::Card(source)]);
                 finish(&mut g);
@@ -247,7 +247,7 @@ fn sos_audit_multi_skywhale_opus_x_paid_four_or_five_and_critique_loot() {
             let whale = put(&mut g, p, "Spectacular Skywhale", Zone::Hand);
             cast_paid(&mut g, whale, &[]);
             finish(&mut g);
-            assert!(g.keywords(whale).contains(Keywords::FLYING));
+
             let discard = put(&mut g, p, "Forest", Zone::Hand);
             let spell = put(&mut g, p, "Traumatic Critique", Zone::Hand);
             xcast(&mut g, spell, x, Some(Target::Player(p.other())));

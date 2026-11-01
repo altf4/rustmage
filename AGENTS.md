@@ -23,6 +23,18 @@ Catalogue entries or partial card implementations do not satisfy it.
   abilities; metadata, action enumeration, and recorded fingerprints alone do not
   establish card coverage. Smaug, Wicked Worm needs its Treasure entry ability and
   Treasure-funded cast trigger checked; flying and legendary belong in mechanics.
+- Maintain `src/testing/coverage/<set>.json` for every admitted physical card.
+  Map every printed ability, mode and casting route to a passing outcome case or
+  the shared-mechanics registry. Pin the source facts and paragraphs. Table rows
+  must report their feature/row ID after their assertions pass; the enclosing
+  test name alone cannot establish coverage for a row. Do not mark unresolved
+  or inherited gaps covered merely to pass validation.
+- Equivalent abilities can share one gameplay outcome. A composed spell-family
+  proof requires an Oracle-authored complete configuration, a passing outcome for
+  an actual representative, a strict binding of each member's engine-consumed
+  targets/program and wrappers, and each member's actual casting-route check.
+  Match the whole configuration; reject unknown fields and intrinsic coupling.
+  Never infer coverage from a matching instruction somewhere in a program.
 - Check legality/privacy, transactional failure, and owned raw/index branch/restore
   once in core-engine tests, not throughout card cases. Bounded full-game tests
   are appropriate for the core engine, not individual cards. Prefer scenario

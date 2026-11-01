@@ -241,23 +241,24 @@ fn hexproof_prevents_an_opponents_targeting_but_allows_its_controller() {
 }
 
 #[test]
-fn ward_counters_a_targeting_spell_when_its_cost_is_declined() {
-    let mut g = game();
-    let terror = put(&mut g, Player::P1, "Tolarian Terror", Zone::Battlefield);
-    let shock = put(&mut g, Player::P0, "Shock", Zone::Hand);
-    cast(&mut g, shock, &[Target::Card(terror)]);
-    for _ in 0..12 {
-        if g.legal_actions().contains(&Action::DeclineResolutionMana) {
-            break;
+fn ward_accepts_payment_or_counters_the_targeting_spell() {
+    for paid in [false, true] {
+        let mut g = game();
+        let terror = put(&mut g, Player::P1, "Tolarian Terror", Zone::Battlefield);
+        let shock = put(&mut g, Player::P0, "Shock", Zone::Hand);
+        cast(&mut g, shock, &[Target::Card(terror)]);
+        reach(&mut g, &Action::DeclineResolutionMana);
+        if paid {
+            let before: u32 = g.state.players[0].mana.iter().sum();
+            choose(&mut g, |a| matches!(a, Action::PayResolutionMana { .. }));
+            assert_eq!(before - g.state.players[0].mana.iter().sum::<u32>(), 2);
+        } else {
+            act(&mut g, Action::DeclineResolutionMana);
         }
-        choose(&mut g, |a| {
-            matches!(a, Action::Pass | Action::PutTrigger { .. })
-        });
+        resolve(&mut g);
+        assert_eq!(g.object_view(shock).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(terror).damage, if paid { 2 } else { 0 });
     }
-    act(&mut g, Action::DeclineResolutionMana);
-    resolve(&mut g);
-    assert_eq!(g.object_view(shock).zone, Zone::Graveyard);
-    assert_eq!(g.object_view(terror).damage, 0);
 }
 
 #[test]
@@ -296,4 +297,34 @@ fn stack_response_resolves_before_the_original_spell() {
     assert_eq!(stats(&g, bear), (5, 5));
     g.finish_cleanup();
     assert_eq!(stats(&g, bear), (2, 2));
+}
+
+#[test]
+fn cant_block_prevents_block_declaration() {
+    let mut g = game();
+    let bear = put(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+    let blocker = put(&mut g, Player::P1, "Bloodghast", Zone::Battlefield);
+    attack(&mut g, bear);
+    reach(&mut g, &Action::FinishBlockers);
+    assert!(!g.legal_actions().contains(&Action::Block {
+        blocker,
+        attacker: bear
+    }));
+}
+
+#[test]
+fn counterspell_counters_a_spell_on_the_stack() {
+    let mut g = game();
+    g.state.active = Player::P1;
+    g.state.priority = Player::P1;
+    let bear = put(&mut g, Player::P1, "Bear Cub", Zone::Hand);
+    cast(&mut g, bear, &[]);
+    act(&mut g, Action::Pass);
+    let counter = put(&mut g, Player::P0, "Counterspell", Zone::Hand);
+    g.state.players[0].mana = [0, 2, 0, 0, 0, 0];
+    cast(&mut g, counter, &[Target::Spell(bear)]);
+    assert_eq!(g.state.players[0].mana, [0; 6]);
+    resolve(&mut g);
+    assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+    assert_eq!(g.object_view(counter).zone, Zone::Graveyard);
 }

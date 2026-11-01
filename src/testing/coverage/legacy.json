@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 5,
+      "name": "Grizzly Bears",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "choices_reviewed": true,
+      "features": [],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/5",
+            "outcomes": [
+              "literal printed cost and normal card outcome"
+            ]
+          }
+        }
+      ],
+      "foundation_contract": 5
+    },
+    {
+      "catalogue_id": 6,
+      "name": "Goblin Piker",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "choices_reviewed": true,
+      "features": [],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/6",
+            "outcomes": [
+              "literal printed cost and normal card outcome"
+            ]
+          }
+        }
+      ],
+      "foundation_contract": 6
+    },
+    {
+      "catalogue_id": 7,
+      "name": "Hill Giant",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "choices_reviewed": true,
+      "features": [],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/7",
+            "outcomes": [
+              "literal printed cost and normal card outcome"
+            ]
+          }
+        }
+      ],
+      "foundation_contract": 7
+    },
+    {
+      "catalogue_id": 9,
+      "name": "Lightning Bolt",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Lightning Bolt deals 3 damage to any target."
+            }
+          ],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/9",
+            "outcomes": [
+              "literal spell outcome from the frozen simple-effect table"
+            ]
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/9",
+            "outcomes": [
+              "literal printed cost and normal card outcome"
+            ]
+          }
+        }
+      ],
+      "foundation_contract": 9
+    },
+    {
+      "catalogue_id": 12,
+      "name": "Divination",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Draw two cards."
+            }
+          ],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/12",
+            "outcomes": [
+              "literal spell outcome from the frozen simple-effect table"
+            ]
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/12",
+            "outcomes": [
+              "literal printed cost and normal card outcome"
+            ]
+          }
+        }
+      ],
+      "foundation_contract": 12
+    },
+    {
+      "catalogue_id": 13,
+      "name": "Counterspell",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Counter target spell."
+            }
+          ],
+          "proof": {
+            "case": "engine::testing::mechanics::counterspell_counters_a_spell_on_the_stack",
+            "outcomes": [
+              "two blue mana counters the creature spell before it enters"
+            ]
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::mechanics::counterspell_counters_a_spell_on_the_stack",
+            "outcomes": [
+              "two blue mana counters the creature spell before it enters"
+            ]
+          }
+        }
+      ],
+      "foundation_contract": 13
+    }
+  ]
+}

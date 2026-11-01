@@ -202,7 +202,7 @@ fn hob_inherited_creatures_provisioner_fixed_current_group_and_guardian_permanen
         let mut g = scenario(p);
         let guardian = paid(&mut g, p, "Guardian of the Halls", [0, 0, 0, 0, 1, 1]);
         assert_eq!(stats(&g, guardian), (2, 2));
-        assert!(g.keywords(guardian).contains(Keywords::TRAMPLE));
+
         for n in 1..=2 {
             g.state.players[p.index()].mana = [0, 0, 0, 0, 2, 5];
             activate(&mut g, guardian, None);

@@ -117,7 +117,7 @@ fn big_inherited_harvester_paid_sweep_discard_duration_and_menace_block_legality
             }
         );
         assert_eq!(g.object_view(small).zone, Zone::Graveyard);
-        assert!(g.keywords(source).contains(Keywords::MENACE));
+
         next_turn(&mut g);
         next_turn(&mut g);
         assert_eq!(

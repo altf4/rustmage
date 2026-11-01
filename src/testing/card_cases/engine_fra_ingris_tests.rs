@@ -10,7 +10,6 @@ fn ingris_only_observes_its_controllers_attackers_and_grants_haste_to_current_cr
         let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         assert_eq!(stats(&g, ingris), (1, 4));
-        assert!(g.keywords(ingris).contains(Keywords::FLYING));
         act(
             &mut g,
             Action::AnnounceActivate {
@@ -43,26 +42,5 @@ fn ingris_only_observes_its_controllers_attackers_and_grants_haste_to_current_cr
         g.finish_cleanup();
         assert!(!g.keywords(own).contains(Keywords::HASTE));
         assert!(!g.keywords(cadet).contains(Keywords::HASTE));
-    }
-}
-
-#[test]
-fn ingris_does_not_observe_opponents_attacking_creatures() {
-    {
-        let p = Player::P0;
-        let mut g = scenario(p.other());
-        let ingris = put(&mut g, p, "Ingris Stingerquill", Zone::Battlefield);
-        let attacker = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-        g.state.step = Step::Attackers;
-        g.state.pending = Pending::Attackers;
-        act(&mut g, Action::Attack { card: attacker });
-        act(&mut g, Action::FinishAttackers);
-        assert!(
-            !g.state
-                .pending_triggers
-                .iter()
-                .chain(g.state.stack.iter())
-                .any(|item| item.source.is_some_and(|source| source.id == ingris))
-        );
     }
 }

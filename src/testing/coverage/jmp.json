@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 165,
+      "name": "Angelic Edict",
+      "oracle_id": "36de8401-ee4e-413f-91ad-06924e39c857",
+      "facts_sha256": "277d7474be0f8a9884019fcce1cc9284387ffa8038abb64b824c4fdc6465a695",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Exile target creature or enchantment."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4839,
+      "name": "Vampire Neonate",
+      "oracle_id": "c0045925-25bf-403c-b721-5f05ba30985b",
+      "facts_sha256": "41f0dc4745cb3ce5c628aceefe490e12ce11644fe03f9238c88f7827547a1a7d",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "{2}, {T}: Each opponent loses 1 life and you gain 1 life."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4839/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

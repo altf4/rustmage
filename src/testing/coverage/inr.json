@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 680,
+      "name": "Cathar Commando",
+      "oracle_id": "774dce79-67e0-4820-8013-c7a7347993ce",
+      "facts_sha256": "e8a56597c41b231ad03da061dc43f6c25d8ee8b430dd5c07dc94e651402439c7",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.flash",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Flash"
+            }
+          ],
+          "proof": {
+            "shared": "flash"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "{1}, Sacrifice this creature: Destroy target artifact or enchantment."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/680/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1247,
+      "name": "Eaten Alive",
+      "oracle_id": "d437ecc2-2fd3-4ad3-b23e-217f55e58dae",
+      "facts_sha256": "5373f8b4335a7fd9e1b5b04fb20919635cbb105f82afba80ad709c156a5afea0",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "As an additional cost to cast this spell, sacrifice a creature or pay {3}{B}."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Exile target creature or planeswalker."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2152,
+      "name": "Imprisoned in the Moon",
+      "oracle_id": "339a7418-9a29-4eae-a3c2-ea590d175936",
+      "facts_sha256": "f5347121b3685468ceba451d85c57471be7052a8e8afef797f33c1d6ec4f77eb",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Enchant creature, land, or planeswalker"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Enchanted permanent is a colorless land with \"{T}: Add {C}\" and loses all other card types and abilities."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2611,
+      "name": "Maelstrom Pulse",
+      "oracle_id": "95ce305f-34bc-4d6d-b7ba-ffd4b2a25336",
+      "facts_sha256": "04d546bcd091b9a07a582488021e23ac16646ef32833279d07194e0b7f7dff28",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Destroy target nonland permanent and all other permanents with the same name as that permanent."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    }
+  ]
+}

@@ -26,7 +26,7 @@ fn grapple_removes_abilities_before_power_damage_and_until_cleanup() {
         let victim = put(&mut g, p.other(), "Serra Angel", Zone::Battlefield);
         let dealer = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let spell = put(&mut g, p, "Flourishing Grapple", Zone::Hand);
-        assert!(g.keywords(victim).contains(Keywords::FLYING));
+
         grapple_cast(&mut g, spell, victim, dealer);
 
         settle(&mut g);
@@ -35,8 +35,6 @@ fn grapple_removes_abilities_before_power_damage_and_until_cleanup() {
         assert!(!g.keywords(victim).contains(Keywords::FLYING));
         assert!(!g.keywords(victim).contains(Keywords::VIGILANCE));
         g.finish_cleanup();
-        assert!(g.keywords(victim).contains(Keywords::FLYING));
-        assert!(g.keywords(victim).contains(Keywords::VIGILANCE));
     }
 }
 

@@ -84,7 +84,7 @@ fn moonshadow_observes_one_owned_permanent_card_per_batch_from_any_zone() {
         pay(&mut g);
         settle(&mut g);
         assert_eq!(stats(&g, source), (1, 1));
-        assert!(g.keywords(source).contains(Keywords::MENACE));
+
         assert_eq!(g.counter_count(source, CounterKind::MinusOne), 6);
         let a = put(&mut g, p, "Forest", Zone::Hand);
         let b = put(&mut g, p, "Bear Cub", Zone::Hand);

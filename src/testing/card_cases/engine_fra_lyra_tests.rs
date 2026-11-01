@@ -30,8 +30,8 @@ fn lyra_end_step_checks_actual_draw_history_and_creates_blue_angel() {
         let p = Player::P0;
         for drawn in [2, 3] {
             let mut g = scenario(p);
-            let lyra = put(&mut g, p, "Lyra, Tolarian Archangel", Zone::Battlefield);
-            assert!(g.keywords(lyra).contains(Keywords::FLYING));
+            let _lyra = put(&mut g, p, "Lyra, Tolarian Archangel", Zone::Battlefield);
+
             g.draw_many(p, drawn);
             g.state.active = p.other();
             g.begin_step(Step::End);

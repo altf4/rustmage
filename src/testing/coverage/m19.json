@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 1747,
+      "name": "Gigantosaurus",
+      "oracle_id": "e666bae7-dd51-4921-8b89-7e8d423caba0",
+      "facts_sha256": "966e96331502fe82b56484af9ee4dc2a462a59e5cc37e766be304a7b9232efc4",
+      "choices_reviewed": true,
+      "features": [],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/1747",
+            "outcomes": [
+              "literal printed cost and normal card outcome"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 2478,
+      "name": "Leonin Vanguard",
+      "oracle_id": "de1e1352-adb2-4ac1-bb2a-ee654d5c727d",
+      "facts_sha256": "1d59cb20e6d1d8b555b47012fe289d7e3dd17f8ee8b910c7d9ee823a48ad59a3",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "At the beginning of combat on your turn, if you control three or more creatures, this creature gets +1/+1 until end of turn and you gain 1 life."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/2478/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

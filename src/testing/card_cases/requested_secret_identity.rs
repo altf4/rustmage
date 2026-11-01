@@ -42,7 +42,7 @@ fn secret_identity_type_replacement_applies_after_changeling() {
         big_helpers::settle(&mut g);
         assert!(g.has_subtype(target, "Hero"));
         assert!(!g.has_subtype(target, "Bear"));
-        assert!(g.keywords(target).contains(Keywords::CHANGELING));
+
         g.finish_cleanup();
         assert!(g.has_subtype(target, "Bear"));
     }

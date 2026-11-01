@@ -97,7 +97,7 @@ fn dain_current_controller_story_and_vigilance() {
         cast(&mut g, d, None);
         settle(&mut g);
         assert_eq!(stats(&g, d), (2, 2));
-        assert!(g.keywords(d).contains(Keywords::VIGILANCE));
+
         assert_eq!(g.attack_controller_tax(p), 0);
         put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
         put(&mut g, p, "Goldvein Pick", Zone::Battlefield);

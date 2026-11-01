@@ -55,7 +55,7 @@ fn blacksmith_creates_a_real_equippable_axe_and_has_double_strike() {
         let mut g = scenario(p);
         let smith = paid(&mut g, p, "Iron Hills Blacksmith", [1, 0, 0, 0, 0, 1]);
         settle(&mut g);
-        assert!(g.keywords(smith).contains(Keywords::DOUBLE_STRIKE));
+
         assert_eq!(stats(&g, smith), (1, 1));
         let axes = token(&g, p, "Axe");
         assert_eq!(axes.len(), 1);

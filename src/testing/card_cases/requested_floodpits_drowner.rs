@@ -12,8 +12,7 @@ fn floodpits_taps_and_stuns_then_shuffles_each_owner() {
         let target = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
         cast(&mut g, source, None, &[]);
         settle(&mut g);
-        assert!(g.keywords(source).contains(Keywords::FLASH));
-        assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+
         assert!(g.object_view(target).tapped);
         assert_eq!(g.counter_count(target, CounterKind::Stun), 1);
         g.state.objects[source as usize].summoning_sick = false;

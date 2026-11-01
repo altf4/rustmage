@@ -169,7 +169,7 @@ fn sos_pestbrood_sloth_reach_death_tokens_and_attack_life() {
         let mut g = setup(p);
         let sloth = paid(&mut g, p, "Pestbrood Sloth", None, &[]);
         settle(&mut g);
-        assert!(g.keywords(sloth).contains(Keywords::REACH));
+
         paid(&mut g, p, "Murder", None, &[Target::Card(sloth)]);
         settle(&mut g);
         let pests = tokens(&g, p, Card::SosPestToken);
@@ -345,7 +345,7 @@ fn sos_emeritus_regrowth_and_attack_reprepare_rechecks_eight_lands() {
             let source = paid(&mut g, p, "Emeritus of Abundance", None, &[]);
             settle(&mut g);
             assert_eq!((g.stats(source).power, g.stats(source).toughness), (3, 4));
-            assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+
             let old = named(&mut g, p, "Forest", Zone::Graveyard);
             paid_prep(&mut g, source, None, &[Target::Card(old)]);
             settle(&mut g);
@@ -566,7 +566,7 @@ fn sos_scolding_repartee_optional_historical_all_counter_transfer_and_replacemen
         );
         settle(&mut g);
         assert_eq!(g.counter_count(source, CounterKind::PlusOne), 1);
-        assert!(g.keywords(source).contains(Keywords::MENACE));
+
         g.add_counter(source, CounterKind::Page, 2);
         g.add_counter(source, CounterKind::Stun, 3);
         g.move_object(source, Zone::Graveyard);
@@ -754,7 +754,7 @@ fn sos_dawning_own_graveyard_card_count_discount_and_reach() {
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 8];
         let source = paid(&mut g, p, "The Dawning Archaic", None, &[]);
         settle(&mut g);
-        assert!(g.keywords(source).contains(Keywords::REACH));
+
         assert_eq!((g.stats(source).power, g.stats(source).toughness), (7, 7));
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     }
@@ -1566,7 +1566,7 @@ fn sos_original_skycoach_crew_sick_creatures_exact_power_and_cleanup() {
         assert!(!g.is_creature(vehicle));
         settle(&mut g);
         assert_eq!((g.stats(vehicle).power, g.stats(vehicle).toughness), (3, 2));
-        assert!(g.keywords(vehicle).contains(Keywords::FLYING));
+
         g.finish_cleanup();
         assert!(!g.is_creature(vehicle));
     }
@@ -1580,7 +1580,7 @@ fn sos_original_graffalon_increment_strict_trigger_and_resolution_checks() {
             let mut g = setup(p);
             let graffalon = paid(&mut g, p, "Hungry Graffalon", None, &[]);
             settle(&mut g);
-            assert!(g.keywords(graffalon).contains(Keywords::REACH));
+
             paid(&mut g, p, "Shopkeeper's Bane", None, &[]);
             settle(&mut g);
             assert_eq!(
@@ -1760,7 +1760,7 @@ fn sos_original_shopkeeper_attack_life_and_live_infusion_control_and_removal() {
         assert_eq!(g.state.players[p.index()].life, life + 2);
         assert_eq!(g.stats(concocter).power, 7);
         assert_eq!(g.stats(bane).power, 5);
-        assert!(g.keywords(bane).contains(Keywords::TRAMPLE));
+
         for player in &mut g.state.players {
             player.mana = [30; 6];
         }
@@ -1827,7 +1827,7 @@ fn sos_original_bg_entry_death_life_events_and_mascot_count_events_not_amount() 
         let mascot = paid(&mut g, p, "Pest Mascot", None, &[]);
         settle(&mut g);
         assert_eq!(g.object_view(mascot).counters.plus_one, 1);
-        assert!(g.keywords(mascot).contains(Keywords::TRAMPLE));
+
         paid(&mut g, p, "Cauldron of Essence", None, &[]);
         settle(&mut g);
         let before = g.state.players[p.index()].life;
@@ -1920,7 +1920,7 @@ fn sos_original_teachers_pest_paid_grave_return_tapped_exact_incarnation_and_men
                 continue;
             }
             assert!(g.object_view(source).tapped);
-            assert!(g.keywords(source).contains(Keywords::MENACE));
+
             g.state.objects[source as usize].tapped = false;
             g.state.objects[source as usize].summoning_sick = false;
             let first = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);

@@ -1,0 +1,50 @@
+[
+  {
+    "catalogue_id": 5,
+    "name": "Grizzly Bears",
+    "mana_cost": "{1}{G}",
+    "type_line": "Creature \u2014 Bear",
+    "oracle_text": "",
+    "power": 2,
+    "toughness": 2
+  },
+  {
+    "catalogue_id": 6,
+    "name": "Goblin Piker",
+    "mana_cost": "{1}{R}",
+    "type_line": "Creature \u2014 Goblin Warrior",
+    "oracle_text": "",
+    "power": 2,
+    "toughness": 1
+  },
+  {
+    "catalogue_id": 7,
+    "name": "Hill Giant",
+    "mana_cost": "{3}{R}",
+    "type_line": "Creature \u2014 Giant",
+    "oracle_text": "",
+    "power": 3,
+    "toughness": 3
+  },
+  {
+    "catalogue_id": 9,
+    "name": "Lightning Bolt",
+    "mana_cost": "{R}",
+    "type_line": "Instant",
+    "oracle_text": "Lightning Bolt deals 3 damage to any target."
+  },
+  {
+    "catalogue_id": 12,
+    "name": "Divination",
+    "mana_cost": "{2}{U}",
+    "type_line": "Sorcery",
+    "oracle_text": "Draw two cards."
+  },
+  {
+    "catalogue_id": 13,
+    "name": "Counterspell",
+    "mana_cost": "{U}{U}",
+    "type_line": "Instant",
+    "oracle_text": "Counter target spell."
+  }
+]

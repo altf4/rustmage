@@ -34,6 +34,31 @@ experiments outside the repository and regular CI. If an investigation uncovers
 missing basic functionality, add its smallest card or shared-mechanic example.
 Do not retain a second legacy or ignored exploratory suite.
 
+`src/testing/coverage/` inventories every admitted physical card using its
+catalogue identity and pinned Oracle facts. Every printed paragraph, individual
+mode and casting route needs an explicit outcome proof. Standalone keywords and
+legendary use `shared.json`; an effect that grants a keyword still needs its own
+card-specific outcome. A successful cast alone proves no other ability.
+
+`card_coverage.py` checks the inventory against the exact passing cases and
+completed table rows in `native.json`. Tests call `covered(row_id)` only after
+the row's assertions pass. Missing cards, stale source pins, unmapped printed
+text, deleted cases and unexecuted rows fail acceptance. Semantic review still
+needs to check that the assertions establish the claimed outcome. Unresolved
+backfill entries remain explicit gaps while the rebuild is a draft.
+
+Equivalent complete configurations share a gameplay outcome. The literal
+`oracle_families.json`, `creature_families.json` and `land_families.json` contracts
+specify independent Oracle expectations. Bindings compare the entire engine-consumed program,
+targets, event, costs and wrappers; unknown or effect-changing additions fail
+eligibility. A composed proof needs three passing rows: an actual representative
+outcome, this member's configuration binding, and this member's actual normal
+cast. The report distinguishes direct, shared-mechanic and composed proofs.
+
+Fixture JSON is read at execution time so a data-only backfill can reuse the
+compiled test executable. The runner hashes every fixture before execution and
+rejects a run if any input changes before all consumers terminate.
+
 ## Local iteration
 
 ```sh

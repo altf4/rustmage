@@ -25,7 +25,7 @@ fn master(g: &mut Game, p: Player) -> CardId {
     drive(g);
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     assert_eq!(stats(g, id), (3, 2));
-    assert!(g.keywords(id).contains(Keywords::DEATHTOUCH));
+
     id
 }
 fn shock(g: &mut Game, p: Player, target: Target) {

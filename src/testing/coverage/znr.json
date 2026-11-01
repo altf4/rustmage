@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 2042,
+      "name": "Highborn Vampire",
+      "oracle_id": "1adcf587-9035-4299-a2bd-62f805fdd897",
+      "facts_sha256": "2ee6755d5eaae6935e15f7017395e1cbdb932dff24bef0f4c21d3e7f265e0062",
+      "choices_reviewed": true,
+      "features": [],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/2042",
+            "outcomes": [
+              "literal printed cost and normal card outcome"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

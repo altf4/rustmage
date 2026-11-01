@@ -570,8 +570,8 @@ fn sos_graveyard_leave_consumers_create_spirits_and_attack_boost() {
     {
         let p = Player::P0;
         let mut g = scenario(p);
-        let excavator = put(&mut g, p, "Garrison Excavator", Zone::Battlefield);
-        assert!(g.keywords(excavator).contains(Keywords::MENACE));
+        let _excavator = put(&mut g, p, "Garrison Excavator", Zone::Battlefield);
+
         let history = put(&mut g, p, "Living History", Zone::Hand);
         cast(&mut g, history, None);
         settle(&mut g);

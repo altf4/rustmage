@@ -26,7 +26,7 @@ fn bard(g: &mut Game, p: Player) -> CardId {
     settle(g);
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     assert_eq!(stats(g, id), (1, 3));
-    assert!(g.keywords(id).contains(Keywords::REACH));
+
     id
 }
 fn second_draw(g: &mut Game, p: Player) {

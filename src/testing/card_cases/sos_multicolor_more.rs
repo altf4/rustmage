@@ -168,7 +168,7 @@ fn sos_more_paradox_surveyor_land_or_x_optional_reveal_and_hybrid() {
             }
             finish(&mut g);
             assert_eq!(g.hand_count(p), usize::from(select != 0));
-            assert!(g.keywords(source).contains(Keywords::REACH));
+
             if select != 0 {
                 let chosen = top[if select == 1 { 0 } else { 2 }];
                 assert!(

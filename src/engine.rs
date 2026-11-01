@@ -10909,4 +10909,4 @@ mod mayhem;
 
 #[cfg(test)]
 #[path = "testing/mod.rs"]
-mod testing;
+pub(crate) mod testing;

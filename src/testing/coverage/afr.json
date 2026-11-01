@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 4842,
+      "name": "Vampire Spawn",
+      "oracle_id": "33cee4b4-3d80-46f1-9223-49ed785891a1",
+      "facts_sha256": "65b7920346cbfad06b732a9857405c105266a48383f9f851bf90f150d04f9d3d",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "When this creature enters, each opponent loses 2 life and you gain 2 life."
+            }
+          ],
+          "proof": {
+            "family": "plain_creature_v1/enter.drain.2.2",
+            "member": 4842
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4842/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

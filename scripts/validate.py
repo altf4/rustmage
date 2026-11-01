@@ -116,6 +116,9 @@ def main(argv=None):
         ('card coverage', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
                               '--suite-timeout', '30', '--compile-timeout', '360'], 400),
+        ('card feature inventory', [sys.executable, 'scripts/card_coverage.py',
+                                    '--native', str(report_dir/'native.json'),
+                                    '--report', str(report_dir/'card-coverage.json')], 30),
     ]
     if args.release:
         commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 360))

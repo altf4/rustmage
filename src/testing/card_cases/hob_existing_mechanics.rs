@@ -253,7 +253,7 @@ fn eagle_attack_counts_other_controlled_creatures_at_resolution_and_locks_in_bon
     let friend = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
     put(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
     assert_eq!(stats(&g, eagle), (2, 5));
-    assert!(g.keywords(eagle).contains(Keywords::FLYING));
+
     attack(&mut g, eagle);
     put(&mut g, Player::P0, "Healer's Hawk", Zone::Battlefield);
     settle(&mut g);

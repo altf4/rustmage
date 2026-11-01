@@ -1,0 +1,793 @@
+{
+  "schema": 1,
+  "cards": [
+    {
+      "catalogue_id": 34,
+      "name": "Abrade",
+      "oracle_id": "f9db72dc-9a5b-48a4-a86e-7464d9a2166a",
+      "facts_sha256": "35b37cc6402ad018a447638c2c0fbed736df0206ec9d52bd31a84fa6187a2df1",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Choose one \u2014"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "\u2022 Abrade deals 3 damage to target creature."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "mode",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "\u2022 Destroy target artifact."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 164,
+      "name": "Angelic Destiny",
+      "oracle_id": "8ba36878-0816-44c7-b543-8ebfc28c2ecd",
+      "facts_sha256": "add8ea694c80c648364117f2df3a29146de40f348e5c631b207b9deb6df1341e",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Enchant creature"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Enchanted creature gets +4/+4, has flying and first strike, and is an Angel in addition to its other types."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "When enchanted creature dies, return this card to its owner's hand."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 456,
+      "name": "Bloodghast",
+      "oracle_id": "e97f9c2b-b41e-4f36-9245-77c0ac125647",
+      "facts_sha256": "188fa6c2954953856a19a60429bb94815153f655c3f1aecdad661bef95650eb1",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0.cant_block",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This creature can't block."
+            }
+          ],
+          "proof": {
+            "shared": "cant_block"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "This creature has haste as long as an opponent has 10 or less life."
+            }
+          ],
+          "proof": {
+            "case": "engine::testing::hartford::bloodghast_returns_on_landfall_and_gains_haste_at_ten_life",
+            "outcomes": [
+              "landfall returns Bloodghast from graveyard",
+              "haste is gained at ten opposing life"
+            ]
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "Landfall \u2014 Whenever a land you control enters, you may return this card from your graveyard to the battlefield."
+            }
+          ],
+          "proof": {
+            "case": "engine::testing::hartford::bloodghast_returns_on_landfall_and_gains_haste_at_ten_life",
+            "outcomes": [
+              "landfall returns Bloodghast from graveyard",
+              "haste is gained at ten opposing life"
+            ]
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::cards::simple_card_families",
+            "row": "family/456",
+            "outcomes": [
+              "literal printed cost and normal card outcome"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 994,
+      "name": "Deadly Brew",
+      "oracle_id": "b831d3f8-07ce-4172-ba29-213cac414c9a",
+      "facts_sha256": "c93aa12017b1e22dd8dea9b3fe7772822d0154e94032c5e57ddb56cebfc9bc96",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Each player sacrifices a creature or planeswalker of their choice. If you sacrificed a permanent this way, you may return another permanent card from your graveyard to your hand."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 1294,
+      "name": "Elusive Otter // Grove's Bounty",
+      "oracle_id": "54175132-2c44-4749-8dfd-d08dcc63e4b3",
+      "facts_sha256": "d3553cb935d698a816dafdf1e9dae718754ec4730588df870f03c9bbad4c1b7f",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Creatures with power less than this creature's power can't block it."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face1.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 1,
+              "paragraph": 0,
+              "text": "Distribute X +1/+1 counters among any number of target creatures you control. (Then exile this card. You may cast the creature later from exile.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        },
+        {
+          "id": "cast.adventure",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3545,
+      "name": "Rite of Replication",
+      "oracle_id": "fb60739e-1dc3-481d-a056-ad72e665c680",
+      "facts_sha256": "3019ec67b9a9721e9fea643050d9ad2a78465f70162e916591636bafe74f1559",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Kicker {5} (You may pay an additional {5} as you cast this spell.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Create a token that's a copy of target creature. If this spell was kicked, create five of those tokens instead."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.kicker.face0",
+          "kind": "casting_route",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Kicker {5} (You may pay an additional {5} as you cast this spell.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 3825,
+      "name": "Sheltered by Ghosts",
+      "oracle_id": "d13fc657-c6fc-4394-bc70-691050550226",
+      "facts_sha256": "e9805d14f25d244674715fdd42bf0c9e18921ee16a767310541a5eb207556d9b",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Enchant creature you control"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this Aura enters, exile target nonland permanent an opponent controls until this Aura leaves the battlefield."
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "Enchanted creature gets +1/+0 and has lifelink and ward {2}."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4172,
+      "name": "Stormcatch Mentor",
+      "oracle_id": "b2252471-01ca-4d58-aa99-4ab0aa5eae12",
+      "facts_sha256": "168b1f1f898c84bcacd9694e02012ab6b082bd5fe21209f5a8f0ffad03aea908",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0.haste",
+          "kind": "shared",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Haste"
+            }
+          ],
+          "proof": {
+            "shared": "haste"
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)"
+            }
+          ],
+          "proof": null
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "Instant and sorcery spells you cast cost {1} less to cast."
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": null
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4365,
+      "name": "Temple of Epiphany",
+      "oracle_id": "79f94050-d850-41ca-b1db-5ae0cf743f0a",
+      "facts_sha256": "af4f3b8e5473b5fb72b1fa7d4fb6706abce5a617238a47975df18ea7a09a5611",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.10/activation",
+            "member": 4365
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.10/activation",
+            "member": 4365
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {U} or {R}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.10/activation",
+            "member": 4365
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.10/activation",
+            "member": 4365
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4366,
+      "name": "Temple of Malady",
+      "oracle_id": "dc55421f-dee8-4263-9df0-2365df5f14bb",
+      "facts_sha256": "5c1ce8f48c424c5fd92785b3756b6a21ce96a40281aa318a512dbd367ae76fb7",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.20/activation",
+            "member": 4366
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.20/activation",
+            "member": 4366
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {B} or {G}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.20/activation",
+            "member": 4366
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.20/activation",
+            "member": 4366
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4368,
+      "name": "Temple of Mystery",
+      "oracle_id": "7e26f0b7-20e6-46d5-8130-d98c14d6aa29",
+      "facts_sha256": "b97de45057cbc654b8ff2651dbf9dbe409f714be3e72d0a0bb8ad07506ba506f",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.18/activation",
+            "member": 4368
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.18/activation",
+            "member": 4368
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {G} or {U}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.18/activation",
+            "member": 4368
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.18/activation",
+            "member": 4368
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4370,
+      "name": "Temple of Silence",
+      "oracle_id": "e6e6fce8-0f6a-4b84-865e-d4e4a4182f9f",
+      "facts_sha256": "e8ed60975e204152eca0235c4558a65e988b580ef9e54ed678b6ae2b202f87c0",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.5/activation",
+            "member": 4370
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.5/activation",
+            "member": 4370
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {W} or {B}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.5/activation",
+            "member": 4370
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.5/activation",
+            "member": 4370
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4371,
+      "name": "Temple of Triumph",
+      "oracle_id": "6f0d94d9-64bb-4175-83bc-301e8f79f54f",
+      "facts_sha256": "fba068ea3e48be25acd1b24cfc19537e5e16d8f4972e14ee0bb7df7515e30945",
+      "choices_reviewed": true,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "This land enters tapped."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.9/activation",
+            "member": 4371
+          }
+        },
+        {
+          "id": "face0.paragraph1",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 1,
+              "text": "When this land enters, scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.9/activation",
+            "member": 4371
+          }
+        },
+        {
+          "id": "face0.paragraph2",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 2,
+              "text": "{T}: Add {R} or {W}."
+            }
+          ],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.9/activation",
+            "member": 4371
+          }
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.land",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "family": "plain_land_v1/always/scry.1/mana.9/activation",
+            "member": 4371
+          }
+        }
+      ]
+    },
+    {
+      "catalogue_id": 4750,
+      "name": "Umbral Collar Zealot",
+      "oracle_id": "12db6263-75c2-442f-a1a5-7af7915f8f9f",
+      "facts_sha256": "b35e8948fc5a994eb859fccefcc2a4715e53c75f372221c2b303983c4b043d5e",
+      "choices_reviewed": false,
+      "features": [
+        {
+          "id": "face0.paragraph0",
+          "kind": "ability",
+          "source": [
+            {
+              "face": 0,
+              "paragraph": 0,
+              "text": "Sacrifice another creature or artifact: Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+            }
+          ],
+          "proof": null
+        }
+      ],
+      "casting_routes": [
+        {
+          "id": "cast.normal",
+          "kind": "casting_route",
+          "source": [],
+          "proof": {
+            "case": "engine::testing::normal_permanents::each_ordinary_permanent_pays_its_printed_mana_and_enters",
+            "row": "card/4750/cast/normal",
+            "outcomes": [
+              "actual hand cast pays the literal printed mana and enters under its controller"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

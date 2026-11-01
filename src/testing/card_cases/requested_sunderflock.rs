@@ -15,7 +15,7 @@ fn sunderflock_uses_greatest_elemental_mana_value_and_bounces_other_creatures() 
         cast(&mut g, flock, None, &[]);
         settle(&mut g);
         assert_eq!(g.object_view(flock).zone, Zone::Battlefield);
-        assert!(g.keywords(flock).contains(Keywords::FLYING));
+
         assert_eq!(g.object_view(elemental).zone, Zone::Battlefield);
         assert_eq!(g.object_view(victim).zone, Zone::Hand);
     }
