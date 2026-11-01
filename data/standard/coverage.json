@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "acd3be71e717c296df12bec8a8ef461ca7974b72bec7e202bd745c87dd1b666d",
+  "catalogue_version": "893e6fdffa7044f8abea9e1809d1f59e14ecb5e9c8d0df496b6f5d3d93d8436e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3000,
-  "implemented_total": 3006,
+  "implemented_standard_cards": 3001,
+  "implemented_total": 3007,
   "token_definitions": 155,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -153,8 +153,8 @@
     },
     "spm": {
       "total": 134,
-      "complete": 45,
-      "gated": 89
+      "complete": 46,
+      "gated": 88
     },
     "tdc": {
       "total": 15,
@@ -5434,8 +5434,8 @@
     {
       "name": "Carnage, Crimson Chaos",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/carnage_crimson_chaos.rs",
       "set": "spm"
     },
