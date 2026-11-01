@@ -34,6 +34,7 @@ impl Game {
                             | TriggerCondition::CreatureCardsEnterYourGraveyard
                             | TriggerCondition::SpellCast { .. }
                             | TriggerCondition::CardDrawn { .. }
+                            | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::PlayerDamaged { .. }
                             | TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::SelfDamaged
