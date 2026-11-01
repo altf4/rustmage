@@ -28,12 +28,19 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         guard: ActivationGuard::Always,
         origin: ActivationOrigin::Battlefield,
         cycling: false,
-        cost: ActivationCost { generic: 8, mana_component: true, ..ActivationCost::ZERO },
+        cost: ActivationCost {
+            generic: 8,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
         targets: TargetPlan::NONE,
         program: &[Instruction::WaterbendCost(8), Instruction::TransformSource],
         sorcery: false,
         once_per_turn: false,
     }],
-    extras: &CardExtras { transforming_double_face: true, ..CardExtras::EMPTY },
+    extras: &CardExtras {
+        transforming_double_face: true,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

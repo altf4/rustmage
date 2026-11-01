@@ -24,7 +24,11 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         guard: ActivationGuard::Always,
         origin: ActivationOrigin::Battlefield,
         cycling: false,
-        cost: ActivationCost { generic: 3, mana_component: true, ..ActivationCost::ZERO },
+        cost: ActivationCost {
+            generic: 3,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
         targets: TargetPlan::NONE,
         program: &[
             Instruction::WaterbendCost(3),
