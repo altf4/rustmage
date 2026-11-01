@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "92fff8628542db2ece6207bdad1506d2e348b1b728b568dd2ccd57e6888ec39b",
+  "catalogue_version": "93829e41cc0376418564aa1a4eda5eb9712ab11d477dc6313e01f0d7fcd807a5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2964,
-  "implemented_total": 2970,
-  "token_definitions": 153,
+  "implemented_standard_cards": 2966,
+  "implemented_total": 2972,
+  "token_definitions": 154,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
   "omen_definitions": 13,
@@ -19,8 +19,8 @@
     },
     "blb": {
       "total": 261,
-      "complete": 118,
-      "gated": 143
+      "complete": 120,
+      "gated": 141
     },
     "cmm": {
       "total": 1,
@@ -34186,8 +34186,8 @@
     {
       "name": "Sunspine Lynx",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/sunspine_lynx.rs",
       "set": "blb"
     },
@@ -39794,8 +39794,8 @@
     {
       "name": "Vren, the Relentless",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/vren_the_relentless.rs",
       "set": "blb"
     },
