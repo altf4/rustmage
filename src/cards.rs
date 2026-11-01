@@ -1615,6 +1615,10 @@ pub(crate) enum Instruction {
     IfTeamwork {
         skip: usize,
     },
+    /// Skip when the spell's optional blight cost was not paid.
+    IfBlighted {
+        skip: usize,
+    },
     IfKicked {
         skip: usize,
     },
@@ -3671,6 +3675,8 @@ pub(crate) enum TriggerCondition {
     CreatureCardLeavesYourGraveyard,
     /// One post-event batch of creature cards entering the controller's graveyard.
     CreatureCardsEnterYourGraveyard,
+    /// A whole event batch put one or more owned permanent cards into a graveyard.
+    PermanentCardsEnterYourGraveyard,
     /// One trigger for a batch exiling controlled creatures or cards from your graveyard.
     ControlledCreaturesOrGraveyardCardsExiled,
     ReturnDeath(ReturnDeathFilter),

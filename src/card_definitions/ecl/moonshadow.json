@@ -3,10 +3,36 @@
   "catalogue_id": 2846,
   "oracle_id": "a3635b3f-839c-4fe5-83a5-7c70e8630184",
   "facts_sha256": "03cd1392239e5665743924df6dbd88514d196bbb3b8722d6a20fe9e1830fb8f4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "11740c2b1ecfbd8597337a090743f4ddeb85ce6640ffdab21dacb8a11c66a076"
   },
-  "physical_metadata_sha256": "11688b2f6724e9f7c60e20e59aaba55bd6e47c7b78368c3205fe550c9c356bf7"
+  "physical_metadata_sha256": "11688b2f6724e9f7c60e20e59aaba55bd6e47c7b78368c3205fe550c9c356bf7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/Moonshadow.java",
+  "java_sha256": "cdce68a6f39fd69e7687e4a19a43bf4d55e34d732aa937396f0c137edc2d2b69",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/BatchTriggeredAbility.java",
+      "sha256": "e2891aafe6a447fbb1347f9b0a52cf2b8f79bc566e7518933f12bd4ed503ad86"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/RemoveCounterSourceEffect.java",
+      "sha256": "a2c61bdfe90b158533c99757444cecf8c13beaebd1d442be4ed27ebf7d4d807d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ],
+  "rules_tests": "src/assurance/hartford_blight.rs"
 }

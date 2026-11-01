@@ -145,7 +145,8 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::CreatureCardsEnterYourGraveyard
+                TriggerCondition::PermanentCardsEnterYourGraveyard
+                    | TriggerCondition::CreatureCardsEnterYourGraveyard
                     | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::DamagedCreatureDies

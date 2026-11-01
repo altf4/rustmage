@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1f0d39c16225adedf46ff77707df01317d61a7047ecca8191679977f62f30899",
+  "catalogue_version": "d94017104449fca59c1f03931e2dc427a70820f5f15d36c85b9e20b5ee50bdcd",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2955,
-  "implemented_total": 2961,
+  "implemented_standard_cards": 2957,
+  "implemented_total": 2963,
   "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -47,8 +47,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 162,
-      "complete": 105
+      "gated": 160,
+      "complete": 107
     },
     "eoc": {
       "total": 8,
@@ -22970,8 +22970,8 @@
     {
       "name": "Moonshadow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/moonshadow.rs",
       "set": "ecl"
     },
@@ -27978,8 +27978,8 @@
     {
       "name": "Requiting Hex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/requiting_hex.rs",
       "set": "ecl"
     },

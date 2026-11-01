@@ -890,6 +890,7 @@ impl Game {
                     | TriggerCondition::OpponentLoyaltyAbilityActivated
                     | TriggerCondition::CardsLeaveGraveyard
                     | TriggerCondition::CreatureCardLeavesYourGraveyard
+                    | TriggerCondition::PermanentCardsEnterYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
                     | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     | TriggerCondition::CreatureExploresYou
@@ -3729,6 +3730,11 @@ impl Game {
                 }
                 Instruction::IfTeamwork { skip } => {
                     if !item.cast.is_some_and(|c| c.teamwork == Some(true)) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::IfBlighted { skip } => {
+                    if !item.cast.is_some_and(|c| c.blight == Some(true)) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }

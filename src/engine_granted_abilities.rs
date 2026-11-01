@@ -30,6 +30,7 @@ impl Game {
                         a.condition.event(),
                         TriggerCondition::ScryOrSurveil
                             | TriggerCondition::Proliferated(_)
+                            | TriggerCondition::PermanentCardsEnterYourGraveyard
                             | TriggerCondition::CreatureCardsEnterYourGraveyard
                             | TriggerCondition::SpellCast { .. }
                             | TriggerCondition::CardDrawn { .. }

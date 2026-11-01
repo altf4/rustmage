@@ -21,15 +21,14 @@ impl Game {
     ) -> bool {
         let card = self.state.objects[id as usize].card;
         let spec = card.blight().unwrap();
-        let Effect::Modal(modes) = card.effect() else {
-            return false;
-        };
-        let target_available = |bits: u64| {
-            modes.iter().enumerate().any(|(i, mode)| {
+        let target_available = |bits: u64| match card.effect() {
+            Effect::Modal(modes) => modes.iter().enumerate().any(|(i, mode)| {
                 i < 64
                     && bits & (1u64 << i) != 0
                     && self.cast_targets_available(mode.targets, actor, self.object_ref(id))
-            })
+            }),
+            Effect::Spell(plan, _) => self.cast_targets_available(plan, actor, self.object_ref(id)),
+            _ => false,
         };
         if target_available(spec.normal_modes) && self.spell_can_fund(actor, id, base) {
             return true;
@@ -72,12 +71,17 @@ impl Game {
                 .expect("cost announcement has object source")
                 .card,
         ));
-        let available = a.item.modes().is_some_and(|modes| {
+        let available = if let Some(modes) = a.item.modes() {
             modes.iter().enumerate().any(|(i, m)| {
                 self.blight_mode_allowed(&a.item, i)
                     && self.item_targets_available(&a.item, m.targets)
             })
-        });
+        } else {
+            match a.item.source.expect("spell source").card.effect() {
+                Effect::Spell(plan, _) => self.item_targets_available(&a.item, plan),
+                _ => false,
+            }
+        };
         available && self.teamwork_proposal_fundable(&a)
     }
     pub(super) fn choose_blight(&mut self, pay: bool) {

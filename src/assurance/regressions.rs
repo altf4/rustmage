@@ -1706,7 +1706,7 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
 fn schema197_new_card(card: Card) -> bool {
     matches!(
         card.identity(),
-        "Airbender Ascension" | "Appa, Steadfast Guardian"
+        "Airbender Ascension" | "Appa, Steadfast Guardian" | "Requiting Hex" | "Moonshadow"
     )
 }
 
@@ -1948,6 +1948,8 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
                         | "AnnounceAirbend"
                         | "Airbender Ascension"
                         | "Appa, Steadfast Guardian"
+                        | "Requiting Hex"
+                        | "Moonshadow"
                 ) =>
             {
                 Err("airbend cast has no schema 196 representation".into())
@@ -1974,6 +1976,8 @@ fn prior_schema197_rejects_airbend_rights_and_actions() {
         r#"[{"action":"AnnounceAirbend"}]"#,
         r#"[{"method":"Airbend"}]"#,
         r#"[{"exile_permissions":[{"airbend":true}]}]"#,
+        r#"[{"card":"Requiting Hex"}]"#,
+        r#"[{"card":"Moonshadow"}]"#,
     ] {
         assert!(project_prior_schema197(value).is_err());
     }
