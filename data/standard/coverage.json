@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c53ff58183d1f599d617bfb5c3c9a1b604202ea50105eb9f7b0a0cd359401704",
+  "catalogue_version": "cdbfaedbccff85f1f1936cecbe66d9837b69c4483831e44664c87c374c513eb4",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2959,
-  "implemented_total": 2965,
+  "implemented_standard_cards": 2961,
+  "implemented_total": 2967,
   "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -37,8 +37,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 80,
-      "gated": 184
+      "complete": 81,
+      "gated": 183
     },
     "ecc": {
       "total": 7,
@@ -144,8 +144,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 13,
-      "gated": 11
+      "complete": 14,
+      "gated": 10
     },
     "sos": {
       "total": 264,
@@ -3850,8 +3850,8 @@
     {
       "name": "Bloodghast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/bloodghast.rs",
       "set": "soc"
     },
@@ -10874,8 +10874,8 @@
     {
       "name": "Enduring Curiosity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/enduring_curiosity.rs",
       "set": "dsk"
     },
