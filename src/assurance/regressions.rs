@@ -8026,7 +8026,7 @@ fn prior_mana_audit_detects_offered_action_identity_and_payload_changes() {
 fn supported_cards_retain_bounded_cast_and_entry_traces() {
     // Keep the reviewed fixture external to the test binary so refreshing only
     // trace data does not recompile the engine. Validation fingerprints this
-    // source file and requires all inputs to remain fixed until the job ends.
+    // fixture and requires all inputs to remain fixed until the job ends.
     let expected: BTreeMap<String, Trace> = serde_json::from_str(
         &std::fs::read_to_string(concat!(
             env!("CARGO_MANIFEST_DIR"),

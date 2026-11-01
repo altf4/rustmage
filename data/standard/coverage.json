@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "65a1326546d6dc856a5ddca2e1f38e005547ec9df36218c11b46c39b9e9b1eb3",
+  "catalogue_version": "acd3be71e717c296df12bec8a8ef461ca7974b72bec7e202bd745c87dd1b666d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2992,
-  "implemented_total": 2998,
+  "implemented_standard_cards": 3000,
+  "implemented_total": 3006,
   "token_definitions": 155,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 100,
-      "gated": 159
+      "complete": 102,
+      "gated": 157
     },
     "dsk": {
       "total": 264,
@@ -57,8 +57,8 @@
     },
     "eoe": {
       "total": 259,
-      "gated": 145,
-      "complete": 114
+      "gated": 144,
+      "complete": 115
     },
     "fdn": {
       "total": 427,
@@ -100,8 +100,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 171,
-      "complete": 102
+      "gated": 170,
+      "complete": 103
     },
     "m19": {
       "total": 2,
@@ -163,13 +163,13 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 126,
-      "gated": 138
+      "complete": 127,
+      "gated": 137
     },
     "tla": {
       "total": 278,
-      "complete": 100,
-      "gated": 178
+      "complete": 102,
+      "gated": 176
     },
     "tle": {
       "total": 5,
@@ -181,8 +181,8 @@
     },
     "tmt": {
       "total": 189,
-      "gated": 122,
-      "complete": 67
+      "gated": 121,
+      "complete": 68
     },
     "w17": {
       "total": 1,
@@ -6938,8 +6938,8 @@
     {
       "name": "Cool but Rude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/cool_but_rude.rs",
       "set": "tmt"
     },
@@ -17778,8 +17778,8 @@
     {
       "name": "Inti, Seneschal of the Sun",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/inti_seneschal_of_the_sun.rs",
       "set": "lci"
     },
@@ -22906,8 +22906,8 @@
     {
       "name": "Monument to Endurance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/monument_to_endurance.rs",
       "set": "dft"
     },
@@ -24098,8 +24098,8 @@
     {
       "name": "Obsessive Pursuit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/obsessive_pursuit.rs",
       "set": "tla"
     },
@@ -25242,8 +25242,8 @@
     {
       "name": "Perilous Snare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/perilous_snare.rs",
       "set": "dft"
     },
@@ -26650,8 +26650,8 @@
     {
       "name": "Quantum Riddler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/quantum_riddler.rs",
       "set": "eoe"
     },
@@ -39890,8 +39890,8 @@
     {
       "name": "Wan Shi Tong, Librarian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/wan_shi_tong_librarian.rs",
       "set": "tla"
     },
@@ -40906,8 +40906,8 @@
     {
       "name": "Winternight Stories",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/winternight_stories.rs",
       "set": "tdm"
     },
