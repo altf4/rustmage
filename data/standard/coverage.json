@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d94017104449fca59c1f03931e2dc427a70820f5f15d36c85b9e20b5ee50bdcd",
+  "catalogue_version": "c53ff58183d1f599d617bfb5c3c9a1b604202ea50105eb9f7b0a0cd359401704",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2957,
-  "implemented_total": 2963,
+  "implemented_standard_cards": 2959,
+  "implemented_total": 2965,
   "token_definitions": 153,
   "emblem_definitions": 11,
   "adventure_definitions": 49,
@@ -100,8 +100,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 176,
-      "complete": 97
+      "gated": 174,
+      "complete": 99
     },
     "m19": {
       "total": 2,
@@ -4370,8 +4370,8 @@
     {
       "name": "Braided Net // Braided Quipu",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/braided_net_braided_quipu.rs",
       "set": "lci"
     },
@@ -32778,8 +32778,8 @@
     {
       "name": "Spring-Loaded Sawblades // Bladewheel Chariot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/spring_loaded_sawblades_bladewheel_chariot.rs",
       "set": "lci"
     },

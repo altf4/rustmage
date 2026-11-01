@@ -1706,7 +1706,16 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
 fn schema197_new_card(card: Card) -> bool {
     matches!(
         card.identity(),
-        "Airbender Ascension" | "Appa, Steadfast Guardian" | "Requiting Hex" | "Moonshadow"
+        "Airbender Ascension"
+            | "Appa, Steadfast Guardian"
+            | "Requiting Hex"
+            | "Moonshadow"
+            | "Braided Net // Braided Quipu"
+            | "Braided Net"
+            | "Braided Quipu"
+            | "Spring-Loaded Sawblades // Bladewheel Chariot"
+            | "Spring-Loaded Sawblades"
+            | "Bladewheel Chariot"
     )
 }
 
@@ -1783,6 +1792,22 @@ fn schema197_packet_supported(item: &SpellView) -> bool {
     {
         return false;
     }
+    // Retained copied or inherited packets can keep craft behavior after the
+    // original source has left, even when its physical identity is different.
+    if matches!(item.kind, StackKind::ActivatedAbility { .. })
+        && item.program().is_some_and(|(_, program)| {
+            program.iter().any(|instruction| {
+                matches!(
+                    instruction,
+                    Instruction::ReturnCraftedSourceTransformed
+                        | Instruction::PreventTargetActivationsWhileTapped
+                        | Instruction::PutSourceThirdFromTop
+                )
+            })
+        })
+    {
+        return false;
+    }
     if let Some(event) = &item.event_object {
         if event
             .subtype_lki
@@ -1813,6 +1838,11 @@ fn schema197_packet_supported(item: &SpellView) -> bool {
 /// complete future behavior has an equivalent old-contract proof.
 fn prior_schema197_state_supported(state: &State) -> bool {
     state.exile_permissions.iter().all(|permission| !permission.airbend)
+        && state.roles.as_ref().is_none_or(|roles| {
+            roles.source_linked_effects.iter().all(|row| {
+                row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
+            })
+        })
         && !state
         .objects
         .iter()
@@ -1950,13 +1980,33 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
                         | "Appa, Steadfast Guardian"
                         | "Requiting Hex"
                         | "Moonshadow"
+                        | "Braided Net // Braided Quipu"
+                        | "Braided Net"
+                        | "Braided Quipu"
+                        | "Spring-Loaded Sawblades // Bladewheel Chariot"
+                        | "Spring-Loaded Sawblades"
+                        | "Bladewheel Chariot"
+                        | "ExileControlledOrGraveyard"
+                        | "ExileControlled"
+                        | "CraftSource"
+                        | "PreventActivationsUntilUntapped"
                 ) =>
             {
                 Err("airbend cast has no schema 196 representation".into())
             }
             serde_json::Value::Array(rows) => rows.iter().try_for_each(check),
             serde_json::Value::Object(fields) => {
-                if fields.contains_key("airbend") || fields.contains_key("AnnounceAirbend") {
+                if [
+                    "airbend",
+                    "AnnounceAirbend",
+                    "ExileControlledOrGraveyard",
+                    "ExileControlled",
+                    "CraftSource",
+                    "PreventActivationsUntilUntapped",
+                ]
+                .iter()
+                .any(|key| fields.contains_key(*key))
+                {
                     return Err("airbend permission has no schema 196 representation".into());
                 }
                 fields.values().try_for_each(check)
@@ -1985,6 +2035,44 @@ fn prior_schema197_rejects_airbend_rights_and_actions() {
     assert!(prior_schema197_state_supported(&game.state));
     let card = put(&mut game, Player::P0, "Bear Cub", Zone::Exile);
     game.grant_airbend_permission(Player::P0, game.object_ref(card));
+    assert!(!prior_schema197_state_supported(&game.state));
+}
+
+#[test]
+fn prior_schema197_rejects_craft_wire_values_and_owned_locks() {
+    for value in [
+        r#"{"clause":"CraftSource"}"#,
+        r#"{"choice":"ExileControlledOrGraveyard"}"#,
+        r#"{"choice":"ExileControlled"}"#,
+        r#"{"kind":"PreventActivationsUntilUntapped"}"#,
+        r#"{"card":"Braided Net // Braided Quipu"}"#,
+        r#"{"card":"Bladewheel Chariot"}"#,
+    ] {
+        assert!(project_prior_schema197(value).is_err());
+    }
+    for name in [
+        "Braided Net",
+        "Braided Quipu",
+        "Spring-Loaded Sawblades",
+        "Bladewheel Chariot",
+    ] {
+        assert!(schema197_new_card(Card::from_name(name).unwrap()));
+    }
+    let mut game = scenario(Player::P0);
+    let id = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
+    let object = game.object_ref(id);
+    assert!(prior_schema197_state_supported(&game.state));
+    game.state
+        .roles
+        .get_or_insert_default()
+        .source_linked_effects
+        .push(SourceLinkedEffectView {
+            source: object,
+            recipient: object,
+            controller: Player::P0,
+            kind: SourceLinkedEffectKind::PreventActivationsUntilUntapped,
+            timestamp: 1,
+        });
     assert!(!prior_schema197_state_supported(&game.state));
 }
 
