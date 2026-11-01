@@ -62,11 +62,7 @@ fn scenario(p: Player) -> Game {
 fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
     assert!(
-        card.is_supported()
-            || name == "Ghost Vacuum"
-            || name == "Pyrrhic Strike"
-            || name == "Airbender Ascension"
-            || name == "Appa, Steadfast Guardian",
+        card.is_supported() || name == "Ghost Vacuum" || name == "Pyrrhic Strike",
         "unsupported fixture {name}"
     );
     let id = g.state.objects.len() as CardId;
