@@ -1,4 +1,4 @@
-// Pinned Oracle/XMage candidate; gated pending craft rules proof.
+// Authored from pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
     keywords: Keywords::FLASH,

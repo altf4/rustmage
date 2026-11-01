@@ -1,4 +1,4 @@
-// Pinned Oracle/XMage candidate; gated pending craft and library placement proof.
+// Authored from pinned Oracle and XMage sources.
 const ARTIFACTS: CountFilter = CountFilter {
     zone: CountZone::Battlefield,
     relation: 0,

@@ -4,7 +4,7 @@
   "oracle_id": null,
   "facts_sha256": null,
   "physical_metadata_sha256": "7b5a8ef5a98ba870e2d4da1f33390ce197199b2fc1d871fb5cb2f20e28f4777b",
-  "complete": false,
+  "complete": true,
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SpringLoadedSawblades.java",
   "java_sha256": "f34d45188c99fd0534d5b9740fba829c50d2f39f0df80bda33f0e61128b0675e",

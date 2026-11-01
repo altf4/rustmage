@@ -1,4 +1,4 @@
-// Pinned Oracle/XMage candidate; gated pending craft rules proof.
+// Authored from pinned Oracle and XMage sources.
 const fn cost(additional: Option<AdditionalCost>) -> ActivationCost {
     ActivationCost {
         colored: [0; 6],

@@ -4,7 +4,7 @@
   "oracle_id": null,
   "facts_sha256": null,
   "physical_metadata_sha256": "c88ee9db1f2567225cad04ff14fcc8135708d499c19390f199839d38592e3546",
-  "complete": false,
+  "complete": true,
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/b/BraidedNet.java",
   "java_sha256": "11ce5a2aa6bf28a3cc5e9dcd6d0013522aa958bb6ac6e29b26ba6fa7b8db21dd",
