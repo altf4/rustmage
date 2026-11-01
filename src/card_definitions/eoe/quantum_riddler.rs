@@ -2,7 +2,7 @@
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 6),
     keywords: Keywords::FLYING,
-    triggers: &[TriggerAbility {
+    triggers: &[TriggeredAbility {
         condition: TriggerCondition::SelfEnters,
         targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[Instruction::Draw(PlayerSet::Controller, 1)],
