@@ -8024,6 +8024,17 @@ fn prior_mana_audit_detects_offered_action_identity_and_payload_changes() {
 
 #[test]
 fn supported_cards_retain_bounded_cast_and_entry_traces() {
+    // Keep the reviewed fixture external to the test binary so refreshing only
+    // trace data does not recompile the engine. Validation fingerprints this
+    // source file and requires all inputs to remain fixed until the job ends.
+    let expected: BTreeMap<String, Trace> = serde_json::from_str(
+        &std::fs::read_to_string(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/src/assurance/card_traces.json"
+        ))
+        .expect("committed card trace baseline"),
+    )
+    .expect("valid committed card trace baseline");
     let coverage: serde_json::Value =
         serde_json::from_str(include_str!("../../data/standard/coverage.json")).unwrap();
     let actual: BTreeMap<String, Trace> = coverage["cards"]
@@ -8102,8 +8113,7 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
             // existing baseline; no historical re-recording or acceptance.
             // Observations are final only, and the historical digest is FNV64.
             if std::env::var_os("RUSTMAGE_AUDIT_PRIOR_MANA_ACTIONS").is_some() {
-                let baseline: BTreeMap<String, Trace> =
-                    serde_json::from_str(include_str!("card_traces.json")).unwrap();
+                let baseline = &expected;
                 // This report contains only trace summaries and fixed projector
                 // error messages; it never emits raw observations or hidden cards.
                 let mut exceptions: BTreeMap<String, (Trace, Option<&Trace>)> = BTreeMap::new();
@@ -8137,8 +8147,6 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
             }
         }
     }
-    let expected: BTreeMap<String, Trace> =
-        serde_json::from_str(include_str!("card_traces.json")).unwrap();
     assert_eq!(
         actual.len(),
         expected.len(),
