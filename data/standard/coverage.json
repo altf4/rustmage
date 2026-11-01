@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a4eb4b451ba9173b66b0ee23f11c146566c27db6758580311d75ac23dcd937db",
+  "catalogue_version": "08c635356f9408fb3d75f8ae0e51a484c49dafd6fdb13515159296edbbedd14d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2987,
-  "implemented_total": 2993,
+  "implemented_standard_cards": 2989,
+  "implemented_total": 2995,
   "token_definitions": 155,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 99,
-      "gated": 160
+      "complete": 100,
+      "gated": 159
     },
     "dsk": {
       "total": 264,
@@ -57,8 +57,8 @@
     },
     "eoe": {
       "total": 259,
-      "gated": 146,
-      "complete": 113
+      "gated": 145,
+      "complete": 114
     },
     "fdn": {
       "total": 427,
@@ -25546,8 +25546,8 @@
     {
       "name": "Pinnacle Starcage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/pinnacle_starcage.rs",
       "set": "eoe"
     },
@@ -27946,8 +27946,8 @@
     {
       "name": "Repurposing Bay",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/repurposing_bay.rs",
       "set": "dft"
     },

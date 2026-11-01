@@ -1706,7 +1706,9 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
 fn schema197_new_card(card: Card) -> bool {
     matches!(
         card.identity(),
-        "Gene Pollinator"
+        "Repurposing Bay"
+            | "Pinnacle Starcage"
+            | "Gene Pollinator"
             | "Warmaker Gunship"
             | "Lively Dirge"
             | "Jeskai Revelation"
@@ -2027,7 +2029,9 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
             serde_json::Value::String(text)
                 if matches!(
                     text.as_str(),
-                    "Gene Pollinator"
+                    "Repurposing Bay"
+                        | "Pinnacle Starcage"
+                        | "Gene Pollinator"
                         | "Warmaker Gunship"
                         | "Lively Dirge"
                         | "Jeskai Revelation"
@@ -2096,6 +2100,7 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
             serde_json::Value::Array(rows) => rows.iter().try_for_each(check),
             serde_json::Value::Object(fields) => {
                 if [
+                    "sacrificed_mana_value",
                     "inspected_cards",
                     "CoverUpSearch",
                     "controlled_creatures_exiled_this_turn",
