@@ -86,6 +86,7 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
     assert!(
         card.is_supported()
+            || name == "Winternight Stories"
             || name == "Ghost Vacuum"
             || name == "Pyrrhic Strike"
             || name == "Spring-Loaded Sawblades"
@@ -468,3 +469,5 @@ mod issue_93_quintorius_kand;
 mod issue_93_ugin;
 
 mod issue_93_ashiok_wicked;
+
+mod hartford_draw;
