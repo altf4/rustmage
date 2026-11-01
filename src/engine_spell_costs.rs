@@ -394,10 +394,9 @@ impl Game {
             )
             .chain(self.state.stack.iter())
             .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == id));
-        let origin = packet
+        packet
             .and_then(|s| s.cast.map(|c| c.origin))
-            .unwrap_or(self.state.objects[id as usize].zone);
-        origin
+            .unwrap_or(self.state.objects[id as usize].zone)
     }
     fn spell_origin_is_nonhand(&self, actor: Player, id: CardId) -> bool {
         self.spell_origin(id) != Zone::Hand || self.state.objects[id as usize].owner != actor

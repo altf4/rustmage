@@ -13,6 +13,10 @@ pub(super) struct EntryMove {
     /// Original source-zone view when this entry is projected using another face.
     pub source_before: Option<Box<ObjectView>>,
     /// Exact material exile incarnations attached to this craft return.
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare craft entry context retains one pointer on ordinary entries"
+    )]
     pub craft_materials: Option<Box<Vec<ObjectRef>>>,
     /// Physical card hidden behind face-down entry characteristics.
     pub manifest_original: Option<Card>,
