@@ -388,3 +388,71 @@ impl std::hash::Hash for SourceLinkedEffectView {
         self.timestamp.hash(state);
     }
 }
+
+impl Game {
+    pub(super) fn counter_ability_and_remove_source_abilities(&mut self, item: &SpellView) {
+        for bound in &item.targets {
+            let Some(victim) = self.bound_stack_item(bound).cloned() else {
+                continue;
+            };
+            if victim.kind == StackKind::Spell {
+                continue;
+            }
+            let recipient = victim.source.and_then(|source| {
+                (self.on_battlefield(source.object.card)
+                    && self.object_ref(source.object.card) == source.object
+                    && self.current_kinds(source.object.card) & (1 | 16 | 64) != 0)
+                    .then_some(source.object)
+            });
+            if !self.counter_stack_item(victim.id, false) {
+                continue;
+            }
+            if let Some(recipient) = recipient {
+                let mut removal = item.clone();
+                removal.targets = vec![BoundTarget {
+                    group: 0,
+                    target: Target::Card(recipient.card),
+                    object: Some(recipient),
+                }];
+                self.resolve_source_linked_effect(
+                    &removal,
+                    SourceLinkedEffectKind::RemoveAbilities,
+                );
+            }
+        }
+    }
+
+    pub(super) fn remove_abilities_then_destroy_creatures_mana_at_most(
+        &mut self,
+        item: &SpellView,
+        amount: AmountValue,
+    ) {
+        let maximum = self.item_amount(amount, item);
+        // Freeze the affected group before ability removal changes characteristics.
+        let ids: Vec<_> = (0..self.state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                self.on_battlefield(id)
+                    && self.is_creature(id)
+                    && u128::from(self.object_mana_value(id)) <= maximum
+            })
+            .collect();
+        let mut removal = item.clone();
+        removal.targets = ids
+            .iter()
+            .map(|&id| BoundTarget {
+                group: 0,
+                target: Target::Card(id),
+                object: Some(self.object_ref(id)),
+            })
+            .collect();
+        self.remove_target_abilities_until_end_of_turn(&removal);
+        let ids: Vec<_> = ids
+            .into_iter()
+            .filter(|&id| !self.effect_destruction_prevented(id))
+            .collect();
+        let sources = self.death_trigger_sources();
+        let events = self.move_objects_raw(&ids, Zone::Graveyard);
+        self.finish_zone_events(&events, &sources);
+    }
+}

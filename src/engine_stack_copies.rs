@@ -127,6 +127,7 @@ impl Game {
                     && self.ability_source_kinds(item) & kinds != 0
             }
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
+            TargetRule::Ability => item.kind != StackKind::Spell,
             TargetRule::Spell => item.kind == StackKind::Spell,
             TargetRule::YourSpellKinds { kinds } => {
                 item.kind == StackKind::Spell

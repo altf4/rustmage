@@ -1123,7 +1123,11 @@ impl Game {
                 }));
             }
         } else if cost.discard {
-            self.discard_batch(&[source.id], definition.cycling.then_some(source.object));
+            if definition.cycling {
+                self.discard_cycling(source.object, item.x);
+            } else {
+                self.discard_batch(&[source.id], None);
+            }
         } else if cost.sacrifice {
             self.sacrifice_batch(&[(item.controller, source.id)]);
         }

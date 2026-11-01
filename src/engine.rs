@@ -9030,6 +9030,7 @@ impl Game {
             if event.amount <= 0 {
                 continue;
             }
+            self.register_damage_death_exile(event);
             self.qualify_damage_destruction(event);
             match event.target {
                 Target::Player(p) => {

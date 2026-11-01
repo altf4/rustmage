@@ -24,6 +24,7 @@ pub(super) enum DiscardAfter {
 pub(super) struct DiscardContext {
     sources: Vec<ObjectView>,
     cycled: Option<ObjectRef>,
+    cycling_x: Option<u32>,
     shuffles: Vec<ObjectRef>,
     pub after: Option<DiscardAfter>,
 }
@@ -59,6 +60,19 @@ impl Game {
         cause: Option<Player>,
         after: Option<DiscardAfter>,
     ) {
+        self.discard_batch_with_cycle_x(cards, cycled, cause, after, None);
+    }
+    pub(super) fn discard_cycling(&mut self, card: ObjectRef, x: Option<u32>) {
+        self.discard_batch_with_cycle_x(&[card.card], Some(card), None, None, x);
+    }
+    fn discard_batch_with_cycle_x(
+        &mut self,
+        cards: &[CardId],
+        cycled: Option<ObjectRef>,
+        cause: Option<Player>,
+        after: Option<DiscardAfter>,
+        cycling_x: Option<u32>,
+    ) {
         // Discard moves cards from hand; transient copies in the hand are not
         // eligible even when an effect supplies a broad object list.
         let cards: Vec<_> = cards
@@ -84,6 +98,7 @@ impl Game {
         let context = DiscardContext {
             sources,
             cycled,
+            cycling_x,
             shuffles: Vec::new(),
             after,
         };
@@ -126,6 +141,7 @@ impl Game {
         let DiscardContext {
             sources,
             cycled,
+            cycling_x,
             shuffles,
             after,
         } = context;
@@ -158,6 +174,7 @@ impl Game {
                 if ability.condition.event() == TriggerCondition::SelfDiscarded
                     || cycling && ability.condition.event() == TriggerCondition::SelfCycled
                 {
+                    let before = self.state.pending_triggers.len();
                     self.queue_discard_trigger(
                         &source,
                         index,
@@ -167,6 +184,12 @@ impl Game {
                             cycling,
                         },
                     );
+                    if cycling
+                        && ability.condition.event() == TriggerCondition::SelfCycled
+                        && self.state.pending_triggers.len() > before
+                    {
+                        self.state.pending_triggers.last_mut().unwrap().x = cycling_x;
+                    }
                 }
             }
         }
@@ -399,6 +422,7 @@ mod balin_result_tests {
         let mut context = DiscardContext {
             sources: Vec::new(),
             cycled: None,
+            cycling_x: None,
             shuffles: Vec::new(),
             after: None,
         };
@@ -446,6 +470,7 @@ mod balin_result_tests {
         let context = DiscardContext {
             sources: vec![view],
             cycled: None,
+            cycling_x: None,
             shuffles: Vec::new(),
             after: None,
         };
@@ -515,6 +540,7 @@ mod balin_result_tests {
                 DiscardContext {
                     sources: Vec::new(),
                     cycled: None,
+                    cycling_x: None,
                     shuffles: Vec::new(),
                     after: Some(DiscardAfter::RememberActual),
                 },

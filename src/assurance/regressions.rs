@@ -1706,7 +1706,12 @@ fn schema194_packet_supported(item: &SpellView) -> bool {
 fn schema197_new_card(card: Card) -> bool {
     matches!(
         card.identity(),
-        "Floodpits Drowner"
+        "Day of Black Sun"
+            | "Tishana's Tidebinder"
+            | "Riverchurn Monument"
+            | "Torch the Tower"
+            | "Webstrike Elite"
+            | "Floodpits Drowner"
             | "Consult the Star Charts"
             | "United Battlefront"
             | "Sunderflock"
@@ -2016,7 +2021,12 @@ fn project_prior_schema197(input: &str) -> Result<String, String> {
             serde_json::Value::String(text)
                 if matches!(
                     text.as_str(),
-                    "Floodpits Drowner"
+                    "Day of Black Sun"
+                        | "Tishana's Tidebinder"
+                        | "Riverchurn Monument"
+                        | "Torch the Tower"
+                        | "Webstrike Elite"
+                        | "Floodpits Drowner"
                         | "Consult the Star Charts"
                         | "United Battlefront"
                         | "Sunderflock"

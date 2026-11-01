@@ -5169,7 +5169,8 @@ impl Game {
                 } => self.add_extra_turn(item.controller, power_up_prohibited),
                 Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
-                Instruction::ActivationX
+                Instruction::ExileDamagedIfDiesThisTurn
+                | Instruction::ActivationX
                 | Instruction::SourceCounterCost { .. }
                 | Instruction::WaterbendCost(_) => (),
                 Instruction::RemoveCreatureCounterThenDraw => {
@@ -7694,6 +7695,12 @@ impl Game {
                     }
                 }
                 Instruction::CounterPermanentExileCast => self.counter_permanent_exile_cast(&item),
+                Instruction::CounterAbilityAndRemoveSourceAbilities => {
+                    self.counter_ability_and_remove_source_abilities(&item);
+                }
+                Instruction::RemoveAbilitiesThenDestroyCreaturesManaAtMost(amount) => {
+                    self.remove_abilities_then_destroy_creatures_mana_at_most(&item, amount);
+                }
                 Instruction::Counter => {
                     for bound in &item.targets {
                         if let Some(id) = self.bound_stack_item(bound).map(|s| s.id) {

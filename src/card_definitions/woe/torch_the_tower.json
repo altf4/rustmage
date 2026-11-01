@@ -3,10 +3,30 @@
   "catalogue_id": 4638,
   "oracle_id": "10d33e95-3e5d-447e-ba4a-acd3c33b4045",
   "facts_sha256": "e08ecc80dcf269dfc8697bd20b9ad335fa529673f8104cccb83064aa7bef4733",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2c2680807aae630d0a0a850e00ca90e5d2a4b7754ba9c6f0ddc9eeca4b0bdbc9"
   },
-  "physical_metadata_sha256": "57507aa6eb1443a82b79f1fc980198aaee9a3c17564a4a22eb72081a9f5471f6"
+  "physical_metadata_sha256": "57507aa6eb1443a82b79f1fc980198aaee9a3c17564a4a22eb72081a9f5471f6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TorchTheTower.java",
+  "java_sha256": "9904dd90a5f390438004d706e28d1dbc34c9d74493bb666e01f16b345baad057",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+      "sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+      "sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/DealtDamageToCreatureBySourceDies.java",
+      "sha256": "4bc2baaa6f939bdcb4f3a943ba75326557b26aae1f74832c52c98bab08b1886e"
+    }
+  ]
 }

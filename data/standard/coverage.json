@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a52284336d5107e6b48ad9dd53da9bf3f8bfe26fb09b2a741b1fe81fcd163ef9",
+  "catalogue_version": "666931fb1b79d3ba214f6c297f4b86a1c3f277609883df325ed0b53344bf5ea9",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2977,
-  "implemented_total": 2983,
+  "implemented_standard_cards": 2982,
+  "implemented_total": 2988,
   "token_definitions": 154,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 97,
-      "gated": 162
+      "complete": 99,
+      "gated": 160
     },
     "dsk": {
       "total": 264,
@@ -100,8 +100,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 173,
-      "complete": 100
+      "gated": 172,
+      "complete": 101
     },
     "m19": {
       "total": 2,
@@ -168,8 +168,8 @@
     },
     "tla": {
       "total": 278,
-      "complete": 99,
-      "gated": 179
+      "complete": 100,
+      "gated": 178
     },
     "tle": {
       "total": 5,
@@ -190,8 +190,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 142,
-      "gated": 116
+      "complete": 143,
+      "gated": 115
     },
     "znr": {
       "total": 1,
@@ -8090,8 +8090,8 @@
     {
       "name": "Day of Black Sun",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/day_of_black_sun.rs",
       "set": "tla"
     },
@@ -28610,8 +28610,8 @@
     {
       "name": "Riverchurn Monument",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/riverchurn_monument.rs",
       "set": "dft"
     },
@@ -37082,8 +37082,8 @@
     {
       "name": "Tishana's Tidebinder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/tishana_s_tidebinder.rs",
       "set": "lci"
     },
@@ -37306,8 +37306,8 @@
     {
       "name": "Torch the Tower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/torch_the_tower.rs",
       "set": "woe"
     },
@@ -40426,8 +40426,8 @@
     {
       "name": "Webstrike Elite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/webstrike_elite.rs",
       "set": "dft"
     },

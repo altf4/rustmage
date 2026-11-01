@@ -633,6 +633,16 @@ impl Game {
             return TargetPlan::Single(spec);
         }
         if let TargetPlan::Single(mut spec) = plan
+            && let TargetRule::ManaValueExactly { base, amount, .. } = spec.rule
+        {
+            spec.rule = TargetRule::ManaValueExactly {
+                base,
+                amount,
+                value: Some(u64::try_from(self.item_amount(amount, item)).unwrap_or(u64::MAX)),
+            };
+            return TargetPlan::Single(spec);
+        }
+        if let TargetPlan::Single(mut spec) = plan
             && let TargetRule::ManaValueAtMost { base, amount, .. } = spec.rule
         {
             spec.rule = TargetRule::ManaValueAtMost {
@@ -1438,6 +1448,10 @@ impl Game {
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
         match rule {
+            TargetRule::ManaValueExactly { base, value, .. } => {
+                return value.is_some_and(|value| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) == value)))
+                    && self.target_matches_without_hand(*base, controller, source, target, departing, qualification);
+            }
             TargetRule::ManaValueAtMost { base, maximum, .. } => {
                 return maximum.is_some_and(|maximum| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) <= maximum)))
                     && self.target_matches_without_hand(*base, controller, source, target, departing, qualification);

@@ -171,6 +171,11 @@ pub(crate) enum TargetGroupConstraint {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetRule {
+    ManaValueExactly {
+        base: &'static TargetRule,
+        amount: AmountValue,
+        value: Option<u64>,
+    },
     ManaValueAtMost {
         base: &'static TargetRule,
         amount: AmountValue,
@@ -206,6 +211,8 @@ pub(crate) enum TargetRule {
     Any,
     Spell,
     SingleTargetStackObject,
+    /// Any activated or triggered ability on the stack.
+    Ability,
     YourSpellKinds {
         kinds: u8,
     },
@@ -995,6 +1002,7 @@ impl RecoveryFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum MillAmount {
+    RecipientGraveyard,
     LifeEvent,
     ChosenX,
     Fixed(u16),
@@ -1338,6 +1346,8 @@ pub(crate) enum Instruction {
     },
     /// Register an exact current target for a direct exile replacement until cleanup.
     ExileIfDiesThisTurn,
+    /// Damage by this spell records actual recipients for an until-cleanup death replacement.
+    ExileDamagedIfDiesThisTurn,
     /// Queue a reflexive ability only when this exact Role actually enters attached.
     CreateTokensReflexive {
         token: Card,
@@ -2212,6 +2222,8 @@ pub(crate) enum Instruction {
     Counter,
     /// Counter; a successfully exiled permanent card gains a lasting free cast.
     CounterPermanentExileCast,
+    CounterAbilityAndRemoveSourceAbilities,
+    RemoveAbilitiesThenDestroyCreaturesManaAtMost(AmountValue),
     Exile,
     /// Exile valid targets and grant each actual exiled card's owner a {2} alternate cast.
     AirbendTargets,
