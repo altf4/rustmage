@@ -543,7 +543,10 @@ fn real_forge_borrowing(g: &mut Game, p: Player, donor: CardId) -> CardId {
 #[test]
 fn a_nonmana_food_parent_keeps_its_source_through_native_and_borrowed_mana_payments() {
     use rustmage_core::engine::funding::FundingState;
-    let _scope = fixture_rules::activate(&[(Card::GildedLotus, &ARTIFACT_MANA_SOURCE)]);
+    let _scope = fixture_rules::activate(&[(
+        Card::from_name("Gilded Lotus").unwrap(),
+        &ARTIFACT_MANA_SOURCE,
+    )]);
     for p in [Player::P0, Player::P1] {
         for borrowed in [false, true] {
             let mut g = scenario(p);
@@ -632,7 +635,10 @@ fn a_nonmana_food_parent_keeps_its_source_through_native_and_borrowed_mana_payme
 #[test]
 fn an_outer_discard_receipt_is_retained_without_overwriting_projected_departures() {
     use rustmage_core::engine::funding::FundingState;
-    let _scope = fixture_rules::activate(&[(Card::GildedLotus, &ARTIFACT_MANA_SOURCE)]);
+    let _scope = fixture_rules::activate(&[(
+        Card::from_name("Gilded Lotus").unwrap(),
+        &ARTIFACT_MANA_SOURCE,
+    )]);
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let producer = put(&mut g, p, "Gilded Lotus", Zone::Battlefield);
