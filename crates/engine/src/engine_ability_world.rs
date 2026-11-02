@@ -153,16 +153,7 @@ pub(super) trait CharacteristicWorld {
             && self.reference(object.card) == object
             && self.entered_this_turn(object)
         {
-            let mana_definition = self.recipe(object.card).definition;
-            let (colored, generic) = mana_definition.cost();
-            std::iter::once(ManaCost { colored, generic })
-                .chain(
-                    mana_definition
-                        .power_up_mana_cost_alternatives()
-                        .iter()
-                        .copied(),
-                )
-                .collect()
+            self.recipe(object.card).power_up_mana_reductions()
         } else {
             vec![ManaCost {
                 colored: [0; 6],
@@ -350,6 +341,9 @@ pub(super) trait CharacteristicWorld {
         self.kinds(id) & 16 != 0 && self.subtypes(id).has(self.definition(id), "Equipment")
     }
     fn mana_value(&self, id: CardId) -> u64 {
+        if self.recipe(id).exceptions.embalm {
+            return 0;
+        }
         let object = self.object(id);
         let Some(front) = object.card.face_parent() else {
             return object.card.fixed_mana_value();

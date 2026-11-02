@@ -1124,6 +1124,7 @@ impl Game {
         if item.self_granted_activation.is_none()
             && !external_planeswalker_grant
             && !item.is_retained_copy_activation()
+            && ability != embalm::ACTIVATION_INDEX
         {
             if let Some(slot) = item.borrowed_slot {
                 self.record_borrowed_use(source.object, slot, definition.exhaust);

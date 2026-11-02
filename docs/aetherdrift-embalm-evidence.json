@@ -1,0 +1,184 @@
+{
+  "scope": "Generic expiring acquired graveyard activation with printed mana-symbol cost and copiable white/Zombie/no-mana-cost token recipe. No ordinary DFT behavior or admission changes.",
+  "oracle": {
+    "name": "Cursecloth Wrappings",
+    "oracle_id": "d9c4996a-35eb-4d38-9680-57d9d039ed82",
+    "facts_sha256": "39965ad82e1200920ead12e06881e4660166c70697628fdc57454315ee6fef1f",
+    "oracle_text": "Zombies you control get +1/+1.\n{T}: Target creature card in your graveyard gains embalm until end of turn. The embalm cost is equal to its mana cost. (Exile that card and pay its embalm cost: Create a token that's a copy of it, except it's a white Zombie in addition to its other types and has no mana cost. Embalm only as a sorcery.)"
+  },
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "complete_java_bodies_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/c/CurseclothWrappings.java",
+      "sha256": "76dcb4196fc57c456d0217865a8129596e798910d0799f2729d3d9cc6fd9ea80"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/EmbalmAbility.java",
+      "sha256": "7b8e17f54df05a428c6b30ff01d785c7ecfd7e2018948bce0067e70d267ea10f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    }
+  ],
+  "primary_rules": [
+    {
+      "url": "https://media.wizards.com/2025/downloads/MagicCompRules%2020250919.pdf",
+      "sections": [
+        "107.3g",
+        "118.6",
+        "118.11",
+        "202.1",
+        "202.3",
+        "602",
+        "702.128",
+        "707.5",
+        "707.9",
+        "707.9d",
+        "707.9e"
+      ],
+      "use": "Graveyard sorcery activation; absent mana cost is unpayable; replacement-modified cost is paid; noncast token X is zero; copiable white/type/no-cost exceptions and subsequent as-entry copy ordering."
+    },
+    {
+      "url": "https://magic.wizards.com/en/news/feature/aetherdrift-release-notes",
+      "use": "Cursecloth Wrappings: printed characteristics copied; white replaces colors; Zombie is additional; no mana cost; copied entry behavior remains."
+    }
+  ],
+  "interfaces": [
+    "Instruction::GrantEmbalmTargets",
+    "Instruction::CreateEmbalmedSourceCopy",
+    "Action::AnnounceEmbalm{source:ObjectRef,acquisition:u64}",
+    "Observation.embalm_abilities:Option<Vec<EmbalmAbilityView{object,acquisition,expires_turn}>> omittedNone",
+    "State.embalm_abilities optional owned SharedVec rows",
+    "CopyExceptions.embalm:bool omittedFalse",
+    "CopyTypes.zombie:bool omittedFalse",
+    "Card::activation_cost_options and activation_x_symbols unify authored static costs with immutable printed-cost activation metadata"
+  ],
+  "activation_slots": {
+    "embalm": 65526,
+    "intrinsic_fallback": 65535,
+    "intrinsic_WUBRGC": [
+      65534,
+      65533,
+      65532,
+      65531,
+      65530,
+      65529
+    ],
+    "granted_tap_mana": 65528,
+    "granted_sacrifice_mana": 65527,
+    "invariants": "Central constants, compile-time strict ordering, authored activation-table length guard. Retain associated Card constants/helpers as aliases at integration."
+  },
+  "semantics": [
+    "Each successful grant creates a distinct exact-incarnation acquisition until cleanup. The ability outlives the grantor, is owned by the graveyard card, counts for no-abilities and craft predicates, is visible to graveyard ability borrowers, and is not copied onto the token.",
+    "Normal activation announcement, target-free payment, source-exile cost, stack, countering, cost modifiers, projected funding and owned rollback are reused. The printed source definition remains captured after paid exile.",
+    "The native printed mana notation metadata supplies numeric, WUBRGC, X, hybrid and twobrid costs without consulting alternate spell costs or Oracle English. Empty mana cost is unpayable; {0} is payable. Ordinary activations retain allocation-free static cost traversal.",
+    "Any positive X paid in the activation is independent of the noncast created token: its entry X and mana value are zero. Existing counter/as-entry/token-creation replacements see the complete modified recipe.",
+    "White replaces the source colors; Zombie adds to existing creature types; the copied card has no mana cost and mana value zero. Those properties are themselves copiable and frozen in actual/projected queries. Entry-turn power-up reductions consult the effective copied mana cost, so an embalmed Aerial Doombot still pays {5}{U}.",
+    "A later as-entry copy replacement replaces these initial layer-one exceptions. Decline retains them; choosing an already embalmed donor copies them. Temporary later copies restore the actual preceding recipe rather than reconstructing initial Embalm properties.",
+    "Exact graveyard source departure removes the acquisition. Exile prohibition prevents payment; a replacement that prevents the exile event still pays the modified cost without removing the unchanged graveyard acquisition."
+  ],
+  "pinned_cost_inventory": {
+    "pool_file": "data/standard/cards.json",
+    "pool_file_sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+    "pool_cards": 5164,
+    "creature_faces": 2978,
+    "printed_mana_symbols": [
+      "1",
+      "10",
+      "11",
+      "2",
+      "2/B",
+      "2/G",
+      "2/R",
+      "2/U",
+      "2/W",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "B",
+      "B/G",
+      "B/R",
+      "G",
+      "G/U",
+      "G/W",
+      "R",
+      "R/G",
+      "R/W",
+      "U",
+      "U/B",
+      "U/R",
+      "W",
+      "W/B",
+      "W/U",
+      "X"
+    ],
+    "snow_or_phyrexian_creature_costs": [],
+    "X_and_hybrid_creature_costs": [],
+    "limit": "No S or P occurs in any pinned creature mana cost. The native notation utility fails closed for unsupported future symbols; no executable Oracle parser was added."
+  },
+  "color_CDA_audit": {
+    "pool": "All 2978 pinned creature faces",
+    "result": "No creature rules body defines its own colors or has devoid. No admitted color-defining creature ability requires suppression for this batch. Layer-five color-setting effects remain later than the white copy exception."
+  },
+  "representation": {
+    "hot_Object_fields_added": 0,
+    "new_SpellView_fields": 0,
+    "cold_rows": "One optional owned row vector, allocated only by grants; omitted observation field when absent. Existing copy recipe gains a boolean; type overlay gains a false-omitted Zombie flag. Root measures final layouts and throughput."
+  },
+  "integration_receipt": [
+    "Preserve the newer CharacteristicWorld::activation_power_up_costs refactor. Replace its native definition.cost()/power_up_mana_cost_alternatives reduction collection with self.recipe(object.card).power_up_mana_reductions(). The older Game::power_up_costs edit in this commit is superseded by that shared helper.",
+    "Preserve Card::GRANTED_TAP_MANA, Card::GRANTED_SACRIFICE_MANA and Card::intrinsic_mana_activation_index public fixture APIs as aliases to central activation_slots. Existing generic granted templates remain before the intrinsic fallback; Embalm is a separate index.",
+    "Root performs two mechanical CopyTypes full-literal compatibility fills (zombie:false) in existing MSH Absorbing Man and Taskmaster definitions; no behavior/admission/provenance edits belong to this engine commit.",
+    "Schema199 must reject active acquired rows, true Embalm recipes, Zombie copy-type overlay, and a paid reserved-index65526 stack activation even when source acquisition rows have already disappeared. Inherited omitted defaults preserve prior serialization."
+  ],
+  "focused_target": "dft_embalm",
+  "tests": [
+    "embalm_is_not_a_cast_and_grant_survives_the_grantors_departure",
+    "an_embalmed_token_and_a_copy_of_it_keep_copiable_color_type_and_no_mana_cost",
+    "embalm_pays_hybrid_and_twobrid_printed_symbols_without_using_spell_alternatives",
+    "chosen_activation_x_is_paid_but_a_noncast_embalmed_token_enters_with_x_zero",
+    "embalmed_chosen_x_graveyard_exile_entry_uses_zero_as_its_maximum",
+    "acquired_embalm_counts_as_an_ability_until_expiry_and_never_follows_a_new_incarnation",
+    "embalm_timing_and_owner_restrictions_are_activation_restrictions",
+    "countering_embalm_leaves_its_exile_cost_paid_and_creates_no_token",
+    "multiple_acquisitions_are_distinct_owned_rows_and_raw_indexed_activation_matches",
+    "graveyard_exile_prohibition_is_shared_by_actual_embalm_and_funding",
+    "graveyard_borrower_sees_the_acquired_ability_but_cannot_pay_its_graveyard_only_source_cost",
+    "token_creation_replacements_apply_to_the_complete_embalm_recipe",
+    "absent_mana_cost_is_unpayable_and_reserved_templates_are_disjoint",
+    "a_later_as_entry_copy_replaces_embalm_exceptions_while_decline_keeps_them",
+    "an_embalmed_as_entry_copier_can_copy_an_embalmed_donor_or_choose_a_new_aura_attachment",
+    "a_replacement_modified_exile_cost_is_paid_without_consuming_an_unmoved_acquisition",
+    "an_embalmed_aerial_doombot_has_no_own_mana_cost_to_reduce_its_power_up_cost"
+  ],
+  "validation": {
+    "rustfmt": "passed edition2024",
+    "git_diff_check": "passed",
+    "Cargo": "Not run by author. Root owns guarded production check, all-target check and 17 focused scenarios."
+  }
+}

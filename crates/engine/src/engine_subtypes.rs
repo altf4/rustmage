@@ -258,6 +258,9 @@ impl GrantedSubtypes {
             if types.fractal {
                 self.insert("Fractal");
             }
+            if types.zombie {
+                self.insert("Zombie");
+            }
         }
     }
     fn copy_type_bit(subtype: &str) -> u32 {

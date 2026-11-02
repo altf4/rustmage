@@ -357,6 +357,15 @@ impl Announcement {
                 unreachable!("triggered ability has no activation cost")
             }
         };
+        let options = if let StackKind::ActivatedAbility { ability } = self.item.kind {
+            self.item
+                .source
+                .expect("activated source")
+                .card
+                .activation_cost_options(ability)
+        } else {
+            crate::cards::mana_symbols::ManaOptions::Static(options)
+        };
         let extra = self.fixed_alternative_cost().and_then(|base| {
             self.item
                 .source
@@ -423,8 +432,7 @@ impl Announcement {
                                                 .source
                                                 .expect("announcement has object source")
                                                 .card
-                                                .activation(ability)
-                                                .x_symbols(),
+                                                .activation_x_symbols(ability),
                                             _ => 0,
                                         })
                                 } else {
@@ -2660,6 +2668,7 @@ impl Game {
     pub(super) fn object_has_rules_abilities(&self, id: CardId) -> bool {
         let object = &self.state.objects[id as usize];
         if object.card.has_rules_abilities()
+            || !embalm::abilities(self, id).is_empty()
             || self
                 .copy_recipe(self.object_ref(id))
                 .is_some_and(|recipe| recipe.exceptions.retained_activation.is_some())

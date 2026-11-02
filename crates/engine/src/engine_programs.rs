@@ -3248,6 +3248,8 @@ impl Game {
                         .get_or_insert_default()
                         .push(delayed);
                 }
+                Instruction::GrantEmbalmTargets => self.grant_embalm_targets(&item),
+                Instruction::CreateEmbalmedSourceCopy => self.create_embalmed_source_copy(&item),
                 Instruction::CopySourceFromLinkedExile { base } => {
                     self.copy_source_from_linked_exile(&item, base)
                 }

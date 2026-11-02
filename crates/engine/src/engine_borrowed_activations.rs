@@ -157,7 +157,7 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                     donor: link.exiled,
                     zone: Zone::Exile,
                     definition: card.card,
-                    ability: u16::MAX - 1 - color as u16,
+                    ability: crate::cards::activation_slots::intrinsic(color),
                     slot,
                     used: false,
                     once_per_turn: link.once_per_turn,
@@ -193,7 +193,8 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
 fn assign_slots<W: CharacteristicWorld + ?Sized>(world: &W, abilities: &mut [Descriptor]) {
     let mut rows = world.borrowed_slots().to_vec();
     for ability in abilities {
-        let intrinsic = ability.ability >= u16::MAX - 5 && ability.ability < u16::MAX;
+        let intrinsic = ability.ability >= crate::cards::activation_slots::INTRINSIC_COLORLESS
+            && ability.ability < crate::cards::activation_slots::INTRINSIC_FALLBACK;
         let definition = (!intrinsic).then_some(ability.definition);
         let graveyard = ability.zone == Zone::Graveyard;
         let matching = |row: &&SlotRow| {
@@ -262,7 +263,8 @@ pub(super) fn refreshed_slots<W: CharacteristicWorld + ?Sized>(world: &W) -> Slo
     }
     for id in sources {
         for ability in inventory(world, id, false) {
-            let intrinsic = ability.ability >= u16::MAX - 5 && ability.ability < u16::MAX;
+            let intrinsic = ability.ability >= crate::cards::activation_slots::INTRINSIC_COLORLESS
+                && ability.ability < crate::cards::activation_slots::INTRINSIC_FALLBACK;
             let row = SlotRow {
                 source: ability.source,
                 acquisition: ability.acquisition,

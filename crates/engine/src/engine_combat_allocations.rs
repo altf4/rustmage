@@ -414,7 +414,7 @@ impl Game {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
-    pub(super) fn x_symbols(&self) -> u32 {
+    pub(crate) fn x_symbols(&self) -> u32 {
         u32::try_from(
             self.program
                 .iter()
@@ -445,13 +445,14 @@ impl Announcement {
                         .card
                         .life_x_cost()
             }
-            StackKind::ActivatedAbility { ability } => self
-                .item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .activation(ability)
-                .has_x_cost(),
+            StackKind::ActivatedAbility { ability } => {
+                self.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .activation_x_symbols(ability)
+                    > 0
+            }
             _ => false,
         }
     }

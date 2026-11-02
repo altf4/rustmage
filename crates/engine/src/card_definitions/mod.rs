@@ -39,6 +39,10 @@ impl CardRules {
         static_groups: &[],
     };
     pub const fn checked_effect(&self) -> Effect {
+        assert!(
+            self.activated.len() <= activation_slots::FIRST_RESERVED as usize,
+            "authored activation slots overlap reserved engine templates"
+        );
         if let Some(false) = self.extras.has_rules_abilities {
             assert!(
                 self.triggers.is_empty()

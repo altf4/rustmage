@@ -59,7 +59,7 @@ pub(super) fn reduce(
 /// Ordinary activations retain their allocation-free mana-options traversal.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) struct ActivationManaCosts {
-    bases: crate::cards::ManaCostOptions,
+    bases: crate::cards::mana_symbols::ManaOptions,
     power_up: Option<Box<PowerUpCosts>>,
     base: Option<ManaCost>,
     reduction_index: usize,
@@ -192,7 +192,7 @@ impl Game {
         x: u32,
     ) -> ActivationManaCosts {
         ActivationManaCosts {
-            bases: definition.activation(ability).cost.mana_options(),
+            bases: definition.activation_cost_options(ability),
             power_up: self.power_up_costs(self.object_ref(source), definition, ability),
             base: None,
             reduction_index: 0,
@@ -200,7 +200,7 @@ impl Game {
             generic_increase: ability_world::CharacteristicWorld::named_activation_generic_increase(
                 self, source,
             ),
-            x: u64::from(x) * u64::from(definition.activation(ability).x_symbols()),
+            x: u64::from(x) * u64::from(definition.activation_x_symbols(ability)),
         }
     }
     pub(super) fn record_power_up_use(&mut self, item: &SpellView, ability: u16) {

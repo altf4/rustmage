@@ -34,8 +34,12 @@ pub use hand_choices::{HandChoiceKind, HandChoiceView};
 pub mod self_granted;
 pub use self_granted::{SelfGrantedAbilityKind, SelfGrantedAbilityView};
 #[doc(hidden)]
+#[path = "engine_embalm.rs"]
+pub mod embalm;
+#[doc(hidden)]
 #[path = "engine_entry_exiles.rs"]
 pub mod entry_exiles;
+pub use embalm::EmbalmAbilityView;
 #[doc(hidden)]
 #[path = "engine_retained_copy_activations.rs"]
 pub mod retained_copy_activations;
@@ -795,6 +799,7 @@ define_actions! {
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
     AnnounceRetainedCopyAbility { source: ObjectRef },
+    AnnounceEmbalm { source:ObjectRef, acquisition:u64 },
     AnnounceSelfGrantedAbility { source: ObjectRef, grant_timestamp: u64 },
     AnnounceSelfGrantedMana { source: ObjectRef, grant_timestamp: u64, counter_payment: Counters, production: Mana },
     ChooseAdditionalCost {
@@ -1844,6 +1849,13 @@ impl SpellView {
 
     /// Characteristics of this stack spell, independent of actual mana paid.
     pub fn mana_value(&self) -> u64 {
+        if self
+            .source_copy_recipe
+            .as_ref()
+            .is_some_and(|r| r.exceptions.embalm)
+        {
+            return 0;
+        }
         let Some(source) = self.source() else {
             return 0;
         };
@@ -2722,6 +2734,7 @@ struct State {
     granted_exhaust_uses: exhaust::GrantUses,
     used_free_hand_permissions: Option<SharedVec<ObjectRef>>,
     graveyard_cast_permissions: cast_permissions::Rows,
+    embalm_abilities: embalm::Rows,
     turn_cast_grants: Option<Box<[PlayerCastGrantsView; 2]>>,
     /// Exact stack item IDs protected by resolved next-spell effects.
     #[allow(clippy::box_collection)]
@@ -3407,6 +3420,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub graveyard_borrowed_abilities: Option<Vec<GraveyardBorrowedAbilityView>>,
     pub graveyard_cast_permissions: Vec<GraveyardCastPermissionView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub embalm_abilities: Option<Vec<EmbalmAbilityView>>,
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
     pub resolution_free_casts: Option<ResolutionFreeCasts>,
     pub cascade: Option<CascadeView>,
@@ -3835,6 +3850,7 @@ impl Game {
                 granted_exhaust_uses: None,
                 used_free_hand_permissions: None,
                 graveyard_cast_permissions: None,
+                embalm_abilities: None,
                 turn_cast_grants: None,
                 uncounterable_spell_ids: None,
                 graveyard_type_uses: None,
@@ -5035,6 +5051,11 @@ impl Game {
                     };
                     if !authorized_origin {
                         continue;
+                    }
+                    if obj.zone == Zone::Graveyard
+                        && self.visit_embalm_activations(card, actor, sorcery, &mut emit)
+                    {
+                        return true;
                     }
                     if obj.zone == Zone::Battlefield
                         && self.visit_intrinsic_mana(card, actor, &mut emit)
@@ -6459,6 +6480,10 @@ impl Game {
                 item.id = self.next_stack_id();
                 self.open_payment_announcement(item, counter_payment, Some(production));
             }
+            Action::AnnounceEmbalm {
+                source,
+                acquisition,
+            } => self.announce_embalm(source, acquisition),
             Action::AnnounceRetainedCopyAbility { source } => {
                 self.announce_retained_copy_ability(source)
             }
@@ -6638,14 +6663,18 @@ impl Game {
                 let grant = ability_world::CharacteristicWorld::granted_mana(self, card)
                     .into_iter()
                     .find(|g| {
-                        g.source == grantor
-                            && g.production.accepts_at_start(self, card, production)
+                        g.source == grantor && g.production.accepts_at_start(self, card, production)
                     })
                     .expect("legal granted mana ability");
                 if !matches!(grant.production.base(), ManaProduction::Fixed(_)) {
-                    let mut item = self.granted_mana_packet(actor, card, grantor, production).expect("live grant");
+                    let mut item = self
+                        .granted_mana_packet(actor, card, grantor, production)
+                        .expect("live grant");
                     item.id = self.next_stack_id();
-                    if self.start_direct_mana_output(item, Counters::default(), [0;6], production) { return; }
+                    if self.start_direct_mana_output(item, Counters::default(), [0; 6], production)
+                    {
+                        return;
+                    }
                 }
                 let quality = self.mana_quality(grant.production, card);
                 let bonus = self.mountain_tap_bonus(actor, card);
@@ -6997,7 +7026,14 @@ impl Game {
                 production,
             } => {
                 let mut item = self.borrowed_activation_item(actor, card, exiled, ability);
-                if self.start_direct_mana_output(item.clone(), counter_payment.clone(), payment, production) { return; }
+                if self.start_direct_mana_output(
+                    item.clone(),
+                    counter_payment.clone(),
+                    payment,
+                    production,
+                ) {
+                    return;
+                }
                 let quality = self
                     .mana_quality(
                         item.source
@@ -7141,7 +7177,14 @@ impl Game {
                 production,
             } => {
                 let mut item = self.activation_item(actor, card, ability);
-                if self.start_direct_mana_output(item.clone(), counter_payment.clone(), payment, production) { return; }
+                if self.start_direct_mana_output(
+                    item.clone(),
+                    counter_payment.clone(),
+                    payment,
+                    production,
+                ) {
+                    return;
+                }
                 let definition = self.state.objects[card as usize]
                     .card
                     .activation(ability)
@@ -7169,8 +7212,17 @@ impl Game {
             }
             Action::ChooseManaLotSpend { .. } => unreachable!("allocation handled transactionally"),
             Action::ChooseMana { production } => {
-                if self.state.announcing.as_ref().is_some_and(|a| a.mana_output.is_some()) {
-                    let mut a = self.state.announcing.take().expect("paid mana announcement");
+                if self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .is_some_and(|a| a.mana_output.is_some())
+                {
+                    let mut a = self
+                        .state
+                        .announcing
+                        .take()
+                        .expect("paid mana announcement");
                     self.complete_mana_output(&mut a, production);
                     return;
                 }
@@ -8783,6 +8835,7 @@ impl Game {
         if before.zone == Zone::Graveyard {
             self.forget_activation_observer(id);
             self.forget_graveyard_cast_permission(before.reference);
+            self.forget_embalm(before.reference);
         }
         if (before.zone == Zone::Library && self.top_library_card(before.owner) == Some(id))
             || destination == Zone::Library
@@ -9501,6 +9554,7 @@ impl Game {
         self.expire_base_stats();
         let expired_animations = self.expire_animations();
         self.expire_graveyard_cast_permissions();
+        self.expire_embalm();
         self.state.turn_cast_grants = None;
         self.prune_uncounterable_spell_ids();
         self.expire_keyword_effects();
@@ -10498,6 +10552,7 @@ impl Game {
                 .graveyard_type_uses
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+            embalm_abilities: self.embalm_views(),
             graveyard_cast_permissions: s
                 .graveyard_cast_permissions
                 .as_ref()
@@ -11083,6 +11138,7 @@ impl Game {
                 std::mem::size_of::<Vec<u64>>() + ids.len() * std::mem::size_of::<u64>()
             })
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
+            + embalm::owned_bytes(&s.embalm_abilities)
             + s.resolution_free_casts.as_ref().map_or(0, |f| {
                 std::mem::size_of::<ResolutionFreeCasts>()
                     + f.remaining.len() * std::mem::size_of::<ObjectRef>()

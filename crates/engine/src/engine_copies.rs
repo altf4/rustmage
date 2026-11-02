@@ -115,6 +115,7 @@ impl CopyRecipe {
                 nightmare: self.exceptions.nightmare,
                 golem: self.exceptions.golem,
                 fractal: self.exceptions.fractal,
+                zombie: self.exceptions.embalm,
                 ..CopyTypes::default()
             })
     }
@@ -137,6 +138,7 @@ impl CopyRecipe {
                 types.nightmare |= exceptions.nightmare;
                 types.golem |= exceptions.golem;
                 types.fractal |= exceptions.fractal;
+                types.zombie |= exceptions.embalm;
             }
         }
         self.exceptions = self.exceptions.union(exceptions);
@@ -151,6 +153,24 @@ impl CopyRecipe {
         }
     }
 
+    /// Own mana cost is copiable; no-cost copies never receive a power-up reduction.
+    pub(super) fn power_up_mana_reductions(self) -> Vec<ManaCost> {
+        if self.exceptions.embalm {
+            return vec![ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            }];
+        }
+        let (colored, generic) = self.definition.cost();
+        std::iter::once(ManaCost { colored, generic })
+            .chain(
+                self.definition
+                    .power_up_mana_cost_alternatives()
+                    .iter()
+                    .copied(),
+            )
+            .collect()
+    }
     pub const fn factory_identity(self) -> &'static str {
         "Copy"
     }
@@ -167,7 +187,11 @@ impl CopyRecipe {
                 .type_line
                 .split_once('—')
                 .map_or("", |(_, types)| types.trim()),
-            colors: card.colors(),
+            colors: if self.exceptions.embalm {
+                1
+            } else {
+                card.colors()
+            },
         }
     }
 }

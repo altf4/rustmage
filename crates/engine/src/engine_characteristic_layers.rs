@@ -353,7 +353,11 @@ pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> 
         return if object.zone == Zone::Stack {
             world.game().effective_spell_card(id).colors()
         } else {
-            object.card.colors()
+            if world.recipe(id).exceptions.embalm {
+                1
+            } else {
+                object.card.colors()
+            }
         };
     }
     changed_colors(world, id)
@@ -378,7 +382,16 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
                 .filter_map(|row| row.colors.map(|colors| (row.timestamp, colors))),
         )
         .max_by_key(|row| row.0)
-        .map_or_else(|| world.object(id).card.colors(), |(_, colors)| colors)
+        .map_or_else(
+            || {
+                if world.recipe(id).exceptions.embalm {
+                    1
+                } else {
+                    world.object(id).card.colors()
+                }
+            },
+            |(_, colors)| colors,
+        )
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]

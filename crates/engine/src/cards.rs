@@ -22,6 +22,10 @@ pub mod fixture_rules;
 #[path = "card_mana_symbols.rs"]
 pub mod mana_symbols;
 
+#[doc(hidden)]
+#[path = "card_activation_slots.rs"]
+pub mod activation_slots;
+
 use crate::capacity::CapacityExt;
 use crate::engine::{GrantedSubtypes, Player, Zone};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -48,6 +52,8 @@ pub struct CopyExceptions {
     pub base: Option<(i16, i16)>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub retained_activation: Option<RetainedCopyActivation>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub embalm: bool,
 }
 /// A layer-one copy between independently selected exact objects. Group absence
 /// at resolution is intentional: losing either required group prevents the copy.
@@ -73,6 +79,7 @@ impl CopyExceptions {
         fractal: false,
         base: None,
         retained_activation: None,
+        embalm: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
@@ -83,6 +90,7 @@ impl CopyExceptions {
         fractal: false,
         base: None,
         retained_activation: None,
+        embalm: false,
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
@@ -93,6 +101,7 @@ impl CopyExceptions {
         fractal: false,
         base: None,
         retained_activation: None,
+        embalm: false,
     };
     pub const ARTIFACT: Self = Self {
         artifact: true,
@@ -125,6 +134,7 @@ impl CopyExceptions {
             fractal: self.fractal || other.fractal,
             base: other.base.or(self.base),
             retained_activation: other.retained_activation.or(self.retained_activation),
+            embalm: self.embalm || other.embalm,
         }
     }
 }
@@ -1499,6 +1509,10 @@ pub enum Instruction {
     CreateCapturedArtifactCopy,
     /// Copy one current/latest-departure entrant, then animate its actual results after entry.
     CopyEnteringPermanentThenAnimate(AnimationSpec),
+    /// Grant a distinct, expiring graveyard activation to each exact targeted creature card.
+    GrantEmbalmTargets,
+    /// Create the immutable printed source copy with copiable white/Zombie/no-cost exceptions.
+    CreateEmbalmedSourceCopy,
     /// Copy the targeted linked exile creature, retaining this exact activated template.
     CopySourceFromLinkedExile {
         base: (i16, i16),
@@ -5515,12 +5529,33 @@ impl Card {
     }
     /// Intrinsic land/dork mana is stored separately from printed activation tables.
     /// The reserved index is used only by a captured inherited-ability descriptor.
-    pub(crate) const GRANTED_TAP_MANA: u16 = u16::MAX - 7;
-    pub(crate) const GRANTED_SACRIFICE_MANA: u16 = u16::MAX - 8;
+    pub(crate) fn activation_cost_options(self, index: u16) -> mana_symbols::ManaOptions {
+        if index == crate::engine::embalm::ACTIVATION_INDEX {
+            mana_symbols::ManaOptions::Printed(
+                mana_symbols::printed_cost(self.info().mana_cost)
+                    .map_or_else(Vec::new, |c| c.options)
+                    .into_iter(),
+            )
+        } else {
+            mana_symbols::ManaOptions::Static(self.activation(index).cost.mana_options())
+        }
+    }
+    pub(crate) fn activation_x_symbols(self, index: u16) -> u32 {
+        if index == crate::engine::embalm::ACTIVATION_INDEX {
+            mana_symbols::printed_cost(self.info().mana_cost).map_or(0, |c| c.x_symbols)
+        } else {
+            self.activation(index).x_symbols()
+        }
+    }
+    pub(crate) const GRANTED_TAP_MANA: u16 = activation_slots::GRANTED_TAP_MANA;
+    pub(crate) const GRANTED_SACRIFICE_MANA: u16 = activation_slots::GRANTED_SACRIFICE_MANA;
     pub(crate) fn intrinsic_mana_activation_index(color: usize) -> u16 {
-        u16::MAX - 1 - color as u16
+        activation_slots::intrinsic(color)
     }
     pub(crate) fn activation(self, index: u16) -> &'static ActivatedAbility {
+        if index == crate::engine::embalm::ACTIVATION_INDEX {
+            return &crate::engine::embalm::TEMPLATE;
+        }
         if matches!(index, Self::GRANTED_TAP_MANA | Self::GRANTED_SACRIFICE_MANA) {
             const TAP: ActivatedAbility = ActivatedAbility {
                 exhaust: false,
@@ -5551,7 +5586,7 @@ impl Card {
                 &SACRIFICE
             };
         }
-        if index >= u16::MAX - 6 {
+        if index >= activation_slots::INTRINSIC_COLORLESS {
             static INTRINSIC: [ActivatedAbility; 6] = [
                 ActivatedAbility {
                     exhaust: false,

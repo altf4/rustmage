@@ -20,8 +20,7 @@ impl Game {
             ability_world::CharacteristicWorld::named_activation_generic_increase(self, source.id);
         let discount = self.item_activation_discount(&a.item);
         let x = if choice.route == ActivationCostRoute::Printed {
-            u64::from(a.item.x.unwrap_or(0))
-                * u64::from(source.card.activation(ability).x_symbols())
+            u64::from(a.item.x.unwrap_or(0)) * u64::from(source.card.activation_x_symbols(ability))
         } else {
             0
         };
