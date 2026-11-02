@@ -351,8 +351,20 @@ fn a_granted_mana_packet_keeps_quality_and_cost_after_its_provider_leaves_during
             },
         )],
     }];
+    const AURA: AuraSpec = AuraSpec {
+        kinds: 1,
+        relation: 0,
+        bonus: EquipmentSpec {
+            stats: Stats {
+                power: 0,
+                toughness: 0,
+            },
+            keywords: Keywords::NONE,
+        },
+    };
     const GRANTOR: CardRules = CardRules {
-        effect: Effect::Permanent,
+        effect: Effect::Aura(AURA),
+        aura: Some(AURA),
         static_groups: GRANTS,
         activated: &[ability(
             ActivationCost {
@@ -376,7 +388,11 @@ fn a_granted_mana_packet_keeps_quality_and_cost_after_its_provider_leaves_during
     let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
     let grantor = put(&mut g, Player::P0, "Stop Cold", Zone::Battlefield);
     g.state.objects[grantor as usize].attached_to = Some(g.object_ref(source));
-    g.register_battlefield_sources(grantor);
+    assert_eq!(
+        g.granted_mana(source).len(),
+        1,
+        "the fixture installs a real Aura mana grant before funding"
+    );
     tax(&mut g, Player::P1, "Grizzly Bears");
     let spell = put(&mut g, Player::P0, "Broadcast Rambler", Zone::Hand);
     g.state.players[0].mana = [0; 6];

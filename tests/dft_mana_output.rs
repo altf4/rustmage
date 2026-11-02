@@ -571,8 +571,20 @@ fn granted_dynamic_mana_uses_conservative_bounds_and_exact_post_cost_search() {
             ManaProduction::SourcePower { color: 4 },
         )],
     }];
+    const AURA: AuraSpec = AuraSpec {
+        kinds: 1,
+        relation: 0,
+        bonus: EquipmentSpec {
+            stats: Stats {
+                power: 0,
+                toughness: 0,
+            },
+            keywords: Keywords::NONE,
+        },
+    };
     const GRANTOR: CardRules = CardRules {
-        effect: Effect::Permanent,
+        effect: Effect::Aura(AURA),
+        aura: Some(AURA),
         static_groups: GROUPS,
         extras: &CardExtras {
             static_ability_groups: GROUPS,
@@ -603,6 +615,11 @@ fn granted_dynamic_mana_uses_conservative_bounds_and_exact_post_cost_search() {
             let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
             let grantor = put(&mut g, p, "Stop Cold", Zone::Battlefield);
             g.state.objects[grantor as usize].attached_to = Some(g.object_ref(source));
+            assert_eq!(
+                g.granted_mana(source).len(),
+                1,
+                "the fixture installs a real Aura mana grant before funding"
+            );
             g.add_counter(source, CounterKind::MinusOne, 1);
             let spell = put(&mut g, p, "Druid of the Cowl", Zone::Hand);
             g.state.players[p.index()].mana = [0; 6];

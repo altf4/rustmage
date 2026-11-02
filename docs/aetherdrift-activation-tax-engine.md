@@ -228,3 +228,12 @@ mutation. These two new scenarios await root validation.
 The ordinary fixed-output fast path adds its result directly to the already
 owned post-cost FundingState. It no longer clones that state a second time;
 dynamic choices continue to branch for distinct concrete outputs.
+
+## Aura fixture authentication
+
+The initial granted-quality and dynamic-grant fixtures now include a genuine
+zero-bonus AuraSpec, as ordinary authored Auras do. Their earlier bare Permanent
+fixture never entered the attachment-provider index, so no mana grant existed
+before the announced cast. Each fixture now asserts that exactly one real grant
+exists before funding. No production rule, cost, amount, spending restriction or
+provider-departure expectation changed. Root validation remains pending.
