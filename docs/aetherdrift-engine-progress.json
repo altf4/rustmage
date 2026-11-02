@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "set": "DFT",
-  "phase": "card authoring; generic permanent cast-copy repair accepted",
+  "phase": "all 276 member definitions and focused outcomes integrated; complete-game and release acceptance in progress",
   "membership": 276,
   "starting_admitted": 119,
-  "newly_admitted": 24,
+  "newly_admitted": 157,
   "source_audit": "docs/aetherdrift-audit/; full direct card bodies covered, reusable helper review limits remain explicit",
   "focused_checkpoints": [
     {
@@ -1951,7 +1951,7 @@
       "peak_memory_gib": 3.1
     }
   },
-  "admissions_status": "256/276 local DFT candidates; whole-card authoring and full set acceptance still pending",
+  "admissions_status": "276/276 local DFT candidates; all276 have passed focused outcomes; full set acceptance remains open",
   "implemented_engine_clusters": [
     "speed scalars/grants/replacements and exact mana quality",
     "crew/saddle participant events, toughness and direct designation",
@@ -1984,5 +1984,6 @@
     "card_work": "may resume against accepted 9000f120b and the same guarded target",
     "validation": "one additional core test compilation after full source reviews; retain guarded warm target and unchanged profile/features",
     "status": "accepted; see aetherdrift-engine-freeze.json"
-  }
+  },
+  "focused_member_receipts": "docs/aetherdrift-focused-card-evidence.json"
 }

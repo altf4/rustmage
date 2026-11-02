@@ -1,78 +1,704 @@
 {
-  "engine_freeze": "fb878868d",
-  "engine_source": "8657c4e6c",
-  "scope": "focused card authoring evidence; full276 acceptance pending",
-  "passing_cases": 73,
+  "scope": "Focused whole-card authoring receipts across immutable consuming runs; full frozen release/native and DFT-only game acceptance remain separate.",
+  "source_revision": "c49add6d3c5d18821dbf32e25e69a3f21711b8b7",
+  "engine_source": "9000f120b",
+  "engine_freeze": "cf5046f15",
+  "members": 276,
+  "initially_admitted": 119,
+  "newly_admitted": 157,
+  "full_set_verified": false,
+  "card_and_provenance_cases": 334,
+  "target_count": 34,
   "targets": [
-    {
-      "target": "dft_white_blue_cards_tempo",
-      "passed": 12,
-      "failed": 0,
-      "compile_seconds": 0.8678812220023246,
-      "execution_seconds": 0.03336838699760847,
-      "command_seconds": 0.9018658379936824,
-      "engine_reused": true,
-      "report": "<cache>/rustmage-authoring/aetherdrift/card-white-blue-tempo-20261102-095100Z/report.json"
-    },
     {
       "target": "dft_black_red_cards_creatures",
       "passed": 13,
       "failed": 0,
-      "compile_seconds": 3.573610281004221,
-      "execution_seconds": 0.024984274001326412,
-      "command_seconds": 3.599208847997943,
-      "engine_reused": true,
-      "report": "<cache>/rustmage-authoring/aetherdrift/card-black-red-creatures-20261102-095600Z/report.json"
+      "execution_seconds": 0.016151274990988895,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "deathless_and_dynamite_contribute_two_extra_power_without_changing_stats",
+        "deathless_pilot_returns_its_exact_owned_graveyard_card_and_not_a_reentry",
+        "draconautics_exhaust_slots_are_independent_and_haste_freezes_only_current_others",
+        "dynamite_divers_death_damage_has_all_target_classes_and_survives_source_movement",
+        "engine_rat_pays_five_generic_and_black_for_repeatable_opponent_life_loss",
+        "engine_rats_one_damage_is_lethal_to_a_larger_creature",
+        "greasewrench_goblin_discards_zero_one_or_two_then_draws_exactly_that_many",
+        "greasewrench_pending_discard_has_private_owned_raw_index_and_restore_branches",
+        "kalakscion_and_tyrox_cast_with_printed_stats_and_are_actually_abilityless",
+        "pacesetter_and_prowcatcher_pay_distinct_exhaust_costs_and_keep_their_counters",
+        "thunderhead_gunner_discards_as_cost_obeys_sorcery_and_once_each_turn",
+        "wreckage_wickerfolk_enters_flying_and_surveils_two_with_real_reordering",
+        "wretched_doll_pays_black_and_tap_then_privately_surveils_one"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_discard_entries",
+      "passed": 8,
+      "failed": 0,
+      "execution_seconds": 0.016068256998551078,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "grim_bauble_targets_only_enemy_creatures_then_sacrifices_before_surveilling_two",
+        "magmakin_cycling_deals_its_one_damage_and_also_counts_for_other_discard_observers",
+        "mako_and_shefet_cycling_pay_two_discard_then_draw_and_mako_does_not_grow_in_hand",
+        "one_two_card_discard_batch_drives_all_three_actual_observers_and_real_chariot_crew",
+        "pactdoll_self_and_controlled_artifacts_each_trigger_once_including_a_token_batch",
+        "ripclaw_wrangles_the_opponents_choice_then_actually_crews_as_a_four_three",
+        "shefet_shrinks_all_other_current_creatures_but_not_itself_or_uncrewed_vehicles",
+        "zero_discard_rummage_never_creates_counters_damage_or_zombies_on_observers"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_grave_costs",
+      "passed": 13,
+      "failed": 0,
+      "execution_seconds": 0.02611457000602968,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "back_on_track_returns_own_creature_or_vehicle_and_the_pilot_actually_crews_for_three",
+        "back_on_tracks_pilot_is_independent_of_failed_return_but_not_an_all_illegal_spell",
+        "carrion_cruiser_mills_then_must_choose_from_the_whole_own_graveyard_and_crews_for_one",
+        "carrion_cruiser_without_any_matching_graveyard_card_still_mills_and_finishes",
+        "gastal_blockbuster_may_sacrifice_itself_even_when_the_reflexive_trigger_has_no_target",
+        "gastal_blockbuster_sacrifices_before_choosing_a_separate_enemy_artifact_target",
+        "intimidation_tactics_reveals_all_cards_and_exiles_the_chosen_artifact_or_creature_permanently",
+        "intimidation_tactics_still_reveals_an_unmatched_hand_and_cycles_for_three",
+        "sideswipe_sacrifices_artifact_or_creature_and_draws_only_for_a_paid_vehicle",
+        "sideswipe_vehicle_draw_does_not_require_destruction_but_does_require_a_legal_target",
+        "wickerfolk_hand_and_external_graveyard_casts_do_not_inherit_route_costs",
+        "wickerfolk_intrinsic_graveyard_route_pays_life_and_either_material_then_dies_normally",
+        "wickerfolk_route_rejects_bad_life_timing_and_owner_and_keeps_paid_owned_branches"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_speed",
+      "passed": 14,
+      "failed": 0,
+      "execution_seconds": 0.016315750006469898,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "black_and_red_surveyors_exile_the_owned_graveyard_card_at_owner_max_speed",
+        "burnout_and_mutant_pumps_pay_two_each_and_expire_without_changing_base_stats",
+        "endrider_catalyzer_max_speed_mana_funds_a_real_spell_and_requires_tap_readiness",
+        "every_speed_creature_starts_its_controller_and_keeps_its_printed_body",
+        "gas_guzzler_sacrifices_another_creature_or_uncrewed_vehicle_only_at_max_speed",
+        "gastal_raider_publicly_reveals_and_must_choose_an_instant_or_sorcery",
+        "hazoret_cannot_attack_or_block_below_max_speed_and_survives_lethal_damage",
+        "hazoret_pays_one_and_tap_for_any_small_creature_and_unblockable_expires",
+        "max_speed_keywords_and_raider_bonus_follow_live_controller_speed",
+        "oilgorger_gains_life_from_actual_damage_only_when_its_controller_has_max_speed",
+        "risen_necroregent_creates_one_black_zombie_at_own_max_speed_end_only",
+        "speed_demons_end_step_draw_and_life_loss_use_current_speed_and_frozen_controller",
+        "spikespitter_exiled_land_and_spell_have_normal_paid_plays_only_this_turn",
+        "spikespitter_exiles_only_on_own_max_speed_upkeep_and_queued_trigger_survives_speed_loss"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_speed_enchantments",
+      "passed": 8,
+      "failed": 0,
+      "execution_seconds": 0.01621792299556546,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "four_speed_enchantments_start_engines_on_actual_entry_and_keep_existing_speed",
+        "hour_of_victory_creates_zombie_and_its_max_speed_sorcery_search_is_required_and_private",
+        "kickoff_optional_discard_draws_two_only_when_paid_and_max_speed_freezes_creature_vehicle_union",
+        "last_ride_live_life_reduction_and_paid_life_draw_follow_controller_and_crew_two",
+        "momentum_breaker_fallback_is_discard_and_life_ability_samples_its_controllers_speed_at_resolution",
+        "momentum_breaker_opponent_must_sacrifice_creature_or_vehicle_instead_of_discarding",
+        "outpace_oblivion_optional_entry_hits_creature_or_planeswalker_and_excludes_players_and_artifacts",
+        "outpace_oblivion_sacrifice_damages_each_nonmax_player_using_independent_resolution_speeds"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_spells",
+      "passed": 14,
+      "failed": 0,
+      "execution_seconds": 0.016336203989339992,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "crash_and_burn_has_distinct_vehicle_destruction_and_six_damage_modes",
+        "fuel_the_flames_damages_both_sides_creatures_but_not_uncrewed_vehicles_or_players",
+        "lightning_strike_deals_three_to_a_player_and_planeswalker",
+        "locust_spray_reduces_both_stats_until_cleanup_and_can_kill_one_toughness",
+        "maximum_overdrive_keeps_its_counter_after_temporary_keywords_expire",
+        "pedal_to_the_metal_locks_paid_x_and_grants_first_strike_even_at_zero",
+        "printed_cycling_costs_discard_before_drawing_and_keep_owner_authority",
+        "quag_feast_does_not_mill_when_its_only_target_is_a_new_incarnation",
+        "quag_feast_uses_post_mill_graveyard_count_and_accepts_all_three_target_types",
+        "risky_shortcut_draws_two_then_both_players_lose_two_life",
+        "road_rage_counts_current_controlled_union_once_at_resolution",
+        "skycrash_and_spin_out_destroy_only_their_printed_target_classes",
+        "syphon_fuel_shrinks_six_and_gains_two_only_when_target_remains_legal",
+        "syphon_fuel_subtracts_exactly_six_from_a_surviving_creatures_two_stats"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_vehicles_mounts",
+      "passed": 8,
+      "failed": 0,
+      "execution_seconds": 0.01653059800446499,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "burner_rocket_flashes_on_opponents_turn_buffs_only_own_target_and_crews_for_one",
+        "chitin_and_ironclad_cycling_pay_the_printed_cost_and_ignore_spell_cost_reductions",
+        "chitin_counts_owned_artifact_or_creature_cards_once_and_not_lands_or_foreign_cards",
+        "chitin_generic_reduction_floors_at_zero_but_never_removes_the_black_symbol",
+        "clamorous_ironclad_needs_three_crew_power_and_keeps_menace_until_animation_expires",
+        "count_on_luck_triggers_only_on_own_upkeep_and_permits_a_paid_play_after_source_leaves",
+        "dracosaur_auxiliary_has_flying_haste_and_deals_two_only_when_attacking_saddled",
+        "gilded_ghoda_must_attack_while_saddled_and_creates_a_real_spendable_treasure"
+      ]
     },
     {
       "target": "dft_colorless_cards_raceways",
       "passed": 7,
       "failed": 0,
-      "compile_seconds": 0.8171816389949527,
-      "execution_seconds": 0.02420012500078883,
-      "command_seconds": 0.8419482389872428,
-      "engine_reused": true,
-      "report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
+      "execution_seconds": 0.01664608099963516,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "all_three_raceways_really_start_engines_and_supply_unconditional_colorless_mana",
+        "amonkhet_haste_targets_either_player_and_survives_source_departure_until_cleanup",
+        "avishkar_pays_three_taps_and_discards_before_drawing_with_no_empty_hand_route",
+        "muraganda_max_speed_mana_is_two_colorless_and_uses_one_tap_at_instant_speed",
+        "night_market_chooses_every_color_as_it_enters_tapped_then_produces_only_that_color",
+        "night_market_cycles_for_three_at_instant_speed_without_entering_or_choosing_a_color",
+        "night_market_entry_choice_owns_independent_raw_index_and_restored_branches"
+      ]
     },
     {
-      "target": "dft_green_multi_cards_search",
-      "passed": 13,
+      "target": "dft_colorless_cards_roads",
+      "passed": 3,
       "failed": 0,
-      "compile_seconds": 3.42404384999827,
-      "execution_seconds": 0.024461837994749658,
-      "command_seconds": 3.449027559996466,
-      "engine_reused": true,
-      "report": "<cache>/rustmage-authoring/aetherdrift/card-green-search-20261102-101000Z/report.json"
-    },
-    {
-      "target": "dft_green_multi_cards_vehicles",
-      "passed": 12,
-      "failed": 0,
-      "compile_seconds": 0.7164024060039083,
-      "execution_seconds": 0.03300392300297972,
-      "command_seconds": 0.7499868849990889,
-      "engine_reused": true,
-      "report": "<cache>/rustmage-authoring/aetherdrift/card-green-vehicles-20261102-101000Z/report.json"
-    },
-    {
-      "target": "dft_white_blue_cards_permanents",
-      "passed": 11,
-      "failed": 0,
-      "compile_seconds": 0.7164796100114472,
-      "execution_seconds": 0.033370789999025874,
-      "command_seconds": 0.7504477649927139,
-      "engine_reused": true,
-      "report": "<cache>/rustmage-authoring/aetherdrift/card-white-blue-permanents-20261102-101000Z/report.json"
+      "execution_seconds": 0.01680598199891392,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "country_roads_pilot_actually_crews_and_saddles_on_owned_branches",
+        "roads_entry_checks_the_actual_controller_and_either_subtype",
+        "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+      ]
     },
     {
       "target": "dft_colorless_cards_speed",
       "passed": 5,
       "failed": 0,
-      "compile_seconds": 0.66653502000554,
-      "execution_seconds": 0.02527651999844238,
-      "command_seconds": 0.692466227003024,
+      "execution_seconds": 0.01643651800986845,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "all_three_artifacts_start_speed_only_on_their_actual_paid_entry",
+        "scoreboard_discount_is_live_own_controller_generic_only_and_requires_max_speed",
+        "scoreboard_draws_two_before_choosing_exactly_one_discard_even_after_it_leaves",
+        "starting_column_produces_each_color_and_max_speed_sacrifices_before_draw_two_discard_one",
+        "walking_sarcophagus_uses_only_its_live_controllers_max_speed_and_bonus_is_not_cumulative"
+      ]
+    },
+    {
+      "target": "dft_colorless_cards_utility",
+      "passed": 4,
+      "failed": 0,
+      "execution_seconds": 0.01645007600018289,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "aetherjacket_pays_two_taps_and_sacrifices_at_sorcery_speed_to_destroy_another_artifact",
+        "guidelight_matrix_uses_separate_mount_sorcery_and_vehicle_instant_abilities",
+        "ticket_tortoise_checks_more_lands_on_entry_and_again_at_resolution",
+        "utility_artifacts_have_their_actual_paid_bodies_and_matrix_draws_one"
+      ]
+    },
+    {
+      "target": "dft_green_multi_cards_artifacts",
+      "passed": 11,
+      "failed": 0,
+      "execution_seconds": 0.01647006299754139,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them",
+        "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once",
+        "broodheart_engine_surveils_at_its_upkeep_and_pays_sorcery_tap_sacrifice_to_return_creature_or_vehicle",
+        "cloudspire_coordinator_scries_two_privately_and_uses_historical_entries_before_it_arrived",
+        "cloudspire_skycycle_announces_two_counters_split_or_together_on_other_controlled_targets",
+        "dredgers_insight_recovers_only_this_mill_batch_and_gains_life_only_for_artifact_or_creature_departure",
+        "dune_drifter_uses_cast_x_for_artifact_or_creature_recovery_but_noncast_return_has_x_zero",
+        "guidelight_pathmaker_search_destination_uses_selected_artifact_value_and_decline_does_not_shuffle",
+        "haunt_the_network_counts_its_new_flying_artifact_tokens_before_the_life_change",
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "voyage_home_affinity_reduces_only_generic_cost_and_always_draws_three_gains_three"
+      ]
+    },
+    {
+      "target": "dft_green_multi_cards_basics",
+      "passed": 5,
+      "failed": 0,
+      "execution_seconds": 0.01621493700076826,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "agonasaur_cycles_to_an_uncrewed_vehicle_with_permanent_counters_and_temporary_keywords",
+        "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x",
+        "migrating_ketradon_entry_gains_four_but_cycling_only_draws_and_discards",
+        "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire",
+        "vanilla_creatures_have_printed_stats_costs_types_and_no_rules_abilities"
+      ]
+    },
+    {
+      "target": "dft_green_multi_cards_exhaust",
+      "passed": 8,
+      "failed": 0,
+      "execution_seconds": 0.016470019007101655,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities",
+        "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union",
+        "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies",
+        "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires",
+        "elvish_refueler_reuses_only_one_spent_exhaust_before_this_turns_first_exhaust",
+        "fang_guardian_flashes_in_and_targets_only_another_controlled_creature_or_vehicle",
+        "ooze_patrol_counts_entire_graveyard_after_two_mills_and_deduplicates_artifact_creature",
+        "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
+      ]
+    },
+    {
+      "target": "dft_green_multi_cards_final",
+      "passed": 14,
+      "failed": 0,
+      "execution_seconds": 0.016620979993604124,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "captain_howler_uses_this_discard_batch_and_delayed_draw_keeps_original_controller_after_source_leaves",
+        "captain_howler_ward_requires_two_mana_and_two_life_together_or_counters_the_spell",
+        "ketramose_also_observes_a_physical_battlefield_artifact_exiled_on_its_controllers_turn",
+        "ketramose_attack_and_block_require_seven_physical_cards_in_all_players_exile",
+        "ketramose_observes_one_global_graveyard_exile_batch_only_on_its_controllers_turn",
+        "loot_has_three_independent_exhaust_instances_with_tap_and_the_printed_outputs",
+        "mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token",
+        "mimeoplasm_actual_cast_exiles_only_own_creatures_and_retains_linked_copy_activation_across_copies",
+        "mimeoplasm_cast_x_zero_exiles_nothing_and_dies_as_zero_zero",
+        "redshift_exhaust_private_selection_commits_one_simultaneous_permanent_batch_and_cannot_repeat",
+        "redshift_power_mana_is_one_color_and_pays_activations_but_cannot_cast_a_spell",
+        "sita_varma_adds_x_counters_then_optionally_samples_its_power_for_other_creatures_base_stats",
+        "winter_declared_artifact_exile_count_weakens_other_nonartifact_creatures_of_both_controllers",
+        "winter_has_one_native_life_ward_and_grants_one_independent_life_ward_to_each_controlled_artifact"
+      ]
+    },
+    {
+      "target": "dft_green_multi_cards_gearhulks",
+      "passed": 12,
+      "failed": 0,
+      "execution_seconds": 0.0163155070040375,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "brightglass_finds_at_most_two_small_artifact_creature_or_enchantment_cards_and_can_decline",
+        "caradora_searches_mount_or_vehicle_and_adds_one_per_counter_event_on_creature_or_vehicle",
+        "coalstoke_returns_opponents_creature_with_finality_and_lasting_keywords_until_our_next_end_step",
+        "embalmed_ascendant_makes_a_zombie_and_its_max_speed_death_trigger_includes_itself_and_tokens",
+        "explosive_getaway_blinks_before_dealing_four_and_returns_under_owner_control_next_end_step",
+        "oildeep_private_hand_look_can_decline_or_replace_one_chosen_card",
+        "oildeep_ward_cost_is_one_mana_and_decline_counters_the_related_targeting_spell",
+        "oviya_grants_trample_only_to_creatures_attacking_its_opponent",
+        "oviya_puts_only_creature_or_vehicle_from_private_hand_and_adds_counters_only_if_artifact",
+        "pyrewood_buffs_only_other_controlled_creatures_and_disables_prevention_through_cleanup",
+        "riptide_inserts_opposing_nonland_in_its_owners_library_third_and_prowess_is_temporary",
+        "zahur_sacrifices_another_once_per_turn_surveils_and_only_nontoken_deaths_make_tapped_zombies"
+      ]
+    },
+    {
+      "target": "dft_green_multi_cards_legends",
+      "passed": 10,
+      "failed": 0,
+      "execution_seconds": 0.01644087300519459,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "aatchik_deduplicates_artifact_creatures_then_observes_each_other_controlled_insect_death",
+        "far_fortune_max_speed_adds_one_only_to_controlled_damage_to_opposing_players_or_permanents",
+        "far_fortune_starts_speed_and_deals_attack_trigger_damage_even_when_another_creature_attacks",
+        "fearless_grants_vehicle_haste_and_draws_three_discards_two_only_when_pirate_and_vehicle_attacked",
+        "gastal_entry_damage_and_life_start_speed_before_live_max_speed_keywords",
+        "kolodin_filters_its_own_entry_and_directly_saddles_mounts_animates_vehicles_with_haste_until_cleanup",
+        "march_adds_ooze_without_removing_types_sets_live_six_six_and_triggers_only_on_opponents_off_turn_casts",
+        "sab_sunen_counts_all_counter_kinds_for_attack_and_block_including_zero_even",
+        "sab_sunen_first_main_adds_one_then_draws_only_if_post_placement_total_is_odd",
+        "samut_live_speed_buffs_only_other_controlled_creatures_and_discounts_only_noncreature_generic_cost"
+      ]
+    },
+    {
+      "target": "dft_green_multi_cards_search",
+      "passed": 13,
+      "failed": 0,
+      "execution_seconds": 0.016446814013761468,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "bestow_greatness_grants_exact_stats_and_trample_until_cleanup",
+        "broken_wings_accepts_each_printed_kind_and_rejects_nonflying_creature",
+        "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three",
+        "fang_druid_can_decline_without_shuffling_or_recovering_an_eligible_card",
+        "fang_druid_searches_either_zone_for_only_one_abilityless_creature_and_reveals_result",
+        "molt_tender_mills_one_and_pays_its_tap_and_graveyard_exile_for_colored_mana",
+        "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes",
+        "point_the_way_starts_speed_and_sacrifices_for_up_to_current_speed_tapped_basics",
+        "pothole_mole_mills_three_then_can_recover_an_old_land_or_decline",
+        "rise_from_the_wreck_selects_all_four_printed_groups_and_returns_each_card",
+        "run_over_reduces_mount_cost_and_deals_one_way_damage_while_plain_creature_pays_full",
+        "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses",
+        "skyserpent_reveals_through_two_lands_puts_them_tapped_and_adds_a_counter_even_if_empty"
+      ]
+    },
+    {
+      "target": "dft_green_multi_cards_vehicles",
+      "passed": 12,
+      "failed": 0,
+      "execution_seconds": 0.01627418800489977,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "apocalypse_runner_rejects_large_or_foreign_targets_and_its_grants_expire",
+        "beastrider_vanguard_looks_privately_takes_a_permanent_and_orders_the_other_cards",
+        "debris_beetle_entry_drains_three_and_bike_entry_gains_two_before_any_crewing",
+        "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+        "lagorin_saddle_one_attack_puts_counters_on_up_to_two_mounts_or_vehicles_of_any_controller",
+        "loxodon_surveyor_starts_engines_and_its_graveyard_draw_requires_its_owners_max_speed",
+        "lumbering_worldwagon_searches_on_entry_and_attack_and_its_power_tracks_lands_live",
+        "regal_imperiosaur_buffs_only_other_controlled_dinosaurs_and_updates_when_control_changes",
+        "stampeding_scurryfoot_exhaust_adds_a_counter_and_an_actual_three_three_elephant_once",
+        "thundering_broodwagon_destroys_only_opposing_small_nonland_or_cycles_without_entry_effect",
+        "thunderous_velocipede_adds_one_or_three_on_actual_entry_without_counting_itself_or_artifacts",
+        "veteran_beastrider_grows_its_controller_only_and_untaps_at_its_own_end_step"
+      ]
+    },
+    {
+      "target": "dft_white_blue_cards_activations",
+      "passed": 11,
+      "failed": 0,
+      "execution_seconds": 0.016376903004129417,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "detention_and_snare_exile_their_distinct_opposing_targets_until_the_source_leaves",
+        "detentions_white_cycling_discards_before_drawing_without_its_entry_exile",
+        "diversion_sacrifices_for_blue_and_counters_only_instant_or_sorcery_unless_three_is_paid",
+        "howlers_cycling_shrinks_an_opposing_uncrewed_vehicle_for_the_turn_and_draws_one",
+        "keen_draws_then_discards_and_adds_one_counter_with_vigilance_and_exhaust_consumed",
+        "mindspring_pays_chosen_x_and_tap_but_counters_each_own_merfolk_even_for_zero",
+        "refueler_draws_for_own_exhaust_including_itself_and_its_animation_is_permanent",
+        "repurposing_bay_pays_another_artifact_and_searches_exactly_one_more_mana_value",
+        "riverchurn_targets_each_player_and_uses_each_separate_current_graveyard_for_exhaust",
+        "scrounging_skyray_counts_a_real_two_card_discard_batch_and_its_cycling_discard",
+        "snare_max_speed_activation_requires_four_sorcery_timing_and_a_controlled_creature_or_vehicle"
+      ]
+    },
+    {
+      "target": "dft_white_blue_cards_final",
+      "passed": 14,
+      "failed": 0,
+      "execution_seconds": 0.026110045990208164,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "fabricator_creates_only_one_thopter_for_second_draw_and_resets_on_the_opponents_turn",
+        "mu_yanling_creates_the_real_vehicle_grants_own_vehicles_flying_and_draws_once_for_a_combat_batch",
+        "possession_engine_control_and_combat_lock_end_irreversibly_when_the_vehicle_changes_controller",
+        "sabotage_strategist_shrinks_only_the_declaration_attacking_its_player_and_exhausts_for_three_counters",
+        "salvation_engine_buffs_other_own_artifact_creatures_and_returns_an_artifact_on_attack",
+        "skyseers_chariot_names_a_nonland_and_taxes_both_players_actual_named_activations",
+        "slick_imitator_copy_of_a_permanent_spell_resolves_as_a_token_without_another_cast",
+        "slick_imitator_requires_max_speed_sacrifices_and_can_retarget_a_copy_of_your_spell",
+        "spikeshell_bounces_the_opposing_vehicle_and_reduces_only_a_strict_leader_above_one",
+        "transit_mages_optional_search_accepts_only_four_or_five_mana_artifacts_and_decline_does_not_shuffle",
+        "valors_flagship_cycles_for_chosen_x_colorless_pilots_and_exactly_one_draw",
+        "valors_flagship_paid_entry_keeps_its_three_keywords_and_crews_for_three",
+        "waxen_cycling_pays_two_discards_the_original_and_draws_without_a_copy_choice",
+        "waxen_flash_entry_copies_only_own_artifacts_or_creatures_with_owned_copy_choices_and_etbs"
+      ]
+    },
+    {
+      "target": "dft_white_blue_cards_mounts",
+      "passed": 14,
+      "failed": 0,
+      "execution_seconds": 0.016749488000641577,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "armory_buffs_only_own_creatures_and_independently_saddles_mounts_or_animates_vehicles",
+        "armory_can_choose_no_target_and_does_not_trigger_in_the_opponents_combat",
+        "basri_pays_white_tap_and_exert_for_one_lifelink_cat_and_cycles_for_own_cat_protection",
+        "bulwark_attack_targets_any_creature_and_sacrifice_protects_only_own_counter_bearers",
+        "canyon_vaulter_grants_flying_for_main_phase_crew_and_saddle_only",
+        "captain_boosts_the_union_once_and_its_two_extra_contribution_pays_saddle_four",
+        "interface_ace_uses_toughness_and_untaps_only_for_the_first_own_turn_tap",
+        "lynx_saddled_attack_searches_only_a_basic_plains_and_keeps_lifelink",
+        "saddled_brightfield_attacks_have_distinct_growth_flying_untap_and_counter_results",
+        "sloth_saddled_attack_untaps_own_creatures_and_grants_temporary_indestructible",
+        "sunmare_searches_a_small_nonland_permanent_onto_the_battlefield",
+        "sunmare_ward_counters_an_opposing_spell_unless_its_controller_pays_two",
+        "unsaddled_attack_does_not_grant_brightfield_growth_or_mustang_counters",
+        "voyager_glidecar_scries_one_then_taps_three_other_creatures_for_flying_and_a_counter"
+      ]
+    },
+    {
+      "target": "dft_white_blue_cards_permanents",
+      "passed": 11,
+      "failed": 0,
+      "execution_seconds": 0.016355661995476112,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies",
+        "artifact_affinity_pays_only_the_remaining_generic_and_required_blue",
+        "broadcast_and_nimble_entries_create_one_real_colorless_flying_artifact_thopter",
+        "daring_mechanic_can_counter_opposing_mounts_and_uncrewed_vehicles_but_not_other_creatures",
+        "guidelight_synergist_tracks_only_its_live_controllers_artifact_count",
+        "lightwheel_starts_speed_enchants_a_vehicle_and_casts_normally_from_own_graveyard_at_four",
+        "lotusguard_entry_grants_both_keywords_to_an_uncrewed_vehicle_independent_of_source",
+        "quickwelder_reduces_only_artifact_spells_of_its_controller",
+        "roadside_assistance_grants_stats_lifelink_and_a_colorless_pilot_that_can_crew_three",
+        "spotcycle_scouter_scries_exactly_two_privately_then_crews_as_a_three_two",
+        "unstoppable_plan_untaps_own_nonlands_only_at_its_controllers_end_step"
+      ]
+    },
+    {
+      "target": "dft_white_blue_cards_speed",
+      "passed": 10,
+      "failed": 0,
+      "execution_seconds": 0.016280406998703256,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "aether_syphon_mills_for_each_actual_controller_draw_only_at_max_speed",
+        "dft_vanillas_have_no_rules_abilities_and_pay_for_their_printed_bodies",
+        "graveyard_surveyors_require_owner_max_speed_and_exile_as_a_paid_cost",
+        "guidelight_optimizer_blue_pays_artifacts_and_activations_but_not_nonartifact_spells",
+        "nesting_bot_death_always_creates_exactly_one_colorless_artifact_servo",
+        "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
+        "pride_max_speed_grants_the_trigger_at_combat_without_a_resolution_recheck",
+        "pride_triggers_at_max_speed_and_can_grant_double_strike_to_an_uncrewed_vehicle",
+        "swiftwing_and_leonin_follow_live_speed_turn_and_controller",
+        "vnwxt_doubles_the_normal_draw_and_loses_both_static_effects_when_blank"
+      ]
+    },
+    {
+      "target": "dft_white_blue_cards_tempo",
+      "passed": 12,
+      "failed": 0,
+      "execution_seconds": 0.016346787990187295,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration",
+        "collision_course_counts_the_creature_vehicle_union_once_and_has_an_artifact_mode",
+        "flood_the_engine_taps_blanks_and_locks_an_uncrewed_vehicle_until_the_aura_leaves",
+        "spectacular_pileup_removes_indestructible_only_from_the_destroyed_union",
+        "spectral_interference_and_spell_pierce_offer_the_correct_payment_or_counter",
+        "stall_out_puts_three_real_stun_counters_on_a_vehicle",
+        "stock_up_keeps_the_look_private_selects_two_and_orders_the_other_three_with_restore",
+        "target_discounts_are_paid_for_tapped_permanents_and_mana_value_one_only",
+        "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw",
+        "trade_the_helm_exchanges_both_objects_or_neither_when_one_incarnation_is_lost",
+        "trip_up_lets_the_owner_choose_top_or_bottom_even_under_foreign_control",
+        "tune_up_returns_the_owned_artifact_and_animates_only_its_exact_vehicle_entry"
+      ]
+    },
+    {
+      "target": "dft_white_blue_vanilla_facts",
+      "passed": 2,
+      "failed": 0,
+      "execution_seconds": 0.016175756987649947,
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "compile_scope": "shared accepted engine checkpoint; compilation counted once in engine freeze",
+      "tests": [
+        "actual_fang_druid_searches_audited_vanillas_in_either_zone_and_rejects_all_abilities_and_basic_lands",
+        "audited_vanilla_facts_preserve_all_fourteen_paid_bodies_costs_and_empty_rules"
+      ]
+    },
+    {
+      "target": "dft_colorless_cards_inherited_lands",
+      "passed": 7,
+      "failed": 0,
+      "execution_seconds": 0.026573511990136467,
+      "compile_seconds": 4.876941149996128,
       "engine_reused": true,
-      "report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-speed-20261102-101000Z/report.json"
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-inherited-lands-20261102-161000Z/report.json",
+      "report_sha256": "f7660ae4c1426db9bab3d4f6ffa7783dcdd74c640821290ffe97c66d19d5f9a5",
+      "tests": [
+        "basic_land_deck_exemption_allows_sixty_copies_in_standard",
+        "basic_lands_play_untapped_have_intrinsic_abilities_and_produce_exactly_their_color",
+        "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
+        "either_owned_tapped_qualifier_unlocks_secondary_and_departure_disables_it",
+        "land_play_and_mana_choices_agree_on_owned_raw_index_and_restored_branches",
+        "verge_funding_and_actual_mana_use_live_types_instead_of_immutable_card_names",
+        "verges_primary_is_unconditional_and_foreign_or_wrong_subtypes_do_not_unlock_secondary"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_trigger_creatures",
+      "passed": 8,
+      "failed": 0,
+      "execution_seconds": 0.01677993399789557,
+      "compile_seconds": 3.8264452699950198,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-black-red-trigger-fixtures-20261102-161900Z/report.json",
+      "report_sha256": "38e360e14ad239cf259b5597c4300bcef27be842fa1abf4e3dfc7f4534f047bb",
+      "tests": [
+        "adrenaline_jockey_counts_committed_own_exhaust_even_if_the_ability_is_countered",
+        "adrenaline_jockey_damages_the_actual_offturn_caster_regardless_of_observer_controller",
+        "bloodghast_actual_landfall_optional_return_and_live_haste_enable_attack_but_never_block",
+        "bloodghast_foreign_land_or_stale_graveyard_incarnation_does_not_return",
+        "grim_javelineer_attack_buff_and_delayed_surveil_keep_original_controller_after_source_departure",
+        "grim_javelineer_delayed_death_rejects_a_new_incarnation_and_expires_at_cleanup",
+        "reckless_velocitaur_buffs_only_its_exact_crew_or_saddle_recipient_during_own_main",
+        "reckless_velocitaur_queued_buff_survives_pilot_departure_but_not_recipient_reentry"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_exhaust_vehicles",
+      "passed": 10,
+      "failed": 0,
+      "execution_seconds": 0.016192569994018413,
+      "compile_seconds": 0.8167604519985616,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-black-red-exhaust-fixtures-20261102-161900Z/report.json",
+      "report_sha256": "d8e6accad746eb9cc3ea08f181d54c943aa657524c0bece06d1ff219d9d4afde",
+      "tests": [
+        "boommobile_entry_chooses_exactly_four_of_one_color_and_that_mana_cannot_cast_any_spell",
+        "boommobile_restricted_red_mana_pays_its_x_exhaust_and_counter_matters_when_crewed",
+        "boommobile_x_zero_and_creature_or_planeswalker_targets_are_independent_of_source_survival",
+        "demonic_junker_affinity_counts_only_controlled_artifacts_reduces_generic_to_zero_and_keeps_black",
+        "demonic_junker_does_not_reward_indestructible_or_stale_own_targets_but_still_destroys_legal_other",
+        "demonic_junker_targets_at_most_one_per_player_and_rewards_actual_own_destruction_once",
+        "gastal_thrillroller_actual_entry_animates_with_haste_trample_then_crew_two_is_needed_next_turn",
+        "gastal_thrillroller_sorcery_graveyard_return_discards_a_card_enters_with_finality_and_exiles_on_death",
+        "spire_mechcycle_exhaust_cost_is_other_untapped_controlled_mount_or_vehicle_and_union_count_is_live",
+        "spire_mechcycle_ordinary_crew_two_is_temporary_and_owned_exhaust_payment_branches_agree"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_mass_spells",
+      "passed": 6,
+      "failed": 0,
+      "execution_seconds": 0.026611483001033776,
+      "compile_seconds": 0.8180468489881605,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-black-red-mass-spells-20261102-161000Z/report.json",
+      "report_sha256": "2afd77d4b1ed43bcdcea296820ad7e914068bb40c56fe7253c2f85b76dd0c439",
+      "tests": [
+        "ancient_vendetta_can_name_land_or_unavailable_card_stop_at_zero_and_owns_private_branches",
+        "ancient_vendetta_reveals_only_the_name_then_privately_selects_four_across_three_opponent_zones",
+        "full_throttle_inserts_two_combats_after_main_one_or_two_without_extra_mains",
+        "full_throttle_repeated_delayed_untap_tracks_exact_attackers_any_controller_until_cleanup",
+        "push_delayed_sacrifice_rejects_blinked_or_foreign_controlled_results_and_owned_branches_keep_exact_group",
+        "push_the_limit_returns_only_own_mount_vehicle_union_animates_existing_vehicles_and_hastes_creatures"
+      ]
+    },
+    {
+      "target": "dft_colorless_cards_machines",
+      "passed": 11,
+      "failed": 0,
+      "execution_seconds": 0.016505462990608066,
+      "compile_seconds": 0.7161995320057031,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json",
+      "report_sha256": "bfbf653d40d22576cea16f63fa97df20da10d63da0e077e89248059e715651aa",
+      "tests": [
+        "lifecraft_actual_entry_choice_changes_only_own_creature_vehicles_and_other_chosen_creatures",
+        "marketback_pays_twice_x_adds_repeatable_counters_and_draws_exact_death_lki",
+        "marketback_zero_x_dies_without_counters_and_draws_zero",
+        "pathcruiser_actual_entry_searches_only_basic_lands_privately_and_shuffles_even_when_declined",
+        "pathcruiser_crew_five_is_temporary_while_five_color_exhaust_is_permanent_and_once",
+        "pit_actual_body_defender_and_two_mana_pay_abilities_but_cannot_cast_spells",
+        "pit_delayed_exhaust_callback_expires_at_cleanup",
+        "pit_delayed_next_exhaust_survives_source_departure_ignores_ordinary_activations_and_is_consumed_once",
+        "radiant_lotus_cost_selection_has_independent_owned_raw_index_restore_after_parent_disposal",
+        "radiant_lotus_paid_entry_and_ranged_self_sacrifice_use_stack_and_controller_chooses_target_players_color",
+        "rover_equips_only_own_creature_at_sorcery_speed_then_crews_as_double_striker_and_detaches"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_final_support",
+      "passed": 11,
+      "failed": 0,
+      "execution_seconds": 0.026039318006951362,
+      "compile_seconds": 0.7664094229985494,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-black-red-final-support-fixtures-20261102-163100Z/report.json",
+      "report_sha256": "2d5988034d59d8d4964341bc1cab7747142f3acb07c97260cb3bea9111ba4208",
+      "tests": [
+        "chandra_enters_at_four_and_own_combat_optionally_animates_only_a_controlled_vehicle_until_cleanup",
+        "chandra_minus_seven_emblem_survives_the_planeswalker_and_artifact_entries_deal_three_to_any_target",
+        "chandra_plus_two_may_discard_any_card_or_sacrifice_an_artifact_and_draws_only_if_paid",
+        "chandra_zero_creates_untapped_colorless_three_two_vehicle_with_real_crew_one",
+        "cursecloth_embalm_acquisition_expires_at_cleanup_and_never_rebinds_a_new_graveyard_incarnation",
+        "cursecloth_embalm_payment_and_copiable_token_properties_survive_raw_index_restore_and_parent_drop",
+        "cursecloth_live_zombie_bonus_tracks_controller_and_covers_new_and_copied_zombies",
+        "cursecloth_tap_targets_only_own_graveyard_creature_and_uses_exact_native_embalm_cost_after_source_leaves",
+        "daretti_attack_trigger_survives_source_departure_but_all_illegal_target_skips_optional_sacrifice",
+        "daretti_entry_chooses_own_artifact_card_before_optional_sacrifice_and_returns_only_that_card",
+        "daretti_power_is_greatest_controlled_artifact_mana_value_in_every_zone_and_updates_live"
+      ]
+    },
+    {
+      "target": "dft_black_red_cards_gonti_howlsquad",
+      "passed": 9,
+      "failed": 0,
+      "execution_seconds": 0.01615690799371805,
+      "compile_seconds": 3.7248006669979077,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-black-red-gonti-howlsquad-20261102-162800Z/report.json",
+      "report_sha256": "893c5d66e8a5db69c987d0709a9586eaed19c5f8318c0d81d73c4e7e634707ff",
+      "tests": [
+        "gonti_actual_combat_freezes_damage_dealer_controller_and_face_down_permission_survives_both_sources",
+        "gonti_each_damaging_creature_exiles_a_card_and_land_permissions_keep_normal_timing_and_shared_limit",
+        "gonti_foreign_spell_treasure_belongs_to_actual_caster_even_on_an_opponents_turn_or_countered_spell",
+        "gonti_noncombat_damage_and_combat_damage_to_its_controller_never_exile",
+        "gonti_prevented_exile_keeps_private_look_only_and_owns_replacement_result_across_raw_index_restore",
+        "howlsquad_actual_entry_starts_speed_and_live_other_goblin_haste_is_controller_relative",
+        "howlsquad_max_speed_tap_mana_counts_current_owned_goblins_including_itself_and_funds_real_red_spell",
+        "howlsquad_own_combat_creates_one_red_goblin_that_must_attack_this_combat_and_requirement_expires",
+        "howlsquad_queued_creation_survives_source_but_without_haste_summoning_sick_token_is_not_forced_to_attack"
+      ]
+    },
+    {
+      "target": "dft_colorless_cards_inherited_artifacts",
+      "passed": 16,
+      "failed": 0,
+      "execution_seconds": 0.01626056600071024,
+      "compile_seconds": 3.825511306000408,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-inherited-artifacts-20261102-163100Z/report.json",
+      "report_sha256": "05b2acf0e8b32e3e9231cb5527dd7905b468931f33bca838080781599b8384ef",
+      "tests": [
+        "aetherspark_attachment_blocks_attacks_until_the_host_leaves_and_own_combat_adds_exact_loyalty",
+        "aetherspark_equipped_creature_combat_on_opponents_turn_does_not_add_loyalty",
+        "aetherspark_minus_five_draws_two_after_its_last_loyalty_is_paid",
+        "aetherspark_minus_ten_uses_the_stack_then_makes_ten_mana_of_exactly_one_color",
+        "aetherspark_plus_one_has_optional_own_target_and_one_sorcery_speed_loyalty_use_per_turn",
+        "both_inherited_cyclers_pay_two_discard_at_commitment_and_draw_without_battlefield_triggers",
+        "camera_launcher_owned_paid_branch_keeps_token_effect_but_never_counters_a_new_incarnation",
+        "camera_launcher_pays_three_exhausts_once_across_turns_and_blink_resets_the_exact_object",
+        "monument_new_incarnation_can_choose_the_same_mode_again_in_the_same_turn",
+        "monument_real_cycling_uses_each_mode_once_and_resets_on_the_opponents_turn",
+        "monument_two_discarded_cards_generate_two_triggers_and_two_objects_have_independent_modes",
+        "scrap_compactor_first_mode_requires_creature_and_pays_three_tap_and_sacrifice_before_damage",
+        "scrap_compactor_second_mode_pays_six_to_destroy_an_uncrewed_vehicle_or_creature",
+        "skybox_ferry_is_a_flying_four_four_only_after_crew_two_and_animation_expires",
+        "wreck_remover_losing_its_only_target_fizzles_life_gain_and_never_rebinds_a_graveyard_reentry",
+        "wreck_remover_paid_entry_exiles_from_either_graveyard_and_its_zero_target_attack_still_gains_life"
+      ]
     }
   ]
 }
