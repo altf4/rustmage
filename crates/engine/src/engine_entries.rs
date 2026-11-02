@@ -590,7 +590,8 @@ impl Game {
         let counter_replacements = batch.moves.iter().any(|m| {
             m.destination == Zone::Battlefield
                 && m.counters.has_any()
-                && (!m.before.card.replacement_effects().is_empty()
+                && (replacements::entry_kind_sensitive(self)
+                    || !m.before.card.replacement_effects().is_empty()
                     || self.state.static_sources.iter().any(|&id| {
                         self.state.objects[id as usize]
                             .card
@@ -628,25 +629,27 @@ impl Game {
             || (card.enters_counters().total() > 0
                 || !card.entry_counter_rules().is_empty()
                 || card.x_complement_entry_counters().is_some())
-                && (card.replacement_effects().iter().any(|e| {
-                    matches!(
-                        e,
-                        crate::cards::ReplacementSpec::Counters { .. }
-                            | crate::cards::ReplacementSpec::CountersPlacedByController
-                    )
-                }) || self.state.static_sources.iter().any(|&id| {
-                    self.state.objects[id as usize]
-                        .card
-                        .replacement_effects()
-                        .iter()
-                        .any(|e| {
-                            matches!(
-                                e,
-                                crate::cards::ReplacementSpec::Counters { .. }
-                                    | crate::cards::ReplacementSpec::CountersPlacedByController
-                            )
-                        })
-                }))
+                && (replacements::entry_kind_sensitive(self)
+                    || card.replacement_effects().iter().any(|e| {
+                        matches!(
+                            e,
+                            crate::cards::ReplacementSpec::Counters { .. }
+                                | crate::cards::ReplacementSpec::CountersPlacedByController
+                        )
+                    })
+                    || self.state.static_sources.iter().any(|&id| {
+                        self.state.objects[id as usize]
+                            .card
+                            .replacement_effects()
+                            .iter()
+                            .any(|e| {
+                                matches!(
+                                    e,
+                                    crate::cards::ReplacementSpec::Counters { .. }
+                                        | crate::cards::ReplacementSpec::CountersPlacedByController
+                                )
+                            })
+                    }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
         self.pre_entry_counters_with_payment(before, destination, None, before.controller, 0)
@@ -1252,6 +1255,15 @@ impl Game {
                 if m.destination != Zone::Battlefield || m.skipped || m.counters.is_empty() {
                     continue;
                 }
+                let type_sensitive =
+                    m.ghost_vacuum_after.is_some() || replacements::entry_kind_sensitive(self);
+                let preview = if type_sensitive
+                    || replacements::entry_power_sensitive(self, m.controller, m.before.card)
+                {
+                    self.ghost_entry_preview(&m.replacement_preview())
+                } else {
+                    None
+                };
                 let p = replacements::CounterPlacement {
                     placed_by: m.controller,
                     object: m.before.reference,
@@ -1259,29 +1271,22 @@ impl Game {
                     owner: m.before.owner,
                     controller: m.controller,
                     protector: m.battle_protector,
-                    subtypes: if m.ghost_vacuum_after.is_some() {
-                        self.ghost_entry_preview(&m.replacement_preview())
-                            .map_or_else(
-                                || Self::entry_replacement_subtypes(&m),
-                                |view| view.granted_subtypes,
-                            )
+                    subtypes: if type_sensitive {
+                        preview.as_ref().map_or_else(
+                            || Self::entry_replacement_subtypes(&m),
+                            |view| view.granted_subtypes,
+                        )
                     } else {
                         Self::entry_replacement_subtypes(&m)
                     },
-                    kind: if m.ghost_vacuum_after.is_some() {
-                        self.ghost_entry_preview(&m.replacement_preview())
+                    kind: if type_sensitive {
+                        preview
+                            .as_ref()
                             .map_or_else(|| m.entry_kinds(), |view| view.kinds)
                     } else {
                         m.entry_kinds()
                     },
-                    power: if m.ghost_vacuum_after.is_some()
-                        || replacements::entry_power_sensitive(self, m.controller, m.before.card)
-                    {
-                        self.ghost_entry_preview(&m.replacement_preview())
-                            .map_or(m.before.power, |view| view.power)
-                    } else {
-                        m.before.power
-                    },
+                    power: preview.as_ref().map_or(m.before.power, |view| view.power),
                     amount: m.counters.clone(),
                     effect: true,
                     entry_index: Some(index),
@@ -1666,6 +1671,7 @@ impl Game {
                             matches!(
                                 f,
                                 crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                                    | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                             )
                         })
                     })
@@ -1695,6 +1701,22 @@ impl Game {
             }
             for group in source.card.static_ability_groups() {
                 for fragment in group.fragments {
+                    if let crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue {
+                        filter, kind, maximum, at_most, above,
+                    } = *fragment
+                        && self.continuous_fragment_available(id, |f| std::ptr::eq(f, fragment))
+                    {
+                        for movement in moves.iter_mut() {
+                            if movement.destination == Zone::Battlefield
+                                && !movement.skipped
+                                && movement.controller == source.controller
+                                && movement.before.reference != self.object_ref(id)
+                                && let Some(amount) = self.entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
+                            {
+                                movement.counters.add(kind, amount);
+                            }
+                        }
+                    }
                     let crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(subtype) =
                         fragment
                     else {

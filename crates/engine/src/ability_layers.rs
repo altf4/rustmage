@@ -139,6 +139,14 @@ pub enum StaticAbilityFragment {
     /// This land is the chosen basic land type (CR305.7).
     ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
+    /// Additional counters on other controlled entrants, selected by effective mana value.
+    OtherControlledEntryCountersByManaValue {
+        filter: ReplacementFilter,
+        kind: CounterKind,
+        maximum: u64,
+        at_most: u16,
+        above: u16,
+    },
     ChosenModifier(ChosenModifier),
     /// Grant keywords to creatures of the source's chosen creature type.
     ChosenTypeKeywords(Keywords),

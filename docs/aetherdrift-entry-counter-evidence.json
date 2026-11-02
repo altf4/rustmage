@@ -1,0 +1,54 @@
+{
+  "scope": "Generic mana-value-dependent controlled entry-counter grant and entry-counter prohibition fast-path fix; no ordinary card definitions or admissions",
+  "oracle": {
+    "name": "Thunderous Velocipede",
+    "oracle_id": "899007b5-6a07-4491-9104-bb537106b07d",
+    "facts_sha256": "8870d1dd905808e749b3c45a814734e404dcb649258b552568447149ff2804e6",
+    "oracle_text": "Trample\nEach other Vehicle and creature you control enters with an additional +1/+1 counter on it if its mana value is 4 or less. Otherwise, it enters with three additional +1/+1 counters on it.\nCrew 3"
+  },
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "complete_java_bodies_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/t/ThunderousVelocipede.java",
+      "sha256": "af33093119bb3eedb1ed365651ff3b78110557abe265f6cad50851e17b0e39d5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/EntersWithCountersControlledEffect.java",
+      "sha256": "bfa7b64ddf72a842033fb29987be71155355c4d9effe7ad9dcb849906835055d"
+    }
+  ],
+  "interface": "StaticAbilityFragment::OtherControlledEntryCountersByManaValue {filter,kind,maximum,at_most,above}",
+  "semantics": [
+    "Only already-present available providers contribute, once each to another controlled exact entrant.",
+    "Creature-or-Vehicle is one deduplicated union. Effective mana value and eligibility come from the shared CR614.12 single-entrant projection, including its own continuous type effects.",
+    "Amounts seed the existing entry counter event; ordinary counter doubling, prohibition and order remain in the existing replacement pipeline.",
+    "A live global counter prohibition forces the counter processing path even without an amount replacement, and sees the same effective entry types in actual and speculative worlds. Incoming general prohibition providers remain absent from pre-event lookup."
+  ],
+  "representation": {
+    "new_game_state_fields": 0,
+    "new_wire_fields": 0,
+    "local_projection": "One projected entry view is reused across type and power fields when the counter event needs those characteristics."
+  },
+  "tests": [
+    "entry_counter_threshold_uses_four_and_five_and_one_union_match",
+    "entry_counter_additions_stack_then_normal_doubling_replacement_applies",
+    "simultaneous_new_providers_do_not_add_counters_until_they_are_present",
+    "entry_counter_prohibition_has_no_amount_replacer_fast_path_escape",
+    "entry_prohibition_sees_the_entrants_own_type_effect_but_not_an_incoming_general_provider",
+    "entry_counter_bonus_uses_current_control_and_disabled_providers_are_inert",
+    "intrinsic_entry_counters_also_obey_prohibition_without_an_external_counter_grant"
+  ],
+  "existing_consumer_regression_filters": [
+    "entry_counter",
+    "generous_revival_adds_to_intrinsic_entry_counters_before_replacements",
+    "yoshimaru_does_not_replace_its_own_entry_counters",
+    "projected_ghost_entry_layers_apply_counters_and_existing_static_bonus",
+    "sos_wildgrowth_multiple_departed_sources_stack_entry_counters_and_replacements",
+    "hob_lonely"
+  ],
+  "validation": {
+    "rustfmt": "passed edition2024",
+    "git_diff_check": "passed",
+    "Cargo": "not run; root sole guarded validation owner"
+  }
+}

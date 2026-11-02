@@ -249,6 +249,27 @@ impl FundingState<'_> {
         .unwrap_or(false)
     }
 
+    /// CR614.12 eligibility is read from this entrant alone in its pre-entry world.
+    pub(super) fn entry_counter_bonus_by_mana_value(
+        &self,
+        movement: &entries::EntryMove,
+        filter: ReplacementFilter,
+        maximum: u64,
+        at_most: u16,
+        above: u16,
+    ) -> Option<u64> {
+        self.with_entry_preview(&movement.replacement_preview(), |world| {
+            let id = movement.before.id;
+            replacements::entry_filter_matches(world, filter, id).then(|| {
+                u64::from(if CharacteristicWorld::mana_value(world, id) <= maximum {
+                    at_most
+                } else {
+                    above
+                })
+            })
+        })
+        .flatten()
+    }
     fn with_entry_preview<T>(
         &self,
         movement: &entries::EntryMove,
@@ -1039,6 +1060,22 @@ impl FundingState<'_> {
                 }
                 for group in provider.card.static_ability_groups() {
                     for fragment in group.fragments {
+                        if let crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue {
+                            filter, kind, maximum, at_most, above,
+                        } = *fragment
+                            && self.fragment_available(id, |f| std::ptr::eq(f, fragment))
+                        {
+                            for movement in &mut moves {
+                                if movement.destination == Zone::Battlefield
+                                    && !movement.skipped
+                                    && movement.controller == provider.controller
+                                    && movement.before.reference != self.reference(id)
+                                    && let Some(amount) = self.entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
+                                {
+                                    movement.counters.add(kind, amount);
+                                }
+                            }
+                        }
                         let crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(subtype) =
                             fragment
                         else {
@@ -1098,6 +1135,16 @@ impl FundingState<'_> {
         if m.skipped || m.destination != Zone::Battlefield || m.counters.is_empty() || processed {
             return self.visit_entry_counters(moves, order, at + 1, actual, emit);
         }
+        let type_sensitive =
+            m.ghost_vacuum_after.is_some() || replacements::entry_kind_sensitive(self);
+        let preview = if current.is_none()
+            && (type_sensitive
+                || replacements::entry_power_sensitive(self, m.controller, m.before.card))
+        {
+            self.preview_entry_view(&m.replacement_preview())
+        } else {
+            None
+        };
         let (placement, mut used) = current.map_or_else(
             || {
                 (
@@ -1108,32 +1155,22 @@ impl FundingState<'_> {
                         owner: m.before.owner,
                         controller: m.controller,
                         protector: m.battle_protector,
-                        subtypes: if m.ghost_vacuum_after.is_some() {
-                            self.preview_entry_view(&m.replacement_preview())
-                                .map_or_else(
-                                    || Game::entry_replacement_subtypes(m),
-                                    |view| view.granted_subtypes,
-                                )
+                        subtypes: if type_sensitive {
+                            preview.as_ref().map_or_else(
+                                || Game::entry_replacement_subtypes(m),
+                                |view| view.granted_subtypes,
+                            )
                         } else {
                             Game::entry_replacement_subtypes(m)
                         },
-                        kind: if m.ghost_vacuum_after.is_some() {
-                            self.preview_entry_view(&m.replacement_preview())
+                        kind: if type_sensitive {
+                            preview
+                                .as_ref()
                                 .map_or_else(|| m.entry_kinds(), |view| view.kinds)
                         } else {
                             m.entry_kinds()
                         },
-                        power: if m.ghost_vacuum_after.is_some()
-                            || replacements::entry_power_sensitive(
-                                self,
-                                m.controller,
-                                m.before.card,
-                            ) {
-                            self.preview_entry_view(&m.replacement_preview())
-                                .map_or(m.before.power, |view| view.power)
-                        } else {
-                            m.before.power
-                        },
+                        power: preview.as_ref().map_or(m.before.power, |view| view.power),
                         amount: m.counters.clone(),
                         effect: true,
                         entry_index: Some(index),
@@ -1147,6 +1184,7 @@ impl FundingState<'_> {
         let refresh = |placement: &replacements::CounterPlacement| {
             let mut refreshed = placement.clone();
             if m.ghost_vacuum_after.is_some()
+                || replacements::entry_kind_sensitive(self)
                 || replacements::entry_power_sensitive(self, m.controller, m.before.card)
             {
                 let mut movement = m.clone();

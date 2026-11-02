@@ -483,6 +483,14 @@ fn global_counters_prohibited<W: super::ability_world::CharacteristicWorld + ?Si
             && world.fragment_available(id, |f| matches!(f, StaticAbilityFragment::CounterProhibition(mask) if *mask & kinds != 0))
     })
 }
+/// A live global prohibition makes the entrant’s effective types relevant even
+/// when no amount-replacement effect exists. Incoming general providers are absent.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn entry_kind_sensitive<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+) -> bool {
+    global_counters_prohibited(world, u16::MAX)
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn counters_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
@@ -522,19 +530,58 @@ fn placement_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn matches_filter(filter: ReplacementFilter, p: &CounterPlacement) -> bool {
-    let subtype = |s| p.subtypes.has(p.card, s);
+    matches_filter_values(
+        filter,
+        p.kind,
+        p.subtypes,
+        p.card,
+        p.power,
+        p.protector,
+        p.controller,
+    )
+}
+fn matches_filter_values(
+    filter: ReplacementFilter,
+    kinds: u16,
+    subtypes: GrantedSubtypes,
+    card: Card,
+    power: i128,
+    protector: Option<Player>,
+    controller: Player,
+) -> bool {
+    let subtype = |s| subtypes.has(card, s);
     match filter {
-        ReplacementFilter::CreaturePowerAtMost(maximum) => p.kind & 1 != 0 && p.power <= maximum,
+        ReplacementFilter::CreaturePowerAtMost(maximum) => kinds & 1 != 0 && power <= maximum,
         ReplacementFilter::Permanent => true,
         ReplacementFilter::BattleProtectedByOpponent => {
-            p.kind & crate::cards::BATTLE_KIND != 0 && p.protector == Some(p.controller.other())
+            kinds & crate::cards::BATTLE_KIND != 0 && protector == Some(controller.other())
         }
-        ReplacementFilter::Creature => p.kind & 1 != 0,
-        ReplacementFilter::CreatureOrVehicle => p.kind & 1 != 0 || subtype("Vehicle"),
+        ReplacementFilter::Creature => kinds & 1 != 0,
+        ReplacementFilter::CreatureOrVehicle => kinds & 1 != 0 || subtype("Vehicle"),
         ReplacementFilter::CreatureSpacecraftPlanet => {
-            p.kind & 1 != 0 || subtype("Spacecraft") || subtype("Planet")
+            kinds & 1 != 0 || subtype("Spacecraft") || subtype("Planet")
         }
     }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn entry_filter_matches<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    filter: ReplacementFilter,
+    id: CardId,
+) -> bool {
+    matches_filter_values(
+        filter,
+        world.kinds(id),
+        world.subtypes(id),
+        world.definition(id),
+        if matches!(filter, ReplacementFilter::CreaturePowerAtMost(_)) {
+            world.power(id)
+        } else {
+            0
+        },
+        world.battle_protector(world.reference(id)),
+        world.object(id).controller,
+    )
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn counter_applies(spec: ReplacementSpec, p: &CounterPlacement) -> bool {
@@ -2499,6 +2546,7 @@ impl Game {
                             .and_then(|b| b.moves.get(index))
                             .cloned()
                         && (movement.ghost_vacuum_after.is_some()
+                            || entry_kind_sensitive(self)
                             || entry_power_sensitive(
                                 self,
                                 movement.controller,
