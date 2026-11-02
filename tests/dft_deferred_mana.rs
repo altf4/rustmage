@@ -493,3 +493,238 @@ fn immutable_copy_profiles_preserve_exact_recipients_and_allow_only_scoped_reuse
         assert_eq!(raw.snapshot(), restored.snapshot());
     }
 }
+
+const ARTIFACT_MANA_SOURCE: CardRules = CardRules {
+    effect: Effect::Permanent,
+    activated: &[ABILITY],
+    ..CardRules::EMPTY
+};
+
+fn nonmana_parent_token(g: &mut Game, p: Player, identity: &str) -> CardId {
+    let token = Card::from_name(identity).unwrap();
+    g.create_tokens(p, token, 1, false);
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .find(|(_, object)| {
+            object.card == token && object.controller == p && object.zone == Zone::Battlefield
+        })
+        .unwrap()
+        .0 as CardId
+}
+
+fn real_forge_borrowing(g: &mut Game, p: Player, donor: CardId) -> CardId {
+    let forge = put(g, p, "Territory Forge", Zone::Hand);
+    cast(g, forge, None);
+    for _ in 0..48 {
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.pending_triggers.is_empty()
+            && g.state.resolving.is_none()
+        {
+            break;
+        }
+        let target = Action::ChooseTarget {
+            target: Target::Card(donor),
+        };
+        if g.legal_actions().contains(&target) {
+            act(g, target);
+        } else if g.legal_actions().contains(&Action::FinishTargets) {
+            act(g, Action::FinishTargets);
+        } else {
+            act(g, Action::Pass);
+        }
+    }
+    assert_eq!(g.object_view(donor).zone, Zone::Exile);
+    forge
+}
+
+#[test]
+fn a_nonmana_food_parent_keeps_its_source_through_native_and_borrowed_mana_payments() {
+    use rustmage_core::engine::funding::FundingState;
+    let _scope = fixture_rules::activate(&[(Card::GildedLotus, &ARTIFACT_MANA_SOURCE)]);
+    for p in [Player::P0, Player::P1] {
+        for borrowed in [false, true] {
+            let mut g = scenario(p);
+            let donor = put(&mut g, p, "Gilded Lotus", Zone::Battlefield);
+            let producer = if borrowed {
+                real_forge_borrowing(&mut g, p, donor)
+            } else {
+                donor
+            };
+            let forest = put(&mut g, p, "Forest", Zone::Battlefield);
+            let food = nonmana_parent_token(&mut g, p, "@token/283fd83a9aec83a51b736926");
+            assert!(g.has_subtype(food, "Food"));
+            let old_food = g.object_ref(food);
+            let life = g.state.players[p.index()].life;
+            let action = if borrowed {
+                Action::AnnounceBorrowedMana {
+                    card: producer,
+                    exiled: g.object_ref(donor),
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production: BLUE,
+                }
+            } else {
+                announce(producer, BLUE)
+            };
+            g.state.players[p.index()].mana = [0; 6];
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: food,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let mut unpaid_source = g.clone();
+            unpaid_source.state.objects[food as usize].tapped = true;
+            reject(&mut unpaid_source, action.clone());
+            let saved = g.snapshot();
+            let mut raw = g.clone();
+            let mut indexed = g.clone();
+            let mut restored = g.clone();
+            restored.restore(&saved).unwrap();
+            drop(g);
+            for (i, branch) in [&mut raw, &mut indexed, &mut restored]
+                .into_iter()
+                .enumerate()
+            {
+                if i == 1 {
+                    let index = branch
+                        .legal_actions()
+                        .iter()
+                        .position(|candidate| *candidate == action)
+                        .unwrap();
+                    branch
+                        .apply_index(branch.actor().unwrap(), branch.revision(), index)
+                        .unwrap();
+                } else {
+                    act(branch, action.clone());
+                }
+                let goal = branch.funding_goal(branch.state.announcing.as_ref().unwrap());
+                let world = FundingState::from_game(branch, &goal);
+                assert!(world.resources.iter().any(|resource| {
+                    resource.id == food && resource.object.generation == old_food.generation
+                }));
+                assert!(world.reachable(&goal, &mut std::collections::HashSet::new()));
+                act(branch, Action::TapMana { card: forest });
+                pay(branch);
+                pay(branch);
+                settle(branch);
+                assert!(!branch.on_battlefield(food));
+                assert_eq!(branch.state.players[p.index()].life, life + 3);
+                assert_eq!(branch.state.players[p.index()].mana, [0, 1, 0, 0, 0, 0]);
+            }
+            assert_eq!(raw.snapshot(), indexed.snapshot());
+            assert_eq!(raw.snapshot(), restored.snapshot());
+            for viewer in [Player::P0, Player::P1] {
+                assert_eq!(
+                    serde_json::to_value(raw.observe(viewer)).unwrap(),
+                    serde_json::to_value(indexed.observe(viewer)).unwrap(),
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn an_outer_discard_receipt_is_retained_without_overwriting_projected_departures() {
+    use rustmage_core::engine::funding::FundingState;
+    let _scope = fixture_rules::activate(&[(Card::GildedLotus, &ARTIFACT_MANA_SOURCE)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let producer = put(&mut g, p, "Gilded Lotus", Zone::Battlefield);
+        let forest = put(&mut g, p, "Forest", Zone::Battlefield);
+        let discard = put(&mut g, p, "Divination", Zone::Hand);
+        let discard_ref = g.object_ref(discard);
+        let blood = nonmana_parent_token(&mut g, p, "@token/blood");
+        g.state.players[p.index()].mana = [0; 6];
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: blood,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseAdditionalCost {
+                object: discard_ref,
+            },
+        );
+        act(&mut g, announce(producer, BLUE));
+        {
+            let head = g.state.announcing.as_ref().unwrap();
+            let frames = g.state.mana_announcement_stack.as_ref().unwrap();
+            let goal = g.funding_goal(head);
+            let mut world = FundingState::from_game(&g, &goal);
+            assert!(world.resources.iter().any(|resource| resource.id == blood));
+            let at = world
+                .resources
+                .iter()
+                .position(|resource| resource.id == discard)
+                .unwrap();
+            assert_eq!(world.resources[at].object.zone, Zone::Hand);
+            let appended = world
+                .resources
+                .iter()
+                .map(|resource| resource.id)
+                .collect::<Vec<_>>();
+            // Costs may already have moved an exact object before another
+            // parent transition. Installing the chain must keep that world,
+            // including its new incarnation, controller and counters.
+            world.resources[at].object.zone = Zone::Graveyard;
+            world.resources[at].object.generation += 1;
+            world.resources[at].object.controller = p.other();
+            world.resources[at].object.counters.plus_one = 2;
+            let projected = world.resources[at].object.clone();
+            world.set_funding_continuation(head, frames, None);
+            assert_eq!(world.resources[at].object, projected);
+            assert_eq!(
+                world
+                    .resources
+                    .iter()
+                    .map(|resource| resource.id)
+                    .collect::<Vec<_>>(),
+                appended
+            );
+            assert!(!world.reachable(&goal, &mut std::collections::HashSet::new()));
+        }
+        let saved = g.snapshot();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        let mut restored = g.clone();
+        restored.restore(&saved).unwrap();
+        drop(g);
+        for (i, branch) in [&mut raw, &mut indexed, &mut restored]
+            .into_iter()
+            .enumerate()
+        {
+            let action = Action::TapMana { card: forest };
+            if i == 1 {
+                let index = branch
+                    .legal_actions()
+                    .iter()
+                    .position(|candidate| *candidate == action)
+                    .unwrap();
+                branch
+                    .apply_index(branch.actor().unwrap(), branch.revision(), index)
+                    .unwrap();
+            } else {
+                act(branch, action);
+            }
+            pay(branch);
+            pay(branch);
+            settle(branch);
+            assert_eq!(branch.object_view(discard).zone, Zone::Graveyard);
+            assert!(!branch.on_battlefield(blood));
+            assert_eq!(branch.state.players[p.index()].cards_drawn_this_turn, 1);
+            assert_eq!(branch.state.players[p.index()].mana, [0, 2, 0, 0, 0, 0]);
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.snapshot(), restored.snapshot());
+    }
+}

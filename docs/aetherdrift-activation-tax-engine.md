@@ -1,12 +1,12 @@
 # Named activation increase engine contract
 
-This engine-only cluster supplies the remaining cost dependency for Skyseer's
-Chariot. It does not admit or edit ordinary DFT definitions. The root integration
-owner has run the eighteen `dft_activation_tax` scenarios: seventeen pass at
-`db13683e8`; the initial-parent deferred grant scenario is the remaining case
-addressed by the ManaOutput repair below. The eight new `dft_mana_output`
-scenarios await the root owner's guarded run. No Cargo runs in this isolated
-worktree.
+This engine-only cluster supplies the cost dependency for Skyseer's Chariot.
+It does not admit or edit ordinary DFT definitions. The root integration owner's
+latest checkpoint at `777cff485` passes all 292 focused scenarios and all 3030
+ordinary native cases, including the earlier deferred-grant and restricted-mana
+regressions. BIG one/two performance remains open; the proven missing-parent
+resource repair below awaits the next combined checkpoint. No Cargo runs in this
+isolated worktree.
 
 ## Pinned rule evidence
 
@@ -369,3 +369,57 @@ changed-recipe and entry-projection fallback, and a hidden WhileSource exclusion
 Its paid spell result is compared through owned raw/index/restore branches. Both
 new scenarios and the repair's BIG effect await the root owner's single shared
 build/runtime checkpoint. No Cargo was run in the isolated author worktree.
+
+## Retain every frozen ancestor cost object
+
+The unchanged-core diagnostic harness replayed the exact captured BIG journals
+and found the first slow queries while paying a Food token activation: BIG one,
+seed56711, decision843, turn21, Food124/generation7; BIG two, seed56712,
+decision791, turn23, Food126/generation1. The candidate constructor retained its
+own mana source but omitted the nonmana Food parent. Parent completion then
+looked for the Food only in the sparse resource inventory and rejected its
+unpaid tap/sacrifice costs regardless of available mana. This is a missing
+payment dependency, not evidence that the legal parent is unfundable.
+
+Root's test-only proof appended the missing exact Food to the existing
+FundingState without rebuilding or changing the core. All three Vista candidates
+in each captured position then completed in approximately0.00013s each. The
+remaining BIG-two inherited Forge visitor still used the original constructor.
+That proof isolates the defect; full natural-game throughput after the repair
+has not yet been measured.
+
+Installing a frozen continuation now collects the head and every ancestor's
+existing explicit receipt references, plus selected crew/saddle source and
+contributor references. Missing IDs are sorted and appended to the sparse
+inventory using the current world object and attacking facts. Existing resources
+are neither replaced nor reordered, preserving projected departure/incarnation,
+controller, counters and already-built cost indices. Reinstalling a parent
+cannot restore a stale Game object or silently rebind an old selected reference.
+The existing cost rules still validate exact generations and all unpaid costs.
+No bound, memo key, payment order, public view or wire state changes here.
+
+Two focused outcomes cover the defect. A real Food parent completes through both
+native costed mana and an actual paid Territory Forge exile/borrow route, with
+both actors and owned raw/index/restore branches; its unpaid tapped-source
+contrast is rejected. A real Blood parent retains its selected nonmana hand
+discard. A projected departure/new generation/control/counter contrast survives
+reinstalling the continuation and cannot complete, while the actual branches
+sacrifice/discard/draw exactly once. The expected results are Food gain3 with one
+blue left, and Blood draw1 with two blue left.
+
+The complete token and reusable Food ability bodies were read at pinned XMage
+revision `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`, together with the full Vista
+class and its embedded mana effect:
+
+| Source | SHA-256 |
+| --- | --- |
+| `Mage/src/main/java/mage/game/permanent/token/FoodToken.java` | `67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a` |
+| `Mage/src/main/java/mage/abilities/token/FoodAbility.java` | `79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4` |
+| `Mage/src/main/java/mage/game/permanent/token/BloodToken.java` | `b08dc2a242ca49528d94620a7b7a7e0a2a0641676c1f9c99210e4be572c565b9` |
+| `Mage.Sets/src/mage/cards/t/TarnationVista.java` | `8e57053d055ce0f4ce862a3742ef262cc073540ed707e220aa5420df9e6229e3` |
+
+The printed Food/Blood source and discard costs remain payable requirements of
+CR602's committed activation. The new immutable synthetic mana fixture only
+supplies an economical costed mana route for the engine regression. No ordinary
+card behavior was authored or changed. The two new outcomes and BIG throughput
+await the root owner's next single shared build/runtime checkpoint.

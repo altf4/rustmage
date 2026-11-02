@@ -2285,6 +2285,45 @@ impl<'g> FundingState<'g> {
         // A caller installing a new immutable chain starts a separate query.
         // Only the explicit parent transition below restores its scoped cache.
         self.continuation_memo = None;
+        // The child constructor retained its own costs and mana witnesses.
+        // Every enclosing payment also needs its exact nonmana objects, even
+        // when they have no mana ability or continuous-effect provider role.
+        let mut retained = HashSet::new();
+        head.collect_funding_references(&mut retained);
+        for frame in outer {
+            frame.announcement.collect_funding_references(&mut retained);
+        }
+        if let Some(payment) = self
+            .game
+            .state
+            .crew
+            .as_ref()
+            .and_then(|crew| crew.payment.as_deref())
+        {
+            retained.insert(payment.source.card);
+            retained.extend(payment.selected.iter().map(|object| object.card));
+        }
+        if let Some(payment) = self.game.state.saddle_payment.as_deref() {
+            retained.insert(payment.source.card);
+            retained.extend(payment.selected.iter().map(|object| object.card));
+        }
+        let mut missing = retained
+            .into_iter()
+            .filter(|id| !self.resources.iter().any(|resource| resource.id == *id))
+            .collect::<Vec<_>>();
+        missing.sort_unstable();
+        for id in missing {
+            // An already projected resource must never be replaced with its
+            // Game snapshot. Absent objects still use the current world view;
+            // exact incarnation checks remain the payment's responsibility.
+            let object = self.object(id).clone();
+            let attacking = self.attacking(id);
+            self.resources.push(Resource {
+                id,
+                object,
+                attacking,
+            });
+        }
         if !outer.is_empty() {
             // Each actual ancestor has already selected its cost before opening
             // a mana window. Count every frozen payment conservatively, even
