@@ -429,6 +429,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseEntryValue { .. } => 0,
+            Action::ChooseEntryExile { .. } => 60,
+            Action::FinishEntryExile => 0,
             Action::ChooseEntryCopy { object } => {
                 // Copying an unchanged as-entry copier grants a fresh choice.
                 // Prefer a completed blueprint and decline copy-only loops.
