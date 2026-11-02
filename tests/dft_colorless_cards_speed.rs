@@ -1,7 +1,6 @@
 //! Printed max-speed artifact effects, ordinary costs and exact draw/discard order.
 mod support;
 use rustmage as _;
-use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 use support::*;
 
