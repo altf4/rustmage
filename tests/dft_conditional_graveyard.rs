@@ -166,6 +166,8 @@ fn normal_graveyard_aura_payment_is_owned_and_does_not_install_flashback() {
         assert_ne!(raw.object_ref(source), old);
         raw.move_object(source, Zone::Graveyard);
         assert_eq!(raw.object_view(source).zone, Zone::Graveyard);
+        // Replenish the consumed pool so speed is the only changed cast condition.
+        raw.state.players[p.index()].mana = [1, 0, 0, 0, 0, 1];
         raw.state.players[p.index()].speed = 3;
         reject(&mut raw, announce(source));
         raw.state.players[p.index()].speed = 4;

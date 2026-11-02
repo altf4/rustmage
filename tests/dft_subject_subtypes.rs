@@ -332,10 +332,12 @@ fn entering_subtype_branch_survives_observer_departure_but_not_entrant_reincarna
     departed.move_object(id, Zone::Battlefield);
     assert_ne!(old, departed.object_ref(id));
     drain(&mut departed);
-    assert_eq!(departed.state.players[p.index()].life, 20);
+    // Both Bike entries gain 2; the stale subtype packet must add nothing.
+    assert_eq!(departed.state.players[p.index()].life, 24);
     parent.move_object(observer, Zone::Graveyard);
     drain(&mut parent);
-    assert_eq!(parent.state.players[p.index()].life, 27);
+    // The original Bike entry gains 2 and the live subtype packet gains 7.
+    assert_eq!(parent.state.players[p.index()].life, 29);
 }
 
 #[test]
@@ -352,7 +354,8 @@ fn attached_subtype_branch_accepts_an_uncrewed_vehicle_and_uses_frozen_attachmen
     stale.move_object(vehicle, Zone::Exile);
     stale.move_object(vehicle, Zone::Battlefield);
     drain(&mut stale);
-    assert_eq!(stale.state.players[p.index()].life, 20);
+    // The returning Bike gains 2; the old attachment packet must add nothing.
+    assert_eq!(stale.state.players[p.index()].life, 22);
     parent.move_object(aura, Zone::Graveyard);
     drain(&mut parent);
     assert_eq!(parent.state.players[p.index()].life, 31);
