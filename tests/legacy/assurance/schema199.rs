@@ -126,6 +126,48 @@ fn wire_supported(value: &impl Serialize) -> bool {
     serde_json::to_value(value).is_ok_and(|value| check(&value).is_ok())
 }
 
+// The action spelling is inherited, but an intrinsic conditional graveyard
+// permission is new. Preserve an independently sufficient old exact permission.
+fn uses_conditional_graveyard_cast(game: &Game, action: &Action) -> bool {
+    let card = match *action {
+        Action::AnnounceCast { card }
+        | Action::Cast { card, .. }
+        | Action::BeginCast { card, .. }
+        | Action::AnnounceAdventure { card }
+        | Action::AnnounceOmen { card }
+        | Action::AnnounceBack { card }
+        | Action::AnnounceDisguise { card }
+        | Action::AnnounceFlashSurcharge { card }
+        | Action::AnnounceFree { card, .. }
+        | Action::AnnounceSneak {
+            card,
+            permission: None,
+        } => card,
+        _ => return false,
+    };
+    let Some(player) = game.actor() else {
+        return false;
+    };
+    if !game.has_graveyard_cast(player, card, card_rules::GraveyardCastKind::Cast) {
+        return false;
+    }
+    !game
+        .state
+        .graveyard_cast_permissions
+        .as_ref()
+        .is_some_and(|rows| {
+            rows.iter().any(|row| {
+                row.player == player
+                    && row.object == game.object_ref(card)
+                    && matches!(
+                        row.kind,
+                        card_rules::GraveyardCastKind::Cast | card_rules::GraveyardCastKind::Play
+                    )
+                    && row.expires_turn >= game.state.turn
+            })
+        })
+}
+
 // A zero vector can now mean "choose the output after paying costs".
 // Compare with the old pre-action domain on the actual activating object:
 // borrowed definitions supply rules, while the borrower supplies quantities.
@@ -143,6 +185,7 @@ pub(super) fn prior_schema199_actions_supported(game: &Game, actions: &[Action])
     }
     actions.iter().all(|action| {
         if !wire_supported(action)
+            || uses_conditional_graveyard_cast(game, action)
             || (matches!(action, Action::ChooseMana { .. })
                 && game
                     .state
@@ -494,6 +537,7 @@ fn program_supported(program: &[Instruction]) -> bool {
             | Instruction::UntapCreaturesThatAttackedThisTurn
             | Instruction::UntapAttached
             | Instruction::MarkSaddled(..)
+            | Instruction::IfSubjectSubtype { .. }
             | Instruction::DecreaseLeadingSpeed { .. }
             | Instruction::LookTargetHandMayDiscardThenDraw
             | Instruction::RevealTargetHandChoose { .. }
@@ -1791,4 +1835,75 @@ fn prior_198_rejects_positive_revealed_hand_selection_but_preserves_old_discard(
 fn prior_198_rejects_attached_untap_without_rejecting_inherited_attached_tap() {
     assert!(!program_supported(&[Instruction::UntapAttached]));
     assert!(program_supported(&[Instruction::TapAttached]));
+}
+
+#[test]
+fn prior_198_distinguishes_conditional_self_cast_from_inherited_graveyard_authority() {
+    use card_rules::authored::{CardExtras, CardRules};
+    const GROUPS: &[card_rules::StaticAbilityGroup] = &[card_rules::StaticAbilityGroup {
+        line: 0,
+        first_layer: card_rules::AbilityLayer::Rule,
+        fragments: &[card_rules::StaticAbilityFragment::SelfGraveyardCastIf(
+            StatValue::AtLeast {
+                value: &StatValue::ControllerSpeed,
+                minimum: 4,
+            },
+        )],
+    }];
+    const RULES: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        static_groups: GROUPS,
+        extras: &CardExtras {
+            static_ability_groups: GROUPS,
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _scope = card_rules::fixture_rules::activate(&[(Card::GrizzlyBears, &RULES)]);
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let id = put(&mut game, p, "Grizzly Bears", Zone::Graveyard);
+    let action = Action::AnnounceCast { card: id };
+    assert!(
+        prior_schema199_actions_supported(&game, std::slice::from_ref(&action)),
+        "false intrinsic predicate adds no route"
+    );
+    game.state.players[p.index()].speed = 4;
+    assert!(game.legal_actions().contains(&action));
+    assert!(!prior_schema199_actions_supported(
+        &game,
+        std::slice::from_ref(&action)
+    ));
+    let exact = game.object_ref(id);
+    game.grant_graveyard_permission(p, exact, card_rules::GraveyardCastKind::Flashback);
+    assert!(
+        !prior_schema199_actions_supported(&game, std::slice::from_ref(&action)),
+        "flashback alone does not authorize this normal action"
+    );
+    game.grant_graveyard_permission(p, exact, card_rules::GraveyardCastKind::Cast);
+    assert!(prior_schema199_actions_supported(
+        &game,
+        std::slice::from_ref(&action)
+    ));
+    game.move_object(id, Zone::Exile);
+    game.move_object(id, Zone::Graveyard);
+    assert_ne!(exact, game.object_ref(id));
+    assert!(
+        !prior_schema199_actions_supported(&game, std::slice::from_ref(&action)),
+        "stale permission cannot mask new self-casting semantics"
+    );
+    let exact = game.object_ref(id);
+    game.grant_graveyard_permission(p, exact, card_rules::GraveyardCastKind::Play);
+    assert!(prior_schema199_actions_supported(
+        &game,
+        std::slice::from_ref(&action)
+    ));
+    game.move_object(id, Zone::Hand);
+    assert!(game.legal_actions().contains(&action));
+    assert!(prior_schema199_actions_supported(&game, &[action]));
+    assert!(!program_supported(&[Instruction::IfSubjectSubtype {
+        subject: Subject::Targets,
+        subtype: "Vehicle",
+        skip: 1,
+    }]));
 }

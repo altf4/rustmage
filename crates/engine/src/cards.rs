@@ -1993,6 +1993,12 @@ pub enum Instruction {
         filter: CreatureFilter,
         skip: usize,
     },
+    /// Live subtype check on one exact permanent, including noncreatures.
+    IfSubjectSubtype {
+        subject: Subject,
+        subtype: &'static str,
+        skip: usize,
+    },
     Skip(usize),
     MoveBattlefield {
         filters: &'static [BattlefieldFilter],

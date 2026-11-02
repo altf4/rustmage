@@ -114,6 +114,33 @@ impl Game {
         id.is_some_and(|id| self.creature_matches(filter, item.controller, source.object, id))
     }
 
+    fn subject_has_subtype(&self, item: &SpellView, subject: Subject, subtype: &str) -> bool {
+        let id = match subject {
+            Subject::Entering => self.entering_subject(item),
+            Subject::Source => item.source.and_then(|source| {
+                (self.on_battlefield(source.id) && self.object_ref(source.id) == source.object)
+                    .then_some(source.id)
+            }),
+            Subject::Attached => {
+                if let Some(event) = &item.attachment_trigger {
+                    (self.on_battlefield(event.recipient.card)
+                        && self.object_ref(event.recipient.card) == event.recipient)
+                        .then_some(event.recipient.card)
+                } else {
+                    self.attached_permanent(item)
+                }
+            }
+            Subject::Targets => match item.targets.as_slice() {
+                [bound] if self.same_target_object(*bound) => match bound.target {
+                    Target::Card(id) => Some(id),
+                    _ => None,
+                },
+                _ => None,
+            },
+        };
+        id.is_some_and(|id| self.on_battlefield(id) && self.has_subtype(id, subtype))
+    }
+
     pub(super) fn arrange_library(
         &mut self,
         player: Player,
@@ -3910,6 +3937,15 @@ impl Game {
                     skip,
                 } => {
                     if !self.subject_condition(&item, subject, filter) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::IfSubjectSubtype {
+                    subject,
+                    subtype,
+                    skip,
+                } => {
+                    if !self.subject_has_subtype(&item, subject, subtype) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
