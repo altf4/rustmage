@@ -2431,7 +2431,7 @@ impl Game {
     fn queue_attack_trigger(&mut self, source: &ObjectView, index: usize) -> bool {
         self.queue_attack_trigger_from(source, index, None)
     }
-    fn queue_attack_trigger_from(
+    pub(super) fn queue_attack_trigger_from(
         &mut self,
         source: &ObjectView,
         index: usize,

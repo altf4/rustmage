@@ -135,7 +135,7 @@
       "cards": [
         "Dragon's Prey"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction)."
     },
     {
       "id": "A12",
@@ -144,7 +144,7 @@
       "cards": [
         "Dragonfire Blade"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction)."
     },
     {
       "id": "A13",
@@ -289,7 +289,7 @@
       "description": "activation x life",
       "required_change": "Add real X life payment for declared activation X alongside generic X mana, colored mana, tap and other costs. Current life_x_cost branch only handles StackKind::Spell; ActivationCost.life is fixed u16. Funding/legal X intervals and life-payment replacements must consider all cost components and restore failed attempts atomically.",
       "cards": [],
-      "status": "confirmed missing activated X-life cost"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction)."
     },
     {
       "id": "B:dynamic_exact_optional_mill",
@@ -394,7 +394,7 @@
       "description": "exact x activation targets",
       "required_change": "Provide exact chosen-X target minimum/maximum for activated ability, including X0. Current targets_up_to_x specialization applies only StackKind::Spell and min0; UpToTargets requires min0. Coordinate legal X intervals with count of legal distinct creature targets and full variable cost feasibility, without enumerating huge X domains.",
       "cards": [],
-      "status": "confirmed missing exact-X homogeneous activated target bound"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction)."
     },
     {
       "id": "B:entered_this_turn_damage_double",
@@ -727,17 +727,17 @@
     "negative_regression_cases": 5,
     "root_endure_cases_passed": 6,
     "root_counter_cases_passed": 7,
-    "latest_assembled_cases_passed": 199,
-    "latest_assembled_compile_seconds": 148.53743017898523,
-    "latest_assembled_scenario_seconds": 0.48389193395269103,
-    "scoped_reviewed_audit_groups_including_aliases": 39,
+    "latest_assembled_cases_passed": 237,
+    "latest_assembled_compile_seconds": 147.3384136800305,
+    "latest_assembled_scenario_seconds": 0.42542873494676314,
+    "scoped_reviewed_audit_groups_including_aliases": 43,
     "total_audit_groups_including_aliases": 80,
     "current_hot_layout_bytes": {
       "Object": 160,
       "ObjectView": 544,
       "State": 4976
     },
-    "additional_implemented_tested_groups_pending_review": 16
+    "additional_implemented_tested_groups_pending_review": 12
   },
   "active_checkpoints": {
     "fixed_endure": {
@@ -801,8 +801,16 @@
       "status": "Scoped runtime/outcome review approved by root and s-z, including mandatory mill semantics and the privacy pacing repair.",
       "root_review": "docs/tdm-resolution-results-root-review.json"
     },
-    "behold_and_costs": "Four remaining Behold/free-origin groups prepared with36 focused scenarios including14 prior cost cases; no first compilation yet.",
-    "next_static_rules": "Six groups authored with20 focused interaction groups; first15 run8pass/7fixture failures; corrected/expanded guarded root20 run active. No acceptance claim.",
+    "behold_and_costs": {
+      "commit": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
+      "status": "131 owner focused/compatibility cases pass; root integration and independent reviews pending."
+    },
+    "next_static_rules": {
+      "commit": "989edcb49e4fddcd1163fc98589d5ef0bc28389d",
+      "evidence": "docs/tdm-static-rules-evidence.json",
+      "followup_evidence": "docs/tdm-gained-attack-evidence.json",
+      "status": "148 original scoped cases passed; gained attack dispatcher finding reproduced and repair passes237 combined cases. Second independent finding: separate native once-per-turn grants coalesce; acquisition identity repair pending. Five other static scopes have no reported finding; no static approval yet."
+    },
     "private_library": {
       "commit": "00f48177e",
       "integration": "b2a42eb84",
@@ -815,13 +823,15 @@
       "commit": "fc95fb1da2575002c32d75cadb2fc438c0489a85",
       "integration": "f20081bfcb6509fe3f16912852d80dea7c655e12",
       "evidence": "docs/tdm-target-activation-costs-evidence.json",
-      "status": "70 selected cases pass; g-s rules review approves, bool-comparison lint fixed in8df06babc; root second review and assembled validation pending."
+      "status": "70 owner selected cases and14 matching root cases pass; root and g-s scoped rules approvals, lint repair8df06babc integrated.",
+      "root_review": "docs/tdm-target-activation-costs-root-review.json"
     },
     "combat_callbacks": {
       "commit": "d6eb0889e1a455dc390525d9925272aeb74fc02b",
       "integration": "409a73558",
       "evidence": "docs/tdm-combat-callbacks-evidence.json",
-      "status": "110 original cases pass; independent review found CR111.5 nonpermanent token creation. Three exact baseline negatives reproduce it; owner repair passes93 focused/compatibility cases, awaiting repair commit/integration/reviews."
+      "status": "CR111.5 repair passes93 owner cases, one refreshed scoped approval and all32 combat cases in237 root assembly; root second review pending.",
+      "repair_integration": "3300f7173"
     },
     "event_contexts": {
       "commit": "5bffb5ea8bea46a733ddc40906ebefc18bfd96ae",
@@ -831,7 +841,8 @@
     },
     "linked_event_casts": {
       "commit": "81a729a8c9a76648b4d48989b60985ef16787526",
-      "status": "99 selected cases pass; integration and two independent reviews pending."
+      "status": "99 owner cases and35 matching root cases pass; two independent scoped reviews pending.",
+      "integration": "d4fa3594e"
     }
   }
 }

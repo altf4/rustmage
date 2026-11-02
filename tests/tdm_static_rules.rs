@@ -1076,3 +1076,162 @@ fn hexproof_grant_ends_when_equipment_provider_is_blanked_or_detached() {
         assert_eq!(g.state.objects[target as usize].damage, 1);
     }
 }
+
+#[test]
+fn windcrag_duplicates_a_real_root_manipulation_gained_attack_ability() {
+    let _scope =
+        fixture_rules::activate(&[(Card::from_name("Anthem of Champions").unwrap(), &MULTIPLIER)]);
+    for p in [Player::P0, Player::P1] {
+        for mode in [1, 0] {
+            let mut g = scenario(p);
+            multiplier(&mut g, p, mode);
+            let attacker = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let spell = put(&mut g, p, "Root Manipulation", Zone::Hand);
+            cast(&mut g, spell, None);
+            settle(&mut g);
+            assert!(
+                g.state
+                    .temporary_abilities
+                    .as_ref()
+                    .unwrap()
+                    .iter()
+                    .any(|a| a.recipient == g.object_ref(attacker))
+            );
+            assert_eq!(
+                g.state.objects[spell as usize].zone,
+                Zone::Graveyard,
+                "the grant survives its spell source"
+            );
+            declare(&mut g, attacker);
+            drain(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                if mode == 0 { 22 } else { 21 }
+            );
+        }
+    }
+}
+
+#[test]
+fn windcrag_gained_attacks_follow_recipient_control_and_layer_six_availability() {
+    let _scope =
+        fixture_rules::activate(&[(Card::from_name("Anthem of Champions").unwrap(), &MULTIPLIER)]);
+    for case in 0..4 {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let siege = multiplier(&mut g, p, 0);
+        let attacker = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let spell = put(&mut g, p, "Root Manipulation", Zone::Hand);
+        cast(&mut g, spell, None);
+        settle(&mut g);
+        let actor = if case == 3 { Player::P1 } else { p };
+        match case {
+            0 => suppress(&mut g, attacker),
+            1 => suppress(&mut g, siege),
+            2 => g.record_control(g.object_ref(siege), p.other(), None),
+            3 => g.record_control(g.object_ref(attacker), p.other(), None),
+            _ => unreachable!(),
+        }
+        g.state.active = actor;
+        g.state.priority = actor;
+        g.state.objects[attacker as usize].summoning_sick = false;
+        declare(&mut g, attacker);
+        drain(&mut g);
+        assert_eq!(
+            g.state.players[actor.index()].life,
+            if case == 0 { 20 } else { 21 }
+        );
+    }
+}
+
+#[test]
+fn windcrag_does_not_duplicate_independent_attack_callback_after_its_source_leaves() {
+    const CALLBACK: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ability(
+            ActivationCost {
+                generic: 1,
+                mana_component: true,
+                ..ActivationCost::ZERO
+            },
+            ActivationOrigin::Battlefield,
+            ActivationGuard::Always,
+            &[Instruction::ScheduleTurnTrigger {
+                event: TurnCallbackEvent::Attack,
+                ability: 0,
+                once: true,
+            }],
+        )],
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::DelayedTargetEvent,
+            targets: TargetPlan::NONE,
+            program: LIFE,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Anthem of Champions").unwrap(), &MULTIPLIER),
+        (Card::from_name("Short Bow").unwrap(), &CALLBACK),
+    ]);
+    let mut g = scenario(Player::P0);
+    multiplier(&mut g, Player::P0, 0);
+    let installer = put(&mut g, Player::P0, "Short Bow", Zone::Battlefield);
+    activate(&mut g, installer, 0);
+    settle(&mut g);
+    g.move_object(installer, Zone::Graveyard);
+    let attacker = put(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
+    declare(&mut g, attacker);
+    drain(&mut g);
+    assert_eq!(
+        g.state.players[0].life, 23,
+        "the delayed ability has no permanent as its current source"
+    );
+}
+
+#[test]
+fn windcrag_temporary_grant_still_obeys_a_printed_once_per_turn_trigger_limit() {
+    const FILTER: CreatureFilter = CreatureFilter {
+        relation: 0,
+        other: false,
+        subtype: None,
+        keyword: Keywords::NONE,
+        attacking: false,
+        tokens: None,
+        artifact: false,
+    };
+    const LIMITED: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::GrantCreatureAbility {
+                filter: FILTER,
+                ability: 0,
+            }],
+        ),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::Granted(&TriggerCondition::OncePerTurn(
+                &TriggerCondition::SelfAttacks,
+            )),
+            targets: TargetPlan::NONE,
+            program: LIFE,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Anthem of Champions").unwrap(), &MULTIPLIER),
+        (Card::from_name("Opt").unwrap(), &LIMITED),
+    ]);
+    let mut g = scenario(Player::P0);
+    multiplier(&mut g, Player::P0, 0);
+    let attacker = put(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
+    let grant = put(&mut g, Player::P0, "Opt", Zone::Hand);
+    cast(&mut g, grant, None);
+    settle(&mut g);
+    declare(&mut g, attacker);
+    drain(&mut g);
+    assert_eq!(g.state.players[0].life, 23);
+    g.state.attackers.clear();
+    g.state.objects[attacker as usize].tapped = false;
+    declare(&mut g, attacker);
+    drain(&mut g);
+    assert_eq!(g.state.players[0].life, 23);
+}

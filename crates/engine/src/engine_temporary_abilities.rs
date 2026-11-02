@@ -282,7 +282,7 @@ impl Game {
             ) {
                 continue;
             }
-            self.queue_trigger_from(
+            self.queue_attack_trigger_from(
                 &source,
                 usize::from(grant.ability),
                 Some(Box::new(AttachmentTriggerView {
