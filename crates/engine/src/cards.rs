@@ -2209,6 +2209,8 @@ pub enum Instruction {
         group: u16,
     },
     TapAttached,
+    /// Untap the exact current enchanted/equipped permanent, using source LKI after departure.
+    UntapAttached,
     PutGrantorCounter(CounterKind),
     PutCombatDealerCounters,
     RemoveSourceCounterIfAny {

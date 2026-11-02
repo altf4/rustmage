@@ -492,6 +492,7 @@ fn program_supported(program: &[Instruction]) -> bool {
             | Instruction::AdditionalCombatsAfterCurrentMain(..)
             | Instruction::ScheduleBeginCombatThisTurn { .. }
             | Instruction::UntapCreaturesThatAttackedThisTurn
+            | Instruction::UntapAttached
             | Instruction::MarkSaddled(..)
             | Instruction::DecreaseLeadingSpeed { .. }
             | Instruction::LookTargetHandMayDiscardThenDraw
@@ -1784,4 +1785,10 @@ fn prior_198_rejects_positive_revealed_hand_selection_but_preserves_old_discard(
     }]));
     let old = r#"{"kind":"DiscardRevealed","actor":"P0","victim":"P1","required":1,"selected":[],"candidates":[],"optional":false}"#;
     assert_eq!(project_prior_schema199(old).unwrap(), old);
+}
+
+#[test]
+fn prior_198_rejects_attached_untap_without_rejecting_inherited_attached_tap() {
+    assert!(!program_supported(&[Instruction::UntapAttached]));
+    assert!(program_supported(&[Instruction::TapAttached]));
 }

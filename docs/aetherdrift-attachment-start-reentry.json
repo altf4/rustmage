@@ -1,0 +1,50 @@
+{
+  "scope": "Shared reentry fixes only; ordinary card definitions remain parked",
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/s/SilkenStrength.java",
+      "sha256": "196c64b5684f9f673782932d4ae1d8e76ed19edece4993353274aca634fe3916",
+      "complete_body_read": true
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAttachedEffect.java",
+      "sha256": "2fa3c394587eff1a4e2a1e1be58a4924f310b3375c714b839b672186dc8136f7",
+      "complete_body_read": true
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+      "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c",
+      "complete_body_read": true
+    }
+  ],
+  "untap": {
+    "opcode": "UntapAttached",
+    "semantics": "Resolve current exact attachment while source remains, otherwise source_attachment LKI refreshed on its departure; do not require creature type; apply normal effect untap/stun replacement",
+    "state_changes": "No new Game/State/packet fields",
+    "source": "Existing attached_permanent resolver and source-LKI update path reused",
+    "tests": {
+      "dft_attached_untap_engine": [
+        "attached_untap_accepts_an_opposing_uncrewed_vehicle_and_owned_branches",
+        "attached_untap_uses_the_last_attachment_when_the_source_leaves",
+        "attached_untap_does_not_rebind_a_blinked_recipient",
+        "attached_untap_uses_the_normal_stun_replacement"
+      ]
+    },
+    "compatibility": "Prior198 rejects the new immutable opcode but preserves inherited TapAttached; schema199 remains unchanged"
+  },
+  "start_your_engines": {
+    "finding": "Actual static-source inventory omitted StartYourEngines; cards with unrelated registered modifiers masked the omission",
+    "repair": "Register that existing fragment through the existing single static-source insertion condition; SBA already reads live controller/availability and keeps existing speed",
+    "tests": {
+      "dft_start_engines_entry": [
+        "paid_entry_starts_speed_for_a_standalone_provider_without_a_trigger",
+        "start_only_uses_current_battlefield_controller_and_never_reduces_speed"
+      ]
+    },
+    "state_changes": "Existing sparse static_sources index only; no new field or wire change"
+  },
+  "runtime": "Not run yet; awaiting the one integrated batch build after independent reviews"
+}

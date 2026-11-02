@@ -4940,9 +4940,13 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::TapAttached => {
+                Instruction::TapAttached | Instruction::UntapAttached => {
                     if let Some(id) = self.attached_permanent(&item) {
-                        self.tap_objects(&[id]);
+                        if instruction == Instruction::UntapAttached {
+                            self.untap_objects(&[id], untap_rules::UntapCause::Effect);
+                        } else {
+                            self.tap_objects(&[id]);
+                        }
                     }
                 }
                 Instruction::AttachEquipmentToAttached { group } => {

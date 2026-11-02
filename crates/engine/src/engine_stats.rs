@@ -214,6 +214,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                             | crate::cards::StaticAbilityFragment::Storied
+                            | crate::cards::StaticAbilityFragment::StartYourEngines
                             | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn
                             | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst

@@ -550,5 +550,11 @@
     "previous": 198,
     "current": 199,
     "status": "bumped once; no further bump for this unpublished engine batch"
+  },
+  "attached_untap_reentry": {
+    "instruction": "UntapAttached",
+    "wire_change": "none; immutable program route only",
+    "prior198": "Reject active new opcode; inherited TapAttached remains supported",
+    "state": "Uses existing source_attachment LKI and current exact attachment; no new owned fields"
   }
 }
