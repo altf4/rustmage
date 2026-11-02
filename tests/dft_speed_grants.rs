@@ -131,6 +131,26 @@ const REMOVABLE_PROHIBITOR: CardRules = CardRules {
     ..EXILE_PROHIBITOR
 };
 
+fn pay(g: &mut Game) {
+    if !g
+        .legal_actions()
+        .iter()
+        .any(|a| matches!(a, Action::PayCosts { .. }))
+    {
+        let a = g.state.announcing.as_ref().expect("payment announcement");
+        let goal = g.funding_goal(a);
+        let world = FundingState::from_game(g, &goal);
+        eprintln!(
+            "grant payment diagnostic: goal={goal:?}, obligations={}, continuation={}, source={:?}, grant={:?}",
+            world.obligations(&goal),
+            world.complete_funding_continuation(&goal),
+            a.item.source,
+            a.item.attachment_trigger
+        );
+    }
+    support::pay(g);
+}
+
 fn source_action(g: &Game, card: CardId) -> Action {
     Action::AnnounceSourceGrant {
         source: g.object_ref(card),
