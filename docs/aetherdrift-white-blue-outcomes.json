@@ -23,7 +23,7 @@
         "{2}, {T}: Draw a card.",
         "Max speed — Whenever you draw a card, each opponent mills two cards. (Each opponent puts the top two cards of their library into their graveyard.)"
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -70,7 +70,7 @@
         "Creatures you control get +0/+1 and have vigilance.",
         "At the beginning of combat on your turn, choose up to one target Mount or Vehicle you control. Until end of turn, that permanent becomes saddled if it's a Mount and becomes an artifact creature if it's a Vehicle."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "armory_buffs_only_own_creatures_and_independently_saddles_mounts_or_animates_vehicles",
@@ -95,7 +95,7 @@
         "Cycling {2}{W} ({2}{W}, Discard this card: Draw a card.)",
         "When you cycle this card, Cats you control gain hexproof and indestructible until end of turn."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "basri_pays_white_tap_and_exert_for_one_lifelink_cat_and_cycles_for_own_cat_protection"
@@ -142,7 +142,7 @@
         "Whenever this creature attacks while saddled, it gets +1/+2 and gains flying until end of turn.",
         "Saddle 3 (Tap any number of other creatures you control with total power 3 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "saddled_brightfield_attacks_have_distinct_growth_flying_untap_and_counter_results",
@@ -166,7 +166,7 @@
         "Whenever this creature attacks while saddled, untap it and put a +1/+1 counter on it.",
         "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "saddled_brightfield_attacks_have_distinct_growth_flying_untap_and_counter_results",
@@ -214,7 +214,7 @@
         "Sacrifice this creature: Creatures you control with counters on them gain hexproof and indestructible until end of turn.",
         "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "bulwark_attack_targets_any_creature_and_sacrifice_protects_only_own_counter_bearers"
@@ -236,7 +236,7 @@
       "printed_obligations": [
         "Printed header and no printed abilities"
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "dft_vanillas_have_no_rules_abilities_and_pay_for_their_printed_bodies"
@@ -258,7 +258,7 @@
       "printed_obligations": [
         "Whenever this creature saddles a Mount or crews a Vehicle during your main phase, that Mount or Vehicle gains flying until end of turn."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "canyon_vaulter_grants_flying_for_main_phase_crew_and_saddle_only"
@@ -281,7 +281,7 @@
         "Mounts and Vehicles you control get +1/+1.",
         "This creature saddles Mounts and crews Vehicles as though its power were 2 greater."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "captain_boosts_the_union_once_and_its_two_extra_contribution_pays_saddle_four"
@@ -352,7 +352,7 @@
         "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
         "Cycling {W} ({W}, Discard this card: Draw a card.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "detention_and_snare_exile_their_distinct_opposing_targets_until_the_source_leaves",
@@ -376,7 +376,7 @@
         "Flying",
         "{U}, Sacrifice this creature: Counter target instant or sorcery spell unless its controller pays {3}."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "diversion_sacrifices_for_blue_and_counters_only_instant_or_sorcery_unless_three_is_paid"
@@ -471,7 +471,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed — {3}, Exile this card from your graveyard: Draw a card."
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -496,7 +496,7 @@
         "Whenever this creature attacks while saddled, search your library for a basic Plains card, reveal it, put it into your hand, then shuffle.",
         "Saddle 2 (Tap any number of other creatures you control with total power 2 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "lynx_saddled_attack_searches_only_a_basic_plains_and_keeps_lifelink"
@@ -520,7 +520,7 @@
         "Whenever this creature attacks while saddled, search your library for a nonland permanent card with mana value 3 or less, put it onto the battlefield, then shuffle.",
         "Saddle 4"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "sunmare_searches_a_small_nonland_permanent_onto_the_battlefield",
@@ -543,7 +543,7 @@
       "printed_obligations": [
         "{T}: Add {U}. Spend this mana only to cast an artifact spell or activate an ability."
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "guidelight_optimizer_blue_pays_artifacts_and_activations_but_not_nonartifact_spells"
@@ -589,7 +589,7 @@
         "Cycling {1}{U} ({1}{U}, Discard this card: Draw a card.)",
         "When you cycle this card, target creature or Vehicle an opponent controls gets -3/-0 until end of turn."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "howlers_cycling_shrinks_an_opposing_uncrewed_vehicle_for_the_turn_and_draws_one"
@@ -636,7 +636,7 @@
         "This creature saddles Mounts and crews Vehicles using its toughness rather than its power.",
         "Whenever this creature becomes tapped during your turn, untap it. This ability triggers only once each turn."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "interface_ace_uses_toughness_and_untaps_only_for_the_first_own_turn_tap"
@@ -659,7 +659,7 @@
         "Vigilance",
         "Exhaust — {1}{U}: Draw a card, then discard a card. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "keen_draws_then_discards_and_adds_one_counter_with_vigilance_and_exhaust_consumed"
@@ -683,7 +683,7 @@
         "During your turn, this creature has first strike.",
         "Max speed — {3}, Exile this card from your graveyard: Draw a card."
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -825,7 +825,7 @@
       "printed_obligations": [
         "Exhaust — {X}{U}{U}, {T}: Draw X cards. Put a +1/+1 counter on each Merfolk creature you control. (Activate each exhaust ability only once.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "mindspring_pays_chosen_x_and_tap_but_counters_each_own_merfolk_even_for_zero"
@@ -849,10 +849,12 @@
         "Vehicles you control have flying.",
         "Whenever one or more creatures you control with flying deal combat damage to a player, draw a card."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "mu_yanling_creates_the_real_vehicle_grants_own_vehicles_flying_and_draws_once_for_a_combat_batch"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Nesting Bot",
@@ -871,7 +873,7 @@
         "When this creature dies, create a 1/1 colorless Servo artifact creature token.",
         "Max speed — This creature gets +1/+0."
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -918,7 +920,7 @@
         "When this artifact enters, exile target nonland permanent an opponent controls until this artifact leaves the battlefield.",
         "Max speed — {T}: Put a +1/+1 counter on target creature or Vehicle you control. Activate only as a sorcery."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "detention_and_snare_exile_their_distinct_opposing_targets_until_the_source_leaves",
@@ -942,10 +944,12 @@
         "When this Vehicle enters, gain control of target creature an opponent controls for as long as you control this Vehicle. That creature can't attack or block for as long as you control this Vehicle.",
         "Crew 3"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "possession_engine_control_and_combat_lock_end_irreversibly_when_the_vehicle_changes_controller"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Pride of the Road",
@@ -964,7 +968,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed — At the beginning of combat on your turn, target creature or Vehicle you control gains double strike until end of turn."
       ],
-      "status": "first nine speed-family scenarios verified; added granted-trigger timing contrast pending integrator run",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -990,7 +994,7 @@
         "Exhaust — {4}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
         "Crew 2"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "refueler_draws_for_own_exhaust_including_itself_and_its_animation_is_permanent"
@@ -1012,7 +1016,7 @@
       "printed_obligations": [
         "{2}, {T}, Sacrifice another artifact: Search your library for an artifact card with mana value equal to 1 plus the sacrificed artifact's mana value, put that card onto the battlefield, then shuffle. Activate only as a sorcery."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "repurposing_bay_pays_another_artifact_and_searches_exactly_one_more_mana_value"
@@ -1058,7 +1062,7 @@
         "{1}, {T}: Any number of target players each mill two cards. (Each of them puts the top two cards of their library into their graveyard.)",
         "Exhaust — {2}{U}{U}, {T}: Any number of target players each mill cards equal to the number of cards in their graveyard. (Activate each exhaust ability only once.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "riverchurn_targets_each_player_and_uses_each_separate_current_graveyard_for_exhaust"
@@ -1130,10 +1134,12 @@
         "Whenever one or more creatures attack you, those creatures get -1/-0 until end of turn.",
         "Exhaust — {5}{U}{U}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "sabotage_strategist_shrinks_only_the_declaration_attacking_its_player_and_exhausts_for_three_counters"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Salvation Engine",
@@ -1152,10 +1158,12 @@
         "Whenever this Vehicle attacks, return up to one target artifact card from your graveyard to the battlefield.",
         "Crew 6"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "salvation_engine_buffs_other_own_artifact_creatures_and_returns_an_artifact_on_attack"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Scrounging Skyray",
@@ -1174,7 +1182,7 @@
         "Whenever you discard one or more cards, put that many +1/+1 counters on this creature.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "scrounging_skyray_counts_a_real_two_card_discard_batch_and_its_cycling_discard"
@@ -1199,10 +1207,12 @@
         "Activated abilities of sources with the chosen name cost {2} more to activate.",
         "Crew 2"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "skyseers_chariot_names_a_nonland_and_taxes_both_players_actual_named_activations"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Skystreak Engineer",
@@ -1220,7 +1230,7 @@
         "Flying",
         "Exhaust — {4}{U}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "refueler_draws_for_own_exhaust_including_itself_and_its_animation_is_permanent"
@@ -1243,10 +1253,13 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed — {1}, Sacrifice this creature: Copy target spell you control. You may choose new targets for the copy. (A copy of a permanent spell becomes a token.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "slick_imitator_requires_max_speed_sacrifices_and_can_retarget_a_copy_of_your_spell",
+        "slick_imitator_copy_of_a_permanent_spell_resolves_as_a_token_without_another_cast"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Spectacular Pileup",
@@ -1331,10 +1344,12 @@
       "printed_obligations": [
         "When this creature enters, return target creature or Vehicle an opponent controls to its owner's hand. If that opponent's speed is greater than each other player's speed, reduce that opponent's speed by 1. This effect can't reduce their speed below 1."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "spikeshell_bounces_the_opposing_vehicle_and_reduces_only_a_strict_leader_above_one"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Spotcycle Scouter",
@@ -1420,7 +1435,7 @@
       "printed_obligations": [
         "Printed header and no printed abilities"
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "dft_vanillas_have_no_rules_abilities_and_pay_for_their_printed_bodies"
@@ -1444,7 +1459,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed — This creature gets +0/+1 and has vigilance."
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -1469,10 +1484,12 @@
         "Whenever you draw your second card each turn, create a 1/1 colorless Thopter artifact creature token with flying.",
         "Crew 2"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "fabricator_creates_only_one_thopter_for_second_draw_and_resets_on_the_opponents_turn"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Trade the Helm",
@@ -1513,10 +1530,12 @@
       "printed_obligations": [
         "When this creature enters, you may search your library for an artifact card with mana value 4 or 5, reveal it, put it into your hand, then shuffle."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "transit_mages_optional_search_accepts_only_four_or_five_mana_artifacts_and_decline_does_not_shuffle"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Trip Up",
@@ -1602,7 +1621,7 @@
         "Whenever this creature attacks while saddled, it gains indestructible until end of turn. Untap all creatures you control.",
         "Saddle 4 (Tap any number of other creatures you control with total power 4 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "sloth_saddled_attack_untaps_own_creatures_and_grants_temporary_indestructible"
@@ -1627,10 +1646,13 @@
         "Cycling {X}{2}{W} ({X}{2}{W}, Discard this card: Draw a card.)",
         "When you cycle this card, create X 1/1 colorless Pilot creature tokens with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "valors_flagship_cycles_for_chosen_x_colorless_pilots_and_exactly_one_draw",
+        "valors_flagship_paid_entry_keeps_its_three_keywords_and_crews_for_three"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     },
     {
       "name": "Vnwxt, Verbose Host",
@@ -1649,7 +1671,7 @@
         "You have no maximum hand size.",
         "Max speed — If you would draw a card, draw two cards instead."
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -1674,7 +1696,7 @@
         "Tap three other untapped creatures you control: Until end of turn, this Vehicle becomes an artifact creature and gains flying. Put a +1/+1 counter on it.",
         "Crew 1"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 14 mount-family scenarios pass",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "voyager_glidecar_scries_one_then_taps_three_other_creatures_for_flying_and_a_counter"
@@ -1720,10 +1742,21 @@
         "You may have this creature enter as a copy of an artifact or creature you control.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_final",
+      "outcome_scenarios": [
+        "waxen_flash_entry_copies_only_own_artifacts_or_creatures_with_owned_copy_choices_and_etbs",
+        "waxen_cycling_pays_two_discards_the_original_and_draws_without_a_copy_choice"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared exact copy, control duration, attack group, mana tax, source cost, keyword, X and entry choice contracts; real card wiring and independently expected outcomes in listed scenarios"
     }
-  ]
+  ],
+  "card_phase_summary": {
+    "identities": 74,
+    "outcome_mapping_complete": true,
+    "verified_before_final_family": 63,
+    "final_family_pending_execution": 11,
+    "ordinary_card_definitions_with_missing_engine_dependencies": 0,
+    "acceptance": "Whole-set integration, independent reviews and broad/release validation remain root-owned and pending. No whole-set completion is claimed by this author ledger."
+  }
 }

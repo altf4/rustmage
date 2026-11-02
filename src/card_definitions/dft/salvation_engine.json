@@ -3,10 +3,30 @@
   "catalogue_id": 3660,
   "oracle_id": "7903666e-7803-4cfc-9ed9-482a6b577c96",
   "facts_sha256": "c2345c0486461861bb72d80fef9418045d495af001114e3cf2475701aa2ec572",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c089a79a5b61822756384f5489d46a5bfb8189e4304bf02a7fd88d5ba2e083c1"
   },
-  "physical_metadata_sha256": "951a47378708d24e2c45334d40b042c6a11d67e3b295abe5eb55ea64c6d0fa32"
+  "physical_metadata_sha256": "951a47378708d24e2c45334d40b042c6a11d67e3b295abe5eb55ea64c6d0fa32",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SalvationEngine.java",
+  "java_sha256": "d04c84b1605740dfcc4949e23bb45fc2a5c4b9979f7c1c91a59859e99a954aa3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

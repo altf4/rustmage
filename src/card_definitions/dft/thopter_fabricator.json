@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fa1066f21fe917d1a51a490b29df047f4ad272836124c8518174489fe0c8f606"
   },
-  "physical_metadata_sha256": "79635adef458499e4dfe3b16c19cfec4c54e9b657a8121814b901ba77c165021"
+  "physical_metadata_sha256": "79635adef458499e4dfe3b16c19cfec4c54e9b657a8121814b901ba77c165021",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThopterFabricator.java",
+  "java_sha256": "fc94d2d848e169c5c26498e5118f1bf2d6f568fd5cb1a3d1a648c2590a0b8162",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+      "sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+      "sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

@@ -508,9 +508,7 @@
         "{3}{W}: Put a +1/+1 counter on target Mount or Vehicle."
       ],
       "existing_typed_composition": [
-        "ActivationCost3W",
-        "controlled Mount-or-Vehicle union target",
-        "PutCounters Targets PlusOne1"
+        "ActivationCost3W, any-controller Mount-or-Vehicle union target, PutCounters Targets PlusOne1; opposing targets explicitly tested"
       ],
       "genuine_shared_gaps": [],
       "api_assessment": "existing typed composition sufficient; real-card outcome verification remains required",
@@ -889,9 +887,7 @@
         "Max speed — {3}, Exile this card from your graveyard: Draw a card."
       ],
       "existing_typed_composition": [
-        "StartYourEngines",
-        "FIRST_STRIKE",
-        "SourceMaxSpeedActivation template in owned graveyard with mana3 and atomic ExileSource then Draw1"
+        "StartYourEngines; source FIRST_STRIKE only during its controller's turn; max-speed graveyard activation3 exiles the exact owned source as cost and draws1"
       ],
       "genuine_shared_gaps": [
         "start_engine_index"
@@ -1718,9 +1714,7 @@
         "Max speed — This creature gets +0/+1 and has vigilance."
       ],
       "existing_typed_composition": [
-        "StartYourEngines",
-        "own-turn FLYING via conditional source grant",
-        "StaticModifier source +1/+0 per live controller speed"
+        "Printed FLYING; StartYourEngines; live max-speed source +0/+1 and VIGILANCE, derived from complete Oracle/main and verified real-card scenarios"
       ],
       "genuine_shared_gaps": [
         "start_engine_index"
@@ -2029,5 +2023,6 @@
       "api_assessment": "existing typed composition sufficient; real-card outcome verification remains required",
       "implementation_state": "pending direct typed authorship and real-card outcomes"
     }
-  ]
+  ],
+  "card_phase_followup": "All three enumerated shared gaps were repaired and accepted at fb878868d before remaining card authorship. The original engine-checkpoint fields above remain historical. Per-card real outcomes are tracked separately in the linked outcomes ledger."
 }
