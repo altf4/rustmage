@@ -63,7 +63,7 @@ pub(super) struct Announcement {
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
     /// None before choice; Some(None) declines the optional tap.
     pub harmonizer: Option<Option<ObjectRef>>,
-    pub harmonize_discount: u32,
+    pub harmonize_discount: u64,
     pub additional_paid: bool,
 }
 
@@ -2378,7 +2378,7 @@ impl Game {
                         .expect("chosen Harmonizer remains available before cost determination")
                 });
                 let extra =
-                    Self::announcement_optional_reduction(announcement) + u64::from(discount);
+                    Self::announcement_optional_reduction(announcement).saturating_add(discount);
                 let total = if announcement.payment_x_symbols() > 0
                     || announcement
                         .item

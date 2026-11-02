@@ -115,6 +115,14 @@ const X_LIFE: CardRules = CardRules {
     },
     ..CardRules::EMPTY
 };
+const X_BARGAIN: CardRules = CardRules {
+    extras: &CardExtras {
+        x_symbols: 1,
+        bargain_reduction: Some(1),
+        ..CardExtras::EMPTY
+    },
+    ..X_LIFE
+};
 const X_HARMONIZE: CardRules = CardRules {
     extras: &CardExtras {
         x_symbols: 1,
@@ -560,6 +568,70 @@ fn x_in_printed_or_harmonize_cost_is_chosen_paid_and_does_not_change_printed_val
         );
         assert_eq!(g.object_view(spell).zone, Zone::Exile);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn harmonize_keeps_power_wide_until_tax_and_x_costs_are_reduced() {
+    let _scope = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &GRANT),
+        (named("Spectral Denial"), &X_BARGAIN),
+        (named("Fanatical Firebrand"), &TAX),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        for surplus in [2u64, 1, u64::MAX - u64::from(u32::MAX)] {
+            let mut g = scenario(p);
+            let spell = put(&mut g, p, "Spectral Denial", Zone::Graveyard);
+            let grantor = grant(&mut g, p, spell);
+            g.move_object(grantor, Zone::Exile);
+            put(&mut g, p.other(), "Fanatical Firebrand", Zone::Battlefield);
+            let helper = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let power = u64::from(u32::MAX) + surplus;
+            let artifact =
+                (power == u64::MAX).then(|| put(&mut g, p, "Short Bow", Zone::Battlefield));
+            g.state.objects[helper as usize].growth.power = i128::from(power) - 2;
+            g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+            act(&mut g, granted(spell));
+            let expected_x = if surplus == 1 { u32::MAX - 1 } else { u32::MAX };
+            assert_eq!(
+                g.x_choice().unwrap().intervals.last().unwrap().maximum,
+                expected_x
+            );
+            if surplus == 1 {
+                reject(&mut g, Action::ChooseX { value: u32::MAX });
+            }
+            act(&mut g, Action::ChooseX { value: expected_x });
+            let sacrifice = artifact.map(|id| g.object_ref(id));
+            act(&mut g, Action::ChooseBargain { sacrifice });
+            reject(&mut g, Action::ChooseHarmonizer { object: None });
+            let object = g.object_ref(helper);
+            act(
+                &mut g,
+                Action::ChooseHarmonizer {
+                    object: Some(object),
+                },
+            );
+            let announcement = g.state.announcing.as_ref().unwrap();
+            assert_eq!(u64::from(announcement.harmonize_discount), power);
+            assert_eq!(announcement.total_cost.unwrap().generic, 0);
+            pay(&mut g);
+            if artifact.is_some() {
+                clause(&mut g, CastCostClause::Additional);
+            }
+            clause(&mut g, CastCostClause::Harmonize(object));
+            if let Some(artifact) = artifact {
+                assert_eq!(g.object_view(artifact).zone, Zone::Graveyard);
+            }
+            assert!(g.object_view(helper).tapped);
+            assert_eq!(
+                g.state.stack.last().unwrap().mana_value(),
+                u64::from(expected_x) + 1
+            );
+            drain(&mut g);
+            assert_eq!(g.object_view(spell).zone, Zone::Exile);
+            assert_eq!(g.state.players[p.index()].life, 20 + i128::from(expected_x));
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
     }
 }
 

@@ -30,7 +30,7 @@ pub(super) fn contribution<W: CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,
     object: ObjectRef,
-) -> Option<u32> {
+) -> Option<u64> {
     world.game().state.objects.get(object.card as usize)?;
     let permanent = world.object(object.card);
     if world.reference(object.card) != object
@@ -41,7 +41,7 @@ pub(super) fn contribution<W: CharacteristicWorld + ?Sized>(
     {
         return None;
     }
-    Some(u32::try_from(world.power(object.card).max(0)).unwrap_or(u32::MAX))
+    Some(u64::try_from(world.power(object.card).max(0)).unwrap_or(u64::MAX))
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -66,7 +66,7 @@ impl Game {
             None => 0,
         };
         let base = Self::announcement_base_cost(a);
-        let extra = Self::announcement_optional_reduction(a) + u64::from(discount);
+        let extra = Self::announcement_optional_reduction(a).saturating_add(discount);
         let source = a.item.source.expect("harmonize has a source");
         let x = a.item.x.unwrap_or(0);
         let Some(total) = self.scalar_x_total_with_symbols(

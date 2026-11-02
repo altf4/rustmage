@@ -1,0 +1,454 @@
+{
+  "schema": 1,
+  "scope": "Wide Harmonize power reduction, optional reduction saturation and Harmonize\u2013Bargain declaration composition; shared rules only",
+  "base_revision": "9d9004ac12b31148377844a97f2c635f64d41d02",
+  "previous_checkpoint": "34cf40d5da9828deeae89a0be5b854afecf682da",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/engine_harmonize.rs",
+      "sha256": "d503365f8bad2c451c5411af5243b662b19a7816d25ce3b2cb6465d82ac3352c"
+    },
+    {
+      "path": "crates/engine/src/engine_targeting.rs",
+      "sha256": "f6d71a438f306fe2b51186212775b0497d28204c7e6f21fb1b8f4e9158a1039e"
+    },
+    {
+      "path": "crates/engine/src/engine_bargain.rs",
+      "sha256": "a5bf67379b4467ed00315083092e95cb0e6e8c03f4aaf2149a5f0256b623202c"
+    },
+    {
+      "path": "tests/tdm_cast_routes.rs",
+      "sha256": "ab3455d4c7f921db9f274157e270182805cc9bfc2e9cedde87cba3ad375268d3"
+    }
+  ],
+  "authority": {
+    "rules": [
+      "107.3",
+      "118.8-9",
+      "601.2b,f,h",
+      "702.180a"
+    ],
+    "rules_url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "previous_complete_source_audit": "docs/tdm-cast-routes-evidence.json"
+  },
+  "independent_findings": [
+    "a-g review: u32-capped Harmonizer power rejects X=u32MAX with tax2 and poweru32MAX+2 even though final generic cost is0.",
+    "g-s review: after widening power, adding a positive optional reduction to u64MAX power must saturate rather than overflow."
+  ],
+  "changes": [
+    "Keep contribution and locked sampled Harmonize discount as u64 until the existing final generic cost conversion. Values above u64MAX saturate sufficiently for the u64 pre-reduction cost domain.",
+    "Saturate the composition of optional and Harmonize reductions in proposal and real cost determination.",
+    "Harmonize Bargain intent delegates to the existing complete announcement/Harmonize proposal funder, retaining the declared exact sacrifice and additional clause. The ordinary Bargain route is unchanged."
+  ],
+  "boundary_evidence": {
+    "test": "harmonize_keeps_power_wide_until_tax_and_x_costs_are_reduced",
+    "actual_actions": [
+      "Actual ETB graveyard Harmonize grant; independent granting permanent departure",
+      "Both seats: U-only payment, opposing generic tax2, X domain at u32MAX",
+      "Poweru32MAX+2 permits chosen X=u32MAX and final generic0",
+      "Poweru32MAX+1 exposes maximumu32MAX-1; choosingu32MAX rejects transactionally",
+      "Poweru64MAX with a declared Bargain1 reduction and exact artifact sacrifice neither wraps nor overflows",
+      "Real Harmonizer tap/payment, full printed stack mana value, life result and stack-leave exile"
+    ],
+    "baseline": {
+      "report": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-baseline-negative/native.json",
+      "sha256": "4fb58f6d019a0900af7b1ddff9012957b6e246487d00358912b259cc8f9348a2",
+      "source": "Two runtime files restored byte-exact to formatted baseline9d9004ac1, while the new regression remained present.",
+      "expected_failure": "Observed Xdomain maximum4294967293; expected4294967295 for poweru32MAX+2 and tax2.",
+      "repair_preservation_manifest": "/tmp/tdm-harmonize-wide-fix-preservation.json",
+      "repair_patch_sha256": "290744e060e5ae05347d294074ad55465e482a54533e6fa64ec4f0349c3c47e6"
+    },
+    "first_fixed_attempt": {
+      "report": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-fixed-focused/native.json",
+      "sha256": "81f6b20b3505773d289dde1664e8164ac2a43e8e50158a2b356a7238b8df2309",
+      "result": "19/20 passed. The real Bargain fixture exposed a pre-existing declaration funder that ignored Harmonize; the final branch repairs that composition rather than removing the witness."
+    }
+  },
+  "final_runs": [
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-bargain-fixed/native.json",
+      "sha256": "f0264f2070628abc1b0428019a5781ca1fee1ad6fe9ab7b90100d900ae529ab7",
+      "cases": 20,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "tdm_cast_routes",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 112.09969346001162,
+      "execution_seconds": 0.05024992799735628,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-0/native.json",
+      "sha256": "f6e54cf98d81108369d803fb68dbca66dce8bfafb5c75928eb4d22bc5085bbdf",
+      "cases": 10,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 22.522590774984565,
+      "execution_seconds": 0.05100281999330036,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-1/native.json",
+      "sha256": "4b1fc83e78696c6cc1254619824a4e4599ea8fb127791662253803db32c061e1",
+      "cases": 11,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_variable_costs_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 1.5189430480240844,
+      "execution_seconds": 0.033500032004667446,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-2/native.json",
+      "sha256": "a50e4a64381873ca57b73f477b3af58067adf6eb50ee15f98955e09a727d6735",
+      "cases": 9,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_deferred_mana",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 1.4192749920184724,
+      "execution_seconds": 0.043501890992047265,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-3/native.json",
+      "sha256": "ef2e154f66bd66404c427c46c3398fa76714b9dcaafdcc1e4e40d7a2d36e0c7d",
+      "cases": 11,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_mana_payment_continuations_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.8675327579840086,
+      "execution_seconds": 0.05064082198077813,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-4/native.json",
+      "sha256": "5c3c812668ff073087bd517d324800759dc378b788963bcada4b83510c3ba661",
+      "cases": 4,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_mana_entry_completion_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.8185884600097779,
+      "execution_seconds": 0.04236269497778267,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-5/native.json",
+      "sha256": "e39de13994d159d146b66c0d46a0dcacd94023e8bb8fefb13efe42dbc8089f43",
+      "cases": 11,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_late_mana_outputs_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.9169399839884136,
+      "execution_seconds": 0.042823347001103684,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-6/native.json",
+      "sha256": "532d0a8615dcbe1ddef9b2cfeec8f9bda2ed69f5352f2ca5bb24eabe368693da",
+      "cases": 9,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_cast_permissions_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.8675339420151431,
+      "execution_seconds": 0.03327174601145089,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-7/native.json",
+      "sha256": "75f4344a723c9e278366bb811c62fd8b43bd6abd0d413f385c44d014c03cfa23",
+      "cases": 1,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.0651770830154419,
+      "execution_seconds": 0.032914865005295724,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-8/native.json",
+      "sha256": "18cab4602194e4926f0f253e2f1c26c0697fcf21847a22f269f5af7cae0e820f",
+      "cases": 1,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06540960000711493,
+      "execution_seconds": 0.02448598699993454,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-9/native.json",
+      "sha256": "e92d102e6e2ed2e1b45f0badf6d285cf8032342afeacb785c3ddf17bf967ce06",
+      "cases": 1,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06471473301644437,
+      "execution_seconds": 0.03329637099523097,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-10/native.json",
+      "sha256": "dc8a06caf412c3a8e112a3a5865e577ce9256a1ec0b3d793ceec32df566540bf",
+      "cases": 1,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06469705901690759,
+      "execution_seconds": 0.0327143800095655,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-11/native.json",
+      "sha256": "b4682cf8f5e704a7e59c772cb931d202c660ba78bb1e29258ccbe45dcf11d548",
+      "cases": 1,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.0649314490146935,
+      "execution_seconds": 0.0245003990130499,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-12/native.json",
+      "sha256": "d1d04f21bbfd77d2228577c891e3e775329f13341fb7e8232a755a904246bbbc",
+      "cases": 1,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06478314398555085,
+      "execution_seconds": 0.034427179023623466,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-13/native.json",
+      "sha256": "de283ffadb5fc67205f6b12a3fec14dd5983b3cb32c9fe15e8b6fc8ff950030c",
+      "cases": 2,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06468993000453338,
+      "execution_seconds": 0.02454127001692541,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-14/native.json",
+      "sha256": "f6e98fe65487e40f55b57b22483feea6e867301965f39086224143580f2c8086",
+      "cases": 1,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.0644892179989256,
+      "execution_seconds": 0.03307696900446899,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/harmonize-wide-compat-15/native.json",
+      "sha256": "6bb3080b7de7807f2a8bc9f705f838e53fd998ea569afec9dc93bbbc70a4bb45",
+      "cases": 2,
+      "success": true,
+      "terminal": true,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.065362623980036,
+      "execution_seconds": 0.03356375699513592,
+      "timeouts": false,
+      "active_processes": []
+    }
+  ],
+  "final_summary": {
+    "cases": 96,
+    "focused": 20,
+    "inherited": 76,
+    "compile_seconds": 141.61535225907573,
+    "execution_seconds": 0.6208744580217171,
+    "all_terminal": true,
+    "failed": 0,
+    "timeouts": false,
+    "engine_memory_peak_bytes": 1903738880,
+    "memory_limit_bytes": 6442450944,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "resource_report": "/home/altf4/.cache/rustmage-build-reports/e413ed1670e449a1aedbe56107b97f59.json",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "verification": [
+    "rustfmt --edition2024 --check --config skip_children=true on all4 changed Rust files",
+    "git diff --check",
+    "Sources stayed fixed until every consuming job terminated; all Cargo entered resource_guard through the native runner."
+  ],
+  "limitations": [
+    "No card definitions/admissions, public wire fields or action shapes were added by this repair.",
+    "Full-set/release/trace acceptance and two independent nonauthor final-head reviews remain integration work.",
+    "Inherited split-face mapping, counted graveyard-exile mana-child and Phyrexian-symbol limitations in the previous evidence are unchanged.",
+    "Rules-fixture execution timing is not a simulation throughput benchmark."
+  ]
+}
