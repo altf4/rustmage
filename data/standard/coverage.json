@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c6cfa465de5056eadb56751599ad7e9a3923c3a63698e7c3ea502cc201f1a828",
+  "catalogue_version": "fcc918af4f466865b7ddb52847b2bdc8ca93119442bc3391e73bebe789ef6e33",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3058,
-  "implemented_total": 3064,
+  "implemented_standard_cards": 3061,
+  "implemented_total": 3067,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 159,
-      "gated": 100
+      "complete": 162,
+      "gated": 97
     },
     "dsk": {
       "total": 264,
@@ -26850,8 +26850,8 @@
     {
       "name": "Racers' Scoreboard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/racers_scoreboard.rs",
       "set": "dft"
     },
@@ -33098,8 +33098,8 @@
     {
       "name": "Starting Column",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/starting_column.rs",
       "set": "dft"
     },
@@ -39858,8 +39858,8 @@
     {
       "name": "Walking Sarcophagus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/walking_sarcophagus.rs",
       "set": "dft"
     },

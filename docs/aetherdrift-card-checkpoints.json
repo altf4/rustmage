@@ -1,0 +1,78 @@
+{
+  "engine_freeze": "fb878868d",
+  "engine_source": "8657c4e6c",
+  "scope": "focused card authoring evidence; full276 acceptance pending",
+  "passing_cases": 73,
+  "targets": [
+    {
+      "target": "dft_white_blue_cards_tempo",
+      "passed": 12,
+      "failed": 0,
+      "compile_seconds": 0.8678812220023246,
+      "execution_seconds": 0.03336838699760847,
+      "command_seconds": 0.9018658379936824,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-white-blue-tempo-20261102-095100Z/report.json"
+    },
+    {
+      "target": "dft_black_red_cards_creatures",
+      "passed": 13,
+      "failed": 0,
+      "compile_seconds": 3.573610281004221,
+      "execution_seconds": 0.024984274001326412,
+      "command_seconds": 3.599208847997943,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-black-red-creatures-20261102-095600Z/report.json"
+    },
+    {
+      "target": "dft_colorless_cards_raceways",
+      "passed": 7,
+      "failed": 0,
+      "compile_seconds": 0.8171816389949527,
+      "execution_seconds": 0.02420012500078883,
+      "command_seconds": 0.8419482389872428,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
+    },
+    {
+      "target": "dft_green_multi_cards_search",
+      "passed": 13,
+      "failed": 0,
+      "compile_seconds": 3.42404384999827,
+      "execution_seconds": 0.024461837994749658,
+      "command_seconds": 3.449027559996466,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-green-search-20261102-101000Z/report.json"
+    },
+    {
+      "target": "dft_green_multi_cards_vehicles",
+      "passed": 12,
+      "failed": 0,
+      "compile_seconds": 0.7164024060039083,
+      "execution_seconds": 0.03300392300297972,
+      "command_seconds": 0.7499868849990889,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-green-vehicles-20261102-101000Z/report.json"
+    },
+    {
+      "target": "dft_white_blue_cards_permanents",
+      "passed": 11,
+      "failed": 0,
+      "compile_seconds": 0.7164796100114472,
+      "execution_seconds": 0.033370789999025874,
+      "command_seconds": 0.7504477649927139,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-white-blue-permanents-20261102-101000Z/report.json"
+    },
+    {
+      "target": "dft_colorless_cards_speed",
+      "passed": 5,
+      "failed": 0,
+      "compile_seconds": 0.66653502000554,
+      "execution_seconds": 0.02527651999844238,
+      "command_seconds": 0.692466227003024,
+      "engine_reused": true,
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-speed-20261102-101000Z/report.json"
+    }
+  ]
+}
