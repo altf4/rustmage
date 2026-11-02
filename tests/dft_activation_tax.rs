@@ -363,7 +363,7 @@ fn a_granted_mana_packet_keeps_quality_and_cost_after_its_provider_leaves_during
         },
     };
     const GRANTOR: CardRules = CardRules {
-        effect: Effect::Aura(AURA),
+        effect: Effect::Aura(TargetPlan::Single(TargetSpec::one(TargetRule::Creature))),
         aura: Some(AURA),
         static_groups: GRANTS,
         activated: &[ability(

@@ -4,6 +4,7 @@ use rustmage::Card;
 use rustmage_core::CardName;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
+use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::*;
 use support::*;
 
@@ -624,7 +625,7 @@ fn granted_dynamic_mana_uses_conservative_bounds_and_exact_post_cost_search() {
         },
     };
     const GRANTOR: CardRules = CardRules {
-        effect: Effect::Aura(AURA),
+        effect: Effect::Aura(TargetPlan::Single(TargetSpec::one(TargetRule::Creature))),
         aura: Some(AURA),
         static_groups: GROUPS,
         extras: &CardExtras {
