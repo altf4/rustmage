@@ -396,7 +396,8 @@ fn cursecloth_embalm_payment_and_copiable_token_properties_survive_raw_index_res
     let source = put(&mut g, p, "Cursecloth Wrappings", Zone::Battlefield);
     let card = put(&mut g, p, "Bear Cub", Zone::Graveyard);
     grant_embalm(&mut g, source, card);
-    act(&mut g, embalm(&g.clone(), card));
+    let action = embalm(&g, card);
+    act(&mut g, action);
     let saved = g.snapshot();
     let mut raw = g.clone();
     let mut indexed = g.clone();
