@@ -13,14 +13,35 @@ fn loot_mana_distinguishes_negative_zero_and_repeated_power() {
         g.state.objects[same as usize].growth.power = -3;
         g.state.objects[loot as usize].summoning_sick = false;
         g.state.players[p.index()].mana = [0; 6];
-        let actions: Vec<_> = g
-            .legal_actions()
-            .into_iter()
+        let offered = g.legal_actions();
+        let actions: Vec<_> = offered
+            .iter()
             .filter(|a| {
                 matches!(a,
-            Action::ActivateMana { card, ability: 0, .. } if *card == loot)
+            Action::ActivateMana { card, ability: 0, production, .. }
+                if *card == loot && *production != [0; 6])
             })
+            .cloned()
             .collect();
+        let late = offered
+            .iter()
+            .filter(|action| {
+                matches!(action,
+            Action::ActivateMana { card, ability: 0, production: [0, 0, 0, 0, 0, 0], .. }
+                if *card == loot)
+            })
+            .count();
+        assert_eq!(late, 1, "one unselected direct start");
+        assert_eq!(
+            offered
+                .iter()
+                .filter(|action| matches!(action,
+            Action::AnnounceMana { card, ability: 0, production: [0, 0, 0, 0, 0, 0], .. }
+                if *card == loot))
+                .count(),
+            1,
+            "one unselected announcement"
+        );
         assert_eq!(actions.len(), 5);
         assert!(
             actions
@@ -34,6 +55,48 @@ fn loot_mana_distinguishes_negative_zero_and_repeated_power() {
         g.restore(&saved).unwrap();
         act(&mut g, actions[0].clone());
         assert_eq!(g.state.players[p.index()].mana.iter().sum::<u32>(), 3);
+
+        g.restore(&saved).unwrap();
+        act(
+            &mut g,
+            Action::AnnounceMana {
+                card: loot,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0; 6],
+            },
+        );
+        pay(&mut g);
+        assert!(g.object_view(loot).tapped);
+        assert_eq!(
+            g.state.players[p.index()].mana,
+            [0; 6],
+            "unselected output is not zero production"
+        );
+        assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
+        let choices = g.legal_actions();
+        assert_eq!(
+            choices
+                .iter()
+                .filter(|a| matches!(a, Action::ChooseMana { .. }))
+                .count(),
+            5
+        );
+        for color in 0..5 {
+            let mut production = [0; 6];
+            production[color] = 3;
+            assert!(choices.contains(&Action::ChooseMana { production }));
+        }
+        let pending = g.snapshot();
+        let choice = Action::ChooseMana {
+            production: [0, 0, 3, 0, 0, 0],
+        };
+        act(&mut g, choice.clone());
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 3, 0, 0, 0]);
+        let completed = g.snapshot();
+        g.restore(&pending).unwrap();
+        act(&mut g, choice);
+        assert_eq!(g.snapshot(), completed);
     }
 }
 
