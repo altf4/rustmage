@@ -82,7 +82,7 @@
   "validation": {
     "cargo": "Not run by author: root owns guarded integrated validation",
     "authored_target": "dft_variable_costs_engine",
-    "scenario_count": 10
+    "scenario_count": 11
   },
   "contracts": {
     "typed_filter": "Immutable CostMatch disjunction layered on unchanged SacrificeFilter; shared actual/projected evaluation",

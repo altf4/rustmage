@@ -263,7 +263,7 @@ struct ExternalManaCost {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ExternalManaCost {
     fn destination(self) -> Zone {
-        match self.kind {
+        match self.kind.payment_kind() {
             EffectChoiceKind::Sacrifice => Zone::Graveyard,
             EffectChoiceKind::ExileGraveyard => Zone::Exile,
             _ => unreachable!("unsupported selected mana cost"),

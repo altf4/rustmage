@@ -687,3 +687,51 @@ fn an_all_illegal_sideswipe_target_fizzles_without_its_conditional_draw() {
     assert_eq!(g.object_view(material).zone, Zone::Graveyard);
     assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
 }
+
+#[test]
+fn disjunctive_external_mana_cost_has_the_same_projected_and_real_destination() {
+    const SACRIFICE_MANA: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[ability(
+            ActivationCost {
+                tap: true,
+                additional: Some(AdditionalCost {
+                    kind: EffectChoiceKind::FilteredCost {
+                        action: CostAction::Sacrifice,
+                        any: &[CostMatch::Kinds(1), CostMatch::Subtype("Vehicle")],
+                    },
+                    filter: SacrificeFilter { other: true, ..ANY },
+                }),
+                ..ActivationCost::ZERO
+            },
+            TargetPlan::NONE,
+            &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 1, 0, 0, 0,
+            ]))],
+        )],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &SACRIFICE_MANA)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let producer = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let material = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);
+    let spell = put(&mut g, p, "Short Bow", Zone::Hand);
+    g.state.players[p.index()].mana = [0; 6];
+    assert!(
+        g.legal_actions()
+            .contains(&Action::AnnounceCast { card: spell })
+    );
+    act(&mut g, Action::AnnounceCast { card: spell });
+    choose(
+        &mut g,
+        |a| matches!(a, Action::AnnounceMana {card,..} if *card == producer),
+    );
+    select(&mut g, material);
+    pay(&mut g);
+    assert_eq!(g.object_view(material).zone, Zone::Graveyard);
+    assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 0, 0]);
+    pay(&mut g);
+    drain(&mut g);
+    assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+}
