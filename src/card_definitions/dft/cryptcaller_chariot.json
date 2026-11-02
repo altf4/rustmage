@@ -3,10 +3,45 @@
   "catalogue_id": 913,
   "oracle_id": "2bdd0bcb-6cfb-48e7-972e-355ff46621a4",
   "facts_sha256": "7e73144418e6c37734dd7864caead918be56cf6188d6c26935d130d96bde8120",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bf05b2a6514fd6989229b686a80eb1258d74616d827fb4a8711282a83302e5d8"
   },
-  "physical_metadata_sha256": "234cbbd2c145c24d3a7c7f798af4f9930a4f0c3e96970b5321030a7e44b7a6a7"
+  "physical_metadata_sha256": "234cbbd2c145c24d3a7c7f798af4f9930a4f0c3e96970b5321030a7e44b7a6a7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CryptcallerChariot.java",
+  "java_sha256": "3473b4c84297de08a3d92771be2113f9c7138da51fabe12a081fe1b118e11bec",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDiscardValue.java",
+      "sha256": "bf74affd38bc41fae8b232bdff16ec3388bd8aeaeff12b154699fbb07fc1f9ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DiscardOneOrMoreCardsTriggeredAbility.java",
+      "sha256": "17c33c5f2864a8d4d2cfcf51583cf47143a7883ef869322f4be26d61d2bd57d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ZombieToken.java",
+      "sha256": "5f597b5065b0c9b6edcef5cac9ca6a7a3018a1a7588ef4b983e700bc6a473e4d"
+    }
+  ]
 }

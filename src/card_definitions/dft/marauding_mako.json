@@ -8,5 +8,45 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f32bf6657863df8081106b2d5f7aaff9912c7ed433bb5c1124f7538c96aa914c"
   },
-  "physical_metadata_sha256": "535003f1072ee4ad4de79ef566740e81c9f89eb6d4990aab80d6f969c16fee82"
+  "physical_metadata_sha256": "535003f1072ee4ad4de79ef566740e81c9f89eb6d4990aab80d6f969c16fee82",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MaraudingMako.java",
+  "java_sha256": "c4e4a9799a192901150e8d47aa6aec8af2f34f035a4b1ebf8482eaff3a686cb6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+      "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDiscardValue.java",
+      "sha256": "bf74affd38bc41fae8b232bdff16ec3388bd8aeaeff12b154699fbb07fc1f9ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DiscardOneOrMoreCardsTriggeredAbility.java",
+      "sha256": "17c33c5f2864a8d4d2cfcf51583cf47143a7883ef869322f4be26d61d2bd57d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ]
 }

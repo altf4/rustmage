@@ -8,5 +8,40 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6136d3f338fb7188a073cc57849317487d521147dd9e7dc1779176009c92d5a8"
   },
-  "physical_metadata_sha256": "ddf66d6212a9a7e0efbe64fd5f6dab09af3c7d81d795085ef0311bd4afa104cd"
+  "physical_metadata_sha256": "ddf66d6212a9a7e0efbe64fd5f6dab09af3c7d81d795085ef0311bd4afa104cd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PactdollTerror.java",
+  "java_sha256": "0bbc953e5df3413a30e3bdbe8983f2f861af700d1b1ac9cf16b101999c83afcc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+      "sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+      "sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+    }
+  ]
 }

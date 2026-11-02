@@ -8,9 +8,9 @@
   "engine_status": "frozen reviewed checkpoint; authors do not mutate shared engine",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "counts": {
-    "authored_candidates": 11,
+    "authored_candidates": 18,
     "validated_by_integrator": 24,
-    "not_started": 40
+    "not_started": 33
   },
   "validation_owner": "root integrator; no Cargo run by card author",
   "validation_targets": [
@@ -29,8 +29,14 @@
     {
       "target": "dft_black_red_cards_speed",
       "cases": 14,
-      "status": "pending root execution",
+      "status": "13/14 pass; test-only Hazoret selected-vs-committed attacker assertion corrected in c4f29685d; root cached rerun pending",
       "scope": "11 complete identities: paid entries/own speed designation, live keywords/controller/pumps, actual mana funding and sickness, owned GY source-grant cost, source-independent max-step triggers, ordinary temporary exile play, public mandatory hand choice, another-creature/Vehicle sacrifice, end-step token and speed draw/life, real lifelink damage and Hazoret combat/target/tap/EOT boundaries"
+    },
+    {
+      "target": "dft_black_red_cards_discard_entries",
+      "cases": 8,
+      "status": "pending root execution",
+      "scope": "7 complete identities: actual0/2 simultaneous discard observers, cycling discard/draw/self-trigger versus battlefield observer, enemy discard authority and Crew2, artifact self-or-other entries without duplicate including token batch, opponent-only shrink plus paid tap/sacrifice Surveil2, all-other-creature EOT shrink and flying"
     }
   ],
   "shared_proofs": [
@@ -363,11 +369,57 @@
         "Crew 2"
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "discard-event-amount"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "one_two_card_discard_batch_drives_all_three_actual_observers_and_real_chariot_crew",
+        "zero_discard_rummage_never_creates_counters_damage_or_zombies_on_observers",
+        "magmakin_cycling_deals_its_one_damage_and_also_counts_for_other_discard_observers"
+      ],
+      "test_target": "dft_black_red_cards_discard_entries",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/c/CryptcallerChariot.java",
+        "java_sha256": "3473b4c84297de08a3d92771be2113f9c7138da51fabe12a081fe1b118e11bec",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDiscardValue.java",
+            "sha256": "bf74affd38bc41fae8b232bdff16ec3388bd8aeaeff12b154699fbb07fc1f9ee"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+            "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DiscardOneOrMoreCardsTriggeredAbility.java",
+            "sha256": "17c33c5f2864a8d4d2cfcf51583cf47143a7883ef869322f4be26d61d2bd57d4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+            "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+            "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/game/permanent/token/ZombieToken.java",
+            "sha256": "5f597b5065b0c9b6edcef5cac9ca6a7a3018a1a7588ef4b983e700bc6a473e4d"
+          }
+        ]
+      },
+      "definition_sha256": "b732fb11cb91c45f5dec406dc66c4d1db127b11610656faef12c27bb4133f51d"
     },
     {
       "name": "Cursecloth Wrappings",
@@ -1289,9 +1341,68 @@
         "{2}{B}, {T}, Sacrifice this artifact: Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)"
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "grim_bauble_targets_only_enemy_creatures_then_sacrifices_before_surveilling_two"
+      ],
+      "test_target": "dft_black_red_cards_discard_entries",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/g/GrimBauble.java",
+        "java_sha256": "09b1f4130192585da886d7b44b6ef5e6530e576a91614fe49e45f35b3372def1",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+            "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+            "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+            "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+            "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+            "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+            "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+            "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+          }
+        ]
+      },
+      "definition_sha256": "eebd77b6f094a03d4fdb241b8e2b20cb778976e9d8706ea40e523f53efd0337d"
     },
     {
       "name": "Grim Javelineer",
@@ -1644,9 +1755,65 @@
         "When you cycle this card, it deals 1 damage to each opponent."
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "one_two_card_discard_batch_drives_all_three_actual_observers_and_real_chariot_crew",
+        "zero_discard_rummage_never_creates_counters_damage_or_zombies_on_observers",
+        "magmakin_cycling_deals_its_one_damage_and_also_counts_for_other_discard_observers"
+      ],
+      "test_target": "dft_black_red_cards_discard_entries",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/m/MagmakinArtillerist.java",
+        "java_sha256": "f8ac9db0b98f9ad4f240f05a07003e9f4a64338fa2dc4e426214bd4e2aba0f11",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/CycleTriggeredAbility.java",
+            "sha256": "a320abe58d7fe90bdd908a013cc2064ac619ccb4e2815f7748e6b54f67fc5c40"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/ZoneChangeTriggeredAbility.java",
+            "sha256": "2387eb4e53ef69a480b3ad72111ccdd5f994528cb727378c65c941a46c44d7ed"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+            "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDiscardValue.java",
+            "sha256": "bf74affd38bc41fae8b232bdff16ec3388bd8aeaeff12b154699fbb07fc1f9ee"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+            "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DiscardOneOrMoreCardsTriggeredAbility.java",
+            "sha256": "17c33c5f2864a8d4d2cfcf51583cf47143a7883ef869322f4be26d61d2bd57d4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+            "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+          }
+        ]
+      },
+      "definition_sha256": "0f73bef56b7b90d2bbefee08909c259650c4eddfd9077d311db2465760515c7e"
     },
     {
       "name": "Marauding Mako",
@@ -1659,9 +1826,61 @@
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "one_two_card_discard_batch_drives_all_three_actual_observers_and_real_chariot_crew",
+        "zero_discard_rummage_never_creates_counters_damage_or_zombies_on_observers",
+        "magmakin_cycling_deals_its_one_damage_and_also_counts_for_other_discard_observers",
+        "mako_and_shefet_cycling_pay_two_discard_then_draw_and_mako_does_not_grow_in_hand"
+      ],
+      "test_target": "dft_black_red_cards_discard_entries",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/m/MaraudingMako.java",
+        "java_sha256": "c4e4a9799a192901150e8d47aa6aec8af2f34f035a4b1ebf8482eaff3a686cb6",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+            "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDiscardValue.java",
+            "sha256": "bf74affd38bc41fae8b232bdff16ec3388bd8aeaeff12b154699fbb07fc1f9ee"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DiscardOneOrMoreCardsTriggeredAbility.java",
+            "sha256": "17c33c5f2864a8d4d2cfcf51583cf47143a7883ef869322f4be26d61d2bd57d4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+            "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+            "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/counters/CounterType.java",
+            "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+          }
+        ]
+      },
+      "definition_sha256": "56a9d6c5ac4d046c23f94c45052a7f03473944ae2e676fea5daff5601ff666dc"
     },
     {
       "name": "Maximum Overdrive",
@@ -1910,9 +2129,53 @@
         "Whenever this creature or another artifact you control enters, each opponent loses 1 life and you gain 1 life."
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "pactdoll_self_and_controlled_artifacts_each_trigger_once_including_a_token_batch"
+      ],
+      "test_target": "dft_black_red_cards_discard_entries",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/p/PactdollTerror.java",
+        "java_sha256": "0bbc953e5df3413a30e3bdbe8983f2f861af700d1b1ac9cf16b101999c83afcc",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+            "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+            "sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+            "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+            "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+            "sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+          }
+        ]
+      },
+      "definition_sha256": "6ddc9b61a7981a791cbfbddaaf92244063bfc6d61a07a5632c7ed3c0e7430a7f"
     },
     {
       "name": "Pedal to the Metal",
@@ -2124,9 +2387,43 @@
         "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "ripclaw_wrangles_the_opponents_choice_then_actually_crews_as_a_four_three"
+      ],
+      "test_target": "dft_black_red_cards_discard_entries",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/r/RipclawWrangler.java",
+        "java_sha256": "c8d7ab4b357945c9118f37f69b20d5dd921f433b86a9ad2f24fee8bc54127166",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+            "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+            "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+            "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetDiscard.java",
+            "sha256": "f165d4061cca290e354f611246bf39c1157977742d5d9ae93fca883b22118668"
+          }
+        ]
+      },
+      "definition_sha256": "0d5c0ab4e91aca27d663a3e9fa36443d3f1e993b8753493edce68ec6eb3770d6"
     },
     {
       "name": "Risen Necroregent",
@@ -2310,9 +2607,54 @@
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "shefet_shrinks_all_other_current_creatures_but_not_itself_or_uncrewed_vehicles",
+        "mako_and_shefet_cycling_pay_two_discard_then_draw_and_mako_does_not_grow_in_hand"
+      ],
+      "test_target": "dft_black_red_cards_discard_entries",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/s/ShefetArchfiend.java",
+        "java_sha256": "a225af4320f5765a0320c926b980e3271bc3bbcc5cc66bcf78917f64caf1337a",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+            "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+            "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+            "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+            "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+            "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+          }
+        ]
+      },
+      "definition_sha256": "3f6c1b43aa48e91c0ab3ce0d864529dc475a4e5fddf2c0187b458a21a488f22c"
     },
     {
       "name": "Skycrash",
