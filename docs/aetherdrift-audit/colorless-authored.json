@@ -1,5 +1,5 @@
 {
-  "base_revision": "819fa96ec",
+  "base_revision": "fb878868d",
   "engine_phase": "frozen; no engine changes",
   "cards": [
     {
@@ -88,7 +88,8 @@
           "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
         }
       ],
-      "runtime_status": "pending root focused run"
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
     },
     {
       "name": "Reef Roads",
@@ -176,7 +177,8 @@
           "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
         }
       ],
-      "runtime_status": "pending root focused run"
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
     },
     {
       "name": "Foul Roads",
@@ -264,7 +266,8 @@
           "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
         }
       ],
-      "runtime_status": "pending root focused run"
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
     },
     {
       "name": "Rocky Roads",
@@ -352,7 +355,8 @@
           "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
         }
       ],
-      "runtime_status": "pending root focused run"
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
     },
     {
       "name": "Wild Roads",
@@ -440,7 +444,305 @@
           "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
         }
       ],
-      "runtime_status": "pending root focused run"
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
+    },
+    {
+      "name": "Amonkhet Raceway",
+      "definition": "src/card_definitions/dft/amonkhet_raceway.rs",
+      "oracle_id": "fe174586-d36b-40f6-babd-1f98e76eec22",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add {C}.\nMax speed \u2014 {T}: Target creature gains haste until end of turn.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/AmonkhetRaceway.java",
+        "sha256": "5e6753b2e4ab563b5948ab43fbaba4bac78580a816c998779c93d1940991017c"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+          "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{T}: Add {C}.",
+        "Max speed \u2014 {T}: Target creature gains haste until end of turn."
+      ],
+      "outcome_scenarios": [
+        "all_three_raceways_really_start_engines_and_supply_unconditional_colorless_mana",
+        "amonkhet_haste_targets_either_player_and_survives_source_departure_until_cleanup"
+      ],
+      "test_target": "dft_colorless_cards_raceways",
+      "runtime_status": "pending focused run"
+    },
+    {
+      "name": "Avishkar Raceway",
+      "definition": "src/card_definitions/dft/avishkar_raceway.rs",
+      "oracle_id": "e2c35551-1ba5-4424-baf9-821b49bbcc8c",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add {C}.\nMax speed \u2014 {3}, {T}, Discard a card: Draw a card.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/AvishkarRaceway.java",
+        "sha256": "4b15583e2088181442771bbcbbc106689298ff25c670cf8fec9bc2d83a77d39b"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+          "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+          "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{T}: Add {C}.",
+        "Max speed \u2014 {3}, {T}, Discard a card: Draw a card."
+      ],
+      "outcome_scenarios": [
+        "all_three_raceways_really_start_engines_and_supply_unconditional_colorless_mana",
+        "avishkar_pays_three_taps_and_discards_before_drawing_with_no_empty_hand_route"
+      ],
+      "test_target": "dft_colorless_cards_raceways",
+      "runtime_status": "pending focused run"
+    },
+    {
+      "name": "Muraganda Raceway",
+      "definition": "src/card_definitions/dft/muraganda_raceway.rs",
+      "oracle_id": "b5fa5651-d714-44d6-867b-be0e3224b7ed",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add {C}.\nMax speed \u2014 {T}: Add {C}{C}.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MuragandaRaceway.java",
+        "sha256": "f5a24981d9bb9e5a048e4fbf6dfd73cfb8c0956254be9ca09960d5c06e95c09b"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+          "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+          "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{T}: Add {C}.",
+        "Max speed \u2014 {T}: Add {C}{C}."
+      ],
+      "outcome_scenarios": [
+        "all_three_raceways_really_start_engines_and_supply_unconditional_colorless_mana",
+        "muraganda_max_speed_mana_is_two_colorless_and_uses_one_tap_at_instant_speed"
+      ],
+      "test_target": "dft_colorless_cards_raceways",
+      "runtime_status": "pending focused run"
+    },
+    {
+      "name": "Night Market",
+      "definition": "src/card_definitions/dft/night_market.rs",
+      "oracle_id": "4cdb9f80-d08f-4986-99c8-573166d66082",
+      "oracle_text": "This land enters tapped. As it enters, choose a color.\n{T}: Add one mana of the chosen color.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/n/NightMarket.java",
+        "sha256": "85278c866806694ced6469c2275a12fea266cf2afef82295be923cf3b2df02d5"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAsItEntersChooseColorAbility.java",
+          "sha256": "ae5f335e82c104afe8d7165f2d404c4ad5e1972a28225b7b9af732c30e8b125d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseColorEffect.java",
+          "sha256": "bbc363d77d1883e5473b95e94ecb24c6d33f8c03a85dd2c6d570c56d112dcba6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceEffect.java",
+          "sha256": "a912f8d2328afba2be2060a9b044621afd2d83bf48f05489962eec2ee29cff0d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+          "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaChosenColorEffect.java",
+          "sha256": "e129dbded6a8eeaa978804934e34f9b3c5992ad5c560692e1fa5120b8c3f2e48"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+          "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+          "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ],
+      "printed_obligations": [
+        "This land enters tapped. As it enters, choose a color.",
+        "{T}: Add one mana of the chosen color.",
+        "Cycling {3} ({3}, Discard this card: Draw a card.)"
+      ],
+      "outcome_scenarios": [
+        "night_market_chooses_every_color_as_it_enters_tapped_then_produces_only_that_color",
+        "night_market_entry_choice_owns_independent_raw_index_and_restored_branches",
+        "night_market_cycles_for_three_at_instant_speed_without_entering_or_choosing_a_color"
+      ],
+      "test_target": "dft_colorless_cards_raceways",
+      "runtime_status": "pending focused run"
     }
   ]
 }

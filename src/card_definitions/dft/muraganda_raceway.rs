@@ -1,8 +1,53 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
+    effect: Effect::Land,
     triggers: &[],
-    activated: &[],
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::StartYourEngines],
+        },
+        StaticAbilityGroup {
+            line: 2,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::SourceMaxSpeedActivation(1)],
+        },
+    ],
+    activated: &[
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 0, 1,
+            ]))],
+            sorcery: false,
+            once_per_turn: false,
+        },
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 0, 2,
+            ]))],
+            sorcery: false,
+            once_per_turn: false,
+        },
+    ],
     enters: Counters {
         plus_one: 0,
         minus_one: 0,
