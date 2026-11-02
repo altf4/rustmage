@@ -954,6 +954,7 @@ impl Game {
                     | TriggerCondition::Foraged
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
+                    | TriggerCondition::DelayedSpellCastAny
                     | TriggerCondition::DelayedSpellCastSourcePower
                     | TriggerCondition::Ward
                     | TriggerCondition::SelfTargeted { .. }
@@ -1703,6 +1704,7 @@ impl Game {
             let item = self.state.stack[index].clone();
             self.expire_land_mana_on_exile_cast(&item);
         }
+        self.commit_suspend_cast(stack);
         self.consume_resolution_cast_quota(caster, stack);
         self.consume_next_spell_uncounterable(caster, stack);
         self.consume_turn_cast_grants(caster, card);
@@ -2556,6 +2558,8 @@ impl Game {
         let program = match item.kind {
             StackKind::TriggeredAbility { .. }
             | StackKind::DecayedAttack
+            | StackKind::SuspendTick
+            | StackKind::SuspendCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -3316,7 +3320,8 @@ impl Game {
                 Instruction::CopyNextExhaustAbility { ability } => {
                     self.remember_next_spell_copy(&item, ability)
                 }
-                Instruction::CopyNextInstantSorcery { ability } => {
+                Instruction::CopyNextSpell { ability }
+                | Instruction::CopyNextInstantSorcery { ability } => {
                     self.remember_next_spell_copy(&item, ability)
                 }
                 Instruction::CopySpellsThisTurn { ability } => {
@@ -3334,6 +3339,20 @@ impl Game {
                 }
                 Instruction::CopyPreparedCastSpell => {
                     if self.copy_captured_prepared_spell(&item) {
+                        return;
+                    }
+                }
+                Instruction::SuspendCapturedSpell { time } => {
+                    self.suspend_captured_spell(&item, time)
+                }
+                Instruction::ResolveSuspendTick => self.resolve_suspend_tick(&item),
+                Instruction::ResolveSuspendCast => {
+                    if self.resolve_suspend_cast(&item) {
+                        return;
+                    }
+                }
+                Instruction::CopyCapturedSpell { retarget, .. } => {
+                    if self.copy_captured_spell_with_targets(&item, retarget) {
                         return;
                     }
                 }

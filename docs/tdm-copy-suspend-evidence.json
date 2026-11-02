@@ -1,0 +1,481 @@
+{
+  "schema": 1,
+  "scope": "A19 arbitrary next-spell copying; printed storm; copy without retarget; granted Suspend exile lifecycle. Shared rules only, no card definitions/admissions.",
+  "base_revision": "464fe0400ac54e7772f3630daad86455aedc1ea9",
+  "original_scope_base": "ce8d13243abce4dbbd85e0645ee89b589765b76e",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/cards.rs",
+      "sha256": "dfa80c50a46106844230aaf216b97a2a886a69972945b52d4814fb599d8db39d"
+    },
+    {
+      "path": "crates/engine/src/engine.rs",
+      "sha256": "7983c3dfd3c1011a6c5a4e5994344858d24b736f164dad64781582be3cd53354"
+    },
+    {
+      "path": "crates/engine/src/engine_ability_timeline.rs",
+      "sha256": "46fc7b537a62c6afe8e63de370518b633dd053535bb02934aa6881d74b9b0ff7"
+    },
+    {
+      "path": "crates/engine/src/engine_cast_origins.rs",
+      "sha256": "f7eb08bf91e6ceb9fe7a2a3aa7074499971496fbd7c8df19107aa0dccf404e95"
+    },
+    {
+      "path": "crates/engine/src/engine_funding.rs",
+      "sha256": "40178b2f9dbbfc0fddc4e109cde6eb4eba5609a9e1d1cb402effc105937e4cf8"
+    },
+    {
+      "path": "crates/engine/src/engine_keyword_counters.rs",
+      "sha256": "1caf544fc7243ffb29e69888fc1dd40e800527d33b0e7895d3ac23ae97cc192d"
+    },
+    {
+      "path": "crates/engine/src/engine_live_counters.rs",
+      "sha256": "241dfb9d1f617943aa0d34f06927b489f961cb167dc19d1a0775d5a2d787972b"
+    },
+    {
+      "path": "crates/engine/src/engine_programs.rs",
+      "sha256": "16328e041250095763ea13048f915572774dda0308a58adf339cdc25b2b88cbd"
+    },
+    {
+      "path": "crates/engine/src/engine_stack_copies.rs",
+      "sha256": "2e285e93ba80f95141657dc843b9aa711be3f6cbbc919614f11fd5950835c48e"
+    },
+    {
+      "path": "crates/engine/src/engine_steps.rs",
+      "sha256": "3997f20f2ca77851de4b98fe0897d4008b831b03dc696a4de6caa9c8dccb6c16"
+    },
+    {
+      "path": "crates/engine/src/engine_storm.rs",
+      "sha256": "776147fbc5f7eded77d567f4e7c2d2c8b1816769aeee2038d54384ccbc3087ca"
+    },
+    {
+      "path": "crates/engine/src/engine_targeting.rs",
+      "sha256": "69869073dc520b726c95b5642386e149ff6c2310e3a1bddf97642851f2414180"
+    },
+    {
+      "path": "crates/engine/src/engine_zone_effects.rs",
+      "sha256": "5ca90e4ad0290f026d23144f2212a7627cf90e785bd830d6eb0cc76044422968"
+    },
+    {
+      "path": "crates/engine/src/engine_suspend.rs",
+      "sha256": "f698c5ce3c1582e7d294bde84336e2ee9974b535c5fe38d9282f332c0c4700f4"
+    },
+    {
+      "path": "tests/tdm_copy_suspend.rs",
+      "sha256": "f339c8f87483538bce98e139b23ee2aaae1c1e3422fab03d536c50991d9389b6"
+    }
+  ],
+  "authority": {
+    "oracle": [
+      {
+        "name": "Flamehold Grappler",
+        "oracle_id": "e2d21635-182f-4ebf-a6f5-d4c1fd7f9705",
+        "oracle_text": "First strike\nWhen this creature enters, copy the next spell you cast this turn when you cast it. You may choose new targets for the copy. (A copy of a permanent spell becomes a token.)"
+      },
+      {
+        "name": "Stormscale Scion",
+        "oracle_id": "cf37426d-b0ad-42c3-81be-79701aa4e0cf",
+        "oracle_text": "Flying\nOther Dragons you control get +1/+1.\nStorm (When you cast this spell, copy it for each spell cast before it this turn. Copies become tokens.)"
+      },
+      {
+        "name": "Taigam, Master Opportunist",
+        "oracle_id": "49f2cbc3-bd03-48e6-b1c4-d7f315b8579d",
+        "oracle_text": "Flurry \u2014 Whenever you cast your second spell each turn, copy it, then exile the spell you cast with four time counters on it. If it doesn't have suspend, it gains suspend. (At the beginning of its owner's upkeep, they remove a time counter. When the last is removed, they may play it without paying its mana cost. If it's a creature, it has haste.)"
+      }
+    ],
+    "oracle_source": {
+      "path": "data/standard/cards.json",
+      "sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0"
+    },
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "xmage_complete_reads": [
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/f/FlameholdGrappler.java",
+        "sha256": "5c04f42f289105cd4037312d71ab2c46e129530dcac9c8b16b576baf4f239fb9",
+        "read": "complete class including nested helpers"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/s/StormscaleScion.java",
+        "sha256": "2037afececca2b63cf8b1572750884e6688ed897c42863f61731bb1f679d95b3",
+        "read": "complete class including nested helpers"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/t/TaigamMasterOpportunist.java",
+        "sha256": "b4c45044f7c02ef37505bda8d69e197739caf1874945ae97f34e6d707ec00cea",
+        "read": "complete class including nested helpers"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/common/delayed/CopyNextSpellDelayedTriggeredAbility.java",
+        "sha256": "40d1a8d8178748adf58bc8bd5bfeea6ab90afbcfe49d639a730d7ae1ed9c5a01",
+        "read": "complete class including nested helpers"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/common/delayed/CastNextSpellDelayedTriggeredAbility.java",
+        "sha256": "a6b2f8fcd1d6e64faa8dfa3e5c3d07e0127ffdb31f8b046b619bd04768bce4cc",
+        "read": "complete class including nested helpers"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+        "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172",
+        "read": "complete class including nested helpers"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/keyword/StormAbility.java",
+        "sha256": "50780a61df4fcc4f08d1055021373554d896532c977990f209edf1dd3606c1fd",
+        "read": "complete class including nested helpers"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/keyword/SuspendAbility.java",
+        "sha256": "a274a7e7a0b7e2f5509691be21be5b47e04c69992c38e22a6de1081c4ba58abf",
+        "read": "complete class including nested helpers"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/continuous/GainSuspendEffect.java",
+        "sha256": "f353fcbff204368f6250b56ced404b789a6c0dc4094c4bea1a86fa7048f1abbf",
+        "read": "complete class including nested helpers"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/condition/common/SuspendedCondition.java",
+        "sha256": "067d2abf774ac4f878ba70a7bec5c20560be3b3d0d76803ff19de5a50d51268d",
+        "read": "complete class including nested helpers"
+      }
+    ],
+    "rules": {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "sections": [
+        "112.1",
+        "400.7",
+        "601.2",
+        "702.40",
+        "702.62",
+        "707.10a-g"
+      ]
+    },
+    "release_notes": {
+      "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+      "path": "/tmp/tdm-release-notes.txt",
+      "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+      "sections_read": "Flamehold Grappler, Stormscale Scion, Taigam complete card-specific notes"
+    }
+  },
+  "source_discrepancies": [
+    "Taigam XMage moveCards(spell.getMainCard()) can follow a countered original into its new graveyard incarnation. Rust copies last-known choices but exiles only the exact original still on stack, following CR112.1/400.7 and official Taigam notes.",
+    "Current Suspend CR702.62a grants an optional immediate play. The stale Java comment describing a mandatory cast does not control Rust behavior."
+  ],
+  "implementation": [
+    "One typed SpellCopyCount and retarget policy share the existing allocator/copy target pipeline; old narrow callbacks retain their event populations.",
+    "Actual cast count sums both players across source zones, subtracts current actual cast and freezes on the storm trigger; uncast copies never enter cast history.",
+    "No-retarget commits inherited exact targets/modes/X/distributions and paid cost facts without exposing a Retarget choice, including latest departure LKI when original left.",
+    "Permanent spell copies use inherited resolution-as-token machinery and bypass token-creation doubling.",
+    "Sparse exact physical exile grants survive zero counters; Time central mutation queues a separate counterable last-removal packet from any source. Owner upkeep tick has its own counterable packet and suspension intervening-if.",
+    "Last-removal resolution requires the same exact exile card; adding another Time counter does not cancel the already-triggered play offer. Existing resolution free-cast flow gives optional immediate casting, X0 and mandatory additional costs/restrictions.",
+    "Suspend creature haste is an external chronological layer-six effect; it survives turns/copy changes and exact Stack-to-Battlefield continuation, is not copied onto spell copies, and ends permanently on actual spell/permanent control loss or zone departure.",
+    "Generic change_controller now accepts exact stack objects and updates their actual spell packet controller; no card-specific branches."
+  ],
+  "focused_cases": [
+    "next_arbitrary_spell_copy_is_one_shot_source_independent_and_permanent_copies_are_not_created",
+    "unused_next_copy_expires_and_existing_narrow_callback_does_not_consume_a_permanent_cast",
+    "printed_storm_freezes_all_players_prior_actual_casts_including_countered_and_graveyard_spells",
+    "zero_count_storm_and_countered_storm_ability_make_no_extra_permanents",
+    "no_retarget_policy_keeps_modal_targets_and_divisions_after_original_departure",
+    "no_retarget_policy_preserves_cast_x_and_paid_cost_facts_for_a_permanent_copy",
+    "optional_retarget_copy_policy_is_owned_transactional_and_restorable_after_parent_disposal",
+    "suspend_grants_exact_physical_exile_card_and_only_owner_upkeep_ticks_with_counterable_packet",
+    "suspend_last_counter_removal_any_time_has_separate_counterable_cast_trigger_and_no_delayed_permission",
+    "suspend_upkeep_last_counter_triggers_after_tick_and_rechecks_exact_suspension",
+    "suspend_free_cast_gains_noncopyable_haste_and_control_loss_ends_it_permanently",
+    "suspend_free_cast_still_pays_mandatory_additional_cost_and_cannot_bypass_cast_prohibition",
+    "suspend_never_rebinds_countered_original_reexiled_card_or_departed_last_counter_source",
+    "suspend_ephemeral_spell_copy_never_receives_persistent_grant_or_time_counters",
+    "suspend_optional_cast_is_public_owned_transactional_and_restorable_after_parent_disposal",
+    "suspend_free_x_is_zero_and_a_zero_toughness_creature_still_dies_after_cast",
+    "suspend_haste_obeys_layer_six_removal_later_grants_and_exact_battlefield_departure",
+    "copy_suspend_hot_layout_and_empty_observation_wire_are_measured"
+  ],
+  "focused_obligations": [
+    "Next arbitrary spell once, source departure, creature/artifact eligibility, expiry and old narrow callback preservation",
+    "Printed storm both players, prior countered spell, prior graveyard flashback, count freeze before later counter, zero/countered storm ability and no creation doubling",
+    "No retarget modal divided targets after original departure; permanent X and positive mandatory paid-cost receipt inheritance",
+    "Exact physical exile4Time, owned public grant state, both-seat owner upkeep tick and countered tick",
+    "Any-time last counter removal, independently countered cast trigger, Time0 no later permission, adding Time before trigger resolution, optional decline",
+    "Tick removes last counter and queues second trigger after tick; exact source departure makes old tick ineffective",
+    "Free X0 creature death; creature haste through turns/Stack-to-BF, independent spell copy has no haste, permanent or spell control loss does not restore on return",
+    "Mandatory sacrifice min1 re-paid on free cast; positive selected/count1 receipt and exact graveyard outcomes; unpaid and stale resource rejects; casting prohibition cannot be bypassed",
+    "Haste layer-six later removal/new grant chronology; exact BF departure removes it",
+    "Countered original LKI copy without graveyard rebind, re-exile new incarnation, old last-removal trigger cleanup",
+    "Ephemeral copied spell receives neither counters nor persistent grant, ceases and reused slot remains clean",
+    "Paid target legality/privacy, wrong actor, raw/index/sibling/restore after parent disposal at retarget and Suspend play offer roots"
+  ],
+  "first_attempt": {
+    "report": "/home/altf4/.cache/rustmage-tdm/copy-suspend-first/native.json",
+    "sha256": "3d279f926b8e3183dacf5340c2c45dc13a4c4a11bc6743c4769c08b64ca0ce47",
+    "compile_seconds": 112.35043627599953,
+    "execution_seconds": 0.03490057899034582,
+    "result": "17/18 passed; fixture expected paid_additional_cost for an unconsumed fixed sacrifice, which correctly omits that receipt. No engine failure or repair.",
+    "correction": "Use real mandatory sacrifice-range min1 so existing paid-cost receipt exists; independently assert selected/count1, original/copied receipt equality, second payment and stale/unpaid rejection.",
+    "engine_inputs_unchanged": true,
+    "source_hash_manifest": "/home/altf4/.cache/rustmage-tdm/copy-suspend-first/source-hashes.json",
+    "resource": {
+      "path": "/home/altf4/.cache/rustmage-build-reports/a53bf6cbcd394a56ad05bdefda9c5932.json",
+      "sha256": "212087f1ded747f70656163dbb8a91dc766ce53033e51f5aed36d9d38a0f06b2",
+      "terminal": true,
+      "exit_code": 1,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1910210560,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "final_runs": [
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-fixture-fixed/native.json",
+      "sha256": "1bc2fa867e1e533dda78041959a20eb24692c81c94ca6e4c0d810085eca8a944",
+      "cases": 18,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 1.8697747269761749,
+      "execution_seconds": 0.034630277019459754,
+      "total_seconds": 1.9050630689889658,
+      "compile_command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "tdm_copy_suspend",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "binaries": [
+        {
+          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_copy_suspend-a39e25d9caedb9ce",
+          "sha256": "175d05bfba5b2549a82800d05cc93bb19c824f2d29b2446f122c387f88f0109e"
+        }
+      ],
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/3a48fabd68b5443aa312d85a3f45e059.json",
+        "sha256": "ad5fd659a9818a239f801194c95932b5c8bdca062ea32a9b578509b34d842dc2",
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 383164416,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-permanent/native.json",
+      "sha256": "88116ca8a84cb85c90d82235ebed36e7a33189a2c7d9d748c19b49d9a18a9559",
+      "cases": 10,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 0.8666230980015825,
+      "execution_seconds": 0.024816121003823355,
+      "total_seconds": 0.8919813459797297,
+      "compile_command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_permanent_cast_copy_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "binaries": [
+        {
+          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_permanent_cast_copy_engine-07da1f2882c32cd8",
+          "sha256": "47b4c06e7ea2078615027019072eaff823f4c82e8b23c4cb664e6ed3f098d3d4"
+        }
+      ],
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/eacebbc1794040879e953288c96cbe9c.json",
+        "sha256": "3a3976edf821641e932b32336f43cdb4e4600f607938f0598da3d4bc24b322bd",
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 222613504,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-storm/native.json",
+      "sha256": "8496f786c1ac9b5f414331d639ab4516c8149ee1e5f52d51ae49e21006e7c15f",
+      "cases": 5,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 22.816583370004082,
+      "execution_seconds": 0.036073070019483566,
+      "total_seconds": 22.85712555598002,
+      "compile_command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "binaries": [
+        {
+          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+          "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da"
+        }
+      ],
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/326ab30e40f84b2e90d008fba5a3c084.json",
+        "sha256": "fa8cce0d6310d69fc10ffec824bc0f8cc0414cfeea40cdaec9de04c9c3dd3fd6",
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1884610560,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-delayed/native.json",
+      "sha256": "c47fc32d61838399f3e07cdd9db9d88ed022daa049f0c567dec0ad454aa01a8a",
+      "cases": 2,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 0.1151807279966306,
+      "execution_seconds": 0.02436630000011064,
+      "total_seconds": 0.1400967679801397,
+      "compile_command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "binaries": [
+        {
+          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+          "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da"
+        }
+      ],
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/13b2fd382f214dafab5107eaa8ecc58b.json",
+        "sha256": "b21c0d78ba65ba3e039c2a2a8ecf6f8d219d0474146c7e43e735a29df453ba14",
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 36528128,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-offer/native.json",
+      "sha256": "215e889081c74e727bfcf1c90fd66077f87c9431742869369f06b5b4ac33e688",
+      "cases": 2,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 0.06476326999836601,
+      "execution_seconds": 0.03299546800553799,
+      "total_seconds": 0.09829609998269007,
+      "compile_command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "binaries": [
+        {
+          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+          "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da"
+        }
+      ],
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/d263f91e74384438af22f789dedf990f.json",
+        "sha256": "0cab13c21f312dfce0e21687cbdd20e925469df6633fb880ef166cd5fcadaba4",
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33783808,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    }
+  ],
+  "final_summary": {
+    "cases": 37,
+    "focused": 18,
+    "inherited": 19,
+    "all_terminal": true,
+    "failed": 0,
+    "timeouts": false,
+    "compile_seconds": 25.732925192976836,
+    "execution_seconds": 0.1528812360484153,
+    "memory_peak_bytes": 1910210560,
+    "memory_limit_bytes": 6442450944
+  },
+  "layout": {
+    "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-fixture-fixed/layout.txt",
+    "sha256": "1c6a8f10dd515a784478151cb5bfea6baa9e3c2628f83425cd8a89b2b6cd3b50",
+    "previous": {
+      "Object": 160,
+      "ObjectView": 528,
+      "State": 4944,
+      "DamageSource": 160
+    },
+    "current": {
+      "Object": 160,
+      "ObjectView": 528,
+      "State": 4960,
+      "DamageSource": 160
+    },
+    "reason": "One optional cold State pointer; State size+16 includes alignment. No Object/ObjectView/DamageSource field added."
+  },
+  "wire_extensions": {
+    "actions": [],
+    "stack_kinds": [
+      "SuspendTick",
+      "SuspendCast"
+    ],
+    "keyword_effect_origins": [
+      "SuspendHaste { controller }"
+    ],
+    "observation": [
+      "suspend_cards: Option<Vec<ObjectRef>>, omitted when none; face-up exact exile grants including Time0"
+    ],
+    "private_state": [
+      "SuspendState.cards/offering/casting are owned, private and not emitted"
+    ],
+    "global_schema_bumped": false
+  },
+  "validation": [
+    "rustfmt --edition2024 --check --config skip_children=true all15 Rust source/test files",
+    "git diff --check",
+    "All14 engine hashes unchanged across first18, corrected18 and compatibility runs; all consuming inputs fixed until terminal. All Cargo ran through resource_guard via native runner."
+  ],
+  "limitations": [
+    "No TDM definitions/admissions were authored. Final-source independent nonauthor reviews, assembled schema/trace integration and release/full-set validation remain pending.",
+    "No generic hand Suspend cost action is needed or implemented for these printed obligations; this work implements gained Suspend on the exiled physical card.",
+    "Land play delegates existing resolution-offer allowance; the frozen Standard manifest has no land-front/spell-back MDFC requiring a new face choice.",
+    "Focused fixture timings are not implementation or full-simulation throughput measurements."
+  ],
+  "preserved_shared_libraries": [
+    {
+      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
+      "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7"
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
+      "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a"
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
+      "sha256": "3cc2dedbc03f134edad33755450fbbb1cda9e040195374fe8e361bf8fa3f64ee"
+    }
+  ]
+}

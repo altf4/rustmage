@@ -22,6 +22,10 @@ pub enum KeywordEffectOrigin {
         source: ObjectRef,
         controller: Player,
     },
+    /// This external haste effect ends permanently on the first actual control loss.
+    SuspendHaste {
+        controller: Player,
+    },
     Suspected,
     Counter {
         kind: CounterKind,

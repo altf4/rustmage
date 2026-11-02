@@ -83,6 +83,9 @@ pub(super) fn applies<W: ability_world::CharacteristicWorld + ?Sized>(
     row: &KeywordEffectView,
 ) -> bool {
     match row.origin {
+        KeywordEffectOrigin::SuspendHaste { controller } => {
+            world.object(row.recipient.card).controller == controller
+        }
         KeywordEffectOrigin::Counter { kind } => world.counter_count(row.recipient.card, kind) > 0,
         _ => true,
     }

@@ -130,6 +130,9 @@ pub mod prepared;
 #[doc(hidden)]
 #[path = "engine_stack_copies.rs"]
 pub mod stack_copies;
+#[doc(hidden)]
+#[path = "engine_suspend.rs"]
+pub mod suspend;
 use copies::CopyFaces;
 pub use copies::CopyRecipe;
 #[doc(hidden)]
@@ -1931,6 +1934,8 @@ impl SpellView {
             | StackKind::DelayedWarpExile
             | StackKind::SiegeDefeat
             | StackKind::DecayedAttack
+            | StackKind::SuspendTick
+            | StackKind::SuspendCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -2080,6 +2085,8 @@ impl SpellView {
                     prior_spells: false,
                 }],
             )),
+            StackKind::SuspendTick => Some((TargetPlan::NONE, &[Instruction::ResolveSuspendTick])),
+            StackKind::SuspendCast => Some((TargetPlan::NONE, &[Instruction::ResolveSuspendCast])),
             StackKind::DecayedAttack => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeSourceAtEndCombat]))
             }
@@ -2172,6 +2179,8 @@ pub enum StackKind {
     SiegeDefeat,
     CopyEndStepSacrifice,
     DecayedAttack,
+    SuspendTick,
+    SuspendCast,
     CopyEndStepConditionalSacrifice,
     CasualtyCopy,
     DelayedReturn,
@@ -2767,6 +2776,7 @@ struct State {
     uncounterable_spell_ids: Option<Box<Vec<u64>>>,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
+    suspend: Option<Box<suspend::SuspendState>>,
     miracle: Option<Box<miracle::MiracleState>>,
     preparations: prepared::Rows,
     adventures: Option<Box<adventure::AdventureState>>,
@@ -3458,6 +3468,9 @@ pub struct Observation {
     pub embalm_abilities: Option<Vec<EmbalmAbilityView>>,
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
     pub resolution_free_casts: Option<ResolutionFreeCasts>,
+    /// Exact public exile cards that have gained suspend, including cards with no time counters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suspend_cards: Option<Vec<ObjectRef>>,
     pub cascade: Option<CascadeView>,
     pub miracle: Option<MiracleChoiceView>,
     pub adventures: Vec<AdventurePermission>,
@@ -3890,6 +3903,7 @@ impl Game {
                 uncounterable_spell_ids: None,
                 graveyard_type_uses: None,
                 resolution_free_casts: None,
+                suspend: None,
                 miracle: None,
                 temporary_abilities: None,
                 self_granted_abilities: None,
@@ -6667,6 +6681,7 @@ impl Game {
                             .is_some_and(|offer| offer.casts_remaining == Some(0)),
                     ));
                 }
+                self.finish_suspend_offer();
                 self.finish_paradigm_copy_offer();
                 self.state.resolution_free_casts = None;
                 self.run_program();
@@ -8863,6 +8878,7 @@ impl Game {
             self.state.step_sources.retain(|&source| source != id);
             self.state.damage_sources.retain(|&source| source != id);
         }
+        self.forget_suspend_card(before.reference);
         self.forget_borrowed_source(before.reference);
         self.forget_power_up_object(before.reference);
         if let Some(state) = &mut self.state.roles {
@@ -10649,6 +10665,7 @@ impl Game {
                 .as_deref()
                 .filter(|f| f.origin != Zone::Library || self.shares_information(viewer, f.player))
                 .cloned(),
+            suspend_cards: self.suspend_views(),
             graveyard_type_uses: s
                 .graveyard_type_uses
                 .as_ref()
@@ -11190,6 +11207,7 @@ impl Game {
             })
             + copy_characteristics::cull_bytes(&s.nightmare_cull)
             + stack_copies::owned_bytes(&s.stack_copy_data)
+            + suspend::owned_bytes(&s.suspend)
             + declared_attack_history::owned_bytes(&s.declared_attack_history)
             + delayed_target_events::owned_bytes(&s.delayed_target_events)
             + s.delayed_artifact_copies.as_ref().map_or(0, |rows| {

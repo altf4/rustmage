@@ -209,6 +209,8 @@ impl Announcement {
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::DecayedAttack
+            | StackKind::SuspendTick
+            | StackKind::SuspendCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -353,6 +355,8 @@ impl Announcement {
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
             | StackKind::DecayedAttack
+            | StackKind::SuspendTick
+            | StackKind::SuspendCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -666,6 +670,8 @@ impl Announcement {
                 StackKind::ActivatedAbility { .. } => self.cost_options().count() > 1,
                 StackKind::TriggeredAbility { .. }
                 | StackKind::DecayedAttack
+                | StackKind::SuspendTick
+                | StackKind::SuspendCast
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::CopyEndStepConditionalSacrifice
                 | StackKind::CasualtyCopy

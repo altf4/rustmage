@@ -398,9 +398,14 @@ impl Game {
         let prior = self.state.players[spell.controller.index()]
             .instant_sorcery_cast_this_turn
             .saturating_sub(1);
+        let earlier_spells = self.earlier_spells_this_turn();
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
             if let Some((_, program)) = trigger.program()
                 && let Some(amount) = program.iter().find_map(|i| match i {
+                    Instruction::CopyCapturedSpell { count, .. } => Some(match count {
+                        crate::cards::SpellCopyCount::One => 1,
+                        crate::cards::SpellCopyCount::EarlierSpellsThisTurn => earlier_spells,
+                    }),
                     Instruction::CopyCastSpell {
                         prior_spells: false,
                     } => Some(1),
@@ -420,18 +425,21 @@ impl Game {
                 }));
             }
         }
-        // The remaining delayed copy abilities only observe instant/sorcery
-        // casts, even when a different prepared spell needed capture above.
-        if !instant_or_sorcery {
-            return;
-        }
+        // Existing narrow callbacks keep their instant/sorcery population;
+        // a one-shot any-spell callback observes permanent spells as well.
         let Some(state) = &mut self.state.stack_copy_data else {
             return;
         };
         let mut delayed = std::mem::take(&mut state.delayed);
         let mut retained = Vec::new();
         for mut trigger in delayed.drain(..) {
-            if delayed_copy_all_spells(&trigger) || delayed_copy_exhaust(&trigger) {
+            let any_type = matches!(trigger.kind, StackKind::TriggeredAbility { ability }
+                if trigger.trigger_definition().triggers()[usize::from(ability)]
+                    .condition.event() == TriggerCondition::DelayedSpellCastAny);
+            if delayed_copy_all_spells(&trigger)
+                || delayed_copy_exhaust(&trigger)
+                || (!instant_or_sorcery && !any_type)
+            {
                 retained.push(trigger);
                 continue;
             }
@@ -744,6 +752,13 @@ impl Game {
         self.copy_captured_spell(item)
     }
     pub(super) fn copy_captured_spell(&mut self, item: &SpellView) -> bool {
+        self.copy_captured_spell_with_targets(item, true)
+    }
+    pub(super) fn copy_captured_spell_with_targets(
+        &mut self,
+        item: &SpellView,
+        retarget: bool,
+    ) -> bool {
         let Some(event) = &item.copy_event else {
             return false;
         };
@@ -775,7 +790,22 @@ impl Game {
             remaining: event.amount - 1,
             victim: None,
         });
-        self.advance_copy_targets()
+        if retarget {
+            self.advance_copy_targets()
+        } else {
+            // Targets, modes, X and distributions are inherited verbatim, even
+            // if targets became illegal. No target-choice Pending is exposed.
+            while self
+                .state
+                .stack_copy_data
+                .as_ref()
+                .is_some_and(|s| s.retarget.is_some())
+            {
+                self.commit_stack_targets();
+            }
+            self.release_stack_copy_state();
+            false
+        }
     }
     pub(super) fn change_single_stack_target(&mut self, item: &SpellView) -> bool {
         let Some(victim) = item

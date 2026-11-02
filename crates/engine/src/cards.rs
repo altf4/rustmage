@@ -1309,6 +1309,14 @@ pub struct EntryCopySpec {
     pub optional: bool,
 }
 
+/// Quantity frozen at the triggering cast, independently of later spells/copies.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum SpellCopyCount {
+    One,
+    EarlierSpellsThisTurn,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Instruction {
@@ -1501,6 +1509,10 @@ pub enum Instruction {
     },
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
+    /// Register a one-shot, any-type next-spell callback until cleanup.
+    CopyNextSpell {
+        ability: u16,
+    },
     CopyNextInstantSorcery {
         ability: u16,
     },
@@ -1526,6 +1538,17 @@ pub enum Instruction {
     CopySourceFromLinkedExile {
         base: (i16, i16),
     },
+    /// Copy the captured actual spell, optionally permitting new legal targets.
+    CopyCapturedSpell {
+        count: SpellCopyCount,
+        retarget: bool,
+    },
+    /// Exile only the unchanged captured stack spell, then grant suspend and time counters.
+    SuspendCapturedSpell {
+        time: u16,
+    },
+    ResolveSuspendTick,
+    ResolveSuspendCast,
     CopyCastSpell {
         prior_spells: bool,
     },
@@ -4546,6 +4569,8 @@ pub enum TriggerCondition {
     },
     /// A registered next-spell callback, never a passive battlefield observer.
     DelayedSpellCastSourcePower,
+    /// Source-independent one-shot callback for the next spell of any type.
+    DelayedSpellCastAny,
     SpellCast {
         relation: CastRelation,
         filter: CastFilter,

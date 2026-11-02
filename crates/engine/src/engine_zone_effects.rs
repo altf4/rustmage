@@ -43,10 +43,22 @@ impl Game {
         // Surviving attackers remain blocked after their blockers leave combat.
     }
     pub(super) fn change_controller(&mut self, object: ObjectRef, controller: Player) {
-        if !self.on_battlefield(object.card)
-            || self.object_ref(object.card) != object
+        if !matches!(
+            self.state.objects[object.card as usize].zone,
+            Zone::Battlefield | Zone::Stack
+        ) || self.object_ref(object.card) != object
             || self.state.objects[object.card as usize].controller == controller
         {
+            return;
+        }
+        self.end_suspend_haste(object);
+        if self.state.objects[object.card as usize].zone == Zone::Stack {
+            self.state.objects[object.card as usize].controller = controller;
+            for spell in &mut self.state.stack {
+                if spell.source.is_some_and(|source| source.object == object) {
+                    spell.controller = controller;
+                }
+            }
             return;
         }
         let previous = self.state.objects[object.card as usize].controller;

@@ -660,6 +660,7 @@ impl Game {
         if paid.is_none() && item.source.expect("cast spell has source").card.x_symbols() > 0 {
             item.x = Some(0);
         }
+        self.remember_suspend_cast(object, item.id);
         self.open_payment_announcement(item, Counters::default(), None);
     }
 }

@@ -4623,6 +4623,8 @@ impl Game {
             ),
             StackKind::TriggeredAbility { .. }
             | StackKind::DecayedAttack
+            | StackKind::SuspendTick
+            | StackKind::SuspendCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -4729,6 +4731,8 @@ impl Game {
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::DecayedAttack
+            | StackKind::SuspendTick
+            | StackKind::SuspendCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
