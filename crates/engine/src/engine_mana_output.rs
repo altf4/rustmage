@@ -178,6 +178,29 @@ impl ManaProduction {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    /// One domain for the observation and checked raw/index actions. Only an
+    /// owned paid activation has an enclosing payment promise to preserve.
+    pub(super) fn visit_effect_mana_choices(&self, mut emit: impl FnMut(Mana) -> bool) -> bool {
+        let Pending::EffectMana { production, .. } = self.state.pending else {
+            return false;
+        };
+        let owned = self
+            .state
+            .announcing
+            .as_ref()
+            .is_some_and(|a| a.mana_output.is_some());
+        // A foreign choice can already have stranded the parent. CR605 requires
+        // finishing this captured child before the existing rollback/replay.
+        let escaping = self.foreign_cast_choice_pending()
+            && self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.capture.is_some());
+        production.visit(|mana| {
+            (!owned || escaping || self.mana_output_choice_fundable(mana)) && emit(mana)
+        })
+    }
     pub(super) fn visit_activation_mana_outputs(
         &self,
         production: ManaProduction,

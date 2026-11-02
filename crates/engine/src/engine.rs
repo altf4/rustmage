@@ -4931,8 +4931,10 @@ impl Game {
                     return true;
                 }
             }
-            Pending::EffectMana { production, .. } => {
-                if production.visit(|production| emit(Action::ChooseMana { production })) {
+            Pending::EffectMana { .. } => {
+                if self
+                    .visit_effect_mana_choices(|production| emit(Action::ChooseMana { production }))
+                {
                     return true;
                 }
             }
@@ -10779,8 +10781,8 @@ impl Game {
             },
             mana_choices: {
                 let mut options = Vec::new();
-                if owns_choice && let Pending::EffectMana { production, .. } = s.pending {
-                    production.visit(|mana| {
+                if owns_choice {
+                    self.visit_effect_mana_choices(|mana| {
                         options.push(mana);
                         false
                     });

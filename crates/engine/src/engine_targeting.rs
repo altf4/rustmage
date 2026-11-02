@@ -2217,7 +2217,11 @@ impl Game {
             .then(|| self.state.pending.clone());
         if production.is_some() {
             self.suspend_mana_announcement();
-            if production.is_some_and(|p| self.mana_output(&item, p).is_none()) {
+            if resume_mana
+                .as_ref()
+                .is_none_or(|pending| *pending == Pending::Priority)
+                && production.is_some_and(|p| self.mana_output(&item, p).is_none())
+            {
                 self.capture_announced_mana_quality(&item, production);
             }
         }
@@ -2238,16 +2242,37 @@ impl Game {
                     .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
-        self.state.announcing =
-            Some(self.payment_announcement(item, counters, production, origin_counter_cost));
-        if let Some(output) = self
-            .state
-            .announcing
-            .as_mut()
-            .and_then(|a| a.mana_output.as_mut())
+        let mut announcement =
+            self.payment_announcement(item, counters, production, origin_counter_cost);
+        // Fixed direct mana keeps its hot path. An announced fixed ability in
+        // a guided/optional payment window must own that window through costs.
+        if announcement.mana_output.is_none()
+            && resume_mana
+                .as_ref()
+                .is_some_and(|pending| *pending != Pending::Priority)
         {
+            let selected = production.expect("mana resume has production");
+            let recipe = self
+                .announced_mana_recipe(&announcement.item, production)
+                .expect("announced mana recipe");
+            let instance = announcement
+                .item
+                .mana_activation_key()
+                .expect("mana activation");
+            announcement.mana_output = Some(Box::new(mana_output::ManaOutput::new(
+                self,
+                recipe,
+                selected,
+                instance,
+                announcement.item.controller,
+                self.announced_mana_quality(&announcement.item, production)
+                    .map(|(_, q)| q),
+            )));
+        }
+        if let Some(output) = announcement.mana_output.as_mut() {
             output.resume = resume_mana.map(Box::new);
         }
+        self.state.announcing = Some(announcement);
         self.state
             .announcing
             .as_mut()

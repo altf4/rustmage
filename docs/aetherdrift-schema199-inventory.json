@@ -593,5 +593,15 @@
       "prior_198_keeps_real_burglars_plot_single_group_capture_eligible"
     ],
     "contract": "docs/aetherdrift-aggregate-target-groups-evidence.json"
+  },
+  "late_mana_completion_followup": {
+    "base_revision": "4c16a4b7f",
+    "new_wire_fields": [],
+    "new_owned_shapes": [],
+    "receipt_population": "Existing Announcement.mana_output is additionally retained for fixed announced mana returning to nonPriority non-announcement windows. It retains the existing recipe/quality/resume shape.",
+    "eligibility": "Existing active/suspended receipt and opaque payment/entry guards reject this population. Existing selected owned ChooseMana journal guard covers completion-filtered late choices; legacy resolving mana choices remain eligible. No broad marker or action stripping.",
+    "evidence": "docs/aetherdrift-late-mana-completion-evidence.json",
+    "central_marker_edited": false,
+    "trace_corpus_edited": false
   }
 }

@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "scope": "Generic owned mana output and exact provenance completion; no card definitions, generated linkage, wire fields or policy bias changes.",
+  "base_revision": "4c16a4b7f",
+  "corpus_witnesses": [
+    {
+      "pair": 1,
+      "seed": 921502,
+      "swapped": true,
+      "decision": 398,
+      "parent": "Draconautics Engineer activated ability0, locked R",
+      "failure": "Last Treasure paid tap+sacrifice, unfiltered late G choice stranded mandatory parent PayCosts with Concede only."
+    },
+    {
+      "pair": 8,
+      "seed": 922200,
+      "swapped": true,
+      "decision": 278,
+      "parent": "AnnounceCast payment",
+      "failure": "The same late Treasure color boundary stranded the frozen cast parent."
+    }
+  ],
+  "rules_source": {
+    "path": "<cache>/rustmage-authoring/rules/MagicCompRules-20260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "rules": [
+      "118.2 and601.2g: activated mana abilities are available in mana payment windows.",
+      "601.2f/h and602.2b: the locked complete payment cannot become a partial payment; existing guided API preserves a completion at each own decision.",
+      "605.3b: an activated mana ability completes immediately, including post-cost entry/color choices, before its enclosing payment resumes.",
+      "605.3c: an unfinished activation cannot recurse into its own instance; a resolved repeatable converter may activate anew.",
+      "733: preserve existing foreign-choice rollback/replay rather than preventing a captured paid child from finishing."
+    ]
+  },
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "full_sources_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/d/DraconauticsEngineer.java",
+      "sha256": "24b42c5275c20b25cbf46012a2e55f4e34935013d5cdcfe51f917b34f462dc1a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+      "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+      "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+      "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5"
+    }
+  ],
+  "source_contract": "TreasureAbility pays tap and sacrifice before AddManaOfAnyColorEffect chooses its color; ActivatedManaAbilityImpl usesStack=false. Oracle Draconautics requires the already locked red activation cost. XMage net-mana previews are not evidence that every later color preserves this library's mandatory guided payment contract.",
+  "boundaries": [
+    {
+      "boundary": "paid late output",
+      "change": "One visitor is shared by offered raw/index actions and actor-only Observation.mana_choices. An owned receipt enumerates its actual post-cost domain and tests each concrete vector through the frozen parent chain or guided terminal. Ordinary resolving AddMana has no receipt and retains its whole domain."
+    },
+    {
+      "boundary": "owned entries during mana costs",
+      "change": "Any receipt, including a selected nonzero dynamic preview, is evaluated in each projected post-cost entry world. Captured output quality, original controller, exact source departure power and frozen tap bonus are used once; child costs are not replayed."
+    },
+    {
+      "boundary": "provenance allocations",
+      "change": "Direct borrowed BF/GY mana actions reuse existing viable-plan preparation. Announced mana PayCosts enumerates exact physical allocations through the same frozen child completion, retaining complete viable plans for later scalar lot choices."
+    },
+    {
+      "boundary": "fixed announced resume",
+      "change": "Only announced fixed mana without an enclosing announcement and with a nonPriority pending window receives an existing cold receipt. It retains Plot/FaceUp/Attack/optional Resolution resume; ordinary fixed direct/priority paths remain unchanged. Legacy announcement_quality is not simultaneously captured for a new receipt."
+    }
+  ],
+  "negative_contracts": [
+    "Foreign entry choices may already have stranded a parent. When foreign_cast_choice_pending and an owned cast_rollback capture exist, the paid child keeps its whole legitimate output domain, then existing concrete replay/rollback proceeds.",
+    "Priority mana, ordinary resolving AddMana and top-level optional ResolutionMana with Decline retain every legitimate color/allocation. Nested real announcements still owe their own costs.",
+    "FaceUp and Attack retain existing abort/rollback contracts; no new general checkpoint or rollback representation.",
+    "An exact Plot subject must still be the same owned card in hand; projected resources and memo identity retain that otherwise inert object.",
+    "No Game clones or powerset enumeration. Output domains and provenance allocations use existing bounded visitors and FundingState queries; fixed direct fast paths do not allocate receipts."
+  ],
+  "own_test_target": "tests/dft_mana_entry_completion_engine.rs",
+  "own_test_map": {
+    "an_owned_entry_can_decline_copy_before_choosing_the_only_parent_funding_color": "Own optional copy decline is available before late W; exact sacrificed source power1, Turn quality, wrong-color transactional rejection, actor-only choices, real Pacifism attachment, both seats and owned raw/index/restore equality.",
+    "nonzero_previews_neither_admit_lost_quantity_nor_hide_new_quantity_during_entry": "Selected CountElf preview2: one return rejects loss below required3, two returns accept growth to required4; every own copier must become Elf, non-Elf/decline reject transactionally; no summoning-sick mana leakage; parent counter outcome and three owned branches in both seats.",
+    "a_departed_animated_mountain_receipt_adds_its_frozen_tap_bonus_exactly_once": "Animation power1 is frozen on paid source departure; copied entry may decline; five late colors plus exactly one captured red tap bonus fund parent1R; wrong quantity rejects, final pool and restricted-lot amount exact, both seats/raw/index/restore.",
+    "a_fixed_prefix_inside_a_root_plot_mana_child_cannot_exile_the_plotted_hand_subject": "Plot subject has an otherwise legal Hand exile-self G ability. Announced {1}->RR child owns root Plot resume with no announcement frames; its nested fixed prefix must preserve exact Plot subject. Bad exile rejects transactionally, Forest prefix completes child and Plot in both seats/raw/index/restore."
+  },
+  "coordinated_test_targets": [
+    "tests/dft_mana_payment_continuations_engine.rs (white/blue owner: borrowed+all announced route provenance; fixed actual Rubble Rouser Plot/FaceUp/optional resumes; converging valid plans and repeated terminal converter followups)",
+    "tests/dft_late_mana_outputs_engine.rs (green owner: actual Engineer+Treasure, cast/nonmana/mana/nested, optional/priority/quality/observation/Combination contrasts)"
+  ],
+  "existing_regression_targets": [
+    "tests/dft_mana_output.rs, especially a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once",
+    "tests/dft_deferred_mana.rs",
+    "tests/dft_activation_tax.rs",
+    "tests/legacy/assurance/schema199.rs: prior_198_rejects_active_and_suspended_mana_output_receipts_after_owned_restore and legacy resolving ChooseMana eligibility contrast"
+  ],
+  "prior_198_audit": "No public field, Action, enum or owned struct shape is added. Active/suspended Announcement.mana_output and opaque payment/entry continuations are already rejected. Selected owned ChooseMana is already rejected before journal completion, including these newly completion-filtered routes. Legacy resolving spell ChooseMana and ordinary direct fixed actions retain their prior eligibility. No additional broad marker, action erasure, version bump or baseline refresh is introduced.",
+  "validation": "Author ran rustfmt and git diff --check only. All scenario outcomes remain unexecuted pending root's one guarded integrated build and independent nonauthor reviews; this source ledger makes no runtime pass claim.",
+  "source_review_corrections": [
+    {
+      "boundary": "terminal constructor",
+      "correction": "The exact active source/ability/definition/borrowed-slot match installs continuation when either announcement frames exist OR its receipt owns a guided terminal. Empty frames do not drop Plot/FaceUp/Attack during nested fixed prefixes."
+    },
+    {
+      "boundary": "full allocation collection",
+      "correction": "Existential completion keeps its scoped boolean visited memo. Each physically distinct candidate in full-plan collection gets an independent scoped boolean memo, retaining equivalent successful suffixes without suppressing another valid actual allocation. Pruning within each boolean search is preserved."
+    }
+  ]
+}

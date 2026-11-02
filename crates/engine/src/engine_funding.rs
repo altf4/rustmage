@@ -956,6 +956,7 @@ impl<'g> FundingState<'g> {
                     && object.card.activations().iter().any(|a| a.source_zone() == object.zone && a.mana_production().is_some()))
                     || (life_replacement_possible && object.zone == Zone::Library && object.is_card())
                     || (graveyard_mana_cost && object.zone == Zone::Graveyard && object.owner == goal.actor && object.is_card())
+                    || game.plot_payment().is_some_and(|request| request.object.card == *id as CardId)
                     || (object.zone == Zone::Command && object.card.is_emblem()) || goal.reserve
                     .is_some_and(|(reference, _)| reference.card == *id as CardId)
                     || goal
@@ -1145,11 +1146,18 @@ impl<'g> FundingState<'g> {
                             == *definition
                         && a.item.borrowed_slot == *slot
                 })
-            && let Some(frames) = game.state.mana_announcement_stack.as_deref()
+            && (game.state.mana_announcement_stack.is_some()
+                || a.mana_output
+                    .as_ref()
+                    .and_then(|o| o.resume.as_deref())
+                    .is_some_and(|pending| game.guided_mana_goal(pending).is_some()))
         {
             result.set_funding_continuation(
                 a,
-                frames.as_slice(),
+                game.state
+                    .mana_announcement_stack
+                    .as_deref()
+                    .map_or(&[][..], |frames| frames.as_slice()),
                 game.state
                     .mana_lots
                     .as_deref()
@@ -2374,12 +2382,24 @@ impl<'g> FundingState<'g> {
         tap_bonus
     }
     fn add_funding_output(&mut self, step: &FundingMove, tap_bonus: u32, production: Mana) {
+        self.add_completed_mana(
+            production,
+            step.output.as_ref().map_or(step.quality, |o| o.quality),
+            tap_bonus,
+        );
+    }
+    fn add_completed_mana(
+        &mut self,
+        production: Mana,
+        quality: Option<mana_lots::Quality>,
+        tap_bonus: u32,
+    ) {
         for (pool, produced) in self.mana.iter_mut().zip(production) {
             *pool = pool
                 .checked_add(u128::from(produced))
                 .capacity("mana representation exhausted");
         }
-        if let Some(quality) = step.output.as_ref().map_or(step.quality, |o| o.quality) {
+        if let Some(quality) = quality {
             mana_lots::add_lot(&mut self.lots, quality, production.map(u128::from));
         }
         self.mana[3] = self.mana[3]
@@ -2526,6 +2546,10 @@ impl<'g> FundingState<'g> {
                                 .any(|row| row.recipient.card == r.id)
                     })
                     || self.continuation.as_ref().is_some_and(|c| c.selects(r.id))
+                    || self
+                        .game
+                        .plot_payment()
+                        .is_some_and(|request| request.object.card == r.id)
                     || self.power_sensitive
                     || self
                         .game
@@ -4784,9 +4808,17 @@ impl Game {
         external: Option<ObjectRef>,
         payment: Option<Mana>,
     ) -> bool {
-        let Some(frames) = self.state.mana_announcement_stack.as_deref() else {
+        let frames = self.state.mana_announcement_stack.as_deref().unwrap_or(&[]);
+        if frames.is_empty()
+            && !self.state.announcing.as_ref().is_some_and(|a| {
+                a.mana_output
+                    .as_ref()
+                    .and_then(|o| o.resume.as_deref())
+                    .is_some_and(|pending| self.guided_mana_goal(pending).is_some())
+            })
+        {
             return true;
-        };
+        }
         let mut child = self
             .state
             .announcing
@@ -5148,7 +5180,9 @@ impl Game {
         }
         for step in state.action_moves(&goal) {
             if state.visit_applied(&step, &mut |next| {
-                next.reachable(&goal, &mut HashSet::new())
+                next.guided_mana_resume_fundable(&Pending::PlotPayment {
+                    player: request.controller,
+                })
             }) && emit(state.action(&step))
             {
                 return true;
@@ -5244,8 +5278,12 @@ impl Game {
     /// completion of that window. Reuse its exact resource search, retaining
     /// complete plans so later scalar choices cannot mix incompatible prefixes.
     pub(super) fn prepare_mana_allocations(&mut self, action: &Action) {
-        let Action::ActivateMana { payment, .. } = action else {
-            return;
+        let payment = match action {
+            Action::ActivateMana { payment, .. }
+            | Action::ActivateBorrowedMana { payment, .. }
+            | Action::ActivateGraveyardBorrowedMana { payment, .. }
+            | Action::PayCosts { payment } => payment,
+            _ => return,
         };
         let Some(actor) = self.semantic_actor() else {
             return;
@@ -5258,6 +5296,53 @@ impl Game {
                 .as_ref()
                 .is_some_and(|state| state.replay.is_some())
         {
+            return;
+        }
+        if matches!(action, Action::PayCosts { .. }) {
+            let Some(a) = self
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| a.production.is_some())
+            else {
+                return;
+            };
+            let frames = self.state.mana_announcement_stack.as_deref().unwrap_or(&[]);
+            let terminal = a
+                .mana_output
+                .as_ref()
+                .and_then(|o| o.resume.as_deref())
+                .is_some_and(|pending| self.guided_mana_goal(pending).is_some());
+            if frames.is_empty() && !terminal {
+                return;
+            }
+            let goal = self.funding_goal(a);
+            let mut world = FundingState::from_game(self, &goal);
+            world.set_purpose(self.purpose_for_item(&a.item));
+            world.set_payment_context(a);
+            let quality = self
+                .state
+                .mana_lots
+                .as_ref()
+                .and_then(|m| m.announcement_quality.as_ref())
+                .map(|(_, q)| q);
+            world.set_funding_continuation(a, frames, quality);
+            let mut viable = Vec::new();
+            world.visit_funding_continuation_allocations(&goal, Some(*payment), &mut |plan| {
+                let allocation = plan
+                    .iter()
+                    .map(|row| row.map(|n| u32::try_from(n).expect("concrete action payment")))
+                    .collect::<Vec<_>>();
+                if !viable.contains(&allocation) {
+                    viable.push(allocation);
+                }
+                false
+            });
+            assert!(
+                !viable.is_empty(),
+                "validated mana payment has a completion"
+            );
+            self.state.mana_lots.as_mut().unwrap().prepared = Some(viable);
             return;
         }
         let (goal, convoke, evidence) = match self.state.pending {
@@ -5634,5 +5719,202 @@ impl Game {
         world.set_purpose(self.purpose_for_item(&proposed.item));
         world.set_payment_context(&proposed);
         world.reachable(&goal, &mut HashSet::new())
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl FundingState<'_> {
+    /// Costs and entry choices already belong to this world. Add only the
+    /// actual post-cost receipt output; never replay the child payment here.
+    pub(super) fn visit_paid_mana_output(
+        &self,
+        a: &Announcement,
+        selected: Option<Mana>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let bonus = a.item.mana_tap_bonus.unwrap_or(0);
+        let quality = a.mana_output.as_ref().map_or_else(
+            || {
+                self.game
+                    .state
+                    .mana_lots
+                    .as_ref()
+                    .and_then(|m| m.announcement_quality)
+                    .map(|(_, q)| q)
+            },
+            |o| o.quality,
+        );
+        let mut finish = |production| {
+            if selected.is_some_and(|chosen| chosen != production) {
+                return false;
+            }
+            let mut next = self.clone();
+            next.add_completed_mana(production, quality, bonus);
+            emit(&next)
+        };
+        if let Some(output) = &a.mana_output {
+            output.visit(
+                self,
+                a.item.source.expect("mana source").facts.power,
+                finish,
+            )
+        } else if let Some(production) = a.production {
+            finish(production)
+        } else {
+            emit(self)
+        }
+    }
+    pub(super) fn paid_mana_parent_fundable(&self, a: &Announcement) -> bool {
+        if let Some(parent) = self
+            .game
+            .state
+            .mana_announcement_stack
+            .as_deref()
+            .and_then(|frames| frames.last())
+        {
+            let goal = self.game.funding_goal(&parent.announcement);
+            self.reachable_with_evidence(
+                &goal,
+                parent.announcement.evidence.as_ref().map(|e| e.threshold),
+                &mut HashSet::new(),
+            )
+        } else {
+            a.mana_output
+                .as_ref()
+                .and_then(|o| o.resume.as_deref())
+                .is_none_or(|pending| self.guided_mana_resume_fundable(pending))
+        }
+    }
+    pub(super) fn guided_mana_resume_fundable(&self, pending: &Pending) -> bool {
+        let Some(goal) = self.game.guided_mana_goal(pending) else {
+            return true;
+        };
+        let mut next = self.clone();
+        next.set_purpose(mana_lots::Purpose::Other);
+        next.set_cost_context(None);
+        next.payment_source = None;
+        next.cost_group = None;
+        next.convoke = false;
+        next.waterbend = 0;
+        next.continuation = None;
+        next.continuation_memo = None;
+        // Reaching a non-announcement resume completed every mana frame. Only
+        // the now-finished chain is retired; a repeatable converter may run anew.
+        next.active_mana_keys = Some(Vec::new());
+        if let Pending::FaceUpPayment { .. } = pending {
+            next.required_face_up = self.game.face_up_payment().map(|r| r.object);
+        }
+        next.reachable_with_completion(&goal, None, &mut HashSet::new(), &mut |world| {
+            let valid = match pending {
+                Pending::PlotPayment { .. } => world.game.plot_payment().is_some_and(|r| {
+                    world.reference(r.object.card) == r.object
+                        && world.object(r.object.card).zone == Zone::Hand
+                        && world.object(r.object.card).owner == r.controller
+                }),
+                _ => true,
+            };
+            valid && world.cost_completion()
+        })
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn guided_mana_goal(&self, pending: &Pending) -> Option<FundingGoal> {
+        let (actor, required, generic) = match pending {
+            Pending::PlotPayment { .. } => {
+                let r = self.plot_payment()?;
+                (r.controller, r.cost.colored, r.cost.generic)
+            }
+            Pending::FaceUpPayment { .. } => {
+                let r = self.face_up_payment()?;
+                (r.controller, r.cost.colored, r.cost.generic)
+            }
+            Pending::AttackPayment { .. } => {
+                let r = self.state.attack_payment.as_ref()?;
+                (r.player, [0; 6], r.generic)
+            }
+            _ => return None,
+        };
+        Some(FundingGoal {
+            actor,
+            required,
+            generic,
+            reserve: None,
+            source: None,
+        })
+    }
+    pub(super) fn paid_mana_parent_world<'g>(&'g self, a: &'g Announcement) -> FundingState<'g> {
+        if let Some((parent, outer)) = self
+            .state
+            .mana_announcement_stack
+            .as_deref()
+            .and_then(|frames| frames.split_last())
+        {
+            let goal = self.funding_goal(&parent.announcement);
+            let mut world = FundingState::from_game_with_convoke(
+                self,
+                &goal,
+                parent.announcement.item.kind == StackKind::Spell
+                    && parent
+                        .announcement
+                        .item
+                        .source
+                        .expect("parent source")
+                        .card
+                        .has_convoke(),
+            );
+            world.set_purpose(self.purpose_for_item(&parent.announcement.item));
+            world.set_payment_context(&parent.announcement);
+            world.set_funding_continuation(
+                &parent.announcement,
+                outer,
+                parent.quality.as_ref().map(|(_, q)| q),
+            );
+            world
+        } else {
+            let goal = a
+                .mana_output
+                .as_ref()
+                .and_then(|o| o.resume.as_deref())
+                .and_then(|pending| self.guided_mana_goal(pending))
+                .unwrap_or(FundingGoal {
+                    actor: a.item.controller,
+                    required: [0; 6],
+                    generic: 0,
+                    reserve: None,
+                    source: None,
+                });
+            let mut world = FundingState::from_game(self, &goal);
+            world.set_purpose(mana_lots::Purpose::Other);
+            world.set_cost_context(None);
+            world.payment_source = None;
+            world.cost_group = None;
+            world.convoke = false;
+            world.waterbend = 0;
+            world.continuation = None;
+            world.continuation_memo = None;
+            world.active_mana_keys = Some(Vec::new());
+            world
+        }
+    }
+    pub(super) fn mana_output_choice_fundable(&self, production: Mana) -> bool {
+        let a = self
+            .state
+            .announcing
+            .as_ref()
+            .expect("owned mana announcement");
+        // Free and optional resumes have no parent completion to constrain.
+        if self.state.mana_announcement_stack.is_none()
+            && a.mana_output
+                .as_ref()
+                .and_then(|o| o.resume.as_deref())
+                .is_none_or(|pending| self.guided_mana_goal(pending).is_none())
+        {
+            return true;
+        }
+        self.paid_mana_parent_world(a)
+            .visit_paid_mana_output(a, Some(production), &mut |next| {
+                next.paid_mana_parent_fundable(a)
+            })
     }
 }

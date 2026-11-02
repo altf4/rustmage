@@ -1863,7 +1863,11 @@ impl Game {
             .as_deref()
             .and_then(|frames| frames.split_last())
             .filter(|_| a.production.is_some());
-        let (mut world, goal) = if transaction {
+        let (mut world, goal) = if a.mana_output.is_some() {
+            // The owned child has already paid. Its continuation is a frozen
+            // parent declaration or a non-announcement resume, never its costs.
+            (self.paid_mana_parent_world(a), None)
+        } else if transaction {
             (self.cast_cost_world(a), None)
         } else if let Some((parent, outer)) = nested {
             let goal = self.funding_goal(&parent.announcement);
@@ -1904,25 +1908,14 @@ impl Game {
             (world, Some(goal))
         };
         let mut complete = |w: &FundingState<'_>| {
-            if let Some(goal) = &goal {
-                let mut next = w.clone();
-                if let Some(production) = a.production {
-                    for (pool, amount) in next.mana.iter_mut().zip(production) {
-                        *pool += u128::from(amount);
-                    }
-                    next.mana[3] = next.mana[3]
-                        .checked_add(u128::from(a.item.mana_tap_bonus.unwrap_or(0)))
-                        .capacity("mana representation exhausted");
-                    if let Some((_, quality)) = self
-                        .state
-                        .mana_lots
-                        .as_ref()
-                        .and_then(|m| m.announcement_quality.as_ref())
-                    {
-                        mana_lots::add_lot(&mut next.lots, *quality, production.map(u128::from));
-                    }
-                }
-                next.reachable(goal, &mut HashSet::new())
+            if a.mana_output.is_some() {
+                w.visit_paid_mana_output(a, None, &mut |completed| {
+                    completed.paid_mana_parent_fundable(a)
+                })
+            } else if let Some(goal) = &goal {
+                w.visit_paid_mana_output(a, None, &mut |completed| {
+                    completed.reachable(goal, &mut HashSet::new())
+                })
             } else {
                 w.cost_completion()
             }
@@ -2350,13 +2343,19 @@ impl<'g> FundingState<'g> {
                 .filter_map(|a| a.item.mana_activation_key())
                 .collect(),
         );
-        self.continuation = (head.production.is_some() && !outer.is_empty()).then(|| {
-            Box::new(PaymentContinuation {
-                head,
-                outer,
-                quality,
-            })
-        });
+        let terminal = head
+            .mana_output
+            .as_ref()
+            .and_then(|o| o.resume.as_deref())
+            .is_some_and(|pending| self.game.guided_mana_goal(pending).is_some());
+        self.continuation =
+            (head.production.is_some() && (!outer.is_empty() || terminal)).then(|| {
+                Box::new(PaymentContinuation {
+                    head,
+                    outer,
+                    quality,
+                })
+            });
     }
     pub(super) fn complete_funding_continuation(&self, goal: &FundingGoal) -> bool {
         self.complete_funding_continuation_for(goal, None)
@@ -2366,19 +2365,34 @@ impl<'g> FundingState<'g> {
         goal: &FundingGoal,
         forced_payment: Option<Mana>,
     ) -> bool {
-        if let Some(query) = self.scoped_continuation_query() {
-            return query.complete_funding_continuation_for(goal, forced_payment);
+        self.visit_funding_continuation_plans(goal, forced_payment, false, &mut |_| true)
+    }
+    pub(super) fn visit_funding_continuation_allocations(
+        &self,
+        goal: &FundingGoal,
+        forced_payment: Option<Mana>,
+        emit: &mut dyn FnMut(&[[u64; 6]]) -> bool,
+    ) -> bool {
+        self.visit_funding_continuation_plans(goal, forced_payment, true, emit)
+    }
+    fn visit_funding_continuation_plans(
+        &self,
+        goal: &FundingGoal,
+        forced_payment: Option<Mana>,
+        independent_plans: bool,
+        emit: &mut dyn FnMut(&[[u64; 6]]) -> bool,
+    ) -> bool {
+        if !independent_plans && let Some(query) = self.scoped_continuation_query() {
+            return query.visit_funding_continuation_plans(goal, forced_payment, false, emit);
         }
         let Some(current) = self.continuation.as_deref() else {
-            return self.cost_completion();
+            return self.cost_completion() && emit(&[]);
         };
         let a = current.head;
         let Some(production) = a.production else {
             return self.cost_completion();
         };
-        let Some((parent, outer)) = current.outer.split_last() else {
-            return false;
-        };
+        let parent = current.outer.split_last();
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return false;
         };
@@ -2392,7 +2406,7 @@ impl<'g> FundingState<'g> {
         }) else {
             return false;
         };
-        let parent_goal = self.game.funding_goal(&parent.announcement);
+        let parent_goal = parent.map(|(parent, _)| self.game.funding_goal(&parent.announcement));
         let purpose = self.payment_purpose(goal);
         let mut found = false;
         let pool = mana_lots::available(self.mana, &self.lots, purpose);
@@ -2448,14 +2462,31 @@ impl<'g> FundingState<'g> {
                         a.item.borrowed_slot,
                     ))),
                 };
-                found = self.visit_applied(&step, &mut |w| {
+                // A visited-world memo answers one existential question, not
+                // every physical plan. Distinct allocations may converge on the
+                // same successful suffix; retain that suffix independently for
+                // each plan while preserving pruning within its boolean query.
+                let query = independent_plans.then(|| {
+                    let mut query = self.clone();
+                    query.continuation_memo = None;
+                    query.scoped_continuation_query().unwrap_or(query)
+                });
+                let query = query.as_ref().unwrap_or(self);
+                let viable = query.visit_applied(&step, &mut |w| {
+                    let Some((parent, outer)) = parent else {
+                        return a
+                            .mana_output
+                            .as_ref()
+                            .and_then(|o| o.resume.as_deref())
+                            .is_some_and(|pending| w.guided_mana_resume_fundable(pending));
+                    };
                     let mut next = w.clone();
                     next.set_funding_continuation(
                         &parent.announcement,
                         outer,
                         parent.quality.as_ref().map(|(_, q)| q),
                     );
-                    next.continuation_memo = self.continuation_memo.clone();
+                    next.continuation_memo = query.continuation_memo.clone();
                     next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
                         && parent
@@ -2467,11 +2498,14 @@ impl<'g> FundingState<'g> {
                             .has_convoke();
                     next.set_payment_context(&parent.announcement);
                     next.reachable_with_evidence(
-                        &parent_goal,
+                        parent_goal.as_ref().expect("parent goal"),
                         parent.announcement.evidence.as_ref().map(|e| e.threshold),
                         &mut HashSet::new(),
                     )
                 });
+                if viable {
+                    found = emit(&step.allocation);
+                }
             });
         });
         found
