@@ -5492,7 +5492,8 @@
     4,
     2,
     8,
-    1
+    1,
+    0
   ],
   "aliases": [
     [
@@ -6542,6 +6543,10 @@
     [
       "@token/sculpture-treasure",
       5437
+    ],
+    [
+      "@token/servo_1_1_colorless_artifact",
+      5487
     ],
     [
       "@token/sos-elemental",
@@ -29162,6 +29167,12 @@
       "name": "Monk Token",
       "subtypes": "Monk",
       "colors": 1
+    },
+    {
+      "factory_identity": "@token/servo_1_1_colorless_artifact",
+      "name": "Servo Token",
+      "subtypes": "Servo",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -186151,6 +186162,33 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5487,
+      "module": "card_5487",
+      "path": "synthetic/token_servo_1_1_colorless_artifact.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/servo_1_1_colorless_artifact",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Servo",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
       "basic": false,
       "mana_color": null,
       "colored": [
