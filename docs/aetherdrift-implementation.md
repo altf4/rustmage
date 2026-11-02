@@ -41,17 +41,20 @@ All Cargo compilation uses `scripts/resource_guard.py`. Reports and compiler
 outputs use a persistent cache outside the checkout. Sources remain fixed while
 a consuming process runs, and required libraries remain at their recorded paths.
 
-Focused engine evidence and build timings are retained in
-`docs/aetherdrift-engine-progress.json`. The assembled checkpoint passed all 291
-focused scenarios in 32 targets after one 151-second engine/set/test build.
-Cached execution completed the remaining 199 native cases after a restricted-mana
-stack overflow. In total, ordinary legacy assurance has 3023 passes, three stale
-mana-action-count assertions, two unfundable-converter assertions and that abort.
-Two native BIG pairings pass; two exceed the unchanged 45-second limit.
+The engine checkpoint is accepted and frozen. All 3329 cases pass: 294 focused
+engine scenarios, 3030 ordinary legacy scenarios, four complete-game cases and the
+strict promoted trace baseline. Both formerly slow BIG pairings now finish below
+the unchanged 45-second limit. Two independent nonauthor reviews approve this
+baseline. Exact inputs, reports and workload timings are recorded in
+`docs/aetherdrift-engine-freeze.json` and the historical progress ledger.
 
-The trace migration proof now has 2966 exact prior198 matches and 41 expected
-unrepresentable late-mana routes, with no unexpected differences or outcome
-changes. The baseline remains unpromoted while funding correctness and performance
-repairs are assembled and reviewed. Diagnostics reuse the current binaries; the
-next expensive build waits for the complete repair batch. Broad native acceptance,
-trace promotion and independent reviews still gate engine freeze/card authorship.
+The final engine/set/test build took 152 seconds. After the audited schema-199
+trace promotion, linkage regeneration and strict trace verification, a 0.365-second
+warm Cargo check reused the engine and every verified test binary. Card authoring
+must retain this target, profile and feature set, with card definitions/provenance
+and card scenarios in separate commits. A missed shared dependency reopens the
+engine phase before dependent cards continue.
+
+No new DFT card was admitted during engine work. The 157 gated identities and full
+rules verification of the inherited 119 now form the card phase; full DFT-only
+games, release acceptance and the single completed-set PR remain outstanding.
