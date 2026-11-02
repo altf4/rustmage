@@ -335,6 +335,7 @@ impl Game {
             sorcery,
             flash_surcharge,
             origin_counter_cost,
+            None,
             false,
         )
     }
@@ -354,7 +355,35 @@ impl Game {
             sorcery,
             flash_surcharge,
             None,
+            None,
             true,
+        )
+    }
+    pub(super) fn permitted_free_additional_origin_cast(
+        &self,
+        actor: Player,
+        card: CardId,
+        face: CastFace,
+        sorcery: bool,
+        flash_surcharge: bool,
+    ) -> bool {
+        let object = &self.state.objects[card as usize];
+        if object.zone != Zone::Graveyard || object.owner != actor || !object.is_card() {
+            return false;
+        }
+        let Some(_) = object.card.self_graveyard_cast_cost() else {
+            return false;
+        };
+        self.permitted_cast_with_origin_rules(
+            actor,
+            card,
+            CastMethod::Free,
+            face,
+            sorcery,
+            flash_surcharge,
+            None,
+            Some(object.card),
+            false,
         )
     }
     #[allow(
@@ -370,6 +399,7 @@ impl Game {
         sorcery: bool,
         flash_surcharge: bool,
         origin_counter_cost: Option<u16>,
+        origin_additional_cost: Option<Card>,
         independent_free: bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
@@ -425,6 +455,9 @@ impl Game {
             && !definition.is_instant()
             && !definition.info().keywords.contains(Keywords::FLASH)
             && !self.cast_timing_granted(actor, definition)
+            && !definition
+                .behold_cast()
+                .is_some_and(|spec| spec.grants_flash)
         {
             return false;
         }
@@ -489,6 +522,12 @@ impl Game {
                 .is_empty();
         }
         let mut a = Announcement {
+            behold_required: !sorcery
+                && method != CastMethod::Sneak
+                && !flash_surcharge
+                && !definition.is_instant()
+                && !definition.info().keywords.contains(Keywords::FLASH)
+                && !self.cast_timing_granted(actor, definition),
             equip_zero_available: false,
             exhaust_reuse_authorized: false,
             activation_cost_route: ActivationCostRoute::Printed,
@@ -499,6 +538,7 @@ impl Game {
             power_up_costs: None,
             free_hand_permission: None,
             origin_counter_cost,
+            origin_additional_cost,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
@@ -525,7 +565,7 @@ impl Game {
             harmonize_discount: 0,
             additional_paid: false,
         };
-        if method == CastMethod::GraveyardAdditionalCosts {
+        if method == CastMethod::GraveyardAdditionalCosts || origin_additional_cost.is_some() {
             a.initialize_cast_costs(improvise::potential(self, definition));
         }
         if let Some(modes) = a.item.modes() {

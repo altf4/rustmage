@@ -6205,6 +6205,15 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::MayBehold { subtype, .. } => {
+                    self.start_optional_behold(&item, subtype);
+                    return;
+                }
+                Instruction::IfBeheld { beheld, skip } => {
+                    if item.cast.is_some_and(|cast| cast.beheld == Some(true)) != beheld {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::UntapSearchResultIfLandsAtLeast(minimum) => {
                     let lands = self
                         .state

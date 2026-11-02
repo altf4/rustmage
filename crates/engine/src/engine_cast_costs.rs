@@ -13,6 +13,7 @@ pub enum CastCostClause {
     /// Exile the activated craft source as its own ordered cost component.
     CraftSource,
     Harmonize(ObjectRef),
+    Behold(&'static str),
     Mana,
     Life(u32),
     AlternativeLife(u32),
@@ -102,6 +103,18 @@ impl Announcement {
     }
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
         self.initialize_alternative_life();
+        if self.item.cast.is_some_and(|cast| cast.beheld == Some(true)) {
+            let subtype = self
+                .item
+                .source
+                .expect("cast source")
+                .card
+                .behold_cast()
+                .expect("behold recipe")
+                .subtype;
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            self.add_cast_cost_clause(CastCostClause::Behold(subtype));
+        }
         if self.item.kind == StackKind::Spell
             && ((self
                 .item
@@ -333,6 +346,12 @@ impl Game {
                 self.state.announcing = Some(a);
                 self.tap_objects(&[object.card]);
                 self.finish_announcement();
+            }
+            CastCostClause::Behold(_) => {
+                self.state.pending = Pending::BeholdCost {
+                    player: a.item.controller,
+                };
+                self.state.announcing = Some(a);
             }
             CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
                 self.pay_life(a.item.controller, i128::from(amount));

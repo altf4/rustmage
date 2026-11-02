@@ -4221,6 +4221,9 @@ impl Game {
         world.reachable(&goal, &mut HashSet::new())
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.needs_behold() {
+            return self.behold_intent_fundable(a, false) || self.behold_intent_fundable(a, true);
+        }
         if !self.exact_x_targets_fundable(a, None, false) {
             return false;
         }
@@ -4238,6 +4241,12 @@ impl Game {
             proposal.initialize_cast_costs(false);
             return self.activation_packet_fundable(&proposal);
         }
+        if a.item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::Free)
+        {
+            return self.behold_announcement_fundable(a, cost);
+        }
         if a.self_graveyard_cast_cost().is_some() {
             return self.self_graveyard_announcement_fundable(a, cost);
         }
@@ -4253,6 +4262,16 @@ impl Game {
             return (0..self.state.objects.len()).any(|id| {
                 self.harmonize_choice_fundable(&selected, Some(self.object_ref(id as CardId)))
             });
+        }
+        if a.item.kind == StackKind::Spell
+            && a.item
+                .source
+                .expect("spell source")
+                .card
+                .behold_cast()
+                .is_some()
+        {
+            return self.behold_announcement_fundable(a, cost);
         }
         if let StackKind::ActivatedAbility { ability } = a.item.kind
             && Self::activation_target_sensitive(
@@ -5114,6 +5133,10 @@ impl Game {
             return true;
         }
         if (delve::potential(self)
+            || announcement
+                .item
+                .cast
+                .is_some_and(|cast| cast.beheld == Some(true))
             || announcement
                 .item
                 .cast

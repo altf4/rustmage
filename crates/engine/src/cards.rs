@@ -1286,6 +1286,16 @@ pub struct TargetSpellIncrease {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct BeholdCastSpec {
+    pub subtype: &'static str,
+    /// Generic mana paid if the caster declines to behold; zero is optional.
+    pub decline_generic: u32,
+    /// Casting outside ordinary timing requires actually paying the behold cost.
+    pub grants_flash: bool,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub type ManaCostOptions = std::iter::Chain<
     std::iter::Once<ManaCost>,
     std::iter::Copied<std::slice::Iter<'static, ManaCost>>,
@@ -2499,6 +2509,16 @@ pub enum Instruction {
     },
     /// Optionally behold a subtype, then untap the searched-for permanent.
     BeholdToUntapSearchResult(&'static str),
+    /// Always offer a private choice, even with no eligible hand witness.
+    MayBehold {
+        subtype: &'static str,
+        skip: usize,
+    },
+    /// Captured cast qualification, copied independently of the chosen witness.
+    IfBeheld {
+        beheld: bool,
+        skip: usize,
+    },
     /// Untap the searched permanent if its controller controls enough lands.
     UntapSearchResultIfLandsAtLeast(u32),
     SearchTargetController(SearchSpec),
@@ -6249,6 +6269,9 @@ impl Card {
     }
     pub(crate) fn has_target_cost_modifier(self) -> bool {
         self.target_cost_reduction().is_some() || self.target_cost_increase().is_some()
+    }
+    pub(crate) fn behold_cast(self) -> Option<BeholdCastSpec> {
+        authored::rules(self).unwrap().extras.behold_cast
     }
     /// Timing permission is an as-though effect, not a granted Flash keyword.
     pub(crate) fn cast_timing_grants(self) -> &'static [CastFilter] {

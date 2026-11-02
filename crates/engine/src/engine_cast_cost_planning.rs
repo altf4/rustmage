@@ -140,6 +140,7 @@ impl FundingState<'_> {
                 | CastCostClause::Blight { .. }
                 | CastCostClause::Casualty(_)
                 | CastCostClause::Harmonize(_) => {}
+                CastCostClause::Behold(_) => {}
             }
         }
         let mut hand = 0usize;
@@ -671,6 +672,13 @@ impl FundingState<'_> {
                         if next.complete_cost_rows(&later, &rest) {
                             return true;
                         }
+                    }
+                }
+                CastCostClause::Behold(subtype) => {
+                    if hand_choices::visit_behold_candidates(self, c.actor, subtype, &[], |_| true)
+                        && self.complete_cost_rows(&later, &rest)
+                    {
+                        return true;
                     }
                 }
                 CastCostClause::Casualty(instance) => {

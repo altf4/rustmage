@@ -11,6 +11,7 @@ pub(super) struct ActivationCostChoice {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
+    pub behold_required: bool,
     pub miracle_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
@@ -34,6 +35,8 @@ pub(super) struct Announcement {
     pub free_hand_permission: Option<Box<ObjectRef>>,
     /// Mandatory nonmana cost belonging to the selected origin permission.
     pub origin_counter_cost: Option<u16>,
+    /// Immutable definition supplying mandatory costs for the chosen origin route.
+    pub origin_additional_cost: Option<Card>,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
@@ -561,6 +564,10 @@ impl Announcement {
                     })
                     .map(|cost| (cost, ActivationCostRoute::Printed, None)),
             )
+            .filter_map(|(mut cost, route, choice)| {
+                cost.generic = cost.generic.checked_add(self.behold_decline_generic())?;
+                Some((cost, route, choice))
+            })
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
         self.cost_route_options().map(|(cost, _, _)| cost)
@@ -1353,7 +1360,9 @@ impl Game {
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
         // declarations precede targets, mana abilities and payment.
-        if a.needs_blight() {
+        if a.needs_behold() {
+            self.state.pending = Pending::CastBehold { player };
+        } else if a.needs_blight() {
             self.state.pending = Pending::BlightIntent { player };
         } else if a.needs_teamwork() {
             self.state.pending = Pending::TeamworkIntent { player };
@@ -2120,6 +2129,7 @@ impl Game {
                 blight: None,
                 bargain: None,
                 evidence: None,
+                beheld: None,
             }),
             id,
             kind: StackKind::Spell,
@@ -2206,6 +2216,7 @@ impl Game {
         }
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
+            behold_required: false,
             equip_zero_available: false,
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
@@ -2223,6 +2234,7 @@ impl Game {
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             origin_counter_cost: None,
+            origin_additional_cost: None,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
@@ -2264,10 +2276,27 @@ impl Game {
 
     pub(super) fn open_payment_announcement_with_origin_cost(
         &mut self,
+        item: SpellView,
+        counters: Counters,
+        production: Option<Mana>,
+        origin_counter_cost: Option<u16>,
+    ) {
+        self.open_payment_announcement_with_origin_rules(
+            item,
+            counters,
+            production,
+            origin_counter_cost,
+            None,
+        );
+    }
+
+    pub(super) fn open_payment_announcement_with_origin_rules(
+        &mut self,
         mut item: SpellView,
         counters: Counters,
         production: Option<Mana>,
         origin_counter_cost: Option<u16>,
+        origin_additional_cost: Option<Card>,
     ) {
         let source = item.source.expect("payment announcement has object source");
         if matches!(item.kind, StackKind::ActivatedAbility { .. })
@@ -2323,6 +2352,7 @@ impl Game {
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         let mut announcement =
             self.payment_announcement(item, counters, production, origin_counter_cost);
+        announcement.origin_additional_cost = origin_additional_cost;
         // Fixed direct mana keeps its hot path. An announced fixed ability in
         // a guided/optional payment window must own that window through costs.
         if announcement.mana_output.is_none()
@@ -2378,6 +2408,7 @@ impl Game {
         let casualty = self.casualty_declarations(&item);
         let mana_output = production.and_then(|selected| self.mana_output(&item, selected));
         Announcement {
+            behold_required: self.behold_timing_required(&item),
             equip_zero_available: self.item_first_equip_zero_available(&item)
                 && counters == Counters::default(),
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
@@ -2396,6 +2427,7 @@ impl Game {
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             origin_counter_cost,
+            origin_additional_cost: None,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,

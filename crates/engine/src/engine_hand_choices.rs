@@ -21,6 +21,10 @@ pub enum HandChoiceKind {
     ExileRevealedLinkedOptional,
     /// Choose a controlled permanent of the requested subtype or reveal a hand card.
     Behold,
+    /// Optional resolution cost; decline skips the instruction's following block.
+    BeholdOptional {
+        subtype: &'static str,
+    },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
@@ -63,30 +67,59 @@ pub(super) fn behold_candidates<W: ability_world::CharacteristicWorld + ?Sized>(
     subtype: &str,
     entering: &[ObjectRef],
 ) -> Vec<ObjectRef> {
-    (0..world.game().state.objects.len())
-        .filter_map(|index| {
-            let id = index as CardId;
-            let object = world.object(id);
-            let reference = world.reference(id);
-            if entering.contains(&reference) {
-                return None;
+    let mut candidates = Vec::new();
+    visit_behold_candidates(world, actor, subtype, entering, |object| {
+        candidates.push(object);
+        false
+    });
+    candidates
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn visit_behold_candidates<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    subtype: &str,
+    entering: &[ObjectRef],
+    mut emit: impl FnMut(ObjectRef) -> bool,
+) -> bool {
+    for index in 0..world.game().state.objects.len() {
+        let id = index as CardId;
+        let object = world.object(id);
+        let reference = world.reference(id);
+        if entering.contains(&reference) {
+            continue;
+        }
+        let matches = match object.zone {
+            Zone::Battlefield => {
+                object.controller == actor && world.subtypes(id).has(world.definition(id), subtype)
             }
-            let matches = match object.zone {
-                Zone::Battlefield => {
-                    object.controller == actor
-                        && world.subtypes(id).has(world.definition(id), subtype)
-                }
-                Zone::Hand => {
-                    object.owner == actor && object.is_card() && object.card.has_subtype(subtype)
-                }
-                _ => false,
-            };
-            matches.then_some(reference)
-        })
-        .collect()
+            Zone::Hand => {
+                object.owner == actor && object.is_card() && object.card.has_subtype(subtype)
+            }
+            _ => false,
+        };
+        if matches && emit(reference) {
+            return true;
+        }
+    }
+    false
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn start_optional_behold(&mut self, item: &SpellView, subtype: &'static str) {
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::BeholdOptional { subtype },
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(item.controller),
+            source: item.source.expect("resolving behold source").object,
+            required: 0,
+            selected: Vec::new(),
+            // The choice still exists with no witness; pacing cannot disclose
+            // whether an otherwise hidden hand contains the requested quality.
+            candidates: behold_candidates(self, item.controller, subtype, &[]),
+        });
+    }
     pub(super) fn start_behold_search_result(
         &mut self,
         item: &SpellView,
@@ -349,6 +382,15 @@ impl Game {
                 (o.zone == Zone::Battlefield && o.controller == interaction.controller)
                     || (o.zone == Zone::Hand && o.owner == interaction.controller && o.is_card())
             }
+            HandChoiceKind::BeholdOptional { subtype } => {
+                (o.zone == Zone::Battlefield
+                    && o.controller == interaction.controller
+                    && self.has_subtype(reference.card, subtype))
+                    || (o.zone == Zone::Hand
+                        && o.owner == interaction.controller
+                        && o.is_card()
+                        && o.card.has_subtype(subtype))
+            }
         }
     }
     pub(super) fn visit_hand_card_choices(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
@@ -368,6 +410,7 @@ impl Game {
             HandChoiceKind::ExileRevealedOrCreature
                 | HandChoiceKind::ExileRevealedLinkedOptional
                 | HandChoiceKind::Behold
+                | HandChoiceKind::BeholdOptional { .. }
                 | HandChoiceKind::LookDiscardDraw
         ) && emit(Action::ChooseHandCard { object: None })
         {
@@ -500,6 +543,11 @@ impl Game {
                         self.untap_objects(&[land.card], untap_rules::UntapCause::Effect);
                     }
                 }
+                HandChoiceKind::BeholdOptional { .. } => {
+                    if self.state.objects[object.card as usize].zone == Zone::Hand {
+                        self.reveal_hand_refs(&[object]);
+                    }
+                }
                 HandChoiceKind::RevealSubset
                 | HandChoiceKind::DeployCreatures
                 | HandChoiceKind::DeployPermanents => unreachable!(),
@@ -507,6 +555,13 @@ impl Game {
         }
         if interaction.kind == HandChoiceKind::Behold {
             self.state.resolving.as_mut().unwrap().search_result = None;
+        }
+        if matches!(interaction.kind, HandChoiceKind::BeholdOptional { .. }) && object.is_none() {
+            let r = self.state.resolving.as_mut().unwrap();
+            let Instruction::MayBehold { skip, .. } = r.program[r.pc - 1] else {
+                unreachable!("optional behold continuation")
+            };
+            r.pc += skip;
         }
         self.run_program();
     }
@@ -545,6 +600,7 @@ impl Game {
                 HandChoiceKind::ExileRevealedOrCreature
                     | HandChoiceKind::ExileRevealedLinkedOptional
                     | HandChoiceKind::Behold
+                    | HandChoiceKind::BeholdOptional { .. }
                     | HandChoiceKind::LookDiscardDraw
             ),
         })

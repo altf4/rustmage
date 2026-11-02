@@ -131,6 +131,8 @@ pub enum StaticAbilityFragment {
         condition: StatValue,
     },
     FreeHandCast,
+    /// An alternative mana cost only; the card needs an independent legal origin.
+    FreeSpellCast(CastFilter),
     FreeHandCastAtMostControlledCreatures,
     GrantInstantSorceryStorm {
         ability: u16,

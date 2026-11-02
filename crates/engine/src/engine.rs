@@ -26,8 +26,12 @@ pub use player_control::{ControlledPlayer, PlayerControlView};
 pub mod library_hand_exchange;
 pub use library_hand_exchange::HandDeploymentView;
 #[doc(hidden)]
+#[path = "engine_behold.rs"]
+pub mod behold;
+#[doc(hidden)]
 #[path = "engine_hand_choices.rs"]
 pub mod hand_choices;
+pub use behold::BeholdCostView;
 pub use hand_choices::{HandChoiceKind, HandChoiceView};
 #[doc(hidden)]
 #[path = "engine_self_granted.rs"]
@@ -889,6 +893,7 @@ define_actions! {
     BeginOnBattlefield { object: ObjectRef },
     FinishOpeningHand,
     CastExiledDuringResolution { object: ObjectRef, face: CastFace },
+    CastFreeDuringResolution { object: ObjectRef, face: CastFace },
     FinishResolutionCasts,
     FinishGraveyardSymbolCost,
     Mulligan,
@@ -908,9 +913,12 @@ define_actions! {
     AnnounceCast {
         card: CardId,
     },
+    ChooseCastBehold { pay: bool },
+    ChooseBeholdCost { object: ObjectRef },
     PlayGraveyardPermanent { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceFree { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeCounterGraveyard { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceFreeGraveyardAdditionalCosts { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeGraveyardPermanent { card: CardId, face: CastFace, flash_surcharge: bool, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceExileFree { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeFromPermission { card: CardId, face: CastFace, flash_surcharge: bool, permission: ObjectRef },
@@ -1394,6 +1402,8 @@ pub struct CastInfo {
     /// Exact cast declaration; its reserved sacrifice is held by the announcement.
     pub bargain: Option<bool>,
     pub evidence: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub beheld: Option<bool>,
 }
 
 /// Frozen recipient and immutable program provenance, independent of later attachments.
@@ -2523,6 +2533,12 @@ enum Pending {
     EntryBehold {
         player: Player,
     },
+    CastBehold {
+        player: Player,
+    },
+    BeholdCost {
+        player: Player,
+    },
     AuraEntry {
         player: Player,
     },
@@ -3450,6 +3466,8 @@ pub struct Observation {
     pub saddle_choice: Option<SaddleChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub teamwork_choice: Option<TeamworkChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub behold_cost: Option<BeholdCostView>,
     /// Complete scalar domain, visible only to its choosing actor.
     pub x_choice: Option<XChoiceView>,
     pub schema: u32,
@@ -4048,6 +4066,8 @@ impl Game {
             | Pending::Explore { player }
             | Pending::Manifest { player }
             | Pending::Bargain { player }
+            | Pending::CastBehold { player }
+            | Pending::BeholdCost { player }
             | Pending::ResolutionX { player }
             | Pending::SourceCounterAmount { player }
             | Pending::TargetCounterRemoval { player }
@@ -5616,6 +5636,30 @@ impl Game {
                     {
                         return true;
                     }
+                    if obj.card.behold_cast().is_some() {
+                        let method = if flashback {
+                            CastMethod::Flashback
+                        } else {
+                            CastMethod::Normal
+                        };
+                        if self.permitted_cast_available(
+                            actor,
+                            card,
+                            method,
+                            CastFace::Normal,
+                            sorcery,
+                            false,
+                        ) && emit(if flashback {
+                            Action::AnnounceFlashback { card }
+                        } else if exile {
+                            Action::AnnounceExile { card }
+                        } else {
+                            Action::AnnounceCast { card }
+                        }) {
+                            return true;
+                        }
+                        continue;
+                    }
                     if !sorcery
                         && !obj.card.is_instant()
                         && !self.keywords(card).contains(Keywords::FLASH)
@@ -6098,6 +6142,22 @@ impl Game {
                     if self.bargain_choice_fundable(a, sacrifice)
                         && emit(Action::ChooseBargain { sacrifice })
                     {
+                        return true;
+                    }
+                }
+            }
+            Pending::CastBehold { .. } => {
+                let a = s.announcing.as_ref().unwrap();
+                for pay in [false, true] {
+                    if self.behold_intent_fundable(a, pay) && emit(Action::ChooseCastBehold { pay })
+                    {
+                        return true;
+                    }
+                }
+            }
+            Pending::BeholdCost { .. } => {
+                for object in self.behold_cost_candidates() {
+                    if emit(Action::ChooseBeholdCost { object }) {
                         return true;
                     }
                 }
@@ -6684,6 +6744,9 @@ impl Game {
             Action::CastExiledDuringResolution { object, face } => {
                 self.cast_exiled_during_resolution(actor, object, face)
             }
+            Action::CastFreeDuringResolution { object, face } => {
+                self.cast_during_resolution_with_cost(actor, object, face, true)
+            }
             Action::FinishResolutionCasts => {
                 if let Some(resolution) = self.state.resolving.as_mut()
                     && resolution.pc > 0
@@ -6829,6 +6892,11 @@ impl Game {
                 face,
                 flash_surcharge,
             }
+            | Action::AnnounceFreeGraveyardAdditionalCosts {
+                card,
+                face,
+                flash_surcharge,
+            }
             | Action::AnnounceFreeGraveyardPermanent {
                 card,
                 face,
@@ -6836,6 +6904,9 @@ impl Game {
                 ..
             } => {
                 let counter_origin = matches!(action, Action::AnnounceFreeCounterGraveyard { .. });
+                let origin_additional_cost =
+                    matches!(action, Action::AnnounceFreeGraveyardAdditionalCosts { .. })
+                        .then(|| self.state.objects[card as usize].card);
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 self.set_cast_face(&mut item, face);
                 let origin_counter_cost = counter_origin.then(|| {
@@ -6856,11 +6927,12 @@ impl Game {
                 {
                     item.x = Some(0);
                 }
-                self.open_payment_announcement_with_origin_cost(
+                self.open_payment_announcement_with_origin_rules(
                     item,
                     Counters::default(),
                     None,
                     origin_counter_cost,
+                    origin_additional_cost,
                 );
             }
             Action::AnnounceExileFree {
@@ -7558,6 +7630,8 @@ impl Game {
                 }
                 self.continue_announcement_choices(false);
             }
+            Action::ChooseCastBehold { pay } => self.choose_cast_behold(pay),
+            Action::ChooseBeholdCost { object } => self.pay_behold_cost(object),
             Action::ChooseGift { beneficiary } => self.choose_gift(beneficiary),
             Action::ChooseOffspring { pay } => {
                 self.state
@@ -10367,6 +10441,7 @@ impl Game {
             } else {
                 None
             },
+            behold_cost: self.behold_cost_view(viewer),
             teamwork_choice: if owns_choice {
                 self.teamwork_choice()
             } else {
@@ -10511,6 +10586,8 @@ impl Game {
                 Pending::CastCosts { .. } => "cast_costs",
                 Pending::CasualtyPayment { .. } => "casualty_payment",
                 Pending::Bargain { .. } => "bargain",
+                Pending::CastBehold { .. } => "cast_behold",
+                Pending::BeholdCost { .. } => "behold_cost",
                 Pending::Kicker { .. } => "kicker",
                 Pending::Gift { .. } => "gift",
                 Pending::Endure { .. } => "endure",

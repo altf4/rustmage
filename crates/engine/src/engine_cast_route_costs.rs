@@ -25,10 +25,18 @@ impl Card {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
     pub(super) fn self_graveyard_cast_cost(&self) -> Option<(u32, AdditionalCost)> {
-        self.item
-            .cast
-            .filter(|cast| cast.method == CastMethod::GraveyardAdditionalCosts)
-            .and_then(|_| self.item.source?.card.self_graveyard_cast_cost())
+        self.origin_additional_cost
+            .and_then(Card::self_graveyard_cast_cost)
+            .or_else(|| {
+                self.item
+                    .cast
+                    .filter(|cast| cast.method == CastMethod::GraveyardAdditionalCosts)
+                    .and_then(|cast| {
+                        cast.physical_card
+                            .unwrap_or(self.item.source?.card)
+                            .self_graveyard_cast_cost()
+                    })
+            })
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

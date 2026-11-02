@@ -238,6 +238,10 @@ impl Game {
         }
         if a.cost.is_none() {
             base = Self::with_tiered_mana(base, &a.item).expect("validated selected Tiered cost");
+            base.generic = base
+                .generic
+                .checked_add(a.behold_decline_generic())
+                .capacity("behold alternative mana cost exhausted");
         }
         if a.forage
             .as_ref()

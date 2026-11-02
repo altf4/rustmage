@@ -77,7 +77,14 @@ impl Game {
         a: &Announcement,
         sacrifice: Option<ObjectRef>,
     ) -> bool {
-        if a.item.cast.is_some_and(|cast| cast.method.is_harmonize()) {
+        if a.item.cast.is_some_and(|cast| cast.method.is_harmonize())
+            || a.item
+                .source
+                .expect("cost source")
+                .card
+                .behold_cast()
+                .is_some()
+        {
             let source = a.item.source.expect("Harmonize source");
             if sacrifice.is_some_and(|object| {
                 !self.additional_candidate(COST, a.item.controller, source.object, object)
