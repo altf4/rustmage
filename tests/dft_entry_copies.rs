@@ -574,15 +574,23 @@ fn foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_ev
     let _scope = fixture_rules::activate(&[
         (Card::from_name("Grizzly Bears").unwrap(), &COPY),
         (Card::from_name("Llanowar Elves").unwrap(), &SAC_MANA),
-        (Card::from_name("Swiftfoot Boots").unwrap(), &CHOOSE_NAME),
     ]);
     let mut g = scenario(Player::P0);
     let mana = put(&mut g, Player::P0, "Llanowar Elves", Zone::Battlefield);
-    put(&mut g, Player::P0, "Forest", Zone::Battlefield);
-    let blueprint = put(&mut g, Player::P1, "Swiftfoot Boots", Zone::Battlefield);
-    g.set_entry_value(
+    let remaining_mana = put(&mut g, Player::P0, "Druid of the Cowl", Zone::Battlefield);
+    let enchanted = put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
+    let blueprint = put(&mut g, Player::P1, "Witness Protection", Zone::Battlefield);
+    g.state.objects[blueprint as usize].attached_to = Some(g.object_ref(enchanted));
+    g.change_object_form(
         g.object_ref(blueprint),
-        EntryChoiceValue::CardName(CardName::from_name("Island").unwrap()),
+        AnimationSpec {
+            artifact: true,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        },
+        characteristic_layers::AnimationTypeMode::PreserveCardTypes,
     );
     let returning = put(&mut g, Player::P1, "Grizzly Bears", Zone::Exile);
     g.state.exile_links.push(ExileLink {
@@ -613,20 +621,13 @@ fn foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_ev
     );
     assert_eq!(g.actor(), Some(Player::P1));
     select_copy(&mut g, blueprint);
-    assert!(matches!(
-        g.state.pending,
-        Pending::EntryValue { .. } | Pending::LandCardName { .. }
-    ));
-    act(
-        &mut g,
-        Action::ChooseEntryValue {
-            value: EntryChoiceValue::CardName(CardName::from_name("Forest").unwrap()),
-        },
-    );
+    assert!(matches!(g.state.pending, Pending::AuraEntry { .. }));
+    let recipient = g.object_ref(remaining_mana);
+    act(&mut g, Action::ChooseAuraAttachment { object: recipient });
     assert_eq!(
         g.state.objects[spell as usize].zone,
         Zone::Hand,
-        "the copied named lock disables the remaining mana source"
+        "the copied Aura removes the remaining producer's mana ability"
     );
     assert_eq!(g.state.objects[mana as usize].zone, Zone::Graveyard);
     assert_eq!(
@@ -636,7 +637,7 @@ fn foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_ev
     );
     assert_eq!(
         g.state.objects[returning as usize].card,
-        Card::from_name("Swiftfoot Boots").unwrap()
+        Card::from_name("Witness Protection").unwrap()
     );
     assert_eq!(
         g.temporary_copy_view(g.object_ref(returning))
