@@ -752,3 +752,37 @@ fn copying_an_unchanged_clone_gains_a_new_as_entry_replacement_instance() {
         Card::from_name("Savannah Lions").unwrap()
     );
 }
+
+#[test]
+fn a_simultaneously_departing_battlefield_blueprint_remains_copyable() {
+    let _scope = fixture_rules::activate(&[(Card::from_name("Grizzly Bears").unwrap(), &COPY)]);
+    let mut g = scenario(Player::P0);
+    let blueprint = put(&mut g, Player::P0, "Savannah Lions", Zone::Battlefield);
+    let incoming = put(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    let moves = vec![
+        g.entry_move(incoming, Zone::Battlefield, false),
+        g.entry_move(blueprint, Zone::Hand, false),
+    ];
+    let world = FundingState::from_game(&g, &goal(Player::P0));
+    let mut projected = false;
+    world.visit_entry_moves(moves.clone(), true, None, &mut |next| {
+        if next.object(incoming).card == Card::from_name("Savannah Lions").unwrap() {
+            assert_eq!(next.object(blueprint).zone, Zone::Hand);
+            projected = true;
+        }
+        false
+    });
+    assert!(
+        projected,
+        "pre-event battlefield blueprint remains eligible in funding"
+    );
+    g.stage_entries(moves, None);
+    assert!(g.advance_entries());
+    assert!(g.legal_actions().contains(&Action::ChooseEntryCopy {
+        object: Some(g.object_ref(blueprint))
+    }));
+    select_copy(&mut g, blueprint);
+    settle(&mut g);
+    assert_eq!(g.state.objects[blueprint as usize].zone, Zone::Hand);
+    assert_eq!(stats(&g, incoming), (2, 1));
+}

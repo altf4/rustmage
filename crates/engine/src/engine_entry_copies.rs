@@ -87,7 +87,10 @@ impl Game {
             .enumerate()
             .filter_map(|(id, _)| {
                 let id = id as CardId;
-                (!batch.moves.iter().any(|m| m.before.id == id)
+                (!batch
+                    .moves
+                    .iter()
+                    .any(|m| m.before.id == id && m.before.zone != Zone::Battlefield)
                     && spec.filters.iter().any(|&filter| {
                         self.battlefield_filter_matches(filter, movement.controller, id)
                     }))

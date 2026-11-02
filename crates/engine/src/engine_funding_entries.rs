@@ -2257,7 +2257,9 @@ impl FundingState<'_> {
         let candidates = ids
             .into_iter()
             .filter_map(|id| {
-                (!moves.iter().any(|m| m.before.id == id)
+                (!moves
+                    .iter()
+                    .any(|m| m.before.id == id && m.before.zone != Zone::Battlefield)
                     && spec.filters.iter().any(|&filter| {
                         battlefield_groups::filter_matches_in_world(
                             self,

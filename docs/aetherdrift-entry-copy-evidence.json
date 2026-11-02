@@ -75,7 +75,8 @@
     "foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_event",
     "copied_own_off_turn_type_is_visible_to_creature_only_entry_replacements",
     "a_copied_aura_that_cannot_enter_never_changes_the_physical_card",
-    "copying_an_unchanged_clone_gains_a_new_as_entry_replacement_instance"
+    "copying_an_unchanged_clone_gains_a_new_as_entry_replacement_instance",
+    "a_simultaneously_departing_battlefield_blueprint_remains_copyable"
   ],
   "validation": {
     "rustfmt": "passed edition2024",
@@ -91,7 +92,9 @@
       "foreign"
     ],
     "first_integrated_run": "Root focused-20261101-193034: 2 of15new tests passed; previous196 passed. Permanent resolution staging, projected cost departure restoration and ordinary parent payment continuation checks corrected. Foreign rollback fixture now disables a remaining mana source rather than incorrectly changing a locked cost.",
-    "second_integrated_run": "Root focused-20261101-193832:14 of15entry-copy tests passed, previous196passed. Last foreign fixture corrected again: legacy named lock intentionally exempts mana, so a copied Witness Protection Aura now disables the remaining mana creature instead. No further engine change."
+    "second_integrated_run": "Root focused-20261101-193832:14 of15entry-copy tests passed, previous196passed. Last foreign fixture corrected again: legacy named lock intentionally exempts mana, so a copied Witness Protection Aura now disables the remaining mana creature instead. No further engine change.",
+    "third_integrated_run": "Root check194953 at4af27a22: all15entry-copy scenarios passed. Mana rollback correctly requires selecting keep; no receipt repair was needed.",
+    "peer_review_followup": "A pre-event battlefield blueprint scheduled to leave in the same simultaneous event remains eligible. Restrict exclusion to objects not yet on the battlefield, in actual and speculative choices. New16thregression pendingroot."
   },
   "rules_reference": {
     "url": "https://media.wizards.com/2025/downloads/MagicCompRules%2020250919.pdf",
