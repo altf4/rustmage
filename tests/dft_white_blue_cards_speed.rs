@@ -14,8 +14,13 @@ fn drain(g: &mut Game) {
         {
             return;
         }
-        assert_eq!(g.state.pending, Pending::Priority);
-        act(g, Action::Pass);
+        match g.state.pending {
+            Pending::OrderTriggers { .. } => {
+                choose(g, |action| matches!(action, Action::PutTrigger { .. }))
+            }
+            Pending::Priority => act(g, Action::Pass),
+            _ => panic!("unexpected speed-family choice {:?}", g.state.pending),
+        }
     }
     panic!("speed family resolution exceeded its action bound");
 }
