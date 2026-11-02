@@ -64,6 +64,7 @@ pub(super) struct ActivationManaCosts {
     base: Option<ManaCost>,
     reduction_index: usize,
     generic_discount: u32,
+    generic_increase: u32,
     x: u64,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -88,8 +89,12 @@ impl Iterator for ActivationManaCosts {
                 continue;
             };
             self.reduction_index += 1;
-            if let Some(cost) = reduce(self.base.unwrap(), reduction, self.generic_discount, self.x)
-            {
+            if let Some(cost) = reduce(
+                self.base.unwrap(),
+                reduction,
+                self.generic_discount,
+                self.x + u64::from(self.generic_increase),
+            ) {
                 return Some(cost);
             }
         }
@@ -162,31 +167,6 @@ impl Game {
                 && u64::from(self.power_up_count(object, definition, ability, slot))
                     < self.power_up_limit(object.card)
     }
-    pub(super) fn power_up_generic_discount(
-        &self,
-        source: CardId,
-        definition: Card,
-        ability: u16,
-    ) -> u32 {
-        if !definition.power_up_abilities().contains(&ability) || !self.is_creature(source) {
-            return 0;
-        }
-        let controller = self.state.objects[source as usize].controller;
-        self.state
-            .objects
-            .iter()
-            .enumerate()
-            .filter(|(id, o)| {
-                *id != source as usize
-                    && o.zone == Zone::Battlefield
-                    && o.controller == controller
-                    && o.card.power_up_other_creature_reduction() != 0
-                    && self.printed_abilities_available(*id as CardId)
-            })
-            .fold(0u32, |total, (_, o)| {
-                total.saturating_add(o.card.power_up_other_creature_reduction())
-            })
-    }
     pub(super) fn power_up_costs(
         &self,
         object: ObjectRef,
@@ -239,6 +219,9 @@ impl Game {
             base: None,
             reduction_index: 0,
             generic_discount: self.activation_generic_discount(source, definition, ability),
+            generic_increase: ability_world::CharacteristicWorld::named_activation_generic_increase(
+                self, source,
+            ),
             x: u64::from(x) * u64::from(definition.activation(ability).x_symbols()),
         }
     }

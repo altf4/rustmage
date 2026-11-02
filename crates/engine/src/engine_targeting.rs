@@ -2,6 +2,13 @@
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct ActivationCostChoice {
+    pub base: ManaCost,
+    pub reduction: ManaCost,
+    pub route: ActivationCostRoute,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
     pub miracle_cost: Option<ManaCost>,
@@ -19,6 +26,10 @@ pub(super) struct Announcement {
     pub total_cost: Option<ManaCost>,
     /// Locked before mana abilities or any nonmana payment changes the source.
     pub activation_discount: u32,
+    /// Provisional while declaring; resampled at total-cost determination.
+    pub activation_generic_increase: u32,
+    /// Only explicit alternative choices allocate this cold pre-reduction receipt.
+    pub activation_choice: Option<Box<ActivationCostChoice>>,
     pub power_up_costs: Option<Box<power_up::PowerUpCosts>>,
     pub free_hand_permission: Option<Box<ObjectRef>>,
     /// Mandatory nonmana cost belonging to the selected origin permission.
@@ -202,7 +213,10 @@ impl Announcement {
         }
     }
 
-    fn cost_route_options(&self) -> impl Iterator<Item = (ManaCost, ActivationCostRoute)> + '_ {
+    fn cost_route_options(
+        &self,
+    ) -> impl Iterator<Item = (ManaCost, ActivationCostRoute, Option<ActivationCostChoice>)> + '_
+    {
         let options = match self.item.kind {
             StackKind::Spell
                 if self
@@ -399,28 +413,38 @@ impl Announcement {
                             cost,
                             reduction,
                             self.activation_discount,
-                            if self.power_up_costs.is_some()
-                                && route == ActivationCostRoute::Printed
-                            {
-                                u64::from(self.item.x.unwrap_or(0))
-                                    * u64::from(match self.item.kind {
-                                        StackKind::ActivatedAbility { ability } => self
-                                            .item
-                                            .source
-                                            .expect("announcement has object source")
-                                            .card
-                                            .activation(ability)
-                                            .x_symbols(),
-                                        _ => 0,
-                                    })
-                            } else {
-                                0
-                            },
+                            u64::from(self.activation_generic_increase)
+                                + if route == ActivationCostRoute::Printed {
+                                    u64::from(self.item.x.unwrap_or(0))
+                                        * u64::from(match self.item.kind {
+                                            StackKind::ActivatedAbility { ability } => self
+                                                .item
+                                                .source
+                                                .expect("announcement has object source")
+                                                .card
+                                                .activation(ability)
+                                                .x_symbols(),
+                                            _ => 0,
+                                        })
+                                } else {
+                                    0
+                                },
                         )
-                        .map(|cost| (cost, route))
+                        .map(|reduced| {
+                            (
+                                reduced,
+                                route,
+                                matches!(self.item.kind, StackKind::ActivatedAbility { .. })
+                                    .then_some(ActivationCostChoice {
+                                        base: cost,
+                                        reduction,
+                                        route,
+                                    }),
+                            )
+                        })
                     })
             })
-            .filter(|(cost, _)| {
+            .filter(|(cost, _, _)| {
                 self.item
                     .cast
                     .is_none_or(|cast| cast.method != CastMethod::GrantedFlashback)
@@ -455,7 +479,7 @@ impl Announcement {
                                 .1,
                         }
             })
-            .filter_map(|(cost, route)| {
+            .filter_map(|(cost, route, choice)| {
                 Game::with_tiered_mana(
                     Game::with_flash_surcharge(
                         cost,
@@ -467,7 +491,7 @@ impl Announcement {
                     ),
                     &self.item,
                 )
-                .map(|cost| (cost, route))
+                .map(|cost| (cost, route, choice))
             })
             .chain(
                 extra
@@ -484,14 +508,32 @@ impl Announcement {
                             &self.item,
                         )
                     })
-                    .map(|cost| (cost, ActivationCostRoute::Printed)),
+                    .map(|cost| (cost, ActivationCostRoute::Printed, None)),
             )
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
-        self.cost_route_options().map(|(cost, _)| cost)
+        self.cost_route_options().map(|(cost, _, _)| cost)
+    }
+    pub(super) fn select_cost(&mut self, index: usize) {
+        let (cost, route, choice) = self.cost_route_options().nth(index).expect("cost option");
+        self.cost = Some(cost);
+        self.activation_cost_route = route;
+        self.activation_choice = choice.map(Box::new);
     }
     pub(super) fn activation_route_for_index(&self, index: usize) -> ActivationCostRoute {
         self.cost_route_options().nth(index).expect("cost option").1
+    }
+    pub(super) fn raw_activation_choice(&self) -> ActivationCostChoice {
+        self.activation_choice
+            .as_deref()
+            .copied()
+            .unwrap_or_else(|| {
+                self.cost_route_options()
+                    .next()
+                    .expect("activation cost")
+                    .2
+                    .expect("activation route")
+            })
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -1162,9 +1204,7 @@ impl Game {
     }
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
-        let cost = a.cost_options().nth(index as usize).unwrap();
-        a.activation_cost_route = a.activation_route_for_index(index as usize);
-        a.cost = Some(cost);
+        a.select_cost(index as usize);
         self.continue_announcement_choices(false);
     }
 
@@ -2069,6 +2109,15 @@ impl Game {
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: self.item_activation_discount(&item),
+            activation_generic_increase: item
+                .source
+                .filter(|_| matches!(item.kind, StackKind::ActivatedAbility { .. }))
+                .map_or(0, |s| {
+                    ability_world::CharacteristicWorld::named_activation_generic_increase(
+                        self, s.id,
+                    )
+                }),
+            activation_choice: None,
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             origin_counter_cost: None,
@@ -2143,7 +2192,7 @@ impl Game {
         }
         if production.is_some() {
             self.suspend_mana_announcement();
-            self.capture_announced_mana_quality(&item);
+            self.capture_announced_mana_quality(&item, production);
         }
         let plan = self.target_spec(&item);
         assert!(
@@ -2187,6 +2236,15 @@ impl Game {
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: self.item_activation_discount(&item),
+            activation_generic_increase: item
+                .source
+                .filter(|_| matches!(item.kind, StackKind::ActivatedAbility { .. }))
+                .map_or(0, |s| {
+                    ability_world::CharacteristicWorld::named_activation_generic_increase(
+                        self, s.id,
+                    )
+                }),
+            activation_choice: None,
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             origin_counter_cost,
@@ -2222,6 +2280,7 @@ impl Game {
         if self.start_target_amounts() {
             return;
         }
+        self.freeze_activation_total();
         if self.start_crew_payment() {
             return;
         }
@@ -2232,23 +2291,6 @@ impl Game {
             && announcement.pay_window
             && matches!(self.state.pending, Pending::Targets { .. })
         {
-            if let StackKind::ActivatedAbility { ability } = announcement.item.kind
-                && Self::activation_target_sensitive(
-                    announcement
-                        .item
-                        .source
-                        .expect("announcement has object source")
-                        .card,
-                    ability,
-                )
-                && announcement.total_cost.is_none()
-            {
-                let base = announcement.cost.unwrap_or_else(|| {
-                    announcement.cost_options().next().expect("activation cost")
-                });
-                let total = self.selected_activation_target_cost(&announcement.item, base);
-                self.state.announcing.as_mut().unwrap().total_cost = Some(total);
-            }
             let announcement = self.state.announcing.as_ref().unwrap();
             if announcement.item.kind == StackKind::Spell && announcement.total_cost.is_none() {
                 let base = Self::announcement_base_cost(announcement);
@@ -2500,6 +2542,18 @@ impl Game {
                 self.state.announcing = Some(announcement);
                 return;
             }
+        }
+        if let Some(completion) = self.take_paid_contributor_completion(&announcement.item) {
+            match completion {
+                activations::ActivationPaymentCompletion::Crew(context) => {
+                    self.finish_paid_crew(announcement.item, context)
+                }
+                activations::ActivationPaymentCompletion::Saddle(selected) => {
+                    self.finish_paid_saddle(announcement.item, selected)
+                }
+                _ => unreachable!("contributor completion"),
+            }
+            return;
         }
         self.state.priority = if announcement.trigger {
             self.state.priority

@@ -70,16 +70,26 @@ impl Game {
                     self.loyalty_timing(card, ability, actor, sorcery),
                 )
                 || !self.targets_available(ability.targets, actor, source)
-                || !self.initial_activation_target_fundable(
-                    FundingGoal {
-                        reserve: None,
-                        actor,
-                        required: ability.cost.colored,
-                        generic: ability.cost.generic,
-                        source: Some((source, index, Counters::default(), object.card, None)),
-                    },
-                    ability.targets,
-                )
+                || !self
+                    .activation_mana_costs(card, object.card, index, 0)
+                    .any(|cost| {
+                        self.initial_activation_target_fundable(
+                            FundingGoal {
+                                reserve: None,
+                                actor,
+                                required: cost.colored,
+                                generic: cost.generic,
+                                source: Some((
+                                    source,
+                                    index,
+                                    Counters::default(),
+                                    object.card,
+                                    None,
+                                )),
+                            },
+                            ability.targets,
+                        )
+                    })
             {
                 continue;
             }
@@ -147,16 +157,26 @@ impl Game {
                         self.loyalty_timing(card, ability, actor, sorcery),
                     )
                     || !self.targets_available(ability.targets, actor, source)
-                    || !self.initial_activation_target_fundable(
-                        FundingGoal {
-                            reserve: None,
-                            actor,
-                            required: ability.cost.colored,
-                            generic: ability.cost.generic,
-                            source: Some((source, index, Counters::default(), giver.card, None)),
-                        },
-                        ability.targets,
-                    )
+                    || !self
+                        .activation_mana_costs(card, giver.card, index, 0)
+                        .any(|cost| {
+                            self.initial_activation_target_fundable(
+                                FundingGoal {
+                                    reserve: None,
+                                    actor,
+                                    required: cost.colored,
+                                    generic: cost.generic,
+                                    source: Some((
+                                        source,
+                                        index,
+                                        Counters::default(),
+                                        giver.card,
+                                        None,
+                                    )),
+                                },
+                                ability.targets,
+                            )
+                        })
                 {
                     continue;
                 }
@@ -335,22 +355,28 @@ impl Game {
             {
                 continue;
             }
-            if self.can_fund(FundingGoal {
-                actor,
-                required: ability.cost.colored,
-                generic: ability.cost.generic,
-                reserve: Some((grantor, Self::attached_tap_spec())),
-                source: Some((
-                    recipient,
-                    index as u16,
-                    Counters::default(),
-                    giver.card,
-                    None,
-                )),
-            }) && emit(Action::AnnounceAttachedAbility {
-                grantor,
-                ability: index as u16,
-            }) {
+            if self
+                .activation_mana_costs(recipient.card, giver.card, index as u16, 0)
+                .any(|cost| {
+                    self.can_fund(FundingGoal {
+                        actor,
+                        required: cost.colored,
+                        generic: cost.generic,
+                        reserve: Some((grantor, Self::attached_tap_spec())),
+                        source: Some((
+                            recipient,
+                            index as u16,
+                            Counters::default(),
+                            giver.card,
+                            None,
+                        )),
+                    })
+                })
+                && emit(Action::AnnounceAttachedAbility {
+                    grantor,
+                    ability: index as u16,
+                })
+            {
                 return true;
             }
         }

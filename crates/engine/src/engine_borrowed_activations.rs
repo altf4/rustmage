@@ -346,7 +346,18 @@ impl Game {
     ) -> SpellView {
         self.refresh_graveyard_borrowing();
         let descriptor = self.borrowed_descriptor(card, exiled, index);
-        let mut item = self.activation_item(actor, card, index);
+        let mut item = self.borrowed_activation_packet(actor, descriptor);
+        item.id = self.next_stack_id();
+        self.state.passes = 0;
+        item
+    }
+    pub(super) fn borrowed_activation_packet(
+        &self,
+        actor: Player,
+        descriptor: Descriptor,
+    ) -> SpellView {
+        let mut item = self.activation_packet(actor, descriptor.source.card, descriptor.ability);
+        item.attachment_trigger = None;
         item.set_source_definition(descriptor.definition);
         item.source_counter_lki =
             card_quantities::counter_quantity_facts(descriptor.rules().program, |kind| {
@@ -492,18 +503,6 @@ impl Game {
             {
                 continue;
             }
-            if ability
-                .crew_minimum()
-                .is_some_and(|minimum| !self.crew_fundable(descriptor.source, actor, minimum))
-            {
-                continue;
-            }
-            if ability
-                .saddle_minimum()
-                .is_some_and(|minimum| !self.saddle_fundable(descriptor.source, actor, minimum))
-            {
-                continue;
-            }
             if (ability.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, card))
                 || !self.activation_guard_available(ability.guard, card, actor)
                 || (ability.mana_production().is_none()
@@ -528,6 +527,31 @@ impl Game {
                 ability,
                 self.counter_amounts(card),
                 |counter_payment| {
+                    if let Some(production) = ability.mana_production() {
+                        let packet = self.borrowed_activation_packet(actor, *descriptor);
+                        if production.in_world(self, card).visit(|production| {
+                            self.mana_packet_fundable(&packet, counter_payment.clone(), production)
+                                && emit(if descriptor.zone == Zone::Graveyard {
+                                    Action::AnnounceGraveyardBorrowedMana {
+                                        card,
+                                        graveyard: descriptor.donor,
+                                        ability: descriptor.ability,
+                                        counter_payment: counter_payment.clone(),
+                                        production,
+                                    }
+                                } else {
+                                    Action::AnnounceBorrowedMana {
+                                        card,
+                                        exiled: descriptor.donor,
+                                        ability: descriptor.ability,
+                                        counter_payment: counter_payment.clone(),
+                                        production,
+                                    }
+                                })
+                        }) {
+                            return true;
+                        }
+                    }
                     let fundable = self
                         .activation_mana_costs(card, descriptor.definition, descriptor.ability, 0)
                         .any(|cost| {

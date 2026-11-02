@@ -3,8 +3,11 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct SaddlePayment {
+    pub source: ObjectRef,
+    pub actor: Player,
     pub minimum: u16,
     pub selected: Vec<ObjectRef>,
+    pub complete: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -78,29 +81,7 @@ impl ActivatedAbility {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn crew_saddle_power(&self, card: CardId, subject: CardId, subtype: &str) -> i128 {
-        let uses_toughness = |fragment: &crate::cards::StaticAbilityFragment| {
-            matches!(
-                fragment,
-                crate::cards::StaticAbilityFragment::CrewSaddleWithToughness
-            )
-        };
-        if self.state.objects[card as usize]
-            .card
-            .static_ability_groups()
-            .iter()
-            .any(|group| group.fragments.iter().any(uses_toughness))
-            && self.continuous_fragment_available(card, uses_toughness)
-        {
-            return self.stats(card).toughness;
-        }
-        let bonus = if self.has_subtype(subject, subtype)
-            && self.keywords(card).contains(Keywords::CREW_SADDLE_PLUS_TWO)
-        {
-            2
-        } else {
-            0
-        };
-        self.stats(card).power.saturating_add(bonus)
+        ability_world::CharacteristicWorld::crew_saddle_contribution(self, card, subject, subtype)
     }
     pub(super) fn is_saddled(&self, object: ObjectRef) -> bool {
         self.state.saddled.contains(&object)
@@ -115,6 +96,7 @@ impl Game {
                 && r != source
         })
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn saddle_fundable(&self, source: ObjectRef, p: Player, minimum: u16) -> bool {
         if minimum == 0 {
             return true;
@@ -133,130 +115,66 @@ impl Game {
         false
     }
     fn saddle_frame_valid(&self) -> bool {
-        let Some(a) = self.state.announcing.as_ref() else {
+        let Some(f) = self.state.saddle_payment.as_deref() else {
             return false;
         };
-        let Some(f) = self.state.saddle_payment.as_ref() else {
-            return false;
-        };
-        self.state
-            .objects
-            .get(
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .object
-                    .card as usize,
-            )
-            .is_some_and(|o| {
-                o.generation
-                    == a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .object
-                        .generation
-                    && o.zone == Zone::Battlefield
-                    && o.controller == a.item.controller
-            })
-            && f.selected.iter().all(|r| {
-                self.saddle_eligible(
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .object,
-                    a.item.controller,
-                    *r,
-                )
-            })
+        self.on_battlefield(f.source.card)
+            && self.object_ref(f.source.card) == f.source
+            && self.state.objects[f.source.card as usize].controller == f.actor
+            && f.selected
+                .iter()
+                .all(|&r| self.saddle_eligible(f.source, f.actor, r))
     }
     fn saddle_sums(&self, maximum: bool) -> PowerSum {
-        let a = self.state.announcing.as_ref().unwrap();
         let f = self.state.saddle_payment.as_ref().unwrap();
         let mut sum = PowerSum::default();
         for id in 0..self.state.objects.len() {
             let r = self.object_ref(id as CardId);
-            if self.saddle_eligible(
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .object,
-                a.item.controller,
-                r,
-            ) {
+            if self.saddle_eligible(f.source, f.actor, r) {
                 let selected = f.selected.contains(&r);
-                if selected || maximum {
-                    let p = self.crew_saddle_power(
-                        r.card,
-                        a.item
-                            .source
-                            .expect("cost announcement has object source")
-                            .id,
-                        "Mount",
-                    );
-                    if selected || p > 0 {
-                        sum.add(p);
-                    }
+                let p = self.crew_saddle_power(r.card, f.source.card, "Mount");
+                if selected || maximum && p > 0 {
+                    sum.add(p);
                 }
             }
         }
         sum
     }
     pub fn saddle_choice(&self) -> Option<SaddleChoiceView> {
-        if !matches!(self.state.pending, Pending::Saddle { .. }) {
+        let f = self.state.saddle_payment.as_ref()?;
+        if self.semantic_actor() != Some(f.actor) {
             return None;
         }
-        let a = self.state.announcing.as_ref()?;
-        let f = self.state.saddle_payment.as_ref()?;
         let sum = self.saddle_sums(false);
         Some(SaddleChoiceView {
-            source: a
-                .item
-                .source
-                .expect("cost announcement has object source")
-                .object,
+            source: f.source,
             minimum: f.minimum,
             selected: f.selected.clone(),
             selected_power: sum.represented(),
-            can_finish: self.saddle_frame_valid() && sum.enough(f.minimum),
+            can_finish: !f.complete
+                && self.saddle_frame_valid()
+                && self.contributor_selection_fundable(&f.selected, true),
         })
     }
     pub(super) fn visit_saddle_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
-        let a = self.state.announcing.as_ref().unwrap();
         let f = self.state.saddle_payment.as_ref().unwrap();
         if !self.saddle_frame_valid() {
             return false;
         }
-        let maximum = self.saddle_sums(true);
         for id in 0..self.state.objects.len() {
             let object = self.object_ref(id as CardId);
-            if !self.saddle_eligible(
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .object,
-                a.item.controller,
-                object,
-            ) || f.selected.contains(&object)
-            {
+            if !self.saddle_eligible(f.source, f.actor, object) || f.selected.contains(&object) {
                 continue;
             }
-            let p = self.crew_saddle_power(
-                object.card,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .id,
-                "Mount",
-            );
-            let mut possible = maximum;
-            if p < 0 {
-                possible.add(p);
-            }
-            if possible.enough(f.minimum) && emit(Action::ChooseSaddler { object }) {
+            let mut selected = f.selected.clone();
+            selected.push(object);
+            if self.contributor_selection_fundable(&selected, false)
+                && emit(Action::ChooseSaddler { object })
+            {
                 return true;
             }
         }
-        self.saddle_sums(false).enough(f.minimum) && emit(Action::FinishSaddle)
+        self.contributor_selection_fundable(&f.selected, true) && emit(Action::FinishSaddle)
     }
     pub(super) fn start_saddle_payment(&mut self) -> bool {
         let Some(a) = self.state.announcing.as_ref() else {
@@ -276,10 +194,15 @@ impl Game {
             return false;
         };
         assert!(a.pay_window && a.item.targets.is_empty());
-        assert!(self.state.saddle_payment.is_none());
+        if self.state.saddle_payment.is_some() {
+            return false;
+        }
         self.state.saddle_payment = Some(Box::new(SaddlePayment {
+            source: a.item.source.expect("Saddle source").object,
+            actor: a.item.controller,
             minimum,
             selected: Vec::new(),
+            complete: false,
         }));
         self.state.pending = Pending::Saddle {
             player: a.item.controller,
@@ -288,44 +211,37 @@ impl Game {
     }
     pub(super) fn finish_saddle_payment(&mut self) {
         assert!(self.saddle_frame_valid());
-        let f = self.state.saddle_payment.take().unwrap();
-        let mut a = self.state.announcing.take().unwrap();
-        assert!(f.selected.iter().all(|r| {
-            self.saddle_eligible(
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .object,
-                a.item.controller,
-                *r,
-            )
-        }));
-        let mut total = PowerSum::default();
-        for r in &f.selected {
-            total.add(
-                self.crew_saddle_power(
-                    r.card,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .id,
-                    "Mount",
-                ),
-            );
-        }
-        assert!(total.enough(f.minimum));
-        // All powers are checked before the simultaneous tap cost. Tap observers
-        // queue during payment, then are ordered above the activated ability.
-        if let Some(phase) = self.pay_activation(&mut a.item, [0; 6], Counters::default()) {
-            self.suspend_activation_payment(
-                a.item,
-                phase,
-                ActivationCostRoute::Printed,
-                activations::ActivationPaymentCompletion::Saddle(f.selected),
-            );
+        let f = self.state.saddle_payment.as_ref().unwrap();
+        assert!(self.contributor_selection_fundable(&f.selected, true));
+        let actor = f.actor;
+        let free = self
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .total_cost
+            .expect("frozen Saddle cost")
+            == ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            };
+        if free && self.saddle_sums(false).enough(f.minimum) {
+            let f = self.state.saddle_payment.take().unwrap();
+            let mut a = self.state.announcing.take().unwrap();
+            if let Some(phase) = self.pay_activation(&mut a.item, [0; 6], Counters::default()) {
+                self.suspend_activation_payment(
+                    a.item,
+                    phase,
+                    ActivationCostRoute::Printed,
+                    activations::ActivationPaymentCompletion::Saddle(f.selected),
+                );
+                return;
+            }
+            self.finish_paid_saddle(a.item, f.selected);
             return;
         }
-        self.finish_paid_saddle(a.item, f.selected);
+        self.state.saddle_payment.as_mut().unwrap().complete = true;
+        self.state.pending = Pending::PayCosts { player: actor };
     }
     pub(super) fn finish_paid_saddle(&mut self, item: SpellView, selected: Vec<ObjectRef>) {
         self.tap_objects(&selected.iter().map(|r| r.card).collect::<Vec<_>>());

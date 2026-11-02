@@ -598,20 +598,46 @@ impl Game {
     }
     // Capture before announcement costs can remove the producer or its choice.
     // The exact source reference identifies this announcement, not a live lookup.
-    pub(super) fn announced_mana_quality(&self, item: &SpellView) -> Option<(ObjectRef, Quality)> {
+    pub(super) fn announced_mana_quality(
+        &self,
+        item: &SpellView,
+        selected: Option<Mana>,
+    ) -> Option<(ObjectRef, Quality)> {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return None;
         };
         let source = item.source?;
-        source
-            .card
-            .activation(ability)
-            .mana_production()
+        let production = if matches!(
+            ability,
+            Card::GRANTED_TAP_MANA | Card::GRANTED_SACRIFICE_MANA
+        ) {
+            let origin = item.attachment_trigger.as_ref()?;
+            ability_world::CharacteristicWorld::granted_mana(self, source.id)
+                .into_iter()
+                .find(|grant| {
+                    grant.source == origin.grantor
+                        && grant.sacrifice == (ability == Card::GRANTED_SACRIFICE_MANA)
+                        && selected.is_none_or(|selected| {
+                            grant
+                                .production
+                                .in_world(self, source.id)
+                                .visit(|production| production == selected)
+                        })
+                })
+                .map(|grant| grant.production)
+        } else {
+            source.card.activation(ability).mana_production()
+        };
+        production
             .and_then(|production| self.mana_quality(production, source.object.card))
             .map(|quality| (source.object, quality.with_definition(source.card)))
     }
-    pub(super) fn capture_announced_mana_quality(&mut self, item: &SpellView) {
-        if let Some(quality) = self.announced_mana_quality(item) {
+    pub(super) fn capture_announced_mana_quality(
+        &mut self,
+        item: &SpellView,
+        production: Option<Mana>,
+    ) {
+        if let Some(quality) = self.announced_mana_quality(item, production) {
             self.state
                 .mana_lots
                 .get_or_insert_default()

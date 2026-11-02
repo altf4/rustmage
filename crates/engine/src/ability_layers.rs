@@ -57,6 +57,8 @@ pub enum StaticAbilityFragment {
     CrewSaddleWithToughness,
     /// A layer-six activated-ability template granted to this source at max speed.
     SourceMaxSpeedActivation(u16),
+    /// Generic increase for activations whose actual source has this chosen name.
+    NamedActivationGenericIncrease(u32),
     /// During own turn, ignore spent exhaust use before the first exhaust activation.
     ReuseExhaustBeforeFirstActivationOwnTurn,
     /// Generic reduction for exhaust abilities of other controlled permanents.

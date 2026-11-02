@@ -5481,8 +5481,43 @@ impl Card {
     }
     /// Intrinsic land/dork mana is stored separately from printed activation tables.
     /// The reserved index is used only by a captured inherited-ability descriptor.
+    pub(crate) const GRANTED_TAP_MANA: u16 = u16::MAX - 7;
+    pub(crate) const GRANTED_SACRIFICE_MANA: u16 = u16::MAX - 8;
+    pub(crate) fn intrinsic_mana_activation_index(color: usize) -> u16 {
+        u16::MAX - 1 - color as u16
+    }
     pub(crate) fn activation(self, index: u16) -> &'static ActivatedAbility {
-        if index >= u16::MAX - 5 {
+        if matches!(index, Self::GRANTED_TAP_MANA | Self::GRANTED_SACRIFICE_MANA) {
+            const TAP: ActivatedAbility = ActivatedAbility {
+                exhaust: false,
+                guard: ActivationGuard::Always,
+                origin: ActivationOrigin::Battlefield,
+                cycling: false,
+                cost: ActivationCost {
+                    tap: true,
+                    ..ActivationCost::ZERO
+                },
+                targets: TargetPlan::NONE,
+                // The concrete production belongs to the frozen grant receipt.
+                program: &[Instruction::AddMana(ManaProduction::Fixed([0; 6]))],
+                sorcery: false,
+                once_per_turn: false,
+            };
+            const SACRIFICE: ActivatedAbility = ActivatedAbility {
+                cost: ActivationCost {
+                    tap: true,
+                    sacrifice: true,
+                    ..ActivationCost::ZERO
+                },
+                ..TAP
+            };
+            return if index == Self::GRANTED_TAP_MANA {
+                &TAP
+            } else {
+                &SACRIFICE
+            };
+        }
+        if index >= u16::MAX - 6 {
             static INTRINSIC: [ActivatedAbility; 6] = [
                 ActivatedAbility {
                     exhaust: false,

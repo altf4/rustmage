@@ -78,19 +78,22 @@ and grantor/definition/origin. New candidate announcements and speculative mana
 moves both reject an instance already active in any mana ancestor. Completing an
 already-announced instance uses the existing frozen continuation path instead.
 
-`dft_deferred_mana` adds three scenarios: a real depth-two nested chain in both
+`dft_deferred_mana` adds four scenarios: a real depth-two nested chain in both
 seats with all-ancestor recursion rejection and read-only action generation; a
 fundable child that would strand its parent; and an unpayable child despite a
-payable parent. Rejected actions retain the exact snapshot/revision. The retained
+payable parent; and a resolved child that can be activated again to complete its restored parent. Rejected actions retain the exact snapshot/revision. The retained
 `dft_speed_grants` nested scenario adds source-grant provenance and owned
 raw/index/restore after disposing of the parent Game.
 
-The initial deferred action adapter handles indexed pure mana with a mana
+The initial deferred action adapter handled indexed pure mana with a mana
 component and no unselected external cost. Existing external-cost choices retain
-their existing route. Additional adapters, named activation taxes and taxed
-Crew/Saddle costs remain engine blockers; they are not claimed implemented by
-this checkpoint. The deferred commit had not yet consumed coordinated validation
-when this document was authored.
+their existing route. The integrated repair completes a frozen child directly,
+constrains an explicit payment vector before lot allocation, and removes only
+that resolved child from the projected active-instance chain. Root's integrated
+`61a720af` checkpoint passed all 196 focused scenarios, including all four deferred
+scenarios, the retained max-speed owned-branch scenario, and the external-cost
+regression. The subsequent tax adapters and Crew/Saddle receipts have their own
+pending validation contract in `aetherdrift-activation-tax-engine.md`.
 
 ## Grant provenance is not an extra tap cost
 

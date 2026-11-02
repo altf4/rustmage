@@ -86,6 +86,143 @@ pub(super) trait CharacteristicWorld {
             .map(|row| row.value)
     }
 
+    /// Costs use the actual source's current name, independent of the card
+    /// defining an indexed, borrowed or externally granted ability.
+    fn activation_generic_discount(&self, source: CardId, definition: Card, ability: u16) -> u32 {
+        let controller = self.object(source).controller;
+        let subtype = definition
+            .activation_subtype_discount(ability)
+            .map_or(0, |subtype| {
+                (0..self.game().state.objects.len())
+                    .filter(|&id| {
+                        let id = id as CardId;
+                        let object = self.object(id);
+                        object.zone == Zone::Battlefield
+                            && object.controller == controller
+                            && self.subtypes(id).has(object.card, subtype)
+                    })
+                    .count()
+                    .try_into()
+                    .unwrap_or(u32::MAX)
+            });
+        let power_up =
+            if definition.power_up_abilities().contains(&ability) && self.kinds(source) & 1 != 0 {
+                (0..self.game().state.objects.len())
+                    .filter_map(|id| {
+                        let id = id as CardId;
+                        let object = self.object(id);
+                        (id != source
+                            && object.zone == Zone::Battlefield
+                            && object.controller == controller
+                            && self.printed_abilities_available(id))
+                        .then_some(object.card.power_up_other_creature_reduction())
+                    })
+                    .fold(0u32, u32::saturating_add)
+            } else {
+                0
+            };
+        exhaust::generic_discount(self, source, definition, ability)
+            .saturating_add(power_up)
+            .saturating_add(subtype)
+            .saturating_add(
+                definition
+                    .activation_counter_discount(ability)
+                    .map_or(0, |kind| {
+                        self.counter_count(source, kind)
+                            .try_into()
+                            .unwrap_or(u32::MAX)
+                    }),
+            )
+    }
+    fn projected_self_grant_used(&self, _source: ObjectRef, _timestamp: u64) -> bool {
+        false
+    }
+    fn self_grant_activation_used(
+        &self,
+        source: ObjectRef,
+        timestamp: u64,
+        definition: Card,
+        ability: u16,
+        actor: Player,
+    ) -> bool {
+        let rules = definition.activation(ability);
+        let spent = self.projected_self_grant_used(source, timestamp)
+            || self
+                .game()
+                .state
+                .granted_exhaust_uses
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .any(|row| {
+                    row.source == source
+                        && row.grantor == source
+                        && row.origin == Some(timestamp)
+                        && row.definition == definition
+                        && row.ability == ability
+                        && (rules.exhaust || row.turn == self.game().state.turn)
+                });
+        spent && ((rules.exhaust && !exhaust::reuse_available(self, actor)) || rules.once_per_turn)
+    }
+    fn crew_saddle_eligible(&self, source: ObjectRef, actor: Player, object: ObjectRef) -> bool {
+        let o = self.object(object.card);
+        object != source
+            && self.reference(object.card) == object
+            && o.zone == Zone::Battlefield
+            && o.controller == actor
+            && !o.tapped
+            && self.kinds(object.card) & 1 != 0
+    }
+    fn crew_saddle_contribution(&self, card: CardId, subject: CardId, subtype: &str) -> i128 {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        let uses_toughness = |fragment: &crate::cards::StaticAbilityFragment| {
+            matches!(
+                fragment,
+                crate::cards::StaticAbilityFragment::CrewSaddleWithToughness
+            )
+        };
+        if self
+            .definition(card)
+            .static_ability_groups()
+            .iter()
+            .any(|g| g.fragments.iter().any(uses_toughness))
+            && query.continuous_fragment_available(card, uses_toughness)
+        {
+            return query.stats(card).toughness;
+        }
+        let bonus = if self
+            .subtypes(subject)
+            .has(self.definition(subject), subtype)
+            && self.keywords(card).contains(Keywords::CREW_SADDLE_PLUS_TWO)
+        {
+            2
+        } else {
+            0
+        };
+        query.stats(card).power.saturating_add(bonus)
+    }
+    fn named_activation_generic_increase(&self, id: CardId) -> u32 {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        (0..self.game().state.objects.len()).fold(0u32, |total, index| {
+            let source = index as CardId;
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield
+                || !matches!(self.entry_value(self.reference(source)),
+                    Some(EntryChoiceValue::CardName(chosen)) if self.rules_name_matches(id, chosen))
+            {
+                return total;
+            }
+            provider.card.static_ability_groups().iter().flat_map(|g| g.fragments)
+                .fold(total, |total, fragment| {
+                    let crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(amount) = *fragment else {
+                        return total;
+                    };
+                    if query.continuous_fragment_available(source, |candidate| std::ptr::eq(candidate, fragment)) {
+                        total.checked_add(amount).capacity("activation cost increase exhausted")
+                    } else { total }
+                })
+        })
+    }
     fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
         self.game().battle_protector(object)
     }
@@ -289,6 +426,16 @@ pub(super) trait CharacteristicWorld {
     /// Name-changing effects belong here, before later characteristic layers.
     fn name(&self, id: CardId) -> &'static str {
         characteristic_layers::name(self, id)
+    }
+    fn rules_name_matches(&self, id: CardId, chosen: crate::CardName) -> bool {
+        let current = self.name(id);
+        if !matches!(self.object(id).zone, Zone::Battlefield | Zone::Stack)
+            && current == self.definition(id).name()
+            && let Some(names) = outside_names::names(self.definition(id))
+        {
+            return names.iter().any(|name| chosen.matches(name));
+        }
+        chosen.matches(current)
     }
     fn colors(&self, id: CardId) -> u8 {
         characteristic_layers::colors(self, id)

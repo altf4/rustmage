@@ -127,6 +127,34 @@ impl Game {
         Some(readiness)
     }
     pub(super) fn record_external_exhaust_use(&mut self, item: &SpellView, ability: u16) -> bool {
+        if let (Some(source), Some(grant)) = (item.source, item.self_granted_activation.as_ref()) {
+            let rules = source.card.activation(ability);
+            if (rules.once_per_turn || rules.exhaust)
+                && self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object
+            {
+                let rows = self.state.granted_exhaust_uses.get_or_insert_default();
+                if let Some(row) = rows.iter_mut().find(|row| {
+                    row.source == source.object
+                        && row.grantor == source.object
+                        && row.definition == source.card
+                        && row.ability == ability
+                        && row.origin == Some(grant.grant_timestamp)
+                }) {
+                    row.turn = self.state.turn;
+                } else {
+                    rows.push(GrantedExhaustUseView {
+                        source: source.object,
+                        grantor: source.object,
+                        definition: source.card,
+                        ability,
+                        origin: Some(grant.grant_timestamp),
+                        turn: self.state.turn,
+                    });
+                }
+            }
+            return true;
+        }
         let Some(source) = item.source else {
             return false;
         };

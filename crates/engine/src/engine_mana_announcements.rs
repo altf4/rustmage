@@ -111,6 +111,9 @@ impl Game {
                                 + f.pending.owned_bytes()
                                 + a.item.owned_bytes()
                                 + a.counter_payment.owned_bytes()
+                                + a.activation_choice.as_ref().map_or(0, |_| {
+                                    std::mem::size_of::<targeting::ActivationCostChoice>()
+                                })
                                 + a.free_hand_permission
                                     .as_ref()
                                     .map_or(0, |_| std::mem::size_of::<ObjectRef>())

@@ -75,11 +75,8 @@ impl CostContext {
                     let StackKind::ActivatedAbility { ability } = a.item.kind else {
                         return None;
                     };
-                    let cost = a.item.source?.card.activation(ability).cost;
-                    Some(ManaCost {
-                        colored: cost.colored,
-                        generic: cost.generic.saturating_sub(a.activation_discount),
-                    })
+                    let _ = ability;
+                    a.cost_options().next()
                 }),
             source: a
                 .item
@@ -198,6 +195,11 @@ impl FundingState<'_> {
         !possible
     }
     pub(super) fn set_cost_context(&mut self, a: Option<&Announcement>) {
+        self.contributors = a.and_then(|a| {
+            self.game
+                .contributor_requirement(&self.game.funding_goal(a))
+        });
+        self.power_sensitive |= self.contributors.is_some();
         self.install_cost_context(a.and_then(CostContext::from_announcement));
         if let Some(a) = a.filter(|a| a.cast_costs.is_some())
             && let Some(frame) = &a.convoke
@@ -218,6 +220,7 @@ impl FundingState<'_> {
     pub(super) fn set_payment_context(&mut self, a: &Announcement) {
         self.payment_source = a.item.source.map(|s| s.object);
         self.exhaust_source_reuse_authorized = a.exhaust_reuse_authorized;
+        self.source_use_independent = a.item.self_granted_activation.is_some();
         if a.cast_costs.is_none() && a.additional_cost().is_some() {
             let mut shadow = a.clone();
             shadow.cast_costs = Some(Box::default());

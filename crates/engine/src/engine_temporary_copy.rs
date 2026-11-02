@@ -664,7 +664,7 @@ impl Game {
         let Some(source) = item.source else {
             return;
         };
-        let bit = 1u64 << ability;
+        let bit = 1u64.checked_shl(u32::from(ability)).unwrap_or(0);
         if self.copy_ability_origin(source.object) == item.source_ability_origin {
             self.state.objects[source.id as usize].used_abilities |= bit;
         } else if let Some(rows) = &mut self.state.temporary_copies

@@ -167,86 +167,23 @@ impl Game {
         intervals
     }
     fn activation_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
-        let StackKind::ActivatedAbility { ability } = a.item.kind else {
-            return Vec::new();
-        };
-        let definition = a
-            .item
-            .source
-            .expect("cost announcement has object source")
-            .card
-            .activation(ability);
-        if a.power_up_costs.is_some() {
-            let fundable = |value: u32| {
-                let mut probe = a.clone();
-                probe.item.x = Some(value);
-                probe
-                    .cost_options()
-                    .any(|cost| self.announcement_cost_fundable(&probe, cost))
-            };
-            if !fundable(0) {
-                return Vec::new();
-            }
-            let (mut low, mut high) = (0u32, u32::MAX);
-            while low < high {
-                let mid = low + (high - low).div_ceil(2);
-                if fundable(mid) {
-                    low = mid;
-                } else {
-                    high = mid - 1;
-                }
-            }
-            return vec![XInterval {
-                minimum: 0,
-                maximum: low,
-            }];
-        }
-        let base = a.cost.unwrap_or(ManaCost {
-            colored: definition.cost.colored,
-            generic: definition
-                .cost
-                .generic
-                .saturating_sub(a.activation_discount),
-        });
         let fundable = |value: u32| {
-            value
-                .checked_mul(definition.x_symbols())
-                .and_then(|x| base.generic.checked_add(x))
-                .is_some_and(|generic| {
-                    self.activation_can_fund(
-                        FundingGoal {
-                            reserve: None,
-                            actor: a.item.controller,
-                            required: base.colored,
-                            generic,
-                            source: Some((
-                                a.item
-                                    .source
-                                    .expect("cost announcement has object source")
-                                    .object,
-                                ability,
-                                a.counter_payment.clone(),
-                                a.item
-                                    .source
-                                    .expect("cost announcement has object source")
-                                    .card,
-                                a.item.borrowed_slot,
-                            )),
-                        },
-                        a.additional_cost(),
-                    )
-                })
+            let mut probe = a.clone();
+            probe.item.x = Some(value);
+            probe
+                .cost_options()
+                .any(|cost| self.announcement_cost_fundable(&probe, cost))
         };
         if !fundable(0) {
             return Vec::new();
         }
-        let (mut low, mut high) = (0u32, (u32::MAX - base.generic) / definition.x_symbols());
+        let (mut low, mut high) = (0u32, u32::MAX);
         while low < high {
-            let middle = low + (high - low).div_ceil(2);
-            if fundable(middle) {
-                low = middle;
+            let mid = low + (high - low).div_ceil(2);
+            if fundable(mid) {
+                low = mid;
             } else {
-                high = middle - 1;
+                high = mid - 1;
             }
         }
         vec![XInterval {

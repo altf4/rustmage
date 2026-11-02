@@ -1973,7 +1973,10 @@ impl<'g> FundingState<'g> {
         }
         let external = if let Some(external) = step.external {
             let source = &self.resources[step.resource];
-            let card = step.frozen.as_ref().map_or(source.object.card, |f| f.0);
+            let card = step.frozen.as_ref().map_or_else(
+                || step.self_grant.map_or(source.object.card, |g| g.0),
+                |f| f.0,
+            );
             let ability = step
                 .borrowed
                 .map_or_else(|| card.activation(step.ability.unwrap()), |b| b.rules());
@@ -1996,11 +1999,10 @@ impl<'g> FundingState<'g> {
         // Paying away the final Finality counter must differ from sacrificing
         // a permanent which still has one after the counter cost.
         next.apply(step, true);
-        let departed = source.object.zone == Zone::Battlefield
-            && next.object(source.id).zone != Zone::Battlefield;
+        let departed = source.object.zone != next.object(source.id).zone;
         let destination = next.object(source.id).zone;
         if departed {
-            next.resources[step.resource].object.zone = Zone::Battlefield;
+            next.resources[step.resource].object.zone = source.object.zone;
         }
         // The staged source remains present until a replacement plan commits.
         next.refresh_control_projection();
@@ -2053,13 +2055,13 @@ impl<'g> FundingState<'g> {
         outer: &'g [mana_announcements::ManaAnnouncement],
         quality: Option<&'g mana_lots::Quality>,
     ) {
-        self.active_mana_keys = Some(Box::new(
+        self.active_mana_keys = Some(
             std::iter::once(head)
                 .chain(outer.iter().map(|frame| &frame.announcement))
                 .filter(|a| a.production.is_some())
                 .filter_map(|a| a.item.mana_activation_key())
                 .collect(),
-        ));
+        );
         self.continuation = (head.production.is_some() && !outer.is_empty()).then(|| {
             Box::new(PaymentContinuation {
                 head,
@@ -2134,6 +2136,12 @@ impl<'g> FundingState<'g> {
                     ability: Some(ability),
                     grantor: None,
                     borrowed: None,
+                    self_grant: a.item.self_granted_activation.as_ref().map(|g| {
+                        (
+                            a.item.source.expect("self-granted source").card,
+                            g.grant_timestamp,
+                        )
+                    }),
                     payment,
                     counters: a.counter_payment.clone(),
                     production,

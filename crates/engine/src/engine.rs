@@ -785,6 +785,7 @@ define_actions! {
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
     AnnounceSelfGrantedAbility { source: ObjectRef, grant_timestamp: u64 },
+    AnnounceSelfGrantedMana { source: ObjectRef, grant_timestamp: u64, counter_payment: Counters, production: Mana },
     ChooseAdditionalCost {
         object: ObjectRef,
     },
@@ -862,6 +863,7 @@ define_actions! {
     },
     // Mana ability granted to this permanent by an exact attached source.
     TapGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
+    AnnounceGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
     AnnounceCast {
         card: CardId,
     },
@@ -5006,18 +5008,7 @@ impl Game {
                         continue;
                     }
                     if obj.zone == Zone::Battlefield
-                        && !ability_world::CharacteristicWorld::activation_prohibited(
-                            self, actor, card,
-                        )
-                        && self.printed_abilities_available(card)
-                        && !obj.tapped
-                        && ability_world::CharacteristicWorld::intrinsic_mana_color(self, card)
-                            .is_some()
-                        && (!self.is_creature(card)
-                            || !obj.summoning_sick
-                            || ability_world::CharacteristicWorld::activation_keywords(self, card)
-                                .contains(Keywords::HASTE))
-                        && emit(Action::TapMana { card })
+                        && self.visit_intrinsic_mana(card, actor, &mut emit)
                     {
                         return true;
                     }
@@ -6416,6 +6407,24 @@ impl Game {
                 item.cast.as_mut().unwrap().method = CastMethod::GraveyardCounterCost;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceSelfGrantedMana {
+                source,
+                grant_timestamp,
+                counter_payment,
+                production,
+            } => {
+                let row = *self
+                    .state
+                    .self_granted_abilities
+                    .as_ref()
+                    .unwrap()
+                    .iter()
+                    .find(|row| row.recipient == source && row.timestamp == grant_timestamp)
+                    .unwrap();
+                let mut item = self.self_granted_activation_packet(row);
+                item.id = self.next_stack_id();
+                self.open_payment_announcement(item, counter_payment, Some(production));
+            }
             Action::AnnounceSelfGrantedAbility {
                 source,
                 grant_timestamp,
@@ -6570,6 +6579,17 @@ impl Game {
                     self.state.land_played = true;
                 }
                 self.state.passes = 0;
+            }
+            Action::AnnounceGrantedMana {
+                card,
+                grantor,
+                production,
+            } => {
+                let mut item = self
+                    .granted_mana_packet(actor, card, grantor, production)
+                    .expect("legal granted mana instance");
+                item.id = self.next_stack_id();
+                self.open_payment_announcement(item, Counters::default(), Some(production));
             }
             Action::TapGrantedMana {
                 card,
@@ -11025,6 +11045,9 @@ impl Game {
                 .map_or(0, |r| r.bytes())
             + s.announcing.as_ref().map_or(0, |a| {
                 a.counter_payment.owned_bytes()
+                    + a.activation_choice.as_ref().map_or(0, |_| {
+                        std::mem::size_of::<targeting::ActivationCostChoice>()
+                    })
                     + a.free_hand_permission
                         .as_ref()
                         .map_or(0, |_| std::mem::size_of::<ObjectRef>())

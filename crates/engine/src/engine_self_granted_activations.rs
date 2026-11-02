@@ -21,10 +21,7 @@ impl Game {
         if !rows.iter().any(|row| row.recipient.card == card) {
             return false;
         }
-        if self.nonmana_actions_prohibited()
-            || CharacteristicWorld::activation_prohibited(self, actor, card)
-            || self.named_activation_prohibited(card)
-        {
+        if CharacteristicWorld::activation_prohibited(self, actor, card) {
             return false;
         }
         let query = self.characteristic_query();
@@ -36,13 +33,31 @@ impl Game {
                 continue;
             };
             let rules = row.granting_card.activation(ability);
-            let readiness = self.activation_readiness(actor, rules);
+            if rules.mana_production().is_none()
+                && (self.nonmana_actions_prohibited() || self.named_activation_prohibited(card))
+            {
+                continue;
+            }
+            if self.self_grant_activation_used(
+                row.recipient,
+                row.timestamp,
+                row.granting_card,
+                ability,
+                actor,
+            ) {
+                continue;
+            }
+            let mut readiness = self.activation_readiness(actor, rules);
+            readiness.once_per_turn = false;
+            readiness.exhaust = false;
+            let mut ready_object = self.state.objects[card as usize].clone();
+            ready_object.used_abilities = 0;
             if activations::pure_loyalty_placement_prohibited(self, row.recipient, &readiness)
                 || (rules.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, card))
                 || !query.self_grant_available(row.recipient, row.timestamp)
                 || !self.activation_guard_available(rules.guard, card, actor)
                 || !Self::object_activation_available_with_kinds(
-                    &self.state.objects[card as usize],
+                    &ready_object,
                     self.counter_amounts(card),
                     self.current_kinds(card),
                     || CharacteristicWorld::activation_keywords(self, card),
@@ -55,23 +70,49 @@ impl Game {
             {
                 continue;
             }
-            if self.targets_available(rules.targets, actor, row.recipient)
-                && self.initial_activation_target_fundable(
-                    FundingGoal {
-                        reserve: None,
-                        actor,
-                        required: rules.cost.colored,
-                        generic: rules.cost.generic,
-                        source: Some((
-                            row.recipient,
-                            ability,
-                            Counters::default(),
-                            row.granting_card,
-                            None,
-                        )),
+            if let Some(production) = rules.mana_production() {
+                let packet = self.self_granted_activation_packet(*row);
+                if self.visit_activation_counter_payments(
+                    actor,
+                    rules,
+                    self.counter_amounts(card),
+                    |counters| {
+                        production.in_world(self, card).visit(|production| {
+                            self.mana_packet_fundable(&packet, counters.clone(), production)
+                                && emit(Action::AnnounceSelfGrantedMana {
+                                    source: row.recipient,
+                                    grant_timestamp: row.timestamp,
+                                    counter_payment: counters.clone(),
+                                    production,
+                                })
+                        })
                     },
-                    rules.targets,
-                )
+                ) {
+                    return true;
+                }
+                continue;
+            }
+            if self.targets_available(rules.targets, actor, row.recipient)
+                && self
+                    .activation_mana_costs(card, row.granting_card, ability, 0)
+                    .any(|cost| {
+                        self.initial_activation_target_fundable(
+                            FundingGoal {
+                                reserve: None,
+                                actor,
+                                required: cost.colored,
+                                generic: cost.generic,
+                                source: Some((
+                                    row.recipient,
+                                    ability,
+                                    Counters::default(),
+                                    row.granting_card,
+                                    None,
+                                )),
+                            },
+                            rules.targets,
+                        )
+                    })
                 && emit(Action::AnnounceSelfGrantedAbility {
                     source: row.recipient,
                     grant_timestamp: row.timestamp,
@@ -95,11 +136,18 @@ impl Game {
             .iter()
             .find(|row| row.recipient == source && row.timestamp == grant_timestamp)
             .unwrap();
+        let mut item = self.self_granted_activation_packet(row);
+        item.id = self.next_stack_id();
+        self.state.passes = 0;
+        self.open_payment_announcement(item, Counters::default(), None);
+    }
+    pub(super) fn self_granted_activation_packet(&self, row: self_granted::Row) -> SpellView {
+        let source = row.recipient;
         let SelfGrantedAbilityKind::Activated { ability } = row.kind else {
             unreachable!()
         };
         let actor = self.state.objects[source.card as usize].controller;
-        let mut item = self.activation_item(actor, source.card, ability);
+        let mut item = self.activation_packet(actor, source.card, ability);
         item.set_source_definition(row.granting_card);
         item.source_ability_origin = Some(row.timestamp);
         item.self_granted_activation = Some(Box::new(SelfGrantedActivationContext {
@@ -108,6 +156,7 @@ impl Game {
         item.source_transform = None;
         item.source_counter_lki = None;
         item.source_quantity_lki = None;
-        self.open_payment_announcement(item, Counters::default(), None);
+        item.attachment_trigger = None;
+        item
     }
 }

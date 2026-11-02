@@ -477,6 +477,8 @@ impl Game {
             exhaust_reuse_authorized: false,
             activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: 0,
+            activation_generic_increase: 0,
+            activation_choice: None,
             power_up_costs: None,
             free_hand_permission: None,
             origin_counter_cost,
