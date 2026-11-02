@@ -70,6 +70,18 @@ fn check(value: &serde_json::Value) -> Result<(), String> {
         )),
         serde_json::Value::Array(rows) => rows.iter().try_for_each(check),
         serde_json::Value::Object(fields) => {
+            // Counter receipts on the old acquired nonmana action are new.
+            // Empty receipts are omitted by its real serializer; native
+            // AnnounceActivate counter_payment is inherited and remains valid.
+            if fields
+                .get("kind")
+                .is_some_and(|kind| kind == "AnnounceSelfGrantedAbility")
+                && fields.contains_key("counter_payment")
+            {
+                return Err(
+                    "acquired nonmana counter payment has no schema 198 representation".into(),
+                );
+            }
             // CardName was already an EntryChoiceValue. Only its new use as an
             // EntryChoiceKind is unrepresentable; old chosen-name values remain.
             if fields.get("kind").is_some_and(|kind| kind == "CardName") {
@@ -1181,4 +1193,33 @@ fn prior_198_keeps_inherited_null_cast_link_origins_eligible_after_owned_restore
             .ability_origin,
         Some(23)
     );
+}
+
+#[test]
+fn prior_198_rejects_only_new_nonempty_acquired_nonmana_counter_receipts() {
+    let source = ObjectRef {
+        card: 17,
+        generation: 2,
+    };
+    let empty = Action::AnnounceSelfGrantedAbility {
+        source,
+        grant_timestamp: 31,
+        counter_payment: Counters::default(),
+    };
+    let inherited = serde_json::to_string(&empty).unwrap();
+    assert!(!inherited.contains("counter_payment"));
+    assert_eq!(project_prior_schema199(&inherited).unwrap(), inherited);
+    let acquired = Action::AnnounceSelfGrantedAbility {
+        source,
+        grant_timestamp: 31,
+        counter_payment: Counters::of(CounterKind::Charge, 1),
+    };
+    assert!(project_prior_schema199(&serde_json::to_string(&acquired).unwrap()).is_err());
+    let native = Action::AnnounceActivate {
+        card: source.card,
+        ability: 0,
+        counter_payment: Counters::of(CounterKind::PlusOne, 1),
+    };
+    let native = serde_json::to_string(&native).unwrap();
+    assert_eq!(project_prior_schema199(&native).unwrap(), native);
 }

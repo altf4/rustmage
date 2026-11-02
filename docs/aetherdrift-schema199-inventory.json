@@ -339,6 +339,13 @@
         "ability = 65526"
       ],
       "contract": "Reserved MAX-9 embalm activation reuses the old packet shape but introduces new behavior. Reject this exact historical slot in JSON and every held packet after the paid exile removes the acquired row."
+    },
+    {
+      "container": "Action::AnnounceSelfGrantedAbility",
+      "members": [
+        "counter_payment"
+      ],
+      "contract": "Owned exact/wildcard acquired nonmana counter-cost receipt. Serde default and omitted when empty preserve inherited action bytes. Reject any present member only in this action variant; native AnnounceActivate counter_payment is inherited and remains eligible."
     }
   ],
   "eligibility": [
@@ -351,7 +358,8 @@
     "Reject sparse acquired embalm and exact retained/link origins at idle roots, and builtin65526 packets after the source has already paid exile.",
     "Reject retained origins in every copy layer, including inactive lower layers, and copiable Zombie/embalm properties in retained original recipes.",
     "An active or suspended Announcement containing ManaOutput remains opaque even during the inherited EffectMana/ChooseMana public phase.",
-    "No blanket false/present-field erasure is permitted; neutral new optional/bool properties are already omitted by their real serializers."
+    "No blanket false/present-field erasure is permitted; neutral new optional/bool properties are already omitted by their real serializers.",
+    "Reject present counter_payment only on AnnounceSelfGrantedAbility; its empty default is omitted. Existing native activation counter-payment fields are not a new wire family."
   ],
   "registry": {
     "module": "tests/legacy/assurance/schema199.rs",
