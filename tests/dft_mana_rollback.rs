@@ -91,7 +91,7 @@ fn drain(g: &mut Game) {
     }
     panic!("bounded trigger settlement")
 }
-fn rollback(p: Player, replacement: bool) -> (Game, CardId, CardId, CardId) {
+fn rollback(p: Player, replacement: bool, dependent: bool) -> (Game, CardId, CardId, CardId) {
     let mut g = scenario(p);
     let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
     g.state.objects[silver as usize].growth.power = -1;
@@ -113,9 +113,30 @@ fn rollback(p: Player, replacement: bool) -> (Game, CardId, CardId, CardId) {
         },
     );
     drain(&mut g);
-    let source = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+    let source = put(
+        &mut g,
+        p,
+        "Llanowar Elves",
+        if dependent {
+            Zone::Exile
+        } else {
+            Zone::Battlefield
+        },
+    );
     let external = put(&mut g, p, "Swiftfoot Boots", Zone::Battlefield);
-    put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let observer = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    // Fixtures replace typed behavior, not the physical printed power. Keep
+    // this observer below casualty's threshold after the foreign Aura returns.
+    g.state.objects[observer as usize].growth.power = -3;
+    let returner = dependent.then(|| {
+        let returner = put(&mut g, p, "Druid of the Cowl", Zone::Battlefield);
+        g.state.exile_links.push(ExileLink {
+            source: g.object_ref(returner),
+            exiled: g.object_ref(source),
+            return_zone: Zone::Battlefield,
+        });
+        returner
+    });
     if replacement {
         put(&mut g, p, "Rest in Peace", Zone::Battlefield);
     }
@@ -131,6 +152,19 @@ fn rollback(p: Player, replacement: bool) -> (Game, CardId, CardId, CardId) {
             target: Target::Card(enemy),
         },
     );
+    if let Some(returner) = returner {
+        act(
+            &mut g,
+            Action::ActivateMana {
+                card: returner,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+    }
     act(
         &mut g,
         Action::AnnounceMana {
@@ -151,7 +185,7 @@ fn rollback(p: Player, replacement: bool) -> (Game, CardId, CardId, CardId) {
             Zone::Graveyard
         }
     );
-    assert!(g.object_view(source).tapped);
+    assert_eq!(g.object_view(source).tapped, !dependent);
     pay(&mut g);
     let clause = g
         .observe(p)
@@ -176,7 +210,7 @@ fn retained_external_sacrifice_preserves_replacement_movement_and_one_original_t
             fixture_rules::activate(&[(Card::LlanowarElves, rules), (Card::HillGiant, &OBSERVER)]);
         for p in [Player::P0, Player::P1] {
             for replacement in [false, true] {
-                let (root, source, external, _) = rollback(p, replacement);
+                let (root, source, external, _) = rollback(p, replacement, false);
                 for keep in [false, true] {
                     let mut raw = root.clone();
                     let saved = raw.snapshot();
@@ -217,6 +251,102 @@ fn retained_external_sacrifice_preserves_replacement_movement_and_one_original_t
                     drain(&mut raw);
                     assert_eq!(raw.state.players[p.index()].life, life + i128::from(keep));
                 }
+            }
+        }
+    }
+}
+
+#[test]
+fn reversing_the_entry_event_makes_a_dependent_no_tap_exert_mana_receipt_unretainable() {
+    const EXERT_FUEL: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                tap: false,
+                ..FUEL.activated[0].cost
+            },
+            program: &[
+                Instruction::ExertCost,
+                Instruction::AddMana(ManaProduction::Fixed([0, 0, 0, 0, 3, 0])),
+            ],
+            ..FUEL.activated[0]
+        }],
+        ..FUEL
+    };
+    const RETURNER: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                tap: true,
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 1, 0,
+            ]))],
+            ..FUEL.activated[0]
+        }],
+        ..FUEL
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::LlanowarElves, &EXERT_FUEL),
+        (Card::from_name("Druid of the Cowl").unwrap(), &RETURNER),
+        (Card::HillGiant, &OBSERVER),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let (root, source, external, _) = rollback(p, false, true);
+        assert_eq!(root.state.cast_rollback.as_ref().unwrap().events.len(), 2);
+        for keep_entry in [false, true] {
+            let mut g = root.clone();
+            act(&mut g, Action::ChooseManaRollback { keep: keep_entry });
+            let saved = g.snapshot();
+            let keep = Action::ChooseManaRollback { keep: true };
+            assert_eq!(g.observe(p).mana_rollback.unwrap().can_keep, keep_entry);
+            assert_eq!(g.legal_actions().contains(&keep), keep_entry);
+            assert_eq!(g.snapshot(), saved, "retention query is transactional");
+            if !keep_entry {
+                reject(&mut g, keep.clone());
+            }
+            for keep_exert in [false, true]
+                .into_iter()
+                .filter(|keep| !*keep || keep_entry)
+            {
+                let mut raw = g.clone();
+                let mut indexed = raw.clone();
+                indexed.restore(&saved).unwrap();
+                let action = Action::ChooseManaRollback { keep: keep_exert };
+                let index = indexed
+                    .legal_actions()
+                    .iter()
+                    .position(|a| *a == action)
+                    .unwrap();
+                let actor = indexed.actor().unwrap();
+                let revision = indexed.revision();
+                act(&mut raw, action);
+                indexed.apply_index(actor, revision, index).unwrap();
+                assert_eq!(raw.snapshot(), indexed.snapshot());
+                assert_eq!(
+                    raw.object_view(source).zone,
+                    if keep_entry {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Exile
+                    }
+                );
+                assert!(!raw.object_view(source).tapped, "exert is not a tap cost");
+                assert_eq!(
+                    raw.observe(p)
+                        .exertions
+                        .as_ref()
+                        .is_some_and(|rows| rows.iter().any(|r| r.object.card == source)),
+                    keep_exert
+                );
+                assert_eq!(
+                    raw.object_view(external).zone,
+                    if keep_exert {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Battlefield
+                    }
+                );
             }
         }
     }

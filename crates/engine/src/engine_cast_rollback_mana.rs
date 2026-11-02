@@ -417,7 +417,8 @@ impl Game {
                     || cost.discard
                     || cost.exile_self
                     || cost.remove.is_some()
-                    || cost.loyalty.is_some();
+                    || cost.loyalty.is_some()
+                    || definition.exerts();
                 if source_cost
                     && (self.object_ref(source.card) != source
                         || object.zone != definition.source_zone()
