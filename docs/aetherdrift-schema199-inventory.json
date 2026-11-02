@@ -1,0 +1,298 @@
+{
+  "schema": 1,
+  "candidate_observation_schema": 199,
+  "prior_schema": 198,
+  "baseline_revision": "73092e3",
+  "inventory_revision": "61a720af",
+  "phase": "engine-only migration candidate; central marker and traces unchanged",
+  "public_json": [
+    {
+      "container": "Observation",
+      "members": [
+        "after_main_combats",
+        "delayed_begin_combat",
+        "must_attack_this_combat",
+        "granted_exhaust_uses",
+        "declared_attack_history",
+        "delayed_target_events",
+        "exertions",
+        "chosen_card_name"
+      ],
+      "contract": "Sparse fields; all present values rejected for prior198."
+    },
+    {
+      "container": "PlayerView",
+      "members": [
+        "mount_or_vehicle_entries_this_turn"
+      ],
+      "contract": "Unsigned derived history; sole byte-preserving projection; all other fields retained."
+    },
+    {
+      "container": "SpellView",
+      "members": [
+        "paid_additional_cost"
+      ],
+      "contract": "Owned paid count/declared count/Vehicle fact; reject even in nested held packets."
+    },
+    {
+      "container": "TurnFactsView",
+      "members": [
+        "exhaust_activated_this_turn"
+      ],
+      "contract": "Actual player activation history; reject when present, never erase."
+    },
+    {
+      "container": "GrantedSubtypes",
+      "members": [
+        "additional_creature_types"
+      ],
+      "contract": "Canonical taxonomy-name list omitted whenempty; reject nonempty overlays in any frozen view."
+    },
+    {
+      "container": "AdditionalCostView",
+      "members": [
+        "can_finish_group"
+      ],
+      "contract": "Typed ranged selection completion; reject whenpresent."
+    },
+    {
+      "container": "HandChoiceView",
+      "members": [
+        "inspected_cards"
+      ],
+      "contract": "Only new hand-choice container rejected; inherited EffectChoiceView.inspected_cards remains valid."
+    },
+    {
+      "container": "DelayedReturnView",
+      "members": [
+        "own_end_step"
+      ],
+      "contract": "New beneficiary-bound return schedule; reject true/present marker."
+    },
+    {
+      "container": "ZoneSearchView",
+      "members": [
+        "to_hand"
+      ],
+      "contract": "New destination mode; reject true/present marker."
+    },
+    {
+      "container": "EntryChoiceKind",
+      "members": [
+        "CardName",
+        "NonlandCardName"
+      ],
+      "contract": "CardName checked only as kind, since EntryChoiceValue::CardName already existed."
+    },
+    {
+      "container": "EffectChoiceKind",
+      "members": [
+        "FilteredCost",
+        "NamedSearch",
+        "SacrificeRange",
+        "ExileGraveyardRange"
+      ],
+      "contract": "Reject new variants and nested CostAction/CostMatch envelopes."
+    },
+    {
+      "container": "CostAction",
+      "members": [
+        "Sacrifice",
+        "TapPermanents",
+        "SacrificeRange",
+        "ExileGraveyardRange"
+      ],
+      "contract": "New nested enum, only exposed through FilteredCost."
+    },
+    {
+      "container": "CostMatch",
+      "members": [
+        "Kinds",
+        "Subtype"
+      ],
+      "contract": "New nested enum, only exposed through FilteredCost."
+    },
+    {
+      "container": "SearchFilter",
+      "members": [
+        "NoAbilities"
+      ],
+      "contract": "Reject new predicate variant."
+    },
+    {
+      "container": "SearchDestination",
+      "members": [
+        "BattlefieldIfManaValueAtMostElseHand"
+      ],
+      "contract": "Reject new destination variant."
+    },
+    {
+      "container": "LibraryDestination",
+      "members": [
+        "NthFromTop"
+      ],
+      "contract": "Reject new action payload variant."
+    },
+    {
+      "container": "CastMethod",
+      "members": [
+        "GraveyardAdditionalCosts"
+      ],
+      "contract": "Reject intrinsic own-graveyard added-cost route."
+    },
+    {
+      "container": "KeywordEffectOrigin",
+      "members": [
+        "ResolutionRemoval"
+      ],
+      "contract": "Reject resolved keyword removal origin."
+    },
+    {
+      "container": "ManaRestrictionView",
+      "members": [
+        "ArtifactSpellOrActivation"
+      ],
+      "contract": "Reject new spending restriction in public or hidden held quality."
+    },
+    {
+      "container": "SourceLinkedEffectKind",
+      "members": [
+        "ControlAndCombatLockWhileControlled"
+      ],
+      "contract": "Reject new continuous-source-control duration."
+    },
+    {
+      "container": "DelayedTargetEvent",
+      "members": [
+        "DiesOnce",
+        "CombatDamageToPlayer"
+      ],
+      "contract": "New row payload; delayed_target_events always rejected."
+    },
+    {
+      "container": "Action",
+      "members": [
+        "FinishAdditionalCostGroup",
+        "AnnounceGraveyardAdditionalCosts"
+      ],
+      "contract": "New serialized legal/journal actions."
+    },
+    {
+      "container": "Observation.pending.kind",
+      "members": [
+        "card_name"
+      ],
+      "contract": "New name-decision phase."
+    },
+    {
+      "container": "MainPhaseCombatView",
+      "members": [
+        "remaining",
+        "resume"
+      ],
+      "contract": "New payload for after_main_combats."
+    },
+    {
+      "container": "DeclaredAttackHistoryView",
+      "members": [
+        "object",
+        "player",
+        "subtypes"
+      ],
+      "contract": "New historical declaration payload."
+    },
+    {
+      "container": "DelayedTargetTriggerView",
+      "members": [
+        "subject",
+        "event",
+        "expires_turn",
+        "packet"
+      ],
+      "contract": "New source-independent delayed packet payload."
+    },
+    {
+      "container": "ExertionView",
+      "members": [
+        "object",
+        "player"
+      ],
+      "contract": "New exact exert/untap obligation payload."
+    },
+    {
+      "container": "GrantedExhaustUseView",
+      "members": [
+        "source",
+        "grantor",
+        "definition",
+        "ability",
+        "origin",
+        "turn"
+      ],
+      "contract": "New acquired-use identity payload."
+    },
+    {
+      "container": "PaidAdditionalCostView",
+      "members": [
+        "count",
+        "selected",
+        "sacrificed_vehicle"
+      ],
+      "contract": "New frozen payment result payload."
+    }
+  ],
+  "pending_agent_additions": [
+    {
+      "owner": "white-blue",
+      "container": "Action",
+      "members": [
+        "AnnounceGrantedMana",
+        "AnnounceSelfGrantedMana"
+      ],
+      "owned_only": [
+        "CrewPayment/SaddlePayment source/actor/complete",
+        "Announcement activation_generic_increase and activation_choice receipt",
+        "FundingState active_mana_keys is speculative only"
+      ]
+    },
+    {
+      "owner": "green-multi",
+      "container": "Observation/Action",
+      "members": [
+        "entry_copy",
+        "ChooseEntryCopy"
+      ],
+      "payload": "EntryCopyChoiceView { entrant, card, optional, candidates }",
+      "owned_only": [
+        "EntryMove.copy_preparation",
+        "EntryBatch.copying",
+        "EntryChoiceRow.origin",
+        "EntryIdentity.copy/choice",
+        "funding projected copy rows/origins"
+      ]
+    }
+  ],
+  "eligibility": [
+    "Only the unsigned Mount/Vehicle entry counter may be erased; its original omission at zero preserves inherited observations.",
+    "Reject new actual exhaust, exert, declared subtype, granted-use, delayed-target, current-combat requirement and future-combat state even if a viewer cannot see it.",
+    "Reject private exact-top knowledge, opaque announcements, activation payments, nested mana frames, replacement continuations, staged entries, linked private decisions and rollback checkpoints.",
+    "Inspect all retained packet containers, their nested copy events, recipe facts, keyword/control rows, damage LKI and mana qualities; no observation-only eligibility claim.",
+    "Conservatively reject new typed instruction/trigger continuations whose packet shape reuses an old representation.",
+    "Waxen copied-origin entry-choice rows must be rejected after integration; active copy preparation already rejected as an opaque entry batch."
+  ],
+  "registry": {
+    "module": "tests/legacy/assurance/schema199.rs",
+    "recording_hook": "tests/legacy/assurance/regressions.rs before prior198 projector",
+    "central_marker_edited": false,
+    "trace_corpus_edited": false,
+    "existing_schema_version_assertion": "Leave198 until root performs actual final199bump, then update regressions.rs schema184 assertion in same final version commit."
+  },
+  "validation": "rustfmt and git diff --check only; parent owns guarded Cargo and full trace recording/comparison",
+  "final_acceptance": [
+    "Integrate remaining tax/copy features and refresh this field/state inventory.",
+    "Set central observation schema to199 once.",
+    "Update exact schema assertion198to199.",
+    "Record candidate with RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=198.",
+    "Compare every inherited full previous-schema trace and action journal against committed198 baseline before replacing only reviewed current-schema fingerprints."
+  ]
+}

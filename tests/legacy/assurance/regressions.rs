@@ -7604,7 +7604,20 @@ fn trace_candidate_with_prepared_observation_audit(
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 198) {
+    if schema_projection.is_some_and(|schema| schema < 199) {
+        if !super::schema199::prior_schema199_state_supported(&g.state) {
+            projection_error = Some(
+                "new Aetherdrift state or opaque continuation cannot be projected to schema 198"
+                    .to_owned(),
+            );
+        } else {
+            match super::schema199::project_prior_schema199(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 198) {
         if !super::schema198::prior_schema198_state_supported(&g.state) {
             projection_error = Some(
                 "new Hartford state or opaque continuation cannot be projected to schema 197"
