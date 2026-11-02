@@ -193,7 +193,8 @@ impl Game {
             if actor != rollback.player
                 && matches!(
                     action,
-                    Action::ChooseEntryBehold { .. }
+                    Action::ChooseEntryCopy { .. }
+                        | Action::ChooseEntryBehold { .. }
                         | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }
                         | Action::ChooseAuraAttachment { .. }

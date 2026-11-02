@@ -101,6 +101,34 @@ pub(super) struct Row {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Row {
+    pub(super) fn as_entry(
+        object: ObjectRef,
+        physical_card: Card,
+        physical_kind: CopyKind,
+        original_recipe: Option<CopyRecipe>,
+        recipe: CopyRecipe,
+        origin: u64,
+    ) -> Self {
+        Self {
+            object,
+            physical_card,
+            physical_kind,
+            original_recipe,
+            original_used: 0,
+            original_provider_time: None,
+            original_hand_time: None,
+            layers: vec![Layer {
+                value: CopyLayerView {
+                    recipe,
+                    origin,
+                    provider_timestamp: 0,
+                    deadline: CopyDeadline::WhileSource { source: object },
+                    hand_timestamp: None,
+                },
+                used_abilities: 0,
+            }],
+        }
+    }
     pub(super) fn active(&self) -> &Layer {
         self.layers.last().expect("live temporary copy has a layer")
     }
@@ -366,6 +394,28 @@ impl Game {
                 active.map_or(row.original_hand_time, |layer| layer.value.hand_timestamp),
             );
         }
+    }
+    /// Install the already-chosen layer before entry providers/events inspect the entrant.
+    pub(super) fn install_entry_copy(
+        &mut self,
+        object: ObjectRef,
+        physical_card: Card,
+        recipe: CopyRecipe,
+    ) {
+        let origin = self.state.roles.get_or_insert_default().next_acquisition();
+        let row = Row::as_entry(
+            object,
+            physical_card,
+            self.state.objects[object.card as usize].copy_kind,
+            self.copy_recipe(object),
+            recipe,
+            origin,
+        );
+        self.state
+            .temporary_copies
+            .get_or_insert_default()
+            .push(row.clone());
+        self.materialize_copy_row(&row, false);
     }
     pub(super) fn apply_temporary_copy(
         &mut self,

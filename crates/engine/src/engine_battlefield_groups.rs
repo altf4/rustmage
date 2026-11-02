@@ -110,24 +110,13 @@ impl Game {
         self.effect_counters(affected, replacements::ResumeMode::Program);
     }
 
-    fn battlefield_filter_matches(
+    pub(super) fn battlefield_filter_matches(
         &self,
         filter: BattlefieldFilter,
         actor: Player,
         id: CardId,
     ) -> bool {
-        let object = &self.state.objects[id as usize];
-        object.zone == Zone::Battlefield
-            && (filter.kinds == 0 || self.current_kinds(id) & filter.kinds != 0)
-            && (filter.relation == -1 || (object.controller == actor) == (filter.relation == 0))
-            && (!filter.nonland || self.current_kinds(id) & 2 == 0)
-            && filter.tapped.is_none_or(|tapped| object.tapped == tapped)
-            && (filter.without == Keywords::NONE || !self.keywords(id).intersects(filter.without))
-            && filter
-                .subtype
-                .is_none_or(|subtype| self.has_subtype(id, subtype))
-            && (filter.max_mana == u32::MAX
-                || self.object_mana_value(id) <= u64::from(filter.max_mana))
+        filter_matches_in_world(self, filter, actor, id)
     }
     pub(super) fn battlefield_group(
         &self,
@@ -342,4 +331,27 @@ impl Game {
             .collect();
         self.stage_entries_with_delayed_sacrifice(moves, item);
     }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn filter_matches_in_world<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    filter: BattlefieldFilter,
+    actor: Player,
+    id: CardId,
+) -> bool {
+    let object = world.object(id);
+    object.zone == Zone::Battlefield
+        && (filter.kinds == 0 || world.kinds(id) & filter.kinds != 0)
+        && (filter.relation == -1 || (object.controller == actor) == (filter.relation == 0))
+        && (!filter.nonland || world.kinds(id) & 2 == 0)
+        && filter.tapped.is_none_or(|tapped| object.tapped == tapped)
+        && (filter.without == Keywords::NONE
+            || !characteristic_query::CharacteristicQuery::in_world(world)
+                .keywords(id)
+                .intersects(filter.without))
+        && filter
+            .subtype
+            .is_none_or(|subtype| world.subtypes(id).has(world.definition(id), subtype))
+        && (filter.max_mana == u32::MAX || world.mana_value(id) <= u64::from(filter.max_mana))
 }

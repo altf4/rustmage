@@ -128,8 +128,35 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
                 |(_, origin)| *origin,
             )
     }
+    fn provided_origin(&self, object: ObjectRef) -> Option<u64> {
+        self.entry_projection
+            .as_ref()
+            .and_then(|p| {
+                p.provided_origins
+                    .iter()
+                    .find(|(source, _)| *source == object)
+            })
+            .map_or_else(
+                || self.game.copied_grant_origin(object),
+                |(_, origin)| *origin,
+            )
+    }
+    fn face_down(&self, id: CardId) -> bool {
+        self.projected_face_down_physical(self.reference(id))
+            .is_some()
+    }
+    fn temporary_copy_rows_state(&self) -> &temporary_copy::Rows {
+        self.entry_projection
+            .as_ref()
+            .map_or(&self.game.state.temporary_copies, |p| &p.temporary_copies)
+    }
     fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
-        let mut view = self.game.temporary_copy_view(object)?;
+        let mut view = self
+            .temporary_copy_rows_state()
+            .as_ref()?
+            .iter()
+            .find(|row| row.object == object)?
+            .view();
         view.layers.retain(|layer| {
             layer.deadline.source().is_none_or(|source| {
                 self.object(source.card).zone == Zone::Battlefield
@@ -688,10 +715,14 @@ impl<'g> FundingState<'g> {
                 .ok()
                 .filter(|&index| rows[index].object == before)
         });
-        let recipe = self.game.temporary_copy_row(before).map_or_else(
-            || index.map(|index| self.copy_recipes.as_ref().unwrap()[index].recipe),
-            |row| row.original_recipe,
-        );
+        let recipe = self
+            .temporary_copy_rows_state()
+            .as_ref()
+            .and_then(|rows| rows.iter().find(|row| row.object == before))
+            .map_or_else(
+                || index.map(|index| self.copy_recipes.as_ref().unwrap()[index].recipe),
+                |row| row.original_recipe,
+            );
         if let Some(index) = index {
             self.copy_recipes.as_mut().unwrap().remove(index);
         }
@@ -712,6 +743,19 @@ impl<'g> FundingState<'g> {
             .is_some_and(|rows| rows.is_empty())
         {
             self.copy_recipes = None;
+        }
+        if let Some(p) = self.entry_projection.as_mut() {
+            p.copy_origins.retain(|(object, _)| *object != before);
+            p.provided_origins.retain(|(object, _)| *object != before);
+            if let Some(rows) = p.temporary_copies.as_mut() {
+                rows.retain(|row| row.object != before);
+            }
+            if p.temporary_copies
+                .as_ref()
+                .is_some_and(|rows| rows.is_empty())
+            {
+                p.temporary_copies = None;
+            }
         }
     }
     fn from_game_with_convoke(game: &'g Game, goal: &FundingGoal, convoke: bool) -> Self {
@@ -1870,6 +1914,11 @@ impl<'g> FundingState<'g> {
                     .capacity("virtual controlled death history exhausted");
             }
             let face_down_physical = self.projected_face_down_physical(reference);
+            let physical_copy = self
+                .temporary_copy_rows_state()
+                .as_ref()
+                .and_then(|rows| rows.iter().find(|row| row.object == reference))
+                .map(|row| (row.physical_card, row.physical_kind));
             let object = &mut self.resources[step.resource].object;
             object.zone = destination;
             if !preserve_departure_counters {
@@ -1881,7 +1930,12 @@ impl<'g> FundingState<'g> {
                     .capacity("virtual generation exhausted");
                 // The slow path still needs the old face for replacement planning.
                 // Normalize only when this step commits the virtual departure.
-                self.game.restore_projected_copy_identity(reference, object);
+                if let Some((physical_card, physical_kind)) = physical_copy {
+                    object.card = physical_card;
+                    object.copy_kind = physical_kind;
+                } else {
+                    self.game.restore_projected_copy_identity(reference, object);
+                }
                 if let Some(physical) = face_down_physical {
                     object.card = physical.front_face();
                 } else if !object.is_token() && !object.is_spell_copy() {

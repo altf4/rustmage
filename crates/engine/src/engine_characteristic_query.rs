@@ -1138,7 +1138,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 None
             },
             provided_ability_origin: if obj.zone == Zone::Battlefield {
-                self.copied_grant_origin(self.reference(id))
+                CharacteristicWorld::provided_origin(self, self.reference(id))
             } else {
                 None
             },
@@ -1187,6 +1187,15 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.world.stored_recipe(id)
+    }
+    fn provided_origin(&self, object: ObjectRef) -> Option<u64> {
+        self.world.provided_origin(object)
+    }
+    fn temporary_copy_rows_state(&self) -> &temporary_copy::Rows {
+        self.world.temporary_copy_rows_state()
+    }
+    fn face_down(&self, id: CardId) -> bool {
+        self.world.face_down(id)
     }
     fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
         self.world.temporary_copy_view(object)

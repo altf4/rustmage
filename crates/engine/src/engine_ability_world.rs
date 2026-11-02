@@ -78,12 +78,12 @@ pub(super) trait CharacteristicWorld {
             .map(|r| r.value)
     }
     fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
-        // A copied linked ability does not inherit choices made for an earlier
-        // ability instance, even when its printed definition is identical.
-        self.ability_origin(object.card)
-            .is_none()
-            .then(|| self.raw_entry_value(object))
-            .flatten()
+        // Fresh choices belong to the copied ability’s acquisition, not merely
+        // its physical object. Older choices remain dormant under a later copy.
+        self.entry_values()
+            .iter()
+            .find(|row| row.object == object && row.origin == self.ability_origin(object.card))
+            .map(|row| row.value)
     }
 
     fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
@@ -100,8 +100,21 @@ pub(super) trait CharacteristicWorld {
             .then(|| self.game().copy_ability_origin(self.reference(id)))
             .flatten()
     }
+    fn provided_origin(&self, object: ObjectRef) -> Option<u64> {
+        self.game().copied_grant_origin(object)
+    }
+    fn face_down(&self, id: CardId) -> bool {
+        self.game().is_face_down(id)
+    }
+    fn temporary_copy_rows_state(&self) -> &temporary_copy::Rows {
+        &self.game().state.temporary_copies
+    }
     fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
-        self.game().temporary_copy_view(object)
+        self.temporary_copy_rows_state()
+            .as_ref()?
+            .iter()
+            .find(|row| row.object == object)
+            .map(temporary_copy::Row::view)
     }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.game().copy_recipe(self.reference(id))

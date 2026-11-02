@@ -1255,6 +1255,14 @@ pub struct BattlefieldFilter {
     pub max_mana: u32,
 }
 
+/// Non-targeted copiable blueprint selection before an entrant’s other entry replacements.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct EntryCopySpec {
+    pub filters: &'static [BattlefieldFilter],
+    pub optional: bool,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Instruction {
@@ -5350,6 +5358,9 @@ impl Card {
     pub(crate) fn aura_artifact_or_non_aura_enchantment(self) -> bool {
         authored::rules(self)
             .is_some_and(|rules| rules.extras.aura_artifact_or_non_aura_enchantment)
+    }
+    pub(crate) fn entry_copy(self) -> Option<EntryCopySpec> {
+        authored::rules(self).and_then(|rules| rules.extras.entry_copy)
     }
     pub(crate) fn aura_kind_or_subtype(self) -> Option<&'static str> {
         authored::rules(self).and_then(|rules| rules.extras.aura_kind_or_subtype)

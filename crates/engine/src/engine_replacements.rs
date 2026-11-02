@@ -2554,7 +2554,7 @@ impl Game {
                             .as_ref()
                             .and_then(|b| b.moves.get(index))
                             .cloned()
-                        && (movement.ghost_vacuum_after.is_some()
+                        && (movement.requires_characteristic_preview()
                             || entry_kind_sensitive(self)
                             || entry_power_sensitive(
                                 self,

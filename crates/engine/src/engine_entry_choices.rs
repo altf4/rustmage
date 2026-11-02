@@ -8,6 +8,7 @@ use crate::cards::{ChoiceColor, ChosenModifier};
 pub(super) struct ChoiceRow {
     pub object: ObjectRef,
     pub value: EntryChoiceValue,
+    pub origin: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) type Rows = Option<SharedVec<ChoiceRow>>;
@@ -34,10 +35,15 @@ impl Game {
     }
     pub(super) fn set_entry_value(&mut self, object: ObjectRef, value: EntryChoiceValue) {
         self.clear_entry_value(object);
+        let origin = self.copy_ability_origin(object);
         self.state
             .entry_values
             .get_or_insert_with(Default::default)
-            .push(ChoiceRow { object, value });
+            .push(ChoiceRow {
+                object,
+                value,
+                origin,
+            });
     }
     pub(super) fn clear_entry_value(&mut self, object: ObjectRef) {
         // Do not detach a shared buffer for unrelated ordinary zone moves.
@@ -313,7 +319,7 @@ impl Game {
             source.zone == Zone::Battlefield
                 && self.object_ref(row.object.card) == row.object
                 && source.card.named_activation_lock()
-                && self.copy_ability_origin(row.object).is_none()
+                && row.origin == self.copy_ability_origin(row.object)
                 && self.printed_abilities_available(row.object.card)
                 && matches!(row.value, EntryChoiceValue::CardName(chosen) if chosen.matches(name))
         })

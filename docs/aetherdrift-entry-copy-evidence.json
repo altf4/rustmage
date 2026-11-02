@@ -1,0 +1,93 @@
+{
+  "scope": "Generic optional non-targeted as-entry permanent copy, fresh linked entry-choice origins and owned speculative entry-copy projection; no ordinary card definitions/admissions",
+  "oracle": {
+    "name": "Waxen Shapethief",
+    "oracle_id": "6c540822-4ceb-4ebf-b777-da172ada3f1b",
+    "facts_sha256": "fed3ccdbfd4e550c75a5e5b4fc4b8e39379e655581c8af3ee12d8edfdc021f2e",
+    "printings": [
+      "74",
+      "336",
+      "444",
+      "535"
+    ],
+    "oracle_text": "Flash\nYou may have this creature enter as a copy of an artifact or creature you control.\nCycling {2} ({2}, Discard this card: Draw a card.)"
+  },
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "complete_java_bodies_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WaxenShapethief.java",
+      "sha256": "dd1d8bc93ea5ae4cb5ed11eddb4637570cf8eb34e647e942936a49b00f2bc3f3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+      "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
+      "sha256": "256e2224f1087a614a7e4826dcdd43873e9e5b50236b9904affb8408698fe8fe"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyEffect.java",
+      "sha256": "4e27230c09fc613d065b165fb57332f3ac4f8bf1fb2f7b33212f155535d8df0b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    }
+  ],
+  "interfaces": [
+    "CardExtras::entry_copy:Option<EntryCopySpec {filters,optional}>",
+    "Action::ChooseEntryCopy {object:Option<ObjectRef>}",
+    "Observation::entry_copy:Option<EntryCopyChoiceView> (omitted when None)"
+  ],
+  "semantics": [
+    "The early owned entry phase chooses a flat copiable recipe before copied tap/counter/choice/Aura initialization; selection is not targeting and excludes simultaneous entrants.",
+    "Only cold EntryMove preparation changes before successful commit. A failed/declined entry never installs a copy layer. Physical identity and face structure are retained by existing owned copy rows.",
+    "A successful copy is a self-bound enduring layer. It survives cleanup, can be covered by a later copy layer, and restores its physical recipe on departure.",
+    "Copied entry choices are new choices linked to the exact copy acquisition. Prior choices remain dormant under later copied abilities and resume when their original layer resumes. Choices are installed before historical entry facts freeze.",
+    "Actual and funding worlds use the same flat blueprint, filter union, copy rows, origin allocation, provider timestamp order and successful-entry pipeline. Projected departure restores the original physical identity.",
+    "CR614.12 projected characteristics include the pending copy and its own type effects for creature-sensitive entry tap and counter replacements.",
+    "Mana-payment continuation enumerates copied entry choices, rejects unfundable actor choices transactionally and retains foreign choices/events when a parent cast fails."
+  ],
+  "representation": {
+    "hot_Object_fields_added": 0,
+    "cold_EntryMove": "Option<Box<Preparation>>",
+    "cold_EntryBatch": "copy phase flag",
+    "branching": "Existing owned copy rows and recipes; COW projected rows; path-duplicate flat recipes pruned only in existential funding search",
+    "wire": "One action and optional observation view; root owns schema regeneration"
+  },
+  "tests": [
+    "as_entry_copy_is_nontargeted_and_the_physical_stack_object_waits_for_commit",
+    "copying_an_artifact_survives_cleanup_and_departure_restores_the_physical_card",
+    "copying_an_existing_copy_flattens_its_blueprint_and_ignores_noncopy_modifiers",
+    "copied_entry_counters_and_the_copied_etb_ability_apply_before_observer_facts",
+    "copied_as_entry_type_choice_is_fresh_and_bound_to_its_ability_acquisition",
+    "copied_as_entry_name_choice_is_new_and_its_named_restriction_is_live",
+    "a_live_artifact_aura_blueprint_copies_its_copiable_aura_and_chooses_new_attachment",
+    "optional_decline_and_selection_are_owned_across_raw_index_restore_and_parent_disposal",
+    "a_private_hand_entry_copy_choice_does_not_expose_the_selected_card_early",
+    "projected_copy_entry_matches_actual_view_and_later_virtual_departure_restores_physical_identity",
+    "an_as_entry_copy_can_supply_the_remaining_parent_cast_mana_and_decline_is_unfundable",
+    "foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_event",
+    "copied_own_off_turn_type_is_visible_to_creature_only_entry_replacements",
+    "a_copied_aura_that_cannot_enter_never_changes_the_physical_card"
+  ],
+  "validation": {
+    "rustfmt": "passed edition2024",
+    "git_diff_check": "passed",
+    "Cargo": "Not run by author. Root guarded integration run required.",
+    "existing_regressions": [
+      "dft_entry_counters (7 pass in root 196-scenario run at 61a720af)",
+      "dft_static_types (13 pass in prior integrated run)",
+      "temporary_copy",
+      "copied_entry",
+      "entry_replacement",
+      "cast_cost",
+      "foreign"
+    ]
+  }
+}

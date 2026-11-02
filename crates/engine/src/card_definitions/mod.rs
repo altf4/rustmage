@@ -44,7 +44,8 @@ impl CardRules {
                 self.triggers.is_empty()
                     && self.activated.is_empty()
                     && self.static_groups.is_empty()
-                    && self.extras.static_ability_groups.is_empty(),
+                    && self.extras.static_ability_groups.is_empty()
+                    && self.extras.entry_copy.is_none(),
                 "abilityless definition has rules abilities"
             );
             assert!(
@@ -216,6 +217,7 @@ pub struct CardExtras {
     pub battle_defense: u64,
     pub as_turned_face_up_counters: &'static [(CounterKind, u64)],
     pub entry_choice: Option<EntryChoiceKind>,
+    pub entry_copy: Option<EntryCopySpec>,
     pub chosen_entry_counters: Option<CounterKind>,
     pub static_modifiers: &'static [StaticModifier],
     pub equipment: Option<EquipmentSpec>,
@@ -329,6 +331,7 @@ impl CardExtras {
         hand_cast_entry_counters: &[],
         named_activation_lock: false,
         entry_choice: None,
+        entry_copy: None,
         chosen_entry_counters: None,
         static_modifiers: &[],
         equipment: None,

@@ -34,6 +34,10 @@ pub use hand_choices::{HandChoiceKind, HandChoiceView};
 pub mod self_granted;
 pub use self_granted::{SelfGrantedAbilityKind, SelfGrantedAbilityView};
 #[doc(hidden)]
+#[path = "engine_entry_copies.rs"]
+pub mod entry_copies;
+pub use entry_copies::EntryCopyChoiceView;
+#[doc(hidden)]
 #[path = "engine_entering_copies.rs"]
 pub mod entering_copies;
 #[doc(hidden)]
@@ -831,6 +835,7 @@ define_actions! {
     ChooseEntryReplacement { source: ObjectRef, intrinsic: bool },
     ChooseEntryBehold { object: Option<ObjectRef> },
     ChooseEntryValue { value: EntryChoiceValue },
+    ChooseEntryCopy { object: Option<ObjectRef> },
     ChooseCreatureType { creature_type: crate::cards::CreatureType },
     ChooseEntryLife {
         pay: bool,
@@ -2427,6 +2432,9 @@ enum Pending {
     EntryReplacement {
         player: Player,
     },
+    EntryCopy {
+        player: Player,
+    },
     EntryValue {
         player: Player,
     },
@@ -2887,6 +2895,8 @@ impl ObjectView {
 struct EntryIdentity {
     controller: Option<Player>,
     face: Option<Card>,
+    copy: Option<CopyRecipe>,
+    choice: Option<EntryChoiceValue>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -3462,6 +3472,8 @@ pub struct Observation {
     pub entry_life: Option<entries::EntryLifeView>,
     pub entry_replacement: Option<entry_tap::EntryTapView>,
     pub entry_timestamps: Option<entries::EntryTimestampView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_copy: Option<EntryCopyChoiceView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
     pub evidence: Option<EvidenceView>,
@@ -3958,6 +3970,7 @@ impl Game {
             | Pending::LinkedChoice { player }
             | Pending::CreatureTypeChoice { player }
             | Pending::EntryValue { player }
+            | Pending::EntryCopy { player }
             | Pending::LandCardName { player }
             | Pending::CardName { player, .. }
             | Pending::EntryLife { player }
@@ -4584,6 +4597,22 @@ impl Game {
             Pending::LinkedChoice { .. } => {
                 if self.visit_linked_choices(&mut emit) {
                     return true;
+                }
+            }
+            Pending::EntryCopy { .. } => {
+                let index = self.current_entry_copy_index().unwrap();
+                let movement = &self.state.entry_batch.as_ref().unwrap().moves[index];
+                if movement.before.card.entry_copy().unwrap().optional
+                    && emit(Action::ChooseEntryCopy { object: None })
+                {
+                    return true;
+                }
+                for object in self.entry_copy_candidates() {
+                    if emit(Action::ChooseEntryCopy {
+                        object: Some(object),
+                    }) {
+                        return true;
+                    }
                 }
             }
             Pending::EntryValue { .. }
@@ -6417,6 +6446,7 @@ impl Game {
                 self.choose_type_for_tokens(creature_type)
             }
             Action::ChooseEntryValue { value } => self.choose_entry_value(value),
+            Action::ChooseEntryCopy { object } => self.choose_entry_copy(object),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseEntryBehold { object } => self.choose_entry_behold(object),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
@@ -8286,8 +8316,19 @@ impl Game {
     }
 
     fn self_entry_requires_tapped(&self, id: CardId, controller: Player) -> bool {
-        let object = &self.state.objects[id as usize];
-        match object.card.entry_tapped() {
+        self.self_entry_definition_requires_tapped(
+            self.state.objects[id as usize].card,
+            id,
+            controller,
+        )
+    }
+    fn self_entry_definition_requires_tapped(
+        &self,
+        card: Card,
+        id: CardId,
+        controller: Player,
+    ) -> bool {
+        match card.entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) | EntryTapped::UnlessBehold(_) => false,
             EntryTapped::UnlessPlainsOrIsland => {
                 !self.state.objects.iter().enumerate().any(|(id, o)| {
@@ -8345,7 +8386,7 @@ impl Game {
                             && self.current_kinds(*other as CardId) & 2 != 0
                     })
                     .count();
-                match object.card.entry_tapped() {
+                match card.entry_tapped() {
                     EntryTapped::UnlessAtMostTwo => lands > 2,
                     _ => lands < 2,
                 }
@@ -8432,6 +8473,8 @@ impl Game {
             EntryIdentity {
                 controller: entry_controller,
                 face: None,
+                copy: None,
+                choice: None,
             },
             ZoneObservers {
                 graveyard: graveyard_observers,
@@ -8452,6 +8495,8 @@ impl Game {
         let EntryIdentity {
             controller: entry_controller,
             face: entering_face,
+            copy: entering_copy,
+            choice: entering_choice,
         } = entry;
         let ZoneObservers {
             graveyard: graveyard_observers,
@@ -8873,6 +8918,7 @@ impl Game {
         self.forget_granted_exhaust_uses(before.reference);
         self.forget_temporary_copy(before.reference);
         self.forget_copy_grant_origin(before.reference);
+        let copy_physical_card = self.state.objects[id as usize].card;
         let obj = &mut self.state.objects[id as usize];
         // CR608.3f/707.10f: a resolving permanent-spell copy becomes a token.
         // This is an entry, not token creation, so creation replacements do not apply.
@@ -8951,6 +8997,16 @@ impl Game {
                 generation,
             },
         );
+        if destination == Zone::Battlefield
+            && let Some(recipe) = entering_copy
+        {
+            self.install_entry_copy(self.object_ref(id), copy_physical_card, recipe);
+        }
+        if destination == Zone::Battlefield
+            && let Some(value) = entering_choice
+        {
+            self.set_entry_value(self.object_ref(id), value);
+        }
         if before.zone == Zone::Stack {
             self.continue_stack_keywords(before.reference, self.object_ref(id), destination);
         }
@@ -8966,8 +9022,10 @@ impl Game {
                 );
             }
             let (owner, _) = entry_identity;
-            self.record_nonland_entry(owner, id, self.current_kinds(id));
+            // Own as-entry type effects need their provider timestamp before
+            // historical entry facts inspect the final layer-four creature types.
             self.register_battlefield_sources(id);
+            self.record_nonland_entry(owner, id, self.current_kinds(id));
         } else if destination == Zone::Graveyard {
             self.register_graveyard_sources(id);
         }
@@ -10223,6 +10281,7 @@ impl Game {
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
+                Pending::EntryCopy { .. } => "entry_copy",
                 Pending::LandCardName { .. } => "land_card_name",
                 Pending::CardName { .. } => "card_name",
                 Pending::EntryLife { .. } => "entry_life",
@@ -10332,6 +10391,7 @@ impl Game {
             entry_life: self.entry_life_view(viewer),
             entry_replacement: self.entry_tap_view(viewer),
             entry_timestamps: self.entry_timestamp_view(viewer),
+            entry_copy: self.entry_copy_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),

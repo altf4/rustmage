@@ -28,6 +28,8 @@ impl PaymentContinuation<'_> {
 pub(super) struct EntryProjection {
     /// Opt-in restoration origins; these are copy changes, never entry history.
     pub copy_origins: Vec<(ObjectRef, Option<u64>)>,
+    pub provided_origins: Vec<(ObjectRef, Option<u64>)>,
+    pub temporary_copies: temporary_copy::Rows,
     pub manifested: Vec<(ObjectRef, Card)>,
     pub static_sources: Vec<CardId>,
     pub attachment_sources: Vec<CardId>,
@@ -59,6 +61,8 @@ impl EntryProjection {
         });
         Self {
             copy_origins: Vec::new(),
+            provided_origins: Vec::new(),
+            temporary_copies: w.temporary_copy_rows_state().clone(),
             manifested: w
                 .game
                 .state
@@ -639,8 +643,8 @@ impl FundingState<'_> {
     }
     fn initialize_entry_tap(&self, m: &mut entries::EntryMove) -> Vec<entry_tap::EntryTapEffect> {
         let mut effects = Vec::new();
-        let kinds = if m.ghost_vacuum_after.is_some() {
-            self.preview_entry_view(m)
+        let kinds = if m.requires_characteristic_preview() {
+            self.preview_entry_view(&m.replacement_preview())
                 .map_or_else(|| m.entry_kinds(), |view| view.kinds)
         } else {
             m.entry_kinds()
@@ -721,6 +725,14 @@ impl FundingState<'_> {
         actual: Option<&entries::EntryBatch>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        let initial = initial || actual.is_some_and(|batch| batch.copying);
+        let actual = actual.filter(|batch| !batch.copying);
+        if moves.iter().any(entry_copies::needs_copy) {
+            let mut choices = Vec::new();
+            return self.visit_entry_copy_choices(moves, &mut choices, &mut |moves| {
+                self.visit_entry_moves(moves, initial, actual, emit)
+            });
+        }
         let mut taps = actual.map_or_else(Vec::new, |b| b.tap_events[b.tap_next..].to_vec());
         if initial {
             for (index, m) in moves.iter_mut().enumerate() {
@@ -1143,7 +1155,7 @@ impl FundingState<'_> {
             return self.visit_entry_counters(moves, order, at + 1, actual, emit);
         }
         let type_sensitive =
-            m.ghost_vacuum_after.is_some() || replacements::entry_kind_sensitive(self);
+            m.requires_characteristic_preview() || replacements::entry_kind_sensitive(self);
         let preview = if current.is_none()
             && (type_sensitive
                 || replacements::entry_power_sensitive(self, m.controller, m.before.card))
@@ -1190,7 +1202,7 @@ impl FundingState<'_> {
         );
         let refresh = |placement: &replacements::CounterPlacement| {
             let mut refreshed = placement.clone();
-            if m.ghost_vacuum_after.is_some()
+            if m.requires_characteristic_preview()
                 || replacements::entry_kind_sensitive(self)
                 || replacements::entry_power_sensitive(self, m.controller, m.before.card)
             {
@@ -1250,7 +1262,10 @@ impl FundingState<'_> {
     }
     fn entry_has_timestamp(m: &entries::EntryMove) -> bool {
         let card = m.before.card;
-        m.artifact_return
+        m.copy_preparation
+            .as_ref()
+            .is_some_and(|copy| copy.recipe.is_some())
+            || m.artifact_return
             || m.enchantment_return
             || m.ghost_vacuum_after.is_some()
             || m.food_return.is_some()
@@ -1282,14 +1297,26 @@ impl FundingState<'_> {
                 continue;
             }
             let face_down_physical = next.projected_face_down_physical(m.before.reference);
+            let physical_copy = next
+                .temporary_copy_rows_state()
+                .as_ref()
+                .and_then(|rows| rows.iter().find(|row| row.object == m.before.reference))
+                .map(|row| (row.physical_card, row.physical_kind));
+            let physical_card =
+                physical_copy.map_or(next.object(m.before.id).card, |value| value.0);
             let row = next
                 .resources
                 .iter_mut()
                 .find(|r| r.id == m.before.id)
                 .expect("entry resource retained");
             let o = &mut row.object;
-            next.game
-                .restore_projected_copy_identity(m.before.reference, o);
+            if let Some((card, kind)) = physical_copy {
+                o.card = card;
+                o.copy_kind = kind;
+            } else {
+                next.game
+                    .restore_projected_copy_identity(m.before.reference, o);
+            }
             o.card = if m.destination == Zone::Battlefield && m.manifest_original.is_some() {
                 m.before.card
             } else if let Some(physical) = face_down_physical
@@ -1371,14 +1398,29 @@ impl FundingState<'_> {
                 if o.card.attachment_bonus().is_some() && !p.attachment_sources.contains(&row.id) {
                     p.attachment_sources.push(row.id)
                 }
-                if let Some(value) = m.choice {
-                    p.entry_values.push(entry_choices::ChoiceRow {
-                        object: source,
-                        value,
-                    });
-                }
             }
             next.project_copy_departure(m.before.reference, source);
+            if m.destination == Zone::Battlefield
+                && let Some(recipe) = m.copy_preparation.as_ref().and_then(|copy| copy.recipe)
+            {
+                next.install_projected_entry_copy(source, physical_card, recipe);
+            }
+        }
+        for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && let Some(value) = m.choice
+            {
+                let source = next.reference(m.before.id);
+                let origin = next.ability_origin(source.card);
+                next.entry_projection.as_mut().unwrap().entry_values.push(
+                    entry_choices::ChoiceRow {
+                        object: source,
+                        value,
+                        origin,
+                    },
+                );
+            }
         }
         for &i in order {
             let m = &moves[i];
@@ -1390,7 +1432,21 @@ impl FundingState<'_> {
             if !Self::entry_has_timestamp(m) {
                 continue;
             }
+            let entry_copy = m
+                .copy_preparation
+                .as_ref()
+                .is_some_and(|copy| copy.recipe.is_some());
+            if entry_copy {
+                p.roles.next_timestamp();
+            }
             let timestamp = p.register(source, m.before.card);
+            if entry_copy
+                && let Some(rows) = p.temporary_copies.as_mut()
+                && let Some(row) = rows.iter_mut().find(|row| row.object == source)
+            {
+                row.original_provider_time = Some(timestamp - 1);
+                row.layers.last_mut().unwrap().value.provider_timestamp = timestamp;
+            }
             keyword_counters::sync_effects(
                 &mut p.roles,
                 source,
@@ -1452,6 +1508,21 @@ impl FundingState<'_> {
                     recipient,
                     timestamp,
                 });
+            }
+        }
+        for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && m.copy_preparation
+                    .as_ref()
+                    .is_some_and(|copy| copy.recipe.is_some())
+            {
+                let source = next.reference(m.before.id);
+                let active = copy_grant_origins::program_grant_active(&next, source);
+                let p = next.entry_projection.as_mut().unwrap();
+                let origin = active.then(|| p.roles.next_timestamp());
+                p.provided_origins.retain(|(object, _)| *object != source);
+                p.provided_origins.push((source, origin));
             }
         }
         // CR611.2e: surrounding characteristic effects exist as entrants enter,
@@ -1635,7 +1706,8 @@ impl Game {
         }
         if !matches!(
             action,
-            Action::ChooseEntryBehold { .. }
+            Action::ChooseEntryCopy { .. }
+                | Action::ChooseEntryBehold { .. }
                 | Action::ChooseEntryValue { .. }
                 | Action::ChooseEntryLife { .. }
                 | Action::ChooseAuraAttachment { .. }
@@ -1759,6 +1831,25 @@ impl Game {
         world.entry_projection.as_mut().unwrap().counter =
             self.projected_entry_counter(counter_choice);
         match action {
+            Some(Action::ChooseEntryCopy { object }) => {
+                let index = batch
+                    .moves
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, m)| entry_copies::needs_copy(m))
+                    .min_by_key(|(i, m)| (m.controller != self.state.active, *i))
+                    .map(|(i, _)| i)
+                    .expect("pending entry-copy choice");
+                if let Some(object) = object {
+                    let recipe = entry_copies::blueprint_in_world(&world, object.card);
+                    entry_copies::apply_blueprint(&mut batch.moves[index], recipe);
+                } else {
+                    batch.moves[index]
+                        .copy_preparation
+                        .get_or_insert_default()
+                        .done = true;
+                }
+            }
             Some(Action::ChooseEntryValue { value }) => {
                 let i = self
                     .current_entry_value_index()
@@ -2089,5 +2180,125 @@ impl<'g> FundingState<'g> {
             });
         });
         found
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl FundingState<'_> {
+    fn install_projected_entry_copy(
+        &mut self,
+        object: ObjectRef,
+        physical_card: Card,
+        recipe: CopyRecipe,
+    ) {
+        let physical_kind = self.object(object.card).copy_kind;
+        let original_recipe = self.stored_recipe(object.card);
+        let origin = self
+            .entry_projection
+            .as_mut()
+            .unwrap()
+            .roles
+            .next_acquisition();
+        let row = temporary_copy::Row::as_entry(
+            object,
+            physical_card,
+            physical_kind,
+            original_recipe,
+            recipe,
+            origin,
+        );
+        let physical = original_recipe.unwrap_or_else(|| CopyRecipe::new(physical_card));
+        let recipe = recipe.with_copy_effect_faces(physical.face_structure());
+        if let Some(rows) = self.copy_recipes.as_mut() {
+            rows.retain(|row| row.object != object);
+        }
+        let recipes = self.copy_recipes.get_or_insert_default();
+        let index = recipes.partition_point(|row| row.object.card < object.card);
+        recipes.insert(index, copies::CopyRow { object, recipe });
+        let target = &mut self
+            .resources
+            .iter_mut()
+            .find(|r| r.id == object.card)
+            .unwrap()
+            .object;
+        target.card = recipe.definition;
+        target.copy_kind = if physical_kind == CopyKind::Token || physical_card.is_token() {
+            CopyKind::Token
+        } else {
+            CopyKind::Physical
+        };
+        let p = self.entry_projection.as_mut().unwrap();
+        p.copy_origins.retain(|(source, _)| *source != object);
+        p.copy_origins.push((object, Some(origin)));
+        p.copy_origins.sort_by_key(|(source, _)| *source);
+        p.temporary_copies.get_or_insert_default().push(row);
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl FundingState<'_> {
+    fn visit_entry_copy_choices(
+        &self,
+        moves: Vec<entries::EntryMove>,
+        seen: &mut Vec<(usize, CopyRecipe)>,
+        emit: &mut dyn FnMut(Vec<entries::EntryMove>) -> bool,
+    ) -> bool {
+        let Some(index) = moves
+            .iter()
+            .enumerate()
+            .filter(|(_, m)| entry_copies::needs_copy(m))
+            .min_by_key(|(i, m)| (m.controller != self.active, *i))
+            .map(|(i, _)| i)
+        else {
+            return emit(moves);
+        };
+        let movement = &moves[index];
+        let spec = movement.before.card.entry_copy().unwrap();
+        let mut ids = (0..self.game.state.objects.len())
+            .map(|id| id as CardId)
+            .collect::<Vec<_>>();
+        ids.extend(self.resources.iter().map(|resource| resource.id));
+        ids.sort_unstable();
+        ids.dedup();
+        let candidates = ids
+            .into_iter()
+            .filter_map(|id| {
+                (!moves.iter().any(|m| m.before.id == id)
+                    && spec.filters.iter().any(|&filter| {
+                        battlefield_groups::filter_matches_in_world(
+                            self,
+                            filter,
+                            movement.controller,
+                            id,
+                        )
+                    }))
+                .then(|| entry_copies::blueprint_in_world(self, id))
+            })
+            .collect::<Vec<_>>();
+        if spec.optional || candidates.is_empty() {
+            let mut declined = moves.clone();
+            declined[index]
+                .copy_preparation
+                .get_or_insert_default()
+                .done = true;
+            if self.visit_entry_copy_choices(declined, seen, emit) {
+                return true;
+            }
+        }
+        for recipe in candidates {
+            // Repeated copy choices with an identical flat blueprint have the
+            // same eventual entry; avoid cycling only inside existential funding search.
+            if seen.contains(&(index, recipe)) {
+                continue;
+            }
+            let mut branch = moves.clone();
+            entry_copies::apply_blueprint(&mut branch[index], recipe);
+            seen.push((index, recipe));
+            if self.visit_entry_copy_choices(branch, seen, emit) {
+                return true;
+            }
+            seen.pop();
+        }
+        false
     }
 }
