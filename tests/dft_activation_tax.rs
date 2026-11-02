@@ -968,36 +968,13 @@ fn a_copied_vehicle_sacrificed_for_its_tax_uses_its_exact_departure_subtype_afte
 
 #[test]
 fn losing_vehicle_before_departure_does_not_keep_the_announcement_subtype_for_assistance() {
-    const TYPES: &[StaticAbilityGroup] = &[StaticAbilityGroup {
-        line: 0,
-        first_layer: AbilityLayer::Type,
-        fragments: &[StaticAbilityFragment::SourceCounterSubtype {
-            kind: CounterKind::Charge,
-            minimum: 1,
-            subtype: "Vehicle",
-            keywords: Keywords::NONE,
-        }],
-    }];
-    const SOURCE_TYPES: CardRules = CardRules {
-        static_groups: TYPES,
-        activated: &[
-            ability(ActivationCost::ZERO, &[Instruction::Crew { minimum: 4 }]),
-            ability(
-                ActivationCost {
-                    remove: Some((Some(CounterKind::Charge), 1)),
-                    sacrifice: true,
-                    ..ActivationCost::ZERO
-                },
-                &[Instruction::AddMana(ManaProduction::Fixed([
-                    0, 0, 0, 0, 0, 4,
-                ]))],
-            ),
-        ],
-        extras: &CardExtras {
-            static_ability_groups: TYPES,
-            ..CardExtras::EMPTY
-        },
-        ..PLAIN
+    const VEHICLE: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ability(
+            ActivationCost::ZERO,
+            &[Instruction::Crew { minimum: 4 }],
+        )],
+        ..CardRules::EMPTY
     };
     const PILOT: CardRules = CardRules {
         keywords: Keywords::CREW_SADDLE_PLUS_TWO,
@@ -1005,15 +982,20 @@ fn losing_vehicle_before_departure_does_not_keep_the_announcement_subtype_for_as
     };
     let _scope = fixture_rules::activate(&[
         (named("Ghost Vacuum"), &TAX),
-        (Card::GrizzlyBears, &SOURCE_TYPES),
+        (named("Broadcast Rambler"), &VEHICLE),
+        (Card::GrizzlyBears, &PLAIN),
         (Card::GoblinPiker, &PILOT),
     ]);
     let mut g = scenario(Player::P0);
     let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    g.apply_temporary_copy(
+        g.object_ref(source),
+        CopyRecipe::new(named("Broadcast Rambler")),
+        CopyDeadline::EndOfTurn,
+    );
+    let original = g.object_ref(source);
     let pilot = put(&mut g, Player::P0, "Goblin Piker", Zone::Battlefield);
-    g.add_counter(source, CounterKind::Charge, 1);
-    assert!(g.has_subtype(source, "Vehicle"));
-    tax(&mut g, Player::P1, "Grizzly Bears");
+    tax(&mut g, Player::P1, "Broadcast Rambler");
     g.state.players[0].mana = TWO;
     act(&mut g, start(source));
     let participant = g.object_ref(pilot);
@@ -1024,22 +1006,41 @@ fn losing_vehicle_before_departure_does_not_keep_the_announcement_subtype_for_as
         },
     );
     act(&mut g, Action::FinishCrew);
-    let mut counters = Counters::default();
-    counters.add(CounterKind::Charge, 1);
-    // The counter is paid before sacrifice. At actual departure this source no
-    // longer has Vehicle, so its old announcement type cannot make power2 pay4.
-    reject(
-        &mut g,
-        Action::ActivateMana {
-            card: source,
-            ability: 1,
-            payment: TWO,
-            counter_payment: counters,
-            production: [0, 0, 0, 0, 0, 4],
-        },
+    // Model a later legitimate copy/type change, followed by departure and slot
+    // reuse. Creature-subtype grants deliberately cannot manufacture Vehicle.
+    g.apply_temporary_copy(
+        original,
+        CopyRecipe::new(Card::GrizzlyBears),
+        CopyDeadline::EndOfTurn,
     );
-    pay(&mut g);
-    assert!(g.object_view(pilot).tapped);
+    assert!(!g.has_subtype(source, "Vehicle"));
+    g.move_object(source, Zone::Graveyard);
+    g.move_object(source, Zone::Battlefield);
+    assert_ne!(g.object_ref(source), original);
+    g.apply_temporary_copy(
+        g.object_ref(source),
+        CopyRecipe::new(named("Broadcast Rambler")),
+        CopyDeadline::EndOfTurn,
+    );
+    assert!(g.has_subtype(source, "Vehicle"));
+    assert!(
+        !g.state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .item
+            .source
+            .unwrap()
+            .facts
+            .has_subtype("Vehicle")
+    );
+    assert!(
+        g.mana_payment_domain().is_none(),
+        "latest departure, not old announcement or new incarnation, controls the assistance"
+    );
+    reject(&mut g, Action::PayCosts { payment: TWO });
+    assert!(!g.object_view(pilot).tapped);
+    assert_eq!(g.state.players[0].mana, TWO);
 }
 
 #[test]

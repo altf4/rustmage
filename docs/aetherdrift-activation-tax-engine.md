@@ -136,8 +136,7 @@ already refreshed active/suspended `SpellView.source.facts` provide the latest
 card/subtype witness. A preflight fallback is used only without a departure
 witness. Final paid sums can use the paid item's facts after its announcement
 header has left State. A new incarnation in the same CardId slot cannot supply
-the old qualifier. Copied-Vehicle sacrifice plus slot reuse and removal of a
-counter-granted Vehicle subtype before sacrifice have contrasting scenarios.
+the old qualifier. Copied-Vehicle sacrifice plus slot reuse and a later copy/type change before departure and a new Vehicle incarnation have contrasting scenarios.
 
 The signed base and assistance bonus are now separate exact PowerSum terms.
 A positive base at i128::MAX plus two is never saturated before cancellation
