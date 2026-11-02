@@ -3,10 +3,60 @@
   "catalogue_id": 1689,
   "oracle_id": "7c98626b-ba97-4d1e-9be7-291480ae8d22",
   "facts_sha256": "309247665a70593494395b7c87c9308cadd3437f241a2831bc2c3f67ca1ffafb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "180130a8fb85d0666d16be7e77af7bb9b9a6217be86814fe9a66093708553405"
   },
-  "physical_metadata_sha256": "69ec09411d0ceda631dc717c6a2692402ca360df8a351f4021f91bb84677d9bf"
+  "physical_metadata_sha256": "69ec09411d0ceda631dc717c6a2692402ca360df8a351f4021f91bb84677d9bf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GasGuzzler.java",
+  "java_sha256": "6df4f8508b6d4f3892c75c37399a3105a43991009e4ff15b7e368146b1293c1d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+      "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+      "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+      "sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+    }
+  ]
 }

@@ -3,10 +3,45 @@
   "catalogue_id": 1331,
   "oracle_id": "b4d970ed-f332-440c-8c2f-8a8a0191410b",
   "facts_sha256": "908b65e50c95229874db55be2d29e02fec5d8adaae7f7b0b7ce8ecedb36c0cc8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c9fde5c7dbffdaf0d6a50ee8c76a498cee47207aaedc085406d2492f44509f19"
   },
-  "physical_metadata_sha256": "6e71633a113938d6c6ada55b9e4e23e0e3aab68f9335488287f60a02fdc5c108"
+  "physical_metadata_sha256": "6e71633a113938d6c6ada55b9e4e23e0e3aab68f9335488287f60a02fdc5c108",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EndriderCatalyzer.java",
+  "java_sha256": "81928e0ddab35973e3f3c5fd98620dd88afcc96051f1216c2f26305e9cf16933",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+      "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/ManaEffect.java",
+      "sha256": "9332af88b954f2fdab1b7fc0bc71ac41d534eeb5ba12dceb4bd924b08f8f88e3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+      "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+      "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+    }
+  ]
 }

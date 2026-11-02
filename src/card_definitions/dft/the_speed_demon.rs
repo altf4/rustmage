@@ -1,16 +1,46 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+// Complete direct typed behavior from full pinned Oracle and XMage sources.
+
+const GROUPS: &[StaticAbilityGroup] = &[
+    StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::FLYING.union(Keywords::TRAMPLE),
+        )],
     },
-    entry: EntryTapped::Never,
+    StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::StartYourEngines],
+    },
+];
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Creature(5, 5),
     keywords: Keywords::FLYING.union(Keywords::TRAMPLE),
+    static_groups: GROUPS,
+    activated: &[],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::End,
+            relation: CastRelation::You,
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::DrawScaled(
+                PlayerSet::Controller,
+                AmountValue::Stat(StatValue::ControllerSpeed),
+            ),
+            Instruction::LoseLifeScaled(
+                PlayerSet::Controller,
+                AmountValue::Stat(StatValue::ControllerSpeed),
+            ),
+        ],
+    }],
+
+    extras: &CardExtras {
+        static_ability_groups: GROUPS,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
