@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8ff3960d759e981030fd38619377cdcbc03a48c4a5638277cb8051c1b59086ea",
+  "catalogue_version": "5b36bbdb999b7b0e3c0b1db58ebd6b39f070ec57bd3fef70893ec1740b388fb7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3043,
-  "implemented_total": 3049,
+  "implemented_standard_cards": 3046,
+  "implemented_total": 3052,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 144,
-      "gated": 115
+      "complete": 147,
+      "gated": 112
     },
     "dsk": {
       "total": 264,
@@ -8258,8 +8258,8 @@
     {
       "name": "Deathless Pilot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/deathless_pilot.rs",
       "set": "dft"
     },
@@ -9970,8 +9970,8 @@
     {
       "name": "Dynamite Diver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/dynamite_diver.rs",
       "set": "dft"
     },
@@ -15074,8 +15074,8 @@
     {
       "name": "Greasewrench Goblin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/greasewrench_goblin.rs",
       "set": "dft"
     },
