@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "00ef218d74c5f6345786ef5753d39852aeda00e2fb321ed7eddb724650c76223",
+  "catalogue_version": "937d80cb567eba165afcf2917e3b8aea0fdf238b611099f65749bc24ff332407",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3009,
-  "implemented_total": 3015,
+  "implemented_standard_cards": 3025,
+  "implemented_total": 3031,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 110,
-      "gated": 149
+      "complete": 126,
+      "gated": 133
     },
     "dsk": {
       "total": 264,
@@ -818,8 +818,8 @@
     {
       "name": "Afterburner Expert",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/afterburner_expert.rs",
       "set": "dft"
     },
@@ -4210,8 +4210,8 @@
     {
       "name": "Boom Scholar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/boom_scholar.rs",
       "set": "dft"
     },
@@ -7162,8 +7162,8 @@
     {
       "name": "Country Roads",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/country_roads.rs",
       "set": "dft"
     },
@@ -7234,8 +7234,8 @@
     {
       "name": "Crash and Burn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/crash_and_burn.rs",
       "set": "dft"
     },
@@ -10154,8 +10154,8 @@
     {
       "name": "Earthrumbler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/earthrumbler.rs",
       "set": "dft"
     },
@@ -10610,8 +10610,8 @@
     {
       "name": "Elvish Refueler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/elvish_refueler.rs",
       "set": "dft"
     },
@@ -11738,8 +11738,8 @@
     {
       "name": "Fang Guardian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/fang_guardian.rs",
       "set": "dft"
     },
@@ -13050,8 +13050,8 @@
     {
       "name": "Foul Roads",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/foul_roads.rs",
       "set": "dft"
     },
@@ -24394,8 +24394,8 @@
     {
       "name": "Ooze Patrol",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/ooze_patrol.rs",
       "set": "dft"
     },
@@ -26602,8 +26602,8 @@
     {
       "name": "Quag Feast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/quag_feast.rs",
       "set": "dft"
     },
@@ -27162,8 +27162,8 @@
     {
       "name": "Rangers' Aetherhive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/rangers_aetherhive.rs",
       "set": "dft"
     },
@@ -27722,8 +27722,8 @@
     {
       "name": "Reef Roads",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/reef_roads.rs",
       "set": "dft"
     },
@@ -28650,8 +28650,8 @@
     {
       "name": "Road Rage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/road_rage.rs",
       "set": "dft"
     },
@@ -28754,8 +28754,8 @@
     {
       "name": "Rocketeer Boostbuggy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/rocketeer_boostbuggy.rs",
       "set": "dft"
     },
@@ -28794,8 +28794,8 @@
     {
       "name": "Rocky Roads",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/rocky_roads.rs",
       "set": "dft"
     },
@@ -40682,8 +40682,8 @@
     {
       "name": "Wild Roads",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/wild_roads.rs",
       "set": "dft"
     },

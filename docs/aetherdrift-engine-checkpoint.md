@@ -90,3 +90,17 @@ The following full dependency inventory deliberately retains each audit ID (over
 - [x] **speed_scalar_and_gates**: Controller speed scalar, max-speed conditional effects and graveyard gates (shared with color audits).
 - [x] **target_player_scaled_chosen_mana**: At resolution controller chooses one color; targeted player receives a scaled count from the actual sacrificed-cost facts.
 - [x] **variable_sacrifice_activation_cost**: One-or-more artifact sacrifice activation cost with exact successful frozen count and rollback-safe speculative reservations.
+
+## Exact-API recheck followups
+
+Ordinary card authorship is parked until this complete reentry batch passes one
+shared guarded build and independent reviews. The prior accepted checkpoint
+remains historical evidence; its reusable outputs are preserved.
+
+- [ ] **attached_permanent_untap**: Silken Strength needs current attachment/LKI, including noncreature Vehicles.
+- [ ] **start_engine_source_index**: Register standalone StartYourEngines providers for actual SBA entry.
+- [ ] **positive_hand_selection**: Mandatory-if-possible positive type union, complete reveal and discard or unlinked exile for Gastal Raider/Intimidation Tactics.
+- [ ] **negative_kind_group_growth**: Winter samples one signed amount for every other nonartifact creature.
+- [ ] **simultaneous_hand_permanents**: Redshift privately selects any number, then commits one simultaneous entry batch.
+- [ ] **conditional_self_graveyard_cast**: Lightwheel Enhancements uses live speed/owner/zone with ordinary casting.
+- [ ] **live_subject_subtype**: Alacrian Armory branches independently on current Mount/Vehicle subtypes without a creature requirement.

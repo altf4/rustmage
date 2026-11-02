@@ -692,7 +692,15 @@
     "named activation increases, immutable post-cost mana output, nested payment identity/continuations and exact external sacrifice/exert rollback receipts",
     "acquired nonmana independent usage and exact counter-cost receipts; temporary acquired Embalm graveyard activations with white/Zombie/no-cost copy exceptions"
   ],
-  "remaining_engine_blockers": [],
+  "remaining_engine_blockers": [
+    "Untap exact attached permanent, including noncreature Vehicle and source LKI",
+    "Register standalone StartYourEngines static sources",
+    "Positive-kind full-hand reveal/mandatory choose with discard or unlinked exile",
+    "Signed scaled growth of other nonartifact creatures using CountFilter",
+    "Optional any-number private hand-permanent selection and simultaneous entry",
+    "Live conditional ordinary self-graveyard cast permission",
+    "Live exact subtype branches for noncreature permanent subjects"
+  ],
   "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)",
   "in_progress_checkpoints": [
     {
@@ -943,5 +951,17 @@
       "engine_freeze": "blocked by funding correctness/performance repairs; no card authoring or admissions yet"
     }
   ],
-  "engine_phase": "accepted and frozen; ordinary card authoring may begin"
+  "engine_phase": "reopened after exact whole-set API recheck; ordinary card authoring parked",
+  "engine_reentry": {
+    "previous_accepted_checkpoint": "819fa96ec",
+    "reason": "Exact card wiring invalidated broad initial API assumptions; no new engine build until all seven fixes and source reviews are assembled",
+    "audited_pool": {
+      "white_blue": 74,
+      "black_red": 75,
+      "green_multicolor": 80,
+      "colorless": 47
+    },
+    "ordinary_card_work": "parked; prepared candidates preserved as separate commits",
+    "validation_policy": "one combined guarded build after all shared followups; reuse prior engine for test-only diagnostics; no clean builds"
+  }
 }

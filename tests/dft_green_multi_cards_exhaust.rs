@@ -111,7 +111,7 @@ fn afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abil
     assert_eq!(thopters.len(), 2);
     for id in &thopters {
         assert_eq!(stats(&g, *id), (1, 1));
-        assert_eq!(g.colors(*id), 0);
+        assert_eq!(g.object_view(*id).colors, 0);
         assert!(g.keywords(*id).contains(Keywords::FLYING));
         assert!(g.current_kinds(*id) & 16 != 0);
     }

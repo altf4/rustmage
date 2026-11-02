@@ -41,7 +41,12 @@ All Cargo compilation uses `scripts/resource_guard.py`. Reports and compiler
 outputs use a persistent cache outside the checkout. Sources remain fixed while
 a consuming process runs, and required libraries remain at their recorded paths.
 
-The engine checkpoint is accepted and frozen. All 3329 cases pass: 294 focused
+The first engine checkpoint was accepted at `819fa96ec`. Exact card wiring then
+identified seven missed typed-API details; the engine phase is reopened, ordinary
+card authoring is parked, and all corrections are being assembled for one shared
+build. The historical checkpoint remains preserved below.
+
+At that checkpoint, All 3329 cases pass: 294 focused
 engine scenarios, 3030 ordinary legacy scenarios, four complete-game cases and the
 strict promoted trace baseline. Both formerly slow BIG pairings now finish below
 the unchanged 45-second limit. Two independent nonauthor reviews approve this
