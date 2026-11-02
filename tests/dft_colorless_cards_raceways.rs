@@ -93,10 +93,14 @@ fn amonkhet_haste_targets_either_player_and_survives_source_departure_until_clea
                 Zone::Battlefield,
             );
             let artifact = put(&mut g, p, "Swiftfoot Boots", Zone::Battlefield);
+            let action = Action::AnnounceSourceGrant {
+                source: g.object_ref(land),
+                ability: 1,
+            };
             g.state.players[p.index()].speed = 3;
-            reject(&mut g, announce_ability(land, 1));
+            reject(&mut g, action.clone());
             g.state.players[p.index()].speed = 4;
-            act(&mut g, announce_ability(land, 1));
+            act(&mut g, action.clone());
             reject(
                 &mut g,
                 Action::ChooseTarget {
@@ -134,17 +138,21 @@ fn avishkar_pays_three_taps_and_discards_before_drawing_with_no_empty_hand_route
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let land = put(&mut g, p, "Avishkar Raceway", Zone::Battlefield);
+        let action = Action::AnnounceSourceGrant {
+            source: g.object_ref(land),
+            ability: 1,
+        };
         g.state.players[p.index()].speed = 4;
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
-        reject(&mut g, announce_ability(land, 1));
+        reject(&mut g, action.clone());
         let discard = put(&mut g, p, "Forest", Zone::Hand);
         let foreign = put(&mut g, p.other(), "Forest", Zone::Hand);
         g.state.players[p.index()].speed = 3;
-        reject(&mut g, announce_ability(land, 1));
+        reject(&mut g, action.clone());
         g.state.players[p.index()].speed = 4;
         let library_before = g.state.players[p.index()].library.len();
         let draws_before = g.state.players[p.index()].cards_drawn_this_turn;
-        act(&mut g, announce_ability(land, 1));
+        act(&mut g, action.clone());
         assert!(g.observe(p.other()).additional_cost.is_none());
         let object = g.object_ref(foreign);
         reject(&mut g, Action::ChooseAdditionalCost { object });
@@ -249,7 +257,10 @@ fn night_market_entry_choice_owns_independent_raw_index_and_restored_branches() 
     );
     raw.move_object(land, Zone::Exile);
     assert!(raw.object_view(land).entry_choice.is_none());
-    raw.move_object(land, Zone::Battlefield);
+    raw.move_object(land, Zone::Hand);
+    // Arrange another legal land play; the new incarnation must choose anew.
+    raw.state.land_played = false;
+    act(&mut raw, Action::PlayLand { card: land });
     assert!(matches!(raw.state.pending, Pending::EntryValue { .. }));
     act(
         &mut raw,
