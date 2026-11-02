@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "DFT",
-  "phase": "card authoring; all identified engine dependencies accepted after combined reentry checkpoint",
+  "phase": "engine reentry: generic triggering-permanent-spell capture; card authoring parked",
   "membership": 276,
   "starting_admitted": 119,
   "newly_admitted": 24,
@@ -668,7 +668,9 @@
   "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
   "pending": "Finish all 276 member card obligations, provenance and focused outcomes, including inherited119; run legal DFT-only complete games/replay/owned search; update README counts; full release acceptance; one completed-set PR and two independent nonauthor reviews of its published head.",
   "throughput": "Combined reentry checkpoint: 336 engine scenarios and 39 prepared-card scenarios, 3035 ordinary legacy cases, four BIG cases and one strict trace pass. Final test compilation 165.993s; focused execution 0.779s; ordinary legacy 77.952s. No new card admissions during engine reentry; DFT143/276 are local candidates, not complete-set acceptance.",
-  "remaining_engine_blockers": [],
+  "remaining_engine_blockers": [
+    "CopyCastSpell must capture the triggering ordinary permanent spell, preserving demand-only allocation, existing prepared/instant behavior and owned copied-permanent results"
+  ],
   "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)",
   "in_progress_checkpoints": [
     {
@@ -1223,7 +1225,7 @@
       }
     }
   ],
-  "engine_phase": "accepted at 8657c4e6c; stable guarded cache warmed",
+  "engine_phase": "reopened after actual Mendicant copy scenario",
   "engine_reentry": {
     "previous_accepted_checkpoint": "819fa96ec",
     "reason": "Exact card wiring invalidated broad initial API assumptions; no new engine build until all seven fixes and source reviews are assembled",
@@ -1645,5 +1647,13 @@
     "retained immutable linked activations and copiable0/0 exceptions; pre-event graveyard exile lookback and shared projected power-up reduction",
     "named activation increases, immutable post-cost mana output, nested payment identity/continuations and exact external sacrifice/exert rollback receipts",
     "acquired nonmana independent usage and exact counter-cost receipts; temporary acquired Embalm graveyard activations with white/Zombie/no-cost copy exceptions"
-  ]
+  ],
+  "copy_capture_reentry": {
+    "previous_accepted_checkpoint": "fb878868d",
+    "observed_case": "dft_green_multi_cards_final::mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token",
+    "cause": "capture_copy_cast_classified returns early for ordinary permanents and gates CopyCastSpell demand by instant/sorcery type",
+    "remaining_api_audit": "Final BR and inherited colorless APIs reread; no other concrete missing primitive found. Root six new machine definitions use existing chosen types, X counters, search, exhaust copying, targeted mana and equip paths.",
+    "card_work": "all prepared work preserved; no new card integration until one reviewed combined engine checkpoint and rewarm",
+    "validation": "one additional core test compilation after full source reviews; retain guarded warm target and unchanged profile/features"
+  }
 }

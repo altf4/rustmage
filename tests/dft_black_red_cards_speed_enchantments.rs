@@ -103,15 +103,18 @@ fn hour_of_victory_creates_zombie_and_its_max_speed_sorcery_search_is_required_a
         assert_eq!(stats(&g, z[0]), (2, 2));
         assert_eq!(g.object_view(z[0]).colors, 4);
         assert!(!g.object_view(z[0]).tapped);
-        reject(&mut g, grant(&g.clone(), source));
+        let request = grant(&g, source);
+        reject(&mut g, request);
         g.state.players[p.index()].speed = 4;
         g.state.step = Step::Upkeep;
-        reject(&mut g, grant(&g.clone(), source));
+        let request = grant(&g, source);
+        reject(&mut g, request);
         g.state.step = Step::Main1;
         g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 1];
         let found = put(&mut g, p, "Shock", Zone::Library);
         let foreign = put(&mut g, p.other(), "Shock", Zone::Library);
-        act(&mut g, grant(&g.clone(), source));
+        let request = grant(&g, source);
+        act(&mut g, request);
         pay(&mut g);
         assert_eq!(g.object_view(source).zone, Zone::Graveyard);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
@@ -162,10 +165,12 @@ fn kickoff_optional_discard_draws_two_only_when_paid_and_max_speed_freezes_creat
         let vehicle = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);
         let artifact = put(&mut g, p, "Gilded Lotus", Zone::Battlefield);
         let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-        reject(&mut g, grant(&g.clone(), source));
+        let request = grant(&g, source);
+        reject(&mut g, request);
         g.state.players[0].speed = 4;
         g.state.step = Step::Upkeep;
-        act(&mut g, grant(&g.clone(), source));
+        let request = grant(&g, source);
+        act(&mut g, request);
         if matches!(g.state.pending, Pending::PayCosts { .. }) {
             pay(&mut g);
         }
