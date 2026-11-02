@@ -2178,6 +2178,12 @@ pub enum Instruction {
     RevealTargetHandSubsetDiscard(AmountValue),
     RevealTargetHandExileUntilSourceLeaves,
     RevealTargetHandExileLinked,
+    /// Reveal the targeted player's whole hand, then choose one matching card if able.
+    /// Kind bits form a positive union; exile is permanent and has no source link.
+    RevealTargetHandChoose {
+        kinds: u16,
+        exile: bool,
+    },
     RevealHandDiscard {
         excluded_kinds: u16,
     },

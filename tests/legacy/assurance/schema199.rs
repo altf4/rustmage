@@ -56,6 +56,8 @@ const NEW_VARIANTS: &[&str] = &[
     "CombatDamageToPlayer",
     "ResolutionRemoval",
     "LookDiscardDraw",
+    "DiscardRevealedKinds",
+    "ExileRevealedKinds",
     "ArtifactSpellOrActivation",
     "ControlAndCombatLockWhileControlled",
     "card_name",
@@ -493,6 +495,7 @@ fn program_supported(program: &[Instruction]) -> bool {
             | Instruction::MarkSaddled(..)
             | Instruction::DecreaseLeadingSpeed { .. }
             | Instruction::LookTargetHandMayDiscardThenDraw
+            | Instruction::RevealTargetHandChoose { .. }
             | Instruction::AddManaChosenScaled { .. }
             | Instruction::IfSacrificedVehicle { .. }
             | Instruction::AnimateSubject { .. }
@@ -1758,4 +1761,27 @@ fn prior_198_keeps_legacy_resolving_spell_mana_choices_eligible() {
     act(&mut game, choice);
     assert!(game.state.resolving.is_none());
     assert!(prior_schema199_state_supported(&game.state));
+}
+
+#[test]
+fn prior_198_rejects_positive_revealed_hand_selection_but_preserves_old_discard() {
+    use rustmage_core::engine::hand_choices::HandChoiceKind;
+    for kind in [
+        HandChoiceKind::DiscardRevealedKinds { kinds: 4 | 8 },
+        HandChoiceKind::ExileRevealedKinds { kinds: 1 | 16 },
+    ] {
+        assert!(!wire_supported(&kind));
+    }
+    for exile in [false, true] {
+        assert!(!program_supported(&[Instruction::RevealTargetHandChoose {
+            kinds: 1 | 16,
+            exile,
+        }]));
+    }
+    assert!(wire_supported(&HandChoiceKind::DiscardRevealed));
+    assert!(program_supported(&[Instruction::RevealHandDiscard {
+        excluded_kinds: 2
+    }]));
+    let old = r#"{"kind":"DiscardRevealed","actor":"P0","victim":"P1","required":1,"selected":[],"candidates":[],"optional":false}"#;
+    assert_eq!(project_prior_schema199(old).unwrap(), old);
 }

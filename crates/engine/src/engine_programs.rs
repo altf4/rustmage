@@ -4860,6 +4860,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::RevealTargetHandChoose { kinds, exile } => {
+                    if self.start_revealed_hand_kind_choice(&item, kinds, exile) {
+                        return;
+                    }
+                }
                 Instruction::RevealHandDiscard { excluded_kinds } => {
                     let Some(victim) = self.program_players(PlayerSet::Targeted, &item).next()
                     else {

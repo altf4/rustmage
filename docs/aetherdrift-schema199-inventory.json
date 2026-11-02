@@ -346,6 +346,14 @@
         "counter_payment"
       ],
       "contract": "Owned exact/wildcard acquired nonmana counter-cost receipt. Serde default and omitted when empty preserve inherited action bytes. Reject any present member only in this action variant; native AnnounceActivate counter_payment is inherited and remains eligible."
+    },
+    {
+      "container": "HandChoiceKind",
+      "members": [
+        "DiscardRevealedKinds { kinds: u16 }",
+        "ExileRevealedKinds { kinds: u16 }"
+      ],
+      "contract": "New positive-kind required selection after full public reveal. Existing ChooseHandCard action and hand_card_choice pending shape stay unchanged; reject the two new discriminants, preserve inherited DiscardRevealed and existing linked-exile variants."
     }
   ],
   "eligibility": [
@@ -489,12 +497,20 @@
         "new amount/filter/copy properties through inherited instructions"
       ],
       "eligibility": "Reject new semantics before old-shaped packet programs are mistaken for inherited state; recursively inspect target wrappers, modes, quantities, copy exceptions and player selectors."
+    },
+    {
+      "container": "ChoiceState.hand / typed immutable programs",
+      "members": [
+        "HandInteraction.kind positive-kind payload",
+        "Instruction::RevealTargetHandChoose { kinds, exile }"
+      ],
+      "eligibility": "Existing opaque hand-decision state guard rejects the new owned choices without adding fields. Reject the new immutable instruction in packets even before the decision opens; never erase selected-card behavior."
     }
   ],
   "focused_tests": {
     "target": "legacy",
     "filter": "engine::assurance::schema199::",
-    "cases": 20,
+    "cases": 21,
     "coverage": [
       "byte-exact unchanged JSON and sole unsigned derived entry-count removal",
       "all new public field/action/phase families",
@@ -510,7 +526,8 @@
       "genuine SourcePower0 and fixed Choice amount0 preserved; borrowed templates resolved from donor",
       "positive/zero native power-choice and distinct-power count domains; opponent creatures excluded",
       "borrowed domain quantities use animated actual borrower with both positive and zero-power donor definitions",
-      "owned late ChooseMana rejected while inherited resolving-spell ChooseMana remains eligible"
+      "owned late ChooseMana rejected while inherited resolving-spell ChooseMana remains eligible",
+      "positive-kind public hand selection variants/program rejected; inherited DiscardRevealed and RevealHandDiscard remain byte-exact eligible"
     ]
   },
   "baseline_distinctions": [

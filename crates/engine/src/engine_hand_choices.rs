@@ -7,6 +7,14 @@ pub enum HandChoiceKind {
     DeployCreatures,
     RevealSubset,
     DiscardRevealed,
+    /// Mandatory one-card choice from a publicly revealed hand, using a positive kind union.
+    DiscardRevealedKinds {
+        kinds: u16,
+    },
+    /// Permanent unlinked exile; source departure cannot revoke the choice or its result.
+    ExileRevealedKinds {
+        kinds: u16,
+    },
     ExileRevealedOrCreature,
     ExileRevealedLinked,
     /// Choose a controlled permanent of the requested subtype or reveal a hand card.
@@ -250,6 +258,44 @@ impl Game {
         });
         true
     }
+    pub(super) fn start_revealed_hand_kind_choice(
+        &mut self,
+        item: &SpellView,
+        kinds: u16,
+        exile: bool,
+    ) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        let hand = self.exact_hand(victim);
+        // Revealing is mandatory even when the whole hand fails the filter.
+        self.reveal_hand_refs(&hand);
+        let candidates: Vec<_> = hand
+            .into_iter()
+            .filter(|r| self.current_kinds(r.card) & kinds != 0)
+            .collect();
+        if candidates.is_empty() {
+            return false;
+        }
+        self.set_hand_interaction(HandInteraction {
+            kind: if exile {
+                HandChoiceKind::ExileRevealedKinds { kinds }
+            } else {
+                HandChoiceKind::DiscardRevealedKinds { kinds }
+            },
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item
+                .source
+                .expect("object-backed revealed hand choice")
+                .object,
+            required: 1,
+            selected: Vec::new(),
+            candidates,
+        });
+        true
+    }
     fn hand_choice_candidate(&self, interaction: &HandInteraction, reference: ObjectRef) -> bool {
         if !interaction.candidates.contains(&reference)
             || interaction.selected.contains(&reference)
@@ -264,6 +310,13 @@ impl Game {
             | HandChoiceKind::RevealSubset
             | HandChoiceKind::DiscardRevealed => {
                 o.zone == Zone::Hand && Some(o.owner) == interaction.victim && o.is_card()
+            }
+            HandChoiceKind::DiscardRevealedKinds { kinds }
+            | HandChoiceKind::ExileRevealedKinds { kinds } => {
+                o.zone == Zone::Hand
+                    && Some(o.owner) == interaction.victim
+                    && o.is_card()
+                    && self.current_kinds(reference.card) & kinds != 0
             }
             HandChoiceKind::ExileRevealedLinked => {
                 o.zone == Zone::Hand
@@ -356,8 +409,11 @@ impl Game {
                         )),
                     );
                 }
-                HandChoiceKind::DiscardRevealed => {
+                HandChoiceKind::DiscardRevealed | HandChoiceKind::DiscardRevealedKinds { .. } => {
                     self.discard_batch_caused(&[object.card], None, Some(interaction.controller))
+                }
+                HandChoiceKind::ExileRevealedKinds { .. } => {
+                    self.move_object(object.card, Zone::Exile);
                 }
                 HandChoiceKind::ExileRevealedOrCreature => {
                     self.exile_objects_until_source_leaves(interaction.source, &[object])
