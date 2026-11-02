@@ -700,6 +700,14 @@ impl Game {
             return TargetPlan::Single(spec);
         }
         if let TargetPlan::Single(mut spec) = plan
+            && matches!(spec.rule, TargetRule::LinkedExileCreature { .. })
+        {
+            spec.rule = TargetRule::LinkedExileCreature {
+                ability_origin: Some(item.source_ability_origin),
+            };
+            return TargetPlan::Single(spec);
+        }
+        if let TargetPlan::Single(mut spec) = plan
             && let TargetRule::ManaValueExactly { base, amount, .. } = spec.rule
         {
             spec.rule = TargetRule::ManaValueExactly {
@@ -1520,6 +1528,11 @@ impl Game {
             TargetRule::ManaValueAtMost { base, maximum, .. } => {
                 return maximum.is_some_and(|maximum| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) <= maximum)))
                     && self.target_matches_without_hand(*base, controller, source, target, departing, qualification);
+            }
+            TargetRule::LinkedExileCreature { ability_origin } => {
+                return matches!(target,Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o|
+                    o.zone==Zone::Exile && o.is_card() && o.card.is_creature()
+                    && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
             }
             TargetRule::GraveCreatureEnteredThisTurn => {
                 return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o|
@@ -2626,7 +2639,11 @@ impl Game {
     /// Current immutable recipe plus any rules abilities acquired in the current zone.
     pub(super) fn object_has_rules_abilities(&self, id: CardId) -> bool {
         let object = &self.state.objects[id as usize];
-        if object.card.has_rules_abilities() {
+        if object.card.has_rules_abilities()
+            || self
+                .copy_recipe(self.object_ref(id))
+                .is_some_and(|recipe| recipe.exceptions.retained_activation.is_some())
+        {
             return true;
         }
         // Existing graveyard cast rows grant flashback-like abilities, rather than

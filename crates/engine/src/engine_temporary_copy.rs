@@ -59,6 +59,11 @@ impl CopyDeadline {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct RetainedActivationOrigin {
+    pub ability_origin: Option<u64>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CopyLayerView {
     pub recipe: CopyRecipe,
     pub origin: u64,
@@ -68,6 +73,8 @@ pub struct CopyLayerView {
     /// The independent timestamp of this layer's hand-setting ability, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hand_timestamp: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub retained_link_origin: Option<RetainedActivationOrigin>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -124,6 +131,7 @@ impl Row {
                     provider_timestamp: 0,
                     deadline: CopyDeadline::WhileSource { source: object },
                     hand_timestamp: None,
+                    retained_link_origin: None,
                 },
                 used_abilities: 0,
             }],
@@ -463,6 +471,7 @@ impl Game {
                 provider_timestamp: origin,
                 deadline,
                 hand_timestamp: None,
+                retained_link_origin: None,
             },
             used_abilities: 0,
         });

@@ -36,6 +36,9 @@ pub use self_granted::{SelfGrantedAbilityKind, SelfGrantedAbilityView};
 #[doc(hidden)]
 #[path = "engine_entry_exiles.rs"]
 pub mod entry_exiles;
+#[doc(hidden)]
+#[path = "engine_retained_copy_activations.rs"]
+pub mod retained_copy_activations;
 pub use entry_exiles::EntryExileChoiceView;
 #[doc(hidden)]
 #[path = "engine_entry_copies.rs"]
@@ -788,6 +791,7 @@ define_actions! {
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
+    AnnounceRetainedCopyAbility { source: ObjectRef },
     AnnounceSelfGrantedAbility { source: ObjectRef, grant_timestamp: u64 },
     AnnounceSelfGrantedMana { source: ObjectRef, grant_timestamp: u64, counter_payment: Counters, production: Mana },
     ChooseAdditionalCost {
@@ -5045,6 +5049,11 @@ impl Game {
                         return true;
                     }
                     if obj.zone == Zone::Battlefield
+                        && self.visit_retained_copy_activation(card, actor, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Battlefield
                         && self.visit_self_granted_activations(card, actor, sorcery, &mut emit)
                     {
                         return true;
@@ -6446,6 +6455,9 @@ impl Game {
                 let mut item = self.self_granted_activation_packet(row);
                 item.id = self.next_stack_id();
                 self.open_payment_announcement(item, counter_payment, Some(production));
+            }
+            Action::AnnounceRetainedCopyAbility { source } => {
+                self.announce_retained_copy_ability(source)
             }
             Action::AnnounceSelfGrantedAbility {
                 source,

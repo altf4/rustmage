@@ -33,7 +33,8 @@ pub(super) fn has_craft_activated_ability<W: ability_world::CharacteristicWorld 
                 })
         });
     (printed
-        && (card.mana_color().is_some()
+        && (world.recipe(id).exceptions.retained_activation.is_some()
+            || card.mana_color().is_some()
             || card.activations().iter().enumerate().any(|(index, _)| {
                 !card.self_granted_activation_template(index as u16)
                     && (!card.grants_activation(index as u16)

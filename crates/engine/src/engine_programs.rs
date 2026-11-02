@@ -3248,6 +3248,9 @@ impl Game {
                         .get_or_insert_default()
                         .push(delayed);
                 }
+                Instruction::CopySourceFromLinkedExile { base } => {
+                    self.copy_source_from_linked_exile(&item, base)
+                }
                 Instruction::CopyEnteringPermanentThenAnimate(spec) => {
                     self.copy_entering_then_animate(&item, spec);
                 }

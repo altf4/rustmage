@@ -26,6 +26,14 @@ use crate::capacity::CapacityExt;
 use crate::engine::{GrantedSubtypes, Player, Zone};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+/// An immutable activated template retained as a copiable layer-one exception.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct RetainedCopyActivation {
+    pub definition: Card,
+    pub ability: u16,
+}
+
 /// Immutable additions made as part of a token-copy effect (CR707.9).
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
@@ -38,6 +46,8 @@ pub struct CopyExceptions {
     pub golem: bool,
     pub fractal: bool,
     pub base: Option<(i16, i16)>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub retained_activation: Option<RetainedCopyActivation>,
 }
 /// A layer-one copy between independently selected exact objects. Group absence
 /// at resolution is intentional: losing either required group prevents the copy.
@@ -62,6 +72,7 @@ impl CopyExceptions {
         golem: false,
         fractal: false,
         base: None,
+        retained_activation: None,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
@@ -71,6 +82,7 @@ impl CopyExceptions {
         golem: false,
         fractal: false,
         base: None,
+        retained_activation: None,
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
@@ -80,6 +92,7 @@ impl CopyExceptions {
         golem: false,
         fractal: false,
         base: None,
+        retained_activation: None,
     };
     pub const ARTIFACT: Self = Self {
         artifact: true,
@@ -111,6 +124,7 @@ impl CopyExceptions {
             golem: self.golem || other.golem,
             fractal: self.fractal || other.fractal,
             base: other.base.or(self.base),
+            retained_activation: other.retained_activation.or(self.retained_activation),
         }
     }
 }
@@ -210,6 +224,10 @@ pub enum TargetRule {
     Filtered {
         base: &'static TargetRule,
         predicate: &'static TargetPredicate,
+    },
+    /// Linked exact exile cards. Some(None) binds the original printed acquisition.
+    LinkedExileCreature {
+        ability_origin: Option<Option<u64>>,
     },
     GraveCreatureEnteredThisTurn,
     GraveCreatureSourcePower {
@@ -1481,6 +1499,10 @@ pub enum Instruction {
     CreateCapturedArtifactCopy,
     /// Copy one current/latest-departure entrant, then animate its actual results after entry.
     CopyEnteringPermanentThenAnimate(AnimationSpec),
+    /// Copy the targeted linked exile creature, retaining this exact activated template.
+    CopySourceFromLinkedExile {
+        base: (i16, i16),
+    },
     CopyCastSpell {
         prior_spells: bool,
     },
