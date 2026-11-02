@@ -188,11 +188,11 @@ fn newer_target_control_can_override_link_but_combat_lock_remains_until_source_d
 fn control_projection_applies_source_change_before_dependent_link_when_aura_is_sacrificed() {
     let _scope = fixture_rules::activate(&[
         (Card::GrizzlyBears, &STEAL),
-        (Card::from_name("Perilous Snare").unwrap(), &CONTROL_AURA),
+        (Card::from_name("Stop Cold").unwrap(), &CONTROL_AURA),
     ]);
     let mut g = scenario(Player::P0);
     let source = put(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
-    let aura = put(&mut g, Player::P0, "Perilous Snare", Zone::Battlefield);
+    let aura = put(&mut g, Player::P0, "Stop Cold", Zone::Battlefield);
     g.state.objects[aura as usize].attached_to = Some(g.object_ref(source));
     g.refresh_controllers();
     assert_eq!(g.object_view(source).controller, Player::P0);
