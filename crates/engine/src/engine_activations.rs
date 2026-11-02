@@ -566,7 +566,8 @@ impl Game {
             {
                 continue;
             }
-            let increase = self.named_activation_generic_increase(card);
+            let increase =
+                ability_world::CharacteristicWorld::named_activation_generic_increase(self, card);
             if grant.production.visit_at_start_with_fixed_choice(
                 self,
                 card,
