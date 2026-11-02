@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5c450245451a4783d2898553dd45b505e01347c4344406e241cdb15b1b099b41",
+  "catalogue_version": "56a4f4a4ce69f2e311926079a7d0797af6c70662c4602fa77dab28cb15e18b4b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3103,
-  "implemented_total": 3109,
+  "implemented_standard_cards": 3110,
+  "implemented_total": 3116,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 204,
-      "gated": 55
+      "complete": 211,
+      "gated": 48
     },
     "dsk": {
       "total": 264,
@@ -11770,8 +11770,8 @@
     {
       "name": "Far Fortune, End Boss",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/far_fortune_end_boss.rs",
       "set": "dft"
     },
@@ -11994,8 +11994,8 @@
     {
       "name": "Fearless Swashbuckler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/fearless_swashbuckler.rs",
       "set": "dft"
     },
@@ -13746,8 +13746,8 @@
     {
       "name": "Gastal Thrillseeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/gastal_thrillseeker.rs",
       "set": "dft"
     },
@@ -19338,8 +19338,8 @@
     {
       "name": "Kolodin, Triumph Caster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/kolodin_triumph_caster.rs",
       "set": "dft"
     },
@@ -21474,8 +21474,8 @@
     {
       "name": "March of the World Ooze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/march_of_the_world_ooze.rs",
       "set": "dft"
     },
@@ -29322,8 +29322,8 @@
     {
       "name": "Sab-Sunen, Luxa Embodied",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/sab_sunen_luxa_embodied.rs",
       "set": "dft"
     },
@@ -29554,8 +29554,8 @@
     {
       "name": "Samut, the Driving Force",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/samut_the_driving_force.rs",
       "set": "dft"
     },
