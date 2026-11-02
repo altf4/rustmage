@@ -588,6 +588,8 @@ use programs::Resolution;
 #[path = "engine_targeting.rs"]
 pub mod targeting;
 use targeting::Announcement;
+#[path = "engine_mandatory_loops.rs"]
+mod mandatory_loops;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -4044,6 +4046,10 @@ impl Game {
                         let _ = self.stats(id as CardId);
                     }
                 }
+            }
+            if self.prove_mandatory_exile_loop() {
+                self.state.outcome = Some(Outcome::Draw);
+                self.state.pending = Pending::Terminal;
             }
             Ok(())
         }));
