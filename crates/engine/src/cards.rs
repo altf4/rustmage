@@ -1242,6 +1242,8 @@ pub enum MillAmount {
     ChosenX,
     Fixed(u16),
     ControllerLife,
+    /// Sample one ordinary nonnegative resolving quantity before the mill batch.
+    Amount(AmountValue),
 }
 
 /// A fixed mana payment, independent of casting or activation costs.
@@ -2218,7 +2220,15 @@ pub enum Instruction {
     MillLifeEvent,
     DrawForGraveyardsAtLeast(u16),
     MayMill(u16),
+    /// Offer the next instruction only if the complete sampled mill is possible.
+    MayMillAmount(AmountValue),
     RecoverMilled(RecoveryFilter),
+    /// A chosen recovery pays the optional action and skips its fallback block,
+    /// independently of destination replacement (CR118.12).
+    RecoverMilledOrSkip {
+        filter: RecoveryFilter,
+        skip: usize,
+    },
     CollectGraveyard,
     CastLibraryTopUpToAttackingPower(u16),
     BottomLookedLibraryRandom,
@@ -2489,6 +2499,15 @@ pub enum Instruction {
     RevealUntilLandToGraveyard(PlayerSet),
     Damage(i32),
     DamageScaled(AmountValue),
+    /// Damage legal targets in the selected group using the other legal target's
+    /// power captured at resolution start, before any instruction moves it.
+    DamageByTargetPower {
+        power_group: u16,
+    },
+    /// Remember actual positive player recipients of this one damage instruction.
+    DamageRememberPlayers(i32),
+    /// Only players actually damaged by the preceding remembered batch discard.
+    DiscardDamagedPlayers(u16),
     DamagePlayers(PlayerSet, i32),
     /// A bound untargeted event object, independently of the ability source.
     EventObjectDamagePlayers(PlayerSet, i32),
@@ -2737,6 +2756,8 @@ pub enum Instruction {
     },
     ResolveDelayedTokenCreation,
     /// Capture a legal graveyard target's subtype, return it, then draw for a match.
+    /// Capture token status before the return; draw even if its destination is replaced.
+    ReturnToHandDrawForTokens,
     ReturnToHandDrawForSubtype(&'static str),
     BottomLibrary,
     TopLibrary,
@@ -2915,6 +2936,13 @@ pub enum Instruction {
     DrawScaled(PlayerSet, AmountValue),
     /// Draw greatest controlled creature power and remember successful draws.
     DrawGreatestCreaturePowerRemember,
+    /// Draw for the controller and remember actual completed draws through replacements.
+    DrawRemembered(AmountValue),
+    /// Execute the next block only if no remembered draw actually completed.
+    /// An omitted draw instruction (a preceding false guard) also means no draw.
+    IfNoRememberedDraws {
+        skip: usize,
+    },
     /// Lose life for the successful draws in the preceding remembered draw.
     LoseLifeRememberedDraws,
     AddCastEntryCounters {

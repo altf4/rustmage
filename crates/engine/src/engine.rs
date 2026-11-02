@@ -9752,11 +9752,19 @@ impl Game {
     }
 
     fn apply_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
+        self.apply_damage_batch_recording(events, None)
+    }
+
+    fn apply_damage_batch_recording(
+        &mut self,
+        events: &[DamageEvent],
+        remembering: Option<u64>,
+    ) -> Vec<LifeGainEvent> {
         if self.damage_replacement_candidates_exist(events) {
-            self.stage_damage_replacements(events);
+            self.stage_damage_replacements(events, remembering);
             Vec::new()
         } else {
-            self.commit_damage_batch(events)
+            self.commit_damage_batch(events, remembering)
         }
     }
 
@@ -9786,7 +9794,11 @@ impl Game {
             })
     }
 
-    fn commit_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
+    fn commit_damage_batch(
+        &mut self,
+        events: &[DamageEvent],
+        remembering: Option<u64>,
+    ) -> Vec<LifeGainEvent> {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
             event.preventable
@@ -9817,6 +9829,21 @@ impl Game {
             self.qualify_damage_destruction(event);
             match event.target {
                 Target::Player(p) => {
+                    if let Some(id) = remembering {
+                        let resolution = self
+                            .state
+                            .resolving
+                            .as_mut()
+                            .expect("remembered damage must have its resolution");
+                        assert_eq!(
+                            resolution.item.id, id,
+                            "damage belongs to a different resolution"
+                        );
+                        *resolution
+                            .remembered_damage_players
+                            .as_mut()
+                            .expect("remembered damage result") |= 1 << p.index();
+                    }
                     if !event.combat {
                         self.state.players[p.index()].noncombat_damage_this_turn = true;
                     }

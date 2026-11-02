@@ -286,6 +286,8 @@ impl TokenBatch {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct DamageBatch {
     events: Vec<DamageEvent>,
+    /// Exact resolving instruction which owns the player-damage result.
+    remembering: Option<u64>,
     heals: Vec<ObjectRef>,
     used_preventions: Vec<(ObjectRef, DamagePreventionKind)>,
     ordered_event: bool,
@@ -1181,7 +1183,11 @@ impl Game {
                 || !self.damage_preventions(event, &[]).is_empty()
         })
     }
-    pub(super) fn stage_damage_replacements(&mut self, events: &[DamageEvent]) {
+    pub(super) fn stage_damage_replacements(
+        &mut self,
+        events: &[DamageEvent],
+        remembering: Option<u64>,
+    ) {
         let resume = if self.state.resolving.is_some() {
             ResumeMode::Program
         } else {
@@ -1205,6 +1211,7 @@ impl Game {
         });
         state.work.push_back(Work::Damage(DamageBatch {
             events,
+            remembering,
             heals: Vec::new(),
             used_preventions: Vec::new(),
             ordered_event: false,
@@ -2430,7 +2437,7 @@ impl Game {
                                 self.state.objects[reference.card as usize].damage = 0;
                             }
                         }
-                        self.commit_damage_batch(&batch.events);
+                        self.commit_damage_batch(&batch.events, batch.remembering);
                         continue;
                     }
                     let event = batch.events[batch.next];

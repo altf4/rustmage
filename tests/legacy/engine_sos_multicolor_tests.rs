@@ -1397,6 +1397,7 @@ fn fra_empower_scaled_zero_and_three() {
                 target_group: 0,
                 moved_count: None,
                 remembered_draws: None,
+                remembered_damage_players: None,
                 remembered_creatures: Vec::new(),
                 discard_after: None,
                 optional_wheel: None,

@@ -93,6 +93,7 @@ fn proliferate_is_non_targeted_repeatable_and_snapshot_owned() {
             target_group: 0,
             moved_count: None,
             remembered_draws: None,
+            remembered_damage_players: None,
             remembered_creatures: Vec::new(),
             discard_after: None,
             discards: [0; 2],

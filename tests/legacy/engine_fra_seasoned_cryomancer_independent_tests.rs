@@ -210,6 +210,7 @@ fn seasoned_copied_reflexive_retargets_with_same_public_limit() {
             target_group: 0,
             moved_count: None,
             remembered_draws: None,
+            remembered_damage_players: None,
             remembered_creatures: Vec::new(),
             sacrificed_power: None,
             discard_after: None,

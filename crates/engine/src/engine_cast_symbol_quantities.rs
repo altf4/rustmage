@@ -33,6 +33,9 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::MoveCountersFromSource { amount: value, .. }
         | Instruction::RevealTargetHandSubsetDiscard(value)
         | Instruction::DrawScaled(_, value)
+        | Instruction::DrawRemembered(value)
+        | Instruction::MayMillAmount(value)
+        | Instruction::Mill(_, MillAmount::Amount(value))
         | Instruction::GainLifeScaled(_, value)
         | Instruction::LoseLifeScaled(_, value)
         | Instruction::DrainLifeScaled(value)

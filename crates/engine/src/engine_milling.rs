@@ -25,7 +25,7 @@ impl Game {
                         .count()
                 })
                 .iter()
-                .filter(|event| event.moved || event.shuffled_in_place)
+                .filter(|event| event.moved)
                 .count();
         }
         let maximum = match amount {
@@ -47,6 +47,10 @@ impl Game {
                 usize::try_from(self.state.resolving.as_ref().unwrap().item.x.unwrap_or(0))
                     .unwrap_or(usize::MAX)
             }
+            MillAmount::Amount(value) => usize::try_from(
+                self.item_amount(value, &self.state.resolving.as_ref().unwrap().item),
+            )
+            .unwrap_or(usize::MAX),
             MillAmount::ControllerLife => {
                 usize::try_from(self.state.players[controller.index()].life.max(0))
                     .unwrap_or(usize::MAX)
@@ -54,7 +58,7 @@ impl Game {
         };
         self.mill_batch_up_to(players, maximum)
             .iter()
-            .filter(|event| event.moved || event.shuffled_in_place)
+            .filter(|event| event.moved)
             .count()
     }
 
@@ -140,6 +144,12 @@ impl Game {
         if let Some(object) = object {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             self.move_milled_selection(player, &[object], MilledDestination::Hand);
+            let resolution = self.state.resolving.as_mut().unwrap();
+            if let Instruction::RecoverMilledOrSkip { skip, .. } =
+                resolution.program[resolution.pc - 1]
+            {
+                resolution.pc += skip;
+            }
         }
         self.run_program();
     }

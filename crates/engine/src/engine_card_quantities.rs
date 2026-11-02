@@ -72,6 +72,9 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::MoveCountersFromSource { amount: value, .. }
             | Instruction::RevealTargetHandSubsetDiscard(value)
             | Instruction::DrawScaled(_, value)
+            | Instruction::DrawRemembered(value)
+            | Instruction::MayMillAmount(value)
+            | Instruction::Mill(_, MillAmount::Amount(value))
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)
             | Instruction::DrainLifeScaled(value)

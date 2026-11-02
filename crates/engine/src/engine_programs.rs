@@ -48,6 +48,7 @@ pub(super) struct Resolution {
     pub target_group: u16,
     pub moved_count: Option<u64>,
     pub remembered_draws: Option<u64>,
+    pub remembered_damage_players: Option<u8>,
     pub remembered_creatures: Vec<ObjectRef>,
     pub sacrificed_power: Option<Box<i128>>,
     pub discard_after: Option<discard_events::DiscardAfter>,
@@ -2683,7 +2684,7 @@ impl Game {
                 Instruction::AmassGoblinsScaled {
                     amount: AmountValue::TargetCreaturePower,
                     ..
-                }
+                } | Instruction::DamageByTargetPower { .. }
             )
         });
         let reads_target_attacking = program.iter().any(|instruction| {
@@ -2711,6 +2712,7 @@ impl Game {
                         | Instruction::SearchTargetControllerWithEntryCounters { .. }
                         | Instruction::LoseLifeTargetController(_)
                         | Instruction::DamageTargetController(_)
+                        | Instruction::DamageByTargetPower { .. }
                         | Instruction::DecreaseLeadingSpeed {
                             players: PlayerSet::TargetController,
                             ..
@@ -2765,6 +2767,7 @@ impl Game {
             target_group: 0,
             moved_count: None,
             remembered_draws: None,
+            remembered_damage_players: None,
             remembered_creatures: Vec::new(),
             discard_after: None,
             optional_wheel: None,
@@ -4860,10 +4863,14 @@ impl Game {
                         self.queue_reflexive(&item, ability, None);
                     }
                 }
-                Instruction::MayMill(amount) => {
+                Instruction::MayMill(_) | Instruction::MayMillAmount(_) => {
                     // CR701.17b forbids choosing to mill more than the library.
-                    let enough_cards =
-                        self.library_card_count(item.controller) >= usize::from(amount);
+                    let amount = match instruction {
+                        Instruction::MayMill(amount) => u128::from(amount),
+                        Instruction::MayMillAmount(value) => self.item_amount(value, &item),
+                        _ => unreachable!(),
+                    };
+                    let enough_cards = self.library_card_count(item.controller) as u128 >= amount;
                     let resolution = self.state.resolving.as_mut().unwrap();
                     if !enough_cards {
                         resolution.pc += 1;
@@ -5012,7 +5019,8 @@ impl Game {
                     self.move_target_batch(&destroy, Zone::Graveyard);
                     self.lose_life(item.controller, i128::from(loss));
                 }
-                Instruction::RecoverMilled(filter) => {
+                Instruction::RecoverMilled(filter)
+                | Instruction::RecoverMilledOrSkip { filter, .. } => {
                     if self
                         .state
                         .resolving
@@ -6790,6 +6798,17 @@ impl Game {
                         self.draw_many(player, amount);
                     }
                 }
+                Instruction::DrawRemembered(value) => {
+                    let amount = self.item_amount(value, &item);
+                    self.state.resolving.as_mut().unwrap().remembered_draws = Some(0);
+                    self.draw_many_recording(item.controller, amount, item.id);
+                }
+                Instruction::IfNoRememberedDraws { skip } => {
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    if resolution.remembered_draws.take().unwrap_or(0) > 0 {
+                        resolution.pc += skip;
+                    }
+                }
                 Instruction::DrawGreatestCreaturePowerRemember => {
                     let player = item.controller;
                     self.state.resolving.as_mut().unwrap().remembered_draws = Some(0);
@@ -7279,15 +7298,54 @@ impl Game {
                         .collect();
                     self.apply_damage_batch(&events);
                 }
+                Instruction::DamageByTargetPower { power_group } => {
+                    let amount = self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .target_card_facts
+                        .as_ref()
+                        .and_then(|facts| facts.iter().find(|fact| fact.group == power_group))
+                        .map_or(0, |fact| fact.power.max(0));
+                    let source = self.program_damage_source(&item);
+                    let events: Vec<_> = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|&bound| self.same_target_object(bound))
+                        .map(|bound| DamageEvent {
+                            preventable: true,
+                            source,
+                            target: bound.target,
+                            amount,
+                            combat: false,
+                        })
+                        .collect();
+                    self.apply_damage_batch(&events);
+                }
+                Instruction::DiscardDamagedPlayers(amount) => {
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    let players = resolution
+                        .remembered_damage_players
+                        .take()
+                        .expect("remembered damage must precede its continuation");
+                    for player in [Player::P0, Player::P1] {
+                        if players & (1 << player.index()) != 0 {
+                            resolution.discards[player.index()] = usize::from(amount);
+                        }
+                    }
+                }
                 Instruction::Damage(_)
+                | Instruction::DamageRememberPlayers(_)
                 | Instruction::DamageScaled(_)
                 | Instruction::DamagePlayers(_, _)
                 | Instruction::DamagePlayersScaled(_, _)
                 | Instruction::DamageDiscardAmount(_) => {
                     let amount = match instruction {
-                        Instruction::Damage(amount) | Instruction::DamagePlayers(_, amount) => {
-                            i128::from(amount)
-                        }
+                        Instruction::Damage(amount)
+                        | Instruction::DamageRememberPlayers(amount)
+                        | Instruction::DamagePlayers(_, amount) => i128::from(amount),
                         Instruction::DamageScaled(value)
                         | Instruction::DamagePlayersScaled(_, value) => {
                             i128::try_from(self.item_amount(value, &item))
@@ -7324,7 +7382,16 @@ impl Game {
                             .map(|bound| event(bound.target))
                             .collect()
                     };
-                    self.apply_damage_batch(&events);
+                    if matches!(instruction, Instruction::DamageRememberPlayers(_)) {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .remembered_damage_players = Some(0);
+                        self.apply_damage_batch_recording(&events, Some(item.id));
+                    } else {
+                        self.apply_damage_batch(&events);
+                    }
                 }
                 Instruction::SetBaseStats {
                     subject,
@@ -8468,7 +8535,8 @@ impl Game {
                     let events = self.move_objects_raw(&ids, Zone::Hand);
                     self.finish_zone_events(&events, &[]);
                 }
-                Instruction::ReturnToHandDrawForSubtype(subtype) => {
+                Instruction::ReturnToHandDrawForTokens
+                | Instruction::ReturnToHandDrawForSubtype(_) => {
                     // Capture the legal target before changing its incarnation.
                     // The subtype condition is independent of a successful move.
                     let draws = item
@@ -8477,7 +8545,15 @@ impl Game {
                         .filter(|&&bound| {
                             self.same_target_object(bound)
                                 && match bound.target {
-                                    Target::Card(id) => self.has_subtype(id, subtype),
+                                    Target::Card(id) => match instruction {
+                                        Instruction::ReturnToHandDrawForTokens => {
+                                            self.state.objects[id as usize].is_token()
+                                        }
+                                        Instruction::ReturnToHandDrawForSubtype(subtype) => {
+                                            self.has_subtype(id, subtype)
+                                        }
+                                        _ => unreachable!(),
+                                    },
                                     _ => false,
                                 }
                         })

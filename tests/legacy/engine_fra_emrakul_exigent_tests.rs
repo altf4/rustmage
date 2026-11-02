@@ -22,6 +22,7 @@ fn emrakul_copy_ability_in_resolution(g: &mut Game, copier: &SpellView) {
         target_group: 0,
         moved_count: None,
         remembered_draws: None,
+        remembered_damage_players: None,
         remembered_creatures: Vec::new(),
         sacrificed_power: None,
         discard_after: None,
