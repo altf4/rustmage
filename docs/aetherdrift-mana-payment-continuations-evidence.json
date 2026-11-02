@@ -16,7 +16,7 @@
     "completed_repeatable_converter_can_run_again_to_finish_root_plot_and_face_up_payments",
     "root_attack_payment_keeps_its_owned_receipt_and_retires_each_completed_converter"
   ],
-  "fixture_contract": "Thread-local immutable rules overlays only; all physical names, printed mana costs, colors, kinds and ownership remain actual metadata. Parent Konstrari Charm retains RG noncreature cost; its test-only no-target program draws one to prove paid completion. Child once-only output is enforced by tapping. Restricted mana is produced through a real tagged activation, not by directly editing a lot. The converging-plan test keeps Scorching Shot's actual RR sorcery identity/cost and replaces its program with the same Draw1 fixture; no whole-card claim is made for that overlay. Irascible Wolverine is unchanged and used only for actual Plot2R and manifest face-up2R costs; face-up is not an enters event.",
+  "fixture_contract": "Thread-local immutable rules overlays only; all physical names, printed mana costs, colors, kinds and ownership remain actual metadata. Parent Konstrari Charm retains RG noncreature cost; its test-only no-target program draws one to prove paid completion. Child once-only output is enforced by tapping. Restricted mana is produced through a real tagged activation, not by directly editing a lot. The converging-plan test keeps Scorching Shot's actual RR sorcery identity/cost and replaces its program with the same Draw1 fixture; no whole-card claim is made for that overlay. Irascible Wolverine is unchanged and used only for actual Plot2R and manifest face-up2R costs; face-up is not an enters event. Root guided windows use emitted direct ActivateMana for the affordable external-cost-free optional allocation contrast. Repeated terminal AnnounceMana cases include an explicit graveyard-exile cost with two selected fuel cards to force the announced route; no fixture assumes an unoffered action.",
   "expected_rules": [
     {
       "risk": "Direct borrowed BF/exile and GY source adapters lose guided allocation feasibility.",
@@ -48,11 +48,11 @@
     },
     {
       "risk": "A completed activation key remains marked active when a root Plot or face-up terminal continuation resumes.",
-      "outcome": "A repeatable untapped R-to-RR converter starts with only R1 and must activate twice to pay the actual Irascible Wolverine Plot2R or manifest face-up printed2R cost. Each completion returns the original window, frees its header and leaves the same exact source available again; the final cost consumes RRR."
+      "outcome": "An untapped R-to-RR converter with an explicit own-graveyard-exile additional cost starts with R1 and two exact fuel cards. It must announce and complete twice to pay actual Irascible Wolverine Plot2R or manifest face-up printed2R. Each completion exiles its selected fuel, returns the original window, frees its header and leaves the same exact source available again; final payment consumes RRR."
     },
     {
       "risk": "Attack-payment terminal receipt is missing, shared between owned branches or keeps a completed converter key.",
-      "outcome": "One attacker faces generic3 tax with startingR1. Two completed R-to-RR converter activations preserve AttackPayment. Raw/index children after parent disposal and a restored child pay exactly3, reject2 transactionally and commit exactly the original attacker with zero mana."
+      "outcome": "One attacker faces generic3 tax with startingR1 and two exact graveyard fuel cards. Two announced R-to-RR/exile-fuel activations preserve AttackPayment. Raw/index children after parent disposal and a restored child pay exactly3, reject2 transactionally, exile each fuel once and commit exactly the original attacker with zero mana."
     }
   ],
   "physical_sources": [

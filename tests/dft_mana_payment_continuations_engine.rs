@@ -576,9 +576,22 @@ fn standalone_and_optional_declinable_windows_do_not_prune_legal_lot_allocations
                 cast(&mut g, spell, None);
                 ready(&mut g, |a| *a == Action::DeclineResolutionMana);
             }
-            let action = child.announced(&g);
-            act(&mut g, action);
-            pay(&mut g);
+            if optional {
+                act(
+                    &mut g,
+                    Action::ActivateMana {
+                        card: child.source,
+                        ability: 0,
+                        payment: GREEN,
+                        counter_payment: Counters::default(),
+                        production: RED,
+                    },
+                );
+            } else {
+                let action = child.announced(&g);
+                act(&mut g, action);
+                pay(&mut g);
+            }
             assert!(matches!(g.state.pending, Pending::ManaLotSpend { .. }));
             for available in [0, 1] {
                 assert!(
@@ -888,6 +901,19 @@ const REPEATABLE: CardRules = CardRules {
         ActivationCost {
             colored: RED,
             mana_component: true,
+            additional: Some(AdditionalCost {
+                kind: EffectChoiceKind::ExileGraveyard,
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 0,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            }),
             ..ActivationCost::ZERO
         },
         &[Instruction::AddMana(ManaProduction::Fixed(TWO_RED))],
@@ -895,11 +921,14 @@ const REPEATABLE: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 const THREE_RED: Mana = [0, 0, 0, 3, 0, 0];
-fn repeat_converter(g: &mut Game, source: CardId, expected: Pending, total_red: u32) {
+fn repeat_converter(g: &mut Game, source: CardId, fuel: CardId, expected: Pending, total_red: u32) {
     act(g, announce(source, TWO_RED));
+    let object = g.object_ref(fuel);
+    act(g, Action::ChooseAdditionalCost { object });
     act(g, Action::PayCosts { payment: RED });
     assert_eq!(g.state.pending, expected);
     assert!(!g.object_view(source).tapped);
+    assert_eq!(g.object_view(fuel).zone, Zone::Exile);
     assert!(g.state.announcing.is_none());
     assert_eq!(
         g.state.players[g.state.active.index()].mana,
@@ -914,6 +943,8 @@ fn completed_repeatable_converter_can_run_again_to_finish_root_plot_and_face_up_
         for plot in [false, true] {
             let mut g = scenario(p);
             let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            let first_fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+            let second_fuel = put(&mut g, p, "Mountain", Zone::Graveyard);
             let target = put(
                 &mut g,
                 p,
@@ -943,12 +974,12 @@ fn completed_repeatable_converter_can_run_again_to_finish_root_plot_and_face_up_
                 );
             }
             let pending = g.state.pending.clone();
-            repeat_converter(&mut g, source, pending.clone(), 2);
+            repeat_converter(&mut g, source, first_fuel, pending.clone(), 2);
             assert!(
                 g.legal_actions().contains(&announce(source, TWO_RED)),
                 "a completed activation instance is no longer an active recursion ancestor"
             );
-            repeat_converter(&mut g, source, pending, 3);
+            repeat_converter(&mut g, source, second_fuel, pending, 3);
             if plot {
                 act(&mut g, Action::PayPlot { payment: THREE_RED });
                 assert_eq!(g.object_view(target).zone, Zone::Exile);
@@ -986,6 +1017,8 @@ fn root_attack_payment_keeps_its_owned_receipt_and_retires_each_completed_conver
     let p = Player::P1;
     let mut parent = scenario(p);
     let source = put(&mut parent, p, "Grizzly Bears", Zone::Battlefield);
+    let first_fuel = put(&mut parent, p, "Forest", Zone::Graveyard);
+    let second_fuel = put(&mut parent, p, "Mountain", Zone::Graveyard);
     let attacker = put(&mut parent, p, "Goblin Piker", Zone::Battlefield);
     put(&mut parent, p.other(), "Short Bow", Zone::Battlefield);
     parent.state.players[p.index()].mana = RED;
@@ -995,7 +1028,7 @@ fn root_attack_payment_keeps_its_owned_receipt_and_retires_each_completed_conver
     act(&mut parent, Action::FinishAttackers);
     let pending = Pending::AttackPayment { player: p };
     assert_eq!(parent.state.pending, pending);
-    repeat_converter(&mut parent, source, pending.clone(), 2);
+    repeat_converter(&mut parent, source, first_fuel, pending.clone(), 2);
     let saved = parent.snapshot();
     let mut raw = parent.clone();
     let mut idx = parent.clone();
@@ -1005,7 +1038,10 @@ fn root_attack_payment_keeps_its_owned_receipt_and_retires_each_completed_conver
     assert_eq!(raw.snapshot(), idx.snapshot());
     drop(parent);
     for g in [&mut raw, &mut idx] {
+        let object = g.object_ref(second_fuel);
+        act(g, Action::ChooseAdditionalCost { object });
         act(g, Action::PayCosts { payment: RED });
+        assert_eq!(g.object_view(second_fuel).zone, Zone::Exile);
         assert_eq!(g.state.pending, pending);
         reject(g, Action::PayAttackCost { payment: TWO_RED });
         act(g, Action::PayAttackCost { payment: THREE_RED });
@@ -1016,7 +1052,7 @@ fn root_attack_payment_keeps_its_owned_receipt_and_retires_each_completed_conver
     }
     assert_eq!(raw.snapshot(), idx.snapshot());
     idx.restore(&saved).unwrap();
-    repeat_converter(&mut idx, source, pending, 3);
+    repeat_converter(&mut idx, source, second_fuel, pending, 3);
     act(&mut idx, Action::PayAttackCost { payment: THREE_RED });
     assert_eq!(raw.snapshot(), idx.snapshot());
 }
