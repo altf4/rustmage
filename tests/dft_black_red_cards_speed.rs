@@ -505,6 +505,8 @@ fn hazoret_cannot_attack_or_block_below_max_speed_and_survives_lethal_damage() {
             reject(&mut g, action);
         } else {
             act(&mut g, action);
+            assert_eq!(g.state.selected_attackers.len(), 1);
+            act(&mut g, Action::FinishAttackers);
             assert_eq!(g.state.attackers.len(), 1);
         }
         let mut blocker = scenario(Player::P1);
