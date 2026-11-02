@@ -15,6 +15,7 @@ pub(super) struct SearchResult {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct SearchChoice {
     pub spec: SearchSpec,
+    pub entry_counters: &'static [(CounterKind, u64)],
     pub minimum: u64,
     pub different_names: bool,
     pub selected: Vec<CardId>,
@@ -231,6 +232,7 @@ impl Game {
                     destination,
                     destination == Zone::Battlefield && choice.spec.tapped,
                 );
+                movement.effect_counters = choice.entry_counters;
                 movement.reveal_hand = choice.spec.reveal && destination == Zone::Hand;
                 if choice.spec.destination == SearchDestination::ExileFreeThisTurn {
                     movement.exile_free_until_end = Some(player);
@@ -328,6 +330,7 @@ impl Game {
                     tapped: false,
                     reveal: false,
                 },
+                entry_counters: &[],
                 minimum: 0,
                 different_names: false,
                 selected: Vec::new(),

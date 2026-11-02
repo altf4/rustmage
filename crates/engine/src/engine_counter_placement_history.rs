@@ -49,6 +49,11 @@ pub(super) fn any_placed(rows: &Rows, object: ObjectRef, player: Player) -> bool
     })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn any_player_placed(rows: &Rows, object: ObjectRef) -> bool {
+    rows.as_ref()
+        .is_some_and(|rows| rows.iter().any(|row| row.object == object))
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn plus_one_placed(rows: &Rows, object: ObjectRef, player: Player) -> bool {
     rows.as_ref().is_some_and(|r| {
         r.iter()

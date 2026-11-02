@@ -53,6 +53,7 @@ impl Game {
                 TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
+                    | TriggerCondition::ControlledCreatureCountersPlaced { .. }
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                     | TriggerCondition::StateCounterAtLeast { .. }
@@ -232,6 +233,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { .. }
                             | crate::cards::StaticAbilityFragment::SpellDelve(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                                    | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction

@@ -11459,6 +11459,8 @@ pub mod equipment;
 #[path = "engine_entry_choices.rs"]
 pub mod entry_choices;
 #[doc(hidden)]
+#[path = "engine_entry_counter_events.rs"]
+pub mod entry_counter_events;
 #[path = "engine_entry_modes.rs"]
 pub mod entry_modes;
 pub use entry_choices::EntryChoiceView;

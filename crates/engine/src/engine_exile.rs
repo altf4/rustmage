@@ -466,6 +466,11 @@ impl Game {
                     .entry_counter_player
                     .expect("battlefield entry controller");
                 let counters = self.counter_amounts(event.after.card).to_owned();
+                // A successful true zone entry has a fresh exact incarnation.
+                self.controlled_creature_counter_events(
+                    std::iter::once((event.after, &counters, placed_by)),
+                    true,
+                );
                 for kind in CounterKind::ALL {
                     self.self_counters_added(event.after, kind, counters.get(kind), placed_by);
                 }

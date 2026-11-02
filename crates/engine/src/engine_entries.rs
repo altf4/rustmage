@@ -37,6 +37,9 @@ pub(super) struct EntryMove {
     pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
+    pub effect_counters: &'static [(CounterKind, u64)],
+    /// A subsequent placement event after successful entry observers have frozen facts.
+    pub post_entry_counters: Option<(Player, &'static [(CounterKind, u64)])>,
     /// Timestamped ability grant after only this move actually enters.
     pub keywords_after: Option<(ObjectRef, Keywords)>,
     /// Source-independent abilities granted only after this actual successful return.
@@ -185,6 +188,8 @@ impl EntryMove {
             suspect_after: false,
             life_bonus: None,
             effect_counter: None,
+            effect_counters: &[],
+            post_entry_counters: None,
             keywords_after: None,
             attack_trigger_after: None,
             equipment_after: false,
@@ -669,6 +674,18 @@ impl Game {
                 movement.counters.add(kind, amount);
             }
         }
+        if movement.destination == Zone::Battlefield
+            && movement.cast_origin == Some(Zone::Graveyard)
+        {
+            for &(kind, amount) in movement.before.card.graveyard_cast_entry_counters() {
+                movement.counters.add(kind, amount);
+            }
+        }
+        if movement.destination == Zone::Battlefield {
+            for &(kind, amount) in movement.effect_counters {
+                movement.counters.add(kind, amount);
+            }
+        }
         if movement.destination == Zone::Battlefield && movement.cast_origin == Some(Zone::Hand) {
             for &(kind, amount) in movement.before.card.hand_cast_entry_counters() {
                 movement.counters.add(kind, amount);
@@ -868,6 +885,7 @@ impl Game {
                 .unwrap_or(&movement.before)
         }));
         let mut events = Vec::new();
+        let mut post_counter_results = Vec::new();
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();
         let mut suspect_results = Vec::new();
@@ -974,6 +992,16 @@ impl Game {
                 } else if before_battle {
                     self.clear_battle_protector(event.after);
                 }
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some((player, amounts)) = movement.post_entry_counters
+            {
+                let mut amount = Counters::default();
+                for &(kind, n) in amounts {
+                    amount.add(kind, n);
+                }
+                post_counter_results.push((event.after, amount, player));
             }
             if event.moved
                 && event.destination == Zone::Battlefield
@@ -1264,6 +1292,35 @@ impl Game {
                 self.forget_library_top(player);
             }
             self.shuffle_library_cards(player);
+        }
+        // A separate counter event starts only after all entry observers retained
+        // their pre-counter facts. The exact successful results survive choices.
+        if !post_counter_results.is_empty() {
+            let placements = post_counter_results
+                .into_iter()
+                .filter_map(|(object, amount, placed_by)| {
+                    if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
+                        return None;
+                    }
+                    let o = &self.state.objects[object.card as usize];
+                    Some(replacements::CounterPlacement {
+                        object,
+                        amount,
+                        placed_by,
+                        card: o.card,
+                        owner: o.owner,
+                        controller: o.controller,
+                        protector: self.battle_protector(object),
+                        subtypes: self.granted_subtypes(object.card),
+                        kind: self.current_kinds(object.card),
+                        power: self.stats(object.card).power,
+                        effect: true,
+                        entry_index: None,
+                        private: false,
+                    })
+                })
+                .collect();
+            self.stage_counter_placements(placements, replacements::ResumeMode::Program);
         }
     }
     /// Settle transactions until an actual player choice blocks. Call at the outer
@@ -1774,6 +1831,7 @@ impl Game {
                             matches!(
                                 f,
                                 crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                                    | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
                                     | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                             )
                         })
@@ -1815,6 +1873,23 @@ impl Game {
                                 && movement.controller == source.controller
                                 && movement.before.reference != self.object_ref(id)
                                 && let Some(amount) = self.entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
+                            {
+                                movement.counters.add(kind, amount);
+                            }
+                        }
+                    }
+                    if let crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters {
+                        subtype,
+                        kind,
+                        amount,
+                    } = *fragment
+                        && self.continuous_fragment_available(id, |f| std::ptr::eq(f, fragment))
+                    {
+                        for movement in moves.iter_mut() {
+                            if !movement.skipped
+                                && movement.destination == Zone::Battlefield
+                                && movement.controller == source.controller
+                                && self.entry_replacement_has_subtype(movement, subtype)
                             {
                                 movement.counters.add(kind, amount);
                             }

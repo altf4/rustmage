@@ -162,6 +162,12 @@ pub enum StaticAbilityFragment {
     /// This land is the chosen basic land type (CR305.7).
     ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
+    /// A fixed addition from a provider already present before the entry event.
+    ControlledSubtypeEntryCounters {
+        subtype: &'static str,
+        kind: CounterKind,
+        amount: u64,
+    },
     /// Additional counters on other controlled entrants, selected by effective mana value.
     OtherControlledEntryCountersByManaValue {
         filter: ReplacementFilter,

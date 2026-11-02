@@ -2398,6 +2398,11 @@ pub enum Instruction {
     /// Untap the searched permanent if its controller controls enough lands.
     UntapSearchResultIfLandsAtLeast(u32),
     SearchTargetController(SearchSpec),
+    /// A frozen target-controller search whose battlefield results enter with all counters.
+    SearchTargetControllerWithEntryCounters {
+        spec: SearchSpec,
+        amounts: &'static [(CounterKind, u64)],
+    },
     /// The legal player target in the currently selected target group searches.
     SearchTargetPlayer(SearchSpec),
     /// Search up to the saved actual result of the preceding move instruction.
@@ -2727,6 +2732,10 @@ pub enum Instruction {
     ReturnToBattlefieldWithAttackTrigger(u16),
     /// Return legal target cards with an additional entry counter.
     ReturnToBattlefieldWithCounter(CounterKind),
+    /// One mixed pre-entry counter event, visible to entry observers.
+    ReturnToBattlefieldWithCounters(&'static [(CounterKind, u64)]),
+    /// Return first, freeze entry observers, then counter only successful exact results.
+    ReturnToBattlefieldThenCounters(&'static [(CounterKind, u64)]),
     ReturnToBattlefieldTapped,
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
@@ -4448,6 +4457,11 @@ pub enum TriggerCondition {
         filter: CountFilter,
     },
     /// One event for the whole simultaneous placement, across all recipients and kinds.
+    /// One positive placement event per controlled creature, independent of placer/kind.
+    /// `first_only` freezes whether this was its first placement event this turn.
+    ControlledCreatureCountersPlaced {
+        first_only: bool,
+    },
     CounterBatchPlacedByYou {
         kind: CounterKind,
         filter: CountFilter,
@@ -6001,6 +6015,12 @@ impl Card {
     }
     pub(crate) fn cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
         authored::rules(self).unwrap().extras.cast_entry_counters
+    }
+    pub(crate) fn graveyard_cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
+        authored::rules(self)
+            .unwrap()
+            .extras
+            .graveyard_cast_entry_counters
     }
     pub(crate) fn hand_cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
         authored::rules(self)

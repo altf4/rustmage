@@ -675,6 +675,14 @@ impl FundingState<'_> {
                 counters.add(kind, n)
             }
         }
+        if m.cast_origin == Some(Zone::Graveyard) {
+            for &(kind, n) in card.graveyard_cast_entry_counters() {
+                counters.add(kind, n)
+            }
+        }
+        for &(kind, n) in m.effect_counters {
+            counters.add(kind, n)
+        }
         if m.cast_origin == Some(Zone::Hand) {
             for &(kind, n) in card.hand_cast_entry_counters() {
                 counters.add(kind, n)
@@ -1214,6 +1222,23 @@ impl FundingState<'_> {
                                     && movement.controller == provider.controller
                                     && movement.before.reference != self.reference(id)
                                     && let Some(amount) = self.entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
+                                {
+                                    movement.counters.add(kind, amount);
+                                }
+                            }
+                        }
+                        if let crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters {
+                            subtype,
+                            kind,
+                            amount,
+                        } = *fragment
+                            && self.fragment_available(id, |f| std::ptr::eq(f, fragment))
+                        {
+                            for movement in &mut moves {
+                                if !movement.skipped
+                                    && movement.destination == Zone::Battlefield
+                                    && movement.controller == provider.controller
+                                    && self.entry_replacement_has_subtype(movement, subtype)
                                 {
                                     movement.counters.add(kind, amount);
                                 }
@@ -1811,7 +1836,100 @@ impl FundingState<'_> {
         }
         next.refresh_control_projection();
         next.refresh_enduring_projection();
-        emit(&next)
+        if moves
+            .iter()
+            .any(|movement| movement.post_entry_counters.is_some())
+        {
+            next.visit_post_entry_counter_events(&moves, 0, &mut Vec::new(), emit)
+        } else {
+            emit(&next)
+        }
+    }
+    fn visit_post_entry_counter_events(
+        &self,
+        moves: &[entries::EntryMove],
+        at: usize,
+        changes: &mut Vec<(ObjectRef, Counters, Player)>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let Some(movement) = moves.get(at) else {
+            if changes.is_empty() {
+                return emit(self);
+            }
+            let mut next = self.clone();
+            for (object, amount, player) in changes.iter() {
+                let mut total = next.counter_amounts(object.card).to_owned();
+                let before = CounterAmounts::from(&total).keyword_amounts();
+                for kind in CounterKind::ALL {
+                    total.add(kind, amount.get(kind));
+                }
+                let after = CounterAmounts::from(&total).keyword_amounts();
+                next.resources
+                    .iter_mut()
+                    .find(|row| row.id == object.card)
+                    .unwrap()
+                    .object
+                    .counters = total.hot();
+                live_counters::set(&mut next.named_counters, *object, total.named);
+                keyword_counters::sync_effects(
+                    &mut next.entry_projection.as_mut().unwrap().roles,
+                    *object,
+                    before,
+                    after,
+                    None,
+                );
+                if amount.has_any() {
+                    counter_placement_history::record(
+                        &mut next.counter_placement_history,
+                        *object,
+                        *player,
+                        amount.plus_one > 0,
+                    );
+                }
+            }
+            return emit(&next);
+        };
+        let Some((player, amounts)) = movement.post_entry_counters else {
+            return self.visit_post_entry_counter_events(moves, at + 1, changes, emit);
+        };
+        if movement.skipped || movement.destination != Zone::Battlefield {
+            return self.visit_post_entry_counter_events(moves, at + 1, changes, emit);
+        }
+        let object = self.reference(movement.before.id);
+        let recipient = self.object(object.card);
+        let mut amount = Counters::default();
+        for &(kind, n) in amounts {
+            amount.add(kind, n);
+        }
+        let placement = replacements::CounterPlacement {
+            object,
+            amount,
+            placed_by: player,
+            card: recipient.card,
+            owner: recipient.owner,
+            controller: recipient.controller,
+            protector: self.battle_protector(object),
+            subtypes: self.subtypes(object.card),
+            kind: CharacteristicWorld::kinds(self, object.card),
+            power: self.power(object.card),
+            effect: true,
+            entry_index: None,
+            private: false,
+        };
+        // All replacement choices use the same completed entry world; earlier
+        // recipients do not acquire their post-entry counters until all finish.
+        replacements::counter_outcomes(
+            self,
+            &placement,
+            &mut Vec::new(),
+            &|p| p.clone(),
+            &mut |amount| {
+                changes.push((object, amount.clone(), player));
+                let stop = self.visit_post_entry_counter_events(moves, at + 1, changes, emit);
+                changes.pop();
+                stop
+            },
+        )
     }
 }
 

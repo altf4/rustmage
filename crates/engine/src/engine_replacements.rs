@@ -1306,6 +1306,13 @@ impl Game {
                 }
             }
         }
+        self.controlled_creature_counter_events(
+            placements
+                .iter()
+                .filter(|p| p.entry_index.is_none())
+                .map(|p| (p.object, &p.amount, p.placed_by)),
+            false,
+        );
         for p in &placements {
             if p.entry_index.is_none() {
                 for kind in CounterKind::ALL {
@@ -1868,6 +1875,10 @@ impl Game {
             let before = self.state.objects[id as usize].counters.lore;
             self.add_counter(id, kind, amount);
             let object = self.object_ref(id);
+            self.controlled_creature_counter_events(
+                std::iter::once((object, &Counters::of(kind, amount), placed_by)),
+                false,
+            );
             self.self_counters_added(object, kind, amount, placed_by);
             self.counter_batch_added(std::iter::once((
                 object,

@@ -995,6 +995,7 @@ impl Game {
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
+                    | TriggerCondition::ControlledCreatureCountersPlaced { .. }
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                     | TriggerCondition::AttackDeclared { .. }
@@ -2611,6 +2612,7 @@ impl Game {
                                 })
                         }) || item.x.is_some()
                             || self.has_cast_entry_counters(source.object)
+                            || !source.card.graveyard_cast_entry_counters().is_empty()
                             || !source.card.hand_cast_entry_counters().is_empty()
                             || !source.card.cast_entry_counters().is_empty()
                             || source.card.entry_choice().is_some()
@@ -2699,6 +2701,7 @@ impl Game {
                         | Instruction::LoseLifeTargetCardManaValue(_)
                         | Instruction::MayTargetController { .. }
                         | Instruction::SearchTargetController(_)
+                        | Instruction::SearchTargetControllerWithEntryCounters { .. }
                         | Instruction::LoseLifeTargetController(_)
                         | Instruction::DamageTargetController(_)
                         | Instruction::DecreaseLeadingSpeed {
@@ -5815,6 +5818,7 @@ impl Game {
                 | Instruction::SearchScaled { spec, .. }
                 | Instruction::SearchDamageReceived(spec)
                 | Instruction::SearchTargetController(spec)
+                | Instruction::SearchTargetControllerWithEntryCounters { spec, .. }
                 | Instruction::SearchTargetPlayer(spec)
                 | Instruction::SearchTargetPlayerMovedCount(spec)
                 | Instruction::SearchRequired(spec)
@@ -5843,7 +5847,11 @@ impl Game {
                             .moved_count
                             .unwrap_or(0);
                     }
-                    let player = if matches!(instruction, Instruction::SearchTargetController(_)) {
+                    let player = if matches!(
+                        instruction,
+                        Instruction::SearchTargetController(_)
+                            | Instruction::SearchTargetControllerWithEntryCounters { .. }
+                    ) {
                         let Some(player) = self.resolution_target_controller() else {
                             continue;
                         };
@@ -5876,6 +5884,13 @@ impl Game {
                     self.state.resolving.as_mut().unwrap().search =
                         Some(Box::new(search::SearchChoice {
                             spec,
+                            entry_counters: match instruction {
+                                Instruction::SearchTargetControllerWithEntryCounters {
+                                    amounts,
+                                    ..
+                                } => amounts,
+                                _ => &[],
+                            },
                             minimum,
                             different_names: matches!(
                                 instruction,
@@ -5909,6 +5924,7 @@ impl Game {
                                 tapped: false,
                                 reveal: false,
                             },
+                            entry_counters: &[],
                             minimum: 0,
                             different_names: false,
                             selected: Vec::new(),
@@ -8317,6 +8333,12 @@ impl Game {
                         })
                         .collect();
                     self.stage_entries(moves, None);
+                }
+                Instruction::ReturnToBattlefieldWithCounters(amounts) => {
+                    self.return_targets_with_counter_events(&item, amounts, false);
+                }
+                Instruction::ReturnToBattlefieldThenCounters(amounts) => {
+                    self.return_targets_with_counter_events(&item, amounts, true);
                 }
                 Instruction::ReturnToBattlefieldWithCounter(counter) => {
                     let moves = item
