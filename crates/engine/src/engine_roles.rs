@@ -1,6 +1,33 @@
 //! Snapshot-owned Role timestamps and predefined attachment creation (CR303.7/704.5).
 use super::*;
 
+/// The closed exile-loop proof may alpha-rename acquisition timestamps only
+/// when they have no layer/order consumers and refer to live loop objects.
+pub(super) fn same_inert_loop_timestamps(before: &State, after: &State, ids: &[CardId]) -> bool {
+    fn key(state: &State, ids: &[CardId]) -> Option<Vec<CardId>> {
+        let mut value = state.roles.as_deref().cloned().unwrap_or_default();
+        let mut sources: Vec<_> = value
+            .ability_timestamps
+            .iter()
+            .map(|r| r.source.card)
+            .collect();
+        if value.ability_timestamps.iter().any(|r| {
+            !ids.contains(&r.source.card)
+                || r.source.generation != state.objects[r.source.card as usize].generation
+        }) {
+            return None;
+        }
+        sources.sort_unstable();
+        value.clock = 0;
+        value.ability_timestamps.clear();
+        (value == RoleState::default()).then_some(sources)
+    }
+    match (key(before, ids), key(after, ids)) {
+        (Some(a), Some(b)) => a == b,
+        _ => false,
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct RoleTimestampView {
