@@ -259,7 +259,8 @@ fn reckless_velocitaur_buffs_only_its_exact_crew_or_saddle_recipient_during_own_
                 );
                 assert_eq!(g.keywords(recipient).contains(Keywords::TRAMPLE), expected);
                 g.finish_cleanup();
-                assert_eq!(stats(&g, recipient), base);
+                assert_eq!(stats(&g, recipient), if crew { (0, 0) } else { base });
+                assert_eq!(g.is_creature(recipient), !crew);
                 assert!(!g.keywords(recipient).contains(Keywords::TRAMPLE));
             }
         }
@@ -287,7 +288,7 @@ fn reckless_velocitaur_queued_buff_survives_pilot_departure_but_not_recipient_re
         drain(&mut g);
         assert_eq!(g.keywords(vehicle).contains(Keywords::TRAMPLE), !stale);
         assert_eq!(g.is_creature(vehicle), !stale);
-        assert_eq!(stats(&g, vehicle), if stale { (6, 3) } else { (8, 3) });
+        assert_eq!(stats(&g, vehicle), if stale { (0, 0) } else { (8, 3) });
     }
 }
 #[test]
@@ -358,6 +359,10 @@ fn bloodghast_foreign_land_or_stale_graveyard_incarnation_does_not_return() {
             if stale {
                 g.move_object(source, Zone::Exile);
                 g.move_object(source, Zone::Graveyard);
+                // The queued optional trigger remains, but accepting it cannot
+                // return a different graveyard incarnation.
+                reach(&mut g, |a| matches!(a, Action::ChooseOptional { .. }));
+                act(&mut g, Action::ChooseOptional { accept: true });
             }
             drain(&mut g);
             assert_eq!(g.object_view(source).zone, Zone::Graveyard);

@@ -345,6 +345,18 @@ fn spire_mechcycle_exhaust_cost_is_other_untapped_controlled_mount_or_vehicle_an
         let foreign = put(&mut g, p.other(), "Gilded Ghoda", Zone::Battlefield);
         let dual = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);
         let packet = g.activation_packet(p, dual, 0);
+        // Mount is a creature subtype: first make the Vehicle a creature.
+        g.animate_source(
+            &packet,
+            AnimationSpec {
+                artifact: true,
+                creature_types: AnimationCreatureTypes::Unchanged,
+                base: None,
+                keywords: Keywords::NONE,
+                duration: AnimationDuration::EndOfTurn,
+            },
+        );
+        assert!(g.is_creature(dual));
         g.add_creature_types(&packet, Subject::Source, &["Mount"]);
         assert!(g.has_subtype(dual, "Mount") && g.has_subtype(dual, "Vehicle"));
         g.state.objects[dual as usize].tapped = true;
