@@ -307,8 +307,12 @@ fn road_rage_counts_current_controlled_union_once_at_resolution() {
         },
         characteristic_layers::AnimationTypeMode::AddCreature,
     );
-    let item = g.cast_item(Player::P0, vehicle, [0; 6]);
+    let item = g.activation_packet(Player::P0, vehicle, 0);
     g.add_creature_types(&item, Subject::Source, &["Mount"]);
+    assert_eq!(g.object_view(vehicle).zone, Zone::Battlefield);
+    assert_eq!(stats(&g, vehicle), (6, 3));
+    assert!(g.has_subtype(vehicle, "Mount"));
+    assert!(g.has_subtype(vehicle, "Vehicle"));
     let mount = put(&mut g, Player::P0, "Trained Arynx", Zone::Battlefield);
     put(&mut g, Player::P1, "Trained Arynx", Zone::Battlefield);
     put(&mut g, Player::P1, "Clamorous Ironclad", Zone::Battlefield);
@@ -322,7 +326,12 @@ fn road_rage_counts_current_controlled_union_once_at_resolution() {
     let spell = put(&mut g, Player::P0, "Road Rage", Zone::Hand);
     cast(&mut g, spell, Some(Target::Card(target)));
     g.move_object(mount, Zone::Graveyard);
+    assert_eq!(g.object_view(vehicle).zone, Zone::Battlefield);
     settle(&mut g);
+    assert_eq!(g.object_view(vehicle).zone, Zone::Battlefield);
+    assert_eq!(stats(&g, vehicle), (6, 3));
+    assert!(g.has_subtype(vehicle, "Mount"));
+    assert!(g.has_subtype(vehicle, "Vehicle"));
     assert_eq!(
         g.object_view(target).counters.loyalty,
         7,
