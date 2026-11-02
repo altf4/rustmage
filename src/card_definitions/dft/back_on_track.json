@@ -3,10 +3,35 @@
   "catalogue_id": 302,
   "oracle_id": "aaf46eaf-2e01-46ac-b79d-6b70739d11c2",
   "facts_sha256": "de472fd0951461eaa74b675cbe78fd0a3cb8d34c528254a75b92e3c946ac9721",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3030a769dfb7c7cfd3e0327ea0ad9f9ed5a5931933d6b278945d51d382b35614"
   },
-  "physical_metadata_sha256": "45059bccb87489f92797ffb41a1044ce915b9411546b22fb97aed0c089ddb68c"
+  "physical_metadata_sha256": "45059bccb87489f92797ffb41a1044ce915b9411546b22fb97aed0c089ddb68c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BackOnTrack.java",
+  "java_sha256": "ae3ede9929435ab4a0512c2175ff1e470d7616e91fa421419aaf0536679a849a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+      "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ]
 }

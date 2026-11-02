@@ -3,10 +3,45 @@
   "catalogue_id": 1999,
   "oracle_id": "d919d8e9-d1ba-42de-9884-12e38dca78ac",
   "facts_sha256": "6f1f534230bbcbe77bd4bd498b1ee899e4305b2e9d5b5bc0356e77da20d4100c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "28fee6f49183c00fab85e7a6879060fb5bb9660e6a0b27a3d8d4b19986609310"
   },
-  "physical_metadata_sha256": "7418301bd2dba9709e90238709e147fb5a97cc52f3c63e1db5720f62932f1111"
+  "physical_metadata_sha256": "7418301bd2dba9709e90238709e147fb5a97cc52f3c63e1db5720f62932f1111",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HellishSideswipe.java",
+  "java_sha256": "076d05b331c3102034e55b264112258d659e05ebd3869d4cd61f0807c89c53c6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SacrificedPermanentCondition.java",
+      "sha256": "f876077a438f688ba1219cc1c7f58eb01573efb1d150dd7451fc3d6bf9716591"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

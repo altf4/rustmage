@@ -3,10 +3,70 @@
   "catalogue_id": 5054,
   "oracle_id": "730d02c7-2f8a-47d3-99f0-e4ada7f6255c",
   "facts_sha256": "188061ef295d6b72db0cc46522dfcdec2578e1d8196419409018cafdbe1174bf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "58ad6a71341aaefe218a7d7ad92618006d161865c118fa84e27080a8d930f34c"
   },
-  "physical_metadata_sha256": "984f5b0396ebbd2a4c4a4fff32e1bde587915a28b8dfe2b1ad1cfc32780006f3"
+  "physical_metadata_sha256": "984f5b0396ebbd2a4c4a4fff32e1bde587915a28b8dfe2b1ad1cfc32780006f3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WickerfolkIndomitable.java",
+  "java_sha256": "8b85b2441a0b34af3e4307ab633a1b7ed13e60af0b0f44a1c35f0d2424f81e3a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MayCastFromGraveyardSourceAbility.java",
+      "sha256": "5fabb3b07028c6709d74af5be237564ca277070effac3353b6bb847a12a76962"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/Cost.java",
+      "sha256": "51faa5510bad018a9529ca34c9a3c7189a2ff5df0bd9e5853e53303d7f54e1b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/Costs.java",
+      "sha256": "af0ae70d995d7e5e409a16d3787fd49dbc9b5d4d18c02462e37f83860a418dd7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/CostsImpl.java",
+      "sha256": "7b320b5c829830e9cd5f09832910509cc12f1b8bf526c5c358762e17d6969e6a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+      "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    }
+  ]
 }

@@ -8,9 +8,9 @@
   "engine_status": "frozen reviewed checkpoint; authors do not mutate shared engine",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "counts": {
-    "authored_candidates": 13,
+    "authored_candidates": 19,
     "validated_by_integrator": 35,
-    "not_started": 27
+    "not_started": 21
   },
   "validation_owner": "root integrator; no Cargo run by card author",
   "validation_targets": [
@@ -43,6 +43,12 @@
       "cases": 8,
       "status": "pending root execution",
       "scope": "6 inherited whole identities: flash on opponent turn, controlled target/EOT buff, exact Crew1/3 and Saddle1/3 payments, Menace/animation cleanup, printed cycling independent of spell reductions, own GY union/count/floor/colored cost, saddled actual attack damage/Treasure including source departure, own upkeep paid exile play/source independence/expiry"
+    },
+    {
+      "target": "dft_black_red_cards_grave_costs",
+      "cases": 13,
+      "status": "pending root execution",
+      "scope": "6 complete identities: targeted own graveyard creature/Vehicle reanimation plus independent Pilot and real Crew3; paid sacrifice frozen Vehicle draw versus indestructible/all-illegal; public positive-kind hand exile and cycling3; route-specific graveyard mana/life/artifact-or-creature sacrifice with ordinary hand/external route contrasts and owned raw/index/restore; mill2 followed by mandatory whole-own-graveyard choice and Crew1; optional sacrifice followed by separate opponent-artifact reflexive targeting including departed source/no target"
     }
   ],
   "shared_proofs": [
@@ -96,9 +102,44 @@
         "Return target creature or Vehicle card from your graveyard to the battlefield. Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "back_on_track_returns_own_creature_or_vehicle_and_the_pilot_actually_crews_for_three",
+        "back_on_tracks_pilot_is_independent_of_failed_return_but_not_an_all_illegal_spell"
+      ],
+      "test_target": "dft_black_red_cards_grave_costs",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/b/BackOnTrack.java",
+        "java_sha256": "ae3ede9929435ab4a0512c2175ff1e470d7616e91fa421419aaf0536679a849a",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+            "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+            "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+            "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+            "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+          }
+        ]
+      },
+      "definition_sha256": "25d5960671e7ac17714e1d7581a19b340258b4e4db9e7492b6b802a818fe422d"
     },
     {
       "name": "Bloodghast",
@@ -294,11 +335,51 @@
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "untargeted-graveyard-kind-subtype"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "carrion_cruiser_mills_then_must_choose_from_the_whole_own_graveyard_and_crews_for_one",
+        "carrion_cruiser_without_any_matching_graveyard_card_still_mills_and_finishes"
+      ],
+      "test_target": "dft_black_red_cards_grave_costs",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/c/CarrionCruiser.java",
+        "java_sha256": "54b9bde45270a6d418b39fda75093bbbca71263d7a61a469050d4e677b098a09",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+            "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+            "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnCardChosenFromGraveyardEffect.java",
+            "sha256": "122060d69e08d3e4d36b3e78ed00c765eb1cc2d42ad202b21da7f99a76e5a015"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+            "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+          }
+        ]
+      },
+      "definition_sha256": "0df896a67af918a07dd71ffa925f03880e2518135d3f36a063cf4ea4445fdebf"
     },
     {
       "name": "Chandra, Spark Hunter",
@@ -1311,11 +1392,56 @@
         "When this creature enters, you may sacrifice a creature or Vehicle. When you do, destroy target artifact an opponent controls."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "cost-union-kind-subtype"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "gastal_blockbuster_sacrifices_before_choosing_a_separate_enemy_artifact_target",
+        "gastal_blockbuster_may_sacrifice_itself_even_when_the_reflexive_trigger_has_no_target"
+      ],
+      "test_target": "dft_black_red_cards_grave_costs",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/g/GastalBlockbuster.java",
+        "java_sha256": "33d3997f9cab5172f251d6caa6d6011317bfffabd3d101952da4031a19b1da29",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+            "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+            "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+            "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+            "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+            "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+            "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+          }
+        ]
+      },
+      "definition_sha256": "32002b58e77c1856adf5ee2cc6fc482cfa65d5175c3a6abde7137d12413a70be"
     },
     {
       "name": "Gastal Raider",
@@ -1856,11 +1982,56 @@
         "Destroy target creature or Vehicle. If the sacrificed permanent was a Vehicle, draw a card."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "sacrifice-cost-facts"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "sideswipe_sacrifices_artifact_or_creature_and_draws_only_for_a_paid_vehicle",
+        "sideswipe_vehicle_draw_does_not_require_destruction_but_does_require_a_legal_target"
+      ],
+      "test_target": "dft_black_red_cards_grave_costs",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/h/HellishSideswipe.java",
+        "java_sha256": "076d05b331c3102034e55b264112258d659e05ebd3869d4cd61f0807c89c53c6",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/condition/common/SacrificedPermanentCondition.java",
+            "sha256": "f876077a438f688ba1219cc1c7f58eb01573efb1d150dd7451fc3d6bf9716591"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+            "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+            "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+            "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+            "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+            "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+          }
+        ]
+      },
+      "definition_sha256": "3d66d8801ec4e1d283276bf1fe892f3a37a9db172958c7032bf6335593643011"
     },
     {
       "name": "Hour of Victory",
@@ -1911,9 +2082,44 @@
         "Cycling {3} ({3}, Discard this card: Draw a card.)"
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "intimidation_tactics_reveals_all_cards_and_exiles_the_chosen_artifact_or_creature_permanently",
+        "intimidation_tactics_still_reveals_an_unmatched_hand_and_cycles_for_three"
+      ],
+      "test_target": "dft_black_red_cards_grave_costs",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/i/IntimidationTactics.java",
+        "java_sha256": "2be6c30994a6f6d348157d9d93f8c7597158ac5dba9a67c713b844ad648e2e7e",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ExileCardYouChooseTargetOpponentEffect.java",
+            "sha256": "d23c3dfee698bf398d0aa9d6585c731a80871af5911b417f77e48b768ddcfc0f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+            "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+            "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+          }
+        ]
+      },
+      "definition_sha256": "b5669d9f950fdbf3ac4e4ba78fc3570009d3091f3514faed9e597c8e67fd8fb5"
     },
     {
       "name": "Kalakscion, Hunger Tyrant",
@@ -3400,11 +3606,82 @@
         "You may cast this card from your graveyard by paying 2 life and sacrificing an artifact or creature in addition to paying its other costs."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "graveyard-self-cast-additional-cost"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "wickerfolk_intrinsic_graveyard_route_pays_life_and_either_material_then_dies_normally",
+        "wickerfolk_hand_and_external_graveyard_casts_do_not_inherit_route_costs",
+        "wickerfolk_route_rejects_bad_life_timing_and_owner_and_keeps_paid_owned_branches"
+      ],
+      "test_target": "dft_black_red_cards_grave_costs",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/w/WickerfolkIndomitable.java",
+        "java_sha256": "8b85b2441a0b34af3e4307ab633a1b7ed13e60af0b0f44a1c35f0d2424f81e3a",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/MayCastFromGraveyardSourceAbility.java",
+            "sha256": "5fabb3b07028c6709d74af5be237564ca277070effac3353b6bb847a12a76962"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+            "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/Cost.java",
+            "sha256": "51faa5510bad018a9529ca34c9a3c7189a2ff5df0bd9e5853e53303d7f54e1b8"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/Costs.java",
+            "sha256": "af0ae70d995d7e5e409a16d3787fd49dbc9b5d4d18c02462e37f83860a418dd7"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/CostsImpl.java",
+            "sha256": "7b320b5c829830e9cd5f09832910509cc12f1b8bf526c5c358762e17d6969e6a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+            "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+            "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+            "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+            "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+          }
+        ]
+      },
+      "definition_sha256": "0ddb01a4b9b51f316b04d1a013d1dc587904dde1c22700b8b5959802984fb2dd"
     },
     {
       "name": "Wreckage Wickerfolk",

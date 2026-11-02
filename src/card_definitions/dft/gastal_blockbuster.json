@@ -3,10 +3,45 @@
   "catalogue_id": 1690,
   "oracle_id": "3b601721-90ca-45d3-9a3a-19c719799bfa",
   "facts_sha256": "d4ac6b012e3368daf426888bb6b48a7906ab299421f9783a00e39679d73bcaee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eb1445d289032e21ff9bf2974e4e5d1330f24b435199cdef29d8bb7eee5f6321"
   },
-  "physical_metadata_sha256": "4be4a7fa77b49eceb3e72b0e7bf376d2574185d8f8f336fa9c6f91b15febf6de"
+  "physical_metadata_sha256": "4be4a7fa77b49eceb3e72b0e7bf376d2574185d8f8f336fa9c6f91b15febf6de",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GastalBlockbuster.java",
+  "java_sha256": "33d3997f9cab5172f251d6caa6d6011317bfffabd3d101952da4031a19b1da29",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }
