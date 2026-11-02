@@ -476,6 +476,154 @@
         "initial parent legality does not yet model a granted mana header announced before grantor sacrifice while paying its tax",
         "invalid Vehicle-as-creature-type fixture, correcteddb13683e8 and independently rerun17/18"
       ]
+    },
+    {
+      "revision": "4c72c0d2f",
+      "status": "partial; remaining fixture/cold mana choice fixes and subsequent review repairs require a rerun",
+      "targets": {
+        "dft_retained_copy": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_outcomes_engine": {
+          "expected": 9,
+          "exit": 0
+        },
+        "dft_speed_engine": {
+          "expected": 10,
+          "exit": 0
+        },
+        "dft_group_engine": {
+          "expected": 4,
+          "exit": 0
+        },
+        "dft_entry_counters": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_combat_tokens": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_embalm": {
+          "expected": 17,
+          "exit": 0
+        },
+        "dft_attack_groups": {
+          "expected": 8,
+          "exit": 0
+        },
+        "dft_trigger_facts_engine": {
+          "expected": 11,
+          "exit": 0
+        },
+        "dft_linked_entry": {
+          "expected": 8,
+          "exit": 0
+        },
+        "dft_speed_grants": {
+          "expected": 13,
+          "exit": 0
+        },
+        "dft_static_types": {
+          "expected": 13,
+          "exit": 0
+        },
+        "dft_entry_copies": {
+          "expected": 16,
+          "exit": 0
+        },
+        "dft_quantities_engine": {
+          "expected": 10,
+          "exit": 0
+        },
+        "dft_variable_costs_engine": {
+          "expected": 11,
+          "exit": 0
+        },
+        "dft_private_hand": {
+          "expected": 6,
+          "exit": 0
+        },
+        "dft_entry_results": {
+          "expected": 10,
+          "exit": 0
+        },
+        "dft_control_duration": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_exhaust_engine": {
+          "expected": 11,
+          "exit": 0
+        },
+        "dft_crew": {
+          "expected": 10,
+          "exit": 0
+        },
+        "dft_acquired_activations": {
+          "expected": 3,
+          "exit": 0
+        },
+        "dft_cast_permissions_engine": {
+          "expected": 9,
+          "exit": 0
+        },
+        "dft_combat_schedule": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_deferred_mana": {
+          "expected": 4,
+          "exit": 0
+        },
+        "dft_exile_lookback": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_fixture_rules": {
+          "expected": 2,
+          "exit": 0
+        },
+        "dft_mana_output": {
+          "expected": 10,
+          "exit": 101
+        },
+        "dft_mana_rollback": {
+          "expected": 1,
+          "exit": 101
+        },
+        "dft_named_search": {
+          "expected": 8,
+          "exit": 0
+        },
+        "dft_activation_tax": {
+          "expected": 18,
+          "exit": 101
+        },
+        "dft_exert_engine": {
+          "expected": 9,
+          "exit": 0
+        },
+        "dft_queries": {
+          "expected": 10,
+          "exit": 0
+        }
+      },
+      "passed": 279,
+      "failed": 4,
+      "expected": 283,
+      "target_count": 32,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-remainder-20261101-214200/result.json",
+      "cargo_build_seconds": 1.1174924740043934,
+      "test_process_seconds": 0.534065235988237,
+      "engine_reused": true,
+      "failures": [
+        "ManaOutput: dynamic grant fixture not registered as an Aura",
+        "ManaOutput: unfinished late mana choice rolls parent back before production",
+        "activation tax: granted-mana fixture not registered as an Aura",
+        "rollback: test observer incorrectly remains a casualty alternative"
+      ]
     }
   ],
   "earlier_focused_runs": [
@@ -571,15 +719,18 @@
       "exert paid",
       "discard",
       "token created",
-      "graveyard return"
+      "graveyard return",
+      "paid embalm and actual embalmed token",
+      "as-entry copy",
+      "actual extra combat"
     ],
     "contracts": "full deterministic replay plus sampled wrong-actor, owned raw/index children, observations and restore"
   },
   "latest_compile_checkpoint": {
-    "revision": "6d04ec2a0",
-    "production_check": "passed5.48s",
-    "all_targets": "passed43.53s",
-    "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-203234/result.json"
+    "revision": "8c8e1a53f",
+    "production_check": "passed in 5.63 seconds",
+    "all_targets": "passed in 43.88 seconds",
+    "report": "<cache>/rustmage-authoring/aetherdrift/review-checkpoint-20261101-213600/result.json"
   },
   "latest_focused_followups": [
     {
@@ -603,5 +754,28 @@
       "command_seconds": 1.0176801930065267
     }
   ],
-  "current_runtime_evidence": "Combined evidence251/252focusedscenarios: full6d04ec2a0engine run250pass2fail, test-onlydb13683e8 corrects one invalid fixture; granted-mana deferred initial funding remains open. All-target compile passed43.53s. Later ManaOutput/Embalm still require new runs."
+  "current_runtime_evidence": "Latest full focused engine run: 279/283 scenarios across 32 targets at 4c72c0d2f. Embalm17/17, acquired3/3, schema13/13, hybrid37/37 and Stoneglider3/3 passed. Four focused failures and a bounded BIG performance timeout remain under repair. Later acquired-counter and exert-rollback repairs are not yet runtime-validated. No new DFT card admission.",
+  "latest_affected_regressions": {
+    "revision": "8c8e1a53f",
+    "schema199": {
+      "passed": 13,
+      "failed": 0
+    },
+    "hybrid": {
+      "passed": 37,
+      "failed": 0
+    },
+    "stoneglider": {
+      "passed": 3,
+      "failed": 0
+    },
+    "bounded_big": {
+      "passed": 0,
+      "timed_out_case": true,
+      "timeout_seconds": 45,
+      "status": "performance blocker; no timeout increase"
+    },
+    "report": "<cache>/rustmage-authoring/aetherdrift/review-checkpoint-20261101-213600/result.json",
+    "peak_memory_gib": 3.1
+  }
 }
