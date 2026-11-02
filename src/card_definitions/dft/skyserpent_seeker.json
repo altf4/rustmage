@@ -3,10 +3,55 @@
   "catalogue_id": 3905,
   "oracle_id": "5da8b86a-a7be-4fb5-9a45-a47d5cb4b372",
   "facts_sha256": "927b0961dd5c7b602bfeb53989db2b187e81f7561cef0f386ae4a9e6107cb740",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eb640c7b6c9121ba3c592d7e4752c64b5764715b82898433a86c6efca1c6be4b"
   },
-  "physical_metadata_sha256": "2ee24ff2f294dae11f2f0e31dc20fdf942bfae63897615764da5a28969a6b0af"
+  "physical_metadata_sha256": "2ee24ff2f294dae11f2f0e31dc20fdf942bfae63897615764da5a28969a6b0af",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SkyserpentSeeker.java",
+  "java_sha256": "6c3b21c3a25d74437f552b07e6d84167768e39a71dcad067e0d356b14e371b26",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ]
 }

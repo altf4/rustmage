@@ -8,5 +8,60 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dcb660b01f683aa9a3ada5989a03fa2913f0631e16067b3a92a758eab535820c"
   },
-  "physical_metadata_sha256": "a61b33dbb314cb1a72d29dc4a015bf78a394c14f27d1ab5fd7a2f82df7cbdf99"
+  "physical_metadata_sha256": "a61b33dbb314cb1a72d29dc4a015bf78a394c14f27d1ab5fd7a2f82df7cbdf99",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RunOver.java",
+  "java_sha256": "787b69d64b916eda40ebee90211bf895aba9ba89e2a73ac8be4382063261cc5b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
+      "sha256": "e9588b28dba4b7d15dd3a9119f75b3b6b3837213fc8004750b4d6d5bca294852"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    }
+  ]
 }

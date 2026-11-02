@@ -3,10 +3,45 @@
   "catalogue_id": 1444,
   "oracle_id": "1a9bfe76-6c74-4393-b04e-461422a29ddb",
   "facts_sha256": "23ed7a177525840b47774603a4418f11c440a9394f29fdfb221648eda26a51be",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "88a124ae6757a3ca2417baeda7f1f34565fe7133f1d44dd740dfdce35a577938"
   },
-  "physical_metadata_sha256": "15a06e30ab5527a7e91b6a403628741b674d70b2efb26629c9c3b355fe052c7f"
+  "physical_metadata_sha256": "15a06e30ab5527a7e91b6a403628741b674d70b2efb26629c9c3b355fe052c7f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FangDruidSummoner.java",
+  "java_sha256": "708bac534ab03db985f8e9dd794c8ebd4e3906e1ddfa8991c8a95f0ed1534859",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryGraveyardPutInHandEffect.java",
+      "sha256": "e066ab1d23be04ff8f341311d68ea02f0efcc7888b0140eb4503fd943a8fe3af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+      "sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/NoAbilityPredicate.java",
+      "sha256": "c3a93e4d13102359be1081b02d0b55939eae3b2f67ac48c3713167d2f8aea0e1"
+    }
+  ]
 }

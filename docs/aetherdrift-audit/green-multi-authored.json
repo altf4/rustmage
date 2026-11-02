@@ -1,7 +1,7 @@
 {
   "owner": "green-multi",
-  "base": "819fa96ec",
-  "engine_revision": "3bb915ad0edb660a64b7ab53f4b949ac1644f530",
+  "base": "fb878868ddbf3f4155b1a0c747129a9e713e4c04",
+  "engine_revision": "8657c4e6c",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "status": "card authorship in progress; root owns linking and guarded validation",
   "cards": [
@@ -24,7 +24,7 @@
         "Exhaust \u2014 {2}{G}{G}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
         "Whenever you activate an exhaust ability, return this card from your graveyard to the battlefield."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
@@ -32,7 +32,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "Exhaust \u2014 {2}{G}{G}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
@@ -56,7 +56,7 @@
         "Cycling {2}{G} ({2}{G}, Discard this card: Draw a card.)",
         "When you cycle this card, put two +1/+1 counters on up to one target creature or Vehicle. It gains trample and indestructible until end of turn."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_basics",
       "outcome_proofs": [
         "agonasaur_cycles_to_an_uncrewed_vehicle_with_permanent_counters_and_temporary_keywords",
@@ -88,13 +88,7 @@
           ]
         }
       ],
-      "validation": {
-        "passed": 5,
-        "scenario_seconds": 0.025,
-        "guarded_run_seconds": 4.003,
-        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
-        "engine_fresh": true
-      }
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
     },
     {
       "name": "Alacrian Jaguar",
@@ -104,7 +98,7 @@
         "Whenever this creature attacks while saddled, it gets +2/+2 until end of turn.",
         "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_basics",
       "outcome_proofs": [
         "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
@@ -132,13 +126,7 @@
           ]
         }
       ],
-      "validation": {
-        "passed": 5,
-        "scenario_seconds": 0.025,
-        "guarded_run_seconds": 4.003,
-        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
-        "engine_fresh": true
-      }
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
     },
     {
       "name": "Apocalypse Runner",
@@ -159,7 +147,7 @@
         "When this creature enters and whenever it attacks while saddled, create a 3/3 green Elephant creature token.",
         "Saddle 5 (Tap any number of other creatures you control with total power 5 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_basics",
       "outcome_proofs": [
         "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
@@ -181,13 +169,7 @@
           ]
         }
       ],
-      "validation": {
-        "passed": 5,
-        "scenario_seconds": 0.025,
-        "guarded_run_seconds": 4.003,
-        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
-        "engine_fresh": true
-      }
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
     },
     {
       "name": "Beastrider Vanguard",
@@ -206,10 +188,25 @@
       "printed_obligations": [
         "Target creature gets +4/+4 and gains trample until end of turn."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "bestow_greatness_grants_exact_stats_and_trample_until_cleanup"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Target creature gets +4/+4 and gains trample until end of turn.",
+          "scenario": [
+            "bestow_greatness_grants_exact_stats_and_trample_until_cleanup"
+          ]
+        }
+      ]
     },
     {
       "name": "Boom Scholar",
@@ -218,7 +215,7 @@
         "Exhaust abilities of other permanents you control cost {2} less to activate.",
         "Exhaust \u2014 {4}{R}{G}: Creatures and Vehicles you control gain trample until end of turn. Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
@@ -226,7 +223,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "Exhaust abilities of other permanents you control cost {2} less to activate.",
@@ -284,10 +281,25 @@
       "printed_obligations": [
         "Destroy target artifact, enchantment, or creature with flying."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "broken_wings_accepts_each_printed_kind_and_rejects_nonflying_creature"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Destroy target artifact, enchantment, or creature with flying.",
+          "scenario": [
+            "broken_wings_accepts_each_printed_kind_and_rejects_nonflying_creature"
+          ]
+        }
+      ]
     },
     {
       "name": "Broodheart Engine",
@@ -383,10 +395,37 @@
         "\u2022 Target permanent you control gains hexproof and indestructible until end of turn.",
         "\u2022 Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Choose one \u2014",
+          "scenario": [
+            "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three"
+          ]
+        },
+        {
+          "obligation": "\u2022 Target permanent you control gains hexproof and indestructible until end of turn.",
+          "scenario": [
+            "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three"
+          ]
+        },
+        {
+          "obligation": "\u2022 Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
+          "scenario": [
+            "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three"
+          ]
+        }
+      ]
     },
     {
       "name": "District Mascot",
@@ -397,7 +436,7 @@
         "Whenever this creature attacks while saddled, put a +1/+1 counter on it.",
         "Saddle 1"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
@@ -405,7 +444,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "This creature enters with a +1/+1 counter on it.",
@@ -465,7 +504,7 @@
         "Exile an artifact or creature card from your graveyard: This Vehicle becomes an artifact creature until end of turn.",
         "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires"
@@ -473,7 +512,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "Vigilance, trample",
@@ -502,7 +541,7 @@
         "During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.",
         "Exhaust \u2014 {1}{G}: Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "elvish_refueler_reuses_only_one_spent_exhaust_before_this_turns_first_exhaust"
@@ -510,7 +549,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.",
@@ -558,7 +597,7 @@
         "Flash",
         "When this creature enters, another target creature or Vehicle you control gets +2/+2 until end of turn."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "fang_guardian_flashes_in_and_targets_only_another_controlled_creature_or_vehicle"
@@ -566,7 +605,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "Flash",
@@ -589,10 +628,34 @@
         "Reach",
         "When this creature enters, you may search your library and/or graveyard for a creature card with no abilities, reveal it, and put it into your hand. If you search your library this way, shuffle."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "fang_druid_searches_either_zone_for_only_one_abilityless_creature_and_reveals_result",
+        "fang_druid_can_decline_without_shuffling_or_recovering_an_eligible_card"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Reach",
+          "scenario": [
+            "fang_druid_searches_either_zone_for_only_one_abilityless_creature_and_reveals_result",
+            "fang_druid_can_decline_without_shuffling_or_recovering_an_eligible_card"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, you may search your library and/or graveyard for a creature card with no abilities, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+          "scenario": [
+            "fang_druid_searches_either_zone_for_only_one_abilityless_creature_and_reveals_result",
+            "fang_druid_can_decline_without_shuffling_or_recovering_an_eligible_card"
+          ]
+        }
+      ]
     },
     {
       "name": "Far Fortune, End Boss",
@@ -640,7 +703,7 @@
         "{G}: Target creature gains trample until end of turn.",
         "Exhaust \u2014 {3}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities",
@@ -649,7 +712,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "{G}: Target creature gains trample until end of turn.",
@@ -721,7 +784,7 @@
       "printed_obligations": [
         "Printed type, cost, colors and power/toughness; no rules abilities"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_basics",
       "outcome_proofs": [
         "vanilla_creatures_have_printed_stats_costs_types_and_no_rules_abilities"
@@ -737,13 +800,7 @@
           ]
         }
       ],
-      "validation": {
-        "passed": 5,
-        "scenario_seconds": 0.025,
-        "guarded_run_seconds": 4.003,
-        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
-        "engine_fresh": true
-      }
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
     },
     {
       "name": "Ketramose, the New Dawn",
@@ -856,7 +913,7 @@
         "When this creature enters, you gain 4 life.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_basics",
       "outcome_proofs": [
         "migrating_ketradon_entry_gains_four_but_cycling_only_draws_and_discards"
@@ -884,13 +941,7 @@
           ]
         }
       ],
-      "validation": {
-        "passed": 5,
-        "scenario_seconds": 0.025,
-        "guarded_run_seconds": 4.003,
-        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
-        "engine_fresh": true
-      }
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
     },
     {
       "name": "Mimeoplasm, Revered One",
@@ -911,10 +962,31 @@
         "{T}: Mill a card. (Put the top card of your library into your graveyard.)",
         "{T}, Exile a card from your graveyard: Add one mana of any color."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "molt_tender_mills_one_and_pays_its_tap_and_graveyard_exile_for_colored_mana"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "{T}: Mill a card. (Put the top card of your library into your graveyard.)",
+          "scenario": [
+            "molt_tender_mills_one_and_pays_its_tap_and_graveyard_exile_for_colored_mana"
+          ]
+        },
+        {
+          "obligation": "{T}, Exile a card from your graveyard: Add one mana of any color.",
+          "scenario": [
+            "molt_tender_mills_one_and_pays_its_tap_and_graveyard_exile_for_colored_mana"
+          ]
+        }
+      ]
     },
     {
       "name": "Oildeep Gearhulk",
@@ -934,7 +1006,7 @@
       "printed_obligations": [
         "When this creature enters, mill two cards, then put a +1/+1 counter on this creature for each artifact and/or creature card in your graveyard. (To mill two cards, put the top two cards of your library into your graveyard.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "ooze_patrol_counts_entire_graveyard_after_two_mills_and_deduplicates_artifact_creature"
@@ -942,7 +1014,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "When this creature enters, mill two cards, then put a +1/+1 counter on this creature for each artifact and/or creature card in your graveyard. (To mill two cards, put the top two cards of your library into your graveyard.)",
@@ -972,10 +1044,37 @@
         "\u2022 Target creature you control fights target creature an opponent controls. (Each deals damage equal to its power to the other.)",
         "\u2022 Destroy target Vehicle."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Choose one \u2014",
+          "scenario": [
+            "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes"
+          ]
+        },
+        {
+          "obligation": "\u2022 Target creature you control fights target creature an opponent controls. (Each deals damage equal to its power to the other.)",
+          "scenario": [
+            "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes"
+          ]
+        },
+        {
+          "obligation": "\u2022 Destroy target Vehicle.",
+          "scenario": [
+            "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes"
+          ]
+        }
+      ]
     },
     {
       "name": "Point the Way",
@@ -984,10 +1083,31 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "{3}{G}, Sacrifice this enchantment: Search your library for up to X basic land cards, where X is your speed. Put those cards onto the battlefield tapped, then shuffle."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "point_the_way_starts_speed_and_sacrifices_for_up_to_current_speed_tapped_basics"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "point_the_way_starts_speed_and_sacrifices_for_up_to_current_speed_tapped_basics"
+          ]
+        },
+        {
+          "obligation": "{3}{G}, Sacrifice this enchantment: Search your library for up to X basic land cards, where X is your speed. Put those cards onto the battlefield tapped, then shuffle.",
+          "scenario": [
+            "point_the_way_starts_speed_and_sacrifices_for_up_to_current_speed_tapped_basics"
+          ]
+        }
+      ]
     },
     {
       "name": "Pothole Mole",
@@ -995,10 +1115,25 @@
       "printed_obligations": [
         "When this creature enters, mill three cards, then you may return a land card from your graveyard to your hand. (To mill three cards, put the top three cards of your library into your graveyard.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "pothole_mole_mills_three_then_can_recover_an_old_land_or_decline"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "When this creature enters, mill three cards, then you may return a land card from your graveyard to your hand. (To mill three cards, put the top three cards of your library into your graveyard.)",
+          "scenario": [
+            "pothole_mole_mills_three_then_can_recover_an_old_land_or_decline"
+          ]
+        }
+      ]
     },
     {
       "name": "Pyrewood Gearhulk",
@@ -1020,7 +1155,7 @@
         "Whenever you activate an exhaust ability, create a 1/1 colorless Thopter artifact creature token with flying.",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
@@ -1028,7 +1163,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "Vigilance",
@@ -1093,10 +1228,25 @@
       "printed_obligations": [
         "Return up to one target creature card, up to one target Mount card, up to one target Vehicle card, and up to one target creature card with no abilities from your graveyard to your hand."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "rise_from_the_wreck_selects_all_four_printed_groups_and_returns_each_card"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Return up to one target creature card, up to one target Mount card, up to one target Vehicle card, and up to one target creature card with no abilities from your graveyard to your hand.",
+          "scenario": [
+            "rise_from_the_wreck_selects_all_four_printed_groups_and_returns_each_card"
+          ]
+        }
+      ]
     },
     {
       "name": "Rocketeer Boostbuggy",
@@ -1106,7 +1256,7 @@
         "Exhaust \u2014 {3}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
         "Crew 1"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_exhaust",
       "outcome_proofs": [
         "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
@@ -1114,7 +1264,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "pending root focused run",
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
       "obligation_evidence": [
         {
           "obligation": "Whenever this Vehicle attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
@@ -1143,10 +1293,31 @@
         "This spell costs {1} less to cast if it targets a Mount or Vehicle you control.",
         "Target creature you control deals damage equal to its power to target creature an opponent controls."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "run_over_reduces_mount_cost_and_deals_one_way_damage_while_plain_creature_pays_full"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "This spell costs {1} less to cast if it targets a Mount or Vehicle you control.",
+          "scenario": [
+            "run_over_reduces_mount_cost_and_deals_one_way_damage_while_plain_creature_pays_full"
+          ]
+        },
+        {
+          "obligation": "Target creature you control deals damage equal to its power to target creature an opponent controls.",
+          "scenario": [
+            "run_over_reduces_mount_cost_and_deals_one_way_damage_while_plain_creature_pays_full"
+          ]
+        }
+      ]
     },
     {
       "name": "Sab-Sunen, Luxa Embodied",
@@ -1184,10 +1355,43 @@
         "When this Aura enters, untap enchanted permanent.",
         "Enchanted permanent gets +1/+2 and has reach."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Flash",
+          "scenario": [
+            "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+          ]
+        },
+        {
+          "obligation": "Enchant creature or Vehicle",
+          "scenario": [
+            "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+          ]
+        },
+        {
+          "obligation": "When this Aura enters, untap enchanted permanent.",
+          "scenario": [
+            "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+          ]
+        },
+        {
+          "obligation": "Enchanted permanent gets +1/+2 and has reach.",
+          "scenario": [
+            "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+          ]
+        }
+      ]
     },
     {
       "name": "Sita Varma, Masked Racer",
@@ -1207,10 +1411,31 @@
         "Flying, deathtouch",
         "Exhaust \u2014 {4}: Reveal cards from the top of your library until you reveal two land cards. Put those land cards onto the battlefield tapped and the rest on the bottom of your library in a random order. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "skyserpent_reveals_through_two_lands_puts_them_tapped_and_adds_a_counter_even_if_empty"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Flying, deathtouch",
+          "scenario": [
+            "skyserpent_reveals_through_two_lands_puts_them_tapped_and_adds_a_counter_even_if_empty"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {4}: Reveal cards from the top of your library until you reveal two land cards. Put those land cards onto the battlefield tapped and the rest on the bottom of your library in a random order. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "skyserpent_reveals_through_two_lands_puts_them_tapped_and_adds_a_counter_even_if_empty"
+          ]
+        }
+      ]
     },
     {
       "name": "Stampeding Scurryfoot",
@@ -1229,7 +1454,7 @@
       "printed_obligations": [
         "Printed type, cost, colors and power/toughness; no rules abilities"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_basics",
       "outcome_proofs": [
         "vanilla_creatures_have_printed_stats_costs_types_and_no_rules_abilities"
@@ -1245,13 +1470,7 @@
           ]
         }
       ],
-      "validation": {
-        "passed": 5,
-        "scenario_seconds": 0.025,
-        "guarded_run_seconds": 4.003,
-        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
-        "engine_fresh": true
-      }
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
     },
     {
       "name": "Thundering Broodwagon",
@@ -1301,7 +1520,7 @@
         "Whenever this creature attacks while saddled, it gets +0/+3 until end of turn.",
         "Saddle 2 (Tap any number of other creatures you control with total power 2 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_basics",
       "outcome_proofs": [
         "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
@@ -1329,13 +1548,7 @@
           ]
         }
       ],
-      "validation": {
-        "passed": 5,
-        "scenario_seconds": 0.025,
-        "guarded_run_seconds": 4.003,
-        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
-        "engine_fresh": true
-      }
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
     },
     {
       "name": "Veteran Beastrider",
@@ -1369,7 +1582,7 @@
         "Cycling {X}{G}{G} ({X}{G}{G}, Discard this card: Draw a card.)",
         "When you cycle this card, destroy up to one target artifact or enchantment with mana value X."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_basics",
       "outcome_proofs": [
         "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x"
@@ -1397,13 +1610,7 @@
           ]
         }
       ],
-      "validation": {
-        "passed": 5,
-        "scenario_seconds": 0.025,
-        "guarded_run_seconds": 4.003,
-        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
-        "engine_fresh": true
-      }
+      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
     },
     {
       "name": "Winter, Cursed Rider",
@@ -1431,5 +1638,6 @@
       "outcome_proofs": [],
       "shared_contracts": []
     }
-  ]
+  ],
+  "engine_checkpoint": "3415 tests pass; independent nonauthor reviews; warm cache verified by root"
 }

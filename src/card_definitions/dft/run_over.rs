@@ -1,4 +1,4 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete pinned Oracle and XMage behavior, with card-specific outcome evidence.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Groups(&[
