@@ -105,13 +105,17 @@ impl Game {
     }
     /// Keep acquired activation identity in the same payment context used by
     /// announcement. A printed slot at the same index has independent history.
-    pub(super) fn initial_activation_packet_target_fundable(&self, packet: &SpellView) -> bool {
+    pub(super) fn initial_activation_packet_target_fundable(
+        &self,
+        packet: &SpellView,
+        counter_payment: &Counters,
+    ) -> bool {
         let StackKind::ActivatedAbility { ability } = packet.kind else {
             unreachable!("activated packet");
         };
         let source = packet.source.expect("activated packet source");
         let mut proposal =
-            self.payment_announcement(packet.clone(), Counters::default(), None, None);
+            self.payment_announcement(packet.clone(), counter_payment.clone(), None, None);
         let options = proposal.cost_options().count();
         (0..options).any(|slot| {
             proposal.select_cost(slot);

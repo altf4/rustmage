@@ -25,11 +25,11 @@
     },
     {
       "path": "crates/engine/src/engine_self_granted_activations.rs",
-      "sha256": "c7ef2e3af29aa4dc422241642b9d499f72c2d6f30b32a6ea6d7315a453c5658b"
+      "sha256": "035fc5ff50071d829795891231958cb8a1759606b30f7609eba91136dd600abe"
     },
     {
       "path": "crates/engine/src/engine_activation_target_costs.rs",
-      "sha256": "2dbdc33988be85d1100c438244f72017cb9ac83c3ee6e61941fcb3e1c46d3651"
+      "sha256": "4cab0a7a627e826a272fd1d031a2dd4638739e3f0f6298a723fd39d60fb5a538"
     },
     {
       "path": "crates/engine/src/engine_funding.rs",
@@ -47,17 +47,26 @@
   "tests": [
     "once_per_turn_grants_fund_independently_of_used_printed_slot_and_each_other",
     "exhaust_grants_fund_independently_of_a_used_copy_slot_and_survive_owned_restore",
-    "acquired_target_discount_and_additional_tap_cost_share_one_projected_payment_context"
+    "acquired_target_discount_and_additional_tap_cost_share_one_projected_payment_context",
+    "acquired_exhaust_remove_one_counter_pays_before_putting_two_and_zero_cannot_start",
+    "acquired_wildcard_counter_payment_keeps_its_kind_in_owned_raw_index_branches",
+    "empty_acquired_counter_receipts_preserve_inherited_action_wire_and_nonempty_round_trips"
   ],
   "representation": {
     "hot_object_fields_added": 0,
     "owned_state_fields_added": 0,
-    "public_wire_changes": 0,
+    "public_wire_changes": 1,
     "cost": "One existing immutable packet/payment context and borrowed funding preview per acquired nonmana initial cost route; ordinary activation funding unchanged."
   },
   "validation": {
     "rustfmt": "passed edition2024",
     "git_diff_check": "passed",
     "Cargo": "Not run. Root owns guarded production/all-target check and dft_acquired_activations target."
+  },
+  "counter_cost_followup": {
+    "finding": "Acquired nonmana initial funding and announcement hardcoded empty counter payment, so an exact/wildcard remove cost could be declared without its removal receipt.",
+    "repair": "Enumerate existing typed counter-cost allocations; preserve each owned Counters choice in the acquired action, packet funding Announcement and live payment Announcement. Normal source-counter payment commits the exact kind and quantity.",
+    "wire": "AnnounceSelfGrantedAbility gains counter_payment:Counters, serde default and omitted when empty; all inherited empty actions retain their bytes. Nonempty acquired-only action receipts require scoped schema199 rejection; existing AnnounceActivate counter_payment stays inherited.",
+    "state": "No additional owned state fields; Announcement.counter_payment already owns the receipt. One existing legacy constructor gets empty compatibility fill."
   }
 }

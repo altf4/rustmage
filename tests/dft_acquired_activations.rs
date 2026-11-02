@@ -79,6 +79,7 @@ fn acquire(g: &mut Game, source: CardId) -> Action {
     Action::AnnounceSelfGrantedAbility {
         source,
         grant_timestamp: timestamp,
+        counter_payment: Counters::default(),
     }
 }
 fn use_printed(g: &mut Game, card: CardId) {
@@ -266,4 +267,151 @@ fn acquired_target_discount_and_additional_tap_cost_share_one_projected_payment_
     assert!(g.state.objects[fuel as usize].tapped && g.state.objects[mana as usize].tapped);
     assert_eq!(g.counter_count(source, CounterKind::PlusOne), 3);
     reject(&mut g, action);
+}
+
+fn with_counter_payment(mut action: Action, counter_payment: Counters) -> Action {
+    let Action::AnnounceSelfGrantedAbility {
+        counter_payment: payment,
+        ..
+    } = &mut action
+    else {
+        unreachable!()
+    };
+    *payment = counter_payment;
+    action
+}
+
+#[test]
+fn acquired_exhaust_remove_one_counter_pays_before_putting_two_and_zero_cannot_start() {
+    const REMOVE: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                remove: Some((Some(CounterKind::PlusOne), 1)),
+                ..ActivationCost::ZERO
+            },
+            ..activation(true, false, 2)
+        }],
+        ..GRANTED_EXHAUST
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &PRINTED_ONCE),
+        (Card::LlanowarElves, &REMOVE),
+    ]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let empty = acquire(&mut g, source);
+    let action = with_counter_payment(empty.clone(), Counters::of(CounterKind::PlusOne, 1));
+    reject(&mut g, action.clone());
+    reject(&mut g, empty.clone());
+    g.add_counter(source, CounterKind::PlusOne, 1);
+    assert!(g.legal_actions().contains(&action));
+    reject(&mut g, empty);
+    reject(
+        &mut g,
+        with_counter_payment(action.clone(), Counters::of(CounterKind::Charge, 1)),
+    );
+    act(&mut g, action.clone());
+    assert_eq!(
+        g.state.announcing.as_ref().unwrap().counter_payment,
+        Counters::of(CounterKind::PlusOne, 1)
+    );
+    assert_eq!(
+        g.counter_count(source, CounterKind::PlusOne),
+        1,
+        "declaring a payment does not remove it early"
+    );
+    pay(&mut g);
+    assert_eq!(
+        g.counter_count(source, CounterKind::PlusOne),
+        0,
+        "the cost is paid before resolution"
+    );
+    settle(&mut g);
+    assert_eq!(g.counter_count(source, CounterKind::PlusOne), 2);
+    reject(&mut g, action);
+}
+
+#[test]
+fn acquired_wildcard_counter_payment_keeps_its_kind_in_owned_raw_index_branches() {
+    const REMOVE_ANY: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                remove: Some((None, 1)),
+                ..ActivationCost::ZERO
+            },
+            ..activation(false, false, 2)
+        }],
+        ..GRANTED_ONCE
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &PRINTED_ONCE),
+        (Card::LlanowarElves, &REMOVE_ANY),
+    ]);
+    let mut parent = scenario(Player::P0);
+    let source = put(&mut parent, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    parent.add_counter(source, CounterKind::PlusOne, 1);
+    parent.add_counter(source, CounterKind::Charge, 1);
+    let base = acquire(&mut parent, source);
+    let plus = with_counter_payment(base.clone(), Counters::of(CounterKind::PlusOne, 1));
+    let charge = with_counter_payment(base, Counters::of(CounterKind::Charge, 1));
+    assert!(parent.legal_actions().contains(&plus));
+    assert!(parent.legal_actions().contains(&charge));
+    let saved = parent.snapshot();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    let mut other = parent.clone();
+    let index = indexed
+        .legal_actions()
+        .iter()
+        .position(|a| *a == charge)
+        .unwrap();
+    let actor = indexed.actor().unwrap();
+    let revision = indexed.revision();
+    act(&mut raw, charge);
+    indexed.apply_index(actor, revision, index).unwrap();
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(
+        indexed.state.announcing.as_ref().unwrap().counter_payment,
+        Counters::of(CounterKind::Charge, 1)
+    );
+    drop(parent);
+    pay(&mut raw);
+    pay(&mut indexed);
+    assert_eq!(raw.counter_count(source, CounterKind::Charge), 0);
+    assert_eq!(raw.counter_count(source, CounterKind::PlusOne), 1);
+    settle(&mut raw);
+    settle(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(raw.counter_count(source, CounterKind::PlusOne), 3);
+    act(&mut other, plus);
+    pay(&mut other);
+    settle(&mut other);
+    assert_eq!(other.counter_count(source, CounterKind::PlusOne), 2);
+    assert_eq!(other.counter_count(source, CounterKind::Charge), 1);
+    indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.counter_count(source, CounterKind::Charge), 1);
+    assert_eq!(indexed.counter_count(source, CounterKind::PlusOne), 1);
+}
+
+#[test]
+fn empty_acquired_counter_receipts_preserve_inherited_action_wire_and_nonempty_round_trips() {
+    let action = Action::AnnounceSelfGrantedAbility {
+        source: ObjectRef {
+            card: 17,
+            generation: 2,
+        },
+        grant_timestamp: 31,
+        counter_payment: Counters::default(),
+    };
+    let old = serde_json::json!({
+        "kind":"AnnounceSelfGrantedAbility",
+        "source":{"card":17,"generation":2},
+        "grant_timestamp":31,
+    });
+    assert_eq!(serde_json::to_value(&action).unwrap(), old);
+    assert_eq!(serde_json::from_value::<Action>(old).unwrap(), action);
+    let action = with_counter_payment(action, Counters::of(CounterKind::Charge, 1));
+    let json = serde_json::to_value(&action).unwrap();
+    assert!(json.get("counter_payment").is_some());
+    assert_eq!(serde_json::from_value::<Action>(json).unwrap(), action);
 }

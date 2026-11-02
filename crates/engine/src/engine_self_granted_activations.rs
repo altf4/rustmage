@@ -94,11 +94,19 @@ impl Game {
             }
             let packet = self.self_granted_activation_packet(*row);
             if self.targets_available(rules.targets, actor, row.recipient)
-                && self.initial_activation_packet_target_fundable(&packet)
-                && emit(Action::AnnounceSelfGrantedAbility {
-                    source: row.recipient,
-                    grant_timestamp: row.timestamp,
-                })
+                && self.visit_activation_counter_payments(
+                    actor,
+                    rules,
+                    self.counter_amounts(card),
+                    |counter_payment| {
+                        self.initial_activation_packet_target_fundable(&packet, &counter_payment)
+                            && emit(Action::AnnounceSelfGrantedAbility {
+                                source: row.recipient,
+                                grant_timestamp: row.timestamp,
+                                counter_payment,
+                            })
+                    },
+                )
             {
                 return true;
             }
@@ -109,6 +117,7 @@ impl Game {
         &mut self,
         source: ObjectRef,
         grant_timestamp: u64,
+        counter_payment: Counters,
     ) {
         let row = *self
             .state
@@ -121,7 +130,7 @@ impl Game {
         let mut item = self.self_granted_activation_packet(row);
         item.id = self.next_stack_id();
         self.state.passes = 0;
-        self.open_payment_announcement(item, Counters::default(), None);
+        self.open_payment_announcement(item, counter_payment, None);
     }
     pub(super) fn self_granted_activation_packet(&self, row: self_granted::Row) -> SpellView {
         let source = row.recipient;

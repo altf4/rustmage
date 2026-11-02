@@ -800,7 +800,12 @@ define_actions! {
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
     AnnounceRetainedCopyAbility { source: ObjectRef },
     AnnounceEmbalm { source:ObjectRef, acquisition:u64 },
-    AnnounceSelfGrantedAbility { source: ObjectRef, grant_timestamp: u64 },
+    AnnounceSelfGrantedAbility {
+        source: ObjectRef,
+        grant_timestamp: u64,
+        #[serde(default, skip_serializing_if = "Counters::is_empty")]
+        counter_payment: Counters,
+    },
     AnnounceSelfGrantedMana { source: ObjectRef, grant_timestamp: u64, counter_payment: Counters, production: Mana },
     ChooseAdditionalCost {
         object: ObjectRef,
@@ -6490,8 +6495,9 @@ impl Game {
             Action::AnnounceSelfGrantedAbility {
                 source,
                 grant_timestamp,
+                counter_payment,
             } => {
-                self.announce_self_granted_ability(source, grant_timestamp);
+                self.announce_self_granted_ability(source, grant_timestamp, counter_payment);
             }
             Action::AnnounceAttachedAbility { grantor, ability } => {
                 self.announce_attached_ability(grantor, ability)
