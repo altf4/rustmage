@@ -138,12 +138,12 @@ fn defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_thr
     drain(&mut g);
     assert!(
         g.keywords(land)
-            .contains(Keywords::HEXPROOF | Keywords::INDESTRUCTIBLE)
+            .contains(Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE))
     );
     g.finish_cleanup();
     assert!(
         !g.keywords(land)
-            .intersects(Keywords::HEXPROOF | Keywords::INDESTRUCTIBLE)
+            .intersects(Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE))
     );
     let vehicle = put(
         &mut g,
@@ -480,7 +480,7 @@ fn skyserpent_reveals_through_two_lands_puts_them_tapped_and_adds_a_counter_even
         let source = put(&mut g, Player::P0, "Skyserpent Seeker", Zone::Battlefield);
         assert!(
             g.keywords(source)
-                .contains(Keywords::FLYING | Keywords::DEATHTOUCH)
+                .contains(Keywords::FLYING.union(Keywords::DEATHTOUCH))
         );
         activate(&mut g, source, 0);
         if count > 0 {
