@@ -483,3 +483,123 @@ fn dynamic_source_endure_uses_the_sample_and_exact_source_for_each_outcome() {
         }
     }
 }
+
+const SOURCE_COPY_TOKEN: CardRules = CardRules {
+    effect: Effect::Creature(1, 1),
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            generic: 1,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        program: &[Instruction::CreateCopyToken {
+            subject: Subject::Source,
+            amount: 1,
+        }],
+        sorcery: false,
+        ..MONUMENT.activated[0]
+    }],
+    ..CardRules::EMPTY
+};
+fn copyable_sized_token(g: &mut Game, p: Player) -> CardId {
+    g.create_sized_token(p, Card::from_name("Bear Cub").unwrap(), 7);
+    g.advance_entries();
+    g.give_priority();
+    let token = g
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .find_map(|(id, o)| {
+            (o.zone == Zone::Battlefield
+                && o.is_token()
+                && o.card == Card::from_name("Bear Cub").unwrap())
+            .then_some(id as CardId)
+        })
+        .unwrap();
+    assert_eq!(stats(g, token), (7, 7));
+    token
+}
+#[test]
+fn sampled_source_copy_base_survives_paid_activation_and_exact_source_departure() {
+    let _rules =
+        fixture_rules::activate(&[(Card::from_name("Bear Cub").unwrap(), &SOURCE_COPY_TOKEN)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = copyable_sized_token(&mut g, p);
+        g.add_counter(source, CounterKind::PlusOne, 2);
+        assert_eq!(stats(&g, source), (9, 9));
+        let old = g.object_ref(source);
+        activate(&mut g, source);
+        let bounce = put(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, Some(Target::Card(source)));
+        wait(&mut g, |g| {
+            g.state.objects[source as usize].zone == Zone::Outside
+        });
+        settle(&mut g);
+        let made: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.is_token()
+                    && o.card == Card::from_name("Bear Cub").unwrap())
+                .then_some(id as CardId)
+            })
+            .collect();
+        assert_eq!(made.len(), 1);
+        assert_ne!(g.object_ref(made[0]), old);
+        assert_eq!(
+            stats(&g, made[0]),
+            (7, 7),
+            "source departure must retain its sampled copiable base"
+        );
+    }
+}
+#[test]
+fn sampled_source_copy_base_is_captured_by_its_own_departure_trigger() {
+    const LEAVING: CardRules = CardRules {
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::SelfLeaves,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateCopyToken {
+                subject: Subject::Source,
+                amount: 1,
+            }],
+        }],
+        activated: &[],
+        ..SOURCE_COPY_TOKEN
+    };
+    let _rules = fixture_rules::activate(&[(Card::from_name("Bear Cub").unwrap(), &LEAVING)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = copyable_sized_token(&mut g, p);
+        g.add_counter(source, CounterKind::PlusOne, 2);
+        assert_eq!(stats(&g, source), (9, 9));
+        let old = g.object_ref(source);
+        let bounce = put(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, Some(Target::Card(source)));
+        settle(&mut g);
+        let made: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.is_token()
+                    && o.card == Card::from_name("Bear Cub").unwrap())
+                .then_some(id as CardId)
+            })
+            .collect();
+        assert_eq!(made.len(), 1);
+        assert_ne!(g.object_ref(made[0]), old);
+        assert_eq!(
+            stats(&g, made[0]),
+            (7, 7),
+            "departed source trigger must retain its sampled copiable base"
+        );
+    }
+}

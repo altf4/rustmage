@@ -1371,11 +1371,7 @@ impl Game {
             captured_artifact_copy: None,
             source_copy_recipe: source
                 .copy_recipe
-                .filter(|r| {
-                    r.exceptions != CopyExceptions::NONE
-                        || r.overrides.is_some()
-                        || r.faces.is_some()
-                })
+                .filter(|r| r.needs_source_snapshot())
                 .map(Box::new),
             source_ability_origin: ability_origin,
             mana_copy_sources: None,

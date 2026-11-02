@@ -277,5 +277,10 @@
     "Global observation schema/trace migration is still required for all engine wire changes.",
     "The final complete shared-engine checkpoint, whole-card tests, set-only games, release acceptance, simulation throughput and two independent nonauthor final published PR-head reviews remain pending.",
     "These are scoped engine proofs; no complete-card implementation or simulation throughput claim."
-  ]
+  ],
+  "followup_reopened_review": {
+    "finding": "Source-copy LKI retention omitted sampled bases in three predicates; two independent outcome regressions reproduced it.",
+    "repair_evidence": "docs/tdm-sampled-source-lki-evidence.json",
+    "status": "Central repair passes12 focused/199 assembled cases; refreshed source reviews pending."
+  }
 }

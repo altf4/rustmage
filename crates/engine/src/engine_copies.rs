@@ -194,6 +194,11 @@ impl CopyRecipe {
                 })
             })
     }
+    /// Preserve every nondefault copiable field for an ability's source LKI.
+    /// Comparing with the constructor includes future recipe extensions too.
+    pub(super) fn needs_source_snapshot(self) -> bool {
+        self != Self::new(self.definition)
+    }
     pub const fn new(definition: Card) -> Self {
         Self {
             definition,

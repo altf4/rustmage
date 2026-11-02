@@ -81,7 +81,7 @@
       "cards": [
         "Abzan Monument"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (dynamic token/endure)."
+      "status": "REOPENED after follow-up independent review: sampled token bases are omitted by three source-copy LKI retention predicates; paid source-copy/departure-trigger regressions and central repair are prepared, not yet validated."
     },
     {
       "id": "A06",
@@ -208,7 +208,7 @@
       "cards": [
         "Flamehold Grappler"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation,37 focused/compatibility cases and two independent nonauthor reviews complete at48dc9ce44; final root integrated acceptance remains pending."
     },
     {
       "id": "A20",
@@ -282,7 +282,7 @@
       "description": "variable endure",
       "required_change": "Extend Endure to an AmountValue and explicit subject, choosing exactly one dynamic white N/N Spirit or N +1 counters, including N0 no action. Reuse owned Pending and counter/token replacement pipeline; never require one pre-generated token card for every X. Preserve choice/recipe in raw/index branch and snapshot/restore.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (dynamic token/endure)."
+      "status": "REOPENED after follow-up independent review: sampled token bases are omitted by three source-copy LKI retention predicates; paid source-copy/departure-trigger regressions and central repair are prepared, not yet validated."
     },
     {
       "id": "B:activation_x_life",
@@ -449,7 +449,7 @@
       "cards": [
         "Warden of the Grove"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (dynamic token/endure)."
+      "status": "REOPENED after follow-up independent review: sampled token bases are omitted by three source-copy LKI retention predicates; paid source-copy/departure-trigger regressions and central repair are prepared, not yet validated."
     },
     {
       "id": "C:GRANTED_HARMONIZE",
@@ -476,7 +476,7 @@
       "cards": [
         "Taigam, Master Opportunist"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation,37 focused/compatibility cases and two independent nonauthor reviews complete at48dc9ce44; final root integrated acceptance remains pending."
     },
     {
       "id": "C:PRINTED_STORM",
@@ -485,7 +485,7 @@
       "cards": [
         "Stormscale Scion"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation,37 focused/compatibility cases and two independent nonauthor reviews complete at48dc9ce44; final root integrated acceptance remains pending."
     },
     {
       "id": "C:NAMED_ENTRY_MODE",
@@ -683,7 +683,7 @@
       "cards": [
         "Taigam, Master Opportunist"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation,37 focused/compatibility cases and two independent nonauthor reviews complete at48dc9ce44; final root integrated acceptance remains pending."
     },
     {
       "id": "C:COLOR_QUALIFIED_PROTECTION",
@@ -727,10 +727,10 @@
     "negative_regression_cases": 5,
     "root_endure_cases_passed": 6,
     "root_counter_cases_passed": 7,
-    "latest_assembled_cases_passed": 147,
-    "latest_assembled_compile_seconds": 144.69915580193629,
-    "latest_assembled_scenario_seconds": 0.4118902189366054,
-    "scoped_reviewed_audit_groups_including_aliases": 25,
+    "latest_assembled_cases_passed": 199,
+    "latest_assembled_compile_seconds": 148.53743017898523,
+    "latest_assembled_scenario_seconds": 0.48389193395269103,
+    "scoped_reviewed_audit_groups_including_aliases": 26,
     "total_audit_groups_including_aliases": 80,
     "current_hot_layout_bytes": {
       "Object": 160,
@@ -772,7 +772,8 @@
     "dynamic_tokens": {
       "commit": "44612475ef8cbf42b44082f55b797117206824da",
       "evidence": "docs/tdm-dynamic-tokens-evidence.json",
-      "status": "10 focused plus137 integrated/inherited groups pass; two exact published-source scoped approvals."
+      "status": "Central source-copy LKI retention repair passes12 focused/199 assembled cases after two exact baseline negatives; refreshed independent exact-source reviews pending.",
+      "followup_evidence": "docs/tdm-sampled-source-lki-evidence.json"
     },
     "casting": {
       "original": "34cf40d5d",
@@ -781,9 +782,25 @@
       "evidence": "docs/tdm-harmonize-wide-evidence.json",
       "status": "20 focused plus76 compatibility pass after independent wide-power and Bargain composition findings; two refreshed scoped approvals. New root integration awaits the next compiled checkpoint."
     },
-    "copy_suspend": "18 focused groups first run17/18; final positive payment witness under repair in isolated worker; not accepted.",
-    "resolution_results": "First coherent22-group target authored in isolated worker; not yet validated.",
+    "copy_suspend": {
+      "commit": "48dc9ce44e0e08b0bb0f0ef810d7f4facde35f86",
+      "integration": "8490c1156",
+      "evidence": "docs/tdm-copy-suspend-evidence.json",
+      "status": "37 selected focused/compatibility cases and two scoped independent approvals; new root assembly awaits next compiled checkpoint."
+    },
+    "resolution_results": {
+      "commit": "194065c62",
+      "integration": "fe47363dd",
+      "evidence": "docs/tdm-resolution-results-evidence.json",
+      "status": "33 owner cases pass; independent cost-owner review approves, root review pending."
+    },
     "behold_and_costs": "Complete source audit and typed implementation in progress; not accepted.",
-    "next_static_rules": "Root source/helper audit coversA09/A13/A18/attack duplication/conditional sacrifice/additive subtype; no implementation yet."
+    "next_static_rules": "Root source/helper audit coversA09/A13/A18/attack duplication/conditional sacrifice/additive subtype; no implementation yet.",
+    "private_library": {
+      "commit": "00f48177e",
+      "integration": "b2a42eb84",
+      "evidence": "docs/tdm-private-library-evidence.json",
+      "status": "REOPENED during independent review for land/nonland decision-count disclosure; exact paired negative reproduces it, owner fixed31 run active."
+    }
   }
 }

@@ -9067,9 +9067,7 @@ impl Game {
                             .unwrap_or_else(|| CopyRecipe::new(before.card));
                         item.source_copy_recipe = (recipe.definition
                             != item.source.expect("matched source").card
-                            || recipe.exceptions != CopyExceptions::NONE
-                            || recipe.overrides.is_some()
-                            || recipe.faces.is_some())
+                            || recipe.needs_source_snapshot())
                         .then(|| Box::new(recipe));
                     }
                 }

@@ -897,11 +897,7 @@ impl Game {
             captured_artifact_copy: None,
             source_copy_recipe: self
                 .copy_recipe(self.object_ref(card))
-                .filter(|r| {
-                    r.exceptions != CopyExceptions::NONE
-                        || r.overrides.is_some()
-                        || r.faces.is_some()
-                })
+                .filter(|r| r.needs_source_snapshot())
                 .map(Box::new),
             source_ability_origin: self.copy_ability_origin(self.object_ref(card)),
             mana_copy_sources: None,
