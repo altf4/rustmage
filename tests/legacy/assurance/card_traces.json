@@ -311,6 +311,14 @@
     "journal": "b3f39d5b44da38ed",
     "observations": "a1cfcfd1535c273d"
   },
+  "Aetherjacket": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "903e360914c6c94c",
+    "observations": "ba907f61734e7e12"
+  },
   "Aettir and Priwen": {
     "root": "main",
     "status": "completed",
@@ -559,6 +567,14 @@
     "journal": "802adcf65e36569e",
     "observations": "be23896335db116e"
   },
+  "Alacrian Armory": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1ee756735d2f017d",
+    "observations": "adb0c6c29adac8d1"
+  },
   "Alacrian Jaguar": {
     "root": "main",
     "status": "completed",
@@ -654,6 +670,14 @@
     "zone": "Battlefield",
     "journal": "17597f5a0f41a3ff",
     "observations": "47acf0f2c4ed93c6"
+  },
+  "Amonkhet Raceway": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "fc0d5d2ab4f8ab65"
   },
   "An Offer You Can't Refuse": {
     "root": "stack",
@@ -830,6 +854,14 @@
     "zone": "Battlefield",
     "journal": "060a086fccb3a1b9",
     "observations": "15e0c613a4715244"
+  },
+  "Apocalypse Runner": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "fb8a57957b19c0bd",
+    "observations": "48d0f0020d3fba0a"
   },
   "Apothecary Stomper": {
     "root": "main",
@@ -1367,6 +1399,14 @@
     "journal": "c840d8a2ea15c38d",
     "observations": "f4f278962c550c64"
   },
+  "Avishkar Raceway": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "4b0f72abb998d90d"
+  },
   "Awaken the Inferno": {
     "root": "main",
     "status": "completed",
@@ -1438,6 +1478,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "518ef0c1095eadea"
+  },
+  "Back on Track": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "ca1ada5f729c973f",
+    "observations": "1cfa418a3b424a16"
   },
   "Bake into a Pie": {
     "root": "main",
@@ -1622,6 +1670,14 @@
     "zone": "Battlefield",
     "journal": "100cb581dd613f1f",
     "observations": "89f96522baffb56c"
+  },
+  "Basri, Tomorrow's Champion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "97f197e40a843eee",
+    "observations": "d7bc39fda1a0089c"
   },
   "Battle Menu": {
     "root": "main",
@@ -2695,6 +2751,14 @@
     "journal": "1ee756735d2f017d",
     "observations": "00c25c4b0987387f"
   },
+  "Brightglass Gearhulk": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "ae98ff851773988f",
+    "observations": "7b93d2518ac19806"
+  },
   "Brightspear Zealot": {
     "root": "main",
     "status": "completed",
@@ -2751,6 +2815,14 @@
     "journal": "60428f3f72377f23",
     "observations": "928b1afac37a67d4"
   },
+  "Broodheart Engine": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "6fa9681564dd188f",
+    "observations": "4a7db1c1ca299452"
+  },
   "Bruce Banner // The Incredible Hulk": {
     "root": "main",
     "status": "completed",
@@ -2790,6 +2862,14 @@
     "zone": "Battlefield",
     "journal": "e404ff90c0dbbc24",
     "observations": "bffabc969a73b086"
+  },
+  "Bulwark Ox": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "63f58fae3baa2f59"
   },
   "Bumbleflower's Sharepot": {
     "root": "main",
@@ -2846,6 +2926,14 @@
     "zone": "Battlefield",
     "journal": "903e360914c6c94c",
     "observations": "de064a3f315a0fcf"
+  },
+  "Burnout Bashtronaut": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "c4b8f6d37ca7169e",
+    "observations": "0f8bdc63d11c35cf"
   },
   "Burrog Banemaker": {
     "root": "main",
@@ -3071,6 +3159,14 @@
     "journal": "060a086fccb3a1b9",
     "observations": "6f4fff5887b436fd"
   },
+  "Canyon Vaulter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "48d1df3affabbf38"
+  },
   "Capital City": {
     "root": "main",
     "status": "completed",
@@ -3110,6 +3206,14 @@
     "zone": "Battlefield",
     "journal": "3ad6d4893695dc9c",
     "observations": "9af272168ba13830"
+  },
+  "Captain Howler, Sea Scourge": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "2cbbc7bfb5d12fad",
+    "observations": "6b6f0842d94b5c16"
   },
   "Captain Mar-Vell, Space-Born": {
     "root": "main",
@@ -3174,6 +3278,14 @@
     "zone": "Battlefield",
     "journal": "100cb581dd613f1f",
     "observations": "76fe2938c7aab2c3"
+  },
+  "Carrion Cruiser": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "eab57b8daba02d78",
+    "observations": "0ad30a6199a90234"
   },
   "Cartographer's Companion": {
     "root": "main",
@@ -3607,6 +3719,38 @@
     "journal": "5a37305467443acc",
     "observations": "7d3c5ef217672c5a"
   },
+  "Cloudspire Captain": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3ad6d4893695dc9c",
+    "observations": "187230667e799b52"
+  },
+  "Cloudspire Coordinator": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "29db4a2104861be2",
+    "observations": "dc395c8c59276e7a"
+  },
+  "Cloudspire Skycycle": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 9,
+    "zone": "Battlefield",
+    "journal": "96888265e7f9dc4e",
+    "observations": "7c687307ede76ea6"
+  },
+  "Coalstoke Gearhulk": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "dce7c9b80c9909d9",
+    "observations": "33a10cfe96bf9961"
+  },
   "Coati Scavenger": {
     "root": "main",
     "status": "completed",
@@ -3678,6 +3822,14 @@
     "zone": "Battlefield",
     "journal": "ce93789b5fa64c9f",
     "observations": "99d33e10b4f01038"
+  },
+  "Collision Course": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "1fcdea1ddc86e57e",
+    "observations": "11032b5df8f3a2d3"
   },
   "Colorstorm Stallion": {
     "root": "main",
@@ -4287,6 +4439,14 @@
     "journal": "9d78478b460edd3d",
     "observations": "be34a20951fabaec"
   },
+  "Cryptcaller Chariot": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9d78478b460edd3d",
+    "observations": "fc8170d52deb0072"
+  },
   "Cryptic Caves": {
     "root": "main",
     "status": "completed",
@@ -4454,6 +4614,14 @@
     "zone": "Battlefield",
     "journal": "7cf9667d9239e4fd",
     "observations": "fd03328d4ae1efca"
+  },
+  "Daring Mechanic": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3ad6d4893695dc9c",
+    "observations": "3bfa3751f1c798d6"
   },
   "Daring Thunder-Thief": {
     "root": "main",
@@ -4694,6 +4862,14 @@
     "zone": "Battlefield",
     "journal": "9642c2c3932450a4",
     "observations": "72c1f9e33a3c6f98"
+  },
+  "Deathless Pilot": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "e960f05cc3dfea7a"
   },
   "Deathmark": {
     "root": "main",
@@ -5495,6 +5671,14 @@
     "journal": "b6c597ca2dde4a90",
     "observations": "9ce646869eb881fd"
   },
+  "Dredger's Insight": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "4e8f1c73500cb305",
+    "observations": "499d6a1dbc2e8d11"
+  },
   "Driver of the Dead": {
     "root": "main",
     "status": "completed",
@@ -5582,6 +5766,14 @@
     "zone": "Battlefield",
     "journal": "c0a1a265af2daf36",
     "observations": "d4a042465d61015c"
+  },
+  "Dune Drifter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "161d6b668f3d3752",
+    "observations": "4c5dec4661dfdc6d"
   },
   "Duress": {
     "root": "main",
@@ -5686,6 +5878,14 @@
     "zone": "Battlefield",
     "journal": "dbb8ae3f9a5d3b87",
     "observations": "73f300fd5db4824a"
+  },
+  "Dynamite Diver": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "c4b8f6d37ca7169e",
+    "observations": "4003df9c53030476"
   },
   "Dáin Ironfoot": {
     "root": "main",
@@ -6103,6 +6303,14 @@
     "journal": "9ac02903fdae659e",
     "observations": "c13bb808e7123fe4"
   },
+  "Embalmed Ascendant": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "ccdc93db3f66796e",
+    "observations": "d0feeee08483e46c"
+  },
   "Embereth Veteran": {
     "root": "main",
     "status": "completed",
@@ -6238,6 +6446,22 @@
     "zone": "Graveyard",
     "journal": "8c6432a78f6c1783",
     "observations": "f37c4fc7df28d58d"
+  },
+  "Endrider Catalyzer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "0a355d56e1c4c4de"
+  },
+  "Endrider Spikespitter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "fa023aad863dc9ad",
+    "observations": "32e4deca8f76355c"
   },
   "Enduring Curiosity": {
     "root": "main",
@@ -6591,6 +6815,14 @@
     "journal": "a4570c800d9dee1d",
     "observations": "570992e2d7670a27"
   },
+  "Explosive Getaway": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "394368a9ecde2ea9",
+    "observations": "02f56cb144df745e"
+  },
   "Explosive Prodigy": {
     "root": "main",
     "status": "completed",
@@ -6775,6 +7007,22 @@
     "journal": "1a356125bd64ecdb",
     "observations": "258f67ae74952cb2"
   },
+  "Fang-Druid Summoner": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "8d00234c0048aa38",
+    "observations": "de04359e704a3022"
+  },
+  "Far Fortune, End Boss": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "fb8a57957b19c0bd",
+    "observations": "c3e770057b20e606"
+  },
   "Farsight Ritual": {
     "root": "main",
     "status": "completed",
@@ -6878,6 +7126,14 @@
     "zone": "Battlefield",
     "journal": "ce93789b5fa64c9f",
     "observations": "483f82c4c765b9c6"
+  },
+  "Fearless Swashbuckler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "f77283e5ac3a7c9e",
+    "observations": "64e4ec6674600d52"
   },
   "Fearsome Goblin Pair": {
     "root": "main",
@@ -7310,6 +7566,14 @@
     "zone": "Battlefield",
     "journal": "0386c07dd2d7047f",
     "observations": "c31cfe6c220f7f78"
+  },
+  "Flood the Engine": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "2f47adf619434ece",
+    "observations": "3a4605557fbee359"
   },
   "Floodfarm Verge": {
     "root": "main",
@@ -7951,6 +8215,38 @@
     "journal": "e8de1199f21a06d6",
     "observations": "88c483dd405a135f"
   },
+  "Gas Guzzler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7def026c1597d7ae",
+    "observations": "74bde73245a43278"
+  },
+  "Gastal Blockbuster": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "27a14919057c842b",
+    "observations": "67f69c9241f078e4"
+  },
+  "Gastal Raider": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "57efe7a6ad3b6069",
+    "observations": "1fc7e02dd07fee5d"
+  },
+  "Gastal Thrillseeker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 9,
+    "zone": "Battlefield",
+    "journal": "f66b5bfe407c241a",
+    "observations": "fe59f6bf1c32331a"
+  },
   "Gate Colossus": {
     "root": "main",
     "status": "completed",
@@ -7998,6 +8294,14 @@
     "zone": "Graveyard",
     "journal": "55485ade73e37a28",
     "observations": "9fed5a7815fb7a17"
+  },
+  "Gearseeker Serpent": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "78a585eeb3f83501",
+    "observations": "3153de6d8986044b"
   },
   "Geist of Saint Thalia": {
     "root": "main",
@@ -8583,6 +8887,14 @@
     "journal": "4432797ffd273139",
     "observations": "12629b55e5ea57cb"
   },
+  "Goblin Surveyor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "050b3497bde4a4b2"
+  },
   "Goblin Tomb Raider": {
     "root": "main",
     "status": "completed",
@@ -8831,6 +9143,14 @@
     "journal": "4324aa4c9fd9325c",
     "observations": "73f7d0de803adf10"
   },
+  "Greasewrench Goblin": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "c4b8f6d37ca7169e",
+    "observations": "fbe80b59eaa629ac"
+  },
   "Great Arashin City": {
     "root": "main",
     "status": "completed",
@@ -9031,6 +9351,14 @@
     "journal": "a19704fa93226173",
     "observations": "47d9136ccd596811"
   },
+  "Guardian Sunmare": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "157c935ef8d4f416",
+    "observations": "99348e53ce4657b7"
+  },
   "Guardian of the Halls": {
     "root": "main",
     "status": "completed",
@@ -9047,6 +9375,14 @@
     "journal": "100cb581dd613f1f",
     "observations": "51721d5a5064f831"
   },
+  "Guidelight Matrix": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "043270708979483d",
+    "observations": "7dacc9dd05bdae1f"
+  },
   "Guidelight Optimizer": {
     "root": "main",
     "status": "completed",
@@ -9054,6 +9390,14 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "36ade8d2de385e52"
+  },
+  "Guidelight Pathmaker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "dfc66d67f9d0bb7b",
+    "observations": "2eff5c6b4915fd6e"
   },
   "Guidelight Synergist": {
     "root": "main",
@@ -9335,6 +9679,14 @@
     "journal": "35eac2d6e96f4306",
     "observations": "f097bbe09cd498e5"
   },
+  "Haunt the Network": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "e61f8aeed2d7aefd",
+    "observations": "a0d66ddcfd314cbe"
+  },
   "Haunted Hellride": {
     "root": "main",
     "status": "completed",
@@ -9398,6 +9750,14 @@
     "zone": "Graveyard",
     "journal": "55485ade73e37a28",
     "observations": "ab34e9a5ea65f899"
+  },
+  "Hazoret, Godseeker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "9413d9ac1029b723"
   },
   "Head of the Homestead": {
     "root": "main",
@@ -9510,6 +9870,14 @@
     "zone": "Battlefield",
     "journal": "ff91f79bc3502b45",
     "observations": "3345a0e4c7601e72"
+  },
+  "Hellish Sideswipe": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "1289f2dc863418ef",
+    "observations": "74c2d0b658a89109"
   },
   "Hellspur Brute": {
     "root": "main",
@@ -9894,6 +10262,14 @@
     "zone": "Graveyard",
     "journal": "100e5f09845b88c8",
     "observations": "4a7836c708539b0d"
+  },
+  "Hour of Victory": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "c74d47fdf1bf30fc",
+    "observations": "79c075c820381f4f"
   },
   "Hovel Hurler": {
     "root": "main",
@@ -10455,6 +10831,14 @@
     "journal": "77bf79854c3416e3",
     "observations": "a4e7504ee18355f9"
   },
+  "Interface Ace": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "f795c0919160fee2"
+  },
   "Interjection": {
     "root": "main",
     "status": "completed",
@@ -10470,6 +10854,14 @@
     "zone": "Battlefield",
     "journal": "b43781f2834dd88f",
     "observations": "e79cc51a7bef828e"
+  },
+  "Intimidation Tactics": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "01de573bff90f54c",
+    "observations": "730abbd7be270f5c"
   },
   "Into the Flood Maw": {
     "root": "main",
@@ -11087,6 +11479,14 @@
     "journal": "c4b8f6d37ca7169e",
     "observations": "e6858d170a30e5e1"
   },
+  "Ketramose, the New Dawn": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "308e6690fa72d89e",
+    "observations": "3a436ba494d48498"
+  },
   "Key to the Side-Door": {
     "root": "main",
     "status": "completed",
@@ -11094,6 +11494,14 @@
     "zone": "Battlefield",
     "journal": "ae05947724786c5e",
     "observations": "e57efca84e5bcebe"
+  },
+  "Kickoff Celebrations": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "3d3ee93213b6a8c8",
+    "observations": "53ed9533d449b695"
   },
   "Kid Loki": {
     "root": "main",
@@ -11303,6 +11711,14 @@
     "journal": "b6cf3749b9ab6fcf",
     "observations": "7497b4409a1d0ebc"
   },
+  "Kolodin, Triumph Caster": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "2ca588a594b1301f",
+    "observations": "a44489a72fe5fc0a"
+  },
   "Koma, World-Eater": {
     "root": "main",
     "status": "completed",
@@ -11486,6 +11902,14 @@
     "zone": "Battlefield",
     "journal": "157c935ef8d4f416",
     "observations": "753282f025b7fc72"
+  },
+  "Lagorin, Soul of Alacria": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ab5d0017e9730bcf",
+    "observations": "cea2c43bbbf4035d"
   },
   "Lake-town": {
     "root": "main",
@@ -11774,6 +12198,14 @@
     "zone": "Graveyard",
     "journal": "b7e7e5a03884f6a4",
     "observations": "1c9a64c51b6e0f89"
+  },
+  "Lightwheel Enhancements": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "b7e7e5a03884f6a4",
+    "observations": "467869a4e10ac125"
   },
   "Liliana the Faultless": {
     "root": "main",
@@ -12119,6 +12551,14 @@
     "journal": "903e360914c6c94c",
     "observations": "f80c29436f0a8858"
   },
+  "Lotusguard Disciple": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "adff102b3da1531c",
+    "observations": "4528beb77ad1ec8e"
+  },
   "Loxodon Battle Priest": {
     "root": "main",
     "status": "completed",
@@ -12134,6 +12574,14 @@
     "zone": "Battlefield",
     "journal": "f500b3118c2282cd",
     "observations": "a9691fb70350c8ef"
+  },
+  "Loxodon Surveyor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "add5462fff5af40e"
   },
   "Loyal Tutor": {
     "root": "main",
@@ -12567,6 +13015,14 @@
     "journal": "c4b8f6d37ca7169e",
     "observations": "46f2bf5ead3a8a88"
   },
+  "March of the World Ooze": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "57d053c6be1289bf",
+    "observations": "d64e833d202d5e41"
+  },
   "Mardu Devotee": {
     "root": "main",
     "status": "completed",
@@ -12839,6 +13295,14 @@
     "journal": "ae39e8c9c29226fe",
     "observations": "3e949a42857e16ac"
   },
+  "Mendicant Core, Guidelight": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1cc7dd0fb86e0b9f",
+    "observations": "73a08f56e1d3def2"
+  },
   "Mental Modulation": {
     "root": "main",
     "status": "completed",
@@ -12991,6 +13455,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "69222c6fd65c9c3b"
   },
+  "Midnight Mangler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "4a328118ff5ea674"
+  },
   "Midnight Reaper": {
     "root": "main",
     "status": "completed",
@@ -13054,6 +13526,14 @@
     "zone": "Battlefield",
     "journal": "d96ad4ca883f316e",
     "observations": "1ae9af7970496413"
+  },
+  "Mimeoplasm, Revered One": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "a463f658d81c82d4",
+    "observations": "49f0bd1f0caebe81"
   },
   "Mind Drill Assailant": {
     "root": "main",
@@ -13126,6 +13606,14 @@
     "zone": "Battlefield",
     "journal": "8628206654ab4c6c",
     "observations": "8f490dd764b3b1a2"
+  },
+  "Mindspring Merfolk": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "77fe8ec276f5ddde",
+    "observations": "705619e6ddb8c0e8"
   },
   "Minecart Daredevil": {
     "root": "main",
@@ -13343,6 +13831,14 @@
     "journal": "543918deceb4be8c",
     "observations": "18358ab2896e44ec"
   },
+  "Molt Tender": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "d96ad4ca883f316e",
+    "observations": "d89b0b4110aa1cea"
+  },
   "Molten Duplication": {
     "root": "main",
     "status": "completed",
@@ -13406,6 +13902,14 @@
     "zone": "Graveyard",
     "journal": "ccc4c3fabc84310d",
     "observations": "06016c29f35f89b5"
+  },
+  "Momentum Breaker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "cb8e52ccde089acd",
+    "observations": "f88d2e1056d3a84d"
   },
   "Mongoose Lizard": {
     "root": "main",
@@ -13631,6 +14135,14 @@
     "journal": "5a37305467443acc",
     "observations": "7f9ea84a91d357c6"
   },
+  "Mu Yanling, Wind Rider": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "15b0001024543f9f",
+    "observations": "f0d1a42a7ae3d488"
+  },
   "Muldrotha, the Gravetide": {
     "root": "main",
     "status": "completed",
@@ -13662,6 +14174,14 @@
     "zone": "Battlefield",
     "journal": "eddf18a57355399d",
     "observations": "85dbdd1f5a71cde3"
+  },
+  "Muraganda Raceway": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "1302aa95aaf25255"
   },
   "Murder": {
     "root": "main",
@@ -13710,6 +14230,14 @@
     "zone": "Graveyard",
     "journal": "900f32d3bfb45c47",
     "observations": "b68338875630d51f"
+  },
+  "Mutant Surveyor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "4324aa4c9fd9325c",
+    "observations": "146f1090b76993bf"
   },
   "Mutant Town": {
     "root": "main",
@@ -13918,6 +14446,14 @@
     "zone": "Battlefield",
     "journal": "97f197e40a843eee",
     "observations": "f41f7f23f468b67f"
+  },
+  "Night Market": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 2,
+    "zone": "Battlefield",
+    "journal": "cae38838aa70fc3b",
+    "observations": "a983e32ab2ed6e39"
   },
   "Night Nurse, Healer of Heroes": {
     "root": "main",
@@ -14198,6 +14734,14 @@
     "zone": "Graveyard",
     "journal": "adcea180f71f0045",
     "observations": "ad969db135def8e5"
+  },
+  "Oildeep Gearhulk": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "b374a49e4a4636c5",
+    "observations": "386cdbc9153d2020"
   },
   "Oko, Lorwyn Liege // Oko, Shadowmoor Scion": {
     "root": "main",
@@ -14495,6 +15039,14 @@
     "journal": "543918deceb4be8c",
     "observations": "1ce1685d495a46ed"
   },
+  "Outpace Oblivion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "4e66e0110bdf32cf",
+    "observations": "d54215373f43d43e"
+  },
   "Outrageous Robbery": {
     "root": "main",
     "status": "completed",
@@ -14574,6 +15126,14 @@
     "zone": "Battlefield",
     "journal": "db5bbd6299e27262",
     "observations": "1b5568e7906b338a"
+  },
+  "Oviya, Automech Artisan": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "60609359dae9f3fd",
+    "observations": "3de73c25caf0f682"
   },
   "Owlin Historian": {
     "root": "main",
@@ -15039,6 +15599,14 @@
     "journal": "7f796ee01d0406c9",
     "observations": "d4547528f1058d2f"
   },
+  "Plow Through": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "997ab1c8ff2ce1da",
+    "observations": "e3ebb8321eb8f968"
+  },
   "Plumecreed Escort": {
     "root": "main",
     "status": "completed",
@@ -15070,6 +15638,14 @@
     "zone": "Graveyard",
     "journal": "966b425c3a810e1d",
     "observations": "c56dcb93a155db71"
+  },
+  "Point the Way": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "d96ad4ca883f316e",
+    "observations": "e0a2652d414564ea"
   },
   "Poised Practitioner": {
     "root": "main",
@@ -15127,6 +15703,14 @@
     "journal": "4324aa4c9fd9325c",
     "observations": "293cb954044095e5"
   },
+  "Possession Engine": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "e4f86707ca1ffe27",
+    "observations": "3b7ffe885a7aca6c"
+  },
   "Postmortem Professor": {
     "root": "main",
     "status": "completed",
@@ -15134,6 +15718,14 @@
     "zone": "Battlefield",
     "journal": "a4c714aeb662e85f",
     "observations": "8d37d2286944642e"
+  },
+  "Pothole Mole": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "32d8619e4e2ccd84",
+    "observations": "fbdbfa820840c3aa"
   },
   "Potioner's Trove": {
     "root": "main",
@@ -15591,6 +16183,14 @@
     "journal": "8628206654ab4c6c",
     "observations": "bf49840d0fff0653"
   },
+  "Pyrewood Gearhulk": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "c2d8a38c77626125",
+    "observations": "65a0cb11f65f49c4"
+  },
   "Pyroclasm": {
     "root": "main",
     "status": "completed",
@@ -15799,6 +16399,14 @@
     "journal": "b43781f2834dd88f",
     "observations": "658412358e2a269a"
   },
+  "Racers' Scoreboard": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "822378c13bd390e8",
+    "observations": "615f947b38c4549b"
+  },
   "Radagast of Rhosgobel": {
     "root": "main",
     "status": "completed",
@@ -15958,6 +16566,14 @@
     "zone": "Battlefield",
     "journal": "1cba658877741a8e",
     "observations": "b3e01e6957fc7fe8"
+  },
+  "Rangers' Refueler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "5e400370c7598b28"
   },
   "Rank Rat": {
     "root": "main",
@@ -16238,6 +16854,14 @@
     "zone": "Battlefield",
     "journal": "903e360914c6c94c",
     "observations": "2d75490d0a4b4938"
+  },
+  "Redshift, Rocketeer Chief": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "310c30cec58089ff",
+    "observations": "3910f11a0afd7fff"
   },
   "Redtooth Genealogist": {
     "root": "main",
@@ -16639,6 +17263,22 @@
     "journal": "52e0e0dab9ddd2a9",
     "observations": "53dc65e24f3bc753"
   },
+  "Riptide Gearhulk": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "0e3b065fe69d7efd",
+    "observations": "a4c1bffa7b082226"
+  },
+  "Rise from the Wreck": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "88cdd0cb17d5f332",
+    "observations": "d47965b9b15ef3c9"
+  },
   "Rise of the Dark Realms": {
     "root": "main",
     "status": "completed",
@@ -16662,6 +17302,14 @@
     "zone": "Graveyard",
     "journal": "60609359dae9f3fd",
     "observations": "318aa79490ecc380"
+  },
+  "Risen Necroregent": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b681d3b088ac0c32",
+    "observations": "66dac5a1717add9a"
   },
   "Risky Research": {
     "root": "main",
@@ -16766,6 +17414,14 @@
     "zone": "Battlefield",
     "journal": "463429368103bb5c",
     "observations": "9e625d5c75102b2d"
+  },
+  "Roadside Assistance": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "077b64f94e7b7146",
+    "observations": "0b3813ff079bbe4b"
   },
   "Roadside Blowout": {
     "root": "main",
@@ -17175,6 +17831,14 @@
     "journal": "46b3e67daab0d01c",
     "observations": "0c06a77bd1339c22"
   },
+  "Sab-Sunen, Luxa Embodied": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "8e1047a8c5fa263c",
+    "observations": "978de46cbe078060"
+  },
   "Saber-Tooth Moose-Lion": {
     "root": "main",
     "status": "completed",
@@ -17182,6 +17846,14 @@
     "zone": "Battlefield",
     "journal": "a0e420e69a0470d9",
     "observations": "fe7ba1dcfa25e83e"
+  },
+  "Sabotage Strategist": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9fb8f9361b7adf8f",
+    "observations": "f635c64fc0c2067e"
   },
   "Sabotender": {
     "root": "main",
@@ -17255,6 +17927,14 @@
     "journal": "d6009dde0ebfb23e",
     "observations": "6d7e4799b9499a54"
   },
+  "Salvation Engine": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "db7b0f4bd7e53672",
+    "observations": "a5e0afba886f138a"
+  },
   "Sami's Curiosity": {
     "root": "main",
     "status": "completed",
@@ -17310,6 +17990,14 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "ce0b4092479d095c"
+  },
+  "Samut, the Driving Force": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "75e8e7895a5e3b4d",
+    "observations": "a9b43a0752d05fdc"
   },
   "Sanar, Unfinished Genius": {
     "root": "main",
@@ -18199,6 +18887,14 @@
     "journal": "b21f71887cb3a47b",
     "observations": "7b9d9e0ebf03b141"
   },
+  "Silken Strength": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "fdc2f9a233c93555",
+    "observations": "89129511623f96bd"
+  },
   "Silvan Reveler": {
     "root": "main",
     "status": "completed",
@@ -18294,6 +18990,14 @@
     "zone": "Battlefield",
     "journal": "ad817a2b37dc4f00",
     "observations": "26dd55cbe9b26f6a"
+  },
+  "Sita Varma, Masked Racer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "21c94e12108ffb3f",
+    "observations": "a337d11041d94193"
   },
   "Sizzling Changeling": {
     "root": "main",
@@ -18391,6 +19095,22 @@
     "journal": "064e0674483370ef",
     "observations": "052e29cf347025f0"
   },
+  "Skyseer's Chariot": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "38e51bd7e2d3ea3e",
+    "observations": "9e6e1d1e49d3f1ea"
+  },
+  "Skyserpent Seeker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "21c94e12108ffb3f",
+    "observations": "ce66ddc9166b430f"
+  },
   "Skyship Buccaneer": {
     "root": "main",
     "status": "completed",
@@ -18478,6 +19198,14 @@
     "zone": "Graveyard",
     "journal": "3787cb0d6aabe740",
     "observations": "1dfc57d1442751b3"
+  },
+  "Slick Imitator": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "02f646649d1bca62"
   },
   "Slickshot Show-Off": {
     "root": "main",
@@ -18759,6 +19487,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "3115cac79963b65b"
   },
+  "Spectacular Pileup": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "157c935ef8d4f416",
+    "observations": "82bbbaf318349d0f"
+  },
   "Spectacular Skywhale": {
     "root": "main",
     "status": "completed",
@@ -18958,6 +19694,14 @@
     "zone": "Battlefield",
     "journal": "6a420d25772ef5d8",
     "observations": "3cf79f8bd4d9a734"
+  },
+  "Spikeshell Harrier": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "527ccfac0d9e6cc3",
+    "observations": "20ace5807a04c3c7"
   },
   "Spin Out": {
     "root": "main",
@@ -19175,6 +19919,14 @@
     "journal": "6a00b6c7783b4dc5",
     "observations": "19c245c2ff532e21"
   },
+  "Stall Out": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "797c571123bdae8d",
+    "observations": "93970faf73dbeb45"
+  },
   "Stampeding Scurryfoot": {
     "root": "main",
     "status": "completed",
@@ -19246,6 +19998,14 @@
     "zone": "Battlefield",
     "journal": "8a8c1e67309780b9",
     "observations": "0cf061e1e5718976"
+  },
+  "Starting Column": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "903e360914c6c94c",
+    "observations": "d914e2167622c10b"
   },
   "Starting Town": {
     "root": "main",
@@ -19646,6 +20406,14 @@
     "zone": "Battlefield",
     "journal": "1570f379b1dbfc8e",
     "observations": "ea7efb748d95f7a8"
+  },
+  "Streaking Oilgorger": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b681d3b088ac0c32",
+    "observations": "74b141cb4db824e2"
   },
   "Stress Dream": {
     "root": "main",
@@ -20879,6 +21647,14 @@
     "journal": "308e6690fa72d89e",
     "observations": "45599de5a1a9e652"
   },
+  "The Last Ride": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7def026c1597d7ae",
+    "observations": "be1c2548102ca689"
+  },
   "The Lion-Turtle": {
     "root": "main",
     "status": "completed",
@@ -21006,6 +21782,14 @@
     "zone": "Battlefield",
     "journal": "802adcf65e36569e",
     "observations": "e057d92be444dffe"
+  },
+  "The Speed Demon": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e8de1199f21a06d6",
+    "observations": "dedf6faa9d483ec0"
   },
   "The Spot's Portal": {
     "root": "main",
@@ -21415,6 +22199,14 @@
     "journal": "a8a230506a4f0c62",
     "observations": "3322cfd2d60eff11"
   },
+  "Thundering Broodwagon": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "0289dc7eebf8785a",
+    "observations": "976d77b0f3c8742d"
+  },
   "Thundering Falls": {
     "root": "main",
     "status": "completed",
@@ -21422,6 +22214,14 @@
     "zone": "Battlefield",
     "journal": "bb652b9252f64f35",
     "observations": "31345ad85f51f3a1"
+  },
+  "Thunderous Velocipede": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "bc95b85ffa280724",
+    "observations": "d8b210dfb414e8be"
   },
   "Thundertrap Trainer": {
     "root": "main",
@@ -21438,6 +22238,14 @@
     "zone": "Graveyard",
     "journal": "b7e7e5a03884f6a4",
     "observations": "a67892d059eb9a8f"
+  },
+  "Ticket Tortoise": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e9faa30ff25cc76d",
+    "observations": "7f73e5b86b82867a"
   },
   "Tidecaller Mentor": {
     "root": "main",
@@ -21711,6 +22519,14 @@
     "journal": "6ad262452df6dc24",
     "observations": "3f95f642902c0b66"
   },
+  "Trade the Helm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "05140431e708464f",
+    "observations": "76122c69f603127d"
+  },
   "Tragedy Feaster": {
     "root": "main",
     "status": "completed",
@@ -21782,6 +22598,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "6d575539c728332b"
+  },
+  "Transit Mage": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "4d9fd1da45b94434",
+    "observations": "1c6ed751f66f98dc"
   },
   "Transmutation Font": {
     "root": "main",
@@ -21966,6 +22790,14 @@
     "zone": "Battlefield",
     "journal": "6b4d8f943f1d195c",
     "observations": "def6852f81f87dba"
+  },
+  "Tune Up": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "c7e7ef3231d0784c",
+    "observations": "670c6732b047ecdf"
   },
   "Tunnel Rats": {
     "root": "main",
@@ -22399,6 +23231,14 @@
     "journal": "695e262e8714d6a0",
     "observations": "75aaf459ad125c8b"
   },
+  "Unstoppable Plan": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "5a37305467443acc",
+    "observations": "7d7bfd6e93f1b6fd"
+  },
   "Unsubtle Mockery": {
     "root": "main",
     "status": "completed",
@@ -22494,6 +23334,14 @@
     "zone": "Graveyard",
     "journal": "9e3411ded918baf1",
     "observations": "99b943dc51ed3443"
+  },
+  "Valor's Flagship": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "2ccfccf7ba980670",
+    "observations": "5f812096cac96966"
   },
   "Valorous Stance": {
     "root": "main",
@@ -23079,6 +23927,22 @@
     "journal": "fae424dc01ad1ac5",
     "observations": "4a96d5da60bd91e1"
   },
+  "Voyage Home": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "c265ae197f307043",
+    "observations": "ebf0fce0b1de99bb"
+  },
+  "Voyager Glidecar": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "63a47dbb3c980021",
+    "observations": "52e9a6d6eb14bd2a"
+  },
   "Voyager Quickwelder": {
     "root": "main",
     "status": "completed",
@@ -23142,6 +24006,14 @@
     "zone": "Battlefield",
     "journal": "40cf737e0d77ac1e",
     "observations": "69ed988ef25aa0ee"
+  },
+  "Walking Sarcophagus": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e9faa30ff25cc76d",
+    "observations": "3e3090e652841282"
   },
   "Wan Shi Tong, Librarian": {
     "root": "main",
@@ -23350,6 +24222,14 @@
     "zone": "Battlefield",
     "journal": "12e1a713ea13279c",
     "observations": "b051e3f6111c9301"
+  },
+  "Waxen Shapethief": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "01d2d8ad0d34d433",
+    "observations": "477286e55fc1d7d5"
   },
   "Way of the Cryomancer": {
     "root": "main",
@@ -23607,6 +24487,14 @@
     "journal": "a4c714aeb662e85f",
     "observations": "da3f9a23b442474e"
   },
+  "Wickerfolk Indomitable": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9d78478b460edd3d",
+    "observations": "325a0c6ec45fa7b2"
+  },
   "Widow's Bite": {
     "root": "main",
     "status": "completed",
@@ -23774,6 +24662,14 @@
     "zone": "Graveyard",
     "journal": "adcea180f71f0045",
     "observations": "8cdf5e92207296d5"
+  },
+  "Winter, Cursed Rider": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "582056d2fe08eabf",
+    "observations": "586d301f3504010a"
   },
   "Winter, Team Player": {
     "root": "main",
@@ -24142,6 +25038,14 @@
     "zone": "Battlefield",
     "journal": "db5bbd6299e27262",
     "observations": "c5d1f3cd69d118ab"
+  },
+  "Zahur, Glory's Past": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "200cf1b001199a8f",
+    "observations": "53f983c85c82929d"
   },
   "Zealous Lorecaster": {
     "root": "main",

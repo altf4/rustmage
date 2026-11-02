@@ -1,32 +1,32 @@
 {
-  "phase": "engine reentry accepted; ordinary card authorship may resume; full-set acceptance remains open",
-  "engine_revision": "8657c4e6c",
-  "tested_revision": "a36b9750418699b70c752fc41980016692f2103d",
-  "engine_inputs_sha256": "b35fa13c95a42ccf943db24abf21a3ca43f05268afe239480afe62acf9cce411",
+  "phase": "engine copy-capture reentry accepted; ordinary cards may resume; full set acceptance remains open",
+  "engine_revision": "9000f120b",
+  "tested_revision": "cb1fbff78d2ef80c0eb4e15b5e9215e84f464ca9",
+  "engine_inputs_sha256": "01b5653ba659ff89071048c83ad5dd22abd29c527e5d0677ddcf05710f98de7e",
   "engine_digest_method": "SHA256 of each sorted tracked crates/engine path, NUL, then binary SHA256(file)",
-  "baseline_sha256": "d66cd3f5d1da4935f2320e29de9b7561210df65ae5e73172da44b1f678816905",
+  "baseline_sha256": "132945c01fea8a9b36352123313d7061b29309ff03ebb6a5e5fac0afcfa5ee6e",
   "focused_engine": {
-    "passed": 336,
+    "passed": 346,
     "failed": 0,
-    "targets": 39,
-    "execution_seconds": 0.6974718030105578
+    "targets": 40,
+    "execution_seconds": 0.6956114639906446
   },
-  "prepared_card_scenarios": {
-    "passed": 39,
+  "authored_card_scenarios": {
+    "passed": 256,
     "failed": 0,
-    "targets": 5,
-    "execution_seconds": 0.08170767000410706
+    "targets": 26,
+    "execution_seconds": 0.44572166599391494
   },
   "focused_total": {
-    "passed": 375,
+    "passed": 602,
     "failed": 0,
-    "targets": 44,
-    "execution_seconds": 0.7791794730146648
+    "targets": 66,
+    "execution_seconds": 1.1413331299845595
   },
   "ordinary_legacy": {
-    "passed": 3035,
+    "passed": 3036,
     "failed": 0,
-    "seconds": 77.95230166299734
+    "seconds": 79.61355417899904
   },
   "big_games": [
     {
@@ -58,11 +58,11 @@
         "Vaultborn Tyrant"
       ],
       "decisions": 2653,
-      "decisions_per_second": 260.52497226632124,
+      "decisions_per_second": 254.63617240460687,
       "deck_pair": 1,
       "excludes": "model inference, exhaustive choice coverage",
       "games": 3,
-      "games_per_second": 0.2946004209570161,
+      "games_per_second": 0.28794139359736926,
       "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
       "outcomes": [
         {
@@ -90,9 +90,9 @@
           "seed": 56712
         }
       ],
-      "seconds": 10.183284838,
+      "seconds": 10.418786832,
       "spell_colors_mask": 31,
-      "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-0/execution.log"
+      "log": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-reentry-20261102-160500Z/big-0/execution.log"
     },
     {
       "cards_activated": [
@@ -121,11 +121,11 @@
         "Worldwalker Helm"
       ],
       "decisions": 1859,
-      "decisions_per_second": 1481.692150811231,
+      "decisions_per_second": 1519.1497500427856,
       "deck_pair": 3,
       "excludes": "model inference, exhaustive choice coverage",
       "games": 3,
-      "games_per_second": 2.391111593563041,
+      "games_per_second": 2.4515595751093904,
       "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
       "outcomes": [
         {
@@ -153,9 +153,9 @@
           "seed": 56712
         }
       ],
-      "seconds": 1.2546465869999999,
+      "seconds": 1.223710829,
       "spell_colors_mask": 27,
-      "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-1/execution.log"
+      "log": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-reentry-20261102-160500Z/big-1/execution.log"
     },
     {
       "cards_activated": [
@@ -180,11 +180,11 @@
         "Vaultborn Tyrant"
       ],
       "decisions": 2823,
-      "decisions_per_second": 574.536863951409,
+      "decisions_per_second": 561.2784590384821,
       "deck_pair": 2,
       "excludes": "model inference, exhaustive choice coverage",
       "games": 3,
-      "games_per_second": 0.6105598979292338,
+      "games_per_second": 0.5964702008910543,
       "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
       "outcomes": [
         {
@@ -212,9 +212,9 @@
           "seed": 56712
         }
       ],
-      "seconds": 4.913522834,
+      "seconds": 5.029589065,
       "spell_colors_mask": 27,
-      "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-2/execution.log"
+      "log": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-reentry-20261102-160500Z/big-2/execution.log"
     },
     {
       "cards_activated": [
@@ -244,11 +244,11 @@
         "Worldwalker Helm"
       ],
       "decisions": 1456,
-      "decisions_per_second": 3356.841173722744,
+      "decisions_per_second": 3289.4263891936703,
       "deck_pair": 0,
       "excludes": "model inference, exhaustive choice coverage",
       "games": 3,
-      "games_per_second": 6.9165683524507084,
+      "games_per_second": 6.7776642634484965,
       "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
       "outcomes": [
         {
@@ -276,23 +276,23 @@
           "seed": 56712
         }
       ],
-      "seconds": 0.433741105,
+      "seconds": 0.442630364,
       "spell_colors_mask": 31,
-      "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-3/execution.log"
+      "log": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-reentry-20261102-160500Z/big-3/execution.log"
     }
   ],
   "strict_trace": {
     "passed": 1,
-    "identities": 3031,
-    "unchanged_inherited_schema199": 3007,
+    "identities": 3144,
+    "unchanged_inherited_schema199": 3031,
     "migration_prior198_exact": 2966,
     "expected_unrepresentable": 41,
-    "expected_added": 24,
+    "expected_added": 113,
     "unexpected_differences": 0,
     "outcome_changes": 0,
-    "seconds": 1.9564084140001796
+    "seconds": 2.097515180008486
   },
-  "total_passing_cases": 3415,
+  "total_passing_cases": 3643,
   "production_format_provenance_strict_workspace_clippy": "passed",
   "independent_nonauthor_reviews": [
     {
@@ -304,28 +304,27 @@
       "decision": "source and final runtime approved"
     }
   ],
-  "resource_guard": "one shared build, one Cargo job/test thread, 6GiB cgroup; no OOM probe",
+  "resource_guard": "one shared build, one Cargo job/test thread, 6 GiB cgroup; no OOM probe",
   "compiler": {
     "target": "<cache>/rustmage-authoring/aetherdrift/target",
-    "profile": "test; engine opt-level1, test bodies opt-level0",
+    "profile": "test; engine opt-level 1, test bodies opt-level 0",
     "features": "rustmage-core/test-support; unchanged through card scenarios",
-    "test_build_seconds": 165.9925818920019,
-    "warm_check_seconds": 0.46553068100183737,
-    "engine_reused_after_promotion": true
+    "test_build_seconds": 183.3957856719935,
+    "warm_check_seconds": 0.6663042019936256,
+    "engine_reused_after_promotion": true,
+    "all_test_binary_hashes_unchanged": true
   },
   "reports": {
-    "assembled": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-assembled-20261102-093300Z/report.json",
-    "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-engine-reentry-20261102-093400Z/report.json"
+    "combined": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+    "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-permanent-copy-20261102-160800Z/report.json"
   },
-  "previous_freeze": "docs/aetherdrift-engine-freeze-initial.json",
-  "scope": "Existing native BIG Standard decks: 12 natural games, 8791 decisions, full replay and sampled owned raw/index/restore and observations. Not DFT set-only or all-Standard acceptance.",
+  "previous_freeze": "docs/aetherdrift-engine-freeze-quantity.json",
+  "scope": "Existing native BIG Standard decks with deterministic policy, natural outcomes, replay and sampled owned raw/index/restore. DFT-only games and full set release acceptance remain pending.",
   "card_admissions": {
-    "new_during_engine_reentry": 0,
     "DFT_inherited": 119,
-    "DFT_local_candidates": 143,
+    "DFT_local_candidates": 256,
     "DFT_total": 276,
-    "DFT_gated": 133,
-    "new_local_candidate_admissions_before_reentry": 24,
+    "DFT_gated": 20,
     "completed_set_verified": false
   }
 }
