@@ -1,5 +1,6 @@
 //! Non-targeted battlefield sets, frozen before simultaneous movement or damage.
 use super::*;
+use crate::cards::AnimationSpec;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn grant_permanent_group_keywords(

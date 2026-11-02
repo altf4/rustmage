@@ -1354,7 +1354,7 @@ impl<'g> FundingState<'g> {
             .activations()
             .iter()
             .enumerate()
-            .filter(|(index, ability)| {
+            .filter(move |(index, ability)| {
                 !object.card.self_granted_activation_template(*index as u16)
                     && !object.card.legacy_subtype_mana_activation(*index as u16)
                     && ability.mana_production().is_some()
