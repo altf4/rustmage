@@ -222,6 +222,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
+                            | crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_)
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType

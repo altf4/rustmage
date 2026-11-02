@@ -270,8 +270,7 @@ pub(super) trait CharacteristicWorld {
     }
     fn named_activation_generic_increase(&self, id: CardId) -> u32 {
         let query = characteristic_query::CharacteristicQuery::in_world(self);
-        (0..self.game().state.objects.len()).fold(0u32, |total, index| {
-            let source = index as CardId;
+        self.static_sources().iter().copied().fold(0u32, |total, source| {
             let provider = self.object(source);
             if provider.zone != Zone::Battlefield
                 || !matches!(self.entry_value(self.reference(source)),
