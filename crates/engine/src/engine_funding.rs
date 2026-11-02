@@ -586,6 +586,10 @@ fn source_exile_payable<W: ability_world::CharacteristicWorld + ?Sized>(
         })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[allow(
+    clippy::too_many_arguments,
+    reason = "Actual and projected payment worlds supply independent readiness facts"
+)]
 fn source_obligations(
     goal: &FundingGoal,
     object: Option<&Object>,

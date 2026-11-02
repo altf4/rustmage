@@ -2477,8 +2477,8 @@ impl FundingState<'_> {
         ids.dedup();
         let candidates = ids
             .into_iter()
-            .filter_map(|id| {
-                (!moves
+            .filter(|&id| {
+                !moves
                     .iter()
                     .any(|m| m.before.id == id && m.before.zone != Zone::Battlefield)
                     && spec.filters.iter().any(|&filter| {
@@ -2488,9 +2488,9 @@ impl FundingState<'_> {
                             movement.controller,
                             id,
                         )
-                    }))
-                .then(|| entry_copies::blueprint_in_world(self, id))
+                    })
             })
+            .map(|id| entry_copies::blueprint_in_world(self, id))
             .collect::<Vec<_>>();
         if spec.optional || candidates.is_empty() {
             let mut declined = moves.clone();

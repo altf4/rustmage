@@ -1749,11 +1749,7 @@ impl Game {
     }
 
     pub(super) fn start_named_card_search(&mut self, item: &SpellView, maximum: u16) -> bool {
-        let Some(owner) = self
-            .program_players(PlayerSet::Targeted, item)
-            .into_iter()
-            .next()
-        else {
+        let Some(owner) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
         };
         let name = self

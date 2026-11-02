@@ -607,7 +607,7 @@ impl Game {
             return None;
         };
         let source = item.source?;
-        let production = if matches!(
+        if matches!(
             ability,
             Card::GRANTED_TAP_MANA | Card::GRANTED_SACRIFICE_MANA
         ) {
@@ -624,8 +624,7 @@ impl Game {
                 .map(|grant| grant.production)
         } else {
             source.card.activation(ability).mana_production()
-        };
-        production
+        }
     }
     pub(super) fn announced_mana_quality(
         &self,

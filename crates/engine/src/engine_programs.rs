@@ -6037,7 +6037,8 @@ impl Game {
                 }
                 Instruction::UpToTargets(_) => (), // Bound before announcing targets.
                 Instruction::IfAmountParity { value, odd, skip } => {
-                    if (self.item_amount(value, &item) % 2 != 0) != odd {
+                    let is_odd = !self.item_amount(value, &item).is_multiple_of(2);
+                    if is_odd != odd {
                         let resolution = self.state.resolving.as_mut().unwrap();
                         let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                         assert!(skip_to <= resolution.program.len());

@@ -8245,9 +8245,7 @@ impl Game {
             .iter()
             .map(|&(_, id)| (self.object_ref(id), Zone::Graveyard))
             .collect();
-        let Some(plans) = self.plan_atomic_zone_cost(&moves) else {
-            return None;
-        };
+        let plans = self.plan_atomic_zone_cost(&moves)?;
         self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
         let actual: Vec<_> = sacrifices

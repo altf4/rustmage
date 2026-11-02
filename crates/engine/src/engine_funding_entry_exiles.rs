@@ -56,6 +56,10 @@ impl FundingState<'_> {
             .collect::<Vec<_>>();
         self.visit_entry_exile_subsets(moves, index, &candidates, 0, selected, closed, emit)
     }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "The recursive choice carries the exact entry batch, cursor and selected references"
+    )]
     fn visit_entry_exile_subsets(
         &self,
         moves: Vec<entries::EntryMove>,
