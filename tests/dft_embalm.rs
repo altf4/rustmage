@@ -541,7 +541,7 @@ fn absent_mana_cost_is_unpayable_and_reserved_templates_are_disjoint() {
     assert_eq!(cost.options.len(), 4);
     assert!(cost.options.iter().all(|c| c.colored[5] == 1));
     assert_eq!(embalm::ACTIVATION_INDEX, activation_slots::EMBALM);
-    assert!(activation_slots::EMBALM < activation_slots::GRANTED_SACRIFICE_MANA);
+    const { assert!(activation_slots::EMBALM < activation_slots::GRANTED_SACRIFICE_MANA) };
     for color in 0..6 {
         let index = activation_slots::intrinsic(color);
         let rule = Card::Forest.activation(index);
