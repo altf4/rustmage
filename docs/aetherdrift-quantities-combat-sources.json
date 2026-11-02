@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "oracle_snapshot": "data/standard/cards.json",
+  "set_membership": "data/sets/dft.json",
+  "cards": [
+    {
+      "name": "Full Throttle",
+      "oracle_id": "3c2f87eb-b0f4-4578-b143-6fba313a82ec",
+      "facts_sha256": "a280ba0d9106b7bce4b4a4dd0ffd500c3644c636a13f437b3164c2c036060d3d",
+      "oracle_text": "After this main phase, there are two additional combat phases.\nAt the beginning of each combat this turn, untap all creatures that attacked this turn."
+    },
+    {
+      "name": "Oviya, Automech Artisan",
+      "oracle_id": "b01649b8-b0b5-4cf6-aea7-291f3407859e",
+      "facts_sha256": "9f090aed37b8221c145ee4c2b9f8465a6a7a45c59c35dce8ad57e267423971e2",
+      "oracle_text": "Each creature that's attacking one of your opponents has trample.\n{G}, {T}: You may put a creature or Vehicle card from your hand onto the battlefield. If you put an artifact onto the battlefield this way, put two +1/+1 counters on it."
+    },
+    {
+      "name": "Sab-Sunen, Luxa Embodied",
+      "oracle_id": "07e15387-f346-4fa0-b556-d1c52d4acc07",
+      "facts_sha256": "6b9c67463c857bd0061e7d7e621e3a0c2565b6466b7bd636ecb824472c421745",
+      "oracle_text": "Reach, trample, indestructible\nSab-Sunen can't attack or block unless it has an even number of counters on it. (Zero is even.)\nAt the beginning of your first main phase, put a +1/+1 counter on Sab-Sunen. Then if it has an odd number of counters on it, draw two cards."
+    },
+    {
+      "name": "Sabotage Strategist",
+      "oracle_id": "1b788680-28e3-4378-9607-bd42acb4fbad",
+      "facts_sha256": "369935c56a33ddf80072032ed61fc66c4a0dc68cb345e1a719956840a92b4f58",
+      "oracle_text": "Flying, vigilance\nWhenever one or more creatures attack you, those creatures get -1/-0 until end of turn.\nExhaust \u2014 {5}{U}{U}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
+    },
+    {
+      "name": "Sita Varma, Masked Racer",
+      "oracle_id": "3b9bc41a-a43f-4be7-9452-f61f5ad5b482",
+      "facts_sha256": "1e8367227aa210605d755d1ace7fb36012b3c4e5ade06427348101756bd6aeee",
+      "oracle_text": "Exhaust \u2014 {X}{G}{G}{U}: Put X +1/+1 counters on Sita Varma. Then you may have the base power and toughness of each other creature you control become equal to Sita Varma's power until end of turn. (Activate each exhaust ability only once.)"
+    },
+    {
+      "name": "Skyseer's Chariot",
+      "oracle_id": "92d28545-4403-4c24-8547-efab4dde6a53",
+      "facts_sha256": "ed52aeaeb3e26e2a769eb73bc34f8c38e3ba14d62b628ac6b5ba2fdbe49c3ec4",
+      "oracle_text": "Flying\nAs this Vehicle enters, choose a nonland card name.\nActivated abilities of sources with the chosen name cost {2} more to activate.\nCrew 2"
+    }
+  ],
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SabSunenLuxaEmbodied.java",
+      "sha256": "06011d385238a444bf547b6e506e87b4c72e176093d57a0e655855c3b8046075"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SitaVarmaMaskedRacer.java",
+      "sha256": "3f4a435c77560048377ba61c9b39d0b8f2119d827d2d43c724470a2d9e8c4f80"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SabotageStrategist.java",
+      "sha256": "8b10a14e5b709280b1c76d483ec807af255cb79951453f8493ee5535db67f903"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/o/OviyaAutomechArtisan.java",
+      "sha256": "99f4ea95bf78ced36cf6f477cf4f42abe55fe32a268a5f080ee87dfdaf0608da"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/f/FullThrottle.java",
+      "sha256": "85fe176f981c1213930b7157f194df3052d4472a207e0870156b93f57846ab44"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SkyseersChariot.java",
+      "sha256": "2018997694a4827146adf0f5c93d54b4b5da5cf7a9e873e2b5a8aa543a8c8ce6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+      "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessAllEffect.java",
+      "sha256": "4373b95198b2cca2412c8177f9cd5a1d4ee9d4e2d32a7d4d5e45cabe7ba7f685"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackBlockUnlessConditionSourceEffect.java",
+      "sha256": "eae1b953cf0978bb9d72c50ce376d715e56b4df86b6e9233d658a717fc4c6bf9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+      "sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/events/DefenderAttackedEvent.java",
+      "sha256": "d0c0cb78d9b4eaa3e4f7afd84be11c10423cdc4d375f84bc67e62045f41ff25a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AdditionalCombatPhaseEffect.java",
+      "sha256": "52f33fcfab80ac5e2027406daace88dec6cd258ea19421a98551e2d34394efd3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllEffect.java",
+      "sha256": "47ebd67f929a1ed625874e7efc4fa26009e074822875002bac26772575136f3c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/AttackedThisTurnPredicate.java",
+      "sha256": "61a91287e7a6b8c353089125d3a08cde463f8e99fc63efaa2ffaa9e1904d49ba"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/AttackedThisTurnWatcher.java",
+      "sha256": "6c5e923e07c20b5532156598d59f92869d578f7fba9e42c238240b2dcd9b13df"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+      "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4"
+    }
+  ]
+}
