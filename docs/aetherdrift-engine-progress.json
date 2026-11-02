@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "DFT",
-  "phase": "all 276 member definitions and focused outcomes integrated; complete-game and release acceptance in progress",
+  "phase": "engine reentry: completion-preserving paid mana outputs and receipt-aware own-entry projections",
   "membership": 276,
   "starting_admitted": 119,
   "newly_admitted": 157,
@@ -668,7 +668,10 @@
   "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
   "pending": "Finish all 276 member card obligations, provenance and focused outcomes, including inherited119; run legal DFT-only complete games/replay/owned search; update README counts; full release acceptance; one completed-set PR and two independent nonauthor reviews of its published head.",
   "throughput": "Combined reentry checkpoint: 336 engine scenarios and 39 prepared-card scenarios, 3035 ordinary legacy cases, four BIG cases and one strict trace pass. Final test compilation 165.993s; focused execution 0.779s; ordinary legacy 77.952s. No new card admissions during engine reentry; DFT143/276 are local candidates, not complete-set acceptance.",
-  "remaining_engine_blockers": [],
+  "remaining_engine_blockers": [
+    "Late owned ManaOutput colors/allocations can strand mandatory parent payments because final output selection bypasses the existing reachability invariant.",
+    "Own entry-completion projection injects the early a.production sentinel/stale preview instead of the paid ManaOutput receipt domain."
+  ],
   "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)",
   "in_progress_checkpoints": [
     {
@@ -2330,5 +2333,20 @@
     "other_DFT_group_audit": "Plow Through Fight, Run Over PowerDamage and Rise from Wreck ReturnAllTargetsToHand already preserve cross-group targets; no additional concrete aggregate dependency found.",
     "status": "engine accepted; both card-only role repairs passed all28 focused response/regression cases"
   },
-  "remaining_card_blockers": []
+  "remaining_card_blockers": [],
+  "late_mana_completion_reentry": {
+    "observed_case": "DFT_ARCHETYPES_V1 pair1 seed921502 swappedtrue decision398",
+    "parent": "Draconautics Engineer activation0 requiresR; lastTreasure lateG choice leaves onlyConcede",
+    "diagnostic": "<cache>/rustmage-authoring/aetherdrift/dft-concession-diagnostic-20261102-01/diagnostic.log",
+    "cause": "EffectMana domain enumeration and advertised mana_choices lack the completion check already applied to initial mana actions; own entry projections also add raw a.production.",
+    "batch_scope": [
+      "shared pure post-cost output completion query for legal/raw/index/advertised choices",
+      "native/borrowed/granted/acquired and nested parent announcement chains with frozen output quality/tap bonus/active-instance ownership",
+      "mandatory Plot and existing guided FaceUp/Attack completion semantics, exact plot subject",
+      "receipt-aware existential OWN entry projection, including dynamic nonzero previews",
+      "preserve full standalone/ordinary resolving/optional ResolutionMana domains and exact foreign-choice selective rollback escape"
+    ],
+    "card_work": "parked; all276 typed card-role definitions already corrected, no new card-specific engine branch",
+    "validation": "source audit and both nonauthor reviews before one combined core build; no policy-only workaround"
+  }
 }
