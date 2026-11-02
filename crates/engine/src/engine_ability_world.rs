@@ -970,9 +970,10 @@ pub(super) trait CharacteristicWorld {
     }
     fn attached(&self, source: ObjectRef, recipient: CardId) -> bool {
         self.attachment_link(source, self.reference(recipient))
-            && (self.is_aura(source.card) || self.is_equipment(source.card))
             && self.kinds(source.card) & 1 == 0
-            && self.kinds(recipient) & 1 != 0
+            && ((self.is_aura(source.card)
+                && aura_kind_matches(self, self.definition(source.card), recipient))
+                || (self.is_equipment(source.card) && self.kinds(recipient) & 1 != 0))
     }
     fn live_applies(&self, source: ObjectRef, effect: &LiveStaticEffect, id: CardId) -> bool {
         let target = self.object(id);
@@ -1042,6 +1043,28 @@ impl CharacteristicWorld for Game {
 }
 
 /// Evaluate the printed Aura restriction in either live or projected worlds.
+/// Shared live enchant restriction for actual attachment/SBA and speculative entry.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn aura_kind_matches<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    aura: Card,
+    id: CardId,
+) -> bool {
+    let Some(spec) = aura.aura() else {
+        return false;
+    };
+    let kinds = world.kinds(id);
+    let kind_match = if spec.kinds == 0 {
+        kinds & (1 | 2 | 16 | 32 | 64 | 256) != 0
+    } else {
+        kinds & u16::from(spec.kinds) != 0
+            || aura
+                .aura_kind_or_subtype()
+                .is_some_and(|subtype| world.subtypes(id).has(world.definition(id), subtype))
+    };
+    kind_match && aura_artifact_or_non_aura_enchantment(world, aura, id)
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn aura_artifact_or_non_aura_enchantment<W: CharacteristicWorld + ?Sized>(
     world: &W,

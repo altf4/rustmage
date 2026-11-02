@@ -5149,6 +5149,9 @@ impl Card {
         authored::rules(self)
             .is_some_and(|rules| rules.extras.aura_artifact_or_non_aura_enchantment)
     }
+    pub(crate) fn aura_kind_or_subtype(self) -> Option<&'static str> {
+        authored::rules(self).and_then(|rules| rules.extras.aura_kind_or_subtype)
+    }
     pub(crate) fn aura(self) -> Option<AuraSpec> {
         authored::rules(self).map_or_else(|| generated::aura(self), |rules| rules.aura)
     }

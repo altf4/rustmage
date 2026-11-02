@@ -349,12 +349,7 @@ impl Game {
             && !self
                 .keywords(target.card)
                 .contains(Keywords::PROTECTION_EVERYTHING)
-            && (if spec.kinds == 0 {
-                self.current_kinds(target.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
-            } else {
-                self.current_kinds(target.card) & u16::from(spec.kinds) != 0
-            })
-            && ability_world::aura_artifact_or_non_aura_enchantment(self, aura, target.card)
+            && ability_world::aura_kind_matches(self, aura, target.card)
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,
                 1 => self.state.objects[target.card as usize].controller != controller,

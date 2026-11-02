@@ -884,16 +884,7 @@ impl FundingState<'_> {
             && !characteristic_query::CharacteristicQuery::in_world(self)
                 .keywords(target.card)
                 .contains(Keywords::PROTECTION_EVERYTHING)
-            && if spec.kinds == 0 {
-                CharacteristicWorld::kinds(self, target.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
-            } else {
-                CharacteristicWorld::kinds(self, target.card) & u16::from(spec.kinds) != 0
-            }
-            && ability_world::aura_artifact_or_non_aura_enchantment(
-                self,
-                m.before.card,
-                target.card,
-            )
+            && ability_world::aura_kind_matches(self, m.before.card, target.card)
             && match spec.relation {
                 0 => o.controller == m.controller,
                 1 => o.controller != m.controller,

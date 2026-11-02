@@ -472,17 +472,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
     pub(super) fn attachment_bonus(&self, id: CardId) -> (Stats, Keywords) {
         let mut stats = Stats::default();
         let mut keywords = Keywords::NONE;
-        if !self.on_battlefield(id) || !self.is_creature(id) {
+        if !self.on_battlefield(id) {
             return (stats, keywords);
         }
-        let target = self.object_ref(id);
         let evaluation = self.evaluation.as_ref();
         for &source in self.attachment_sources() {
             let object = self.object(source);
             if object.zone != Zone::Battlefield {
                 continue;
             }
-            if object.attached_to == Some(target) && !self.is_creature(source) {
+            if CharacteristicWorld::attached(self, self.object_ref(source), id) {
                 if let Some(evaluation) = &evaluation {
                     for (index, group) in object.card.static_ability_groups().iter().enumerate() {
                         if !evaluation.group_available(self.object_ref(source), index) {
