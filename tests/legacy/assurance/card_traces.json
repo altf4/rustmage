@@ -239,6 +239,14 @@
     "journal": "b681d3b088ac0c32",
     "observations": "81770e601c15917c"
   },
+  "Adrenaline Jockey": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "cfbe6255b98a6330"
+  },
   "Adventurer's Airship": {
     "root": "main",
     "status": "completed",
@@ -758,6 +766,14 @@
     "zone": "Battlefield",
     "journal": "7c50116fb450cf1c",
     "observations": "52a05c62086bbe17"
+  },
+  "Ancient Vendetta": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "b6dcbdf1077e7de8",
+    "observations": "c3071d2341ac153b"
   },
   "Angel of Finality": {
     "root": "main",
@@ -2534,6 +2550,14 @@
     "zone": "Battlefield",
     "journal": "4154caa6c7d30e4e",
     "observations": "152adcc410783813"
+  },
+  "Boommobile": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "7a2e353ecaafb724",
+    "observations": "51e4ad159b2f608c"
   },
   "Boosted Sloop": {
     "root": "main",
@@ -4543,6 +4567,14 @@
     "journal": "201b2c3b3b67b6f9",
     "observations": "a08b1bba2c5c07c6"
   },
+  "Cursecloth Wrappings": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "4b79be953ba318c7",
+    "observations": "78a7b073066953ee"
+  },
   "Cursed Courtier": {
     "root": "main",
     "status": "completed",
@@ -4614,6 +4646,14 @@
     "zone": "Battlefield",
     "journal": "7cf9667d9239e4fd",
     "observations": "fd03328d4ae1efca"
+  },
+  "Daretti, Rocketeer Engineer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "e2555346c63c8c02",
+    "observations": "d75bb64dfc60d5d4"
   },
   "Daring Mechanic": {
     "root": "main",
@@ -4950,6 +4990,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "7f4d86365d398c57"
+  },
+  "Demonic Junker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "9359f84316f8ae62",
+    "observations": "06767e3a8ffa4a46"
   },
   "Demonic Pact": {
     "root": "main",
@@ -7983,6 +8031,14 @@
     "journal": "3f63acf45133a30c",
     "observations": "272f2ba80d8943d5"
   },
+  "Full Throttle": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "b46e0d343c9fed61",
+    "observations": "fa34baa79c19eb15"
+  },
   "Fulminous Forte": {
     "root": "main",
     "status": "completed",
@@ -8238,6 +8294,14 @@
     "zone": "Battlefield",
     "journal": "57efe7a6ad3b6069",
     "observations": "1fc7e02dd07fee5d"
+  },
+  "Gastal Thrillroller": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "996b3f354b3811ac",
+    "observations": "2ac85b0d4d1f87df"
   },
   "Gastal Thrillseeker": {
     "root": "main",
@@ -8999,6 +9063,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "35bff4189348422f"
   },
+  "Gonti, Night Minister": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "4b79be953ba318c7",
+    "observations": "69a9031f42fb8e50"
+  },
   "Goobbue Gardener": {
     "root": "main",
     "status": "completed",
@@ -9254,6 +9326,14 @@
     "zone": "Battlefield",
     "journal": "949980d93ec06bb7",
     "observations": "0804254087aeed92"
+  },
+  "Grim Javelineer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "4324aa4c9fd9325c",
+    "observations": "bfb44c3c876efed6"
   },
   "Grim Reaper, Lethal Legionnaire": {
     "root": "main",
@@ -10294,6 +10374,14 @@
     "zone": "Battlefield",
     "journal": "b3f39d5b44da38ed",
     "observations": "8815e0843a0223f0"
+  },
+  "Howlsquad Heavy": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "ff794042353fd826"
   },
   "Huatli's Final Strike": {
     "root": "main",
@@ -12135,6 +12223,14 @@
     "journal": "b09baf7e6d26b241",
     "observations": "996587a5acb346e7"
   },
+  "Lifecraft Engine": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "6aa04e0154edb386",
+    "observations": "1b6ed7e36a76db2c"
+  },
   "Lifecreed Duo": {
     "root": "main",
     "status": "completed",
@@ -13031,6 +13127,14 @@
     "journal": "58e5c5fe35386aab",
     "observations": "daee055ad247eee7"
   },
+  "Marketback Walker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "890a407724723675",
+    "observations": "d6f36b7e6552c813"
+  },
   "Marketwatch Phantom": {
     "root": "main",
     "status": "completed",
@@ -13046,6 +13150,14 @@
     "zone": "Battlefield",
     "journal": "65d7aa6b04098bad",
     "observations": "91b835b39bf82cd6"
+  },
+  "Marshals' Pathcruiser": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "43189d80c7f369c7",
+    "observations": "873f050e48bed143"
   },
   "Marwyn, the Clearcutter": {
     "root": "main",
@@ -15567,6 +15679,14 @@
     "journal": "903e360914c6c94c",
     "observations": "0b46881d4a689c43"
   },
+  "Pit Automaton": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e9faa30ff25cc76d",
+    "observations": "712c7601720b5646"
+  },
   "Plains": {
     "root": "main",
     "status": "completed",
@@ -16159,6 +16279,14 @@
     "journal": "cad610e5c81fe048",
     "observations": "e48c7c89504162f9"
   },
+  "Push the Limit": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "fdec9d219b268ea0",
+    "observations": "7282d8b053ddf6a5"
+  },
   "Pym Particles": {
     "root": "main",
     "status": "completed",
@@ -16414,6 +16542,14 @@
     "zone": "Battlefield",
     "journal": "dbb8ae3f9a5d3b87",
     "observations": "09f22a64015186d6"
+  },
+  "Radiant Lotus": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "2e812e35bf5aacc1",
+    "observations": "79ca017dd95ee56e"
   },
   "Radiant Strike": {
     "root": "main",
@@ -16774,6 +16910,14 @@
     "zone": "Graveyard",
     "journal": "e52ccec308bcae2d",
     "observations": "3755226aa371bc1b"
+  },
+  "Reckless Velocitaur": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "fa023aad863dc9ad",
+    "observations": "d8e6a08b87c23a0e"
   },
   "Reclamation Sage": {
     "root": "main",
@@ -17606,6 +17750,14 @@
     "zone": "Battlefield",
     "journal": "a8a230506a4f0c62",
     "observations": "a42ed038990b18b7"
+  },
+  "Rover Blades": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "903e360914c6c94c",
+    "observations": "f2fed1900645411e"
   },
   "Rowdy Research": {
     "root": "main",
@@ -19742,6 +19894,14 @@
     "zone": "Battlefield",
     "journal": "7c50116fb450cf1c",
     "observations": "78c4991049192ea6"
+  },
+  "Spire Mechcycle": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a8a230506a4f0c62",
+    "observations": "29f6a93830664c9b"
   },
   "Spirebluff Canal": {
     "root": "main",
