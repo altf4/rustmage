@@ -19,7 +19,7 @@ disjoint audit partitions cover all 275 resolved identities; the separate
 [Cori-Steel Cutter audit](tdm-cori-steel-audit.json) covers the final identity.
 The [complete dependency ledger](tdm-engine-audit.json) reconciles all 276 source
 audits and records 80 dependency/proof groups, including duplicate group aliases.
-Shared engine implementation is in progress.25 of the80 audit/proof groups, including aliases, have scoped implementation, focused evidence and two independent nonauthor reviews. The full integrated engine checkpoint remains open. Do not begin card authorship until every shared dependency is finished, verified and reviewed.
+Shared engine implementation is in progress. **39 of the80 audit/proof groups**, including aliases, have scoped implementation, focused evidence and two independent nonauthor reviews. Another16 groups have owner tests passing with reviews or review repairs pending. Counts are not weighted by complexity. Full integrated engine acceptance remains open; card authorship stays gated until all dependencies pass and are reviewed.
 
 The reviewed fixed Endure repair covers: use the exact permanent's
 current controller, retain its last battlefield controller after departure, and
@@ -59,22 +59,24 @@ completed-set PR; obtain two independent nonauthor final-head reviews.
 Initial source-pin verification: 5,488 definitions / 2,512 source blobs verified;
 generated-link consistency and authenticated frozen membership checks pass.
 No new complete cards, full acceptance runs or simulation throughput measurements
-have been produced. The latest assembled checkpoint passes147 selected rules
-scenarios:10 dynamic-token/Endure groups,85 other TDM groups and52 inherited
-copy/token groups. Compilation took144.699s and bounded scenario execution0.412s;
-those are rules-workload measurements, not simulation throughput.
+have been produced. The latest validated assembled checkpoint passes199 selected
+rules scenarios. Compilation took148.537s and bounded scenario execution0.484s;
+these are rules-workload measurements, not simulation throughput. Newer cost,
+combat and event checkpoints have separate passing owner reports and still need
+integration acceptance.
 
-Reviewed scoped checkpoints now include fixed Endure, exact optional attachment,
-named entry modes, counter-world queries and damage history, entry counter payloads
-and first placement, colored protection and independent Decayed instances,
-sampled copiable token bases, and granted Harmonize/delve. Independent review found
-and repaired both Decayed multiplicity and wide Harmonize/payment-composition
-errors. The casting repair passes96 owner focused/compatibility scenarios and is
-integrated for the next root checkpoint.
+Reviewed scoped checkpoints include fixed and dynamic Endure, sampled copiable
+token bases and source LKI, optional attachment, named entry modes, counter-world
+queries, entry counter payloads/history, colored protection and independent
+Decayed instances, granted Harmonize/delve, copy/Suspend lifecycle, and resolving
+outcomes/private-library continuations. Reviews reproduced and repaired Decayed
+multiplicity, wide Harmonize/Bargain funding, sampled source-copy LKI and private
+top-card pacing defects. Combat review identified a further CR111.5 nonpermanent
+token-copy edge; its owner repair passes93 scenarios and awaits integration/review.
 
 The dependency ledger links exact source hashes, reports and scoped reviews.
-Remaining work includes Suspend/copy lifecycle acceptance, resolving outcome and
-private-library continuations, Behold and cost extensions, static restrictions,
+Remaining work includes Behold/free-origin casting, target/activation cost review,
+combat/event integration and reviews, static restrictions, search/color sequences
 and the other audited groups. Global observation-schema/trace migration, full
 shared-engine acceptance, every card's complete behavior, set-only games and the
 single final PR's acceptance/reviews remain open. The user goal stays active.

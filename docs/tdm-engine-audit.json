@@ -12,7 +12,7 @@
     "unresolved_membership_facts": 1,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "whole-set source audit recorded; shared engine implementation may begin; card authoring remains gated",
+  "phase": "Shared engine implementation and scoped review in progress; full integrated acceptance and card authoring remain gated.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -62,7 +62,7 @@
       "cards": [
         "Ainok Wayfarer"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "A04",
@@ -81,7 +81,7 @@
       "cards": [
         "Abzan Monument"
       ],
-      "status": "REOPENED after follow-up independent review: sampled token bases are omitted by three source-copy LKI retention predicates; paid source-copy/departure-trigger regressions and central repair are prepared, not yet validated."
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (sampled source LKI repair)."
     },
     {
       "id": "A06",
@@ -282,7 +282,7 @@
       "description": "variable endure",
       "required_change": "Extend Endure to an AmountValue and explicit subject, choosing exactly one dynamic white N/N Spirit or N +1 counters, including N0 no action. Reuse owned Pending and counter/token replacement pipeline; never require one pre-generated token card for every X. Preserve choice/recipe in raw/index branch and snapshot/restore.",
       "cards": [],
-      "status": "REOPENED after follow-up independent review: sampled token bases are omitted by three source-copy LKI retention predicates; paid source-copy/departure-trigger regressions and central repair are prepared, not yet validated."
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (sampled source LKI repair)."
     },
     {
       "id": "B:activation_x_life",
@@ -296,14 +296,14 @@
       "description": "dynamic exact optional mill",
       "required_change": "Generalize existing MayMill exact-feasibility guard and MillAmount to controlled-land-count amount sampled on resolution. The choice to mill N must be unavailable when fewer than N library cards remain. Fixed MayMill3 already covers Rainveil without new machinery.",
       "cards": [],
-      "status": "confirmed missing quantity variant"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "B:graveyard_power_damage",
       "description": "graveyard power damage",
       "required_change": "Freeze a legal own graveyard creature target current power, including CDAs, for subsequent spell-source damage to an independent creature target after return-to-hand. Current AmountValue::TargetCreaturePower capture is wired only for specific Amass consumers and selected group, not this graveyard group. CR608.2b: illegal graveyard target cannot supply power and causes no damage, while an illegal battlefield target does not prevent returning the legal card.",
       "cards": [],
-      "status": "confirmed missing reusable capture wiring"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "B:distinct_color_search",
@@ -449,7 +449,7 @@
       "cards": [
         "Warden of the Grove"
       ],
-      "status": "REOPENED after follow-up independent review: sampled token bases are omitted by three source-copy LKI retention predicates; paid source-copy/departure-trigger regressions and central repair are prepared, not yet validated."
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (sampled source LKI repair)."
     },
     {
       "id": "C:GRANTED_HARMONIZE",
@@ -575,7 +575,7 @@
       "cards": [
         "Sonic Shrieker"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "C:EMPTY_LIBRARY_GRAVEYARD_TOP",
@@ -584,7 +584,7 @@
       "cards": [
         "Stillness in Motion"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "C:RETURN_TOKEN_DRAW_RESULT",
@@ -593,7 +593,7 @@
       "cards": [
         "Sunpearl Kirin"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "C:RANDOM_GRAVEYARD_EXILE_PLAY",
@@ -629,7 +629,7 @@
       "cards": [
         "Trade Route Envoy"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "C:PRIVATE_TOP_LAND_THEN_OPTIONAL_GRAVE",
@@ -638,7 +638,7 @@
       "cards": [
         "Traveling Botanist"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "C:SCALED_DAMAGE_DIVISION",
@@ -656,7 +656,7 @@
       "cards": [
         "Veteran Ice Climber"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "C:YATHAN_MILL_SEMANTICS_REVIEW",
@@ -665,7 +665,7 @@
       "cards": [
         "Yathan Roadwatcher"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
     },
     {
       "id": "C:TEMPORARY_ADDITIVE_SUBTYPE",
@@ -730,13 +730,14 @@
     "latest_assembled_cases_passed": 199,
     "latest_assembled_compile_seconds": 148.53743017898523,
     "latest_assembled_scenario_seconds": 0.48389193395269103,
-    "scoped_reviewed_audit_groups_including_aliases": 26,
+    "scoped_reviewed_audit_groups_including_aliases": 39,
     "total_audit_groups_including_aliases": 80,
     "current_hot_layout_bytes": {
       "Object": 160,
       "ObjectView": 544,
       "State": 4976
-    }
+    },
+    "additional_implemented_tested_groups_pending_review": 16
   },
   "active_checkpoints": {
     "fixed_endure": {
@@ -772,8 +773,13 @@
     "dynamic_tokens": {
       "commit": "44612475ef8cbf42b44082f55b797117206824da",
       "evidence": "docs/tdm-dynamic-tokens-evidence.json",
-      "status": "Central source-copy LKI retention repair passes12 focused/199 assembled cases after two exact baseline negatives; refreshed independent exact-source reviews pending.",
-      "followup_evidence": "docs/tdm-sampled-source-lki-evidence.json"
+      "status": "12 focused/199 assembled cases pass; both independent nonauthor reviewers approve exact published source812a0b7d0 after two reproduced baseline negatives.",
+      "followup_evidence": "docs/tdm-sampled-source-lki-evidence.json",
+      "followup_commit": "812a0b7d0a9eaa0eec7ba6ec9388fd9c930a664f",
+      "reviewers": [
+        "/root/tdm_audit_a_g",
+        "/root/tdm_audit_s_z"
+      ]
     },
     "casting": {
       "original": "34cf40d5d",
@@ -792,15 +798,40 @@
       "commit": "194065c62",
       "integration": "fe47363dd",
       "evidence": "docs/tdm-resolution-results-evidence.json",
-      "status": "33 owner cases pass; independent cost-owner review approves, root review pending."
+      "status": "Scoped runtime/outcome review approved by root and s-z, including mandatory mill semantics and the privacy pacing repair.",
+      "root_review": "docs/tdm-resolution-results-root-review.json"
     },
-    "behold_and_costs": "Complete source audit and typed implementation in progress; not accepted.",
-    "next_static_rules": "Root source/helper audit coversA09/A13/A18/attack duplication/conditional sacrifice/additive subtype; no implementation yet.",
+    "behold_and_costs": "Four remaining Behold/free-origin groups prepared with36 focused scenarios including14 prior cost cases; no first compilation yet.",
+    "next_static_rules": "Six groups authored with20 focused interaction groups; first15 run8pass/7fixture failures; corrected/expanded guarded root20 run active. No acceptance claim.",
     "private_library": {
       "commit": "00f48177e",
       "integration": "b2a42eb84",
       "evidence": "docs/tdm-private-library-evidence.json",
-      "status": "REOPENED during independent review for land/nonland decision-count disclosure; exact paired negative reproduces it, owner fixed31 run active."
+      "status": "Privacy pacing repair passes45 owner scenarios and is present in199 root assembled cases; root and s-z approve the exact scoped repair.",
+      "repair": "2ef69055450dba01aad61e496d2d45f5615d962a",
+      "repair_evidence": "docs/tdm-private-top-pacing-evidence.json"
+    },
+    "target_activation_costs": {
+      "commit": "fc95fb1da2575002c32d75cadb2fc438c0489a85",
+      "integration": "f20081bfcb6509fe3f16912852d80dea7c655e12",
+      "evidence": "docs/tdm-target-activation-costs-evidence.json",
+      "status": "70 selected cases pass; g-s rules review approves, bool-comparison lint fixed in8df06babc; root second review and assembled validation pending."
+    },
+    "combat_callbacks": {
+      "commit": "d6eb0889e1a455dc390525d9925272aeb74fc02b",
+      "integration": "409a73558",
+      "evidence": "docs/tdm-combat-callbacks-evidence.json",
+      "status": "110 original cases pass; independent review found CR111.5 nonpermanent token creation. Three exact baseline negatives reproduce it; owner repair passes93 focused/compatibility cases, awaiting repair commit/integration/reviews."
+    },
+    "event_contexts": {
+      "commit": "5bffb5ea8bea46a733ddc40906ebefc18bfd96ae",
+      "integration": "58e701c35",
+      "evidence": "docs/tdm-event-contexts-evidence.json",
+      "status": "58 selected cases pass; g-s approves scoped review, root second review pending."
+    },
+    "linked_event_casts": {
+      "commit": "81a729a8c9a76648b4d48989b60985ef16787526",
+      "status": "99 selected cases pass; integration and two independent reviews pending."
     }
   }
 }
