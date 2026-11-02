@@ -10,6 +10,12 @@ fn cycle_for(player: Player) -> Game {
     let cage = put(&mut g, player, "Pinnacle Starcage", Zone::Exile);
     g.state.objects[snare as usize].generation = 7;
     g.state.objects[cage as usize].generation = 11;
+    // put() also records this exact incarnation in entry history.
+    for object in g.state.entered_this_turn.as_mut().unwrap().iter_mut() {
+        if object.card == snare {
+            object.generation = 7;
+        }
+    }
     for stamp in &mut g.state.roles.as_mut().unwrap().ability_timestamps {
         if stamp.source.card == snare {
             stamp.source.generation = 7;
@@ -94,6 +100,20 @@ fn optional_instant_and_rejected_indices_preserve_the_game() {
         assert_eq!(g.snapshot(), saved);
         assert_eq!(g.revision(), revision);
         advance(&mut g, true);
+        assert_eq!(g.outcome(), None);
+    }
+}
+
+#[test]
+fn stale_unmapped_entry_history_declines_detection() {
+    let mut g = cycle();
+    let source = g.state.exile_links[0].source.card;
+    g.state.entered_this_turn.as_mut().unwrap().push(ObjectRef {
+        card: source,
+        generation: 0,
+    });
+    for _ in 0..64 {
+        advance(&mut g, false);
         assert_eq!(g.outcome(), None);
     }
 }
