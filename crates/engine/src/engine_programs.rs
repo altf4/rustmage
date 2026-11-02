@@ -4887,6 +4887,16 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::LookTopLandThenMayGraveyard => {
+                    if self.start_top_land_then_graveyard(&item) {
+                        return;
+                    }
+                }
+                Instruction::RefillEmptyLibraryFromGraveyard(amount) => {
+                    if self.refill_empty_library_from_graveyard(&item, amount) {
+                        return;
+                    }
+                }
                 Instruction::CollectGraveyard => {
                     self.state.resolving.as_mut().unwrap().milled = self
                         .state

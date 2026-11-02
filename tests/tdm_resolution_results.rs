@@ -941,3 +941,399 @@ fn yathan_shuffle_in_place_is_no_completed_fourth_mill_and_direct_entry_does_not
     assert_eq!(g.library_card_count(p), 1);
     assert_eq!(g.object_view(old).zone, Zone::Graveyard);
 }
+
+const STILLNESS: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::Upkeep,
+            relation: CastRelation::You,
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::Mill(PlayerSet::Controller, MillAmount::Fixed(3)),
+            Instruction::RefillEmptyLibraryFromGraveyard(5),
+        ],
+    }],
+    ..CardRules::EMPTY
+};
+const BOTANIST: CardRules = CardRules {
+    effect: Effect::Creature(2, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfBecomesTapped,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::LookTopLandThenMayGraveyard],
+    }],
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            generic: 1,
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[],
+        sorcery: false,
+        once_per_turn: false,
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+    }],
+    ..CardRules::EMPTY
+};
+fn stillness(g: &mut Game, p: Player, library: usize) -> CardId {
+    let id = put(g, p, "Short Bow", Zone::Hand);
+    cast(g, id, None);
+    drain(g);
+    clear_library(g, p);
+    for _ in 0..library {
+        put(g, p, "Forest", Zone::Library);
+    }
+    g.begin_turn();
+    id
+}
+fn finish_top(g: &mut Game) {
+    for _ in 0..8 {
+        if !matches!(g.state.pending, Pending::MilledSelection { .. }) {
+            drain(g);
+            return;
+        }
+        let view = g.observe(g.actor().unwrap()).milled_choice.unwrap();
+        if let Some(&object) = view.candidates.first() {
+            act(g, Action::SelectMilled { object });
+        } else {
+            act(g, Action::FinishMilledSelection);
+        }
+    }
+    panic!("bounded graveyard top selection");
+}
+fn botanist_start(g: &mut Game, p: Player, name: &str) -> (CardId, CardId) {
+    let source = cast_creature(g, p);
+    drain(g);
+    g.begin_turn();
+    let top = put(g, p, name, Zone::Library);
+    act(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    pay(g);
+    (source, top)
+}
+fn botanist(g: &mut Game, p: Player, name: &str) -> (CardId, CardId) {
+    let result = botanist_start(g, p, name);
+    ready(g, None, |g| {
+        matches!(g.state.pending, Pending::EffectLibrarySelection { .. })
+    });
+    result
+}
+#[test]
+fn stillness_checks_empty_library_after_mill_and_exiles_only_then() {
+    let _scope = fixture_rules::activate(&[(card("Short Bow"), &STILLNESS)]);
+    for count in [0, 1, 3, 4] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        for _ in 0..5 {
+            put(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        }
+        let source = stillness(&mut g, p, count);
+        if count <= 3 {
+            ready(&mut g, None, |g| {
+                matches!(g.state.pending, Pending::MilledSelection { .. })
+            });
+            finish_top(&mut g);
+        } else {
+            drain(&mut g);
+        }
+        assert_eq!(
+            g.object_view(source).zone,
+            if count <= 3 {
+                Zone::Exile
+            } else {
+                Zone::Battlefield
+            }
+        );
+        assert_eq!(g.library_card_count(p), if count <= 3 { 5 } else { 1 });
+        assert!(!g.state.players[p.index()].attempted_empty_draw);
+    }
+}
+#[test]
+fn mandatory_graveyard_top_selection_is_private_ordered_and_rejects_wrong_or_duplicate_cards() {
+    let _scope = fixture_rules::activate(&[(card("Short Bow"), &STILLNESS)]);
+    let p = Player::P1;
+    let mut g = scenario(p);
+    let wrong = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+    let chosen: Vec<_> = (0..7)
+        .map(|_| put(&mut g, p, "Llanowar Elves", Zone::Graveyard))
+        .collect();
+    stillness(&mut g, p, 3);
+    ready(&mut g, None, |g| {
+        matches!(g.state.pending, Pending::MilledSelection { .. })
+    });
+    assert!(g.observe(p.other()).milled_choice.is_none());
+    reject(&mut g, Action::FinishMilledSelection);
+    let bad = g.object_ref(wrong);
+    reject(&mut g, Action::SelectMilled { object: bad });
+    let order = [chosen[4], chosen[0], chosen[3], chosen[1], chosen[6]];
+    for (at, &id) in order.iter().enumerate() {
+        let object = g.object_ref(id);
+        act(&mut g, Action::SelectMilled { object });
+        if at == 0 {
+            reject(&mut g, Action::SelectMilled { object });
+            assert!(g.observe(p.other()).milled_choice.is_none());
+        }
+    }
+    drain(&mut g);
+    let actual: Vec<_> = g.state.players[p.index()]
+        .library
+        .iter()
+        .rev()
+        .copied()
+        .collect();
+    assert_eq!(actual, order);
+    assert!(g.observe(p.other()).known_library_top[p.index()].is_none());
+    assert_eq!(
+        g.observe(p).known_library_top[p.index()]
+            .unwrap()
+            .object
+            .card,
+        order[0]
+    );
+}
+#[test]
+fn stillness_returns_all_available_fewer_than_five_and_none_is_not_an_empty_draw() {
+    let _scope = fixture_rules::activate(&[(card("Short Bow"), &STILLNESS)]);
+    for count in [0, 2] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        for _ in 0..count {
+            put(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        }
+        let source = stillness(&mut g, p, 0);
+        if count > 0 {
+            ready(&mut g, None, |g| {
+                matches!(g.state.pending, Pending::MilledSelection { .. })
+            });
+            finish_top(&mut g);
+        } else {
+            drain(&mut g);
+        }
+        assert_eq!(g.library_card_count(p), count);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        assert!(!g.state.players[p.index()].attempted_empty_draw);
+    }
+}
+#[test]
+fn stillness_source_departure_never_cancels_return_or_exiles_a_later_incarnation() {
+    let _scope = fixture_rules::activate(&[(card("Short Bow"), &STILLNESS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    for _ in 0..5 {
+        put(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+    }
+    let source = stillness(&mut g, p, 0);
+    let old = g.object_ref(source);
+    g.move_object(source, Zone::Hand);
+    g.move_object(source, Zone::Battlefield);
+    assert_ne!(g.object_ref(source), old);
+    ready(&mut g, None, |g| {
+        matches!(g.state.pending, Pending::MilledSelection { .. })
+    });
+    finish_top(&mut g);
+    assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+    assert_eq!(g.library_card_count(p), 5);
+}
+#[test]
+fn graveyard_top_order_is_owned_across_raw_index_restore_and_independent_orders() {
+    let _scope = fixture_rules::activate(&[(card("Short Bow"), &STILLNESS)]);
+    let p = Player::P1;
+    let mut parent = scenario(p);
+    let cards: Vec<_> = (0..6)
+        .map(|_| put(&mut parent, p, "Llanowar Elves", Zone::Graveyard))
+        .collect();
+    stillness(&mut parent, p, 0);
+    ready(&mut parent, None, |g| {
+        matches!(g.state.pending, Pending::MilledSelection { .. })
+    });
+    let action = Action::SelectMilled {
+        object: parent.object_ref(cards[3]),
+    };
+    let rev = parent.revision();
+    let index = parent
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap();
+    let saved = parent.snapshot();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    let mut sibling = parent.clone();
+    drop(parent);
+    assert_eq!(raw.apply(p.other(), action.clone()), Err(Error::WrongActor));
+    assert_eq!(raw.snapshot(), saved);
+    raw.apply(p, action.clone()).unwrap();
+    indexed.apply_index(p, rev, index).unwrap();
+    finish_top(&mut raw);
+    finish_top(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(raw.top_library_card(p), Some(cards[3]));
+    let other = Action::SelectMilled {
+        object: sibling.object_ref(cards[4]),
+    };
+    act(&mut sibling, other);
+    finish_top(&mut sibling);
+    assert_eq!(sibling.top_library_card(p), Some(cards[4]));
+    indexed.restore(&saved).unwrap();
+    assert_eq!(
+        indexed.apply_index(p, rev, index),
+        Err(Error::StaleRevision)
+    );
+    act(&mut indexed, action);
+    finish_top(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+}
+#[test]
+fn private_top_land_choice_has_hand_graveyard_and_keep_outcomes() {
+    let _scope = fixture_rules::activate(&[(card("Bear Cub"), &BOTANIST)]);
+    for p in [Player::P0, Player::P1] {
+        for outcome in 0..3 {
+            let mut g = scenario(p);
+            let (source, top) = botanist(&mut g, p, "Forest");
+            assert!(g.object_view(source).tapped);
+            assert!(g.observe(p.other()).library_selection.is_none());
+            let view = g.observe(p).library_selection.unwrap();
+            assert_eq!(view.destination, "hand");
+            assert!(view.reveal);
+            if outcome == 0 {
+                act(&mut g, Action::SelectLibrary { card: top });
+                act(&mut g, Action::FinishLibrarySelection);
+            } else {
+                act(&mut g, Action::FinishLibrarySelection);
+                let view = g.observe(p).library_selection.unwrap();
+                assert_eq!(view.destination, "graveyard");
+                assert!(!view.reveal);
+                assert!(g.observe(p.other()).library_selection.is_none());
+                if outcome == 1 {
+                    act(&mut g, Action::SelectLibrary { card: top });
+                }
+                act(&mut g, Action::FinishLibrarySelection);
+            }
+            drain(&mut g);
+            assert_eq!(
+                g.object_view(top).zone,
+                [Zone::Hand, Zone::Graveyard, Zone::Library][outcome]
+            );
+            assert_eq!(
+                g.state.known_hand.iter().any(|r| r.card == top),
+                outcome == 0
+            );
+            assert!(g.observe(p.other()).known_library_top[p.index()].is_none());
+            if outcome == 2 {
+                assert_eq!(
+                    g.observe(p).known_library_top[p.index()]
+                        .unwrap()
+                        .object
+                        .card,
+                    top
+                );
+            }
+        }
+    }
+}
+#[test]
+fn private_nonland_top_never_offers_hand_and_source_departure_is_independent() {
+    let _scope = fixture_rules::activate(&[(card("Bear Cub"), &BOTANIST)]);
+    for grave in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let (source, top) = botanist_start(&mut g, p, "Opt");
+        g.move_object(source, Zone::Exile);
+        ready(&mut g, None, |g| {
+            matches!(g.state.pending, Pending::EffectLibrarySelection { .. })
+        });
+        assert_eq!(
+            g.observe(p).library_selection.unwrap().destination,
+            "graveyard"
+        );
+        reject(&mut g, Action::SelectLibrary { card: source });
+        if grave {
+            act(&mut g, Action::SelectLibrary { card: top });
+        }
+        act(&mut g, Action::FinishLibrarySelection);
+        drain(&mut g);
+        assert_eq!(
+            g.object_view(top).zone,
+            if grave {
+                Zone::Graveyard
+            } else {
+                Zone::Library
+            }
+        );
+    }
+    let p = Player::P1;
+    let mut empty = scenario(p);
+    let source = cast_creature(&mut empty, p);
+    drain(&mut empty);
+    empty.begin_turn();
+    clear_library(&mut empty, p);
+    act(
+        &mut empty,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    pay(&mut empty);
+    drain(&mut empty);
+    assert!(empty.observe(p).library_selection.is_none());
+    assert!(!empty.state.players[p.index()].attempted_empty_draw);
+}
+#[test]
+fn private_top_fallback_is_owned_and_illegal_choices_are_transactional() {
+    let _scope = fixture_rules::activate(&[(card("Bear Cub"), &BOTANIST)]);
+    let p = Player::P1;
+    let mut parent = scenario(p);
+    let (_, top) = botanist(&mut parent, p, "Forest");
+    act(&mut parent, Action::FinishLibrarySelection);
+    let action = Action::SelectLibrary { card: top };
+    let rev = parent.revision();
+    let index = parent
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap();
+    let saved = parent.snapshot();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    let mut sibling = parent.clone();
+    drop(parent);
+    assert_eq!(raw.apply(p.other(), action.clone()), Err(Error::WrongActor));
+    assert_eq!(raw.snapshot(), saved);
+    reject(&mut raw, Action::SelectLibrary { card: 0 });
+    raw.apply(p, action.clone()).unwrap();
+    indexed.apply_index(p, rev, index).unwrap();
+    for child in [&mut raw, &mut indexed] {
+        act(child, Action::FinishLibrarySelection);
+        drain(child);
+        assert!(child.observe(p.other()).known_library_top[p.index()].is_none());
+    }
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(raw.object_view(top).zone, Zone::Graveyard);
+    act(&mut sibling, Action::FinishLibrarySelection);
+    drain(&mut sibling);
+    assert_eq!(sibling.top_library_card(p), Some(top));
+    indexed.restore(&saved).unwrap();
+    assert_eq!(
+        indexed.apply_index(p, rev, index),
+        Err(Error::StaleRevision)
+    );
+    act(&mut indexed, action);
+    act(&mut indexed, Action::FinishLibrarySelection);
+    drain(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+}

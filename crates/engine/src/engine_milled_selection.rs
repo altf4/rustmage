@@ -224,6 +224,7 @@ impl Game {
             }
             MilledDestination::Hand => Zone::Hand,
             MilledDestination::Battlefield => Zone::Battlefield,
+            MilledDestination::LibraryTop => Zone::Library,
         };
         let ids: Vec<_> = selected
             .iter()
@@ -246,6 +247,27 @@ impl Game {
         } else {
             let events = self.move_objects_raw(&ids, destination);
             self.finish_zone_events(&events, &[]);
+            if destination == Zone::Library {
+                let ordered: Vec<_> = events
+                    .iter()
+                    .filter(|event| {
+                        event.moved
+                            && event.destination == Zone::Library
+                            && self.object_ref(event.after.card) == event.after
+                            && self.state.objects[event.after.card as usize].zone == Zone::Library
+                    })
+                    .map(|event| event.after.card)
+                    .collect();
+                self.forget_library_top(player);
+                let library = &mut self.state.players[player.index()].library;
+                library.retain(|id| !ordered.contains(id));
+                library.extend(ordered.into_iter().rev());
+                // The order was a private choice, not a public top reveal.
+                if let Some(&id) = library.last() {
+                    let object = self.object_ref(id);
+                    self.remember_private_library_top(player, player, object);
+                }
+            }
             for event in events {
                 if event.moved
                     && event.destination == Zone::Hand

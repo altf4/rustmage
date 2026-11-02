@@ -120,6 +120,45 @@ impl Game {
         events
     }
 
+    pub(super) fn refill_empty_library_from_graveyard(
+        &mut self,
+        item: &SpellView,
+        amount: u16,
+    ) -> bool {
+        if self.library_card_count(item.controller) != 0 {
+            return false;
+        }
+        if let Some(source) = item.source
+            && self.on_battlefield(source.id)
+            && self.object_ref(source.id) == source.object
+        {
+            self.move_object(source.id, Zone::Exile);
+        }
+        if amount == 0 {
+            return false;
+        }
+        self.state.resolving.as_mut().unwrap().milled = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| {
+                object.owner == item.controller
+                    && object.zone == Zone::Graveyard
+                    && object.is_card()
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect();
+        self.start_milled_selection(MilledSelectionSpec {
+            filter: MilledFilter::Any,
+            count: MilledCount::Range {
+                minimum: amount,
+                maximum: amount,
+            },
+            destination: MilledDestination::LibraryTop,
+        })
+    }
+
     pub(super) fn can_recover_milled(
         &self,
         player: Player,

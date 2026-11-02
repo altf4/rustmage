@@ -5,8 +5,15 @@ use crate::cards::{
     LibrarySelectionEffect, LibrarySelectionFilter, LibrarySelectionSpec,
 };
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum TopLandStage {
+    Hand,
+    Graveyard,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LibrarySelection {
+    pub top_land: Option<TopLandStage>,
     pub spec: LibrarySelectionSpec,
     pub owner: Player,
     pub may_transform: bool,
@@ -80,6 +87,52 @@ impl Game {
                 c.is_creature() && self.stats(id).power <= i128::from(power)
             }
         }
+    }
+    pub(super) fn start_top_land_then_graveyard(&mut self, item: &SpellView) -> bool {
+        let owner = item.controller;
+        let Some(id) = self.top_library_card(owner) else {
+            return false;
+        };
+        let object = self.object_ref(id);
+        let land = self.current_kinds(id) & 2 != 0;
+        self.remember_private_library_top(owner, owner, object);
+        self.state.resolving.as_mut().unwrap().selection = Some(Box::new(LibrarySelection {
+            top_land: Some(if land {
+                TopLandStage::Hand
+            } else {
+                TopLandStage::Graveyard
+            }),
+            spec: LibrarySelectionSpec {
+                look: 1,
+                count: LibrarySelectionCount::Fixed(1),
+                filter: LibrarySelectionFilter::Any,
+                optional: true,
+                reveal: land,
+                remainder: LibraryRemainder::Keep,
+            },
+            owner,
+            may_transform: false,
+            entered: None,
+            transform_pending: false,
+            destination: if land {
+                LibraryPickDestination::Hand
+            } else {
+                LibraryPickDestination::Graveyard
+            },
+            exclude_selected_from_remainder: true,
+            public: false,
+            entering: false,
+            remaining: vec![object],
+            eligible: vec![object],
+            selected: Vec::new(),
+            bottom: Vec::new(),
+            minimum: 0,
+            maximum: 1,
+            ordering: false,
+            random: false,
+        }));
+        self.state.pending = Pending::EffectLibrarySelection { player: owner };
+        true
     }
     pub(super) fn start_library_selection(
         &mut self,
@@ -230,6 +283,7 @@ impl Game {
         let maximum = requested.min(eligible.len());
         let minimum = if spec.optional { 0 } else { maximum };
         self.state.resolving.as_mut().unwrap().selection = Some(Box::new(LibrarySelection {
+            top_land: None,
             spec,
             owner,
             may_transform,
@@ -348,6 +402,13 @@ impl Game {
             .selection
             .as_mut()
             .unwrap();
+        if f.top_land == Some(TopLandStage::Hand) && f.selected.is_empty() {
+            f.top_land = Some(TopLandStage::Graveyard);
+            f.destination = LibraryPickDestination::Graveyard;
+            f.spec.reveal = false;
+            self.state.pending = Pending::EffectLibrarySelection { player: owner };
+            return true;
+        }
         if f.spec.remainder == LibraryRemainder::BottomAny && !f.remaining.is_empty() {
             f.ordering = true;
             self.state.pending = Pending::EffectLibrarySelection { player: owner };
@@ -358,7 +419,6 @@ impl Game {
         }
     }
     fn commit_library_selection(&mut self, owner: Player) {
-        self.forget_library_top(owner);
         let mut f = self
             .state
             .resolving
@@ -367,6 +427,9 @@ impl Game {
             .selection
             .take()
             .unwrap();
+        if f.top_land.is_none() || !f.selected.is_empty() {
+            self.forget_library_top(owner);
+        }
         for reference in f.selected.iter().chain(&f.remaining).chain(&f.bottom) {
             assert_eq!(self.object_ref(reference.card), *reference);
             assert_eq!(
@@ -403,6 +466,7 @@ impl Game {
         let ids: Vec<_> = f.selected.iter().map(|r| r.card).collect();
         let events = match f.destination {
             LibraryPickDestination::Hand => self.move_objects_raw(&ids, Zone::Hand),
+            LibraryPickDestination::Graveyard => self.move_objects_raw(&ids, Zone::Graveyard),
             LibraryPickDestination::Exile => self.move_objects_raw(&ids, Zone::Exile),
             _ => Vec::new(),
         };
@@ -433,7 +497,9 @@ impl Game {
         }
         if f.spec.reveal {
             for e in &events {
-                self.state.known_hand.push(e.after);
+                if e.moved && e.destination == Zone::Hand {
+                    self.state.known_hand.push(e.after);
+                }
             }
         }
         self.finish_zone_events(&events, &[]);
@@ -508,6 +574,7 @@ impl Game {
             }));
         }
         match f.spec.remainder {
+            LibraryRemainder::Keep => (),
             LibraryRemainder::Shuffle => {
                 if self.state.players[owner.index()].library.len() > 1 {
                     self.forget_library_top(owner);
@@ -669,6 +736,7 @@ impl Game {
                 }
                 LibraryPickDestination::LandsTappedRestHand => "lands_tapped_rest_hand",
                 LibraryPickDestination::Hand => "hand",
+                LibraryPickDestination::Graveyard => "graveyard",
                 LibraryPickDestination::Battlefield => "battlefield",
                 LibraryPickDestination::BattlefieldTapped => "battlefield_tapped",
                 LibraryPickDestination::Top => "top",
@@ -676,6 +744,7 @@ impl Game {
                 LibraryPickDestination::Exile => "exile",
             },
             remainder: match f.spec.remainder {
+                LibraryRemainder::Keep => "keep",
                 LibraryRemainder::Graveyard => "graveyard",
                 LibraryRemainder::Hand => "hand",
                 LibraryRemainder::Shuffle => "shuffle",

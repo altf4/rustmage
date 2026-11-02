@@ -756,6 +756,8 @@ impl ManaProduction {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryRemainder {
+    /// Leave every unselected looked card in its existing position.
+    Keep,
     /// Shuffle the entire library after selected entries finish.
     Shuffle,
     Graveyard,
@@ -806,6 +808,7 @@ pub enum LibraryPickDestination {
     BattlefieldIfManaValueAtMostElseHand(AmountValue),
     BattlefieldTapped,
     LandsTappedRestHand,
+    Graveyard,
     Hideaway,
     Exile,
     Hand,
@@ -1197,7 +1200,11 @@ pub enum MilledFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum MilledDestination {
-    PlayPermission { next_turn: bool },
+    /// First selected card is uppermost; the choice/order stays private.
+    LibraryTop,
+    PlayPermission {
+        next_turn: bool,
+    },
     Hand,
     Battlefield,
 }
@@ -2230,6 +2237,12 @@ pub enum Instruction {
         skip: usize,
     },
     CollectGraveyard,
+    /// After prior milling, an empty library causes exact-source exile and a
+    /// mandatory private selection/order of up to the available graveyard cards.
+    RefillEmptyLibraryFromGraveyard(u16),
+    /// Privately look at top one; optionally reveal a land to hand, otherwise
+    /// optionally put that same exact card into the graveyard.
+    LookTopLandThenMayGraveyard,
     CastLibraryTopUpToAttackingPower(u16),
     BottomLookedLibraryRandom,
     ControlTargetPlayerNextTurn,
