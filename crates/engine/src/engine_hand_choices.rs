@@ -18,6 +18,7 @@ pub enum HandChoiceKind {
     },
     ExileRevealedOrCreature,
     ExileRevealedLinked,
+    ExileRevealedLinkedOptional,
     /// Choose a controlled permanent of the requested subtype or reveal a hand card.
     Behold,
 }
@@ -235,6 +236,12 @@ impl Game {
         true
     }
     pub(super) fn start_revealed_hand_exile_linked(&mut self, item: &SpellView) -> bool {
+        self.start_revealed_hand_link(item, false)
+    }
+    pub(super) fn start_optional_revealed_hand_link(&mut self, item: &SpellView) -> bool {
+        self.start_revealed_hand_link(item, true)
+    }
+    fn start_revealed_hand_link(&mut self, item: &SpellView, optional: bool) -> bool {
         let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
         };
@@ -248,12 +255,16 @@ impl Game {
             return false;
         }
         self.set_hand_interaction(HandInteraction {
-            kind: HandChoiceKind::ExileRevealedLinked,
+            kind: if optional {
+                HandChoiceKind::ExileRevealedLinkedOptional
+            } else {
+                HandChoiceKind::ExileRevealedLinked
+            },
             actor: item.controller,
             controller: item.controller,
             victim: Some(victim),
             source: item.source.expect("object-backed packet").object,
-            required: 1,
+            required: usize::from(!optional),
             selected: Vec::new(),
             candidates,
         });
@@ -319,7 +330,7 @@ impl Game {
                     && o.is_card()
                     && self.current_kinds(reference.card) & kinds != 0
             }
-            HandChoiceKind::ExileRevealedLinked => {
+            HandChoiceKind::ExileRevealedLinked | HandChoiceKind::ExileRevealedLinkedOptional => {
                 o.zone == Zone::Hand
                     && Some(o.owner) == interaction.victim
                     && !o.is_token()
@@ -355,6 +366,7 @@ impl Game {
         if matches!(
             interaction.kind,
             HandChoiceKind::ExileRevealedOrCreature
+                | HandChoiceKind::ExileRevealedLinkedOptional
                 | HandChoiceKind::Behold
                 | HandChoiceKind::LookDiscardDraw
         ) && emit(Action::ChooseHandCard { object: None })
@@ -449,6 +461,27 @@ impl Game {
                             });
                     }
                 }
+                HandChoiceKind::ExileRevealedLinkedOptional => {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        let ability_origin = self
+                            .state
+                            .resolving
+                            .as_ref()
+                            .unwrap()
+                            .item
+                            .source_ability_origin;
+                        self.state
+                            .linked_choices
+                            .get_or_insert_default()
+                            .links
+                            .push(LinkedExileView {
+                                source: interaction.source,
+                                exiled: event.after,
+                                ability_origin,
+                            });
+                    }
+                }
                 HandChoiceKind::Behold => {
                     if self.state.objects[object.card as usize].zone == Zone::Hand {
                         self.reveal_hand_refs(&[object]);
@@ -510,6 +543,7 @@ impl Game {
             optional: matches!(
                 interaction.kind,
                 HandChoiceKind::ExileRevealedOrCreature
+                    | HandChoiceKind::ExileRevealedLinkedOptional
                     | HandChoiceKind::Behold
                     | HandChoiceKind::LookDiscardDraw
             ),

@@ -227,6 +227,8 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    /// Internal result of one owner's part of a simultaneous creation event.
+    CollectSimultaneous,
     AttackThisCombat,
     CounterOtherWizards,
     Counters {
@@ -313,6 +315,10 @@ enum Event {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
+    SimultaneousCopyTokens {
+        ready: Vec<TokenBatch>,
+        remaining: VecDeque<TokenBatch>,
+    },
     CreatedAttackThisCombat(Vec<ObjectRef>),
     AmassSubtype {
         source: ObjectRef,
@@ -418,6 +424,14 @@ impl ReplacementState {
                     Work::Proliferate(b) => b.used.len() * std::mem::size_of::<(ObjectRef, u16)>(),
                     Work::Counters(b) => counter_bytes(b),
                     Work::Tokens(b) => token_bytes(b),
+                    Work::SimultaneousCopyTokens { ready, remaining } => {
+                        (ready.len() + remaining.len()) * std::mem::size_of::<TokenBatch>()
+                            + ready
+                                .iter()
+                                .chain(remaining)
+                                .map(&token_bytes)
+                                .sum::<usize>()
+                    }
                     Work::CreatedGraveyardCounters { created, .. } => {
                         created.len() * std::mem::size_of::<ObjectRef>()
                     }
@@ -2010,6 +2024,46 @@ impl Game {
         b.effect = true;
         b.used.push((choice.source, choice.ability));
     }
+    /// Resolve each affected owner's token replacements before committing all
+    /// created objects in one entry batch. No newly created provider can modify
+    /// another owner's part of this same event.
+    pub(super) fn stage_simultaneous_copy_creation(
+        &mut self,
+        players: &[Player],
+        recipe: CopyRecipe,
+    ) {
+        if players.is_empty() {
+            return;
+        }
+        let remaining = players
+            .iter()
+            .map(|&player| TokenBatch {
+                recipes: vec![Some(recipe)],
+                player,
+                groups: vec![TokenGroupView {
+                    token: recipe.definition,
+                    amount: 1,
+                    tapped: false,
+                }],
+                effect: true,
+                used: Vec::new(),
+                completion: TokenCompletion::CollectSimultaneous,
+            })
+            .collect();
+        let state = self.state.replacements.get_or_insert_with(|| {
+            Box::new(ReplacementState {
+                work: VecDeque::new(),
+                active: None,
+                attachment: None,
+                resume: None,
+                mode: ResumeMode::Program,
+            })
+        });
+        state.work.push_back(Work::SimultaneousCopyTokens {
+            ready: Vec::new(),
+            remaining,
+        });
+    }
     pub(super) fn stage_copy_creation(&mut self, player: Player, recipe: CopyRecipe, amount: u128) {
         self.stage_copy_creation_inner(player, recipe, amount, TokenCompletion::None);
     }
@@ -2275,6 +2329,38 @@ impl Game {
             }
             if state.active.is_none() {
                 match state.work.pop_front() {
+                    Some(Work::SimultaneousCopyTokens {
+                        mut ready,
+                        mut remaining,
+                    }) => {
+                        if let Some(batch) = remaining.pop_front() {
+                            state
+                                .work
+                                .push_front(Work::SimultaneousCopyTokens { ready, remaining });
+                            state.active = Some(Event::Tokens(batch));
+                        } else {
+                            let mut moves = Vec::new();
+                            for batch in ready.drain(..) {
+                                moves.extend(self.allocate_copy_group_entries(
+                                    batch.player,
+                                    &batch.groups,
+                                    &batch.recipes,
+                                ));
+                            }
+                            if !moves.is_empty() {
+                                self.track_nightmare_copy_entries(&moves);
+                                self.stage_entries(moves, None);
+                                if let Some(entry) = self.state.entry_batch.as_mut() {
+                                    assert!(entry.replacement_resume.is_none());
+                                    entry.replacement_resume = Some(state);
+                                    return self.advance_entries();
+                                }
+                                // A choice-free batch can commit synchronously;
+                                // the local replacement queue still owns resume.
+                            }
+                            continue;
+                        }
+                    }
                     Some(Work::CreatedAttackThisCombat(created)) => {
                         self.require_created_attacks_this_combat(&created);
                         continue;
@@ -2681,6 +2767,15 @@ impl Game {
                             let Some(Event::Tokens(batch)) = state.active.take() else {
                                 unreachable!()
                             };
+                            if matches!(batch.completion, TokenCompletion::CollectSimultaneous) {
+                                let Some(Work::SimultaneousCopyTokens { ready, .. }) =
+                                    state.work.front_mut()
+                                else {
+                                    unreachable!("owned simultaneous token continuation")
+                                };
+                                ready.push(batch);
+                                continue;
+                            }
                             if let TokenCompletion::TemporaryTokens(context) = &batch.completion {
                                 let recipes = if batch.recipes.is_empty() {
                                     vec![None; batch.groups.len()]
@@ -2699,6 +2794,7 @@ impl Game {
                                     entry.replacement_resume = Some(state);
                                     return self.advance_entries();
                                 }
+
                                 continue;
                             }
                             if !batch.recipes.is_empty() {

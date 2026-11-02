@@ -5051,6 +5051,19 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::RevealTargetHandMayExileLinked => {
+                    if self.start_optional_revealed_hand_link(&item) {
+                        return;
+                    }
+                }
+                Instruction::CreateSizedTokensForLinkedExileOwners { token } => {
+                    self.create_sized_tokens_for_linked_exile_owners(&item, token);
+                }
+                Instruction::ExileDamageEventLibraryCastFree => {
+                    if self.exile_damage_event_library_cast_free(&item) {
+                        return;
+                    }
+                }
                 Instruction::RevealTargetHandExileLinked => {
                     if self.start_revealed_hand_exile_linked(&item) {
                         return;

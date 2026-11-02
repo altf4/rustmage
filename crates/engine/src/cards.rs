@@ -2298,6 +2298,16 @@ pub enum Instruction {
     RevealTargetHandSubsetDiscard(AmountValue),
     RevealTargetHandExileUntilSourceLeaves,
     RevealTargetHandExileLinked,
+    /// Reveal the full target hand, then optionally link one nonland exile.
+    RevealTargetHandMayExileLinked,
+    /// Each distinct linked card owner creates one token sized by the sum of
+    /// all cards still in exile for this exact acquired linked ability pair.
+    CreateSizedTokensForLinkedExileOwners {
+        token: Card,
+    },
+    /// Immediate free casts from the damaged player's top X, each mana value
+    /// at most the frozen actual damage X; no shared mana-value budget.
+    ExileDamageEventLibraryCastFree,
     /// Reveal the targeted player's whole hand, then choose one matching card if able.
     /// Kind bits form a positive union; exile is permanent and has no source link.
     RevealTargetHandChoose {

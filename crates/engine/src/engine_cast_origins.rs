@@ -704,6 +704,45 @@ impl Game {
             free.pending_cast = None;
         }
     }
+    pub(super) fn exile_damage_event_library_cast_free(&mut self, item: &SpellView) -> bool {
+        let Some(damage) = item.damage_event else {
+            return false;
+        };
+        let ids = exile::top_library_cards(self, damage.player, damage.amount);
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let remaining: Vec<_> = events
+            .iter()
+            .filter(|event| event.moved && event.destination == Zone::Exile)
+            .map(|event| event.after)
+            .collect();
+        self.finish_zone_events(&events, &[]);
+        if remaining.is_empty() {
+            return false;
+        }
+        // Existing maximum is exclusive. At/above u64::MAX every represented
+        // card mana value qualifies; do not narrow the frozen damage first.
+        let maximum_mana_value = u64::try_from(damage.amount)
+            .ok()
+            .and_then(|value| value.checked_add(1));
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
+            paid: None,
+            casts_remaining: None,
+            pending_cast: None,
+            remaining_mana_value: None,
+            alternative_cost: None,
+            maximum_mana_value,
+            origin: Zone::Exile,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player: item.controller,
+            remaining,
+        }));
+        self.state.pending = Pending::ResolutionCasts {
+            player: item.controller,
+        };
+        true
+    }
     pub(super) fn exile_target_top_cast_free(
         &mut self,
         item: &SpellView,

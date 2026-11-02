@@ -319,23 +319,21 @@ impl Game {
             .capacity("object generation exhausted");
         self.state.free_tokens.push(object.card);
     }
-    pub(super) fn create_copy_groups_inner(
+    pub(super) fn allocate_copy_group_entries(
         &mut self,
         player: Player,
         groups: &[TokenGroupView],
         recipes: &[Option<CopyRecipe>],
-        temporary: Option<&SpellView>,
-    ) -> Vec<ObjectRef> {
-        self.create_copy_groups_with_instructions(player, groups, recipes, temporary, None)
+    ) -> Vec<entries::EntryMove> {
+        self.allocate_copy_group_entries_with_instructions(player, groups, recipes, None)
     }
-    pub(super) fn create_copy_groups_with_instructions(
+    fn allocate_copy_group_entries_with_instructions(
         &mut self,
         player: Player,
         groups: &[TokenGroupView],
         recipes: &[Option<CopyRecipe>],
-        temporary: Option<&SpellView>,
         instructions: Option<&temporary_tokens::TokenInstructions>,
-    ) -> Vec<ObjectRef> {
+    ) -> Vec<entries::EntryMove> {
         assert_eq!(groups.len(), recipes.len());
         let total = groups
             .iter()
@@ -435,6 +433,31 @@ impl Game {
                 moves.push(movement);
             }
         }
+        moves
+    }
+    pub(super) fn create_copy_groups_inner(
+        &mut self,
+        player: Player,
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+        temporary: Option<&SpellView>,
+    ) -> Vec<ObjectRef> {
+        self.create_copy_groups_with_instructions(player, groups, recipes, temporary, None)
+    }
+    pub(super) fn create_copy_groups_with_instructions(
+        &mut self,
+        player: Player,
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+        temporary: Option<&SpellView>,
+        instructions: Option<&temporary_tokens::TokenInstructions>,
+    ) -> Vec<ObjectRef> {
+        let moves = self.allocate_copy_group_entries_with_instructions(
+            player,
+            groups,
+            recipes,
+            instructions,
+        );
         let created = moves
             .iter()
             .map(|m| ObjectRef {
