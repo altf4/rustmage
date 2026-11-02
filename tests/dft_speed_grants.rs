@@ -185,7 +185,7 @@ fn max_speed_mana_is_one_indexed_activation_and_funding_agrees_at_three_and_four
             "indexed costs are not flattened tap grants"
         );
         mana(&mut g, source);
-        assert_eq!(g.state.players[p.index()].mana, BLUE.map(u64::from));
+        assert_eq!(g.state.players[p.index()].mana, BLUE);
         assert!(g.object_view(source).tapped);
         assert!(g.state.stack.is_empty(), "mana resolves immediately");
         cast(&mut g, spell, None);
