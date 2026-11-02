@@ -8,9 +8,9 @@
   "engine_status": "frozen reviewed checkpoint; authors do not mutate shared engine",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "counts": {
-    "authored_candidates": 24,
+    "authored_candidates": 28,
     "validated_by_integrator": 35,
-    "not_started": 16
+    "not_started": 12
   },
   "validation_owner": "root integrator; no Cargo run by card author",
   "validation_targets": [
@@ -55,6 +55,12 @@
       "cases": 8,
       "scope": "5 whole cards: actual engine-starting entries at existing0/3 speed; Zombie characteristics; max-speed source grants, sorcery-only required private search and shuffle after source sacrifice/speed loss; optional discard2draw and frozen creature/Vehicle Haste union EOT; opponent mandatory creature/Vehicle sacrifice versus discard fallback and independently sampled life; optional creature/planeswalker5damage; postpayment independent speed2damage; live life-scaled13/13 Vehicle with Crew2 and real2life+2B draw",
       "status": "pending root execution"
+    },
+    {
+      "target": "dft_black_red_cards_trigger_creatures",
+      "cases": 8,
+      "scope": "4 complete creatures: exact caster versus active/observer matrix and committed own exhaust qualification under countering; actual attack declaration target buff, source-independent death surveil with original beneficiary/privacy/raw-index restore and stale/expiry contrasts; exact paid Crew/Saddle recipient plus main/other turn and departed pilot/reentered recipient; actual optional graveyard landfall and opponent/stale contrasts, live10life haste attack and can't-block legality",
+      "status": "pending root execution"
     }
   ],
   "shared_proofs": [
@@ -75,12 +81,52 @@
         "Whenever you activate an exhaust ability, put a +1/+1 counter on this creature."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "caster-off-turn",
         "exhaust-event"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "adrenaline_jockey_damages_the_actual_offturn_caster_regardless_of_observer_controller",
+        "adrenaline_jockey_counts_committed_own_exhaust_even_if_the_ability_is_countered"
+      ],
+      "test_target": "dft_black_red_cards_trigger_creatures",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/a/AdrenalineJockey.java",
+        "java_sha256": "0c85ceaca77bbb277aaec45b3d030ef57e6c09bc8ea7ec9626c4426f17e54938",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/ActivateAbilityTriggeredAbility.java",
+            "sha256": "ac026c9e891ddf1ca80ef4b2847e5f12587bd504bbd2f213346d129ea2ae961c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SpellCastAllTriggeredAbility.java",
+            "sha256": "7837dc850438ff0b6ee06931b9578252338a1abd3306475a94d92d1333df4988"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+            "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+            "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/counters/CounterType.java",
+            "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+          }
+        ]
+      },
+      "definition_sha256": "a621cbe7a7edfe1b60a8b8379f9955d1d4f792bc53b52ce5bf88a8b8f1fee7c0"
     },
     {
       "name": "Ancient Vendetta",
@@ -159,9 +205,69 @@
         "Landfall \u2014 Whenever a land you control enters, you may return this card from your graveyard to the battlefield."
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "bloodghast_actual_landfall_optional_return_and_live_haste_enable_attack_but_never_block",
+        "bloodghast_foreign_land_or_stale_graveyard_incarnation_does_not_return"
+      ],
+      "test_target": "dft_black_red_cards_trigger_creatures",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/b/Bloodghast.java",
+        "java_sha256": "ffa59b6db05372083f8286c50c7249757c4c37974094fe4eac9a76f1a949cf8b",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/CantBlockAbility.java",
+            "sha256": "e78337c6f4e0c6d913ed6085d1a91b4663b27f6985deb409d78303a0f565dda1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+            "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+            "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/condition/common/LifeCompareCondition.java",
+            "sha256": "6cc17c2f13a46a9093c2c080007fb80f6ccb1e998a28dd0fa94e608feb0628fa"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+            "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffect.java",
+            "sha256": "deea4c7c61bc169d2cc284d082e13df8322434d8784d94f2a744244ad96d24d9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+            "sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+            "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+            "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+          }
+        ]
+      },
+      "definition_sha256": "eafd73222ab3a7cbb3d5e55727e5aadcc8d6e1c5ff40f4736891d6057461535a"
     },
     {
       "name": "Boommobile",
@@ -1870,11 +1976,61 @@
         "Whenever you attack, target attacking creature gets +1/+0 until end of turn. When that creature dies this turn, surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)"
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "delayed-target-dies"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "grim_javelineer_attack_buff_and_delayed_surveil_keep_original_controller_after_source_departure",
+        "grim_javelineer_delayed_death_rejects_a_new_incarnation_and_expires_at_cleanup"
+      ],
+      "test_target": "dft_black_red_cards_trigger_creatures",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/g/GrimJavelineer.java",
+        "java_sha256": "cccf295ed40611f1ff26aad03eba7925a02af437142bb03c31054d3d2bcdbcb0",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+            "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/delayed/WhenTargetDiesDelayedTriggeredAbility.java",
+            "sha256": "06ed400e2766a16d28d9e0895026249164e27f66fc03481e105d4a574c6fc137"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+            "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+            "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+            "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+            "sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+          }
+        ]
+      },
+      "definition_sha256": "e6be6e1fbc8423d393039793f8d4a317bbdea6f24805704fb39390872b362654"
     },
     {
       "name": "Hazoret, Godseeker",
@@ -3195,11 +3351,56 @@
         "Whenever this creature saddles a Mount or crews a Vehicle during your main phase, that Mount or Vehicle gets +2/+0 and gains trample until end of turn."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "crew-saddle-participant-event"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "reckless_velocitaur_buffs_only_its_exact_crew_or_saddle_recipient_during_own_main",
+        "reckless_velocitaur_queued_buff_survives_pilot_departure_but_not_recipient_reentry"
+      ],
+      "test_target": "dft_black_red_cards_trigger_creatures",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/r/RecklessVelocitaur.java",
+        "java_sha256": "073e1cd696f8632cf351b45ed9ad8e5bac78d93e4a255e06f5ae167ae64ef06d",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+            "sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CrewsVehicleSourceTriggeredAbility.java",
+            "sha256": "7c5b25d1fb306a4340b5f91b84c2830c9b6e0320bbdfbbe68bb0cb1fa6718095"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+            "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+            "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+            "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+          }
+        ]
+      },
+      "definition_sha256": "73e9b631ee1aa8c22bd96fea0c8b08439f3371f4c3a860941479329ba96ed4a3"
     },
     {
       "name": "Ripclaw Wrangler",
