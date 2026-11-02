@@ -57,7 +57,7 @@
       "proofs": [
         "fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_or_reverse"
       ],
-      "outcomes": "Both seats: actual tax2 AttackPayment with one exact attacker suspends for announced{1}+tap fixedCC. Parent-dropped raw/index/restored children release their header, retain frozen generic2/attacker incarnation, and either payCC to commit that attack or abort/reverse the mana event to the original declaration snapshot."
+      "outcomes": "Both seats: actual tax2 AttackPayment with one exact attacker suspends for announced{1}+tap+exile-one-own-GY-land fixedCC (explicit external cost ensures the public announced route). Parent-dropped raw/index/restored children release their header, retain frozen generic2/attacker incarnation, and either payCC to commit that attack or abort/reverse the mana event to the original declaration snapshot, restoring exact fuel incarnation in the graveyard."
     }
   ],
   "required_existing_shared_regressions": [

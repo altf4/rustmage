@@ -551,6 +551,19 @@ fn fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_o
                 generic: 1,
                 mana_component: true,
                 tap: true,
+                additional: Some(AdditionalCost {
+                    kind: EffectChoiceKind::ExileGraveyard,
+                    filter: SacrificeFilter {
+                        keywords: Keywords::NONE,
+                        source_only: false,
+                        kinds: 2,
+                        nonland: false,
+                        other: false,
+                        tokens: None,
+                        artifact_enchantment_or_token: false,
+                        subtype: None,
+                    },
+                }),
                 ..ActivationCost::ZERO
             },
             program: &[Instruction::AddMana(ManaProduction::Fixed(TWO))],
@@ -581,6 +594,8 @@ fn fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_o
             let attacker = put(&mut parent, p, "Bear Cub", Zone::Battlefield);
             let attacker_ref = parent.object_ref(attacker);
             let producer = put(&mut parent, p, "Grizzly Bears", Zone::Battlefield);
+            let fuel = put(&mut parent, p, "Forest", Zone::Graveyard);
+            let fuel_ref = parent.object_ref(fuel);
             parent.state.players[p.index()].mana = ONE;
             parent.state.step = Step::Attackers;
             parent.state.pending = Pending::Attackers;
@@ -597,6 +612,10 @@ fn fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_o
                     counter_payment: Counters::default(),
                     production: TWO,
                 },
+            );
+            act(
+                &mut parent,
+                Action::ChooseAdditionalCost { object: fuel_ref },
             );
             assert_eq!(parent.state.pending, Pending::PayCosts { player: p });
             assert!(
@@ -636,6 +655,8 @@ fn fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_o
                 assert_eq!(g.state.pending, Pending::AttackPayment { player: p });
                 assert_eq!(g.state.players[p.index()].mana, TWO);
                 assert!(g.object_view(producer).tapped);
+                assert_eq!(g.object_view(fuel).zone, Zone::Exile);
+                assert_ne!(g.object_ref(fuel), fuel_ref);
                 let receipt = g.state.attack_payment.as_ref().unwrap();
                 assert_eq!(receipt.player, p);
                 assert_eq!(receipt.generic, 2);
@@ -651,6 +672,8 @@ fn fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_o
                     assert_eq!(g.snapshot(), declaration);
                     assert!(!g.object_view(attacker).tapped);
                     assert!(!g.object_view(producer).tapped);
+                    assert_eq!(g.object_ref(fuel), fuel_ref);
+                    assert_eq!(g.object_view(fuel).zone, Zone::Graveyard);
                     assert_eq!(g.state.players[p.index()].mana, ONE);
                 } else {
                     act(g, Action::PayAttackCost { payment: TWO });
