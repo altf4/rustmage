@@ -787,3 +787,236 @@ fn fixed_announced_output_owns_the_guided_resume_across_raw_index_parent_disposa
     drain(&mut idx);
     assert_eq!(raw.snapshot(), idx.snapshot());
 }
+
+#[test]
+fn converging_suffixes_keep_both_valid_provenance_plans_for_a_double_red_parent() {
+    const ABILITY_RESTRICTED: CardRules = CardRules {
+        effect: Effect::Creature(1, 3),
+        activated: &[ability(
+            ActivationCost {
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            &[Instruction::AddMana(ManaProduction::Tagged {
+                production: &ManaProduction::Fixed(GREEN),
+                quality: &ManaQuality {
+                    restriction: ManaRestriction::AbilityActivation,
+                    spell_bonus: ManaSpellBonus::None,
+                    retention: ManaRetention::Step,
+                },
+            })],
+        )],
+        ..CardRules::EMPTY
+    };
+    const SECOND: CardRules = CardRules {
+        effect: Effect::Creature(3, 3),
+        activated: &[CHILD_ABILITY],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &NATIVE),
+        (Card::HillGiant, &SECOND),
+        (named("Druid of the Cowl"), &ABILITY_RESTRICTED),
+        (named("Scorching Shot"), &PARENT),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let first = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let second = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let producer = put(&mut g, p, "Druid of the Cowl", Zone::Battlefield);
+        g.state.players[p.index()].mana = GREEN;
+        act(&mut g, direct(producer, GREEN));
+        let spell = put(&mut g, p, "Scorching Shot", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        assert_eq!(
+            g.state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .total_cost
+                .unwrap()
+                .colored,
+            TWO_RED
+        );
+        act(&mut g, announce(first, RED));
+        pay(&mut g);
+        assert!(matches!(g.state.pending, Pending::ManaLotSpend { .. }));
+        for amount in [0, 1] {
+            assert!(
+                g.legal_actions()
+                    .contains(&Action::ChooseManaLotSpend { amount }),
+                "both prefixes converge to an identical RR suffix, so one plan cannot prune the other"
+            );
+        }
+        let saved = g.snapshot();
+        let mut raw = g.clone();
+        let mut idx = g.clone();
+        let action = Action::ChooseManaLotSpend { amount: 1 };
+        act(&mut raw, action.clone());
+        indexed(&mut idx, action);
+        assert_eq!(raw.snapshot(), idx.snapshot());
+        drop(g);
+        for branch in [&mut raw, &mut idx] {
+            act(branch, announce(second, RED));
+            pay(branch);
+            assert!(branch.object_view(first).tapped && branch.object_view(second).tapped);
+            assert_eq!(branch.state.players[p.index()].mana, TWO_RED);
+            assert_eq!(branch.available_mana(p, mana_lots::Purpose::Other), TWO_RED);
+            complete_parent(branch, spell, p, 0, 1);
+        }
+        assert_eq!(raw.snapshot(), idx.snapshot());
+        idx.restore(&saved).unwrap();
+        act(&mut idx, Action::ChooseManaLotSpend { amount: 0 });
+        act(&mut idx, announce(second, RED));
+        pay(&mut idx);
+        assert!(
+            !idx.legal_actions()
+                .contains(&Action::ChooseManaLotSpend { amount: 0 })
+        );
+        if matches!(idx.state.pending, Pending::ManaLotSpend { .. }) {
+            act(&mut idx, Action::ChooseManaLotSpend { amount: 1 });
+        }
+        assert_eq!(idx.available_mana(p, mana_lots::Purpose::Other), TWO_RED);
+        complete_parent(&mut idx, spell, p, 0, 1);
+        assert_eq!(idx.snapshot(), raw.snapshot());
+    }
+}
+
+const REPEATABLE: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    activated: &[ability(
+        ActivationCost {
+            colored: RED,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        &[Instruction::AddMana(ManaProduction::Fixed(TWO_RED))],
+    )],
+    ..CardRules::EMPTY
+};
+const THREE_RED: Mana = [0, 0, 0, 3, 0, 0];
+fn repeat_converter(g: &mut Game, source: CardId, expected: Pending, total_red: u32) {
+    act(g, announce(source, TWO_RED));
+    act(g, Action::PayCosts { payment: RED });
+    assert_eq!(g.state.pending, expected);
+    assert!(!g.object_view(source).tapped);
+    assert!(g.state.announcing.is_none());
+    assert_eq!(
+        g.state.players[g.state.active.index()].mana,
+        [0, 0, 0, total_red, 0, 0]
+    );
+}
+
+#[test]
+fn completed_repeatable_converter_can_run_again_to_finish_root_plot_and_face_up_payments() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &REPEATABLE)]);
+    for p in [Player::P0, Player::P1] {
+        for plot in [false, true] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            let target = put(
+                &mut g,
+                p,
+                "Irascible Wolverine",
+                if plot { Zone::Hand } else { Zone::Library },
+            );
+            if !plot {
+                let object = g.object_ref(target);
+                let entry = g.manifest_entry(object, p).unwrap();
+                g.stage_entries(vec![entry], None);
+                assert!(!g.advance_entries());
+            }
+            g.state.players[p.index()].mana = RED;
+            if plot {
+                act(&mut g, Action::AnnouncePlot { card: target });
+            } else {
+                let object = g.object_ref(target);
+                act(
+                    &mut g,
+                    Action::BeginFaceUp {
+                        object,
+                        cost: ManaCost {
+                            colored: RED,
+                            generic: 2,
+                        },
+                    },
+                );
+            }
+            let pending = g.state.pending.clone();
+            repeat_converter(&mut g, source, pending.clone(), 2);
+            assert!(
+                g.legal_actions().contains(&announce(source, TWO_RED)),
+                "a completed activation instance is no longer an active recursion ancestor"
+            );
+            repeat_converter(&mut g, source, pending, 3);
+            if plot {
+                act(&mut g, Action::PayPlot { payment: THREE_RED });
+                assert_eq!(g.object_view(target).zone, Zone::Exile);
+                assert_eq!(g.observe(p).plotted_cards.len(), 1);
+            } else {
+                act(&mut g, Action::PayFaceUp { payment: THREE_RED });
+                assert!(!g.is_face_down(g.object_ref(target)));
+                assert_eq!(stats(&g, target), (3, 2));
+            }
+            drain(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert!(!g.object_view(source).tapped);
+        }
+    }
+}
+
+#[test]
+fn root_attack_payment_keeps_its_owned_receipt_and_retires_each_completed_converter() {
+    const ATTACK_TAX: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::AttackControllerTax {
+                amount: 3,
+                condition: StatValue::Fixed(1),
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &REPEATABLE),
+        (named("Short Bow"), &ATTACK_TAX),
+    ]);
+    let p = Player::P1;
+    let mut parent = scenario(p);
+    let source = put(&mut parent, p, "Grizzly Bears", Zone::Battlefield);
+    let attacker = put(&mut parent, p, "Goblin Piker", Zone::Battlefield);
+    put(&mut parent, p.other(), "Short Bow", Zone::Battlefield);
+    parent.state.players[p.index()].mana = RED;
+    parent.state.step = Step::Attackers;
+    parent.state.pending = Pending::Attackers;
+    act(&mut parent, Action::Attack { card: attacker });
+    act(&mut parent, Action::FinishAttackers);
+    let pending = Pending::AttackPayment { player: p };
+    assert_eq!(parent.state.pending, pending);
+    repeat_converter(&mut parent, source, pending.clone(), 2);
+    let saved = parent.snapshot();
+    let mut raw = parent.clone();
+    let mut idx = parent.clone();
+    let start = announce(source, TWO_RED);
+    act(&mut raw, start.clone());
+    indexed(&mut idx, start);
+    assert_eq!(raw.snapshot(), idx.snapshot());
+    drop(parent);
+    for g in [&mut raw, &mut idx] {
+        act(g, Action::PayCosts { payment: RED });
+        assert_eq!(g.state.pending, pending);
+        reject(g, Action::PayAttackCost { payment: TWO_RED });
+        act(g, Action::PayAttackCost { payment: THREE_RED });
+        assert_eq!(g.state.attackers.len(), 1);
+        assert_eq!(g.state.attackers[0].card, attacker);
+        assert!(g.object_view(attacker).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+    assert_eq!(raw.snapshot(), idx.snapshot());
+    idx.restore(&saved).unwrap();
+    repeat_converter(&mut idx, source, pending, 3);
+    act(&mut idx, Action::PayAttackCost { payment: THREE_RED });
+    assert_eq!(raw.snapshot(), idx.snapshot());
+}
