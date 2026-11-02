@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fcc918af4f466865b7ddb52847b2bdc8ca93119442bc3391e73bebe789ef6e33",
+  "catalogue_version": "c593bbbd07143fbe92dd5710862336bf1e6c7ad7d2e2857f0f5342ef2d41ca22",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3061,
-  "implemented_total": 3067,
+  "implemented_standard_cards": 3088,
+  "implemented_total": 3094,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 162,
-      "gated": 97
+      "complete": 189,
+      "gated": 70
     },
     "dsk": {
       "total": 264,
@@ -1178,8 +1178,8 @@
     {
       "name": "Alacrian Armory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/alacrian_armory.rs",
       "set": "dft"
     },
@@ -2978,8 +2978,8 @@
     {
       "name": "Basri, Tomorrow's Champion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/basri_tomorrow_s_champion.rs",
       "set": "dft"
     },
@@ -4746,8 +4746,8 @@
     {
       "name": "Broodheart Engine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/broodheart_engine.rs",
       "set": "dft"
     },
@@ -4842,8 +4842,8 @@
     {
       "name": "Bulwark Ox",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/bulwark_ox.rs",
       "set": "dft"
     },
@@ -4962,8 +4962,8 @@
     {
       "name": "Burnout Bashtronaut",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/burnout_bashtronaut.rs",
       "set": "dft"
     },
@@ -5306,8 +5306,8 @@
     {
       "name": "Canyon Vaulter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/canyon_vaulter.rs",
       "set": "dft"
     },
@@ -6458,24 +6458,24 @@
     {
       "name": "Cloudspire Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/cloudspire_captain.rs",
       "set": "dft"
     },
     {
       "name": "Cloudspire Coordinator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/cloudspire_coordinator.rs",
       "set": "dft"
     },
     {
       "name": "Cloudspire Skycycle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/cloudspire_skycycle.rs",
       "set": "dft"
     },
@@ -9682,8 +9682,8 @@
     {
       "name": "Dredger's Insight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/dredger_s_insight.rs",
       "set": "dft"
     },
@@ -9826,8 +9826,8 @@
     {
       "name": "Dune Drifter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/dune_drifter.rs",
       "set": "dft"
     },
@@ -10850,16 +10850,16 @@
     {
       "name": "Endrider Catalyzer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/endrider_catalyzer.rs",
       "set": "dft"
     },
     {
       "name": "Endrider Spikespitter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/endrider_spikespitter.rs",
       "set": "dft"
     },
@@ -13714,8 +13714,8 @@
     {
       "name": "Gas Guzzler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/gas_guzzler.rs",
       "set": "dft"
     },
@@ -13730,8 +13730,8 @@
     {
       "name": "Gastal Raider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/gastal_raider.rs",
       "set": "dft"
     },
@@ -14682,8 +14682,8 @@
     {
       "name": "Goblin Surveyor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/goblin_surveyor.rs",
       "set": "dft"
     },
@@ -15394,8 +15394,8 @@
     {
       "name": "Guardian Sunmare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/guardian_sunmare.rs",
       "set": "dft"
     },
@@ -15442,8 +15442,8 @@
     {
       "name": "Guidelight Pathmaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/guidelight_pathmaker.rs",
       "set": "dft"
     },
@@ -15890,8 +15890,8 @@
     {
       "name": "Haunt the Network",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/haunt_the_network.rs",
       "set": "dft"
     },
@@ -15978,8 +15978,8 @@
     {
       "name": "Hazoret, Godseeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/hazoret_godseeker.rs",
       "set": "dft"
     },
@@ -17762,8 +17762,8 @@
     {
       "name": "Interface Ace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/interface_ace.rs",
       "set": "dft"
     },
@@ -23314,8 +23314,8 @@
     {
       "name": "Mutant Surveyor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/mutant_surveyor.rs",
       "set": "dft"
     },
@@ -28530,8 +28530,8 @@
     {
       "name": "Risen Necroregent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/risen_necroregent.rs",
       "set": "dft"
     },
@@ -33674,8 +33674,8 @@
     {
       "name": "Streaking Oilgorger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/streaking_oilgorger.rs",
       "set": "dft"
     },
@@ -36210,8 +36210,8 @@
     {
       "name": "The Speed Demon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/the_speed_demon.rs",
       "set": "dft"
     },
@@ -39730,16 +39730,16 @@
     {
       "name": "Voyage Home",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/voyage_home.rs",
       "set": "dft"
     },
     {
       "name": "Voyager Glidecar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/voyager_glidecar.rs",
       "set": "dft"
     },
