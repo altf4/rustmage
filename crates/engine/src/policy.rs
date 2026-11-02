@@ -340,6 +340,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnouncePlaneswalkerGrant { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
+            | Action::AnnounceRetainedCopyAbility { .. }
             | Action::AnnounceBorrowedAbility { .. }
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. }
