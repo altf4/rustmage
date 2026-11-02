@@ -81,6 +81,10 @@ impl Report {
             "discard",
             "token_created",
             "graveyard_return",
+            "embalm_paid",
+            "embalmed_token",
+            "as_entry_copy",
+            "extra_combat",
         ]
         .into_iter()
         .filter(|m| self.witnesses.get(*m).copied().unwrap_or(0) == 0)
@@ -249,7 +253,7 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
                 "Brightfield Mustang",
                 "Gilded Ghoda",
                 "Dracosaur Auxiliary",
-                "Burner Rocket",
+                "Full Throttle",
                 "Roadside Assistance",
             ],
         ),
@@ -319,6 +323,8 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
 struct Tracker {
     seen_packets: BTreeSet<u64>,
     hand_activations: BTreeSet<u64>,
+    embalm_announcements: BTreeSet<u64>,
+    combat_starts: BTreeMap<u32, u32>,
     seen_events: BTreeSet<String>,
     cards: BTreeSet<String>,
     witnesses: BTreeMap<String, u64>,
@@ -330,7 +336,23 @@ impl Tracker {
             *self.witnesses.entry(key.to_string()).or_default() += 1;
         }
     }
-    fn inspect(&mut self, before: &Observation, after: &Observation, _action: &Action) {
+    fn inspect(&mut self, before: &Observation, after: &Observation, action: &Action) {
+        if matches!(action, Action::AnnounceEmbalm { .. })
+            && let Some(item) = &after.announcing
+        {
+            self.embalm_announcements.insert(item.id);
+        }
+        if let Action::ChooseEntryCopy { object: Some(_) } = action {
+            self.hit("as_entry_copy", format!("{}:{action:?}", after.turn));
+        }
+        if before.step != after.step && after.step == Step::BeginCombat {
+            let starts = self.combat_starts.entry(after.turn).or_default();
+            *starts += 1;
+            let count = *starts;
+            if count > 1 {
+                self.hit("extra_combat", format!("{}:{count}", after.turn));
+            }
+        }
         for view in [before, after] {
             if let Some(item) = &view.announcing
                 && matches!(item.kind, StackKind::ActivatedAbility { .. })
@@ -355,6 +377,9 @@ impl Tracker {
                 self.cards.insert(source.card.name().into());
                 self.colors |= source.card.colors();
                 self.hit("actual_cast", s.id.to_string());
+            }
+            if self.embalm_announcements.contains(&s.id) {
+                self.hit("embalm_paid", s.id.to_string());
             }
             if matches!(s.kind, StackKind::ActivatedAbility { .. })
                 && (self.hand_activations.contains(&s.id)
@@ -432,6 +457,12 @@ impl Tracker {
             }
             if object.is_token() {
                 self.hit("token_created", format!("{:?}", object.reference));
+                if object
+                    .copy_recipe
+                    .is_some_and(|recipe| recipe.exceptions.embalm)
+                {
+                    self.hit("embalmed_token", format!("{:?}", object.reference));
+                }
             }
             if before.objects.iter().any(|old| {
                 old.id == object.id
