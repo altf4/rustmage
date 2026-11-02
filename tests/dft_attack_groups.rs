@@ -81,7 +81,8 @@ const ABILITY_COUNTER: CardRules = CardRules {
 };
 
 fn battle(g: &mut Game, owner: Player) -> CardId {
-    let id = put(g, owner, "Goblin Piker", Zone::Battlefield);
+    // A non-Siege Battle is protected by its own controller.
+    let id = put(g, owner.other(), "Goblin Piker", Zone::Battlefield);
     let mut recipe = CopyRecipe::new(Card::GoblinPiker);
     recipe.overrides = Some(CopyOverrides {
         kinds: Some(BATTLE_KIND),

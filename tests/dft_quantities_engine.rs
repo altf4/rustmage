@@ -27,19 +27,24 @@ const PARITY_DRAW: &[Instruction] = &[
     },
     Instruction::Draw(PlayerSet::Controller, 2),
 ];
+const PARITY_RESTRICTION: CombatRestriction = CombatRestriction {
+    subject: Subject::Source,
+    attack: true,
+    block: true,
+    unless: Some(EVEN),
+};
 const COUNTER_PARITY: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
+    extras: &CardExtras {
+        combat_restriction: Some(PARITY_RESTRICTION),
+        ..CardExtras::EMPTY
+    },
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Rule,
         fragments: &[StaticAbilityFragment::CombatRestriction(
             0,
-            CombatRestriction {
-                subject: Subject::Source,
-                attack: true,
-                block: true,
-                unless: Some(EVEN),
-            },
+            PARITY_RESTRICTION,
         )],
     }],
     triggers: &[TriggeredAbility {
@@ -383,6 +388,9 @@ fn group_source_power_is_signed_and_departure_lki_survives_owned_optional_choice
     optional(&mut g);
     g.move_object(source, Zone::Exile);
     g.move_object(source, Zone::Battlefield);
+    // The new incarnation would be an eligible "other" creature if still controlled.
+    // Give it to the opponent to isolate departure-LKI sampling from recipient membership.
+    g.record_control(g.object_ref(source), Player::P0, None);
     g.state.objects[source as usize].growth.power = 20;
     let snapshot = g.snapshot();
     let mut raw = g.clone();
@@ -430,4 +438,27 @@ fn current_exact_noncreature_source_samples_zero_power() {
     activate(&mut g, source);
     finish(&mut g);
     assert_eq!(stats(&g, recipient), (1, 1));
+}
+
+#[test]
+fn a_new_controlled_source_incarnation_is_an_other_group_recipient() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &NEGATIVE_SETTER)]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let recipient = put(&mut g, Player::P0, "Goblin Piker", Zone::Battlefield);
+    g.state.objects[source as usize].growth.power = -4;
+    g.add_counter(recipient, CounterKind::PlusOne, 3);
+    activate(&mut g, source);
+    optional(&mut g);
+    g.move_object(source, Zone::Exile);
+    g.move_object(source, Zone::Battlefield);
+    g.add_counter(source, CounterKind::PlusOne, 5);
+    act(&mut g, Action::ChooseOptional { accept: true });
+    finish(&mut g);
+    assert_eq!(stats(&g, recipient), (1, 1));
+    assert_eq!(
+        stats(&g, source),
+        (3, 3),
+        "new object receives old source's signed -2 base, then its own five counters"
+    );
 }
