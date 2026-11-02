@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3f37ab4b9320ad05de69f5587d3b48fc8f80416e03a5e4981cc11e6495f8de8e",
+  "catalogue_version": "5b3931d711b8bc7b7fa6c62481f457746828bb17bed84aca5b69342036a7f5aa",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3031,
-  "implemented_total": 3037,
+  "implemented_standard_cards": 3039,
+  "implemented_total": 3045,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 132,
-      "gated": 127
+      "complete": 140,
+      "gated": 119
     },
     "dsk": {
       "total": 264,
@@ -11754,8 +11754,8 @@
     {
       "name": "Fang-Druid Summoner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/fang_druid_summoner.rs",
       "set": "dft"
     },
@@ -22706,8 +22706,8 @@
     {
       "name": "Molt Tender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/molt_tender.rs",
       "set": "dft"
     },
@@ -25682,8 +25682,8 @@
     {
       "name": "Plow Through",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/plow_through.rs",
       "set": "dft"
     },
@@ -25738,8 +25738,8 @@
     {
       "name": "Point the Way",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/point_the_way.rs",
       "set": "dft"
     },
@@ -25882,8 +25882,8 @@
     {
       "name": "Pothole Mole",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/pothole_mole.rs",
       "set": "dft"
     },
@@ -28498,8 +28498,8 @@
     {
       "name": "Rise from the Wreck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/rise_from_the_wreck.rs",
       "set": "dft"
     },
@@ -31146,8 +31146,8 @@
     {
       "name": "Silken Strength",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/silken_strength.rs",
       "set": "dft"
     },
@@ -31442,8 +31442,8 @@
     {
       "name": "Skyserpent Seeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/skyserpent_seeker.rs",
       "set": "dft"
     },
