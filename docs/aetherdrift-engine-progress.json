@@ -223,6 +223,128 @@
       "cargo_engine_set_test_build_reported": "1m 57s",
       "resource_report": "<cache>/rustmage-build-reports/79c3368fda1b44569d1217cb9c249f0b.json",
       "memory_peak_bytes": 1817440256
+    },
+    {
+      "revision": "fb22ae3c8",
+      "status": "partial;229/232pass before subsequent reviewed fixes and remaining mechanisms",
+      "targets": {
+        "dft_activation_tax": {
+          "passed": 12,
+          "failed": 2
+        },
+        "dft_attack_groups": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_cast_permissions_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_combat_schedule": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_combat_tokens": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_control_duration": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_crew": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_deferred_mana": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_entry_copies": {
+          "passed": 15,
+          "failed": 1
+        },
+        "dft_entry_counters": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_entry_results": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_exert_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_exhaust_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_fixture_rules": {
+          "passed": 2,
+          "failed": 0
+        },
+        "dft_group_engine": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_linked_entry": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_named_search": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_outcomes_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_private_hand": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_quantities_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_queries": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_grants": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_static_types": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_trigger_facts_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_variable_costs_engine": {
+          "passed": 11,
+          "failed": 0
+        }
+      },
+      "passed": 229,
+      "failed": 3,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-200816/result.json",
+      "command_seconds": 20.272068538994063,
+      "cargo_engine_build": "reused from prior102.89s compile run that stopped at two fixture borrow errors; this command built test targets only",
+      "resource_report": "<cache>/rustmage-build-reports/72b48f3b81ca4abcb1a80067432cfb73.json",
+      "remaining_failures": [
+        "taxed granted-mana initial parent funding must permit deferred announcement before grantor departure",
+        "obsolete self-granted activation lifecycle guard rejects newly supported once/mana instances",
+        "same-zone no-op copy fixture must mark its row skipped; corrected172c2c7dd"
+      ]
     }
   ],
   "earlier_focused_runs": [
@@ -249,7 +371,7 @@
   ],
   "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
   "pending": "Finish all engine blockers and focused/shared contract proofs plus independent reviews before ordinary DFT definitions. Then complete card behavior/provenance, inherited119 verification, legal set-only complete games/replay/owned search, full release acceptance, README counts, one completed-set PR and two independent nonauthor reviews.",
-  "throughput": "0 new whole cards admitted during engine phase. Latest combined frozen run196/196:117.82s command; Cargo engine/set/test build reported1m57s; production check5.63s; cgroup peak1.69GiB. Test-only Howlsquad6/6 took1.17s command/1.11s build. No set simulation benchmark or all-Standard performance claim.",
+  "throughput": "0 new whole cards admitted during engine phase. Latest execution229/232cases;20.27s test-only command after reusable engine/sets compile102.89s. Last all-target compile check before tax/copyextensions passed7.13s at a26d56dc. No set simulation benchmark or all-Standard performance claim.",
   "implemented_engine_clusters_pending_final_review": [
     "speed scalars/grants/replacements and exact mana quality",
     "crew/saddle participant events, toughness and direct designation",
@@ -267,15 +389,17 @@
     "main-relative extra combats and repeated source-independent combat packets",
     "all/nonland name choices and capped private mixed-zone named exile search",
     "deferred mana headers and exact nested child continuation; current-combat token requirement with exact live-incarnation de-duplication; private chosen-card discard/draw",
-    "independent hidden exile/play rights and route-specific graveyard costs; paid additional-cost reservations released before mana funding"
+    "independent hidden exile/play rights and route-specific graveyard costs; paid additional-cost reservations released before mana funding",
+    "as-entry artifact/creature copying with fresh copied choices; simultaneous departing blueprints (15previouscasespassed;matrixfollowup pending)",
+    "pre-entry selected exiles with actual result counters/links (first6passed); whole-batch exact-object reservation and complete projected graveyard inventory followups pending",
+    "retained immutable linked activation and copiable0/0 exception; root pre-event graveyard exile lookback correction; shared projected power-up reduction (compile-checked, focused execution pending)"
   ],
   "remaining_engine_blockers": [
-    "full named activation tax across ordinary/borrowed/granted/mana/crew/saddle routes",
-    "as-entry artifact/creature copying and fresh copied entry-choice origins",
-    "Mimeoplasm successful linked pre-entry exile/counters and retained permanent0/0 copying",
-    "temporary acquired embalm graveyard activation and copiable token exceptions",
-    "independent whole-engine reviews and broad existing regressions",
-    "final wire schema integration and implementation/simulation performance evidence"
+    "complete taxed mana initial deferred funding and acquired lifecycle, plus exact contributor source LKI",
+    "validate retained Mimeoplasm copies and all later copy/entry/projection fixes",
+    "temporary acquired Embalm graveyard activation and copiable token exceptions",
+    "two independent nonauthor scoped reviews covering every final engine change, plus broad existing regressions",
+    "final schema199 integration/previous198 trace equality and final cache warm before cards"
   ],
   "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)",
   "in_progress_checkpoints": [
@@ -297,7 +421,7 @@
         "projected entry-copy departure retains copied definition instead of physical identity",
         "pending parent-payment choices do not reflect new copy in all continuation paths"
       ],
-      "status": "copy owner repairing before further copy mechanics"
+      "status": "historical failure evidence; ordinary staging/projected restoration fixed7a135cae and original15tests subsequentlypassed; see later focused checkpoints"
     }
   ],
   "acceptance_workload": {
@@ -319,5 +443,11 @@
       "graveyard return"
     ],
     "contracts": "full deterministic replay plus sampled wrong-actor, owned raw/index children, observations and restore"
+  },
+  "latest_compile_checkpoint": {
+    "revision": "a75dbc810",
+    "production_check": "passed5.58s",
+    "all_targets": "two missing test-only FundingGoal/FundingState imports in new power-up scenario;fixed612496fe5; rerun pending",
+    "report": "<cache>/rustmage-authoring/aetherdrift/compile-20261101-201309/result.json"
   }
 }
