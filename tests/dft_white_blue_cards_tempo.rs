@@ -177,7 +177,28 @@ fn trade_the_helm_exchanges_both_objects_or_neither_when_one_incarnation_is_lost
         let own = put(&mut g, Player::P0, "Swiftfoot Boots", Zone::Battlefield);
         let other = put(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
         let source = put(&mut g, Player::P0, "Trade the Helm", Zone::Hand);
-        announce(&mut g, source, &[Target::Card(own), Target::Card(other)]);
+        let same_controller = put(&mut g, Player::P0, "Aegis Turtle", Zone::Battlefield);
+        act(&mut g, Action::AnnounceCast { card: source });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(same_controller),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(other),
+            },
+        );
+        finish_targets(&mut g);
+        pay(&mut g);
         if stale {
             g.move_object(other, Zone::Exile);
             g.move_object(other, Zone::Battlefield);
