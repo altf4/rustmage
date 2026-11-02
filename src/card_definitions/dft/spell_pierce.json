@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7581faa40bff11879fadeb01f8a1abe9dad3ce1ef2aceb14a51eeeb0526d2562"
   },
-  "physical_metadata_sha256": "f75bae078c0115b8a8c70d4f6e63ff08583875f5b70c6a933152e7d63f835f81"
+  "physical_metadata_sha256": "f75bae078c0115b8a8c70d4f6e63ff08583875f5b70c6a933152e7d63f835f81",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpellPierce.java",
+  "java_sha256": "454f24549dd316d1a6873f41cc11fb0f969af68ee7c0650b4c5439e58c66ccd4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    }
+  ]
 }

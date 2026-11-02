@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1bc0ddcdab33c1b069d898e95de34cfa515056a017e1b18fa97d20d64253bb6a"
   },
-  "physical_metadata_sha256": "0e8e2aaa9808f476f03db1b2b51a5f511f1d5df209ce6812fe1bc11ffc7b4a07"
+  "physical_metadata_sha256": "0e8e2aaa9808f476f03db1b2b51a5f511f1d5df209ce6812fe1bc11ffc7b4a07",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GallantStrike.java",
+  "java_sha256": "365c4f0013d9d82093c5669806e8b2bfe3daf15f0e580d6f952c5e31fcc6db99",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+      "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+    }
+  ]
 }

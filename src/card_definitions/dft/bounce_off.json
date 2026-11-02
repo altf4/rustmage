@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "895af6cb51ae899b65a81835b41cc4b8b8bc486ce72d7d045d314f60c4ba682e"
   },
-  "physical_metadata_sha256": "4e9a6a47d4f5825a893a9ff62772c522a4797d3d41b3c83fc4014cc5414a9f17"
+  "physical_metadata_sha256": "4e9a6a47d4f5825a893a9ff62772c522a4797d3d41b3c83fc4014cc5414a9f17",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BounceOff.java",
+  "java_sha256": "174a4ed4b2bb6226c65c64ca46ab448b90db9d7f40b92ec259fc125ad4cedef6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    }
+  ]
 }

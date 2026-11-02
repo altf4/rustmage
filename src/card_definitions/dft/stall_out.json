@@ -3,10 +3,35 @@
   "catalogue_id": 4091,
   "oracle_id": "ce55c0a9-3334-440e-ae1b-c04a9e1c3d87",
   "facts_sha256": "c0b1d32058f77b2dfa8ca45790b32297b5a308ddc851c3574cf09b289fe2ad10",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c9e74d29d4afa66b5e5c5631ae7dd953be1536b331428ce8247c2f63a0338934"
   },
-  "physical_metadata_sha256": "83c338b1472ef51bab0435c799982e862e9de3cb048d9c71f6ab07ee3438b124"
+  "physical_metadata_sha256": "83c338b1472ef51bab0435c799982e862e9de3cb048d9c71f6ab07ee3438b124",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StallOut.java",
+  "java_sha256": "728b91267bc441922767d31250ab620210b2effa0b36c05246774222f29d8967",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+      "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+    }
+  ]
 }

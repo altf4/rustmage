@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1f38427fc7370f69e4ff6ff835b0787af0f79b92194d42468b858d93b8ff5813"
   },
-  "physical_metadata_sha256": "20d315deb87922bbb81d75354eda79bb25e7cc642f4a63dab7a410fae069fac6"
+  "physical_metadata_sha256": "20d315deb87922bbb81d75354eda79bb25e7cc642f4a63dab7a410fae069fac6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StockUp.java",
+  "java_sha256": "1baa80d4eb7da2689cd017ee5ef0d2d758c64c42a606a04174acfec99636c965",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    }
+  ]
 }
