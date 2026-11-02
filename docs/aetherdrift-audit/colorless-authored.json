@@ -1145,14 +1145,15 @@
         "lifecraft_actual_entry_choice_changes_only_own_creature_vehicles_and_other_chosen_creatures"
       ],
       "test_target": "dft_colorless_cards_machines",
-      "runtime_status": "pending focused run",
+      "runtime_status": "passed 11/11; engine reused",
       "shared_proofs": [
         "dft_static_types",
         "dft_exhaust_engine",
         "dft_variable_costs_engine",
         "dft_mana_output",
         "dft_entry_counters"
-      ]
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
     },
     {
       "name": "Marketback Walker",
@@ -1216,14 +1217,15 @@
         "marketback_zero_x_dies_without_counters_and_draws_zero"
       ],
       "test_target": "dft_colorless_cards_machines",
-      "runtime_status": "pending focused run",
+      "runtime_status": "passed 11/11; engine reused",
       "shared_proofs": [
         "dft_static_types",
         "dft_exhaust_engine",
         "dft_variable_costs_engine",
         "dft_mana_output",
         "dft_entry_counters"
-      ]
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
     },
     {
       "name": "Marshals' Pathcruiser",
@@ -1287,14 +1289,15 @@
         "pathcruiser_crew_five_is_temporary_while_five_color_exhaust_is_permanent_and_once"
       ],
       "test_target": "dft_colorless_cards_machines",
-      "runtime_status": "pending focused run",
+      "runtime_status": "passed 11/11; engine reused",
       "shared_proofs": [
         "dft_static_types",
         "dft_exhaust_engine",
         "dft_variable_costs_engine",
         "dft_mana_output",
         "dft_entry_counters"
-      ]
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
     },
     {
       "name": "Pit Automaton",
@@ -1364,14 +1367,15 @@
         "pit_delayed_exhaust_callback_expires_at_cleanup"
       ],
       "test_target": "dft_colorless_cards_machines",
-      "runtime_status": "pending focused run",
+      "runtime_status": "passed 11/11; engine reused",
       "shared_proofs": [
         "dft_static_types",
         "dft_exhaust_engine",
         "dft_variable_costs_engine",
         "dft_mana_output",
         "dft_entry_counters"
-      ]
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
     },
     {
       "name": "Radiant Lotus",
@@ -1418,14 +1422,15 @@
         "radiant_lotus_cost_selection_has_independent_owned_raw_index_restore_after_parent_disposal"
       ],
       "test_target": "dft_colorless_cards_machines",
-      "runtime_status": "pending focused run",
+      "runtime_status": "passed 11/11; engine reused",
       "shared_proofs": [
         "dft_static_types",
         "dft_exhaust_engine",
         "dft_variable_costs_engine",
         "dft_mana_output",
         "dft_entry_counters"
-      ]
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
     },
     {
       "name": "Rover Blades",
@@ -1479,14 +1484,15 @@
         "rover_equips_only_own_creature_at_sorcery_speed_then_crews_as_double_striker_and_detaches"
       ],
       "test_target": "dft_colorless_cards_machines",
-      "runtime_status": "pending focused run",
+      "runtime_status": "passed 11/11; engine reused",
       "shared_proofs": [
         "dft_static_types",
         "dft_exhaust_engine",
         "dft_variable_costs_engine",
         "dft_mana_output",
         "dft_entry_counters"
-      ]
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
     }
   ]
 }
