@@ -206,6 +206,7 @@ impl Game {
             || self.state.mana_announcement_stack.is_some()
             || self.state.cast_rollback.is_some()
             || self.state.stack_copy_data.is_some()
+            || self.state.delayed_target_events.is_some()
             || self.state.paradigm.is_some()
             || self.state.entry_batch.is_some()
             || self

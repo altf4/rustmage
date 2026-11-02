@@ -347,6 +347,9 @@ impl Game {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 return !self.case_solved(source) && p.life_gained_this_turn >= n;
             }
+            StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
+                return self.declared_attack_subtypes_all(player, subtypes);
+            }
             StepGuard::Always => return true,
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {

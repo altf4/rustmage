@@ -902,6 +902,13 @@ pub enum CostAction {
     ExileGraveyardRange { minimum: u16 },
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum DelayedTargetEvent {
+    DiesOnce,
+    CombatDamageToPlayer,
+}
+
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1385,6 +1392,11 @@ pub enum Instruction {
     },
     WeakenDeclaredAttacker(i32),
     ExileOpponentLibrariesExceptBottom,
+    /// Create a source-independent delayed ability for each exact legal target.
+    DelayTargetEvent {
+        event: DelayedTargetEvent,
+        ability: u16,
+    },
     ScheduleAttackTriggerThisTurn {
         ability: u16,
     },
@@ -3828,6 +3840,12 @@ pub enum CastFilter {
     /// A spell cast from an actual prepared card copy.
     PreparedSpell,
     NotOwnedByYou,
+    /// Physical ownership is compared to the actual caster, not the observer.
+    NotOwnedByCaster,
+    /// Event qualification against the actual caster's turn, never the observer's.
+    CasterOffTurn {
+        filter: &'static CastFilter,
+    },
     HasX,
     SourceChosenColor,
     SourceChosenManaValueParity,
@@ -3888,6 +3906,8 @@ impl CastFilter {
             // Contextual cast observers use Game::cast_filter_matches instead.
             Self::PreparedSpell
             | Self::NotOwnedByYou
+            | Self::NotOwnedByCaster
+            | Self::CasterOffTurn { .. }
             | Self::SourceChosenColor
             | Self::SourceChosenManaValueParity
             | Self::Targeted { .. }
@@ -4033,6 +4053,8 @@ pub enum StepGuard {
     Outlaw,
     Always,
     Attacked,
+    /// Historical declaration facts; one attacker may satisfy several subtypes.
+    DeclaredAttackSubtypesAll(&'static [&'static str]),
     CreatureDied,
     OpponentLostLife,
     CommittedCrimeThisTurn,
@@ -4152,6 +4174,8 @@ pub enum TriggerCondition {
     ExhaustAbilityActivated,
     /// Source-independent next nonmana exhaust activation until cleanup.
     DelayedExhaustAbilityActivated,
+    /// Template dispatched only by an owned delayed target-event registration.
+    DelayedTargetEvent,
     /// The controller committed an activation of a loyalty ability.
     LoyaltyAbilityActivated,
     /// Committed loyalty activation paid at least this many loyalty counters.

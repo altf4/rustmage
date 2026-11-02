@@ -331,6 +331,9 @@ impl FundingState<'_> {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 !self.game.case_solved(source) && state.life_gained_this_turn >= n
             }
+            StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
+                self.game.declared_attack_subtypes_all(player, subtypes)
+            }
             StepGuard::Always => true,
             StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {

@@ -96,6 +96,7 @@ impl Game {
             self.state.players[actor.index()].greatest_declared_attack_power_this_turn =
                 Some(previous_maximum.map_or(total, |prior| prior.max(total)));
         }
+        self.record_declared_attack_history(actor, declared);
         // CR508.1f/k/m: inspect characteristics at the actual attack event, after taps.
         let hero = declared.iter().any(|attack| {
             self.on_battlefield(attack.card)

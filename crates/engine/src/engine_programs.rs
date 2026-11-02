@@ -652,6 +652,7 @@ impl Game {
         if !event.moved {
             return;
         }
+        self.delayed_target_departure(event);
         self.temporary_departure_triggers(event);
         self.forget_self_grants(event);
         if event.before.zone == Zone::Battlefield {
@@ -905,6 +906,7 @@ impl Game {
                     | TriggerCondition::NonmanaAbilityActivated
                     | TriggerCondition::ExhaustAbilityActivated
                     | TriggerCondition::DelayedExhaustAbilityActivated
+                    | TriggerCondition::DelayedTargetEvent
                     | TriggerCondition::LoyaltyAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                     | TriggerCondition::OpponentLoyaltyAbilityActivated
@@ -1516,6 +1518,19 @@ impl Game {
         targets: &[BoundTarget],
     ) -> bool {
         match filter {
+            CastFilter::NotOwnedByCaster => spell_owner.is_some_and(|owner| owner != caster),
+            CastFilter::CasterOffTurn { filter } => {
+                self.state.active != caster
+                    && self.cast_filter_matches_value(
+                        spell_owner,
+                        *filter,
+                        card,
+                        mana_value,
+                        caster,
+                        source,
+                        targets,
+                    )
+            }
             CastFilter::NotOwnedByYou => {
                 spell_owner.is_some_and(|owner| owner != source.controller)
             }
@@ -1777,6 +1792,10 @@ impl Game {
                                         )
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
+                                        | Instruction::CreateTokensFor {
+                                            players: PlayerSet::CastingPlayer,
+                                            ..
+                                        }
                                         | Instruction::PutCountersScaled {
                                             amount: AmountValue::SpellColors
                                                 | AmountValue::CastSpellManaValue,
@@ -3180,6 +3199,9 @@ impl Game {
                     let before = self.death_trigger_sources();
                     let events = self.move_objects_raw(&ids, Zone::Exile);
                     self.finish_zone_events(&events, &before);
+                }
+                Instruction::DelayTargetEvent { event, ability } => {
+                    self.delay_target_event(&item, event, ability);
                 }
                 Instruction::ScheduleAttackTriggerThisTurn { ability } => {
                     let mut delayed = item.clone();

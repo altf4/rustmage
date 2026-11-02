@@ -275,6 +275,12 @@ pub use replacements::{
 
 use crate::shared_vec::SharedVec;
 #[doc(hidden)]
+#[path = "engine_declared_attack_history.rs"]
+pub mod declared_attack_history;
+pub use declared_attack_history::DeclaredAttackHistoryView;
+#[path = "engine_delayed_target_events.rs"]
+pub mod delayed_target_events;
+pub use delayed_target_events::DelayedTargetTriggerView;
 #[path = "engine_variable_costs.rs"]
 pub mod variable_costs;
 pub use variable_costs::PaidAdditionalCostView;
@@ -2614,6 +2620,9 @@ struct State {
     delayed_artifact_copies: Option<Box<Vec<SpellView>>>,
     #[allow(clippy::box_collection)]
     delayed_attack_this_turn: Option<Box<Vec<SpellView>>>,
+    declared_attack_history: Option<Box<declared_attack_history::DeclaredAttackHistory>>,
+    #[allow(clippy::box_collection)]
+    delayed_target_events: Option<Box<Vec<DelayedTargetTriggerView>>>,
     // Keep this rarely used state out of the hot State allocation.
     #[allow(clippy::box_collection)]
     delayed_opponent_attack_until_next_turn: Option<Box<Vec<SpellView>>>,
@@ -3304,6 +3313,10 @@ pub struct Observation {
     pub delayed_artifact_copies: Vec<SpellView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub delayed_attack_this_turn: Vec<SpellView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub declared_attack_history: Option<Vec<DeclaredAttackHistoryView>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delayed_target_events: Option<Vec<DelayedTargetTriggerView>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub delayed_opponent_attack_until_next_turn: Vec<SpellView>,
     pub delayed_main_mana: Vec<SpellView>,
@@ -3729,6 +3742,8 @@ impl Game {
                 stack_copy_data: None,
                 delayed_artifact_copies: None,
                 delayed_attack_this_turn: None,
+                declared_attack_history: None,
+                delayed_target_events: None,
                 delayed_opponent_attack_until_next_turn: None,
                 delayed_main_mana: None,
                 delayed_upkeep_tokens: None,
@@ -9115,6 +9130,8 @@ impl Game {
         self.state.cast_entry_counters = None;
         self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
+        self.state.declared_attack_history = None;
+        self.state.delayed_target_events = None;
         self.state.cards_exiled_this_turn = false;
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
@@ -9246,6 +9263,7 @@ impl Game {
                 self.give_priority();
             }
             Step::EndCombat => {
+                self.state.declared_attack_history = None;
                 self.state.attackers.clear();
                 self.state.blocking.clear();
                 self.state.attack_declared = false;
@@ -9277,6 +9295,7 @@ impl Game {
     fn finish_cleanup(&mut self) {
         self.expire_manifest_deaths();
         self.state.delayed_attack_this_turn = None;
+        self.state.delayed_target_events = None;
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.additional_combats = 0;
@@ -9546,6 +9565,7 @@ impl Game {
         self.creature_damage_events(events);
         self.creature_received_damage_triggers(events);
         self.player_damage_triggers(events);
+        self.delayed_target_combat_damage(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
         gains
     }
@@ -9916,6 +9936,12 @@ impl Game {
                 .as_deref()
                 .cloned()
                 .unwrap_or_default(),
+            declared_attack_history: self
+                .state
+                .declared_attack_history
+                .as_ref()
+                .map(|history| history.rows.clone()),
+            delayed_target_events: self.state.delayed_target_events.as_deref().cloned(),
             delayed_attack_this_turn: self
                 .state
                 .delayed_attack_this_turn
@@ -10798,6 +10824,8 @@ impl Game {
             })
             + copy_characteristics::cull_bytes(&s.nightmare_cull)
             + stack_copies::owned_bytes(&s.stack_copy_data)
+            + declared_attack_history::owned_bytes(&s.declared_attack_history)
+            + delayed_target_events::owned_bytes(&s.delayed_target_events)
             + s.delayed_artifact_copies.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<SpellView>>()
                     + rows
