@@ -3,7 +3,7 @@
   "base": "fb878868ddbf3f4155b1a0c747129a9e713e4c04",
   "engine_revision": "8657c4e6c",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "status": "All80 assigned identities authored with paired source pins and per-obligation outcome/shared-contract evidence; final16 candidates await root focused validation. No shared engine changes during card phase.",
+  "status": "79 of80 assigned identities have root-focused passing outcomes. Mendicant is authored but blocked by confirmed normal permanent-spell copy capture restriction; root owns the shared repair. No engine edits in this card batch.",
   "cards": [
     {
       "name": "Aatchik, Emerald Radian",
@@ -12,7 +12,7 @@
         "When Aatchik enters, create a 1/1 green Insect creature token for each artifact and/or creature card in your graveyard.",
         "Whenever another Insect you control dies, put a +1/+1 counter on Aatchik. Each opponent loses 1 life."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_legends",
       "outcome_proofs": [
         "aatchik_deduplicates_artifact_creatures_then_observes_each_other_controlled_insect_death"
@@ -22,7 +22,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "When Aatchik enters, create a 1/1 green Insect creature token for each artifact and/or creature card in your graveyard.",
@@ -468,7 +468,7 @@
         "Ward\u2014{2}, Pay 2 life.",
         "Whenever you discard one or more cards, target creature gets +2/+0 until end of turn for each card discarded this way. Whenever that creature deals combat damage to a player this turn, you draw a card."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_final",
       "outcome_proofs": [
         "captain_howler_uses_this_discard_batch_and_delayed_draw_keeps_original_controller_after_source_leaves",
@@ -480,7 +480,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Ward\u2014{2}, Pay 2 life.",
@@ -1057,7 +1057,7 @@
         "Whenever you attack, Far Fortune deals 1 damage to each opponent.",
         "Max speed \u2014 If a source you control would deal damage to an opponent or a permanent an opponent controls, it deals that much damage plus 1 instead."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_legends",
       "outcome_proofs": [
         "far_fortune_starts_speed_and_deals_attack_trigger_damage_even_when_another_creature_attacks",
@@ -1068,7 +1068,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -1101,7 +1101,7 @@
         "Vehicles you control have haste.",
         "Whenever you attack, if a Pirate and a Vehicle attacked this combat, draw three cards, then discard two cards."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_legends",
       "outcome_proofs": [
         "fearless_grants_vehicle_haste_and_draws_three_discards_two_only_when_pirate_and_vehicle_attacked"
@@ -1111,7 +1111,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Haste",
@@ -1141,7 +1141,7 @@
         "When this creature enters, it deals 1 damage to target opponent and you gain 1 life.",
         "Max speed \u2014 This creature has deathtouch and haste."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_legends",
       "outcome_proofs": [
         "gastal_entry_damage_and_life_start_speed_before_live_max_speed_keywords"
@@ -1151,7 +1151,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -1379,7 +1379,7 @@
         "Ketramose can't attack or block unless there are seven or more cards in exile.",
         "Whenever one or more cards are put into exile from graveyards and/or the battlefield during your turn, you draw a card and lose 1 life."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_final",
       "outcome_proofs": [
         "ketramose_attack_and_block_require_seven_physical_cards_in_all_players_exile",
@@ -1392,7 +1392,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Menace, lifelink, indestructible",
@@ -1428,7 +1428,7 @@
         "Whenever a Mount you control enters, it becomes saddled until end of turn.",
         "Whenever a Vehicle you control enters, it becomes an artifact creature until end of turn."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_legends",
       "outcome_proofs": [
         "kolodin_filters_its_own_entry_and_directly_saddles_mounts_animates_vehicles_with_haste_until_cleanup"
@@ -1438,7 +1438,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Mounts and Vehicles you control have haste.",
@@ -1510,7 +1510,7 @@
         "Exhaust \u2014 {U}, {T}: Draw three cards.",
         "Exhaust \u2014 {R}, {T}: Loot deals 3 damage to any target."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_final",
       "outcome_proofs": [
         "loot_has_three_independent_exhaust_instances_with_tap_and_the_printed_outputs"
@@ -1521,7 +1521,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Double strike, vigilance, haste",
@@ -1633,7 +1633,7 @@
         "Creatures you control have base power and toughness 6/6 and are Oozes in addition to their other types.",
         "Whenever an opponent casts a spell, if it's not their turn, you create a 3/3 green Elephant creature token."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_legends",
       "outcome_proofs": [
         "march_adds_ooze_without_removing_types_sets_live_six_six_and_triggers_only_on_opponents_off_turn_casts"
@@ -1643,7 +1643,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Creatures you control have base power and toughness 6/6 and are Oozes in addition to their other types.",
@@ -1667,7 +1667,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed \u2014 Whenever you cast an artifact spell, you may pay {1}. If you do, copy it. (The copy becomes a token.)"
       ],
-      "status": "authored candidate",
+      "status": "blocked by shared dependency",
       "test_target": "dft_green_multi_cards_final",
       "outcome_proofs": [
         "mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token"
@@ -1678,7 +1678,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Final target13/14 passed; optional artifact-copy scenario fails only when paying at max speed. capture_copy_cast_classified currently captures CopyCastSpell only for instant/sorcery casts. Root notified; no card-only semantic substitute.",
       "obligation_evidence": [
         {
           "obligation": "Mendicant Core's power is equal to the number of artifacts you control.",
@@ -1698,6 +1698,9 @@
             "mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token"
           ]
         }
+      ],
+      "remaining_blockers": [
+        "Generic capture of the artifact spell for the triggering copy instruction; permanent-copy allocator already exists."
       ]
     },
     {
@@ -1745,7 +1748,7 @@
         "As Mimeoplasm enters, exile up to X creature cards from your graveyard. It enters with three +1/+1 counters on it for each creature card exiled this way.",
         "{2}: Mimeoplasm becomes a copy of target creature card exiled with it, except it's 0/0 and has this ability."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_final",
       "outcome_proofs": [
         "mimeoplasm_actual_cast_exiles_only_own_creatures_and_retains_linked_copy_activation_across_copies",
@@ -1757,7 +1760,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "As Mimeoplasm enters, exile up to X creature cards from your graveyard. It enters with three +1/+1 counters on it for each creature card exiled this way.",
@@ -2083,7 +2086,7 @@
         "{T}: Add X mana of any one color, where X is Redshift's power. Spend this mana only to activate abilities.",
         "Exhaust \u2014 {10}{R}{G}: Put any number of permanent cards from your hand onto the battlefield. (Activate each exhaust ability only once.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_final",
       "outcome_proofs": [
         "redshift_power_mana_is_one_color_and_pays_activations_but_cannot_cast_a_spell",
@@ -2095,7 +2098,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Vigilance",
@@ -2292,7 +2295,7 @@
         "Sab-Sunen can't attack or block unless it has an even number of counters on it. (Zero is even.)",
         "At the beginning of your first main phase, put a +1/+1 counter on Sab-Sunen. Then if it has an odd number of counters on it, draw two cards."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_legends",
       "outcome_proofs": [
         "sab_sunen_counts_all_counter_kinds_for_attack_and_block_including_zero_even",
@@ -2303,7 +2306,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Reach, trample, indestructible",
@@ -2337,7 +2340,7 @@
         "Other creatures you control get +X/+0, where X is your speed.",
         "Noncreature spells you cast cost {X} less to cast, where X is your speed."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_legends",
       "outcome_proofs": [
         "samut_live_speed_buffs_only_other_controlled_creatures_and_discounts_only_noncreature_generic_cost"
@@ -2347,7 +2350,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "First strike, vigilance, haste",
@@ -2429,7 +2432,7 @@
       "printed_obligations": [
         "Exhaust \u2014 {X}{G}{G}{U}: Put X +1/+1 counters on Sita Varma. Then you may have the base power and toughness of each other creature you control become equal to Sita Varma's power until end of turn. (Activate each exhaust ability only once.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_final",
       "outcome_proofs": [
         "sita_varma_adds_x_counters_then_optionally_samples_its_power_for_other_creatures_base_stats"
@@ -2440,7 +2443,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Exhaust \u2014 {X}{G}{G}{U}: Put X +1/+1 counters on Sita Varma. Then you may have the base power and toughness of each other creature you control become equal to Sita Varma's power until end of turn. (Activate each exhaust ability only once.)",
@@ -2823,7 +2826,7 @@
         "Artifacts you control have \"Ward\u2014Pay 2 life.\"",
         "Exhaust \u2014 {2}{U}{B}, {T}, Exile X artifact cards from your graveyard: Each other nonartifact creature gets -X/-X until end of turn. (Activate each exhaust ability only once.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_final",
       "outcome_proofs": [
         "winter_declared_artifact_exile_count_weakens_other_nonartifact_creatures_of_both_controllers",
@@ -2835,7 +2838,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
       "obligation_evidence": [
         {
           "obligation": "Ward\u2014Pay 2 life.",
