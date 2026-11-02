@@ -4,8 +4,8 @@ pub mod ability_layers;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub use ability_layers::{
     AbilityLayer, AdditionalTriggerScope, AnimationCreatureTypes, AnimationDuration, AnimationSpec,
-    AttachedCharacteristics, LandManaRecipients, PermanentForm, StaticAbilityFragment,
-    StaticAbilityGroup, UntapRestriction,
+    AttachedCharacteristics, CreatureSubtypeGrant, LandManaRecipients, PermanentForm,
+    StaticAbilityFragment, StaticAbilityGroup, UntapRestriction,
 };
 
 #[doc(hidden)]
@@ -452,7 +452,10 @@ impl CreatureType {
             .map(|i| Self(u16::try_from(i).expect("creature taxonomy fits u16")))
     }
     pub fn name(self) -> &'static str {
-        CREATURE_TYPES[usize::from(self.0)]
+        CREATURE_TYPES[self.index()]
+    }
+    pub(crate) const fn index(self) -> usize {
+        self.0 as usize
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

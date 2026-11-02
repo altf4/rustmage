@@ -333,6 +333,24 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             }
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
+                    if let StaticAbilityFragment::CreatureGroupBonus {
+                        filters,
+                        stats: bonus,
+                    } = *fragment
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                        && filters.iter().any(|&filter| {
+                            self.creature_matches(
+                                filter,
+                                object.controller,
+                                self.object_ref(source),
+                                id,
+                            )
+                        })
+                    {
+                        stats += bonus;
+                    }
                     if let StaticAbilityFragment::ConditionalCreatureModifier {
                         condition,
                         modifier,

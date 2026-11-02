@@ -111,15 +111,15 @@ fn land_forms<W: CharacteristicWorld + ?Sized>(
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn source_counter_turn_creature<W: CharacteristicWorld + ?Sized>(
+fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
-) -> Option<(u64, &'static [&'static str])> {
+) -> Option<(u64, u16, &'static [&'static str])> {
     let object = world.object(id);
     if object.zone != Zone::Battlefield {
         return None;
     }
-    let types = object
+    let (kinds, types) = object
         .card
         .static_ability_groups()
         .iter()
@@ -134,7 +134,12 @@ fn source_counter_turn_creature<W: CharacteristicWorld + ?Sized>(
             } if (!own_turn || object.controller == world.game().state.active)
                 && world.counter_count(id, kind) >= minimum =>
             {
-                Some(subtypes)
+                Some((1, subtypes))
+            }
+            StaticAbilityFragment::SourceOffTurnCreature
+                if object.controller != world.game().state.active =>
+            {
+                Some((17, &[]))
             }
             _ => None,
         })?;
@@ -144,7 +149,7 @@ fn source_counter_turn_creature<W: CharacteristicWorld + ?Sized>(
         .iter()
         .find(|row| row.source == world.reference(id))?
         .timestamp;
-    Some((timestamp, types))
+    Some((timestamp, kinds, types))
 }
 /// Layer-four changes to the presence of the land card type. Other card-type
 /// additions do not affect existing land types and need no timeline entry.
@@ -181,15 +186,7 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     id: CardId,
     object: &Object,
 ) -> u16 {
-    let mut result = if object.zone == Zone::Stack {
-        world.game().effective_spell_card(id).kind_mask()
-    } else {
-        object.card.kind_mask()
-    };
-    let recipe = world.recipe(id);
-    if recipe.exceptions != CopyExceptions::NONE || recipe.overrides.is_some() {
-        result = recipe.kinds();
-    }
+    let mut result = original_kinds(world, id, object);
     if object.zone != Zone::Battlefield {
         return result;
     }
@@ -197,7 +194,7 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         .roles()
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
-        && source_counter_turn_creature(world, id).is_none()
+        && source_conditional_creature(world, id).is_none()
         && land_forms(world, id).next().is_none()
     {
         if world
@@ -213,9 +210,25 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     }
     changed_kinds(world, id, result)
 }
+fn original_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, object: &Object) -> u16 {
+    let mut result = if object.zone == Zone::Stack {
+        world.game().effective_spell_card(id).kind_mask()
+    } else {
+        object.card.kind_mask()
+    };
+    let recipe = world.recipe(id);
+    if recipe.exceptions != CopyExceptions::NONE || recipe.overrides.is_some() {
+        result = recipe.kinds();
+    }
+    result
+}
 // Keep uncommon projection/sort work out of ordinary type queries.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut result: u16) -> u16 {
+fn kind_timeline<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+    mut result: u16,
+) -> (u16, Vec<(u64, u16, bool)>) {
     let mut changes: Vec<_> = aura_effects(world, id)
         .into_iter()
         .map(|(time, spec)| {
@@ -230,8 +243,8 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
             )
         })
         .collect();
-    if let Some((timestamp, _)) = source_counter_turn_creature(world, id) {
-        changes.push((timestamp, 1, true));
+    if let Some((timestamp, kinds, _)) = source_conditional_creature(world, id) {
+        changes.push((timestamp, kinds, true));
     }
     changes.extend(land_forms(world, id).map(|row| (row.timestamp, 2, false)));
     for row in animations(world, id) {
@@ -268,6 +281,11 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
         result |= 17;
     }
     changes.sort_by_key(|c| c.0);
+    (result, changes)
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, result: u16) -> u16 {
+    let (mut result, changes) = kind_timeline(world, id, result);
     for (_, mask, additive) in changes {
         if additive {
             result |= mask;
@@ -276,6 +294,27 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
         }
     }
     result
+}
+/// A creature-only subtype grant depends on an effect which first animates its
+/// recipient. Its type addition follows that effect even with an older source.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn creature_addition_timestamp<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Option<u64> {
+    let object = world.object(id);
+    let (mut result, changes) = kind_timeline(world, id, original_kinds(world, id, object));
+    let mut latest = None;
+    for (timestamp, mask, additive) in changes {
+        let was_creature = result & 1 != 0;
+        result = if additive { result | mask } else { mask };
+        if result & 1 == 0 {
+            latest = None;
+        } else if !was_creature {
+            latest = Some(timestamp);
+        }
+    }
+    latest
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
@@ -373,6 +412,8 @@ fn changed_base<W: CharacteristicWorld + ?Sized>(
 pub(super) enum SubtypeChange {
     Named(&'static [&'static str], bool),
     Add(&'static [&'static str]),
+    Chosen(crate::cards::CreatureType),
+    Granted(crate::cards::CreatureType, Option<&'static str>),
     All,
     LandOnly,
     BasicLand(crate::cards::BasicLandType),
@@ -389,7 +430,7 @@ pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
         .roles()
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
-        && source_counter_turn_creature(world, id).is_none()
+        && source_conditional_creature(world, id).is_none()
         && land_forms(world, id).next().is_none()
     {
         return Vec::new();
@@ -414,7 +455,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             )
         })
         .collect();
-    if let Some((timestamp, types)) = source_counter_turn_creature(world, id)
+    if let Some((timestamp, _, types)) = source_conditional_creature(world, id)
         && !types.is_empty()
     {
         changes.push((timestamp, SubtypeChange::Named(types, false)));

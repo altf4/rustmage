@@ -255,6 +255,9 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }
                             | crate::cards::StaticAbilityFragment::SourceGraveyardBonus { .. }
                             | crate::cards::StaticAbilityFragment::ConditionalCreatureModifier { .. }
+                            | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
+                            | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }

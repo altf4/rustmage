@@ -90,11 +90,46 @@ const ADDED_MASK: u32 = JOB_MASK
     | ADDED_CONSTRUCT;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const _: () = assert!(JOB_TYPES.len() + 12 <= u32::BITS as usize);
+// Only query values and frozen views carry this fixed taxonomy mask. Hot Object
+// storage is unchanged; inherited sparse grants retain their original wire form.
+const CREATURE_TYPE_WORDS: usize = crate::cards::CREATURE_TYPES.len().div_ceil(64);
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct CreatureTypeSet([u64; CREATURE_TYPE_WORDS]);
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl CreatureTypeSet {
+    fn is_empty(self) -> bool {
+        self.0 == [0; CREATURE_TYPE_WORDS]
+    }
+    fn insert(&mut self, typ: crate::cards::CreatureType) {
+        let index = typ.index();
+        self.0[index / 64] |= 1 << (index % 64);
+    }
+    fn contains(self, name: &str) -> bool {
+        !self.is_empty()
+            && crate::cards::CREATURE_TYPES
+                .binary_search(&name)
+                .is_ok_and(|index| self.0[index / 64] & (1 << (index % 64)) != 0)
+    }
+}
+impl Serialize for CreatureTypeSet {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let count = self.0.iter().map(|word| word.count_ones() as usize).sum();
+        let mut out = serializer.serialize_seq(Some(count))?;
+        for (index, name) in crate::cards::CREATURE_TYPES.iter().enumerate() {
+            if self.0[index / 64] & (1 << (index % 64)) != 0 {
+                out.serialize_element(name)?;
+            }
+        }
+        out.end()
+    }
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
     added: u32,
     chosen: Option<crate::cards::CreatureType>,
+    additional_creature_types: CreatureTypeSet,
     /// A layer-four effect replaces all previously held land subtypes.
     basic_land: Option<crate::cards::BasicLandType>,
     added_basic_lands: u8,
@@ -112,6 +147,7 @@ impl GrantedSubtypes {
         Self {
             added: SUPPRESS_PRINTED | ADDED_FOOD,
             chosen: None,
+            additional_creature_types: CreatureTypeSet::default(),
             basic_land: None,
             added_basic_lands: 0,
             effective_basic_lands: None,
@@ -147,6 +183,7 @@ impl GrantedSubtypes {
             || (self.added & Self::copy_type_bit(subtype) != 0)
             || (self.flag(ALL_CREATURE_TYPES) && crate::cards::is_creature_type(subtype))
             || self.chosen.is_some_and(|t| t.name() == subtype)
+            || self.additional_creature_types.contains(subtype)
             || self
                 .creature_types
                 .is_some_and(|types| types.contains(&subtype))
@@ -196,6 +233,7 @@ impl GrantedSubtypes {
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
         self.added &= FLAGS_MASK | ADDED_FOOD;
         self.chosen = None;
+        self.additional_creature_types = CreatureTypeSet::default();
         self.creature_types = Some(types);
     }
     fn apply_copy_types(&mut self, types: Option<CopyTypes>) {
@@ -242,11 +280,14 @@ impl GrantedSubtypes {
             self.added |= copy;
             return;
         }
-        let i = JOB_TYPES
-            .iter()
-            .position(|s| *s == subtype)
-            .expect("authenticated immutable subtype grant");
-        self.added |= 1 << i;
+        if let Some(i) = JOB_TYPES.iter().position(|s| *s == subtype) {
+            self.added |= 1 << i;
+        } else {
+            self.additional_creature_types.insert(
+                crate::cards::CreatureType::from_name(subtype)
+                    .expect("authenticated immutable creature subtype grant"),
+            );
+        }
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -285,7 +326,8 @@ impl Serialize for GrantedSubtypes {
                 + usize::from(self.basic_land.is_some())
                 + usize::from(self.added_basic_lands != 0)
                 + usize::from(self.effective_basic_lands.is_some())
-                + usize::from(self.suppress_printed_land),
+                + usize::from(self.suppress_printed_land)
+                + usize::from(!self.additional_creature_types.is_empty()),
         )?;
         out.serialize_field("suppress_printed", &self.flag(SUPPRESS_PRINTED))?;
         out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
@@ -293,6 +335,9 @@ impl Serialize for GrantedSubtypes {
         out.serialize_field("chosen", &self.chosen)?;
         out.serialize_field("added", &Added(self.added & ADDED_MASK))?;
         out.serialize_field("creature_types", &self.creature_types)?;
+        if !self.additional_creature_types.is_empty() {
+            out.serialize_field("additional_creature_types", &self.additional_creature_types)?;
+        }
         if let Some(bits) = self.effective_basic_lands {
             let kinds: Vec<_> = crate::cards::BasicLandType::ALL
                 .into_iter()
@@ -633,6 +678,79 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             characteristic_layers::SubtypeChange::BasicLand(kind),
         ));
     }
+    let source_time = |source: ObjectRef| {
+        world
+            .roles()
+            .and_then(|state| {
+                state
+                    .ability_timestamps
+                    .iter()
+                    .find(|row| row.source == source)
+            })
+            .map(|row| row.timestamp)
+            .expect("registered layer-four provider timestamp")
+    };
+    if kinds(id, target) & 1 != 0 {
+        let mut dependency_time = None;
+        if target.card.static_ability_groups().iter().any(|g| {
+            g.fragments
+                .iter()
+                .any(|f| matches!(f, crate::cards::StaticAbilityFragment::ChosenCreatureType))
+        }) && let Some(EntryChoiceValue::CreatureType(typ)) = world.entry_value(reference)
+        {
+            changes.push((
+                source_time(reference).max(*dependency_time.get_or_insert_with(|| {
+                    characteristic_layers::creature_addition_timestamp(world, id).unwrap_or(0)
+                })),
+                characteristic_layers::SubtypeChange::Chosen(typ),
+            ));
+        }
+        for &source in world.static_sources() {
+            let provider = world.object(source);
+            if provider.zone != Zone::Battlefield || provider.controller != target.controller {
+                continue;
+            }
+            let origin = world.reference(source);
+            for group in provider.card.static_ability_groups() {
+                for fragment in group.fragments {
+                    if let crate::cards::StaticAbilityFragment::ControlledCreatureSubtype {
+                        grant,
+                        required_subtype,
+                    } = *fragment
+                    {
+                        let typ = match grant {
+                            crate::cards::CreatureSubtypeGrant::Named(name) => Some(
+                                crate::cards::CreatureType::from_name(name)
+                                    .expect("authenticated immutable creature subtype grant"),
+                            ),
+                            crate::cards::CreatureSubtypeGrant::Chosen => {
+                                match world.entry_value(origin) {
+                                    Some(EntryChoiceValue::CreatureType(typ)) => Some(typ),
+                                    _ => None,
+                                }
+                            }
+                        };
+                        if let Some(typ) = typ {
+                            changes.push((
+                                source_time(origin).max(*dependency_time.get_or_insert_with(
+                                    || {
+                                        characteristic_layers::creature_addition_timestamp(
+                                            world, id,
+                                        )
+                                        .unwrap_or(0)
+                                    },
+                                )),
+                                characteristic_layers::SubtypeChange::Granted(
+                                    typ,
+                                    required_subtype,
+                                ),
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+    }
     changes.sort_by_key(|row| row.0);
     let replacement_time = changes
         .iter()
@@ -641,6 +759,8 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             !matches!(
                 change,
                 characteristic_layers::SubtypeChange::Add(_)
+                    | characteristic_layers::SubtypeChange::Chosen(_)
+                    | characteristic_layers::SubtypeChange::Granted(..)
                     | characteristic_layers::SubtypeChange::BasicLand(_)
                     | characteristic_layers::SubtypeChange::AddBasicLand(_)
             )
@@ -653,6 +773,14 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                     for typ in types {
                         mask.insert(typ);
                     }
+                }
+            }
+            characteristic_layers::SubtypeChange::Chosen(typ) => {
+                mask.chosen = Some(typ);
+            }
+            characteristic_layers::SubtypeChange::Granted(typ, required_subtype) => {
+                if required_subtype.is_none_or(|subtype| mask.has(target.card, subtype)) {
+                    mask.additional_creature_types.insert(typ);
                 }
             }
             characteristic_layers::SubtypeChange::BasicLand(kind) => {
@@ -713,30 +841,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
     if kinds(id, target) & 1 == 0 {
         return mask;
     }
-    let source_time = |source: ObjectRef| {
-        world
-            .roles()
-            .and_then(|state| {
-                state
-                    .ability_timestamps
-                    .iter()
-                    .find(|row| row.source == source)
-            })
-            .map(|row| row.timestamp)
-            .expect("registered layer-four provider timestamp")
-    };
     let newer = |source| replacement_time.is_none_or(|time| source_time(source) > time);
-    if !world.entry_values().is_empty()
-        && target.card.static_ability_groups().iter().any(|g| {
-            g.fragments
-                .iter()
-                .any(|f| matches!(f, crate::cards::StaticAbilityFragment::ChosenCreatureType))
-        })
-        && newer(reference)
-        && let Some(EntryChoiceValue::CreatureType(typ)) = world.entry_value(reference)
-    {
-        mask.chosen = Some(typ);
-    }
     for group in target.card.static_ability_groups() {
         for fragment in group.fragments {
             if let crate::cards::StaticAbilityFragment::SourceCounterSubtype {

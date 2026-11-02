@@ -129,6 +129,13 @@ pub enum StaticAbilityFragment {
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
     ChosenCreatureType,
+    /// Add this source’s type to controlled creatures, optionally of a required subtype.
+    ControlledCreatureSubtype {
+        grant: CreatureSubtypeGrant,
+        required_subtype: Option<&'static str>,
+    },
+    /// This source adds artifact and creature during another player’s turn.
+    SourceOffTurnCreature,
     /// This land is the chosen basic land type (CR305.7).
     ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
@@ -262,6 +269,11 @@ pub enum StaticAbilityFragment {
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
+    /// One layer-7c effect applies once to the union of its live creature groups.
+    CreatureGroupBonus {
+        filters: &'static [CreatureFilter],
+        stats: Stats,
+    },
     /// Live earlier-layer predicate gates an ordinary creature-group bonus.
     ConditionalCreatureModifier {
         condition: StatValue,
@@ -316,6 +328,14 @@ pub enum StaticAbilityFragment {
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,
     StaticCastRestriction(u16, u8),
+}
+
+/// An immutable named creature subtype or the exact source’s as-entry choice.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CreatureSubtypeGrant {
+    Named(&'static str),
+    Chosen,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

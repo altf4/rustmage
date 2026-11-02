@@ -1,0 +1,156 @@
+{
+  "scope": "Aetherdrift engine static characteristics and Aura eligibility; no ordinary card definition or admission changes",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "oracle": [
+    {
+      "name": "Cloudspire Captain",
+      "oracle_id": "c86bac69-96d6-4b9f-87e4-2d7faecaa112",
+      "facts_sha256": "964175a9f99421f71b3d3e430663b191fd415ac50b7761e21f7231a3c0674908",
+      "oracle_text": "Mounts and Vehicles you control get +1/+1.\nThis creature saddles Mounts and crews Vehicles as though its power were 2 greater."
+    },
+    {
+      "name": "Lifecraft Engine",
+      "oracle_id": "caa69b51-1efd-4d0e-803b-914a83ccb836",
+      "facts_sha256": "b3dfe4f76b4c14447d09fb505c887fb366ac4589dadc36136efa19f483c04630",
+      "oracle_text": "As this Vehicle enters, choose a creature type.\nVehicle creatures you control are the chosen creature type in addition to their other types.\nEach creature you control of the chosen type other than this Vehicle gets +1/+1.\nCrew 3"
+    },
+    {
+      "name": "March of the World Ooze",
+      "oracle_id": "a04696c4-4138-47e2-8da4-81d61748519f",
+      "facts_sha256": "5c59733d6090fd40b178f4616f290e095cb6129f49ae08388fab81e8800ac499",
+      "oracle_text": "Creatures you control have base power and toughness 6/6 and are Oozes in addition to their other types.\nWhenever an opponent casts a spell, if it's not their turn, you create a 3/3 green Elephant creature token."
+    },
+    {
+      "name": "Midnight Mangler",
+      "oracle_id": "c9f8651a-4118-4d80-902e-60473e81d3a9",
+      "facts_sha256": "a9aea994e0b07548dda4cb1871d40f58af4f81301430b06dbfa2447a4db98624",
+      "oracle_text": "During turns other than yours, this Vehicle is an artifact creature.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
+    },
+    {
+      "name": "Silken Strength",
+      "oracle_id": "53a59ba9-f4e9-460b-928a-ce6d7ae883f7",
+      "facts_sha256": "08de9fdc3894d80de44340cd98636ce33a7c569d7d73ec98f62d51974a27175c",
+      "oracle_text": "Flash\nEnchant creature or Vehicle\nWhen this Aura enters, untap enchanted permanent.\nEnchanted permanent gets +1/+2 and has reach."
+    }
+  ],
+  "complete_java_bodies_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/c/CloudspireCaptain.java",
+      "sha256": "4eb8899579daddc20ef486b460ddd7887dac8306570d74ed94832362e27c7dad"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/l/LifecraftEngine.java",
+      "sha256": "509b54cda70e60cd793d513f8f81bf00d0d325429fd3686394fecbfef830507a"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MarchOfTheWorldOoze.java",
+      "sha256": "a0a87713b50413cdaedca465346de6d3ff197e872ad90fdd0702c6d6e78d1fde"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MidnightMangler.java",
+      "sha256": "6225dfbfba895f74772e51a629e833a5e109a6e554404cede75d52fc8ccc4b40"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SilkenStrength.java",
+      "sha256": "196c64b5684f9f673782932d4ae1d8e76ed19edece4993353274aca634fe3916"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllOfChosenSubtypeEffect.java",
+      "sha256": "aa088319449679f38b3d77f34e8939565afe24be2f2b7b2d374454e4c6df7128"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+      "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubtypeAllEffect.java",
+      "sha256": "a03380cd32f179fb0f7a2e1133196d2bed882ab237679768ee547e08acc81535"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessAllEffect.java",
+      "sha256": "4373b95198b2cca2412c8177f9cd5a1d4ee9d4e2d32a7d4d5e45cabe7ba7f685"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+      "sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAttachedEffect.java",
+      "sha256": "2fa3c394587eff1a4e2a1e1be58a4924f310b3375c714b839b672186dc8136f7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+      "sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+      "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/NotMyTurnCondition.java",
+      "sha256": "db899ec29be5298f5f3d4e36f0df6975f3f23ef347fa7753aa14cc9c1580e9df"
+    }
+  ],
+  "interfaces": [
+    "StaticAbilityFragment::CreatureGroupBonus { filters, stats }: one additive bonus for union membership",
+    "StaticAbilityFragment::ControlledCreatureSubtype { grant: Named|Chosen, required_subtype }: layer-four timestamped additions",
+    "StaticAbilityFragment::SourceOffTurnCreature: live source controller/turn artifact-creature addition with existing vehicle statistics",
+    "CardExtras::aura_kind_or_subtype plus shared actual/speculative aura_kind_matches; Aura keyword recipients may be noncreatures",
+    "GrantedSubtypes retains legacy fields and adds a fixed full-taxonomy set for additional creature types; type replacement clears it"
+  ],
+  "ordering": "Creature-only subtype grants follow the type change which first animates a recipient, even when the granting source is older. Later independent subtype-only setters overwrite earlier grants. Layer-four effects survive later layer-six source ability removal; independent lord abilities still require availability.",
+  "representation": {
+    "creature_taxonomy_count": 324,
+    "additional_mask_u64_words": 6,
+    "additional_mask_payload_bytes": 48,
+    "hot_Object_fields_added": 0,
+    "exact_layout_measurement": "pending root guarded test; type_overlay_layout_is_reported_without_changing_hot_object_storage prints Object, ObjectView, DamageFacts, GrantedSubtypes",
+    "serialization": "additional_creature_types is sorted by pinned taxonomy and omitted when empty; all preexisting fields retained"
+  },
+  "tests": [
+    "aura_can_enchant_uncrewed_vehicle_and_its_keyword_survives_animation_cleanup",
+    "aura_resolution_rechecks_the_live_union_and_sba_rejects_a_later_ineligible_form",
+    "aura_union_rejects_an_ordinary_noncreature_artifact_transactionally",
+    "projected_aura_entry_accepts_the_same_noncreature_vehicle_as_actual_entry",
+    "static_creature_group_union_applies_once_and_follows_control_and_source_zone",
+    "multiple_chosen_type_providers_accumulate_with_an_independent_self_choice",
+    "subtype_grant_depends_on_new_animation_but_a_later_subtype_setter_replaces_it",
+    "static_named_subtype_and_base_stats_are_live_and_survive_later_ability_removal",
+    "off_turn_creature_addition_uses_current_controller_and_keeps_vehicle_stats",
+    "funding_worlds_retain_static_type_providers_and_query_projected_control_and_departure",
+    "chosen_type_entry_is_owned_across_raw_indexed_restore_and_parent_disposal",
+    "type_overlay_layout_is_reported_without_changing_hot_object_storage",
+    "type_grant_continues_after_removal_but_its_separate_lord_ability_stops"
+  ],
+  "validation": {
+    "rustfmt": "passed with edition 2024",
+    "git_diff_check": "passed",
+    "Cargo": "not run; root owns guarded validation",
+    "benchmark": "pending integrated engine checkpoint"
+  },
+  "remaining_card_wiring": "Captain crew/saddle assistance, Lifecraft entry choice/crew/lord, March opponent off-turn token trigger, Midnight crew, and Silken flash/untap/bonus must still be wired and verified as whole cards in the later card phase; existing shared support is reused."
+}
