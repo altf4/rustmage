@@ -4994,10 +4994,10 @@
   "Demonic Junker": {
     "root": "main",
     "status": "completed",
-    "decisions": 7,
+    "decisions": 8,
     "zone": "Battlefield",
-    "journal": "9359f84316f8ae62",
-    "observations": "06767e3a8ffa4a46"
+    "journal": "208f059cc5d469f1",
+    "observations": "ea264aed36d113da"
   },
   "Demonic Pact": {
     "root": "main",
