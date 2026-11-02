@@ -26,7 +26,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             }),
             program: &[Instruction::GrantKeywords {
                 subject: Subject::Targets,
-                keywords: Keywords::LIFELINK.union(Keywords::UNBLOCKABLE),
+                keywords: Keywords::LIFELINK.union(Keywords::CANT_BE_BLOCKED),
             }],
             sorcery: false,
             once_per_turn: false,

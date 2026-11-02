@@ -230,12 +230,12 @@ fn apocalypse_runner_rejects_large_or_foreign_targets_and_its_grants_expire() {
     assert!(g.object_view(runner).tapped);
     assert!(
         g.keywords(small)
-            .contains(Keywords::LIFELINK.union(Keywords::UNBLOCKABLE))
+            .contains(Keywords::LIFELINK.union(Keywords::CANT_BE_BLOCKED))
     );
     g.finish_cleanup();
     assert!(
         !g.keywords(small)
-            .intersects(Keywords::LIFELINK.union(Keywords::UNBLOCKABLE))
+            .intersects(Keywords::LIFELINK.union(Keywords::CANT_BE_BLOCKED))
     );
 }
 #[test]
