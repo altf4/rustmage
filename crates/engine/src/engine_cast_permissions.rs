@@ -167,20 +167,27 @@ impl Game {
         object.zone == Zone::Graveyard
             && object.owner == player
             && object.is_card()
-            && self
-                .state
-                .graveyard_cast_permissions
-                .as_ref()
-                .is_some_and(|rows| {
-                    rows.iter().any(|row| {
-                        row.player == player
-                            && row.object == self.object_ref(card)
-                            && (row.kind == kind
-                                || (kind == GraveyardCastKind::Cast
-                                    && row.kind == GraveyardCastKind::Play))
-                            && row.expires_turn >= self.state.turn
+            && ((kind == GraveyardCastKind::Cast
+                && object.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(*fragment, StaticAbilityFragment::SelfGraveyardCastIf(condition)
+                            if self.stat_value(condition, self.object_ref(card), player) != 0)
                     })
-                })
+                }))
+                || self
+                    .state
+                    .graveyard_cast_permissions
+                    .as_ref()
+                    .is_some_and(|rows| {
+                        rows.iter().any(|row| {
+                            row.player == player
+                                && row.object == self.object_ref(card)
+                                && (row.kind == kind
+                                    || (kind == GraveyardCastKind::Cast
+                                        && row.kind == GraveyardCastKind::Play))
+                                && row.expires_turn >= self.state.turn
+                        })
+                    }))
     }
     pub(super) fn grant_graveyard_cast(&mut self, item: &SpellView, kind: GraveyardCastKind) {
         for bound in &item.targets {

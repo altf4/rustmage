@@ -76,6 +76,10 @@ pub enum StaticAbilityFragment {
     /// During combat no spells or nonmana activated abilities may be started.
     NoSpellsOrNonmanaDuringCombat,
 
+    /// Cast this exact owned graveyard card normally while the live predicate holds.
+    /// This grants neither land plays nor flashback's alternative cost/destination.
+    SelfGraveyardCastIf(StatValue),
+
     /// This exact owned graveyard card has a separate ordinary-mana casting route.
     SelfGraveyardCastWithAdditionalCosts {
         life: u32,
