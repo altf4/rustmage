@@ -188,16 +188,10 @@ fn trigger_supported(condition: TriggerCondition) -> bool {
         | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
         | TriggerCondition::SelfCrewsOrSaddles
         | TriggerCondition::CreaturesAttackYou => false,
-        TriggerCondition::AtStep { guard, .. } => !matches!(
-            guard,
-            cards::StepGuard::YourMainPhase | cards::StepGuard::DeclaredAttackSubtypesAll(_)
-        ),
+        TriggerCondition::AtStep { guard, .. } => guard_supported(guard),
         TriggerCondition::When { guard, event }
         | TriggerCondition::InterveningIf { guard, event } => {
-            !matches!(
-                guard,
-                cards::StepGuard::YourMainPhase | cards::StepGuard::DeclaredAttackSubtypesAll(_)
-            ) && trigger_supported(*event)
+            guard_supported(guard) && trigger_supported(*event)
         }
         TriggerCondition::InZone { event, .. }
         | TriggerCondition::Granted(event)
@@ -209,6 +203,56 @@ fn trigger_supported(condition: TriggerCondition) -> bool {
         | TriggerCondition::ManaSpent { event, .. } => trigger_supported(*event),
         TriggerCondition::SpellCast { filter, .. } => cast_filter_supported(filter),
         _ => true,
+    }
+}
+fn stat_supported(value: StatValue) -> bool {
+    match value {
+        StatValue::MountOrVehicleEntriesThisTurn
+        | StatValue::SourceTotalCounters
+        | StatValue::Parity { .. }
+        | StatValue::ControllerSpeed
+        | StatValue::OpponentControlsMoreLands => false,
+        StatValue::Not(value)
+        | StatValue::AtLeast { value, .. }
+        | StatValue::GroupsOf { value, .. } => stat_supported(*value),
+        StatValue::Sum(values) => values.iter().copied().all(stat_supported),
+        _ => true,
+    }
+}
+fn amount_supported(value: AmountValue) -> bool {
+    match value {
+        AmountValue::SourceTotalCounters
+        | AmountValue::DiscardEventAmount
+        | AmountValue::PaidAdditionalCostCount
+        | AmountValue::PaidAdditionalCostSelectionCount => false,
+        AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => {
+            amount_supported(*value)
+        }
+        AmountValue::Sum(values) => values.iter().copied().all(amount_supported),
+        AmountValue::Stat(value) => stat_supported(value),
+        _ => true,
+    }
+}
+fn guard_supported(guard: cards::StepGuard) -> bool {
+    match guard {
+        cards::StepGuard::YourMainPhase | cards::StepGuard::DeclaredAttackSubtypesAll(_) => false,
+        cards::StepGuard::Expression { value, .. } => stat_supported(value),
+        _ => true,
+    }
+}
+fn target_supported(rule: TargetRule) -> bool {
+    match rule {
+        TargetRule::YourSpell => false,
+        TargetRule::Filtered { base, predicate } => {
+            *predicate != TargetPredicate::NoAbilities && target_supported(*base)
+        }
+        _ => true,
+    }
+}
+fn plan_supported(plan: TargetPlan) -> bool {
+    match plan {
+        TargetPlan::Single(spec) => target_supported(spec.rule),
+        TargetPlan::Groups(groups) => groups.iter().all(|spec| target_supported(spec.rule)),
     }
 }
 fn program_supported(program: &[Instruction]) -> bool {
@@ -249,6 +293,51 @@ fn program_supported(program: &[Instruction]) -> bool {
         | Instruction::OwnerLibraryNthFromTop(..)
         | Instruction::GainControlAndPreventCombatWhileSourceControlled
         | Instruction::CreateTokensAttackThisCombat { .. } => false,
+        Instruction::Search(spec) => wire_supported(&spec),
+        Instruction::SelectLibraryTo(effect)
+        | Instruction::SelectLibraryThenMayTransform(effect) => {
+            !matches!(effect.look, cards::LibraryLook::UntilKindsCount { .. })
+                && match effect.look {
+                    cards::LibraryLook::Amount(value) => amount_supported(value),
+                    _ => true,
+                }
+                && effect.maximum_mana_value.is_none_or(amount_supported)
+                && match effect.destination {
+                    cards::LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(value) => {
+                        amount_supported(value)
+                    }
+                    _ => true,
+                }
+        }
+        Instruction::UpToTargets(value)
+        | Instruction::IfAmountAtLeast { value, .. }
+        | Instruction::PutLandCards { maximum: value, .. }
+        | Instruction::DiscardScaled(_, value)
+        | Instruction::AddCastEntryCounters { amount: value, .. }
+        | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
+        | Instruction::SetCreatureForm { base: value, .. }
+        | Instruction::MoveCountersFromSource { amount: value, .. }
+        | Instruction::RevealTargetHandSubsetDiscard(value)
+        | Instruction::DrawScaled(_, value)
+        | Instruction::GainLifeScaled(_, value)
+        | Instruction::LoseLifeScaled(_, value)
+        | Instruction::DrainLifeScaled(value)
+        | Instruction::LoseOpponentGainSame(value)
+        | Instruction::DamageScaled(value)
+        | Instruction::AddColorlessScaled(value)
+        | Instruction::AddManaScaled { amount: value, .. }
+        | Instruction::AddCombatRedScaled(value)
+        | Instruction::Mobilize { amount: value, .. }
+        | Instruction::CounterUnlessPayScaled { amount: value, .. }
+        | Instruction::PutCountersScaled { amount: value, .. }
+        | Instruction::PutPermanentCountersScaled { amount: value, .. }
+        | Instruction::GrowScaled { amount: value, .. }
+        | Instruction::GrowCreaturesScaled { amount: value, .. }
+        | Instruction::GrowPermanentGroupScaled { amount: value, .. }
+        | Instruction::CreateTokensScaled { amount: value, .. }
+        | Instruction::CreateTokensWithCounters {
+            counters: value, ..
+        } => amount_supported(value),
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes)
@@ -259,14 +348,35 @@ fn program_supported(program: &[Instruction]) -> bool {
     })
 }
 fn packet_supported(item: &SpellView) -> bool {
-    wire_supported(item)
-        && item
+    if !wire_supported(item) {
+        return false;
+    }
+    let trigger = match item.kind {
+        StackKind::TriggeredAbility { ability } => item.source.and_then(|_| {
+            item.trigger_definition()
+                .triggers()
+                .get(usize::from(ability))
+        }),
+        _ => None,
+    };
+    // Some inherited event packets use a legacy synthetic trigger index, without
+    // a typed TriggeredAbility. Never index their absent modes/program entry.
+    let legacy_trigger =
+        matches!(item.kind, StackKind::TriggeredAbility { .. }) && trigger.is_none();
+    (legacy_trigger
+        || item
             .program()
-            .is_none_or(|(_, program)| program_supported(program))
+            .is_none_or(|(plan, program)| plan_supported(plan) && program_supported(program)))
+        && trigger.is_none_or(|trigger| trigger_supported(trigger.condition))
         && match item.kind {
-            StackKind::TriggeredAbility { ability } => trigger_supported(
-                item.trigger_definition().triggers()[usize::from(ability)].condition,
-            ),
+            StackKind::ActivatedAbility { ability } => item.source.is_none_or(|source| {
+                source
+                    .card
+                    .activation(ability)
+                    .cost
+                    .additional
+                    .is_none_or(|spec| wire_supported(&spec.kind))
+            }),
             _ => true,
         }
         && item
@@ -313,6 +423,10 @@ pub(super) fn prior_schema199_state_supported(state: &State) -> bool {
             .zone_rules
             .as_ref()
             .is_some_and(|rules| rules.has_checkpoint())
+        || state
+            .entry_values
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|row| row.origin.is_some()))
         || state.saddle_payment.is_some()
         || state
             .crew
@@ -555,4 +669,22 @@ fn prior_198_checks_owned_packet_facts_even_outside_public_stack() {
     }));
     game.state.delayed_artifact_copies = Some(Box::new(vec![packet]));
     assert!(!prior_schema199_state_supported(&game.state));
+}
+
+#[test]
+fn prior_198_rejects_copied_choice_origins_after_the_entry_phase_ends() {
+    let mut game = scenario(Player::P0);
+    let card = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    game.set_entry_value(
+        game.object_ref(card),
+        EntryChoiceValue::CardName(CardName::from_name("Forest").unwrap()),
+    );
+    assert!(prior_schema199_state_supported(&game.state));
+    let saved = game.snapshot();
+    game.state.entry_values.as_mut().unwrap()[0].origin = Some(17);
+    let mut branch = game.clone();
+    drop(game);
+    assert!(!prior_schema199_state_supported(&branch.state));
+    branch.restore(&saved).unwrap();
+    assert!(prior_schema199_state_supported(&branch.state));
 }

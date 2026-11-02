@@ -3,7 +3,7 @@
   "candidate_observation_schema": 199,
   "prior_schema": 198,
   "baseline_revision": "73092e3",
-  "inventory_revision": "61a720af",
+  "inventory_revision": "7a135cae",
   "phase": "engine-only migration candidate; central marker and traces unchanged",
   "public_json": [
     {
@@ -16,7 +16,8 @@
         "declared_attack_history",
         "delayed_target_events",
         "exertions",
-        "chosen_card_name"
+        "chosen_card_name",
+        "entry_copy"
       ],
       "contract": "Sparse fields; all present values rejected for prior198."
     },
@@ -239,6 +240,24 @@
         "sacrificed_vehicle"
       ],
       "contract": "New frozen payment result payload."
+    },
+    {
+      "container": "EntryCopyChoiceView",
+      "members": [
+        "entrant",
+        "card",
+        "optional",
+        "candidates"
+      ],
+      "contract": "New sparse as-entry copy phase; public field/action and opaque entry preparation rejected."
+    },
+    {
+      "container": "Action / Observation.pending.kind",
+      "members": [
+        "ChooseEntryCopy",
+        "entry_copy"
+      ],
+      "contract": "Waxen copy-choice action and phase newly integrated since61a720af."
     }
   ],
   "pending_agent_additions": [
@@ -269,7 +288,8 @@
         "EntryChoiceRow.origin",
         "EntryIdentity.copy/choice",
         "funding projected copy rows/origins"
-      ]
+      ],
+      "status": "Waxen integrated through7a135cae; exact copied-origin state guard included. Mimeoplasm early-exile extension remains pending."
     }
   ],
   "eligibility": [
@@ -278,7 +298,7 @@
     "Reject private exact-top knowledge, opaque announcements, activation payments, nested mana frames, replacement continuations, staged entries, linked private decisions and rollback checkpoints.",
     "Inspect all retained packet containers, their nested copy events, recipe facts, keyword/control rows, damage LKI and mana qualities; no observation-only eligibility claim.",
     "Conservatively reject new typed instruction/trigger continuations whose packet shape reuses an old representation.",
-    "Waxen copied-origin entry-choice rows must be rejected after integration; active copy preparation already rejected as an opaque entry batch."
+    "Reject any copied-origin EntryChoiceRow at idle roots; active copy preparation/identity payloads already rejected as opaque entry batches."
   ],
   "registry": {
     "module": "tests/legacy/assurance/schema199.rs",
