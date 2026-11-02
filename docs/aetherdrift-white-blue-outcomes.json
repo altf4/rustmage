@@ -352,10 +352,13 @@
         "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
         "Cycling {W} ({W}, Discard this card: Draw a card.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "detention_and_snare_exile_their_distinct_opposing_targets_until_the_source_leaves",
+        "detentions_white_cycling_discards_before_drawing_without_its_entry_exile"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Diversion Unit",
@@ -373,10 +376,12 @@
         "Flying",
         "{U}, Sacrifice this creature: Counter target instant or sorcery spell unless its controller pays {3}."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "diversion_sacrifices_for_blue_and_counters_only_instant_or_sorcery_unless_three_is_paid"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Flood the Engine",
@@ -584,10 +589,12 @@
         "Cycling {1}{U} ({1}{U}, Discard this card: Draw a card.)",
         "When you cycle this card, target creature or Vehicle an opponent controls gets -3/-0 until end of turn."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "howlers_cycling_shrinks_an_opposing_uncrewed_vehicle_for_the_turn_and_draws_one"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Hulldrifter",
@@ -652,10 +659,12 @@
         "Vigilance",
         "Exhaust — {1}{U}: Draw a card, then discard a card. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "keen_draws_then_discards_and_adds_one_counter_with_vigilance_and_exhaust_consumed"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Leonin Surveyor",
@@ -816,10 +825,12 @@
       "printed_obligations": [
         "Exhaust — {X}{U}{U}, {T}: Draw X cards. Put a +1/+1 counter on each Merfolk creature you control. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "mindspring_pays_chosen_x_and_tap_but_counters_each_own_merfolk_even_for_zero"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Mu Yanling, Wind Rider",
@@ -907,10 +918,13 @@
         "When this artifact enters, exile target nonland permanent an opponent controls until this artifact leaves the battlefield.",
         "Max speed — {T}: Put a +1/+1 counter on target creature or Vehicle you control. Activate only as a sorcery."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "detention_and_snare_exile_their_distinct_opposing_targets_until_the_source_leaves",
+        "snare_max_speed_activation_requires_four_sorcery_timing_and_a_controlled_creature_or_vehicle"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Possession Engine",
@@ -976,10 +990,12 @@
         "Exhaust — {4}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
         "Crew 2"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "refueler_draws_for_own_exhaust_including_itself_and_its_animation_is_permanent"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Repurposing Bay",
@@ -996,10 +1012,12 @@
       "printed_obligations": [
         "{2}, {T}, Sacrifice another artifact: Search your library for an artifact card with mana value equal to 1 plus the sacrificed artifact's mana value, put that card onto the battlefield, then shuffle. Activate only as a sorcery."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "repurposing_bay_pays_another_artifact_and_searches_exactly_one_more_mana_value"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Ride's End",
@@ -1040,10 +1058,12 @@
         "{1}, {T}: Any number of target players each mill two cards. (Each of them puts the top two cards of their library into their graveyard.)",
         "Exhaust — {2}{U}{U}, {T}: Any number of target players each mill cards equal to the number of cards in their graveyard. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "riverchurn_targets_each_player_and_uses_each_separate_current_graveyard_for_exhaust"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Roadside Assistance",
@@ -1154,10 +1174,12 @@
         "Whenever you discard one or more cards, put that many +1/+1 counters on this creature.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "scrounging_skyray_counts_a_real_two_card_discard_batch_and_its_cycling_discard"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Skyseer's Chariot",
@@ -1198,10 +1220,12 @@
         "Flying",
         "Exhaust — {4}{U}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_activations",
+      "outcome_scenarios": [
+        "refueler_draws_for_own_exhaust_including_itself_and_its_animation_is_permanent"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d: exhaust paid-use/owned origins, trigger batches, activation targets and linked zone results; actual card costs and distinct printed outcomes in listed scenarios"
     },
     {
       "name": "Slick Imitator",

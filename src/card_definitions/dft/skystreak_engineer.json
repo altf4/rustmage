@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "717a09f96ef5cca27f390cd861fc7c0d5df43a7c337dcfb4782cfba92b6a56cd"
   },
-  "physical_metadata_sha256": "249d603454a8aa0aa9da7dbb9a6e61f657755716011bf3970fac42029018ccf8"
+  "physical_metadata_sha256": "249d603454a8aa0aa9da7dbb9a6e61f657755716011bf3970fac42029018ccf8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SkystreakEngineer.java",
+  "java_sha256": "b52056192e2969340912e3ad9fea51870a20b6c28eaeb86f172f2a2e0aac02de",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

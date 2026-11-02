@@ -3,10 +3,40 @@
   "catalogue_id": 3371,
   "oracle_id": "8e7ac64d-42c3-4e3b-9a20-9f09ee9d8a7a",
   "facts_sha256": "33ca0847739643222c01dca42d94867a61ac67580654a52cf27e388689c92f5e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "108850783d3f82b18d685daf3b41d9b1f4501a7223ef648126048a0ee999d2bf"
   },
-  "physical_metadata_sha256": "764bf55e01bf66d20228946590ecf6b1dd6aa5c7cba3131c035ed4ac330cc9dd"
+  "physical_metadata_sha256": "764bf55e01bf66d20228946590ecf6b1dd6aa5c7cba3131c035ed4ac330cc9dd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RangersRefueler.java",
+  "java_sha256": "9ec3fdfb2df09afa0403a31fbad0bffcfe892237cac7ac3ec8f34551789ebfa8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAbilityTriggeredAbility.java",
+      "sha256": "ac026c9e891ddf1ca80ef4b2847e5f12587bd504bbd2f213346d129ea2ae961c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+      "sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

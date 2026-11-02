@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f222f26c6cb7786bee77a26dd7108e7e5b1ce448ae13b3ae156187408316d3e2"
   },
-  "physical_metadata_sha256": "d82e370e4222a02a22f2a7d9c2b77eb805a4463abdc1957183a8af44cb8703fc"
+  "physical_metadata_sha256": "d82e370e4222a02a22f2a7d9c2b77eb805a4463abdc1957183a8af44cb8703fc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HowlersHeavy.java",
+  "java_sha256": "8ec34373fb41af154beb73ef9270263f7c6fdc49221dcc0709309ef710ca0ac6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

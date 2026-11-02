@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "006a1985e7c8c0b425476d9ed97ce6a96d01c6d3d10fc30fc1012ca5466c84f2"
   },
-  "physical_metadata_sha256": "de3c98fe643fe4ee892e03fe5d0ae200e11b8ffc040153f62ce8246e9a76f6b2"
+  "physical_metadata_sha256": "de3c98fe643fe4ee892e03fe5d0ae200e11b8ffc040153f62ce8246e9a76f6b2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScroungingSkyray.java",
+  "java_sha256": "f6b7f3d037db27d5ff34969e7281460e94b80cf9e7ee1c8df11339a314332017",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DiscardOneOrMoreCardsTriggeredAbility.java",
+      "sha256": "17c33c5f2864a8d4d2cfcf51583cf47143a7883ef869322f4be26d61d2bd57d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDiscardValue.java",
+      "sha256": "bf74affd38bc41fae8b232bdff16ec3388bd8aeaeff12b154699fbb07fc1f9ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    }
+  ]
 }

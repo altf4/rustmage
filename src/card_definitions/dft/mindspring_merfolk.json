@@ -3,10 +3,35 @@
   "catalogue_id": 2770,
   "oracle_id": "35142b01-4b8d-4335-a943-a3172fa04573",
   "facts_sha256": "57ea2cc46cfbc766d50ac84ced2d557a9eac8a4b9b2666644aa166fb8ccca975",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f96937eb2ab45a906900c7df3e51e565f05a3f4001a0f97bfa434a41a41db3a0"
   },
-  "physical_metadata_sha256": "4e8acdaf4c823f3aaa4d1c3061811fbbb2d955fdb006fb0c5eec938aff485446"
+  "physical_metadata_sha256": "4e8acdaf4c823f3aaa4d1c3061811fbbb2d955fdb006fb0c5eec938aff485446",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MindspringMerfolk.java",
+  "java_sha256": "3df4673a22032c570a1592c17406f36236e5ad2cf2ed2ef34a1a7d88b0e52e87",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    }
+  ]
 }
