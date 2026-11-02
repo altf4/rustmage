@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5b3931d711b8bc7b7fa6c62481f457746828bb17bed84aca5b69342036a7f5aa",
+  "catalogue_version": "8ff3960d759e981030fd38619377cdcbc03a48c4a5638277cb8051c1b59086ea",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3039,
-  "implemented_total": 3045,
+  "implemented_standard_cards": 3043,
+  "implemented_total": 3049,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 140,
-      "gated": 119
+      "complete": 144,
+      "gated": 115
     },
     "dsk": {
       "total": 264,
@@ -1394,8 +1394,8 @@
     {
       "name": "Amonkhet Raceway",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/amonkhet_raceway.rs",
       "set": "dft"
     },
@@ -2498,8 +2498,8 @@
     {
       "name": "Avishkar Raceway",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/avishkar_raceway.rs",
       "set": "dft"
     },
@@ -23226,8 +23226,8 @@
     {
       "name": "Muraganda Raceway",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/muraganda_raceway.rs",
       "set": "dft"
     },
@@ -23666,8 +23666,8 @@
     {
       "name": "Night Market",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/night_market.rs",
       "set": "dft"
     },
