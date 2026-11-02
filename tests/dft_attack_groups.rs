@@ -414,7 +414,7 @@ fn funding_sacrifice_removes_static_provider_before_nested_payment_queries() {
 fn funding_uses_projected_provider_controller_after_control_aura_is_sacrificed() {
     let _rules = fixture_rules::activate(&[
         (Card::GrizzlyBears, &TRAMPLE_PROVIDER),
-        (Card::StopCold, &CONTROL_MANA_AURA),
+        (Card::from_name("Stop Cold").unwrap(), &CONTROL_MANA_AURA),
     ]);
     let mut g = scenario(Player::P0);
     let provider = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
