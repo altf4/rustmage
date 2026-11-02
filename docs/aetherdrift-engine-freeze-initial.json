@@ -1,0 +1,97 @@
+{
+  "phase": "engine accepted; card definitions and whole-set acceptance remain open",
+  "engine_revision": "3bb915ad0edb660a64b7ab53f4b949ac1644f530",
+  "tested_revision": "d1c76ee711d2dcd07248d9cbf6d6b1a7ee9aa8fc",
+  "engine_inputs_sha256": "2d8ffdab54d91eb70ae428ff233d43f100ae9bfc9bd73f2d8faf0aab92ac9fb2",
+  "baseline_sha256": "9f97d70de2246b0d63c54a6d328bae522ce39c8e4311321bd89db6fd753b25ee",
+  "focused": {
+    "passed": 294,
+    "failed": 0,
+    "targets": 32,
+    "execution_seconds": 0.5568916119955247
+  },
+  "ordinary_legacy": {
+    "passed": 3030,
+    "failed": 0,
+    "seconds": 76.26175640099973
+  },
+  "big_games": [
+    {
+      "deck_pair": 1,
+      "games": 3,
+      "decisions": 2653,
+      "seconds": 10.020384177,
+      "games_per_second": 0.2993897186982075,
+      "decisions_per_second": 264.76030790211485,
+      "spell_colors_mask": 31
+    },
+    {
+      "deck_pair": 3,
+      "games": 3,
+      "decisions": 1859,
+      "seconds": 1.247995053,
+      "games_per_second": 2.403855682591396,
+      "decisions_per_second": 1489.5892379791349,
+      "spell_colors_mask": 27
+    },
+    {
+      "deck_pair": 2,
+      "games": 3,
+      "decisions": 2823,
+      "seconds": 4.846439877,
+      "games_per_second": 0.6190110836280576,
+      "decisions_per_second": 582.4894296940022,
+      "spell_colors_mask": 27
+    },
+    {
+      "deck_pair": 0,
+      "games": 3,
+      "decisions": 1456,
+      "seconds": 0.446948365,
+      "games_per_second": 6.712184750916361,
+      "decisions_per_second": 3257.6469991114072,
+      "spell_colors_mask": 31
+    }
+  ],
+  "strict_trace": {
+    "passed": 1,
+    "identities": 3007,
+    "seconds": 2.0359885299985763,
+    "migration_prior198_exact": 2966,
+    "expected_unrepresentable": 41,
+    "unexpected_differences": 0,
+    "outcome_changes": 0
+  },
+  "total_passing_cases": 3329,
+  "production_format_provenance_strict_workspace_clippy": "passed",
+  "independent_nonauthor_reviews": [
+    {
+      "agent": "engine_review_one",
+      "decision": "engine freeze approved"
+    },
+    {
+      "agent": "engine_review_final",
+      "decision": "engine freeze approved"
+    }
+  ],
+  "resource_guard": "one shared build, one Cargo job/test thread,6GiB cgroup; no OOM probe",
+  "compiler": {
+    "target": "<cache>/rustmage-authoring/aetherdrift/target",
+    "profile": "test; engine opt-level1, test bodies opt-level0",
+    "features": "rustmage-core/test-support; unchanged through card scenarios",
+    "test_build_seconds": 152.262286829995,
+    "warm_check_seconds": 0.3651752550067613,
+    "engine_reused": true
+  },
+  "reports": {
+    "assembled": "<cache>/rustmage-authoring/aetherdrift/assembled-engine-20261102-071400Z/report.json",
+    "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-engine-20261102-072100Z/report.json"
+  },
+  "scope": "Existing native BIG Standard decks with basics,12 natural games, full replay and sampled owned/raw/index/restore and observations; not DFT set-only or all-Standard acceptance",
+  "card_admissions": {
+    "new_during_engine_phase": 0,
+    "DFT_inherited": 119,
+    "DFT_total": 276,
+    "DFT_gated": 157
+  }
+}

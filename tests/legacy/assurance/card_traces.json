@@ -295,6 +295,14 @@
     "journal": "a0f071eeddba6e9d",
     "observations": "cef6f3578a6c3163"
   },
+  "Aether Syphon": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3fba902266e1c58c",
+    "observations": "f04b5f645272faec"
+  },
   "Aetherize": {
     "root": "main",
     "status": "completed",
@@ -318,6 +326,14 @@
     "zone": "Battlefield",
     "journal": "a04ca547dc679507",
     "observations": "bb714fd80996053f"
+  },
+  "Afterburner Expert": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "87b4dd39ec1d56b1"
   },
   "Afterthought Sentry": {
     "root": "main",
@@ -2455,6 +2471,14 @@
     "journal": "c1a75084aaf62e17",
     "observations": "64136fcc22c70544"
   },
+  "Boom Scholar": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "4154caa6c7d30e4e",
+    "observations": "152adcc410783813"
+  },
   "Boosted Sloop": {
     "root": "main",
     "status": "completed",
@@ -4039,6 +4063,14 @@
     "journal": "ee958f8fc3958dc1",
     "observations": "b0a0f362baf1cfad"
   },
+  "Country Roads": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "09d90c03a3bd887f"
+  },
   "Courageous Goblin": {
     "root": "main",
     "status": "completed",
@@ -4078,6 +4110,14 @@
     "zone": "Graveyard",
     "journal": "c4b8f6d37ca7169e",
     "observations": "6fe9661041453acf"
+  },
+  "Crash and Burn": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "a60352581e118779",
+    "observations": "ca9bb0101953c0f5"
   },
   "Craterclaw Colossus": {
     "root": "main",
@@ -5743,6 +5783,14 @@
     "journal": "ec03f2213c461167",
     "observations": "783f8b33501f456d"
   },
+  "Earthrumbler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1cf44c3255a028f2",
+    "observations": "ad2dd867496c3876"
+  },
   "East Wind Avatar": {
     "root": "main",
     "status": "completed",
@@ -6038,6 +6086,14 @@
     "zone": "Battlefield",
     "journal": "100cb581dd613f1f",
     "observations": "fb3a8612fe1441e2"
+  },
+  "Elvish Refueler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "17798bf123a080a5"
   },
   "Elvish Regrower": {
     "root": "main",
@@ -6710,6 +6766,14 @@
     "zone": "Graveyard",
     "journal": "144070c5d1044ac7",
     "observations": "4b514b9ebedf93c5"
+  },
+  "Fang Guardian": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "1a356125bd64ecdb",
+    "observations": "258f67ae74952cb2"
   },
   "Farsight Ritual": {
     "root": "main",
@@ -7438,6 +7502,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "ceb24a4e6c996cc3"
+  },
+  "Foul Roads": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "603fca5d2d37e323"
   },
   "Fountainport": {
     "root": "main",
@@ -8359,6 +8431,14 @@
     "journal": "5e03904e3ed6b0a9",
     "observations": "f43fdce8aa5aad3e"
   },
+  "Glitch Ghost Surveyor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "5a37305467443acc",
+    "observations": "282a7b8d461686ba"
+  },
   "Gloomlake Verge": {
     "root": "main",
     "status": "completed",
@@ -8966,6 +9046,14 @@
     "zone": "Battlefield",
     "journal": "100cb581dd613f1f",
     "observations": "51721d5a5064f831"
+  },
+  "Guidelight Optimizer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "36ade8d2de385e52"
   },
   "Guidelight Synergist": {
     "root": "main",
@@ -11583,6 +11671,14 @@
     "journal": "1cdb76cb7c2a22c5",
     "observations": "af99bac57a4bd936"
   },
+  "Leonin Surveyor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "6c782d8d20aa63ea"
+  },
   "Leonin Vanguard": {
     "root": "main",
     "status": "completed",
@@ -13767,6 +13863,14 @@
     "journal": "100cb581dd613f1f",
     "observations": "f1fd08beb61281ea"
   },
+  "Nesting Bot": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "97f197e40a843eee",
+    "observations": "8002b38ac5fb80da"
+  },
   "Nettle Guard": {
     "root": "main",
     "status": "completed",
@@ -14230,6 +14334,14 @@
     "zone": "Graveyard",
     "journal": "f9022d6f53373307",
     "observations": "e044dc844874707e"
+  },
+  "Ooze Patrol": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "f500b3118c2282cd",
+    "observations": "750aeaf229725ca2"
   },
   "Ooze Spill": {
     "root": "stack",
@@ -15127,6 +15239,14 @@
     "journal": "6b1f70526e900a40",
     "observations": "fbaa2762a2c80e08"
   },
+  "Pride of the Road": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1ee756735d2f017d",
+    "observations": "33427770b85ec686"
+  },
   "Prideful Feastling": {
     "root": "main",
     "status": "completed",
@@ -15495,6 +15615,14 @@
     "journal": "76493bc5559a5f97",
     "observations": "c6f895faa718947b"
   },
+  "Quag Feast": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "adcea180f71f0045",
+    "observations": "8abb96becffb5b9f"
+  },
   "Quake, Agent of S.H.I.E.L.D.": {
     "root": "main",
     "status": "completed",
@@ -15823,6 +15951,14 @@
     "journal": "bdc89f9863097122",
     "observations": "405a934e0162cc96"
   },
+  "Rangers' Aetherhive": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1cba658877741a8e",
+    "observations": "b3e01e6957fc7fe8"
+  },
   "Rank Rat": {
     "root": "main",
     "status": "completed",
@@ -16110,6 +16246,14 @@
     "zone": "Battlefield",
     "journal": "b3e9111ecff18a9c",
     "observations": "9da10bb957ffc336"
+  },
+  "Reef Roads": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "918633814e145c93"
   },
   "Refute": {
     "root": "stack",
@@ -16607,6 +16751,14 @@
     "journal": "a8c50427938b6a1f",
     "observations": "a6dd7deaee02c2bd"
   },
+  "Road Rage": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "3f63acf45133a30c",
+    "observations": "45e7690d37e97b15"
+  },
   "Roads Go Ever, Ever On": {
     "root": "main",
     "status": "completed",
@@ -16655,6 +16807,14 @@
     "journal": "9fd05d03cd121c28",
     "observations": "8864a6b57e62c716"
   },
+  "Rocketeer Boostbuggy": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "310c30cec58089ff",
+    "observations": "835057bc4c0360a2"
+  },
   "Rockfall Vale": {
     "root": "main",
     "status": "completed",
@@ -16670,6 +16830,14 @@
     "zone": "Graveyard",
     "journal": "c518aa0d73dd1d92",
     "observations": "4f95b6d4c5f98d7a"
+  },
+  "Rocky Roads": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "386b9726892a9957"
   },
   "Rodeo Pyromancers": {
     "root": "main",
@@ -20007,6 +20175,14 @@
     "journal": "17b1007f413b3222",
     "observations": "1c9e8f31e67f1bb1"
   },
+  "Swiftwing Assailant": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1ee756735d2f017d",
+    "observations": "73e9f2237bc8724e"
+  },
   "Sword of Vengeance": {
     "root": "main",
     "status": "completed",
@@ -22815,6 +22991,14 @@
     "journal": "60609359dae9f3fd",
     "observations": "11c984aa946d77bc"
   },
+  "Vnwxt, Verbose Host": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "b0f2ada80fd51146"
+  },
   "Voice of Victory": {
     "root": "main",
     "status": "completed",
@@ -23446,6 +23630,14 @@
     "zone": "Graveyard",
     "journal": "3f63acf45133a30c",
     "observations": "7583998664a1508d"
+  },
+  "Wild Roads": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "f6f5f36587b4f17b"
   },
   "Wildborn Preserver": {
     "root": "main",
