@@ -117,7 +117,7 @@
       "cards": [
         "Clarion Conqueror"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
     },
     {
       "id": "A10",
@@ -153,7 +153,7 @@
       "cards": [
         "Dragonfire Blade"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
     },
     {
       "id": "A14",
@@ -199,7 +199,7 @@
       "cards": [
         "Essence Anchor"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
     },
     {
       "id": "A19",
@@ -503,7 +503,7 @@
       "cards": [
         "Windcrag Siege"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
     },
     {
       "id": "C:CONDITIONAL_SACRIFICE_PROHIBITION",
@@ -512,7 +512,7 @@
       "cards": [
         "Zurgo, Thunder's Decree"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
     },
     {
       "id": "C:FIRST_COUNTER_PLACEMENT",
@@ -674,7 +674,7 @@
       "cards": [
         "Sarkhan, Dragon Ascendant"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
     },
     {
       "id": "C:CAPTURED_COPY_WITHOUT_RETARGET",
@@ -730,14 +730,14 @@
     "latest_assembled_cases_passed": 376,
     "latest_assembled_compile_seconds": 155.7269442360266,
     "latest_assembled_scenario_seconds": 1.1519135490816552,
-    "scoped_reviewed_audit_groups_including_aliases": 43,
+    "scoped_reviewed_audit_groups_including_aliases": 49,
     "total_audit_groups_including_aliases": 80,
     "current_hot_layout_bytes": {
       "Object": 160,
       "ObjectView": 544,
       "State": 4976
     },
-    "additional_implemented_tested_groups_pending_review": 22
+    "additional_implemented_tested_groups_pending_review": 16
   },
   "active_checkpoints": {
     "fixed_endure": {
@@ -810,8 +810,14 @@
       "commit": "989edcb49e4fddcd1163fc98589d5ef0bc28389d",
       "evidence": "docs/tdm-static-rules-evidence.json",
       "followup_evidence": "docs/tdm-gained-attack-evidence.json",
-      "status": "Both independent findings reproduced and repaired. Gained dispatch passes237 cases; independent grant-origin repair passes376 combined cases, including28 static. Refreshed independent exact-repair reviews pending.",
-      "origin_repair_evidence": "docs/tdm-native-grant-origins-evidence.json"
+      "status": "All six scopes approved by a-g and g-s at exact c7489ce1e284b6b321eef1753fda3792605cbb2c after two reproduced findings; 376 combined passing cases retained. Full engine/schema/set acceptance remains pending.",
+      "origin_repair_evidence": "docs/tdm-native-grant-origins-evidence.json",
+      "review_commit": "c7489ce1e284b6b321eef1753fda3792605cbb2c",
+      "reviewers": [
+        "/root/tdm_audit_a_g",
+        "/root/tdm_audit_g_s"
+      ],
+      "review_record": "docs/tdm-static-rules-review-record.json"
     },
     "private_library": {
       "commit": "00f48177e",

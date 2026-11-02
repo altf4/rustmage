@@ -19,7 +19,7 @@ disjoint audit partitions cover all 275 resolved identities; the separate
 [Cori-Steel Cutter audit](tdm-cori-steel-audit.json) covers the final identity.
 The [complete dependency ledger](tdm-engine-audit.json) reconciles all 276 source
 audits and records 80 dependency/proof groups, including duplicate group aliases.
-Shared engine implementation is in progress. **43 of the80 audit/proof groups**, including aliases, have scoped implementation, focused evidence and two independent nonauthor reviews. Another22 groups have owner tests passing with reviews or review repairs pending. Counts are not weighted by complexity. Full integrated engine acceptance remains open; card authorship stays gated until all dependencies pass and are reviewed.
+Shared engine implementation is in progress. **49 of the80 audit/proof groups**, including aliases, have scoped implementation, focused evidence and two independent nonauthor reviews. Another16 groups have owner tests passing with reviews or review repairs pending. Counts are not weighted by complexity. Full integrated engine acceptance remains open; card authorship stays gated until all dependencies pass and are reviewed.
 
 The reviewed fixed Endure repair covers: use the exact permanent's
 current controller, retain its last battlefield controller after departure, and
