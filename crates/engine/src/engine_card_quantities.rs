@@ -12,6 +12,13 @@ pub struct SourceCounterQuantityView {
 fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
     fn amount(value: AmountValue, kinds: &mut Vec<CounterKind>) {
         match value {
+            AmountValue::SourceTotalCounters => {
+                for kind in CounterKind::ALL {
+                    if !kinds.contains(&kind) {
+                        kinds.push(kind);
+                    }
+                }
+            }
             AmountValue::SourceCounterQuantity(kind) => {
                 if !kinds.contains(&kind) {
                     kinds.push(kind);
@@ -54,6 +61,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             }
             Instruction::UpToTargets(value)
             | Instruction::IfAmountAtLeast { value, .. }
+            | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }

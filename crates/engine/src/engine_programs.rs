@@ -5877,6 +5877,13 @@ impl Game {
                     }
                 }
                 Instruction::UpToTargets(_) => (), // Bound before announcing targets.
+                Instruction::IfAmountParity { value, odd, skip } => {
+                    if (self.item_amount(value, &item) % 2 != 0) != odd {
+                        let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                        assert!(skip_to <= resolution.program.len());
+                        self.state.resolving.as_mut().unwrap().pc = skip_to;
+                    }
+                }
                 Instruction::IfAmountAtLeast {
                     value,
                     minimum,
@@ -7042,6 +7049,20 @@ impl Game {
                 } => self.set_base_stats(&item, subject, power, toughness),
                 Instruction::SetBaseStatsFromSource { subject } => {
                     self.set_base_stats_from_source(&item, subject);
+                }
+                Instruction::SetPermanentGroupBaseStats {
+                    filters,
+                    exclude_source,
+                    power,
+                    toughness,
+                } => {
+                    self.set_permanent_group_base_stats(
+                        &item,
+                        filters,
+                        exclude_source,
+                        power,
+                        toughness,
+                    );
                 }
                 Instruction::SetResolvedBaseStats {
                     subject,

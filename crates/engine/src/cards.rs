@@ -2285,6 +2285,12 @@ pub enum Instruction {
     NoMaximumHandSize,
     ExileResolvingSpell,
     UntapLands(u16),
+    /// Continue only when this sampled nonnegative amount has the requested parity.
+    IfAmountParity {
+        value: AmountValue,
+        odd: bool,
+        skip: usize,
+    },
     IfAmountAtLeast {
         value: AmountValue,
         minimum: u128,
@@ -2355,6 +2361,13 @@ pub enum Instruction {
     /// Sample signed source P/T once, using departure LKI if its exact object left.
     SetBaseStatsFromSource {
         subject: Subject,
+    },
+    /// Freeze one non-targeted group and sampled signed values until cleanup.
+    SetPermanentGroupBaseStats {
+        filters: &'static [BattlefieldFilter],
+        exclude_source: bool,
+        power: Option<ResolvedStatValue>,
+        toughness: Option<ResolvedStatValue>,
     },
     SetResolvedBaseStats {
         subject: Subject,
@@ -2856,6 +2869,8 @@ pub enum AmountValue {
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
     )]
     SourceCounterQuantity(CounterKind),
+    /// All counter kinds on the exact source, using departure LKI after it leaves.
+    SourceTotalCounters,
     /// Frozen successful source-counter cost; never the source current counter count.
     PaidSourceCounterQuantity(CounterKind),
     /// Frozen before the selected sacrifice changes any battlefield object.
@@ -2910,6 +2925,8 @@ pub enum ResolvedStatValue {
     },
     /// Current exact event object, or its signed departure LKI.
     EnteringPower,
+    /// Signed current power of the exact source, or its departure LKI.
+    SourcePower,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2947,6 +2964,13 @@ pub enum StatValue {
     LegendaryCreaturesYouControl,
     HasEnduringStory,
     SourceCounters(CounterKind),
+    /// Total across hot and named counter kinds on the exact source.
+    SourceTotalCounters,
+    /// A boolean parity predicate; zero is even.
+    Parity {
+        value: &'static StatValue,
+        odd: bool,
+    },
     Tokens(CountFilter),
     AtLeast {
         value: &'static StatValue,

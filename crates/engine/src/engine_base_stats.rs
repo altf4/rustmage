@@ -107,6 +107,12 @@ impl Game {
                 } | Instruction::SetResolvedBaseStats {
                     toughness: Some(ResolvedStatValue::EnteringPower),
                     ..
+                } | Instruction::SetPermanentGroupBaseStats {
+                    power: Some(ResolvedStatValue::EnteringPower),
+                    ..
+                } | Instruction::SetPermanentGroupBaseStats {
+                    toughness: Some(ResolvedStatValue::EnteringPower),
+                    ..
                 } | Instruction::GrowResolved {
                     value: ResolvedStatValue::EnteringPower,
                     ..
@@ -158,6 +164,24 @@ impl Game {
                     no
                 },
             ),
+            ResolvedStatValue::SourcePower => {
+                let source = item.source?;
+                Some(
+                    if self.on_battlefield(source.object.card)
+                        && self.object_ref(source.object.card) == source.object
+                    {
+                        if self.is_creature(source.object.card) {
+                            self.stats(source.object.card).power
+                        } else {
+                            0
+                        }
+                    } else if source.facts.is_creature() {
+                        source.facts.power
+                    } else {
+                        0
+                    },
+                )
+            }
             ResolvedStatValue::EnteringPower => {
                 let subject = item.entering_object?;
                 let fact = self
@@ -178,6 +202,35 @@ impl Game {
                 }
             }
         }
+    }
+    pub(super) fn set_permanent_group_base_stats(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        exclude_source: bool,
+        power: Option<ResolvedStatValue>,
+        toughness: Option<ResolvedStatValue>,
+    ) {
+        let Some(source) = item.source else {
+            return;
+        };
+        // Select exact recipients and sample all expressions before any layer-7b writes.
+        let recipients = self
+            .battlefield_group(item, filters)
+            .into_iter()
+            .map(|id| self.object_ref(id))
+            .filter(|recipient| !exclude_source || *recipient != source.object)
+            .collect();
+        let p = power.map(|value| self.resolved_stat_value(item, value));
+        let t = if toughness == power {
+            p
+        } else {
+            toughness.map(|value| self.resolved_stat_value(item, value))
+        };
+        if p.is_some_and(|value| value.is_none()) || t.is_some_and(|value| value.is_none()) {
+            return;
+        }
+        self.set_base_stats_recipients(item, recipients, p.flatten(), t.flatten());
     }
     pub(super) fn set_resolved_base_stats(
         &mut self,
@@ -253,9 +306,21 @@ impl Game {
                 })
                 .collect(),
         };
+        self.set_base_stats_recipients(item, recipients, power, toughness);
+    }
+    fn set_base_stats_recipients(
+        &mut self,
+        item: &SpellView,
+        recipients: Vec<ObjectRef>,
+        power: Option<i128>,
+        toughness: Option<i128>,
+    ) {
         if recipients.is_empty() {
             return;
         }
+        let Some(source) = item.source else {
+            return;
+        };
         let timestamp = self.next_role_timestamp();
         let state = self.state.roles.get_or_insert_with(Default::default);
         for recipient in recipients {

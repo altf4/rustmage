@@ -22,6 +22,7 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         }
         Instruction::UpToTargets(value)
         | Instruction::IfAmountAtLeast { value, .. }
+        | Instruction::IfAmountParity { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }
         | Instruction::DiscardScaled(_, value)
         | Instruction::AddCastEntryCounters { amount: value, .. }

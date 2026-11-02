@@ -132,6 +132,37 @@ impl Game {
             }
             StatValue::Fixed(n) => i128::from(n),
             StatValue::HasEnduringStory => i128::from(enduring_story),
+            StatValue::SourceTotalCounters => objects()
+                .find(|(id, object)| *id == source.card && object.generation == source.generation)
+                .map_or(0, |_| {
+                    CounterKind::ALL
+                        .into_iter()
+                        .map(|kind| i128::from(counter_count(source.card, kind)))
+                        .sum()
+                }),
+            StatValue::Parity { value, odd } => i128::from(
+                (self.stat_value_with(
+                    *value,
+                    source,
+                    owner,
+                    objects,
+                    subtypes,
+                    kinds,
+                    names,
+                    colors,
+                    legendary,
+                    mana_value,
+                    counter_count,
+                    has_counters,
+                    life,
+                    opponent_life,
+                    attacking,
+                    enduring_story,
+                    life_lost,
+                ) % 2
+                    != 0)
+                    == odd,
+            ),
             StatValue::SourceCounters(kind) => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |_| i128::from(counter_count(source.card, kind))),

@@ -502,6 +502,10 @@ impl Game {
                 .source_counter_payment
                 .filter(|payment| payment.paid && payment.kind == kind)
                 .map_or(0, |payment| u128::from(payment.amount)),
+            AmountValue::SourceTotalCounters => CounterKind::ALL
+                .into_iter()
+                .map(|kind| self.item_amount(AmountValue::SourceCounterQuantity(kind), item))
+                .sum(),
             AmountValue::SourceCounterQuantity(kind) => item
                 .source
                 .and_then(|source| self.source_counter_quantity_live(source.object, kind))
