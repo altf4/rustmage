@@ -261,6 +261,25 @@ fn nonzero_previews_neither_admit_lost_quantity_nor_hide_new_quantity_during_ent
                         act(branch, action);
                     }
                 }
+                if returns == 2 {
+                    // Both simultaneous copy effects acquire timestamps. The
+                    // batch, and therefore the mana ability, has not finished.
+                    assert!(
+                        matches!(branch.state.pending, Pending::EntryTimestamp { player } if player == p)
+                    );
+                    assert_eq!(branch.state.players[p.index()].mana, [0; 6]);
+                    let action = Action::ChooseEntryTimestamp {
+                        object: branch.object_ref(returning[0]),
+                    };
+                    if i == 1 {
+                        index(branch, action);
+                    } else {
+                        act(branch, action);
+                    }
+                }
+                assert!(
+                    matches!(branch.state.pending, Pending::PayCosts { player } if player == p)
+                );
                 assert_eq!(
                     branch.state.players[p.index()].mana,
                     [0, returns + 1, 0, 0, 0, 0]
