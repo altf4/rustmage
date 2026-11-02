@@ -3,7 +3,9 @@
 use super::*;
 use crate::cards::{ReplacementFilter, StaticAbilityFragment};
 use ability_world::CharacteristicWorld;
+use std::cell::RefCell;
 use std::collections::HashSet;
+use std::rc::Rc;
 #[doc(hidden)]
 #[path = "engine_cast_cost_planning.rs"]
 pub mod cast_cost_planning;
@@ -90,6 +92,8 @@ pub(super) struct FundingState<'g> {
     cast_costs: Option<Box<CostContext>>,
     entry_projection: Option<Box<EntryProjection>>,
     continuation: Option<Box<PaymentContinuation<'g>>>,
+    /// One boolean query owns this cache; action enumeration worlds never do.
+    continuation_memo: Option<Rc<ContinuationMemo>>,
     /// A projected completion removes only its resolved child from CR605.3c's
     /// active-instance chain; the real game's immutable active frames stay intact.
     active_mana_keys: Option<Vec<mana_announcements::ManaActivationKey>>,
@@ -412,6 +416,14 @@ struct FundingKey {
     named_counters: live_counters::Rows,
     counter_placement_history: counter_placement_history::Rows,
     keyword_counter_timestamps: Vec<(ObjectRef, CounterKind, u64)>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Default)]
+struct ContinuationMemo {
+    visited: RefCell<HashSet<(usize, FundingKey)>>,
+    exact: HashSet<CardId>,
+    contributors: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -990,6 +1002,7 @@ impl<'g> FundingState<'g> {
             cast_costs: None,
             entry_projection: None,
             continuation: None,
+            continuation_memo: None,
             active_mana_keys: None,
             cost_group: game
                 .state
@@ -2441,7 +2454,23 @@ impl<'g> FundingState<'g> {
                 // Unattached, unmodified basic lands remain interchangeable even
                 // when an unrelated Aura is present. Keep exact identities for
                 // attachment participants, nonbasics and named-counter worlds.
-                identity: (self.sacrifice_prohibition_source(r.id)
+                identity: (self.continuation_memo.as_ref().is_some_and(|memo| {
+                    memo.contributors
+                        || memo.exact.contains(&r.id)
+                        || !r.object.card.is_basic_land()
+                        || !r.object.card.activations().is_empty()
+                        || self.kinds(r) != r.object.card.kind_mask()
+                        || r.object.growth != Stats::default()
+                        || r.object.gained_keywords != Keywords::NONE
+                        || self
+                            .borrowed_slots
+                            .as_ref()
+                            .is_some_and(|rows| rows.iter().any(|row| row.source.card == r.id))
+                        || self.graveyard_borrowing.as_ref().is_some_and(|rows| {
+                            rows.iter()
+                                .any(|row| row.source.card == r.id || row.donor.card == r.id)
+                        })
+                }) || self.sacrifice_prohibition_source(r.id)
                     || zone_replacements::card_provides_prevention(r.object.card)
                     || {
                         #[cfg(feature = "test-support")]
@@ -3300,6 +3329,9 @@ impl<'g> FundingState<'g> {
         evidence: Option<u16>,
         visited: &mut HashSet<FundingKey>,
     ) -> bool {
+        if let Some(query) = self.scoped_continuation_query() {
+            return query.reachable_with_evidence(goal, evidence, visited);
+        }
         self.reachable_with_completion(goal, evidence, visited, &mut |world| {
             world.complete_funding_continuation(goal)
         })
@@ -3326,6 +3358,22 @@ impl<'g> FundingState<'g> {
         }
         if self.pure_tap_teamwork_deficit(goal) {
             return false;
+        }
+        let memoized = self.continuation_memo.is_some() && self.continuation_memo_safe();
+        if memoized {
+            let depth = self.continuation.as_ref().map_or(0, |c| c.outer.len());
+            let key = self.key(goal);
+            // Release the interior borrow before evaluating any continuation.
+            let fresh = self
+                .continuation_memo
+                .as_ref()
+                .unwrap()
+                .visited
+                .borrow_mut()
+                .insert((depth, key));
+            if !fresh {
+                return false;
+            }
         }
         let purpose = self.payment_purpose(goal);
         let adjusted = cast_origins::payment_goal(self, goal, purpose);
@@ -3385,7 +3433,7 @@ impl<'g> FundingState<'g> {
         {
             return false;
         }
-        if !visited.insert(self.key(goal)) {
+        if !memoized && !visited.insert(self.key(goal)) {
             return false;
         }
         let mut moves = self.moves(goal);
@@ -3439,6 +3487,7 @@ impl<'g> FundingState<'g> {
         self.cost_group = parent.cost_group.clone();
         self.cast_costs = parent.cast_costs.clone();
         self.continuation = parent.continuation.clone();
+        self.continuation_memo = parent.continuation_memo.clone();
         self.active_mana_keys = parent.active_mana_keys.clone();
         self.watched_sources = parent.watched_sources.clone();
     }
@@ -3486,6 +3535,7 @@ impl<'g> FundingState<'g> {
         child.cost_group = None;
         child.cast_costs = None;
         child.continuation = None;
+        child.continuation_memo = None;
         child.reachable_with_completion(&goal, None, &mut HashSet::new(), &mut |world| {
             let purpose = world.payment_purpose(&goal);
             let pool = mana_lots::available(world.mana, &world.lots, purpose);

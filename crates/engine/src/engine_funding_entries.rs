@@ -6,7 +6,7 @@ use ability_world::CharacteristicWorld;
 #[derive(Clone)]
 pub(super) struct PaymentContinuation<'g> {
     head: &'g Announcement,
-    outer: &'g [mana_announcements::ManaAnnouncement],
+    pub(super) outer: &'g [mana_announcements::ManaAnnouncement],
     quality: Option<&'g mana_lots::Quality>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -21,6 +21,103 @@ impl PaymentContinuation<'_> {
                     .additional
                     .is_some_and(|selected| selected.card == id)
             })
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Announcement {
+    fn collect_funding_references(&self, exact: &mut HashSet<CardId>) {
+        let mut add = |object: ObjectRef| {
+            exact.insert(object.card);
+        };
+        if let Some(source) = self.item.source {
+            add(source.object);
+        }
+        if let Some(object) = self.additional {
+            add(object);
+        }
+        if let Some(objects) = &self.additional_group {
+            for &object in objects.iter() {
+                add(object);
+            }
+        }
+        if let Some(objects) = &self.creature_counter_cost {
+            for &(object, _) in objects.iter() {
+                add(object);
+            }
+        }
+        if let Some(forage) = &self.forage {
+            for &object in &forage.selected {
+                add(object);
+            }
+        }
+        if let Some(evidence) = &self.evidence {
+            for &object in &evidence.selected {
+                add(object);
+            }
+        }
+        if let Some(casualty) = &self.casualty {
+            for row in casualty.iter() {
+                add(row.grant.source);
+                if let Some(object) = row.sacrifice {
+                    add(object);
+                }
+            }
+        }
+        if let Some(convoke) = &self.convoke {
+            for row in &convoke.selected {
+                add(row.object);
+            }
+            for &object in &convoke.improvised {
+                add(object);
+            }
+        }
+        if let Some(costs) = &self.cast_costs {
+            for &object in &costs.teammates {
+                add(object);
+            }
+            for row in &costs.clauses {
+                match row.clause {
+                    CastCostClause::Blight {
+                        selected: Some(object),
+                        ..
+                    }
+                    | CastCostClause::Harmonize(object) => add(object),
+                    _ => (),
+                }
+            }
+        }
+        if let Some(object) = self.harmonizer.flatten() {
+            add(object);
+        }
+        if let Some(object) = &self.free_hand_permission {
+            add(**object);
+        }
+        if let Some(grant) = &self.item.attachment_trigger {
+            add(grant.grantor);
+            add(grant.recipient);
+        }
+        if let Some(object) = self.item.attached_activation_tap_cost() {
+            add(object);
+        }
+        if let Some(object) = self.item.source_attachment {
+            add(object);
+        }
+        for target in &self.item.targets {
+            if let Some(object) = target.object {
+                add(object);
+            }
+        }
+        if let Some(objects) = &self.item.craft_materials {
+            for &object in objects.iter() {
+                add(object);
+            }
+        }
+        if let Some(subject) = &self.item.reflexive_subject {
+            add(subject.object);
+            for &object in &subject.additional_objects {
+                add(object);
+            }
+        }
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2102,12 +2199,70 @@ impl<'g> FundingState<'g> {
             self.visit_linked_returns(&mut after_source)
         }
     }
+    pub(super) fn continuation_memo_safe(&self) -> bool {
+        self.entry_projection.is_none()
+            && self.copy_recipes.is_none()
+            && self.game.state.copy_recipes.is_none()
+            && self.game.state.temporary_copies.is_none()
+    }
+    pub(super) fn scoped_continuation_query(&self) -> Option<Self> {
+        if self.continuation_memo.is_some()
+            || self.continuation.is_none()
+            || !self.continuation_memo_safe()
+        {
+            return None;
+        }
+        let current = self.continuation.as_deref()?;
+        let mut memo = ContinuationMemo::default();
+        current.head.collect_funding_references(&mut memo.exact);
+        for frame in current.outer {
+            frame
+                .announcement
+                .collect_funding_references(&mut memo.exact);
+        }
+        if let Some(payment) = self
+            .game
+            .state
+            .crew
+            .as_ref()
+            .and_then(|c| c.payment.as_deref())
+        {
+            memo.contributors = true;
+            memo.exact.insert(payment.source.card);
+            memo.exact.extend(payment.selected.iter().map(|r| r.card));
+        }
+        if let Some(payment) = self.game.state.saddle_payment.as_deref() {
+            memo.contributors = true;
+            memo.exact.insert(payment.source.card);
+            memo.exact.extend(payment.selected.iter().map(|r| r.card));
+        }
+        memo.contributors |= self.contributors.is_some();
+        if let Some(rows) = &self.game.state.self_granted_abilities {
+            memo.exact.extend(rows.iter().map(|r| r.recipient.card));
+        }
+        if let Some(rows) = &self.game.state.borrowed_links {
+            for row in rows.iter() {
+                memo.exact.insert(row.source.card);
+                memo.exact.insert(row.exiled.card);
+            }
+        }
+        for row in &self.game.state.exile_links {
+            memo.exact.insert(row.source.card);
+            memo.exact.insert(row.exiled.card);
+        }
+        let mut query = self.clone();
+        query.continuation_memo = Some(Rc::new(memo));
+        Some(query)
+    }
     pub(super) fn set_funding_continuation(
         &mut self,
         head: &'g Announcement,
         outer: &'g [mana_announcements::ManaAnnouncement],
         quality: Option<&'g mana_lots::Quality>,
     ) {
+        // A caller installing a new immutable chain starts a separate query.
+        // Only the explicit parent transition below restores its scoped cache.
+        self.continuation_memo = None;
         self.active_mana_keys = Some(
             std::iter::once(head)
                 .chain(outer.iter().map(|frame| &frame.announcement))
@@ -2131,6 +2286,9 @@ impl<'g> FundingState<'g> {
         goal: &FundingGoal,
         forced_payment: Option<Mana>,
     ) -> bool {
+        if let Some(query) = self.scoped_continuation_query() {
+            return query.complete_funding_continuation_for(goal, forced_payment);
+        }
         let Some(current) = self.continuation.as_deref() else {
             return self.cost_completion();
         };
@@ -2217,6 +2375,7 @@ impl<'g> FundingState<'g> {
                         outer,
                         parent.quality.as_ref().map(|(_, q)| q),
                     );
+                    next.continuation_memo = self.continuation_memo.clone();
                     next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
                         && parent

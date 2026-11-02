@@ -732,3 +732,61 @@ fn a_silent_fixed_choice_retains_the_original_concrete_domain_in_a_parent_paymen
     assert_eq!(g.state.players[0].cards_drawn_this_turn, 2);
     assert_eq!(g.state.players[0].mana, [0, 1, 0, 0, 0, 0]);
 }
+
+#[test]
+fn a_real_forge_borrowing_gilded_lotus_offers_each_exact_mana_announcement_once() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let lotus = put(&mut g, p, "Gilded Lotus", Zone::Battlefield);
+        let forge = put(&mut g, p, "Territory Forge", Zone::Hand);
+        cast(&mut g, forge, None);
+        for _ in 0..48 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            }
+            let target = Action::ChooseTarget {
+                target: Target::Card(lotus),
+            };
+            if g.legal_actions().contains(&target) {
+                act(&mut g, target);
+            } else if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            } else {
+                act(&mut g, Action::Pass);
+            }
+        }
+        assert_eq!(g.object_view(lotus).zone, Zone::Exile);
+        g.state.players[p.index()].mana = [0; 6];
+        let donor = g.object_ref(lotus);
+        let actions = g.legal_actions().into_iter().filter(|a| matches!(a, Action::AnnounceBorrowedMana { card, exiled, .. } if *card == forge && *exiled == donor)).collect::<Vec<_>>();
+        assert_eq!(actions.len(), 5);
+        for action in &actions {
+            assert_eq!(actions.iter().filter(|a| *a == action).count(), 1);
+        }
+        assert!(actions.iter().all(|a| matches!(a, Action::AnnounceBorrowedMana { production, .. } if production.iter().sum::<u32>() == 3)));
+        let action = actions.into_iter().find(|a| matches!(a, Action::AnnounceBorrowedMana { production, .. } if *production == [0, 3, 0, 0, 0, 0])).unwrap();
+        let mut indexed_game = g.clone();
+        let index = indexed_game
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        act(&mut g, action);
+        indexed_game
+            .apply_index(
+                indexed_game.actor().unwrap(),
+                indexed_game.revision(),
+                index,
+            )
+            .unwrap();
+        pay(&mut g);
+        pay(&mut indexed_game);
+        assert_eq!(g.snapshot(), indexed_game.snapshot());
+        assert!(g.object_view(forge).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0, 3, 0, 0, 0, 0]);
+    }
+}

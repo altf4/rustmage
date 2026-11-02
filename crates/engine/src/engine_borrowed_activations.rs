@@ -13,7 +13,7 @@ pub(super) const DONOR_SLOT_WIDTH: u64 = 1;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub(super) struct SlotRow {
-    source: ObjectRef,
+    pub(super) source: ObjectRef,
     acquisition: u64,
     graveyard: bool,
     pub(super) definition: Option<Card>,
@@ -531,7 +531,7 @@ impl Game {
                 |counter_payment| {
                     if let Some(production) = ability.mana_production() {
                         let packet = self.borrowed_activation_packet(actor, *descriptor);
-                        if self.visit_activation_mana_outputs(
+                        return self.visit_activation_mana_outputs(
                             production,
                             card,
                             descriptor.definition,
@@ -559,9 +559,7 @@ impl Game {
                                     }
                                 })
                             },
-                        ) {
-                            return true;
-                        }
+                        );
                     }
                     let fundable = self
                         .activation_mana_costs(card, descriptor.definition, descriptor.ability, 0)
@@ -598,49 +596,21 @@ impl Game {
                     if !fundable || !targets_available {
                         return false;
                     }
-                    if let Some(production) = ability.mana_production() {
-                        self.visit_activation_mana_outputs(
-                            production,
+                    emit(if descriptor.zone == Zone::Graveyard {
+                        Action::AnnounceGraveyardBorrowedAbility {
                             card,
-                            descriptor.definition,
-                            descriptor.ability,
-                            |production| {
-                                emit(if descriptor.zone == Zone::Graveyard {
-                                    Action::AnnounceGraveyardBorrowedMana {
-                                        card,
-                                        graveyard: descriptor.donor,
-                                        ability: descriptor.ability,
-                                        counter_payment: counter_payment.clone(),
-                                        production,
-                                    }
-                                } else {
-                                    Action::AnnounceBorrowedMana {
-                                        card,
-                                        exiled: descriptor.donor,
-                                        ability: descriptor.ability,
-                                        counter_payment: counter_payment.clone(),
-                                        production,
-                                    }
-                                })
-                            },
-                        )
+                            graveyard: descriptor.donor,
+                            ability: descriptor.ability,
+                            counter_payment,
+                        }
                     } else {
-                        emit(if descriptor.zone == Zone::Graveyard {
-                            Action::AnnounceGraveyardBorrowedAbility {
-                                card,
-                                graveyard: descriptor.donor,
-                                ability: descriptor.ability,
-                                counter_payment,
-                            }
-                        } else {
-                            Action::AnnounceBorrowedAbility {
-                                card,
-                                exiled: descriptor.donor,
-                                ability: descriptor.ability,
-                                counter_payment,
-                            }
-                        })
-                    }
+                        Action::AnnounceBorrowedAbility {
+                            card,
+                            exiled: descriptor.donor,
+                            ability: descriptor.ability,
+                            counter_payment,
+                        }
+                    })
                 },
             ) {
                 return true;

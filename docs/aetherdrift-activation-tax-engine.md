@@ -269,3 +269,52 @@ start transactionally, and pays/finishes the parent. The fixed Combination late
 scenario now pays and asserts a real one-life cost before its owned allocation
 choice. No memoization, search cutoff or gameplay-name table was added. Root
 validation and the bounded BIG workload measurement remain pending.
+
+## Scoped parent-payment reuse and inherited uniqueness
+
+The bounded native BIG workload still exceeded its unchanged 45-second limit
+after fixed-domain deduplication. A bounded debugger sample at eight seconds
+located repeated nested funding/parent completion, not observation, JSON or
+replay. The immutable BIG workload matches pre-DFT source byte-for-byte. Its
+older BIG acceptance records three games/2653 decisions in0.647s under opt1;
+that historical figure is not a current baseline measurement.
+
+One boolean feasibility call may now own a sparse shared continuation memo. Its
+key combines the immutable announcement-chain depth with the existing complete
+projected funding key. The cache starts in a local scoped query clone; an action
+or mana-lot enumeration world never owns it, and the next action/allocation
+receives a fresh query. A short interior borrow inserts a key and ends before
+any recursive continuation. Parent completion carries the same cache to its
+next fixed depth; a newly projected deferred child's different goal disables it
+and restores the parent's cache only when that child completes.
+
+Early reuse is excluded whenever an entry projection, copy recipe or temporary
+copy could require facts outside the ordinary funding key. Those worlds keep
+the old completion-before-visited search. Under scoped reuse, every nonbasic or
+modified basic is exact; ordinary unmodified native basics retain symmetry only
+when no immutable receipt identifies them. The owned exact-reference set includes
+all ancestor sources, targets, selected costs, counter/forage/evidence/casualty
+receipts, convoke/improvise selections, teamwork/blight/harmonize clauses,
+permissions and attached grantors. Acquired mana recipients and linked borrowed
+sources are exact too. Contributor payments conservatively retain every resource
+identity. No Game, hot Object or public wire field changes, global memo, heuristic
+cutoff, plan exclusion or cardinality search is introduced.
+
+The new exact-source scenario contrasts two identical permanents: tapping the
+lower-ID parent source funds its child but strands the parent's unpaid tap;
+tapping its twin allows both. It checks both actors, raw/index/restore branches,
+rejected source use and repeated independent feasibility queries. A second
+scenario distinguishes one Forest with an acquired blue-mana template from an
+otherwise identical plain Forest. Projection fallback is asserted separately.
+
+Independent review also found inherited mana declarations emitted twice: the
+new packet-fundable path fell through when its emitter continued, reaching the
+legacy path for the same descriptor/counter payment. The mana branch now returns
+its complete visitor result; the remaining branch handles nonmana abilities.
+A real Territory Forge cast resolves its exile/borrow trigger on Gilded Lotus,
+then offers five distinct nonzero mana announcements, each once, with raw/index
+completion equality. All descriptors and counter choices remain enumerated.
+
+The combined core batch awaits the root owner's single guarded compile/runtime,
+current BIG performance and prior-schema trace checkpoint. No Cargo has run in
+this isolated worktree; no measured improvement is claimed yet.
