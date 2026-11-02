@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "DFT",
-  "phase": "late mana-completion engine accepted; final DFT-only gameplay and release acceptance pending",
+  "phase": "all276 card outcomes and full fixed DFT gameplay passed; release acceptance and published-head reviews pending",
   "membership": 276,
   "starting_admitted": 119,
   "newly_admitted": 157,
@@ -3053,5 +3053,21 @@
         "completed_set_verified": false
       }
     }
+  },
+  "whole_set_games": {
+    "source_revision": "9848e4caff86c49f737633ae1906612c4268e9bb",
+    "report": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/report.json",
+    "report_sha256": "313d3b967a2f37a1da0bc5c8aa85d1a953e69991c3d0a11da4c63355f5565cbe",
+    "benchmark": {
+      "workload": "DFT_ARCHETYPES_V1",
+      "scope": "Same exact80 fixed cases as verification; test profile, engine opt-level1. Includes game construction/rules/action emission/shared observation-only smoke policy/telemetry; excludes replay/owned checks, traces, model inference and network. Not all-Standard throughput.",
+      "games": 80,
+      "decisions": 67835,
+      "seconds": 112.212445358,
+      "games_per_second": 0.7129333982943679,
+      "decisions_per_second": 604.5229634162305,
+      "same_cases_outcomes_decisions_witnesses_as_verification": true
+    },
+    "receipt": "docs/aetherdrift-game-acceptance.json"
   }
 }

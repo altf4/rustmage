@@ -21,9 +21,10 @@ The engine is available through a native Rust API and in-process Python bindings
 Your application supplies the bot, learning algorithm, and reward function;
 Rustmage supplies the game rules and state transitions.
 
-Seven full sets are implemented across accepted branches: **Foundations**,
+Nine full sets are implemented across accepted branches: **Foundations**,
 **Lorwyn Eclipsed**, **Teenage Mutant Ninja Turtles**, **The Big Score**,
-**Secrets of Strixhaven**, **Marvel Super Heroes**, and **The Hobbit**, with
+**Secrets of Strixhaven**, **Marvel Super Heroes**, **The Hobbit**,
+**Reality Fracture**, and **Aetherdrift**, with
 accepted rules and interaction assurance.
 The long-term goal is complete Standard coverage; implementation of the wider
 card pool is still in progress. Standard games reject cards whose rules have not
@@ -47,13 +48,13 @@ To explore the project:
 
 ## Standard set tracker
 
-**8 / 20 sets complete · 40%**
+**9 / 20 sets complete · 45%**
 
-`████████░░░░░░░░░░░░`
+`█████████░░░░░░░░░░░`
 
-**3,219 / 5,164 unique Standard cards implemented across accepted branches · 62%**
+**3,438 / 5,164 unique Standard cards implemented across accepted branches · 67%**
 
-`████████████░░░░░░░░`
+`█████████████░░░░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
@@ -72,23 +73,23 @@ establish set completion. Set completion is separate from integration into `main
 | Foundations | FDN | 517/517 (100%) | ✅ Complete |
 | Lorwyn Eclipsed | ECL | 273/273 (100%) | ✅ Complete |
 | Teenage Mutant Ninja Turtles | TMT | 195/195 (100%) | ✅ Complete |
-| Aetherdrift | DFT | 111/276 (40%) | ⏳ Partial |
-| Avatar: The Last Airbender | TLA | 100/286 (35%) | ⏳ Partial |
-| Bloomburrow | BLB | 132/279 (47%) | ⏳ Partial |
-| Duskmourn: House of Horror | DSK | 87/276 (32%) | ⏳ Partial |
-| Edge of Eternities | EOE | 115/266 (43%) | ⏳ Partial |
-| Final Fantasy | FIN | 135/312 (43%) | ⏳ Partial |
+| Aetherdrift | DFT | 276/276 (100%) | ✅ Complete |
+| Avatar: The Last Airbender | TLA | 108/286 (38%) | ⏳ Partial |
+| Bloomburrow | BLB | 135/279 (48%) | ⏳ Partial |
+| Duskmourn: House of Horror | DSK | 91/276 (33%) | ⏳ Partial |
+| Edge of Eternities | EOE | 122/266 (46%) | ⏳ Partial |
+| Final Fantasy | FIN | 136/312 (44%) | ⏳ Partial |
 | Marvel Super Heroes | MSH | 281/281 (100%) | ✅ Complete |
-| Marvel's Spider-Man | SPM | 79/193 (41%) | ⏳ Partial |
-| Murders at Karlov Manor | MKM | 82/279 (29%) | ⏳ Partial |
-| Outlaws of Thunder Junction | OTJ | 101/276 (37%) | ⏳ Partial |
+| Marvel's Spider-Man | SPM | 82/193 (42%) | ⏳ Partial |
+| Murders at Karlov Manor | MKM | 86/279 (31%) | ⏳ Partial |
+| Outlaws of Thunder Junction | OTJ | 106/276 (38%) | ⏳ Partial |
 | Reality Fracture | FRA | 285/285 (100%) | ✅ Complete |
 | Secrets of Strixhaven | SOS | 271/271 (100%) | ✅ Complete |
-| Tarkir: Dragonstorm | TDM | 130/276 (47%) | ⏳ Partial |
+| Tarkir: Dragonstorm | TDM | 137/276 (50%) | ⏳ Partial |
 | The Big Score | BIG | 30/30 (100%) | ✅ Complete |
 | The Hobbit | HOB | 193/193 (100%) | ✅ Complete |
-| The Lost Caverns of Ixalan | LCI | 108/291 (37%) | ⏳ Partial |
-| Wilds of Eldraine | WOE | 153/281 (54%) | ⏳ Partial |
+| The Lost Caverns of Ixalan | LCI | 117/291 (40%) | ⏳ Partial |
+| Wilds of Eldraine | WOE | 156/281 (56%) | ⏳ Partial |
 
 Supported counts use the union of the accepted branches’ coverage reports
 and full physical set membership from pinned XMage tables and Oracle facts,

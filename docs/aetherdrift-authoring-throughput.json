@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "membership": 276,
+  "initially_admitted": 119,
+  "newly_completed_local_candidates": 157,
+  "start_revision": "819fa96ec",
+  "end_revision": "faf0f3395",
+  "start_utc": "2026-11-02T07:22:36+00:00",
+  "end_utc": "2026-11-02T10:02:19-07:00",
+  "elapsed_seconds": 34783.0,
+  "new_complete_candidates_per_wall_hour": 16.249317195181554,
+  "scope": "Parallel whole-card authoring, source reviews, engine reentries and focused rules evidence from the first accepted engine freeze through the final card-only role repair. Includes waiting and engine work; not isolated typing speed. Full-set acceptance is recorded separately.",
+  "focused_card_and_provenance_cases": 340,
+  "engine_rebuild_policy": "Engine dependencies batched before card work; engine reentries reviewed and tested before resuming. Test-only fixture repairs reused warm core."
+}
