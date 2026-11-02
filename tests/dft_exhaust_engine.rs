@@ -1,5 +1,6 @@
 //! Shared exhaust lifecycle contracts. These fixtures do not admit DFT cards.
 mod support;
+use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
