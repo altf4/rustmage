@@ -1,0 +1,2979 @@
+{
+  "owner": "green-multi",
+  "base": "fb878868ddbf3f4155b1a0c747129a9e713e4c04",
+  "engine_revision": "9000f120b",
+  "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "status": "All80 assigned identities have complete typed behavior, paired pinned sources and passing per-obligation outcome/shared-contract evidence. Whole276 set acceptance remains open.",
+  "cards": [
+    {
+      "name": "Aatchik, Emerald Radian",
+      "definition_path": "src/card_definitions/dft/aatchik_emerald_radian.rs",
+      "printed_obligations": [
+        "When Aatchik enters, create a 1/1 green Insect creature token for each artifact and/or creature card in your graveyard.",
+        "Whenever another Insect you control dies, put a +1/+1 counter on Aatchik. Each opponent loses 1 life."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_legends",
+      "outcome_proofs": [
+        "aatchik_deduplicates_artifact_creatures_then_observes_each_other_controlled_insect_death"
+      ],
+      "shared_contracts": [
+        "Frozen dft_static_types: arbitrary subtype additions, retained original types, live base6/6 and actual/projected queries",
+        "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
+        "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "When Aatchik enters, create a 1/1 green Insect creature token for each artifact and/or creature card in your graveyard.",
+          "scenario": [
+            "aatchik_deduplicates_artifact_creatures_then_observes_each_other_controlled_insect_death"
+          ]
+        },
+        {
+          "obligation": "Whenever another Insect you control dies, put a +1/+1 counter on Aatchik. Each opponent loses 1 life.",
+          "scenario": [
+            "aatchik_deduplicates_artifact_creatures_then_observes_each_other_controlled_insect_death"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Afterburner Expert",
+      "definition_path": "src/card_definitions/dft/afterburner_expert.rs",
+      "printed_obligations": [
+        "Exhaust \u2014 {2}{G}{G}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+        "Whenever you activate an exhaust ability, return this card from your graveyard to the battlefield."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Exhaust \u2014 {2}{G}{G}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        },
+        {
+          "obligation": "Whenever you activate an exhaust ability, return this card from your graveyard to the battlefield.",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Agonasaur Rex",
+      "definition_path": "src/card_definitions/dft/agonasaur_rex.rs",
+      "printed_obligations": [
+        "Trample",
+        "Cycling {2}{G} ({2}{G}, Discard this card: Draw a card.)",
+        "When you cycle this card, put two +1/+1 counters on up to one target creature or Vehicle. It gains trample and indestructible until end of turn."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_basics",
+      "outcome_proofs": [
+        "agonasaur_cycles_to_an_uncrewed_vehicle_with_permanent_counters_and_temporary_keywords",
+        "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x"
+      ],
+      "shared_contracts": [
+        "engine keyword/combat, cycling costs and exact source/trigger X; saddle contributor legality, attack event and cleanup"
+      ],
+      "obligation_evidence": [
+        {
+          "obligation": "Trample",
+          "scenario": [
+            "agonasaur_cycles_to_an_uncrewed_vehicle_with_permanent_counters_and_temporary_keywords",
+            "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x"
+          ]
+        },
+        {
+          "obligation": "Cycling {2}{G} ({2}{G}, Discard this card: Draw a card.)",
+          "scenario": [
+            "agonasaur_cycles_to_an_uncrewed_vehicle_with_permanent_counters_and_temporary_keywords",
+            "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x"
+          ]
+        },
+        {
+          "obligation": "When you cycle this card, put two +1/+1 counters on up to one target creature or Vehicle. It gains trample and indestructible until end of turn.",
+          "scenario": [
+            "agonasaur_cycles_to_an_uncrewed_vehicle_with_permanent_counters_and_temporary_keywords",
+            "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x"
+          ]
+        }
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
+    },
+    {
+      "name": "Alacrian Jaguar",
+      "definition_path": "src/card_definitions/dft/alacrian_jaguar.rs",
+      "printed_obligations": [
+        "Vigilance",
+        "Whenever this creature attacks while saddled, it gets +2/+2 until end of turn.",
+        "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_basics",
+      "outcome_proofs": [
+        "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+      ],
+      "shared_contracts": [
+        "engine keyword/combat, cycling costs and exact source/trigger X; saddle contributor legality, attack event and cleanup"
+      ],
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance",
+          "scenario": [
+            "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+          ]
+        },
+        {
+          "obligation": "Whenever this creature attacks while saddled, it gets +2/+2 until end of turn.",
+          "scenario": [
+            "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+          ]
+        },
+        {
+          "obligation": "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+          "scenario": [
+            "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+          ]
+        }
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
+    },
+    {
+      "name": "Apocalypse Runner",
+      "definition_path": "src/card_definitions/dft/apocalypse_runner.rs",
+      "printed_obligations": [
+        "{T}: Target creature you control with power 2 or less gains lifelink until end of turn and can't be blocked this turn.",
+        "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+        "apocalypse_runner_rejects_large_or_foreign_targets_and_its_grants_expire"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "{T}: Target creature you control with power 2 or less gains lifelink until end of turn and can't be blocked this turn.",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "apocalypse_runner_rejects_large_or_foreign_targets_and_its_grants_expire"
+          ]
+        },
+        {
+          "obligation": "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "apocalypse_runner_rejects_large_or_foreign_targets_and_its_grants_expire"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Autarch Mammoth",
+      "definition_path": "src/card_definitions/dft/autarch_mammoth.rs",
+      "printed_obligations": [
+        "When this creature enters and whenever it attacks while saddled, create a 3/3 green Elephant creature token.",
+        "Saddle 5 (Tap any number of other creatures you control with total power 5 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_basics",
+      "outcome_proofs": [
+        "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+      ],
+      "shared_contracts": [
+        "engine keyword/combat, cycling costs and exact source/trigger X; saddle contributor legality, attack event and cleanup"
+      ],
+      "obligation_evidence": [
+        {
+          "obligation": "When this creature enters and whenever it attacks while saddled, create a 3/3 green Elephant creature token.",
+          "scenario": [
+            "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+          ]
+        },
+        {
+          "obligation": "Saddle 5 (Tap any number of other creatures you control with total power 5 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+          "scenario": [
+            "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+          ]
+        }
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
+    },
+    {
+      "name": "Beastrider Vanguard",
+      "definition_path": "src/card_definitions/dft/beastrider_vanguard.rs",
+      "printed_obligations": [
+        "{4}{G}: Look at the top three cards of your library. You may reveal a permanent card from among them and put it into your hand. Put the rest on the bottom of your library in any order."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "beastrider_vanguard_looks_privately_takes_a_permanent_and_orders_the_other_cards"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "{4}{G}: Look at the top three cards of your library. You may reveal a permanent card from among them and put it into your hand. Put the rest on the bottom of your library in any order.",
+          "scenario": [
+            "beastrider_vanguard_looks_privately_takes_a_permanent_and_orders_the_other_cards"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bestow Greatness",
+      "definition_path": "src/card_definitions/dft/bestow_greatness.rs",
+      "printed_obligations": [
+        "Target creature gets +4/+4 and gains trample until end of turn."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "bestow_greatness_grants_exact_stats_and_trample_until_cleanup"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Target creature gets +4/+4 and gains trample until end of turn.",
+          "scenario": [
+            "bestow_greatness_grants_exact_stats_and_trample_until_cleanup"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Boom Scholar",
+      "definition_path": "src/card_definitions/dft/boom_scholar.rs",
+      "printed_obligations": [
+        "Exhaust abilities of other permanents you control cost {2} less to activate.",
+        "Exhaust \u2014 {4}{R}{G}: Creatures and Vehicles you control gain trample until end of turn. Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Exhaust abilities of other permanents you control cost {2} less to activate.",
+          "scenario": [
+            "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {4}{R}{G}: Creatures and Vehicles you control gain trample until end of turn. Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Boosted Sloop",
+      "definition_path": "src/card_definitions/dft/boosted_sloop.rs",
+      "printed_obligations": [
+        "Menace",
+        "Whenever you attack, draw a card, then discard a card.",
+        "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Menace",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        },
+        {
+          "obligation": "Whenever you attack, draw a card, then discard a card.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        },
+        {
+          "obligation": "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Brightglass Gearhulk",
+      "definition_path": "src/card_definitions/dft/brightglass_gearhulk.rs",
+      "printed_obligations": [
+        "First strike, trample",
+        "When this creature enters, you may search your library for up to two artifact, creature, and/or enchantment cards with mana value 1 or less, reveal them, put them into your hand, then shuffle."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "brightglass_finds_at_most_two_small_artifact_creature_or_enchantment_cards_and_can_decline"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "First strike, trample",
+          "scenario": [
+            "brightglass_finds_at_most_two_small_artifact_creature_or_enchantment_cards_and_can_decline"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, you may search your library for up to two artifact, creature, and/or enchantment cards with mana value 1 or less, reveal them, put them into your hand, then shuffle.",
+          "scenario": [
+            "brightglass_finds_at_most_two_small_artifact_creature_or_enchantment_cards_and_can_decline"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Broadside Barrage",
+      "definition_path": "src/card_definitions/dft/broadside_barrage.rs",
+      "printed_obligations": [
+        "Broadside Barrage deals 5 damage to target creature or planeswalker. Draw a card, then discard a card."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Broadside Barrage deals 5 damage to target creature or planeswalker. Draw a card, then discard a card.",
+          "scenario": [
+            "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Broken Wings",
+      "definition_path": "src/card_definitions/dft/broken_wings.rs",
+      "printed_obligations": [
+        "Destroy target artifact, enchantment, or creature with flying."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "broken_wings_accepts_each_printed_kind_and_rejects_nonflying_creature"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Destroy target artifact, enchantment, or creature with flying.",
+          "scenario": [
+            "broken_wings_accepts_each_printed_kind_and_rejects_nonflying_creature"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Broodheart Engine",
+      "definition_path": "src/card_definitions/dft/broodheart_engine.rs",
+      "printed_obligations": [
+        "At the beginning of your upkeep, surveil 1.",
+        "{2}{B}{G}, {T}, Sacrifice this artifact: Return target creature or Vehicle card from your graveyard to the battlefield. Activate only as a sorcery."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "broodheart_engine_surveils_at_its_upkeep_and_pays_sorcery_tap_sacrifice_to_return_creature_or_vehicle"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "At the beginning of your upkeep, surveil 1.",
+          "scenario": [
+            "broodheart_engine_surveils_at_its_upkeep_and_pays_sorcery_tap_sacrifice_to_return_creature_or_vehicle"
+          ]
+        },
+        {
+          "obligation": "{2}{B}{G}, {T}, Sacrifice this artifact: Return target creature or Vehicle card from your graveyard to the battlefield. Activate only as a sorcery.",
+          "scenario": [
+            "broodheart_engine_surveils_at_its_upkeep_and_pays_sorcery_tap_sacrifice_to_return_creature_or_vehicle"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Captain Howler, Sea Scourge",
+      "definition_path": "src/card_definitions/dft/captain_howler_sea_scourge.rs",
+      "printed_obligations": [
+        "Ward\u2014{2}, Pay 2 life.",
+        "Whenever you discard one or more cards, target creature gets +2/+0 until end of turn for each card discarded this way. Whenever that creature deals combat damage to a player this turn, you draw a card."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_final",
+      "outcome_proofs": [
+        "captain_howler_uses_this_discard_batch_and_delayed_draw_keeps_original_controller_after_source_leaves",
+        "captain_howler_ward_requires_two_mana_and_two_life_together_or_counters_the_spell"
+      ],
+      "shared_contracts": [
+        "Frozen dft_trigger_facts_engine: captured discard event counts and delayed exact-creature combat callback preserving original controller through source departure, control change and double strike",
+        "Frozen dft_linked_entry + dft_retained_copy: CR614.13 linked successful exiles, no-reuse reservations, actual cast-X, repeated permanent copy origin and exact linked target legality",
+        "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
+        "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Ward\u2014{2}, Pay 2 life.",
+          "scenario": [
+            "captain_howler_uses_this_discard_batch_and_delayed_draw_keeps_original_controller_after_source_leaves",
+            "captain_howler_ward_requires_two_mana_and_two_life_together_or_counters_the_spell"
+          ]
+        },
+        {
+          "obligation": "Whenever you discard one or more cards, target creature gets +2/+0 until end of turn for each card discarded this way. Whenever that creature deals combat damage to a player this turn, you draw a card.",
+          "scenario": [
+            "captain_howler_uses_this_discard_batch_and_delayed_draw_keeps_original_controller_after_source_leaves",
+            "captain_howler_ward_requires_two_mana_and_two_life_together_or_counters_the_spell"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Caradora, Heart of Alacria",
+      "definition_path": "src/card_definitions/dft/caradora_heart_of_alacria.rs",
+      "printed_obligations": [
+        "When Caradora enters, you may search your library for a Mount or Vehicle card, reveal it, put it into your hand, then shuffle.",
+        "If one or more +1/+1 counters would be put on a creature or Vehicle you control, that many plus one +1/+1 counters are put on it instead."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "caradora_searches_mount_or_vehicle_and_adds_one_per_counter_event_on_creature_or_vehicle"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "When Caradora enters, you may search your library for a Mount or Vehicle card, reveal it, put it into your hand, then shuffle.",
+          "scenario": [
+            "caradora_searches_mount_or_vehicle_and_adds_one_per_counter_event_on_creature_or_vehicle"
+          ]
+        },
+        {
+          "obligation": "If one or more +1/+1 counters would be put on a creature or Vehicle you control, that many plus one +1/+1 counters are put on it instead.",
+          "scenario": [
+            "caradora_searches_mount_or_vehicle_and_adds_one_per_counter_event_on_creature_or_vehicle"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cloudspire Coordinator",
+      "definition_path": "src/card_definitions/dft/cloudspire_coordinator.rs",
+      "printed_obligations": [
+        "When this creature enters, scry 2.",
+        "{T}: Create X 1/1 colorless Pilot creature tokens, where X is the number of Mounts and/or Vehicles that entered the battlefield under your control this turn. The tokens have \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "cloudspire_coordinator_scries_two_privately_and_uses_historical_entries_before_it_arrived"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "When this creature enters, scry 2.",
+          "scenario": [
+            "cloudspire_coordinator_scries_two_privately_and_uses_historical_entries_before_it_arrived"
+          ]
+        },
+        {
+          "obligation": "{T}: Create X 1/1 colorless Pilot creature tokens, where X is the number of Mounts and/or Vehicles that entered the battlefield under your control this turn. The tokens have \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
+          "scenario": [
+            "cloudspire_coordinator_scries_two_privately_and_uses_historical_entries_before_it_arrived"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cloudspire Skycycle",
+      "definition_path": "src/card_definitions/dft/cloudspire_skycycle.rs",
+      "printed_obligations": [
+        "Flying",
+        "When this Vehicle enters, distribute two +1/+1 counters among one or two other target Vehicles and/or creatures you control.",
+        "Crew 1"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "cloudspire_skycycle_announces_two_counters_split_or_together_on_other_controlled_targets"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Flying",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "cloudspire_skycycle_announces_two_counters_split_or_together_on_other_controlled_targets"
+          ]
+        },
+        {
+          "obligation": "When this Vehicle enters, distribute two +1/+1 counters among one or two other target Vehicles and/or creatures you control.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "cloudspire_skycycle_announces_two_counters_split_or_together_on_other_controlled_targets"
+          ]
+        },
+        {
+          "obligation": "Crew 1",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "cloudspire_skycycle_announces_two_counters_split_or_together_on_other_controlled_targets"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Coalstoke Gearhulk",
+      "definition_path": "src/card_definitions/dft/coalstoke_gearhulk.rs",
+      "printed_obligations": [
+        "Menace, deathtouch",
+        "When this creature enters, put target creature card with mana value 4 or less from a graveyard onto the battlefield under your control with a finality counter on it. That creature gains menace, deathtouch, and haste. At the beginning of your next end step, exile that creature."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "coalstoke_returns_opponents_creature_with_finality_and_lasting_keywords_until_our_next_end_step"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Menace, deathtouch",
+          "scenario": [
+            "coalstoke_returns_opponents_creature_with_finality_and_lasting_keywords_until_our_next_end_step"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, put target creature card with mana value 4 or less from a graveyard onto the battlefield under your control with a finality counter on it. That creature gains menace, deathtouch, and haste. At the beginning of your next end step, exile that creature.",
+          "scenario": [
+            "coalstoke_returns_opponents_creature_with_finality_and_lasting_keywords_until_our_next_end_step"
+          ]
+        }
+      ],
+      "definition_binding_note": "Pinned Oracle gives menace/deathtouch/haste without a duration. Author a permanent exact-entry grant; pinned XMage calls GainAbilityTargetEffect default EndOfTurn, so that Java duration is deliberately corrected to Oracle. Scenario crosses opponent cleanup before our delayed exile."
+    },
+    {
+      "name": "Debris Beetle",
+      "definition_path": "src/card_definitions/dft/debris_beetle.rs",
+      "printed_obligations": [
+        "Trample",
+        "When this Vehicle enters, each opponent loses 3 life and you gain 3 life.",
+        "Crew 2"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+        "debris_beetle_entry_drains_three_and_bike_entry_gains_two_before_any_crewing"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Trample",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "debris_beetle_entry_drains_three_and_bike_entry_gains_two_before_any_crewing"
+          ]
+        },
+        {
+          "obligation": "When this Vehicle enters, each opponent loses 3 life and you gain 3 life.",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "debris_beetle_entry_drains_three_and_bike_entry_gains_two_before_any_crewing"
+          ]
+        },
+        {
+          "obligation": "Crew 2",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "debris_beetle_entry_drains_three_and_bike_entry_gains_two_before_any_crewing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Defend the Rider",
+      "definition_path": "src/card_definitions/dft/defend_the_rider.rs",
+      "printed_obligations": [
+        "Choose one \u2014",
+        "\u2022 Target permanent you control gains hexproof and indestructible until end of turn.",
+        "\u2022 Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Choose one \u2014",
+          "scenario": [
+            "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three"
+          ]
+        },
+        {
+          "obligation": "\u2022 Target permanent you control gains hexproof and indestructible until end of turn.",
+          "scenario": [
+            "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three"
+          ]
+        },
+        {
+          "obligation": "\u2022 Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
+          "scenario": [
+            "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "District Mascot",
+      "definition_path": "src/card_definitions/dft/district_mascot.rs",
+      "printed_obligations": [
+        "This creature enters with a +1/+1 counter on it.",
+        "{1}{G}, Remove two +1/+1 counters from this creature: Destroy target artifact.",
+        "Whenever this creature attacks while saddled, put a +1/+1 counter on it.",
+        "Saddle 1"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "This creature enters with a +1/+1 counter on it.",
+          "scenario": [
+            "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+          ]
+        },
+        {
+          "obligation": "{1}{G}, Remove two +1/+1 counters from this creature: Destroy target artifact.",
+          "scenario": [
+            "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+          ]
+        },
+        {
+          "obligation": "Whenever this creature attacks while saddled, put a +1/+1 counter on it.",
+          "scenario": [
+            "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+          ]
+        },
+        {
+          "obligation": "Saddle 1",
+          "scenario": [
+            "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dredger's Insight",
+      "definition_path": "src/card_definitions/dft/dredger_s_insight.rs",
+      "printed_obligations": [
+        "Whenever one or more artifact and/or creature cards leave your graveyard, you gain 1 life.",
+        "When this enchantment enters, mill four cards. You may put an artifact, creature, or land card from among the milled cards into your hand. (To mill four cards, put the top four cards of your library into your graveyard.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "dredgers_insight_recovers_only_this_mill_batch_and_gains_life_only_for_artifact_or_creature_departure"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Whenever one or more artifact and/or creature cards leave your graveyard, you gain 1 life.",
+          "scenario": [
+            "dredgers_insight_recovers_only_this_mill_batch_and_gains_life_only_for_artifact_or_creature_departure"
+          ]
+        },
+        {
+          "obligation": "When this enchantment enters, mill four cards. You may put an artifact, creature, or land card from among the milled cards into your hand. (To mill four cards, put the top four cards of your library into your graveyard.)",
+          "scenario": [
+            "dredgers_insight_recovers_only_this_mill_batch_and_gains_life_only_for_artifact_or_creature_departure"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dune Drifter",
+      "definition_path": "src/card_definitions/dft/dune_drifter.rs",
+      "printed_obligations": [
+        "When this Vehicle enters, return target artifact or creature card with mana value X or less from your graveyard to the battlefield.",
+        "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "dune_drifter_uses_cast_x_for_artifact_or_creature_recovery_but_noncast_return_has_x_zero"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "When this Vehicle enters, return target artifact or creature card with mana value X or less from your graveyard to the battlefield.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "dune_drifter_uses_cast_x_for_artifact_or_creature_recovery_but_noncast_return_has_x_zero"
+          ]
+        },
+        {
+          "obligation": "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "dune_drifter_uses_cast_x_for_artifact_or_creature_recovery_but_noncast_return_has_x_zero"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Earthrumbler",
+      "definition_path": "src/card_definitions/dft/earthrumbler.rs",
+      "printed_obligations": [
+        "Vigilance, trample",
+        "Exile an artifact or creature card from your graveyard: This Vehicle becomes an artifact creature until end of turn.",
+        "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance, trample",
+          "scenario": [
+            "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires"
+          ]
+        },
+        {
+          "obligation": "Exile an artifact or creature card from your graveyard: This Vehicle becomes an artifact creature until end of turn.",
+          "scenario": [
+            "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires"
+          ]
+        },
+        {
+          "obligation": "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Elvish Refueler",
+      "definition_path": "src/card_definitions/dft/elvish_refueler.rs",
+      "printed_obligations": [
+        "During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.",
+        "Exhaust \u2014 {1}{G}: Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "elvish_refueler_reuses_only_one_spent_exhaust_before_this_turns_first_exhaust"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.",
+          "scenario": [
+            "elvish_refueler_reuses_only_one_spent_exhaust_before_this_turns_first_exhaust"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {1}{G}: Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "elvish_refueler_reuses_only_one_spent_exhaust_before_this_turns_first_exhaust"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Embalmed Ascendant",
+      "definition_path": "src/card_definitions/dft/embalmed_ascendant.rs",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "When this creature enters, create a 2/2 black Zombie creature token.",
+        "Max speed \u2014 Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "embalmed_ascendant_makes_a_zombie_and_its_max_speed_death_trigger_includes_itself_and_tokens"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "embalmed_ascendant_makes_a_zombie_and_its_max_speed_death_trigger_includes_itself_and_tokens"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, create a 2/2 black Zombie creature token.",
+          "scenario": [
+            "embalmed_ascendant_makes_a_zombie_and_its_max_speed_death_trigger_includes_itself_and_tokens"
+          ]
+        },
+        {
+          "obligation": "Max speed \u2014 Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life.",
+          "scenario": [
+            "embalmed_ascendant_makes_a_zombie_and_its_max_speed_death_trigger_includes_itself_and_tokens"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Explosive Getaway",
+      "definition_path": "src/card_definitions/dft/explosive_getaway.rs",
+      "printed_obligations": [
+        "Exile up to one target artifact or creature. Return it to the battlefield under its owner's control at the beginning of the next end step.",
+        "Explosive Getaway deals 4 damage to each creature."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "explosive_getaway_blinks_before_dealing_four_and_returns_under_owner_control_next_end_step"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Exile up to one target artifact or creature. Return it to the battlefield under its owner's control at the beginning of the next end step.",
+          "scenario": [
+            "explosive_getaway_blinks_before_dealing_four_and_returns_under_owner_control_next_end_step"
+          ]
+        },
+        {
+          "obligation": "Explosive Getaway deals 4 damage to each creature.",
+          "scenario": [
+            "explosive_getaway_blinks_before_dealing_four_and_returns_under_owner_control_next_end_step"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fang Guardian",
+      "definition_path": "src/card_definitions/dft/fang_guardian.rs",
+      "printed_obligations": [
+        "Flash",
+        "When this creature enters, another target creature or Vehicle you control gets +2/+2 until end of turn."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "fang_guardian_flashes_in_and_targets_only_another_controlled_creature_or_vehicle"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Flash",
+          "scenario": [
+            "fang_guardian_flashes_in_and_targets_only_another_controlled_creature_or_vehicle"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, another target creature or Vehicle you control gets +2/+2 until end of turn.",
+          "scenario": [
+            "fang_guardian_flashes_in_and_targets_only_another_controlled_creature_or_vehicle"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fang-Druid Summoner",
+      "definition_path": "src/card_definitions/dft/fang_druid_summoner.rs",
+      "printed_obligations": [
+        "Reach",
+        "When this creature enters, you may search your library and/or graveyard for a creature card with no abilities, reveal it, and put it into your hand. If you search your library this way, shuffle."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "fang_druid_searches_either_zone_for_only_one_abilityless_creature_and_reveals_result",
+        "fang_druid_can_decline_without_shuffling_or_recovering_an_eligible_card"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Reach",
+          "scenario": [
+            "fang_druid_searches_either_zone_for_only_one_abilityless_creature_and_reveals_result",
+            "fang_druid_can_decline_without_shuffling_or_recovering_an_eligible_card"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, you may search your library and/or graveyard for a creature card with no abilities, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+          "scenario": [
+            "fang_druid_searches_either_zone_for_only_one_abilityless_creature_and_reveals_result",
+            "fang_druid_can_decline_without_shuffling_or_recovering_an_eligible_card"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Far Fortune, End Boss",
+      "definition_path": "src/card_definitions/dft/far_fortune_end_boss.rs",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Whenever you attack, Far Fortune deals 1 damage to each opponent.",
+        "Max speed \u2014 If a source you control would deal damage to an opponent or a permanent an opponent controls, it deals that much damage plus 1 instead."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_legends",
+      "outcome_proofs": [
+        "far_fortune_starts_speed_and_deals_attack_trigger_damage_even_when_another_creature_attacks",
+        "far_fortune_max_speed_adds_one_only_to_controlled_damage_to_opposing_players_or_permanents"
+      ],
+      "shared_contracts": [
+        "Frozen dft_static_types: arbitrary subtype additions, retained original types, live base6/6 and actual/projected queries",
+        "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
+        "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "far_fortune_starts_speed_and_deals_attack_trigger_damage_even_when_another_creature_attacks",
+            "far_fortune_max_speed_adds_one_only_to_controlled_damage_to_opposing_players_or_permanents"
+          ]
+        },
+        {
+          "obligation": "Whenever you attack, Far Fortune deals 1 damage to each opponent.",
+          "scenario": [
+            "far_fortune_starts_speed_and_deals_attack_trigger_damage_even_when_another_creature_attacks",
+            "far_fortune_max_speed_adds_one_only_to_controlled_damage_to_opposing_players_or_permanents"
+          ]
+        },
+        {
+          "obligation": "Max speed \u2014 If a source you control would deal damage to an opponent or a permanent an opponent controls, it deals that much damage plus 1 instead.",
+          "scenario": [
+            "far_fortune_starts_speed_and_deals_attack_trigger_damage_even_when_another_creature_attacks",
+            "far_fortune_max_speed_adds_one_only_to_controlled_damage_to_opposing_players_or_permanents"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fearless Swashbuckler",
+      "definition_path": "src/card_definitions/dft/fearless_swashbuckler.rs",
+      "printed_obligations": [
+        "Haste",
+        "Vehicles you control have haste.",
+        "Whenever you attack, if a Pirate and a Vehicle attacked this combat, draw three cards, then discard two cards."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_legends",
+      "outcome_proofs": [
+        "fearless_grants_vehicle_haste_and_draws_three_discards_two_only_when_pirate_and_vehicle_attacked"
+      ],
+      "shared_contracts": [
+        "Frozen dft_static_types: arbitrary subtype additions, retained original types, live base6/6 and actual/projected queries",
+        "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
+        "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Haste",
+          "scenario": [
+            "fearless_grants_vehicle_haste_and_draws_three_discards_two_only_when_pirate_and_vehicle_attacked"
+          ]
+        },
+        {
+          "obligation": "Vehicles you control have haste.",
+          "scenario": [
+            "fearless_grants_vehicle_haste_and_draws_three_discards_two_only_when_pirate_and_vehicle_attacked"
+          ]
+        },
+        {
+          "obligation": "Whenever you attack, if a Pirate and a Vehicle attacked this combat, draw three cards, then discard two cards.",
+          "scenario": [
+            "fearless_grants_vehicle_haste_and_draws_three_discards_two_only_when_pirate_and_vehicle_attacked"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Gastal Thrillseeker",
+      "definition_path": "src/card_definitions/dft/gastal_thrillseeker.rs",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "When this creature enters, it deals 1 damage to target opponent and you gain 1 life.",
+        "Max speed \u2014 This creature has deathtouch and haste."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_legends",
+      "outcome_proofs": [
+        "gastal_entry_damage_and_life_start_speed_before_live_max_speed_keywords"
+      ],
+      "shared_contracts": [
+        "Frozen dft_static_types: arbitrary subtype additions, retained original types, live base6/6 and actual/projected queries",
+        "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
+        "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "gastal_entry_damage_and_life_start_speed_before_live_max_speed_keywords"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, it deals 1 damage to target opponent and you gain 1 life.",
+          "scenario": [
+            "gastal_entry_damage_and_life_start_speed_before_live_max_speed_keywords"
+          ]
+        },
+        {
+          "obligation": "Max speed \u2014 This creature has deathtouch and haste.",
+          "scenario": [
+            "gastal_entry_damage_and_life_start_speed_before_live_max_speed_keywords"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Greenbelt Guardian",
+      "definition_path": "src/card_definitions/dft/greenbelt_guardian.rs",
+      "printed_obligations": [
+        "{G}: Target creature gains trample until end of turn.",
+        "Exhaust \u2014 {3}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities",
+        "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "{G}: Target creature gains trample until end of turn.",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities",
+            "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {3}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities",
+            "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Guidelight Pathmaker",
+      "definition_path": "src/card_definitions/dft/guidelight_pathmaker.rs",
+      "printed_obligations": [
+        "Vigilance",
+        "When this Vehicle enters, you may search your library for an artifact card and reveal it. Put it onto the battlefield if its mana value is 2 or less. Otherwise, put it into your hand. If you search your library this way, shuffle.",
+        "Crew 2"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "guidelight_pathmaker_search_destination_uses_selected_artifact_value_and_decline_does_not_shuffle"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "guidelight_pathmaker_search_destination_uses_selected_artifact_value_and_decline_does_not_shuffle"
+          ]
+        },
+        {
+          "obligation": "When this Vehicle enters, you may search your library for an artifact card and reveal it. Put it onto the battlefield if its mana value is 2 or less. Otherwise, put it into your hand. If you search your library this way, shuffle.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "guidelight_pathmaker_search_destination_uses_selected_artifact_value_and_decline_does_not_shuffle"
+          ]
+        },
+        {
+          "obligation": "Crew 2",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "guidelight_pathmaker_search_destination_uses_selected_artifact_value_and_decline_does_not_shuffle"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Haunt the Network",
+      "definition_path": "src/card_definitions/dft/haunt_the_network.rs",
+      "printed_obligations": [
+        "Choose target opponent. Create two 1/1 colorless Thopter artifact creature tokens with flying. Then the chosen player loses X life and you gain X life, where X is the number of artifacts you control."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "haunt_the_network_counts_its_new_flying_artifact_tokens_before_the_life_change"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Choose target opponent. Create two 1/1 colorless Thopter artifact creature tokens with flying. Then the chosen player loses X life and you gain X life, where X is the number of artifacts you control.",
+          "scenario": [
+            "haunt_the_network_counts_its_new_flying_artifact_tokens_before_the_life_change"
+          ]
+        }
+      ],
+      "definition_binding_note": "Use existing LoseOpponentGainSame with own artifact count after creating two Thopters; printed gain is X independently of whether the opponent actually loses that much life. Initial audit DrainLifeScaled binding was replaced by this exact existing operation."
+    },
+    {
+      "name": "Haunted Hellride",
+      "definition_path": "src/card_definitions/dft/haunted_hellride.rs",
+      "printed_obligations": [
+        "Whenever you attack, target creature you control gets +1/+0 and gains deathtouch until end of turn. Untap it.",
+        "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Whenever you attack, target creature you control gets +1/+0 and gains deathtouch until end of turn. Untap it.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        },
+        {
+          "obligation": "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hazard of the Dunes",
+      "definition_path": "src/card_definitions/dft/hazard_of_the_dunes.rs",
+      "printed_obligations": [
+        "Reach, trample",
+        "Exhaust \u2014 {6}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Reach, trample",
+          "scenario": [
+            "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {6}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Jibbirik Omnivore",
+      "definition_path": "src/card_definitions/dft/jibbirik_omnivore.rs",
+      "printed_obligations": [
+        "Printed type, cost, colors and power/toughness; no rules abilities"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_basics",
+      "outcome_proofs": [
+        "vanilla_creatures_have_printed_stats_costs_types_and_no_rules_abilities"
+      ],
+      "shared_contracts": [
+        "engine keyword/combat, cycling costs and exact source/trigger X; saddle contributor legality, attack event and cleanup"
+      ],
+      "obligation_evidence": [
+        {
+          "obligation": "Printed type, cost, colors and power/toughness; no rules abilities",
+          "scenario": [
+            "vanilla_creatures_have_printed_stats_costs_types_and_no_rules_abilities"
+          ]
+        }
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
+    },
+    {
+      "name": "Ketramose, the New Dawn",
+      "definition_path": "src/card_definitions/dft/ketramose_the_new_dawn.rs",
+      "printed_obligations": [
+        "Menace, lifelink, indestructible",
+        "Ketramose can't attack or block unless there are seven or more cards in exile.",
+        "Whenever one or more cards are put into exile from graveyards and/or the battlefield during your turn, you draw a card and lose 1 life."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_final",
+      "outcome_proofs": [
+        "ketramose_attack_and_block_require_seven_physical_cards_in_all_players_exile",
+        "ketramose_observes_one_global_graveyard_exile_batch_only_on_its_controllers_turn",
+        "ketramose_also_observes_a_physical_battlefield_artifact_exiled_on_its_controllers_turn"
+      ],
+      "shared_contracts": [
+        "Frozen dft_trigger_facts_engine: captured discard event counts and delayed exact-creature combat callback preserving original controller through source departure, control change and double strike",
+        "Frozen dft_linked_entry + dft_retained_copy: CR614.13 linked successful exiles, no-reuse reservations, actual cast-X, repeated permanent copy origin and exact linked target legality",
+        "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
+        "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Menace, lifelink, indestructible",
+          "scenario": [
+            "ketramose_attack_and_block_require_seven_physical_cards_in_all_players_exile",
+            "ketramose_observes_one_global_graveyard_exile_batch_only_on_its_controllers_turn",
+            "ketramose_also_observes_a_physical_battlefield_artifact_exiled_on_its_controllers_turn"
+          ]
+        },
+        {
+          "obligation": "Ketramose can't attack or block unless there are seven or more cards in exile.",
+          "scenario": [
+            "ketramose_attack_and_block_require_seven_physical_cards_in_all_players_exile",
+            "ketramose_observes_one_global_graveyard_exile_batch_only_on_its_controllers_turn",
+            "ketramose_also_observes_a_physical_battlefield_artifact_exiled_on_its_controllers_turn"
+          ]
+        },
+        {
+          "obligation": "Whenever one or more cards are put into exile from graveyards and/or the battlefield during your turn, you draw a card and lose 1 life.",
+          "scenario": [
+            "ketramose_attack_and_block_require_seven_physical_cards_in_all_players_exile",
+            "ketramose_observes_one_global_graveyard_exile_batch_only_on_its_controllers_turn",
+            "ketramose_also_observes_a_physical_battlefield_artifact_exiled_on_its_controllers_turn"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Kolodin, Triumph Caster",
+      "definition_path": "src/card_definitions/dft/kolodin_triumph_caster.rs",
+      "printed_obligations": [
+        "Mounts and Vehicles you control have haste.",
+        "Whenever a Mount you control enters, it becomes saddled until end of turn.",
+        "Whenever a Vehicle you control enters, it becomes an artifact creature until end of turn."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_legends",
+      "outcome_proofs": [
+        "kolodin_filters_its_own_entry_and_directly_saddles_mounts_animates_vehicles_with_haste_until_cleanup"
+      ],
+      "shared_contracts": [
+        "Frozen dft_static_types: arbitrary subtype additions, retained original types, live base6/6 and actual/projected queries",
+        "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
+        "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Mounts and Vehicles you control have haste.",
+          "scenario": [
+            "kolodin_filters_its_own_entry_and_directly_saddles_mounts_animates_vehicles_with_haste_until_cleanup"
+          ]
+        },
+        {
+          "obligation": "Whenever a Mount you control enters, it becomes saddled until end of turn.",
+          "scenario": [
+            "kolodin_filters_its_own_entry_and_directly_saddles_mounts_animates_vehicles_with_haste_until_cleanup"
+          ]
+        },
+        {
+          "obligation": "Whenever a Vehicle you control enters, it becomes an artifact creature until end of turn.",
+          "scenario": [
+            "kolodin_filters_its_own_entry_and_directly_saddles_mounts_animates_vehicles_with_haste_until_cleanup"
+          ]
+        }
+      ],
+      "definition_binding_note": "Use existing FilteredEntersYou SubtypeAny for Mount/Vehicle; initial audit PermanentEntersYou include_source:true would bypass filters on self entry and incorrectly saddle/animate a normal Human Kolodin. This is an exact binding correction using an already accepted predicate, with own-entry regression."
+    },
+    {
+      "name": "Lagorin, Soul of Alacria",
+      "definition_path": "src/card_definitions/dft/lagorin_soul_of_alacria.rs",
+      "printed_obligations": [
+        "Flying",
+        "Whenever Lagorin attacks while saddled, put a +1/+1 counter on each of up to two target Mounts and/or Vehicles.",
+        "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "lagorin_saddle_one_attack_puts_counters_on_up_to_two_mounts_or_vehicles_of_any_controller"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Flying",
+          "scenario": [
+            "lagorin_saddle_one_attack_puts_counters_on_up_to_two_mounts_or_vehicles_of_any_controller"
+          ]
+        },
+        {
+          "obligation": "Whenever Lagorin attacks while saddled, put a +1/+1 counter on each of up to two target Mounts and/or Vehicles.",
+          "scenario": [
+            "lagorin_saddle_one_attack_puts_counters_on_up_to_two_mounts_or_vehicles_of_any_controller"
+          ]
+        },
+        {
+          "obligation": "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+          "scenario": [
+            "lagorin_saddle_one_attack_puts_counters_on_up_to_two_mounts_or_vehicles_of_any_controller"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Loot, the Pathfinder",
+      "definition_path": "src/card_definitions/dft/loot_the_pathfinder.rs",
+      "printed_obligations": [
+        "Double strike, vigilance, haste",
+        "Exhaust \u2014 {G}, {T}: Add three mana of any one color. (Activate each exhaust ability only once.)",
+        "Exhaust \u2014 {U}, {T}: Draw three cards.",
+        "Exhaust \u2014 {R}, {T}: Loot deals 3 damage to any target."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_final",
+      "outcome_proofs": [
+        "loot_has_three_independent_exhaust_instances_with_tap_and_the_printed_outputs"
+      ],
+      "shared_contracts": [
+        "Frozen dft_trigger_facts_engine: captured discard event counts and delayed exact-creature combat callback preserving original controller through source departure, control change and double strike",
+        "Frozen dft_linked_entry + dft_retained_copy: CR614.13 linked successful exiles, no-reuse reservations, actual cast-X, repeated permanent copy origin and exact linked target legality",
+        "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
+        "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Double strike, vigilance, haste",
+          "scenario": [
+            "loot_has_three_independent_exhaust_instances_with_tap_and_the_printed_outputs"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {G}, {T}: Add three mana of any one color. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "loot_has_three_independent_exhaust_instances_with_tap_and_the_printed_outputs"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {U}, {T}: Draw three cards.",
+          "scenario": [
+            "loot_has_three_independent_exhaust_instances_with_tap_and_the_printed_outputs"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {R}, {T}: Loot deals 3 damage to any target.",
+          "scenario": [
+            "loot_has_three_independent_exhaust_instances_with_tap_and_the_printed_outputs"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Loxodon Surveyor",
+      "definition_path": "src/card_definitions/dft/loxodon_surveyor.rs",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "loxodon_surveyor_starts_engines_and_its_graveyard_draw_requires_its_owners_max_speed"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "loxodon_surveyor_starts_engines_and_its_graveyard_draw_requires_its_owners_max_speed"
+          ]
+        },
+        {
+          "obligation": "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card.",
+          "scenario": [
+            "loxodon_surveyor_starts_engines_and_its_graveyard_draw_requires_its_owners_max_speed"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lumbering Worldwagon",
+      "definition_path": "src/card_definitions/dft/lumbering_worldwagon.rs",
+      "printed_obligations": [
+        "This Vehicle's power is equal to the number of lands you control.",
+        "Whenever this Vehicle enters or attacks, you may search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+        "Crew 4"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+        "lumbering_worldwagon_searches_on_entry_and_attack_and_its_power_tracks_lands_live"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "This Vehicle's power is equal to the number of lands you control.",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "lumbering_worldwagon_searches_on_entry_and_attack_and_its_power_tracks_lands_live"
+          ]
+        },
+        {
+          "obligation": "Whenever this Vehicle enters or attacks, you may search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "lumbering_worldwagon_searches_on_entry_and_attack_and_its_power_tracks_lands_live"
+          ]
+        },
+        {
+          "obligation": "Crew 4",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "lumbering_worldwagon_searches_on_entry_and_attack_and_its_power_tracks_lands_live"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "March of the World Ooze",
+      "definition_path": "src/card_definitions/dft/march_of_the_world_ooze.rs",
+      "printed_obligations": [
+        "Creatures you control have base power and toughness 6/6 and are Oozes in addition to their other types.",
+        "Whenever an opponent casts a spell, if it's not their turn, you create a 3/3 green Elephant creature token."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_legends",
+      "outcome_proofs": [
+        "march_adds_ooze_without_removing_types_sets_live_six_six_and_triggers_only_on_opponents_off_turn_casts"
+      ],
+      "shared_contracts": [
+        "Frozen dft_static_types: arbitrary subtype additions, retained original types, live base6/6 and actual/projected queries",
+        "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
+        "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Creatures you control have base power and toughness 6/6 and are Oozes in addition to their other types.",
+          "scenario": [
+            "march_adds_ooze_without_removing_types_sets_live_six_six_and_triggers_only_on_opponents_off_turn_casts"
+          ]
+        },
+        {
+          "obligation": "Whenever an opponent casts a spell, if it's not their turn, you create a 3/3 green Elephant creature token.",
+          "scenario": [
+            "march_adds_ooze_without_removing_types_sets_live_six_six_and_triggers_only_on_opponents_off_turn_casts"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Mendicant Core, Guidelight",
+      "definition_path": "src/card_definitions/dft/mendicant_core_guidelight.rs",
+      "printed_obligations": [
+        "Mendicant Core's power is equal to the number of artifacts you control.",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 Whenever you cast an artifact spell, you may pay {1}. If you do, copy it. (The copy becomes a token.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_final",
+      "outcome_proofs": [
+        "mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token"
+      ],
+      "shared_contracts": [
+        "Frozen dft_trigger_facts_engine: captured discard event counts and delayed exact-creature combat callback preserving original controller through source departure, control change and double strike",
+        "Frozen dft_linked_entry + dft_retained_copy: CR614.13 linked successful exiles, no-reuse reservations, actual cast-X, repeated permanent copy origin and exact linked target legality",
+        "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
+        "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Mendicant Core's power is equal to the number of artifacts you control.",
+          "scenario": [
+            "mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token"
+          ]
+        },
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token"
+          ]
+        },
+        {
+          "obligation": "Max speed \u2014 Whenever you cast an artifact spell, you may pay {1}. If you do, copy it. (The copy becomes a token.)",
+          "scenario": [
+            "mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Migrating Ketradon",
+      "definition_path": "src/card_definitions/dft/migrating_ketradon.rs",
+      "printed_obligations": [
+        "Reach",
+        "When this creature enters, you gain 4 life.",
+        "Cycling {2} ({2}, Discard this card: Draw a card.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_basics",
+      "outcome_proofs": [
+        "migrating_ketradon_entry_gains_four_but_cycling_only_draws_and_discards"
+      ],
+      "shared_contracts": [
+        "engine keyword/combat, cycling costs and exact source/trigger X; saddle contributor legality, attack event and cleanup"
+      ],
+      "obligation_evidence": [
+        {
+          "obligation": "Reach",
+          "scenario": [
+            "migrating_ketradon_entry_gains_four_but_cycling_only_draws_and_discards"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, you gain 4 life.",
+          "scenario": [
+            "migrating_ketradon_entry_gains_four_but_cycling_only_draws_and_discards"
+          ]
+        },
+        {
+          "obligation": "Cycling {2} ({2}, Discard this card: Draw a card.)",
+          "scenario": [
+            "migrating_ketradon_entry_gains_four_but_cycling_only_draws_and_discards"
+          ]
+        }
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
+    },
+    {
+      "name": "Mimeoplasm, Revered One",
+      "definition_path": "src/card_definitions/dft/mimeoplasm_revered_one.rs",
+      "printed_obligations": [
+        "As Mimeoplasm enters, exile up to X creature cards from your graveyard. It enters with three +1/+1 counters on it for each creature card exiled this way.",
+        "{2}: Mimeoplasm becomes a copy of target creature card exiled with it, except it's 0/0 and has this ability."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_final",
+      "outcome_proofs": [
+        "mimeoplasm_actual_cast_exiles_only_own_creatures_and_retains_linked_copy_activation_across_copies",
+        "mimeoplasm_cast_x_zero_exiles_nothing_and_dies_as_zero_zero"
+      ],
+      "shared_contracts": [
+        "Frozen dft_trigger_facts_engine: captured discard event counts and delayed exact-creature combat callback preserving original controller through source departure, control change and double strike",
+        "Frozen dft_linked_entry + dft_retained_copy: CR614.13 linked successful exiles, no-reuse reservations, actual cast-X, repeated permanent copy origin and exact linked target legality",
+        "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
+        "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "As Mimeoplasm enters, exile up to X creature cards from your graveyard. It enters with three +1/+1 counters on it for each creature card exiled this way.",
+          "scenario": [
+            "mimeoplasm_actual_cast_exiles_only_own_creatures_and_retains_linked_copy_activation_across_copies",
+            "mimeoplasm_cast_x_zero_exiles_nothing_and_dies_as_zero_zero"
+          ]
+        },
+        {
+          "obligation": "{2}: Mimeoplasm becomes a copy of target creature card exiled with it, except it's 0/0 and has this ability.",
+          "scenario": [
+            "mimeoplasm_actual_cast_exiles_only_own_creatures_and_retains_linked_copy_activation_across_copies",
+            "mimeoplasm_cast_x_zero_exiles_nothing_and_dies_as_zero_zero"
+          ]
+        }
+      ],
+      "physical_metadata_note": "Preserves root c7502219a corrected immutable printed {X}{B}{G}{U} fixed colored cost components and paired physical metadata pin8621c9073855c8696f73928e076c46ee7768ec4e9ca47913823971c4888b705d."
+    },
+    {
+      "name": "Molt Tender",
+      "definition_path": "src/card_definitions/dft/molt_tender.rs",
+      "printed_obligations": [
+        "{T}: Mill a card. (Put the top card of your library into your graveyard.)",
+        "{T}, Exile a card from your graveyard: Add one mana of any color."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "molt_tender_mills_one_and_pays_its_tap_and_graveyard_exile_for_colored_mana"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "{T}: Mill a card. (Put the top card of your library into your graveyard.)",
+          "scenario": [
+            "molt_tender_mills_one_and_pays_its_tap_and_graveyard_exile_for_colored_mana"
+          ]
+        },
+        {
+          "obligation": "{T}, Exile a card from your graveyard: Add one mana of any color.",
+          "scenario": [
+            "molt_tender_mills_one_and_pays_its_tap_and_graveyard_exile_for_colored_mana"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Oildeep Gearhulk",
+      "definition_path": "src/card_definitions/dft/oildeep_gearhulk.rs",
+      "printed_obligations": [
+        "Lifelink, ward {1}",
+        "When this creature enters, look at target player's hand. You may choose a card from it. If you do, that player discards that card, then draws a card."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "oildeep_private_hand_look_can_decline_or_replace_one_chosen_card",
+        "oildeep_ward_cost_is_one_mana_and_decline_counters_the_related_targeting_spell"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Lifelink, ward {1}",
+          "scenario": [
+            "oildeep_private_hand_look_can_decline_or_replace_one_chosen_card",
+            "oildeep_ward_cost_is_one_mana_and_decline_counters_the_related_targeting_spell"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, look at target player's hand. You may choose a card from it. If you do, that player discards that card, then draws a card.",
+          "scenario": [
+            "oildeep_private_hand_look_can_decline_or_replace_one_chosen_card",
+            "oildeep_ward_cost_is_one_mana_and_decline_counters_the_related_targeting_spell"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ooze Patrol",
+      "definition_path": "src/card_definitions/dft/ooze_patrol.rs",
+      "printed_obligations": [
+        "When this creature enters, mill two cards, then put a +1/+1 counter on this creature for each artifact and/or creature card in your graveyard. (To mill two cards, put the top two cards of your library into your graveyard.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "ooze_patrol_counts_entire_graveyard_after_two_mills_and_deduplicates_artifact_creature"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "When this creature enters, mill two cards, then put a +1/+1 counter on this creature for each artifact and/or creature card in your graveyard. (To mill two cards, put the top two cards of your library into your graveyard.)",
+          "scenario": [
+            "ooze_patrol_counts_entire_graveyard_after_two_mills_and_deduplicates_artifact_creature"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Oviya, Automech Artisan",
+      "definition_path": "src/card_definitions/dft/oviya_automech_artisan.rs",
+      "printed_obligations": [
+        "Each creature that's attacking one of your opponents has trample.",
+        "{G}, {T}: You may put a creature or Vehicle card from your hand onto the battlefield. If you put an artifact onto the battlefield this way, put two +1/+1 counters on it."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "oviya_puts_only_creature_or_vehicle_from_private_hand_and_adds_counters_only_if_artifact",
+        "oviya_grants_trample_only_to_creatures_attacking_its_opponent"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Each creature that's attacking one of your opponents has trample.",
+          "scenario": [
+            "oviya_puts_only_creature_or_vehicle_from_private_hand_and_adds_counters_only_if_artifact",
+            "oviya_grants_trample_only_to_creatures_attacking_its_opponent"
+          ]
+        },
+        {
+          "obligation": "{G}, {T}: You may put a creature or Vehicle card from your hand onto the battlefield. If you put an artifact onto the battlefield this way, put two +1/+1 counters on it.",
+          "scenario": [
+            "oviya_puts_only_creature_or_vehicle_from_private_hand_and_adds_counters_only_if_artifact",
+            "oviya_grants_trample_only_to_creatures_attacking_its_opponent"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Plow Through",
+      "definition_path": "src/card_definitions/dft/plow_through.rs",
+      "printed_obligations": [
+        "Choose one \u2014",
+        "\u2022 Target creature you control fights target creature an opponent controls. (Each deals damage equal to its power to the other.)",
+        "\u2022 Destroy target Vehicle."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Choose one \u2014",
+          "scenario": [
+            "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes"
+          ]
+        },
+        {
+          "obligation": "\u2022 Target creature you control fights target creature an opponent controls. (Each deals damage equal to its power to the other.)",
+          "scenario": [
+            "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes"
+          ]
+        },
+        {
+          "obligation": "\u2022 Destroy target Vehicle.",
+          "scenario": [
+            "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Point the Way",
+      "definition_path": "src/card_definitions/dft/point_the_way.rs",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{3}{G}, Sacrifice this enchantment: Search your library for up to X basic land cards, where X is your speed. Put those cards onto the battlefield tapped, then shuffle."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "point_the_way_starts_speed_and_sacrifices_for_up_to_current_speed_tapped_basics"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "point_the_way_starts_speed_and_sacrifices_for_up_to_current_speed_tapped_basics"
+          ]
+        },
+        {
+          "obligation": "{3}{G}, Sacrifice this enchantment: Search your library for up to X basic land cards, where X is your speed. Put those cards onto the battlefield tapped, then shuffle.",
+          "scenario": [
+            "point_the_way_starts_speed_and_sacrifices_for_up_to_current_speed_tapped_basics"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pothole Mole",
+      "definition_path": "src/card_definitions/dft/pothole_mole.rs",
+      "printed_obligations": [
+        "When this creature enters, mill three cards, then you may return a land card from your graveyard to your hand. (To mill three cards, put the top three cards of your library into your graveyard.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "pothole_mole_mills_three_then_can_recover_an_old_land_or_decline"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "When this creature enters, mill three cards, then you may return a land card from your graveyard to your hand. (To mill three cards, put the top three cards of your library into your graveyard.)",
+          "scenario": [
+            "pothole_mole_mills_three_then_can_recover_an_old_land_or_decline"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pyrewood Gearhulk",
+      "definition_path": "src/card_definitions/dft/pyrewood_gearhulk.rs",
+      "printed_obligations": [
+        "Vigilance, menace",
+        "When this creature enters, other creatures you control get +2/+2 and gain vigilance and menace until end of turn. Damage can't be prevented this turn."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "pyrewood_buffs_only_other_controlled_creatures_and_disables_prevention_through_cleanup"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance, menace",
+          "scenario": [
+            "pyrewood_buffs_only_other_controlled_creatures_and_disables_prevention_through_cleanup"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, other creatures you control get +2/+2 and gain vigilance and menace until end of turn. Damage can't be prevented this turn.",
+          "scenario": [
+            "pyrewood_buffs_only_other_controlled_creatures_and_disables_prevention_through_cleanup"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rangers' Aetherhive",
+      "definition_path": "src/card_definitions/dft/rangers_aetherhive.rs",
+      "printed_obligations": [
+        "Vigilance",
+        "Whenever you activate an exhaust ability, create a 1/1 colorless Thopter artifact creature token with flying.",
+        "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        },
+        {
+          "obligation": "Whenever you activate an exhaust ability, create a 1/1 colorless Thopter artifact creature token with flying.",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        },
+        {
+          "obligation": "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Redshift, Rocketeer Chief",
+      "definition_path": "src/card_definitions/dft/redshift_rocketeer_chief.rs",
+      "printed_obligations": [
+        "Vigilance",
+        "{T}: Add X mana of any one color, where X is Redshift's power. Spend this mana only to activate abilities.",
+        "Exhaust \u2014 {10}{R}{G}: Put any number of permanent cards from your hand onto the battlefield. (Activate each exhaust ability only once.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_final",
+      "outcome_proofs": [
+        "redshift_power_mana_is_one_color_and_pays_activations_but_cannot_cast_a_spell",
+        "redshift_exhaust_private_selection_commits_one_simultaneous_permanent_batch_and_cannot_repeat"
+      ],
+      "shared_contracts": [
+        "Frozen dft_trigger_facts_engine: captured discard event counts and delayed exact-creature combat callback preserving original controller through source departure, control change and double strike",
+        "Frozen dft_linked_entry + dft_retained_copy: CR614.13 linked successful exiles, no-reuse reservations, actual cast-X, repeated permanent copy origin and exact linked target legality",
+        "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
+        "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance",
+          "scenario": [
+            "redshift_power_mana_is_one_color_and_pays_activations_but_cannot_cast_a_spell",
+            "redshift_exhaust_private_selection_commits_one_simultaneous_permanent_batch_and_cannot_repeat"
+          ]
+        },
+        {
+          "obligation": "{T}: Add X mana of any one color, where X is Redshift's power. Spend this mana only to activate abilities.",
+          "scenario": [
+            "redshift_power_mana_is_one_color_and_pays_activations_but_cannot_cast_a_spell",
+            "redshift_exhaust_private_selection_commits_one_simultaneous_permanent_batch_and_cannot_repeat"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {10}{R}{G}: Put any number of permanent cards from your hand onto the battlefield. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "redshift_power_mana_is_one_color_and_pays_activations_but_cannot_cast_a_spell",
+            "redshift_exhaust_private_selection_commits_one_simultaneous_permanent_batch_and_cannot_repeat"
+          ]
+        }
+      ],
+      "definition_binding_note": "The accepted engine-reentry DeployHandPermanents operation privately selects own physical hand permanents and submits one simultaneous entry batch. TapSourcePowerChoice output is tagged AbilityActivation; generic spell funding cannot spend it."
+    },
+    {
+      "name": "Regal Imperiosaur",
+      "definition_path": "src/card_definitions/dft/regal_imperiosaur.rs",
+      "printed_obligations": [
+        "Other Dinosaurs you control get +1/+1."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "regal_imperiosaur_buffs_only_other_controlled_dinosaurs_and_updates_when_control_changes"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Other Dinosaurs you control get +1/+1.",
+          "scenario": [
+            "regal_imperiosaur_buffs_only_other_controlled_dinosaurs_and_updates_when_control_changes"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Riptide Gearhulk",
+      "definition_path": "src/card_definitions/dft/riptide_gearhulk.rs",
+      "printed_obligations": [
+        "Double strike",
+        "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+        "When this creature enters, for each opponent, put up to one target nonland permanent that player controls into its owner's library third from the top."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "riptide_inserts_opposing_nonland_in_its_owners_library_third_and_prowess_is_temporary"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Double strike",
+          "scenario": [
+            "riptide_inserts_opposing_nonland_in_its_owners_library_third_and_prowess_is_temporary"
+          ]
+        },
+        {
+          "obligation": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+          "scenario": [
+            "riptide_inserts_opposing_nonland_in_its_owners_library_third_and_prowess_is_temporary"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, for each opponent, put up to one target nonland permanent that player controls into its owner's library third from the top.",
+          "scenario": [
+            "riptide_inserts_opposing_nonland_in_its_owners_library_third_and_prowess_is_temporary"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rise from the Wreck",
+      "definition_path": "src/card_definitions/dft/rise_from_the_wreck.rs",
+      "printed_obligations": [
+        "Return up to one target creature card, up to one target Mount card, up to one target Vehicle card, and up to one target creature card with no abilities from your graveyard to your hand."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "rise_from_the_wreck_selects_all_four_printed_groups_and_returns_each_card"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Return up to one target creature card, up to one target Mount card, up to one target Vehicle card, and up to one target creature card with no abilities from your graveyard to your hand.",
+          "scenario": [
+            "rise_from_the_wreck_selects_all_four_printed_groups_and_returns_each_card"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rocketeer Boostbuggy",
+      "definition_path": "src/card_definitions/dft/rocketeer_boostbuggy.rs",
+      "printed_obligations": [
+        "Whenever this Vehicle attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+        "Exhaust \u2014 {3}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
+        "Crew 1"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Whenever this Vehicle attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+          "scenario": [
+            "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {3}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
+          ]
+        },
+        {
+          "obligation": "Crew 1",
+          "scenario": [
+            "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Run Over",
+      "definition_path": "src/card_definitions/dft/run_over.rs",
+      "printed_obligations": [
+        "This spell costs {1} less to cast if it targets a Mount or Vehicle you control.",
+        "Target creature you control deals damage equal to its power to target creature an opponent controls."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "run_over_reduces_mount_cost_and_deals_one_way_damage_while_plain_creature_pays_full"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "This spell costs {1} less to cast if it targets a Mount or Vehicle you control.",
+          "scenario": [
+            "run_over_reduces_mount_cost_and_deals_one_way_damage_while_plain_creature_pays_full"
+          ]
+        },
+        {
+          "obligation": "Target creature you control deals damage equal to its power to target creature an opponent controls.",
+          "scenario": [
+            "run_over_reduces_mount_cost_and_deals_one_way_damage_while_plain_creature_pays_full"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Sab-Sunen, Luxa Embodied",
+      "definition_path": "src/card_definitions/dft/sab_sunen_luxa_embodied.rs",
+      "printed_obligations": [
+        "Reach, trample, indestructible",
+        "Sab-Sunen can't attack or block unless it has an even number of counters on it. (Zero is even.)",
+        "At the beginning of your first main phase, put a +1/+1 counter on Sab-Sunen. Then if it has an odd number of counters on it, draw two cards."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_legends",
+      "outcome_proofs": [
+        "sab_sunen_counts_all_counter_kinds_for_attack_and_block_including_zero_even",
+        "sab_sunen_first_main_adds_one_then_draws_only_if_post_placement_total_is_odd"
+      ],
+      "shared_contracts": [
+        "Frozen dft_static_types: arbitrary subtype additions, retained original types, live base6/6 and actual/projected queries",
+        "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
+        "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Reach, trample, indestructible",
+          "scenario": [
+            "sab_sunen_counts_all_counter_kinds_for_attack_and_block_including_zero_even",
+            "sab_sunen_first_main_adds_one_then_draws_only_if_post_placement_total_is_odd"
+          ]
+        },
+        {
+          "obligation": "Sab-Sunen can't attack or block unless it has an even number of counters on it. (Zero is even.)",
+          "scenario": [
+            "sab_sunen_counts_all_counter_kinds_for_attack_and_block_including_zero_even",
+            "sab_sunen_first_main_adds_one_then_draws_only_if_post_placement_total_is_odd"
+          ]
+        },
+        {
+          "obligation": "At the beginning of your first main phase, put a +1/+1 counter on Sab-Sunen. Then if it has an odd number of counters on it, draw two cards.",
+          "scenario": [
+            "sab_sunen_counts_all_counter_kinds_for_attack_and_block_including_zero_even",
+            "sab_sunen_first_main_adds_one_then_draws_only_if_post_placement_total_is_odd"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Samut, the Driving Force",
+      "definition_path": "src/card_definitions/dft/samut_the_driving_force.rs",
+      "printed_obligations": [
+        "First strike, vigilance, haste",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Other creatures you control get +X/+0, where X is your speed.",
+        "Noncreature spells you cast cost {X} less to cast, where X is your speed."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_legends",
+      "outcome_proofs": [
+        "samut_live_speed_buffs_only_other_controlled_creatures_and_discounts_only_noncreature_generic_cost"
+      ],
+      "shared_contracts": [
+        "Frozen dft_static_types: arbitrary subtype additions, retained original types, live base6/6 and actual/projected queries",
+        "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
+        "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "First strike, vigilance, haste",
+          "scenario": [
+            "samut_live_speed_buffs_only_other_controlled_creatures_and_discounts_only_noncreature_generic_cost"
+          ]
+        },
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "samut_live_speed_buffs_only_other_controlled_creatures_and_discounts_only_noncreature_generic_cost"
+          ]
+        },
+        {
+          "obligation": "Other creatures you control get +X/+0, where X is your speed.",
+          "scenario": [
+            "samut_live_speed_buffs_only_other_controlled_creatures_and_discounts_only_noncreature_generic_cost"
+          ]
+        },
+        {
+          "obligation": "Noncreature spells you cast cost {X} less to cast, where X is your speed.",
+          "scenario": [
+            "samut_live_speed_buffs_only_other_controlled_creatures_and_discounts_only_noncreature_generic_cost"
+          ]
+        }
+      ],
+      "definition_binding_note": "Four live +1/+0 fragments at speed>=1/2/3/4 exactly implement the rules-bounded speed domain0..4, without a shared-engine change. The cost reduction uses the existing dynamic ControllerSpeed scalar directly."
+    },
+    {
+      "name": "Silken Strength",
+      "definition_path": "src/card_definitions/dft/silken_strength.rs",
+      "printed_obligations": [
+        "Flash",
+        "Enchant creature or Vehicle",
+        "When this Aura enters, untap enchanted permanent.",
+        "Enchanted permanent gets +1/+2 and has reach."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Flash",
+          "scenario": [
+            "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+          ]
+        },
+        {
+          "obligation": "Enchant creature or Vehicle",
+          "scenario": [
+            "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+          ]
+        },
+        {
+          "obligation": "When this Aura enters, untap enchanted permanent.",
+          "scenario": [
+            "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+          ]
+        },
+        {
+          "obligation": "Enchanted permanent gets +1/+2 and has reach.",
+          "scenario": [
+            "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Sita Varma, Masked Racer",
+      "definition_path": "src/card_definitions/dft/sita_varma_masked_racer.rs",
+      "printed_obligations": [
+        "Exhaust \u2014 {X}{G}{G}{U}: Put X +1/+1 counters on Sita Varma. Then you may have the base power and toughness of each other creature you control become equal to Sita Varma's power until end of turn. (Activate each exhaust ability only once.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_final",
+      "outcome_proofs": [
+        "sita_varma_adds_x_counters_then_optionally_samples_its_power_for_other_creatures_base_stats"
+      ],
+      "shared_contracts": [
+        "Frozen dft_trigger_facts_engine: captured discard event counts and delayed exact-creature combat callback preserving original controller through source departure, control change and double strike",
+        "Frozen dft_linked_entry + dft_retained_copy: CR614.13 linked successful exiles, no-reuse reservations, actual cast-X, repeated permanent copy origin and exact linked target legality",
+        "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
+        "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Exhaust \u2014 {X}{G}{G}{U}: Put X +1/+1 counters on Sita Varma. Then you may have the base power and toughness of each other creature you control become equal to Sita Varma's power until end of turn. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "sita_varma_adds_x_counters_then_optionally_samples_its_power_for_other_creatures_base_stats"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Skyserpent Seeker",
+      "definition_path": "src/card_definitions/dft/skyserpent_seeker.rs",
+      "printed_obligations": [
+        "Flying, deathtouch",
+        "Exhaust \u2014 {4}: Reveal cards from the top of your library until you reveal two land cards. Put those land cards onto the battlefield tapped and the rest on the bottom of your library in a random order. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_search",
+      "outcome_proofs": [
+        "skyserpent_reveals_through_two_lands_puts_them_tapped_and_adds_a_counter_even_if_empty"
+      ],
+      "shared_contracts": [
+        "dft_queries: private optional zone search, abilityless facts, dynamic search bounds, nth-land reveal, deterministic library RNG and owned raw/index/restore",
+        "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
+        "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Flying, deathtouch",
+          "scenario": [
+            "skyserpent_reveals_through_two_lands_puts_them_tapped_and_adds_a_counter_even_if_empty"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {4}: Reveal cards from the top of your library until you reveal two land cards. Put those land cards onto the battlefield tapped and the rest on the bottom of your library in a random order. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "skyserpent_reveals_through_two_lands_puts_them_tapped_and_adds_a_counter_even_if_empty"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Stampeding Scurryfoot",
+      "definition_path": "src/card_definitions/dft/stampeding_scurryfoot.rs",
+      "printed_obligations": [
+        "Exhaust \u2014 {3}{G}: Put a +1/+1 counter on this creature. Create a 3/3 green Elephant creature token. (Activate each exhaust ability only once.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "stampeding_scurryfoot_exhaust_adds_a_counter_and_an_actual_three_three_elephant_once"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Exhaust \u2014 {3}{G}: Put a +1/+1 counter on this creature. Create a 3/3 green Elephant creature token. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "stampeding_scurryfoot_exhaust_adds_a_counter_and_an_actual_three_three_elephant_once"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Terrian, World Tyrant",
+      "definition_path": "src/card_definitions/dft/terrian_world_tyrant.rs",
+      "printed_obligations": [
+        "Printed type, cost, colors and power/toughness; no rules abilities"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_basics",
+      "outcome_proofs": [
+        "vanilla_creatures_have_printed_stats_costs_types_and_no_rules_abilities"
+      ],
+      "shared_contracts": [
+        "engine keyword/combat, cycling costs and exact source/trigger X; saddle contributor legality, attack event and cleanup"
+      ],
+      "obligation_evidence": [
+        {
+          "obligation": "Printed type, cost, colors and power/toughness; no rules abilities",
+          "scenario": [
+            "vanilla_creatures_have_printed_stats_costs_types_and_no_rules_abilities"
+          ]
+        }
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
+    },
+    {
+      "name": "Thundering Broodwagon",
+      "definition_path": "src/card_definitions/dft/thundering_broodwagon.rs",
+      "printed_obligations": [
+        "Reach, menace",
+        "When this Vehicle enters, destroy target nonland permanent an opponent controls with mana value 4 or less.",
+        "Crew 3",
+        "Cycling {2} ({2}, Discard this card: Draw a card.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+        "thundering_broodwagon_destroys_only_opposing_small_nonland_or_cycles_without_entry_effect"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Reach, menace",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "thundering_broodwagon_destroys_only_opposing_small_nonland_or_cycles_without_entry_effect"
+          ]
+        },
+        {
+          "obligation": "When this Vehicle enters, destroy target nonland permanent an opponent controls with mana value 4 or less.",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "thundering_broodwagon_destroys_only_opposing_small_nonland_or_cycles_without_entry_effect"
+          ]
+        },
+        {
+          "obligation": "Crew 3",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "thundering_broodwagon_destroys_only_opposing_small_nonland_or_cycles_without_entry_effect"
+          ]
+        },
+        {
+          "obligation": "Cycling {2} ({2}, Discard this card: Draw a card.)",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "thundering_broodwagon_destroys_only_opposing_small_nonland_or_cycles_without_entry_effect"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Thunderous Velocipede",
+      "definition_path": "src/card_definitions/dft/thunderous_velocipede.rs",
+      "printed_obligations": [
+        "Trample",
+        "Each other Vehicle and creature you control enters with an additional +1/+1 counter on it if its mana value is 4 or less. Otherwise, it enters with three additional +1/+1 counters on it.",
+        "Crew 3"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+        "thunderous_velocipede_adds_one_or_three_on_actual_entry_without_counting_itself_or_artifacts"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Trample",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "thunderous_velocipede_adds_one_or_three_on_actual_entry_without_counting_itself_or_artifacts"
+          ]
+        },
+        {
+          "obligation": "Each other Vehicle and creature you control enters with an additional +1/+1 counter on it if its mana value is 4 or less. Otherwise, it enters with three additional +1/+1 counters on it.",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "thunderous_velocipede_adds_one_or_three_on_actual_entry_without_counting_itself_or_artifacts"
+          ]
+        },
+        {
+          "obligation": "Crew 3",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "thunderous_velocipede_adds_one_or_three_on_actual_entry_without_counting_itself_or_artifacts"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Veloheart Bike",
+      "definition_path": "src/card_definitions/dft/veloheart_bike.rs",
+      "printed_obligations": [
+        "When this Vehicle enters, you gain 2 life.",
+        "{T}: Add one mana of any color.",
+        "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+        "debris_beetle_entry_drains_three_and_bike_entry_gains_two_before_any_crewing"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "When this Vehicle enters, you gain 2 life.",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "debris_beetle_entry_drains_three_and_bike_entry_gains_two_before_any_crewing"
+          ]
+        },
+        {
+          "obligation": "{T}: Add one mana of any color.",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "debris_beetle_entry_drains_three_and_bike_entry_gains_two_before_any_crewing"
+          ]
+        },
+        {
+          "obligation": "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
+            "debris_beetle_entry_drains_three_and_bike_entry_gains_two_before_any_crewing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Venomsac Lagac",
+      "definition_path": "src/card_definitions/dft/venomsac_lagac.rs",
+      "printed_obligations": [
+        "Deathtouch",
+        "Whenever this creature attacks while saddled, it gets +0/+3 until end of turn.",
+        "Saddle 2 (Tap any number of other creatures you control with total power 2 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_basics",
+      "outcome_proofs": [
+        "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+      ],
+      "shared_contracts": [
+        "engine keyword/combat, cycling costs and exact source/trigger X; saddle contributor legality, attack event and cleanup"
+      ],
+      "obligation_evidence": [
+        {
+          "obligation": "Deathtouch",
+          "scenario": [
+            "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+          ]
+        },
+        {
+          "obligation": "Whenever this creature attacks while saddled, it gets +0/+3 until end of turn.",
+          "scenario": [
+            "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+          ]
+        },
+        {
+          "obligation": "Saddle 2 (Tap any number of other creatures you control with total power 2 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+          "scenario": [
+            "printed_saddle_thresholds_trigger_only_saddled_attacks_and_buffs_expire"
+          ]
+        }
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
+    },
+    {
+      "name": "Veteran Beastrider",
+      "definition_path": "src/card_definitions/dft/veteran_beastrider.rs",
+      "printed_obligations": [
+        "At the beginning of your end step, untap each creature you control.",
+        "{2}{G}{W}: Creatures you control get +1/+1 until end of turn."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_vehicles",
+      "outcome_proofs": [
+        "veteran_beastrider_grows_its_controller_only_and_untaps_at_its_own_end_step"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_counters: CR614.12 preview, creature-or-Vehicle union dedup, simultaneous batches, counter replacement/prohibition and funding equivalence",
+        "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
+        "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "At the beginning of your end step, untap each creature you control.",
+          "scenario": [
+            "veteran_beastrider_grows_its_controller_only_and_untaps_at_its_own_end_step"
+          ]
+        },
+        {
+          "obligation": "{2}{G}{W}: Creatures you control get +1/+1 until end of turn.",
+          "scenario": [
+            "veteran_beastrider_grows_its_controller_only_and_untaps_at_its_own_end_step"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Voyage Home",
+      "definition_path": "src/card_definitions/dft/voyage_home.rs",
+      "printed_obligations": [
+        "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
+        "You draw three cards and gain 3 life."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "voyage_home_affinity_reduces_only_generic_cost_and_always_draws_three_gains_three"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
+          "scenario": [
+            "voyage_home_affinity_reduces_only_generic_cost_and_always_draws_three_gains_three"
+          ]
+        },
+        {
+          "obligation": "You draw three cards and gain 3 life.",
+          "scenario": [
+            "voyage_home_affinity_reduces_only_generic_cost_and_always_draws_three_gains_three"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Webstrike Elite",
+      "definition_path": "src/card_definitions/dft/webstrike_elite.rs",
+      "printed_obligations": [
+        "Reach",
+        "Cycling {X}{G}{G} ({X}{G}{G}, Discard this card: Draw a card.)",
+        "When you cycle this card, destroy up to one target artifact or enchantment with mana value X."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_basics",
+      "outcome_proofs": [
+        "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x"
+      ],
+      "shared_contracts": [
+        "engine keyword/combat, cycling costs and exact source/trigger X; saddle contributor legality, attack event and cleanup"
+      ],
+      "obligation_evidence": [
+        {
+          "obligation": "Reach",
+          "scenario": [
+            "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x"
+          ]
+        },
+        {
+          "obligation": "Cycling {X}{G}{G} ({X}{G}{G}, Discard this card: Draw a card.)",
+          "scenario": [
+            "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x"
+          ]
+        },
+        {
+          "obligation": "When you cycle this card, destroy up to one target artifact or enchantment with mana value X.",
+          "scenario": [
+            "cycling_optional_triggers_can_decline_and_webstrike_uses_exact_chosen_x"
+          ]
+        }
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
+    },
+    {
+      "name": "Winter, Cursed Rider",
+      "definition_path": "src/card_definitions/dft/winter_cursed_rider.rs",
+      "printed_obligations": [
+        "Ward\u2014Pay 2 life.",
+        "Artifacts you control have \"Ward\u2014Pay 2 life.\"",
+        "Exhaust \u2014 {2}{U}{B}, {T}, Exile X artifact cards from your graveyard: Each other nonartifact creature gets -X/-X until end of turn. (Activate each exhaust ability only once.)"
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_final",
+      "outcome_proofs": [
+        "winter_declared_artifact_exile_count_weakens_other_nonartifact_creatures_of_both_controllers",
+        "winter_has_one_native_life_ward_and_grants_one_independent_life_ward_to_each_controlled_artifact"
+      ],
+      "shared_contracts": [
+        "Frozen dft_trigger_facts_engine: captured discard event counts and delayed exact-creature combat callback preserving original controller through source departure, control change and double strike",
+        "Frozen dft_linked_entry + dft_retained_copy: CR614.13 linked successful exiles, no-reuse reservations, actual cast-X, repeated permanent copy origin and exact linked target legality",
+        "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
+        "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Ward\u2014Pay 2 life.",
+          "scenario": [
+            "winter_declared_artifact_exile_count_weakens_other_nonartifact_creatures_of_both_controllers",
+            "winter_has_one_native_life_ward_and_grants_one_independent_life_ward_to_each_controlled_artifact"
+          ]
+        },
+        {
+          "obligation": "Artifacts you control have \"Ward\u2014Pay 2 life.\"",
+          "scenario": [
+            "winter_declared_artifact_exile_count_weakens_other_nonartifact_creatures_of_both_controllers",
+            "winter_has_one_native_life_ward_and_grants_one_independent_life_ward_to_each_controlled_artifact"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {2}{U}{B}, {T}, Exile X artifact cards from your graveyard: Each other nonartifact creature gets -X/-X until end of turn. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "winter_declared_artifact_exile_count_weakens_other_nonartifact_creatures_of_both_controllers",
+            "winter_has_one_native_life_ward_and_grants_one_independent_life_ward_to_each_controlled_artifact"
+          ]
+        }
+      ],
+      "definition_binding_note": "The accepted engine-reentry GrowFilteredScaled operation uses CountFilter Battlefield creature/excludeArtifact/otherSource with declared PaidAdditionalCostSelectionCount, freezing amount and recipients once. The independent artifact Ward callback is a Granted(Ward) template rather than a second native Ward."
+    },
+    {
+      "name": "Zahur, Glory's Past",
+      "definition_path": "src/card_definitions/dft/zahur_glory_s_past.rs",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Sacrifice another creature: Surveil 1. Activate only once each turn.",
+        "Max speed \u2014 Whenever a nontoken creature you control dies, create a tapped 2/2 black Zombie creature token."
+      ],
+      "status": "root-verified complete",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "zahur_sacrifices_another_once_per_turn_surveils_and_only_nontoken_deaths_make_tapped_zombies"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
+      "obligation_evidence": [
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "zahur_sacrifices_another_once_per_turn_surveils_and_only_nontoken_deaths_make_tapped_zombies"
+          ]
+        },
+        {
+          "obligation": "Sacrifice another creature: Surveil 1. Activate only once each turn.",
+          "scenario": [
+            "zahur_sacrifices_another_once_per_turn_surveils_and_only_nontoken_deaths_make_tapped_zombies"
+          ]
+        },
+        {
+          "obligation": "Max speed \u2014 Whenever a nontoken creature you control dies, create a tapped 2/2 black Zombie creature token.",
+          "scenario": [
+            "zahur_sacrifices_another_once_per_turn_surveils_and_only_nontoken_deaths_make_tapped_zombies"
+          ]
+        }
+      ]
+    }
+  ],
+  "engine_checkpoint": "Accepted cf5046f15:3643 passes, two independent runtime/source reviews and frozen core cache reuse; all80 green/multicolor identities have passing outcome evidence.",
+  "authored_card_count": 80,
+  "pending_authorship_count": 0,
+  "status_counts": {
+    "root-verified complete": 80
+  },
+  "validation_report": {
+    "accepted_revision": "cf5046f1588a00817b3cecf9d31910552c16ff96",
+    "tested_revision": "cb1fbff78d2ef80c0eb4e15b5e9215e84f464ca9",
+    "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+    "report_sha256": "e0abbcfff29c74afed8fb40e924f6116ce7d619145bb49b416e802fea41dd9b9",
+    "passing_green_cases": 85,
+    "targets": [
+      {
+        "target": "dft_green_multi_cards_artifacts",
+        "passed": 11,
+        "failed": 0,
+        "execution_seconds": 0.01647006299754139
+      },
+      {
+        "target": "dft_green_multi_cards_basics",
+        "passed": 5,
+        "failed": 0,
+        "execution_seconds": 0.01621493700076826
+      },
+      {
+        "target": "dft_green_multi_cards_exhaust",
+        "passed": 8,
+        "failed": 0,
+        "execution_seconds": 0.016470019007101655
+      },
+      {
+        "target": "dft_green_multi_cards_final",
+        "passed": 14,
+        "failed": 0,
+        "execution_seconds": 0.016620979993604124
+      },
+      {
+        "target": "dft_green_multi_cards_gearhulks",
+        "passed": 12,
+        "failed": 0,
+        "execution_seconds": 0.0163155070040375
+      },
+      {
+        "target": "dft_green_multi_cards_legends",
+        "passed": 10,
+        "failed": 0,
+        "execution_seconds": 0.01644087300519459
+      },
+      {
+        "target": "dft_green_multi_cards_search",
+        "passed": 13,
+        "failed": 0,
+        "execution_seconds": 0.016446814013761468
+      },
+      {
+        "target": "dft_green_multi_cards_vehicles",
+        "passed": 12,
+        "failed": 0,
+        "execution_seconds": 0.01627418800489977
+      }
+    ],
+    "all_recorded_scenario_references_found_and_passed": true
+  },
+  "resolved_dependencies": [
+    {
+      "dependency": "ordinary permanent-spell capture for the triggering single-copy instruction",
+      "consumer": "Mendicant Core, Guidelight",
+      "engine_revision": "9000f120b",
+      "evidence": "docs/aetherdrift-permanent-cast-copy-evidence.json",
+      "actual_card_target": "dft_green_multi_cards_final",
+      "passed": 14
+    }
+  ]
+}

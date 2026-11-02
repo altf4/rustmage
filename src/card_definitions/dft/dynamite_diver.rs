@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Full pinned Oracle/XMage: both payment contribution and the exact death trigger.
+const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Ability,
+    fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+        Keywords::CREW_SADDLE_PLUS_TWO,
+    )],
+}];
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(1, 1),
+    keywords: Keywords::CREW_SADDLE_PLUS_TWO,
+    static_groups: GROUPS,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDies,
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Any)),
+        program: &[Instruction::Damage(1)],
+    }],
+    extras: &CardExtras {
+        static_ability_groups: GROUPS,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

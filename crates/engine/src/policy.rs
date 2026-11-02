@@ -320,6 +320,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceCounterGraveyard { .. }
+            | Action::AnnounceGraveyardAdditionalCosts { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
@@ -339,9 +340,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnouncePlaneswalkerGrant { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
+            | Action::AnnounceRetainedCopyAbility { .. }
+            | Action::AnnounceEmbalm { .. }
             | Action::AnnounceBorrowedAbility { .. }
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. }
+            | Action::AnnounceGrantedMana { .. }
+            | Action::AnnounceSelfGrantedMana { .. }
             | Action::AnnounceBorrowedMana { .. }
             | Action::AnnounceGraveyardBorrowedMana { .. } => -2,
             Action::PayCosts { .. }
@@ -426,6 +431,26 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseEntryValue { .. } => 0,
+            Action::ChooseEntryExile { .. } => 60,
+            Action::FinishEntryExile => 0,
+            Action::ChooseEntryCopy { object } => {
+                // Copying an unchanged as-entry copier grants a fresh choice.
+                // Prefer a completed blueprint and decline copy-only loops.
+                object
+                    .and_then(|reference| {
+                        observation
+                            .objects
+                            .iter()
+                            .find(|object| object.reference == reference)
+                    })
+                    .map_or(0, |object| {
+                        if object.card.entry_copy().is_some() {
+                            -1
+                        } else {
+                            60
+                        }
+                    })
+            }
             Action::ChooseEntryBehold { object } => {
                 if object.is_some() {
                     80
@@ -629,7 +654,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::CancelAttackDeclaration
             | Action::AbortAttackPayment
             | Action::AbortFaceUpPayment => -100,
-            Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
+            Action::Pass
+            | Action::FinishAttackers
+            | Action::FinishBlockers
+            | Action::FinishAdditionalCostGroup => 0,
         }
     };
     actions

@@ -1,0 +1,3466 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "status": "full fixed gameplay corpus passed; final release acceptance passed",
+  "source_revision": "9848e4caff86c49f737633ae1906612c4268e9bb",
+  "engine_source": "7cb154785ff4893759854032ddf243e7beeedba3",
+  "engine_freeze": "9848e4caf",
+  "input_sha256": "a1a34225afaa0bad310c5c4ee1d009030e4f423e4b5377445048d4dc0f31a012",
+  "report": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/report.json",
+  "report_sha256": "313d3b967a2f37a1da0bc5c8aa85d1a953e69991c3d0a11da4c63355f5565cbe",
+  "verification": {
+    "actual_spell_colors": 31,
+    "catalogue": "23df33ad8677e7ceb9cb9f392cf17c8fa354955bf7fadaaa4b89557cecc0eac7",
+    "corpus_gate": "passed",
+    "decisions": 67835,
+    "decisions_per_second": 496.3241038585929,
+    "decks": [
+      {
+        "cards": {
+          "Interface Ace": 4,
+          "Island": 14,
+          "Mu Yanling, Wind Rider": 4,
+          "Nimble Thopterist": 4,
+          "Plains": 14,
+          "Roadside Assistance": 4,
+          "Spotcycle Scouter": 4,
+          "Stock Up": 4,
+          "Voyager Glidecar": 4,
+          "Voyager Quickwelder": 4
+        },
+        "dft_membership": true,
+        "name": "White-blue artifacts",
+        "size": 60,
+        "standard_validation": true
+      },
+      {
+        "cards": {
+          "Carrion Cruiser": 4,
+          "Deathless Pilot": 4,
+          "Engine Rat": 4,
+          "Gas Guzzler": 4,
+          "Island": 14,
+          "Keen Buccaneer": 4,
+          "Midnight Mangler": 4,
+          "Scrounging Skyray": 4,
+          "Stall Out": 4,
+          "Swamp": 14
+        },
+        "dft_membership": true,
+        "name": "Blue-black speed",
+        "size": 60,
+        "standard_validation": true
+      },
+      {
+        "cards": {
+          "Burnout Bashtronaut": 4,
+          "Dynamite Diver": 4,
+          "Endrider Catalyzer": 4,
+          "Endrider Spikespitter": 4,
+          "Engine Rat": 4,
+          "Gas Guzzler": 4,
+          "Kickoff Celebrations": 4,
+          "Lightning Strike": 4,
+          "Mountain": 14,
+          "Swamp": 14
+        },
+        "dft_membership": true,
+        "name": "Black-red speed",
+        "size": 60,
+        "standard_validation": true
+      },
+      {
+        "cards": {
+          "Afterburner Expert": 4,
+          "Beastrider Vanguard": 4,
+          "Draconautics Engineer": 4,
+          "Elvish Refueler": 4,
+          "Forest": 14,
+          "Gilded Ghoda": 4,
+          "Greasewrench Goblin": 4,
+          "Lightning Strike": 4,
+          "Mountain": 14,
+          "Stampeding Scurryfoot": 4
+        },
+        "dft_membership": true,
+        "name": "Red-green exhaust",
+        "size": 60,
+        "standard_validation": true
+      },
+      {
+        "cards": {
+          "Alacrian Jaguar": 4,
+          "Brightfield Glider": 4,
+          "Brightfield Mustang": 4,
+          "Bulwark Ox": 4,
+          "Canyon Vaulter": 4,
+          "Cloudspire Captain": 4,
+          "Defend the Rider": 4,
+          "District Mascot": 4,
+          "Forest": 14,
+          "Plains": 14
+        },
+        "dft_membership": true,
+        "name": "Green-white saddle",
+        "size": 60,
+        "standard_validation": true
+      },
+      {
+        "cards": {
+          "Back on Track": 4,
+          "Basri, Tomorrow's Champion": 4,
+          "Cryptcaller Chariot": 4,
+          "Cursecloth Wrappings": 4,
+          "Deathless Pilot": 4,
+          "Grim Bauble": 4,
+          "Nesting Bot": 4,
+          "Plains": 14,
+          "Swamp": 14,
+          "Swiftwing Assailant": 4
+        },
+        "dft_membership": true,
+        "name": "White-black recursion",
+        "size": 60,
+        "standard_validation": true
+      },
+      {
+        "cards": {
+          "Draconautics Engineer": 4,
+          "Fuel the Flames": 4,
+          "Greasewrench Goblin": 4,
+          "Island": 14,
+          "Keen Buccaneer": 4,
+          "Lightning Strike": 4,
+          "Mindspring Merfolk": 4,
+          "Mountain": 14,
+          "Rangers' Refueler": 4,
+          "Scrounging Skyray": 4
+        },
+        "dft_membership": true,
+        "name": "Blue-red exhaust",
+        "size": 60,
+        "standard_validation": true
+      },
+      {
+        "cards": {
+          "Afterburner Expert": 4,
+          "Back on Track": 4,
+          "Carrion Cruiser": 4,
+          "Deathless Pilot": 4,
+          "Dredger's Insight": 4,
+          "Forest": 14,
+          "Molt Tender": 4,
+          "Ooze Patrol": 4,
+          "Pothole Mole": 4,
+          "Swamp": 14
+        },
+        "dft_membership": true,
+        "name": "Black-green graveyards",
+        "size": 60,
+        "standard_validation": true
+      },
+      {
+        "cards": {
+          "Basri, Tomorrow's Champion": 4,
+          "Brightfield Mustang": 4,
+          "Canyon Vaulter": 4,
+          "Cloudspire Captain": 4,
+          "Dracosaur Auxiliary": 4,
+          "Full Throttle": 4,
+          "Gilded Ghoda": 4,
+          "Mountain": 14,
+          "Plains": 14,
+          "Roadside Assistance": 4
+        },
+        "dft_membership": true,
+        "name": "Red-white combat",
+        "size": 60,
+        "standard_validation": true
+      },
+      {
+        "cards": {
+          "Elvish Refueler": 4,
+          "Forest": 14,
+          "Island": 14,
+          "Keen Buccaneer": 4,
+          "Oviya, Automech Artisan": 4,
+          "Rangers' Refueler": 4,
+          "Stampeding Scurryfoot": 4,
+          "Stock Up": 4,
+          "Veloheart Bike": 4,
+          "Waxen Shapethief": 4
+        },
+        "dft_membership": true,
+        "name": "Green-blue value",
+        "size": 60,
+        "standard_validation": true
+      }
+    ],
+    "games": [
+      {
+        "cards_cast": [
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Interface Ace",
+          "Keen Buccaneer",
+          "Midnight Mangler",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Roadside Assistance",
+          "Scrounging Skyray",
+          "Spotcycle Scouter",
+          "Stock Up",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1042,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 30888,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 60,
+        "pair": 0,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1042,
+        "seed": 921400,
+        "starting_player": "P0",
+        "trace_digest": "62eb4a7e0f8d13ae",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921400-swapped-false.json",
+        "turns": 20,
+        "witnesses": {
+          "actual_cast": 20,
+          "crew_paid": 79,
+          "cycling": 1,
+          "discard": 2,
+          "exhaust_paid": 1,
+          "speed_increased": 2,
+          "speed_started": 1,
+          "token_created": 5
+        }
+      },
+      {
+        "cards_cast": [
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Interface Ace",
+          "Keen Buccaneer",
+          "Midnight Mangler",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Roadside Assistance",
+          "Spotcycle Scouter",
+          "Stock Up",
+          "Voyager Glidecar",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1410,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 36304,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 70,
+        "pair": 0,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1410,
+        "seed": 921400,
+        "starting_player": "P0",
+        "trace_digest": "fc15d83a1b547db0",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921400-swapped-true.json",
+        "turns": 25,
+        "witnesses": {
+          "actual_cast": 28,
+          "crew_paid": 87,
+          "cycling": 4,
+          "discard": 6,
+          "exhaust_paid": 2,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 6
+        }
+      },
+      {
+        "cards_cast": [
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Interface Ace",
+          "Keen Buccaneer",
+          "Midnight Mangler",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Roadside Assistance",
+          "Spotcycle Scouter",
+          "Stock Up",
+          "Voyager Glidecar",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1723,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 31608,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 91,
+        "pair": 0,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1723,
+        "seed": 921401,
+        "starting_player": "P1",
+        "trace_digest": "c438ac83de5f1308",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921401-swapped-false.json",
+        "turns": 36,
+        "witnesses": {
+          "actual_cast": 34,
+          "crew_paid": 77,
+          "cycling": 4,
+          "discard": 6,
+          "exhaust_paid": 2,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 9
+        }
+      },
+      {
+        "cards_cast": [
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Gas Guzzler",
+          "Interface Ace",
+          "Keen Buccaneer",
+          "Midnight Mangler",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Roadside Assistance",
+          "Spotcycle Scouter",
+          "Stall Out",
+          "Stock Up",
+          "Voyager Glidecar",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1632,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 35876,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 89,
+        "pair": 0,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1632,
+        "seed": 921401,
+        "starting_player": "P1",
+        "trace_digest": "a276d9f3dad50bda",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921401-swapped-true.json",
+        "turns": 28,
+        "witnesses": {
+          "actual_cast": 28,
+          "crew_paid": 113,
+          "cycling": 4,
+          "discard": 6,
+          "exhaust_paid": 2,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 4
+        }
+      },
+      {
+        "cards_cast": [
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Interface Ace",
+          "Keen Buccaneer",
+          "Midnight Mangler",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Roadside Assistance",
+          "Spotcycle Scouter",
+          "Stock Up",
+          "Voyager Glidecar",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1310,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 31620,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 63,
+        "pair": 0,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1310,
+        "seed": 921402,
+        "starting_player": "P0",
+        "trace_digest": "77782b16f0a2cf12",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921402-swapped-false.json",
+        "turns": 24,
+        "witnesses": {
+          "actual_cast": 26,
+          "crew_paid": 81,
+          "cycling": 6,
+          "discard": 7,
+          "exhaust_paid": 1,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 5
+        }
+      },
+      {
+        "cards_cast": [
+          "Deathless Pilot",
+          "Engine Rat",
+          "Interface Ace",
+          "Keen Buccaneer",
+          "Midnight Mangler",
+          "Nimble Thopterist",
+          "Roadside Assistance",
+          "Spotcycle Scouter",
+          "Stall Out",
+          "Stock Up",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 788,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 27008,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 38,
+        "pair": 0,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 788,
+        "seed": 921402,
+        "starting_player": "P0",
+        "trace_digest": "9199bc4dcea451b7",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921402-swapped-true.json",
+        "turns": 19,
+        "witnesses": {
+          "actual_cast": 19,
+          "crew_paid": 36,
+          "cycling": 1,
+          "discard": 3,
+          "exhaust_paid": 2,
+          "token_created": 4
+        }
+      },
+      {
+        "cards_cast": [
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Interface Ace",
+          "Midnight Mangler",
+          "Mu Yanling, Wind Rider",
+          "Roadside Assistance",
+          "Stock Up",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 689,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 27600,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 34,
+        "pair": 0,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 689,
+        "seed": 921403,
+        "starting_player": "P1",
+        "trace_digest": "620235c42078eb56",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921403-swapped-false.json",
+        "turns": 17,
+        "witnesses": {
+          "actual_cast": 15,
+          "crew_paid": 30,
+          "cycling": 1,
+          "discard": 1,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 4
+        }
+      },
+      {
+        "cards_cast": [
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Interface Ace",
+          "Keen Buccaneer",
+          "Midnight Mangler",
+          "Nimble Thopterist",
+          "Spotcycle Scouter",
+          "Stock Up",
+          "Voyager Glidecar",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1931,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 34000,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 102,
+        "pair": 0,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1931,
+        "seed": 921403,
+        "starting_player": "P1",
+        "trace_digest": "0bc9114df79b026d",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921403-swapped-true.json",
+        "turns": 30,
+        "witnesses": {
+          "actual_cast": 33,
+          "crew_paid": 144,
+          "cycling": 7,
+          "discard": 8,
+          "exhaust_paid": 1,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 3
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Draconautics Engineer",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Endrider Spikespitter",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Greasewrench Goblin",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 660,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26880,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 31,
+        "pair": 1,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 660,
+        "seed": 921500,
+        "starting_player": "P0",
+        "trace_digest": "6e795b4a631b03da",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921500-swapped-false.json",
+        "turns": 20,
+        "witnesses": {
+          "actual_cast": 18,
+          "discard": 3,
+          "exhaust_paid": 4,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Beastrider Vanguard",
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Endrider Spikespitter",
+          "Engine Rat",
+          "Greasewrench Goblin",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 393,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 25452,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 18,
+        "pair": 1,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 393,
+        "seed": 921500,
+        "starting_player": "P0",
+        "trace_digest": "be530a1b67c41587",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921500-swapped-true.json",
+        "turns": 13,
+        "witnesses": {
+          "actual_cast": 10,
+          "exhaust_paid": 2,
+          "graveyard_return": 1,
+          "speed_increased": 1,
+          "speed_started": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Beastrider Vanguard",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Gilded Ghoda",
+          "Lightning Strike",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 462,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26296,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 20,
+        "pair": 1,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 462,
+        "seed": 921501,
+        "starting_player": "P1",
+        "trace_digest": "5ea92118536d7471",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921501-swapped-false.json",
+        "turns": 15,
+        "witnesses": {
+          "actual_cast": 11,
+          "exhaust_paid": 1,
+          "saddled_attack": 4,
+          "speed_started": 1,
+          "token_created": 5
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Beastrider Vanguard",
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Endrider Spikespitter",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Gilded Ghoda",
+          "Greasewrench Goblin",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 822,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26152,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 40,
+        "pair": 1,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 822,
+        "seed": 921501,
+        "starting_player": "P1",
+        "trace_digest": "3b99f0c93852cfd5",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921501-swapped-true.json",
+        "turns": 24,
+        "witnesses": {
+          "actual_cast": 24,
+          "discard": 2,
+          "exhaust_paid": 3,
+          "graveyard_return": 1,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Beastrider Vanguard",
+          "Burnout Bashtronaut",
+          "Draconautics Engineer",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Gilded Ghoda",
+          "Kickoff Celebrations",
+          "Lightning Strike"
+        ],
+        "decisions": 604,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 27648,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 30,
+        "pair": 1,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 604,
+        "seed": 921502,
+        "starting_player": "P0",
+        "trace_digest": "683da9a62b8af79c",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921502-swapped-false.json",
+        "turns": 20,
+        "witnesses": {
+          "actual_cast": 15,
+          "discard": 1,
+          "exhaust_paid": 5,
+          "graveyard_return": 1,
+          "saddled_attack": 3,
+          "speed_increased": 2,
+          "speed_started": 1,
+          "token_created": 5
+        }
+      },
+      {
+        "cards_cast": [
+          "Beastrider Vanguard",
+          "Draconautics Engineer",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Endrider Spikespitter",
+          "Engine Rat",
+          "Gilded Ghoda",
+          "Greasewrench Goblin",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 887,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26436,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 46,
+        "pair": 1,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 887,
+        "seed": 921502,
+        "starting_player": "P0",
+        "trace_digest": "a097674dfbcc5352",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921502-swapped-true.json",
+        "turns": 27,
+        "witnesses": {
+          "actual_cast": 19,
+          "discard": 2,
+          "exhaust_paid": 5,
+          "max_speed": 1,
+          "saddled_attack": 5,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 6
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Draconautics Engineer",
+          "Elvish Refueler",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Gilded Ghoda",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 413,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26748,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 19,
+        "pair": 1,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 413,
+        "seed": 921503,
+        "starting_player": "P1",
+        "trace_digest": "7ca28a8dd7a15957",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921503-swapped-false.json",
+        "turns": 13,
+        "witnesses": {
+          "actual_cast": 11,
+          "discard": 1,
+          "exhaust_paid": 3,
+          "saddled_attack": 4,
+          "speed_started": 1,
+          "token_created": 7
+        }
+      },
+      {
+        "cards_cast": [
+          "Beastrider Vanguard",
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Endrider Spikespitter",
+          "Greasewrench Goblin",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 726,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 25968,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 37,
+        "pair": 1,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 726,
+        "seed": 921503,
+        "starting_player": "P1",
+        "trace_digest": "3be8c37b2566f885",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921503-swapped-true.json",
+        "turns": 21,
+        "witnesses": {
+          "actual_cast": 20,
+          "discard": 3,
+          "exhaust_paid": 2,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Back on Track",
+          "Basri, Tomorrow's Champion",
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Cursecloth Wrappings",
+          "Deathless Pilot",
+          "Defend the Rider"
+        ],
+        "decisions": 385,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26468,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 19,
+        "pair": 2,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 385,
+        "seed": 921600,
+        "starting_player": "P0",
+        "trace_digest": "6659d02e88083105",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921600-swapped-false.json",
+        "turns": 13,
+        "witnesses": {
+          "actual_cast": 11,
+          "graveyard_return": 1,
+          "saddled_attack": 1,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Basri, Tomorrow's Champion",
+          "Brightfield Glider",
+          "Bulwark Ox",
+          "Cloudspire Captain",
+          "Cryptcaller Chariot",
+          "Deathless Pilot",
+          "District Mascot",
+          "Grim Bauble",
+          "Nesting Bot"
+        ],
+        "decisions": 672,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 27300,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 34,
+        "pair": 2,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 672,
+        "seed": 921600,
+        "starting_player": "P0",
+        "trace_digest": "72130813a4b536f2",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921600-swapped-true.json",
+        "turns": 20,
+        "witnesses": {
+          "actual_cast": 16,
+          "crew_paid": 8,
+          "cycling": 1,
+          "discard": 1,
+          "exert_paid": 4,
+          "saddled_attack": 5,
+          "speed_increased": 1,
+          "speed_started": 1,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Back on Track",
+          "Brightfield Glider",
+          "Bulwark Ox",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Cryptcaller Chariot",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "District Mascot",
+          "Grim Bauble",
+          "Nesting Bot",
+          "Swiftwing Assailant"
+        ],
+        "decisions": 616,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 28404,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 28,
+        "pair": 2,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 616,
+        "seed": 921601,
+        "starting_player": "P1",
+        "trace_digest": "b602be3ebbab610a",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921601-swapped-false.json",
+        "turns": 18,
+        "witnesses": {
+          "actual_cast": 15,
+          "crew_paid": 14,
+          "graveyard_return": 1,
+          "max_speed": 1,
+          "saddled_attack": 2,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 3
+        }
+      },
+      {
+        "cards_cast": [
+          "Basri, Tomorrow's Champion",
+          "Brightfield Glider",
+          "Brightfield Mustang",
+          "Bulwark Ox",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Cryptcaller Chariot",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "District Mascot",
+          "Grim Bauble",
+          "Swiftwing Assailant"
+        ],
+        "decisions": 906,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 28056,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 38,
+        "pair": 2,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 906,
+        "seed": 921601,
+        "starting_player": "P1",
+        "trace_digest": "3a4d4073a38e465c",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921601-swapped-true.json",
+        "turns": 25,
+        "witnesses": {
+          "actual_cast": 18,
+          "crew_paid": 7,
+          "cycling": 1,
+          "discard": 1,
+          "exert_paid": 8,
+          "saddled_attack": 8,
+          "speed_increased": 1,
+          "speed_started": 1,
+          "token_created": 6
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Basri, Tomorrow's Champion",
+          "Brightfield Glider",
+          "Brightfield Mustang",
+          "Bulwark Ox",
+          "Cloudspire Captain",
+          "Cryptcaller Chariot",
+          "Cursecloth Wrappings",
+          "District Mascot",
+          "Nesting Bot",
+          "Swiftwing Assailant"
+        ],
+        "decisions": 782,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 28520,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 38,
+        "pair": 2,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 782,
+        "seed": 921602,
+        "starting_player": "P0",
+        "trace_digest": "f05ab7a02d8d2f98",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921602-swapped-false.json",
+        "turns": 20,
+        "witnesses": {
+          "actual_cast": 16,
+          "crew_paid": 17,
+          "embalm_paid": 1,
+          "embalmed_token": 1,
+          "exert_paid": 2,
+          "max_speed": 1,
+          "saddled_attack": 2,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 3
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Back on Track",
+          "Brightfield Glider",
+          "Brightfield Mustang",
+          "Bulwark Ox",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Cursecloth Wrappings",
+          "Deathless Pilot",
+          "Nesting Bot"
+        ],
+        "decisions": 892,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 28108,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 44,
+        "pair": 2,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 892,
+        "seed": 921602,
+        "starting_player": "P0",
+        "trace_digest": "9a48395845a8607c",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921602-swapped-true.json",
+        "turns": 23,
+        "witnesses": {
+          "actual_cast": 15,
+          "cycling": 3,
+          "discard": 3,
+          "embalm_paid": 1,
+          "embalmed_token": 1,
+          "graveyard_return": 3,
+          "max_speed": 1,
+          "saddled_attack": 9,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 10
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Back on Track",
+          "Basri, Tomorrow's Champion",
+          "Brightfield Glider",
+          "Bulwark Ox",
+          "Cloudspire Captain",
+          "Defend the Rider",
+          "District Mascot",
+          "Grim Bauble",
+          "Nesting Bot"
+        ],
+        "decisions": 807,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26560,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 40,
+        "pair": 2,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 807,
+        "seed": 921603,
+        "starting_player": "P1",
+        "trace_digest": "217407bf5380ae4a",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921603-swapped-false.json",
+        "turns": 24,
+        "witnesses": {
+          "actual_cast": 16,
+          "exert_paid": 10,
+          "graveyard_return": 1,
+          "max_speed": 1,
+          "saddled_attack": 6,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 8
+        }
+      },
+      {
+        "cards_cast": [
+          "Brightfield Glider",
+          "Brightfield Mustang",
+          "Bulwark Ox",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Cursecloth Wrappings",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "District Mascot",
+          "Grim Bauble",
+          "Swiftwing Assailant"
+        ],
+        "decisions": 750,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 29344,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 34,
+        "pair": 2,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 750,
+        "seed": 921603,
+        "starting_player": "P1",
+        "trace_digest": "0b0301b10fa5e960",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921603-swapped-true.json",
+        "turns": 24,
+        "witnesses": {
+          "actual_cast": 18,
+          "cycling": 1,
+          "discard": 1,
+          "embalm_paid": 1,
+          "embalmed_token": 1,
+          "exert_paid": 3,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 6
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Dredger's Insight",
+          "Greasewrench Goblin",
+          "Keen Buccaneer",
+          "Lightning Strike",
+          "Mindspring Merfolk",
+          "Molt Tender",
+          "Ooze Patrol",
+          "Pothole Mole",
+          "Rangers' Refueler",
+          "Scrounging Skyray"
+        ],
+        "decisions": 860,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 27192,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 45,
+        "pair": 3,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 860,
+        "seed": 921700,
+        "starting_player": "P0",
+        "trace_digest": "88a49641df34b55f",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921700-swapped-false.json",
+        "turns": 22,
+        "witnesses": {
+          "actual_cast": 30,
+          "crew_paid": 8,
+          "cycling": 1,
+          "discard": 2,
+          "exhaust_paid": 8,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Fuel the Flames",
+          "Greasewrench Goblin",
+          "Mindspring Merfolk",
+          "Molt Tender",
+          "Pothole Mole"
+        ],
+        "decisions": 412,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26328,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 22,
+        "pair": 3,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 412,
+        "seed": 921700,
+        "starting_player": "P0",
+        "trace_digest": "b69ee58bc5454d4d",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921700-swapped-true.json",
+        "turns": 12,
+        "witnesses": {
+          "actual_cast": 12,
+          "crew_paid": 4,
+          "cycling": 2,
+          "discard": 3,
+          "exhaust_paid": 3,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Dredger's Insight",
+          "Greasewrench Goblin",
+          "Keen Buccaneer",
+          "Lightning Strike",
+          "Mindspring Merfolk",
+          "Ooze Patrol",
+          "Pothole Mole"
+        ],
+        "decisions": 913,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 30276,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 44,
+        "pair": 3,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 913,
+        "seed": 921701,
+        "starting_player": "P1",
+        "trace_digest": "61576825922590d6",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921701-swapped-false.json",
+        "turns": 25,
+        "witnesses": {
+          "actual_cast": 21,
+          "crew_paid": 26,
+          "discard": 3,
+          "exhaust_paid": 7,
+          "graveyard_return": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Dredger's Insight",
+          "Keen Buccaneer",
+          "Lightning Strike",
+          "Molt Tender",
+          "Ooze Patrol",
+          "Pothole Mole",
+          "Rangers' Refueler"
+        ],
+        "decisions": 799,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 29676,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 39,
+        "pair": 3,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 799,
+        "seed": 921701,
+        "starting_player": "P1",
+        "trace_digest": "c7d857ceb0d35a3b",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921701-swapped-true.json",
+        "turns": 21,
+        "witnesses": {
+          "actual_cast": 20,
+          "crew_paid": 14,
+          "cycling": 3,
+          "discard": 5,
+          "exhaust_paid": 7,
+          "graveyard_return": 2,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Dredger's Insight",
+          "Greasewrench Goblin",
+          "Keen Buccaneer",
+          "Mindspring Merfolk",
+          "Molt Tender",
+          "Pothole Mole",
+          "Rangers' Refueler",
+          "Scrounging Skyray"
+        ],
+        "decisions": 962,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 38332,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 48,
+        "pair": 3,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 962,
+        "seed": 921702,
+        "starting_player": "P0",
+        "trace_digest": "77358287718303e9",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921702-swapped-false.json",
+        "turns": 19,
+        "witnesses": {
+          "actual_cast": 21,
+          "crew_paid": 54,
+          "cycling": 3,
+          "discard": 6,
+          "exhaust_paid": 9,
+          "graveyard_return": 2,
+          "token_created": 4
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Dredger's Insight",
+          "Fuel the Flames",
+          "Greasewrench Goblin",
+          "Keen Buccaneer",
+          "Lightning Strike",
+          "Molt Tender",
+          "Ooze Patrol",
+          "Pothole Mole"
+        ],
+        "decisions": 644,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 27064,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 37,
+        "pair": 3,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 644,
+        "seed": 921702,
+        "starting_player": "P0",
+        "trace_digest": "3040ebac2797897a",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921702-swapped-true.json",
+        "turns": 18,
+        "witnesses": {
+          "actual_cast": 20,
+          "crew_paid": 11,
+          "cycling": 1,
+          "discard": 3,
+          "exhaust_paid": 5,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Dredger's Insight",
+          "Greasewrench Goblin",
+          "Keen Buccaneer",
+          "Mindspring Merfolk",
+          "Molt Tender",
+          "Ooze Patrol",
+          "Rangers' Refueler"
+        ],
+        "decisions": 795,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 27564,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 42,
+        "pair": 3,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 795,
+        "seed": 921703,
+        "starting_player": "P1",
+        "trace_digest": "116bc3155870d9f1",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921703-swapped-false.json",
+        "turns": 18,
+        "witnesses": {
+          "actual_cast": 18,
+          "crew_paid": 32,
+          "cycling": 2,
+          "discard": 4,
+          "exhaust_paid": 7,
+          "graveyard_return": 4,
+          "token_created": 3
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Dredger's Insight",
+          "Lightning Strike",
+          "Mindspring Merfolk",
+          "Ooze Patrol",
+          "Pothole Mole",
+          "Rangers' Refueler"
+        ],
+        "decisions": 616,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 27252,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 24,
+        "pair": 3,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 616,
+        "seed": 921703,
+        "starting_player": "P1",
+        "trace_digest": "23666d541a52ada4",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921703-swapped-true.json",
+        "turns": 19,
+        "witnesses": {
+          "actual_cast": 13,
+          "crew_paid": 13,
+          "cycling": 2,
+          "discard": 2,
+          "exhaust_paid": 3,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Basri, Tomorrow's Champion",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Elvish Refueler",
+          "Gilded Ghoda",
+          "Keen Buccaneer",
+          "Rangers' Refueler",
+          "Roadside Assistance",
+          "Veloheart Bike"
+        ],
+        "decisions": 439,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 27584,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 19,
+        "pair": 4,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 439,
+        "seed": 921800,
+        "starting_player": "P0",
+        "trace_digest": "76b48a003616ae07",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921800-swapped-false.json",
+        "turns": 13,
+        "witnesses": {
+          "actual_cast": 11,
+          "crew_paid": 5,
+          "discard": 1,
+          "exert_paid": 6,
+          "exhaust_paid": 2,
+          "saddled_attack": 4,
+          "token_created": 9
+        }
+      },
+      {
+        "cards_cast": [
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Dracosaur Auxiliary",
+          "Elvish Refueler",
+          "Full Throttle",
+          "Gilded Ghoda",
+          "Keen Buccaneer",
+          "Oviya, Automech Artisan",
+          "Rangers' Refueler",
+          "Roadside Assistance",
+          "Stampeding Scurryfoot",
+          "Stock Up",
+          "Veloheart Bike"
+        ],
+        "decisions": 726,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 29676,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 29,
+        "pair": 4,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 726,
+        "seed": 921800,
+        "starting_player": "P0",
+        "trace_digest": "a1a6d5ae1071b49d",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921800-swapped-true.json",
+        "turns": 20,
+        "witnesses": {
+          "actual_cast": 18,
+          "crew_paid": 15,
+          "cycling": 2,
+          "discard": 3,
+          "exhaust_paid": 4,
+          "saddled_attack": 5,
+          "token_created": 4
+        }
+      },
+      {
+        "cards_cast": [
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Dracosaur Auxiliary",
+          "Elvish Refueler",
+          "Full Throttle",
+          "Keen Buccaneer",
+          "Rangers' Refueler",
+          "Stock Up",
+          "Veloheart Bike",
+          "Waxen Shapethief"
+        ],
+        "decisions": 981,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 32132,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 48,
+        "pair": 4,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 981,
+        "seed": 921801,
+        "starting_player": "P1",
+        "trace_digest": "64eb27ba454b42f0",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921801-swapped-false.json",
+        "turns": 26,
+        "witnesses": {
+          "actual_cast": 15,
+          "as_entry_copy": 1,
+          "crew_paid": 24,
+          "cycling": 2,
+          "discard": 10,
+          "exhaust_paid": 5,
+          "extra_combat": 4,
+          "saddled_attack": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Elvish Refueler",
+          "Full Throttle",
+          "Oviya, Automech Artisan",
+          "Rangers' Refueler",
+          "Roadside Assistance",
+          "Stampeding Scurryfoot",
+          "Veloheart Bike",
+          "Waxen Shapethief"
+        ],
+        "decisions": 754,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 27692,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 28,
+        "pair": 4,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 754,
+        "seed": 921801,
+        "starting_player": "P1",
+        "trace_digest": "c4ef95401ae5aa97",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921801-swapped-true.json",
+        "turns": 20,
+        "witnesses": {
+          "actual_cast": 14,
+          "as_entry_copy": 1,
+          "crew_paid": 11,
+          "exhaust_paid": 4,
+          "extra_combat": 4,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Cloudspire Captain",
+          "Dracosaur Auxiliary",
+          "Full Throttle",
+          "Gilded Ghoda",
+          "Keen Buccaneer",
+          "Rangers' Refueler",
+          "Roadside Assistance",
+          "Stock Up",
+          "Waxen Shapethief"
+        ],
+        "decisions": 742,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 27452,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 33,
+        "pair": 4,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 742,
+        "seed": 921802,
+        "starting_player": "P0",
+        "trace_digest": "0447ae2c86a5bc25",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921802-swapped-false.json",
+        "turns": 19,
+        "witnesses": {
+          "actual_cast": 14,
+          "as_entry_copy": 2,
+          "crew_paid": 15,
+          "cycling": 2,
+          "discard": 4,
+          "exhaust_paid": 5,
+          "extra_combat": 2,
+          "saddled_attack": 3,
+          "token_created": 3
+        }
+      },
+      {
+        "cards_cast": [
+          "Basri, Tomorrow's Champion",
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Elvish Refueler",
+          "Keen Buccaneer",
+          "Oviya, Automech Artisan",
+          "Roadside Assistance",
+          "Stampeding Scurryfoot",
+          "Stock Up",
+          "Veloheart Bike"
+        ],
+        "decisions": 454,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26352,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 21,
+        "pair": 4,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 454,
+        "seed": 921802,
+        "starting_player": "P0",
+        "trace_digest": "3ccc6b51185990ac",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921802-swapped-true.json",
+        "turns": 14,
+        "witnesses": {
+          "actual_cast": 14,
+          "crew_paid": 2,
+          "cycling": 1,
+          "discard": 2,
+          "exert_paid": 6,
+          "exhaust_paid": 1,
+          "saddled_attack": 2,
+          "token_created": 4
+        }
+      },
+      {
+        "cards_cast": [
+          "Basri, Tomorrow's Champion",
+          "Cloudspire Captain",
+          "Full Throttle",
+          "Oviya, Automech Artisan",
+          "Stampeding Scurryfoot",
+          "Stock Up"
+        ],
+        "decisions": 468,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26084,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 20,
+        "pair": 4,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 468,
+        "seed": 921803,
+        "starting_player": "P1",
+        "trace_digest": "412919e44f70c109",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921803-swapped-false.json",
+        "turns": 15,
+        "witnesses": {
+          "actual_cast": 6,
+          "discard": 4,
+          "exert_paid": 6,
+          "exhaust_paid": 3,
+          "extra_combat": 2,
+          "token_created": 3
+        }
+      },
+      {
+        "cards_cast": [
+          "Basri, Tomorrow's Champion",
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Dracosaur Auxiliary",
+          "Elvish Refueler",
+          "Gilded Ghoda",
+          "Rangers' Refueler",
+          "Stock Up",
+          "Waxen Shapethief"
+        ],
+        "decisions": 706,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 27704,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 31,
+        "pair": 4,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 706,
+        "seed": 921803,
+        "starting_player": "P1",
+        "trace_digest": "4352b956927e1ed5",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921803-swapped-true.json",
+        "turns": 19,
+        "witnesses": {
+          "actual_cast": 12,
+          "as_entry_copy": 1,
+          "crew_paid": 2,
+          "cycling": 2,
+          "discard": 2,
+          "exert_paid": 9,
+          "exhaust_paid": 2,
+          "saddled_attack": 5,
+          "token_created": 8
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Deathless Pilot",
+          "Dredger's Insight",
+          "Interface Ace",
+          "Molt Tender",
+          "Mu Yanling, Wind Rider",
+          "Pothole Mole",
+          "Stock Up"
+        ],
+        "decisions": 450,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 27024,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 23,
+        "pair": 5,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 450,
+        "seed": 921900,
+        "starting_player": "P0",
+        "trace_digest": "bf393b8fbc9aae88",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921900-swapped-false.json",
+        "turns": 14,
+        "witnesses": {
+          "actual_cast": 11,
+          "crew_paid": 3,
+          "exhaust_paid": 2,
+          "graveyard_return": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Dredger's Insight",
+          "Interface Ace",
+          "Molt Tender",
+          "Nimble Thopterist",
+          "Pothole Mole",
+          "Roadside Assistance",
+          "Spotcycle Scouter",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1397,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 36720,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 72,
+        "pair": 5,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1397,
+        "seed": 921900,
+        "starting_player": "P0",
+        "trace_digest": "00defc0861da0982",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921900-swapped-true.json",
+        "turns": 25,
+        "witnesses": {
+          "actual_cast": 21,
+          "crew_paid": 104,
+          "graveyard_return": 3,
+          "token_created": 5
+        }
+      },
+      {
+        "cards_cast": [
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Dredger's Insight",
+          "Interface Ace",
+          "Molt Tender",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Ooze Patrol",
+          "Spotcycle Scouter",
+          "Stock Up",
+          "Voyager Glidecar",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1225,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 33140,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 64,
+        "pair": 5,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1225,
+        "seed": 921901,
+        "starting_player": "P1",
+        "trace_digest": "c358ea138836a477",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921901-swapped-false.json",
+        "turns": 25,
+        "witnesses": {
+          "actual_cast": 24,
+          "crew_paid": 84,
+          "exhaust_paid": 2,
+          "graveyard_return": 3,
+          "token_created": 6
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Interface Ace",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Ooze Patrol",
+          "Pothole Mole",
+          "Roadside Assistance",
+          "Stock Up",
+          "Voyager Glidecar",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1477,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 37088,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 72,
+        "pair": 5,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1477,
+        "seed": 921901,
+        "starting_player": "P1",
+        "trace_digest": "753d5ed6ea21048a",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921901-swapped-true.json",
+        "turns": 26,
+        "witnesses": {
+          "actual_cast": 23,
+          "crew_paid": 128,
+          "exhaust_paid": 1,
+          "graveyard_return": 1,
+          "token_created": 8
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Dredger's Insight",
+          "Interface Ace",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Roadside Assistance",
+          "Spotcycle Scouter",
+          "Stock Up",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1286,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 37536,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 70,
+        "pair": 5,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1286,
+        "seed": 921902,
+        "starting_player": "P0",
+        "trace_digest": "08289d75bb12230b",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921902-swapped-false.json",
+        "turns": 21,
+        "witnesses": {
+          "actual_cast": 25,
+          "crew_paid": 108,
+          "exhaust_paid": 2,
+          "graveyard_return": 1,
+          "token_created": 9
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Dredger's Insight",
+          "Molt Tender",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Ooze Patrol",
+          "Pothole Mole",
+          "Roadside Assistance",
+          "Stock Up",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 1619,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 37696,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 88,
+        "pair": 5,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1619,
+        "seed": 921902,
+        "starting_player": "P0",
+        "trace_digest": "6199c1c394fb2bdd",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921902-swapped-true.json",
+        "turns": 25,
+        "witnesses": {
+          "actual_cast": 28,
+          "crew_paid": 140,
+          "exhaust_paid": 3,
+          "graveyard_return": 3,
+          "token_created": 10
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Dredger's Insight",
+          "Interface Ace",
+          "Molt Tender",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Ooze Patrol",
+          "Pothole Mole",
+          "Roadside Assistance",
+          "Spotcycle Scouter",
+          "Stock Up",
+          "Voyager Glidecar"
+        ],
+        "decisions": 1653,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 38840,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 80,
+        "pair": 5,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1653,
+        "seed": 921903,
+        "starting_player": "P1",
+        "trace_digest": "4dfbc03edd6d55f0",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921903-swapped-false.json",
+        "turns": 27,
+        "witnesses": {
+          "actual_cast": 30,
+          "crew_paid": 124,
+          "exhaust_paid": 4,
+          "graveyard_return": 6,
+          "token_created": 7
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Carrion Cruiser",
+          "Deathless Pilot",
+          "Dredger's Insight",
+          "Interface Ace",
+          "Molt Tender",
+          "Mu Yanling, Wind Rider",
+          "Nimble Thopterist",
+          "Ooze Patrol",
+          "Pothole Mole",
+          "Roadside Assistance",
+          "Spotcycle Scouter",
+          "Stock Up",
+          "Voyager Glidecar",
+          "Voyager Quickwelder"
+        ],
+        "decisions": 2211,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 39548,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 116,
+        "pair": 5,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 2211,
+        "seed": 921903,
+        "starting_player": "P1",
+        "trace_digest": "15db651d2a61dc96",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921903-swapped-true.json",
+        "turns": 32,
+        "witnesses": {
+          "actual_cast": 37,
+          "crew_paid": 200,
+          "exhaust_paid": 2,
+          "graveyard_return": 1,
+          "token_created": 5
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Brightfield Glider",
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Carrion Cruiser",
+          "Cloudspire Captain",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "District Mascot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Keen Buccaneer",
+          "Midnight Mangler"
+        ],
+        "decisions": 1184,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26908,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 62,
+        "pair": 6,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1184,
+        "seed": 922000,
+        "starting_player": "P0",
+        "trace_digest": "e73cf188044051a9",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922000-swapped-false.json",
+        "turns": 28,
+        "witnesses": {
+          "actual_cast": 25,
+          "crew_paid": 23,
+          "cycling": 5,
+          "discard": 6,
+          "exhaust_paid": 1,
+          "max_speed": 1,
+          "saddled_attack": 7,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Carrion Cruiser",
+          "Cloudspire Captain",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "District Mascot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Midnight Mangler",
+          "Scrounging Skyray"
+        ],
+        "decisions": 896,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26516,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 45,
+        "pair": 6,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 896,
+        "seed": 922000,
+        "starting_player": "P0",
+        "trace_digest": "e6cb59a43e81d501",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922000-swapped-true.json",
+        "turns": 23,
+        "witnesses": {
+          "actual_cast": 18,
+          "crew_paid": 18,
+          "cycling": 1,
+          "discard": 1,
+          "saddled_attack": 6,
+          "speed_increased": 2,
+          "speed_started": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Brightfield Glider",
+          "Bulwark Ox",
+          "Carrion Cruiser",
+          "Cloudspire Captain",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Keen Buccaneer",
+          "Midnight Mangler"
+        ],
+        "decisions": 667,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 27992,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 35,
+        "pair": 6,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 667,
+        "seed": 922001,
+        "starting_player": "P1",
+        "trace_digest": "9ac90b41cbc95ce0",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922001-swapped-false.json",
+        "turns": 17,
+        "witnesses": {
+          "actual_cast": 16,
+          "crew_paid": 30,
+          "cycling": 1,
+          "discard": 1,
+          "saddled_attack": 5,
+          "speed_started": 1,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Brightfield Glider",
+          "Brightfield Mustang",
+          "Bulwark Ox",
+          "Canyon Vaulter",
+          "Deathless Pilot",
+          "District Mascot",
+          "Gas Guzzler",
+          "Keen Buccaneer",
+          "Midnight Mangler"
+        ],
+        "decisions": 960,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 27132,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 40,
+        "pair": 6,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 960,
+        "seed": 922001,
+        "starting_player": "P1",
+        "trace_digest": "6a889ec817d4204d",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922001-swapped-true.json",
+        "turns": 24,
+        "witnesses": {
+          "actual_cast": 24,
+          "crew_paid": 7,
+          "cycling": 3,
+          "discard": 3,
+          "max_speed": 1,
+          "saddled_attack": 9,
+          "speed_increased": 3,
+          "speed_started": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Brightfield Glider",
+          "Brightfield Mustang",
+          "Bulwark Ox",
+          "Carrion Cruiser",
+          "Cloudspire Captain",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "District Mascot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Keen Buccaneer",
+          "Midnight Mangler",
+          "Stall Out"
+        ],
+        "decisions": 1341,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 28212,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 70,
+        "pair": 6,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1341,
+        "seed": 922002,
+        "starting_player": "P0",
+        "trace_digest": "845362d2acbd5c1c",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922002-swapped-false.json",
+        "turns": 34,
+        "witnesses": {
+          "actual_cast": 28,
+          "crew_paid": 9,
+          "cycling": 3,
+          "discard": 5,
+          "exhaust_paid": 2,
+          "max_speed": 1,
+          "saddled_attack": 11,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Brightfield Glider",
+          "Brightfield Mustang",
+          "Bulwark Ox",
+          "Canyon Vaulter",
+          "Carrion Cruiser",
+          "Cloudspire Captain",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "District Mascot",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Keen Buccaneer",
+          "Midnight Mangler"
+        ],
+        "decisions": 1182,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26216,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 60,
+        "pair": 6,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1182,
+        "seed": 922002,
+        "starting_player": "P0",
+        "trace_digest": "8b6dff3832a4e800",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922002-swapped-true.json",
+        "turns": 33,
+        "witnesses": {
+          "actual_cast": 26,
+          "crew_paid": 11,
+          "cycling": 2,
+          "discard": 4,
+          "exhaust_paid": 2,
+          "max_speed": 1,
+          "saddled_attack": 7,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Brightfield Glider",
+          "Brightfield Mustang",
+          "Bulwark Ox",
+          "Canyon Vaulter",
+          "Carrion Cruiser",
+          "Cloudspire Captain",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "District Mascot",
+          "Gas Guzzler",
+          "Keen Buccaneer",
+          "Midnight Mangler",
+          "Scrounging Skyray"
+        ],
+        "decisions": 905,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 27004,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 42,
+        "pair": 6,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 905,
+        "seed": 922003,
+        "starting_player": "P1",
+        "trace_digest": "cf9085c1b133cb1a",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922003-swapped-false.json",
+        "turns": 28,
+        "witnesses": {
+          "actual_cast": 21,
+          "crew_paid": 7,
+          "cycling": 2,
+          "discard": 4,
+          "exhaust_paid": 2,
+          "max_speed": 1,
+          "saddled_attack": 6,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Alacrian Jaguar",
+          "Bulwark Ox",
+          "Carrion Cruiser",
+          "Cloudspire Captain",
+          "Deathless Pilot",
+          "Defend the Rider",
+          "Engine Rat",
+          "Keen Buccaneer"
+        ],
+        "decisions": 429,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 25404,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 20,
+        "pair": 6,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 429,
+        "seed": 922003,
+        "starting_player": "P1",
+        "trace_digest": "4f81ffa3f0f0d6d8",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922003-swapped-true.json",
+        "turns": 15,
+        "witnesses": {
+          "actual_cast": 12,
+          "crew_paid": 2,
+          "cycling": 1,
+          "discard": 2,
+          "exhaust_paid": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Keen Buccaneer",
+          "Lightning Strike",
+          "Oviya, Automech Artisan",
+          "Rangers' Refueler",
+          "Stampeding Scurryfoot",
+          "Stock Up",
+          "Veloheart Bike",
+          "Waxen Shapethief"
+        ],
+        "decisions": 1065,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 31764,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 55,
+        "pair": 7,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1065,
+        "seed": 922100,
+        "starting_player": "P0",
+        "trace_digest": "9c792c47801fc666",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922100-swapped-false.json",
+        "turns": 27,
+        "witnesses": {
+          "actual_cast": 27,
+          "as_entry_copy": 1,
+          "crew_paid": 24,
+          "discard": 7,
+          "exhaust_paid": 5,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Oviya, Automech Artisan",
+          "Rangers' Refueler",
+          "Stock Up"
+        ],
+        "decisions": 802,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26476,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 35,
+        "pair": 7,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 802,
+        "seed": 922100,
+        "starting_player": "P0",
+        "trace_digest": "52374aae6682a3c9",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922100-swapped-true.json",
+        "turns": 21,
+        "witnesses": {
+          "actual_cast": 25,
+          "crew_paid": 2,
+          "cycling": 3,
+          "discard": 5,
+          "exhaust_paid": 3,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Endrider Spikespitter",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Oviya, Automech Artisan",
+          "Rangers' Refueler",
+          "Stock Up",
+          "Veloheart Bike",
+          "Waxen Shapethief"
+        ],
+        "decisions": 884,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 30564,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 44,
+        "pair": 7,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 884,
+        "seed": 922101,
+        "starting_player": "P1",
+        "trace_digest": "259fb09bf983da51",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922101-swapped-false.json",
+        "turns": 22,
+        "witnesses": {
+          "actual_cast": 23,
+          "as_entry_copy": 1,
+          "crew_paid": 11,
+          "cycling": 2,
+          "discard": 4,
+          "exhaust_paid": 2,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Endrider Spikespitter",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Keen Buccaneer",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Oviya, Automech Artisan",
+          "Rangers' Refueler",
+          "Stampeding Scurryfoot",
+          "Stock Up",
+          "Veloheart Bike",
+          "Waxen Shapethief"
+        ],
+        "decisions": 1466,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 34108,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 77,
+        "pair": 7,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1466,
+        "seed": 922101,
+        "starting_player": "P1",
+        "trace_digest": "8e08659c3b5de949",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922101-swapped-true.json",
+        "turns": 29,
+        "witnesses": {
+          "actual_cast": 44,
+          "as_entry_copy": 2,
+          "crew_paid": 41,
+          "discard": 5,
+          "exhaust_paid": 9,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Elvish Refueler",
+          "Engine Rat",
+          "Oviya, Automech Artisan",
+          "Stock Up",
+          "Veloheart Bike"
+        ],
+        "decisions": 573,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 25972,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 29,
+        "pair": 7,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 573,
+        "seed": 922102,
+        "starting_player": "P0",
+        "trace_digest": "16b97cde8d2a12e5",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922102-swapped-false.json",
+        "turns": 17,
+        "witnesses": {
+          "actual_cast": 12,
+          "crew_paid": 2,
+          "cycling": 1,
+          "discard": 1,
+          "exhaust_paid": 1,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Endrider Catalyzer",
+          "Endrider Spikespitter",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Keen Buccaneer",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Oviya, Automech Artisan",
+          "Rangers' Refueler",
+          "Stampeding Scurryfoot",
+          "Stock Up",
+          "Veloheart Bike",
+          "Waxen Shapethief"
+        ],
+        "decisions": 1378,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 30180,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 72,
+        "pair": 7,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1378,
+        "seed": 922102,
+        "starting_player": "P0",
+        "trace_digest": "da02a9671760a50b",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922102-swapped-true.json",
+        "turns": 32,
+        "witnesses": {
+          "actual_cast": 35,
+          "as_entry_copy": 3,
+          "crew_paid": 47,
+          "discard": 4,
+          "exhaust_paid": 4,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Elvish Refueler",
+          "Endrider Catalyzer",
+          "Endrider Spikespitter",
+          "Engine Rat",
+          "Gas Guzzler",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Oviya, Automech Artisan",
+          "Rangers' Refueler",
+          "Stampeding Scurryfoot",
+          "Stock Up",
+          "Veloheart Bike"
+        ],
+        "decisions": 1131,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 29848,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 60,
+        "pair": 7,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1131,
+        "seed": 922103,
+        "starting_player": "P1",
+        "trace_digest": "7bac15e6d858caba",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922103-swapped-false.json",
+        "turns": 28,
+        "witnesses": {
+          "actual_cast": 31,
+          "crew_paid": 23,
+          "cycling": 3,
+          "discard": 5,
+          "exhaust_paid": 4,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Burnout Bashtronaut",
+          "Dynamite Diver",
+          "Endrider Spikespitter",
+          "Engine Rat",
+          "Kickoff Celebrations",
+          "Lightning Strike",
+          "Oviya, Automech Artisan",
+          "Veloheart Bike"
+        ],
+        "decisions": 345,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26652,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 19,
+        "pair": 7,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 345,
+        "seed": 922103,
+        "starting_player": "P1",
+        "trace_digest": "235a116c4c2d9bc4",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922103-swapped-true.json",
+        "turns": 11,
+        "witnesses": {
+          "actual_cast": 11,
+          "cycling": 2,
+          "discard": 3,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Back on Track",
+          "Basri, Tomorrow's Champion",
+          "Beastrider Vanguard",
+          "Cryptcaller Chariot",
+          "Draconautics Engineer",
+          "Gilded Ghoda",
+          "Lightning Strike",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 396,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 25788,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 18,
+        "pair": 8,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 396,
+        "seed": 922200,
+        "starting_player": "P0",
+        "trace_digest": "de10de399a7fc552",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922200-swapped-false.json",
+        "turns": 13,
+        "witnesses": {
+          "actual_cast": 10,
+          "crew_paid": 2,
+          "exert_paid": 2,
+          "exhaust_paid": 3,
+          "graveyard_return": 1,
+          "saddled_attack": 3,
+          "token_created": 7
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Basri, Tomorrow's Champion",
+          "Beastrider Vanguard",
+          "Draconautics Engineer",
+          "Gilded Ghoda",
+          "Greasewrench Goblin",
+          "Grim Bauble",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 515,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26104,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 29,
+        "pair": 8,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 515,
+        "seed": 922200,
+        "starting_player": "P0",
+        "trace_digest": "49854fc3c2c5a34a",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922200-swapped-true.json",
+        "turns": 16,
+        "witnesses": {
+          "actual_cast": 11,
+          "exert_paid": 8,
+          "exhaust_paid": 1,
+          "saddled_attack": 2,
+          "token_created": 6
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Basri, Tomorrow's Champion",
+          "Beastrider Vanguard",
+          "Cryptcaller Chariot",
+          "Cursecloth Wrappings",
+          "Gilded Ghoda",
+          "Greasewrench Goblin",
+          "Grim Bauble",
+          "Lightning Strike",
+          "Nesting Bot"
+        ],
+        "decisions": 1010,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 28160,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 53,
+        "pair": 8,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 1010,
+        "seed": 922201,
+        "starting_player": "P1",
+        "trace_digest": "a115a017b7021866",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922201-swapped-false.json",
+        "turns": 27,
+        "witnesses": {
+          "actual_cast": 20,
+          "crew_paid": 6,
+          "cycling": 1,
+          "discard": 2,
+          "embalm_paid": 4,
+          "embalmed_token": 4,
+          "exert_paid": 7,
+          "exhaust_paid": 7,
+          "graveyard_return": 5,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 14
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Cryptcaller Chariot",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Gilded Ghoda",
+          "Grim Bauble",
+          "Lightning Strike",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 369,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 25684,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 15,
+        "pair": 8,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 369,
+        "seed": 922201,
+        "starting_player": "P1",
+        "trace_digest": "bb9739219d863e1f",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922201-swapped-true.json",
+        "turns": 13,
+        "witnesses": {
+          "actual_cast": 10,
+          "crew_paid": 1,
+          "exhaust_paid": 2,
+          "graveyard_return": 1,
+          "token_created": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Cryptcaller Chariot",
+          "Draconautics Engineer",
+          "Greasewrench Goblin",
+          "Grim Bauble"
+        ],
+        "decisions": 250,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 25648,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 10,
+        "pair": 8,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 250,
+        "seed": 922202,
+        "starting_player": "P0",
+        "trace_digest": "6ed55a8ce0680093",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922202-swapped-false.json",
+        "turns": 9,
+        "witnesses": {
+          "actual_cast": 6,
+          "discard": 2,
+          "exhaust_paid": 3,
+          "graveyard_return": 1
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Beastrider Vanguard",
+          "Cursecloth Wrappings",
+          "Deathless Pilot",
+          "Draconautics Engineer",
+          "Lightning Strike",
+          "Nesting Bot",
+          "Stampeding Scurryfoot",
+          "Swiftwing Assailant"
+        ],
+        "decisions": 416,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 25932,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 20,
+        "pair": 8,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 416,
+        "seed": 922202,
+        "starting_player": "P0",
+        "trace_digest": "b22efdb94ebb5796",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922202-swapped-true.json",
+        "turns": 13,
+        "witnesses": {
+          "actual_cast": 13,
+          "embalm_paid": 1,
+          "embalmed_token": 1,
+          "exhaust_paid": 1,
+          "max_speed": 1,
+          "speed_increased": 3,
+          "speed_started": 1,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Afterburner Expert",
+          "Back on Track",
+          "Basri, Tomorrow's Champion",
+          "Draconautics Engineer",
+          "Greasewrench Goblin",
+          "Nesting Bot",
+          "Stampeding Scurryfoot",
+          "Swiftwing Assailant"
+        ],
+        "decisions": 521,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26564,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 24,
+        "pair": 8,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 521,
+        "seed": 922203,
+        "starting_player": "P1",
+        "trace_digest": "5f38e3fafcbc0d8a",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922203-swapped-false.json",
+        "turns": 16,
+        "witnesses": {
+          "actual_cast": 12,
+          "exert_paid": 6,
+          "exhaust_paid": 5,
+          "graveyard_return": 3,
+          "speed_increased": 2,
+          "speed_started": 1,
+          "token_created": 9
+        }
+      },
+      {
+        "cards_cast": [
+          "Cursecloth Wrappings",
+          "Elvish Refueler",
+          "Gilded Ghoda",
+          "Stampeding Scurryfoot"
+        ],
+        "decisions": 488,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 25956,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 22,
+        "pair": 8,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 488,
+        "seed": 922203,
+        "starting_player": "P1",
+        "trace_digest": "5a301a5e451c119a",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922203-swapped-true.json",
+        "turns": 15,
+        "witnesses": {
+          "actual_cast": 6,
+          "cycling": 3,
+          "discard": 3,
+          "exhaust_paid": 2,
+          "saddled_attack": 2,
+          "token_created": 3
+        }
+      },
+      {
+        "cards_cast": [
+          "Basri, Tomorrow's Champion",
+          "Dracosaur Auxiliary",
+          "Greasewrench Goblin",
+          "Keen Buccaneer",
+          "Mindspring Merfolk",
+          "Rangers' Refueler",
+          "Roadside Assistance",
+          "Scrounging Skyray"
+        ],
+        "decisions": 653,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26444,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 31,
+        "pair": 9,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 653,
+        "seed": 922300,
+        "starting_player": "P0",
+        "trace_digest": "b443361389bf74f0",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922300-swapped-false.json",
+        "turns": 19,
+        "witnesses": {
+          "actual_cast": 13,
+          "crew_paid": 8,
+          "cycling": 3,
+          "discard": 5,
+          "exert_paid": 8,
+          "exhaust_paid": 5,
+          "token_created": 5
+        }
+      },
+      {
+        "cards_cast": [
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Draconautics Engineer",
+          "Dracosaur Auxiliary",
+          "Fuel the Flames",
+          "Roadside Assistance"
+        ],
+        "decisions": 431,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 25696,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 15,
+        "pair": 9,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 431,
+        "seed": 922300,
+        "starting_player": "P0",
+        "trace_digest": "4158f941741b168b",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922300-swapped-true.json",
+        "turns": 15,
+        "witnesses": {
+          "actual_cast": 9,
+          "cycling": 1,
+          "discard": 1,
+          "saddled_attack": 3,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Draconautics Engineer",
+          "Dracosaur Auxiliary",
+          "Fuel the Flames",
+          "Full Throttle",
+          "Gilded Ghoda",
+          "Keen Buccaneer",
+          "Lightning Strike",
+          "Rangers' Refueler",
+          "Roadside Assistance"
+        ],
+        "decisions": 789,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26824,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 35,
+        "pair": 9,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 789,
+        "seed": 922301,
+        "starting_player": "P1",
+        "trace_digest": "f515898357dfc5c4",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922301-swapped-false.json",
+        "turns": 24,
+        "witnesses": {
+          "actual_cast": 16,
+          "crew_paid": 2,
+          "cycling": 2,
+          "discard": 4,
+          "exhaust_paid": 3,
+          "extra_combat": 4,
+          "saddled_attack": 1,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Draconautics Engineer",
+          "Gilded Ghoda",
+          "Greasewrench Goblin",
+          "Lightning Strike",
+          "Mindspring Merfolk",
+          "Roadside Assistance"
+        ],
+        "decisions": 312,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 25372,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 13,
+        "pair": 9,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 312,
+        "seed": 922301,
+        "starting_player": "P1",
+        "trace_digest": "7551065e016fb2d5",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922301-swapped-true.json",
+        "turns": 11,
+        "witnesses": {
+          "actual_cast": 7,
+          "cycling": 2,
+          "discard": 2,
+          "exhaust_paid": 3,
+          "token_created": 3
+        }
+      },
+      {
+        "cards_cast": [
+          "Basri, Tomorrow's Champion",
+          "Canyon Vaulter",
+          "Cloudspire Captain",
+          "Draconautics Engineer",
+          "Dracosaur Auxiliary",
+          "Full Throttle",
+          "Gilded Ghoda",
+          "Greasewrench Goblin",
+          "Keen Buccaneer",
+          "Lightning Strike",
+          "Rangers' Refueler"
+        ],
+        "decisions": 754,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 26800,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 40,
+        "pair": 9,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 754,
+        "seed": 922302,
+        "starting_player": "P0",
+        "trace_digest": "97975e6d14ed749f",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922302-swapped-false.json",
+        "turns": 19,
+        "witnesses": {
+          "actual_cast": 15,
+          "crew_paid": 13,
+          "cycling": 5,
+          "discard": 7,
+          "exert_paid": 9,
+          "exhaust_paid": 7,
+          "extra_combat": 2,
+          "token_created": 7
+        }
+      },
+      {
+        "cards_cast": [
+          "Basri, Tomorrow's Champion",
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Draconautics Engineer",
+          "Gilded Ghoda",
+          "Lightning Strike",
+          "Mindspring Merfolk",
+          "Rangers' Refueler",
+          "Roadside Assistance"
+        ],
+        "decisions": 432,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26716,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 20,
+        "pair": 9,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 432,
+        "seed": 922302,
+        "starting_player": "P0",
+        "trace_digest": "f538b905adab93b9",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922302-swapped-true.json",
+        "turns": 13,
+        "witnesses": {
+          "actual_cast": 10,
+          "cycling": 2,
+          "discard": 2,
+          "exert_paid": 4,
+          "exhaust_paid": 1,
+          "saddled_attack": 5,
+          "token_created": 8
+        }
+      },
+      {
+        "cards_cast": [
+          "Brightfield Mustang",
+          "Cloudspire Captain",
+          "Draconautics Engineer",
+          "Full Throttle",
+          "Gilded Ghoda",
+          "Greasewrench Goblin",
+          "Keen Buccaneer",
+          "Lightning Strike",
+          "Rangers' Refueler",
+          "Scrounging Skyray"
+        ],
+        "decisions": 905,
+        "deck_swapped": false,
+        "max_sampled_state_bytes": 33704,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_branches": 49,
+        "pair": 9,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 905,
+        "seed": 922303,
+        "starting_player": "P1",
+        "trace_digest": "151b3cae657d8e55",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922303-swapped-false.json",
+        "turns": 20,
+        "witnesses": {
+          "actual_cast": 18,
+          "crew_paid": 23,
+          "cycling": 3,
+          "discard": 7,
+          "exhaust_paid": 7,
+          "extra_combat": 2,
+          "saddled_attack": 1,
+          "token_created": 2
+        }
+      },
+      {
+        "cards_cast": [
+          "Brightfield Mustang",
+          "Canyon Vaulter",
+          "Draconautics Engineer",
+          "Dracosaur Auxiliary",
+          "Greasewrench Goblin",
+          "Lightning Strike",
+          "Mindspring Merfolk",
+          "Roadside Assistance",
+          "Scrounging Skyray"
+        ],
+        "decisions": 495,
+        "deck_swapped": true,
+        "max_sampled_state_bytes": 26060,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_branches": 27,
+        "pair": 9,
+        "rejected_attack_attempts": 0,
+        "replayed_actions": 495,
+        "seed": 922303,
+        "starting_player": "P1",
+        "trace_digest": "fcf46301896927ee",
+        "trace_file": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922303-swapped-true.json",
+        "turns": 15,
+        "witnesses": {
+          "actual_cast": 14,
+          "cycling": 2,
+          "discard": 3,
+          "exhaust_paid": 3,
+          "saddled_attack": 2,
+          "token_created": 1
+        }
+      }
+    ],
+    "games_per_second": 0.5853309988750266,
+    "measurement": "Sum of group verification durations, including replay/owned checks and telemetry; excludes this aggregation I/O. Not a simulation benchmark.",
+    "mode": "verification",
+    "pool_members": 276,
+    "scope": "Exact unchanged full DFT case multiset assembled from bounded verification groups",
+    "seconds": 136.67480477499998,
+    "unique_cases": 80,
+    "witnesses": {
+      "actual_cast": 1482,
+      "as_entry_copy": 12,
+      "crew_paid": 2132,
+      "cycling": 110,
+      "discard": 209,
+      "embalm_paid": 8,
+      "embalmed_token": 8,
+      "exert_paid": 98,
+      "exhaust_paid": 216,
+      "extra_combat": 20,
+      "graveyard_return": 48,
+      "max_speed": 30,
+      "saddled_attack": 140,
+      "speed_increased": 101,
+      "speed_started": 40,
+      "token_created": 289
+    },
+    "workload": "DFT_ARCHETYPES_V1"
+  },
+  "benchmark": {
+    "workload": "DFT_ARCHETYPES_V1",
+    "scope": "Same exact80 fixed cases as verification; test profile, engine opt-level1. Includes game construction/rules/action emission/shared observation-only smoke policy/telemetry; excludes replay/owned checks, traces, model inference and network. Not all-Standard throughput.",
+    "games": 80,
+    "decisions": 67835,
+    "seconds": 112.212445358,
+    "games_per_second": 0.7129333982943679,
+    "decisions_per_second": 604.5229634162305,
+    "same_cases_outcomes_decisions_witnesses_as_verification": true
+  },
+  "trace_artifact_sha256": {
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921400-swapped-false.json": "c165850830cd49cfa8f6fad09e3befd0356c1411b7f83340bf6af7a4cecba77b",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921400-swapped-true.json": "dcef1e1150cc1c04d750954683738bd8a2f3f96c57d2e07587a9ae17fd4e465b",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921401-swapped-false.json": "7b160fd10796c5a5ddc8b3e7b5ade2342d6ff7b75d2d301d31dcdfb1d26de35d",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921401-swapped-true.json": "519c1939ecc1a7d1ac1f34df95265fe278c2601977cd6d9e70121a1fa64ef409",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921402-swapped-false.json": "fb8212ef65eb9b64cf01c275570946a3f4445b0d584e97e48c6c666464a7b6a4",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921402-swapped-true.json": "7ea52483f1ab9df34bb2a64106ac14e06bef178cc06ff503eef798e9d4a6eb29",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921403-swapped-false.json": "0ff224829c7f754501aee6da6be3dfc44f53434190dbd5f89441230115608eb4",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/0/pair-0-seed-921403-swapped-true.json": "76c16829d7f1d680be066b785fe087d3293aeee691ae18d419f341e8b0b42fd0",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921500-swapped-false.json": "54b8008ea46d1815560c5360b8da1442d6812cd8cc8fd6864af4618d84d37cc4",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921500-swapped-true.json": "925263b86f9ecfb215eb816d03304412d797e57c65a369f99246e3aeefb58387",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921501-swapped-false.json": "abbb5cdc8df5c2f67776b0acdd5bce182a3fbd799049084a39f08553681a60d7",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921501-swapped-true.json": "f4979d154a07f8c88100816a637a33dbe178c8e57321a48911be60ac9c53b8aa",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921502-swapped-false.json": "6b701344f790a21ac78944f694d346bbb16884b5674fd4f4bc27980818ded78d",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921502-swapped-true.json": "a89612b5a8712f8c562dd706d784ef1efdb7a9fc1fa0cdb8885dca28fb674461",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921503-swapped-false.json": "795364e1c3208baeb9caf29d0f11501fda256fa6a87557ec366bede5ff970480",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/1/pair-1-seed-921503-swapped-true.json": "b547fcfae2ba95d3a020d10964e5a8e58d80162f00f4792787191942e345fc0a",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921600-swapped-false.json": "97c563baad2c797440953dde1421a288abcec5c19f5b4acf4ba1036cc43a2906",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921600-swapped-true.json": "d0ca8416da306f36fc1c8c94641697a31c616041257627f2048ed74e06502873",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921601-swapped-false.json": "6497e388f7f328ac8695810d3e8659739786ca832a98ef6ae07686a3dba77003",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921601-swapped-true.json": "883d59643a4c569dcb0efb2402e6c293238f506a5e157b095b1556418111f693",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921602-swapped-false.json": "436be45363e1d25732b81e3c12921d1b9d52d5ba3f323484110d4265c846bae0",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921602-swapped-true.json": "a40b5f87b140a6d635996182dd6363757dc86df6b969833e99265746d2caeb7c",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921603-swapped-false.json": "5d55f4dd4f5e79625c51d3a1d5ec4510228b7d874d13ae004a4b586364cc3219",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/2/pair-2-seed-921603-swapped-true.json": "a5e70b82c9704d377e7dc765b8042195891d19ed191b93e49be3b98f05050fbc",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921700-swapped-false.json": "a4955f6131906d5467aa9d31d8e258cc088f9f8c62f0faf932771c67a9737913",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921700-swapped-true.json": "23aa4b455ba083947aee724f7e080ceb1c4d404d64a5a5715e5d4ec40e008717",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921701-swapped-false.json": "38096a06aaf352020f1275867003153d6770c1ae1bcb79f0c867a1c95bbdb798",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921701-swapped-true.json": "9ff9a9a6aaa6badddae0090d2a828dbaea0629d1c8e96431bdcfc71dfa4c8160",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921702-swapped-false.json": "4ede32b87859db5df6f36e366d1aa40b7c36be4c755821b0050056320a6895a8",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921702-swapped-true.json": "68d82dfc18e8f7a4cd3b291201f173c18b1086c81323ed74853d7a615b304c06",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921703-swapped-false.json": "d477c019b247640a4a9f7d235f4c1af0112df5b7b7229f3ad41a0acd562f7ce9",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/3/pair-3-seed-921703-swapped-true.json": "f02207173481eef498aa258986baff2eb94eb9108c8ea6329cd8e10750be0e05",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921800-swapped-false.json": "707bf78b65f09f4fb3f1cad942f6cb2b8e19d821254f78abdc8c4515c3da5eed",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921800-swapped-true.json": "69af90ae82a9923d7be67dec453a6a1278bf872119a2b8b8f415d9f97906dbb2",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921801-swapped-false.json": "cbcabaa510519fe08045866c7e000a2cc2debb296ac56d4307dbc42eed75338e",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921801-swapped-true.json": "7badc90943e176e18b110bb458fdd99554bc3287da43ae3226517d08c43d0cd3",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921802-swapped-false.json": "c52a324a82f6dfe6d0bade1c8d474a87917f9377f5abb2cd643c275be7f33155",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921802-swapped-true.json": "348989fde7ec1c1ada5d19e54ff03e5dbf0e28809725ed0cf1e468f5924faf8f",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921803-swapped-false.json": "7ca144a205b71804e4ed9e1a93c4d751a14dfe1d8885625cb063d2f6c4ea6ac4",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/4/pair-4-seed-921803-swapped-true.json": "73bc6e6749863b42728405201d331434d4737d6ea0c3af2bcaa16ecca40e059d",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921900-swapped-false.json": "7b7f02796671db4888d9cc90b60beb26286d104a600b1893ebda42392496fb7f",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921900-swapped-true.json": "b4e18e54275123c6d21a429d72c359fffe5b25f0f4cafc3ccc7d453476a98711",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921901-swapped-false.json": "4364587d8eacb1cbbd1e16c8370efd62674714679b18c634575bcdf773254177",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921901-swapped-true.json": "b61bedaf76c66f6ee3c7601cc685ec9cfa27505e9fe28ddcdcd53483ec76734a",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921902-swapped-false.json": "6829a13bd2f035aaff17d912e2bc446e187fd567726e6ad83f58453f29e52fe5",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921902-swapped-true.json": "a8225b6299542baf1a1ff478f60356096c3929670da99fc2fec4f51d33a76949",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921903-swapped-false.json": "9b68c5ec02d749731e48f76c81df488574c3bf1a96b5cf72210b13c8fec82b3c",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/5/pair-5-seed-921903-swapped-true.json": "d747a9ac307ac2e0ca3e555ab11876f118ea10b68be962520a0adaa3c002a0a4",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922000-swapped-false.json": "23a4a5c9a702b129677d4c344c9a814376c282103218a081578692d975e3de33",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922000-swapped-true.json": "bea68ab4dc6f0578c2a709dd466c1a87bbf884b6ce353d6f09f95c91224dcc73",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922001-swapped-false.json": "b834c0256f54bff4e6f536150b7b883d7e4a473195c8dae015468b9f68d220f8",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922001-swapped-true.json": "a627c77b84afc2c67da6f84e119367cce3566c4a1e972ced722cb89b26614646",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922002-swapped-false.json": "3f68209ff8a772520a29a191bff19592b38bd67e1d644f09a35dc9ee12758991",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922002-swapped-true.json": "8f9dfbfb9d39fe3dd9054cf428c8c6e67b832eb327b1afd2f3585f7c7b4065de",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922003-swapped-false.json": "47e800e091aa1bd7757976a86f32877085cd30c0f1cef1cc709290fce5c2f68f",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/6/pair-6-seed-922003-swapped-true.json": "3ce1f8a32412f33c2573c7076684d3ce76c1004dc0913f98ef169ae29d9f3ba0",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922100-swapped-false.json": "29a7c03646fad5051577cff7abd65e32a70cb3c5bb79c974b2622f2d93fc42c8",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922100-swapped-true.json": "c2a1b9e9952ae35fddd16170adf2a7a7c71a4d847963d191985172e5af116107",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922101-swapped-false.json": "0dd209b3dc15d1b987b686bf99944f134013bd9e52fcfc4432ce0d0e12f8e840",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922101-swapped-true.json": "62623b585c83d560ffbf7dc1774c417981d75d93646bb8debd96cbb2c4536b8c",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922102-swapped-false.json": "9460931974b79ae39412f6a266a4452759835fa4a53e87c466195aff7d462cee",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922102-swapped-true.json": "3dd4b0b2ccd1f653637779e8d0006a82dfea7cb2d0556487c0dac7e2b8a77c65",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922103-swapped-false.json": "a08f5653449394022876654a7b13fb137abae289d25ac786be022f53564d28b3",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/7/pair-7-seed-922103-swapped-true.json": "88cbb2b47b788e1fa755dc0fbb5a838b27c83dfcffc43e25683fc1b6c5d3f8f1",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922200-swapped-false.json": "95128715ee8c54d4ab71a7b79d7f312176aebed5e16ad7aa59214503df264778",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922200-swapped-true.json": "ac118727ab312ab20ffe744fa53bd2dec86a45d6391cd4282dd118a823f6d72d",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922201-swapped-false.json": "5b54413d373f05b2c0f7d903368c1509f37a7d3fa64fb8794a18015403946404",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922201-swapped-true.json": "54455c26fb4fa8febca7c41e5da82fd13cfbcd123dc52cd3de19791a7ff8a5e4",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922202-swapped-false.json": "185b0c3ae13846f2a81204f1fdf67abef2aec8a565bd4d0bff8efa5e6e400947",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922202-swapped-true.json": "d318d168467db349eddd29c627e583964281b3e296af774f35d998f651e3e41d",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922203-swapped-false.json": "f799d385502af60d9045156cbb7d1e41767067b59b8910c45a811161330d8499",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/8/pair-8-seed-922203-swapped-true.json": "7ef1963dc7f10c8f2879de1edf96c7c2e2aa8b84e5d43c66ae5678923121edfe",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922300-swapped-false.json": "e9328eee896aa35fa441dd7253cab61617fc21288004b48a45f7f8d0b55a5cc1",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922300-swapped-true.json": "233d2a8393bc5869c5ec415ca6f48534a6d4d8a6fbe2ad0142ad9e566f22d040",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922301-swapped-false.json": "9b65720b1312ce510ff4e12fb28444c07899b258231ea42a16c2784c7d42e17f",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922301-swapped-true.json": "7c38f0ef4acd387c5acd8ea6baf29eb3e9471b6737f6164faf67307db185d3c3",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922302-swapped-false.json": "6ccae26fe08da8ce27042a37af9e0e5c797100a1e0f45e0180b289d3113c587c",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922302-swapped-true.json": "429868464c5002c188b86f13d643ce24886bd9916f306ca66b47fd3eddc73e4b",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922303-swapped-false.json": "2196576360118e8dfa0e4c94f7bce27ad1c3c86b5109d060eaeabaa0483259bc",
+    "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/traces/9/pair-9-seed-922303-swapped-true.json": "9d6a67f9ba4d3950be1a7aed4f2f43f38a6d5a68ea548c1c5ae8433c7e462c39"
+  },
+  "required_mechanic_witnesses": [
+    "speed_started",
+    "speed_increased",
+    "max_speed",
+    "exhaust_paid",
+    "crew_paid",
+    "saddled_attack",
+    "cycling",
+    "exert_paid",
+    "discard",
+    "token_created",
+    "graveyard_return",
+    "embalm_paid",
+    "embalmed_token",
+    "as_entry_copy",
+    "extra_combat"
+  ],
+  "unchanged_inputs": true,
+  "terminal": true,
+  "acceptance_limits": "Full276 member definitions have separate whole-card outcome receipts. These fixed80 games cover colors/mechanics and deterministic owned contracts; not exhaustive choice exploration or all-Standard acceptance.",
+  "release_acceptance": "docs/aetherdrift-acceptance.json"
+}

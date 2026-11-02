@@ -1,4 +1,4 @@
-// Complete Oracle and pinned XMage implementation.
+// Complete pinned Oracle/XMage: optional exact Vehicle animation, three loyalty modes and independent emblem.
 const fn loyalty(amount: i32) -> ActivationCost {
     ActivationCost {
         loyalty: Some(amount),

@@ -1,0 +1,3075 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "phase": "all 276 members, full DFT gameplay and release acceptance passed; published-head reviews and hosted CI are tracked on PR569",
+  "membership": 276,
+  "starting_admitted": 119,
+  "newly_admitted": 157,
+  "source_audit": "docs/aetherdrift-audit/; full direct card bodies covered, reusable helper review limits remain explicit",
+  "focused_checkpoints": [
+    {
+      "revision": "148572fec8c3fe4e6e5fae35c89dfb935c4e4f10",
+      "status": "passed; subsequent engine changes require rerun",
+      "targets": {
+        "dft_crew": 10,
+        "dft_fixture_rules": 2,
+        "dft_queries": 10,
+        "dft_speed_engine": 10
+      },
+      "passed": 32,
+      "failed": 0,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-175018/result.json",
+      "command_seconds": 1.5183093750092667,
+      "cargo_build_seconds": 1.42,
+      "reported_scenario_seconds": 0.01,
+      "resource_report": "<cache>/rustmage-build-reports/7eedc7ea557c4071ae8afd713ab9e21d.json"
+    },
+    {
+      "revision": "4d5507a7",
+      "status": "partial engine checkpoint; subsequent engine features and fixes require fresh combined verification",
+      "targets": {
+        "dft_attack_groups": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_combat_schedule": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_control_duration": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_crew": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_entry_counters": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_entry_results": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_exert_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_exhaust_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_fixture_rules": {
+          "passed": 2,
+          "failed": 0
+        },
+        "dft_group_engine": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_named_search": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_outcomes_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_quantities_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_queries": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_grants": {
+          "passed": 12,
+          "failed": 1
+        },
+        "dft_static_types": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_trigger_facts_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_variable_costs_engine": {
+          "passed": 11,
+          "failed": 0
+        }
+      },
+      "passed": 167,
+      "failed": 1,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-184344/result.json",
+      "command_seconds": 115.80187910600216,
+      "cargo_engine_set_test_build_reported": "1m 55s",
+      "reported_scenario_seconds": 0.06,
+      "resource_report": "<cache>/rustmage-build-reports/f741073dac1c4bb4bd493d3f2ac05bf0.json",
+      "remaining_failure": "Resolved and independently exercised in checkpoint61a720af; retained as historical failure evidence."
+    },
+    {
+      "revision": "61a720af3e5201604c95deb0692438b28df4bc4c",
+      "status": "passed; final tax/copy engine features and full-engine reviews still pending",
+      "production_check": "passed",
+      "targets": {
+        "dft_attack_groups": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_cast_permissions_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_combat_schedule": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_combat_tokens": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_control_duration": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_crew": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_deferred_mana": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_entry_counters": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_entry_results": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_exert_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_exhaust_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_fixture_rules": {
+          "passed": 2,
+          "failed": 0
+        },
+        "dft_group_engine": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_named_search": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_outcomes_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_private_hand": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_quantities_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_queries": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_grants": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_static_types": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_trigger_facts_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_variable_costs_engine": {
+          "passed": 11,
+          "failed": 0
+        }
+      },
+      "passed": 196,
+      "failed": 0,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-191659/result.json",
+      "command_seconds": 117.82443391501147,
+      "production_check_seconds": 5.628672553008073,
+      "cargo_engine_set_test_build_reported": "1m 57s",
+      "resource_report": "<cache>/rustmage-build-reports/79c3368fda1b44569d1217cb9c249f0b.json",
+      "memory_peak_bytes": 1817440256
+    },
+    {
+      "revision": "fb22ae3c8",
+      "status": "partial;229/232pass before subsequent reviewed fixes and remaining mechanisms",
+      "targets": {
+        "dft_activation_tax": {
+          "passed": 12,
+          "failed": 2
+        },
+        "dft_attack_groups": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_cast_permissions_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_combat_schedule": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_combat_tokens": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_control_duration": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_crew": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_deferred_mana": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_entry_copies": {
+          "passed": 15,
+          "failed": 1
+        },
+        "dft_entry_counters": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_entry_results": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_exert_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_exhaust_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_fixture_rules": {
+          "passed": 2,
+          "failed": 0
+        },
+        "dft_group_engine": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_linked_entry": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_named_search": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_outcomes_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_private_hand": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_quantities_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_queries": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_grants": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_static_types": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_trigger_facts_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_variable_costs_engine": {
+          "passed": 11,
+          "failed": 0
+        }
+      },
+      "passed": 229,
+      "failed": 3,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-200816/result.json",
+      "command_seconds": 20.272068538994063,
+      "cargo_engine_build": "reused from prior102.89s compile run that stopped at two fixture borrow errors; this command built test targets only",
+      "resource_report": "<cache>/rustmage-build-reports/72b48f3b81ca4abcb1a80067432cfb73.json",
+      "remaining_failures": [
+        "taxed granted-mana initial parent funding must permit deferred announcement before grantor departure",
+        "obsolete self-granted activation lifecycle guard rejects newly supported once/mana instances",
+        "same-zone no-op copy fixture must mark its row skipped; corrected172c2c7dd"
+      ]
+    },
+    {
+      "revision": "6d04ec2a0",
+      "status": "250/252passed; remaining invalid Vehicle-creature-type fixture correcteddb13683e8,17/18taxrerunpasses; one known deferred funding gap remains",
+      "targets": {
+        "dft_activation_tax": {
+          "passed": 16,
+          "failed": 2
+        },
+        "dft_attack_groups": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_cast_permissions_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_combat_schedule": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_combat_tokens": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_control_duration": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_crew": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_deferred_mana": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_entry_copies": {
+          "passed": 16,
+          "failed": 0
+        },
+        "dft_entry_counters": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_entry_results": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_exert_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_exhaust_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_exile_lookback": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_fixture_rules": {
+          "passed": 2,
+          "failed": 0
+        },
+        "dft_group_engine": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_linked_entry": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_named_search": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_outcomes_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_private_hand": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_quantities_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_queries": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_retained_copy": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_speed_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_grants": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_static_types": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_trigger_facts_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_variable_costs_engine": {
+          "passed": 11,
+          "failed": 0
+        }
+      },
+      "passed": 250,
+      "failed": 2,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-203234/result.json",
+      "command_seconds": 124.70797207800206,
+      "production_check_seconds": 5.478992214004393,
+      "all_target_check_seconds": 43.530548238995834,
+      "all_target_check": "passed",
+      "resource_report": "<cache>/rustmage-build-reports/268295f35f874feb8cef688153c14cf5.json",
+      "remaining_failures": [
+        "initial parent legality does not yet model a granted mana header announced before grantor sacrifice while paying its tax",
+        "invalid Vehicle-as-creature-type fixture, correcteddb13683e8 and independently rerun17/18"
+      ]
+    },
+    {
+      "revision": "4c72c0d2f",
+      "status": "partial; remaining fixture/cold mana choice fixes and subsequent review repairs require a rerun",
+      "targets": {
+        "dft_retained_copy": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_outcomes_engine": {
+          "expected": 9,
+          "exit": 0
+        },
+        "dft_speed_engine": {
+          "expected": 10,
+          "exit": 0
+        },
+        "dft_group_engine": {
+          "expected": 4,
+          "exit": 0
+        },
+        "dft_entry_counters": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_combat_tokens": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_embalm": {
+          "expected": 17,
+          "exit": 0
+        },
+        "dft_attack_groups": {
+          "expected": 8,
+          "exit": 0
+        },
+        "dft_trigger_facts_engine": {
+          "expected": 11,
+          "exit": 0
+        },
+        "dft_linked_entry": {
+          "expected": 8,
+          "exit": 0
+        },
+        "dft_speed_grants": {
+          "expected": 13,
+          "exit": 0
+        },
+        "dft_static_types": {
+          "expected": 13,
+          "exit": 0
+        },
+        "dft_entry_copies": {
+          "expected": 16,
+          "exit": 0
+        },
+        "dft_quantities_engine": {
+          "expected": 10,
+          "exit": 0
+        },
+        "dft_variable_costs_engine": {
+          "expected": 11,
+          "exit": 0
+        },
+        "dft_private_hand": {
+          "expected": 6,
+          "exit": 0
+        },
+        "dft_entry_results": {
+          "expected": 10,
+          "exit": 0
+        },
+        "dft_control_duration": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_exhaust_engine": {
+          "expected": 11,
+          "exit": 0
+        },
+        "dft_crew": {
+          "expected": 10,
+          "exit": 0
+        },
+        "dft_acquired_activations": {
+          "expected": 3,
+          "exit": 0
+        },
+        "dft_cast_permissions_engine": {
+          "expected": 9,
+          "exit": 0
+        },
+        "dft_combat_schedule": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_deferred_mana": {
+          "expected": 4,
+          "exit": 0
+        },
+        "dft_exile_lookback": {
+          "expected": 7,
+          "exit": 0
+        },
+        "dft_fixture_rules": {
+          "expected": 2,
+          "exit": 0
+        },
+        "dft_mana_output": {
+          "expected": 10,
+          "exit": 101
+        },
+        "dft_mana_rollback": {
+          "expected": 1,
+          "exit": 101
+        },
+        "dft_named_search": {
+          "expected": 8,
+          "exit": 0
+        },
+        "dft_activation_tax": {
+          "expected": 18,
+          "exit": 101
+        },
+        "dft_exert_engine": {
+          "expected": 9,
+          "exit": 0
+        },
+        "dft_queries": {
+          "expected": 10,
+          "exit": 0
+        }
+      },
+      "passed": 279,
+      "failed": 4,
+      "expected": 283,
+      "target_count": 32,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-remainder-20261101-214200/result.json",
+      "cargo_build_seconds": 1.1174924740043934,
+      "test_process_seconds": 0.534065235988237,
+      "engine_reused": true,
+      "failures": [
+        "ManaOutput: dynamic grant fixture not registered as an Aura",
+        "ManaOutput: unfinished late mana choice rolls parent back before production",
+        "activation tax: granted-mana fixture not registered as an Aura",
+        "rollback: test observer incorrectly remains a casualty alternative"
+      ]
+    },
+    {
+      "revision": "586895eee",
+      "status": "286/288 passed; both remaining casualty fixtures corrected in test-only followup, yielding combined 288/288 evidence on the same engine",
+      "passed": 286,
+      "failed": 2,
+      "expected": 288,
+      "target_count": 32,
+      "report": "<cache>/rustmage-authoring/aetherdrift/engine-candidate-20261101-220700/focused/report.json",
+      "cargo_build_seconds": 129.858889436,
+      "followup": {
+        "target": "dft_mana_rollback",
+        "passed": 2,
+        "failed": 0,
+        "report": "<cache>/rustmage-authoring/aetherdrift/rollback-fixture-20261101-221700/report.json",
+        "scope": "Zero-power fixture bodies remove unintended casualty1 alternatives; engine unchanged"
+      }
+    }
+  ],
+  "earlier_focused_runs": [
+    {
+      "report_suffix": "focused-20261101-174354",
+      "seconds": 28.831207258001086,
+      "result": "compile failed: scaled-search borrow conflict; fixed1768d336"
+    },
+    {
+      "report_suffix": "focused-20261101-174530",
+      "seconds": 101.31380501300737,
+      "result": "engine/sets compiled; speed fixture used nonexistent Bounce instruction; fixed521ac5a7"
+    },
+    {
+      "report_suffix": "focused-20261101-174754",
+      "seconds": 1.2172481210000115,
+      "result": "9crew cases passed; fixture expected effective creature stats on noncreature Vehicle; fixedd183a2fb"
+    },
+    {
+      "report_suffix": "focused-20261101-174916",
+      "seconds": 0.8160798330063699,
+      "result": "30/32 passed; fixture token lacked required recipe, direct damage fixture had not advanced replacement batch; fixed148572fe"
+    }
+  ],
+  "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
+  "pending": "Finish all 276 member card obligations, provenance and focused outcomes, including inherited119; run legal DFT-only complete games/replay/owned search; update README counts; full release acceptance; one completed-set PR and two independent nonauthor reviews of its published head.",
+  "throughput": "Combined reentry checkpoint: 336 engine scenarios and 39 prepared-card scenarios, 3035 ordinary legacy cases, four BIG cases and one strict trace pass. Final test compilation 165.993s; focused execution 0.779s; ordinary legacy 77.952s. No new card admissions during engine reentry; DFT143/276 are local candidates, not complete-set acceptance.",
+  "remaining_engine_blockers": [],
+  "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)",
+  "in_progress_checkpoints": [
+    {
+      "revision": "92e3acfe",
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-193034/result.json",
+      "production_check": "passed5.48s",
+      "previous_scenarios": {
+        "passed": 196,
+        "failed": 0
+      },
+      "new_entry_copy_scenarios": {
+        "passed": 2,
+        "failed": 13
+      },
+      "combined_command_seconds": 121.83731649800029,
+      "blocking_findings": [
+        "ordinary permanent spell entries bypass early copy-choice staging",
+        "projected entry-copy departure retains copied definition instead of physical identity",
+        "pending parent-payment choices do not reflect new copy in all continuation paths"
+      ],
+      "status": "historical failure evidence; ordinary staging/projected restoration fixed7a135cae and original15tests subsequentlypassed; see later focused checkpoints"
+    }
+  ],
+  "acceptance_workload": {
+    "example": "examples/dft_acceptance.rs",
+    "scope": "ten legal60-card DFT-only deck lists, both deck assignments, shared smoke policy; full-pool gate before any game",
+    "compile_check_report": "<cache>/rustmage-authoring/aetherdrift/example-check-20261101-193349/result.json",
+    "compile_check_seconds": 21.823240645011538,
+    "runtime_acceptance": "not run; full276-card support required first",
+    "witnesses": [
+      "all five actual cast colors",
+      "speed started/increased/max",
+      "exhaust paid",
+      "crew paid",
+      "saddled attack",
+      "cycling",
+      "exert paid",
+      "discard",
+      "token created",
+      "graveyard return",
+      "paid embalm and actual embalmed token",
+      "as-entry copy",
+      "actual extra combat"
+    ],
+    "contracts": "full deterministic replay plus sampled wrong-actor, owned raw/index children, observations and restore"
+  },
+  "latest_compile_checkpoint": {
+    "revision": "3b29b55758059e9366ee6cd487b7bef8b0fe7c06",
+    "all_preflight": "passed",
+    "test_build_seconds": 191.6713965460076,
+    "report": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-assembled-20261102-01/report.json"
+  },
+  "latest_focused_followups": [
+    {
+      "revision": "a36b9750418699b70c752fc41980016692f2103d",
+      "passed": 375,
+      "failed": 0,
+      "targets": 44,
+      "execution_seconds": 0.7791794730146648,
+      "report": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-assembled-20261102-093300Z/report.json"
+    }
+  ],
+  "current_runtime_evidence": "All 3770 cases pass: 387 engine scenarios, 340 authored card scenarios, 3038 ordinary legacy, 4 BIG cases and one strict trace. Prior 3164 schema199 identities unchanged; prior198 2966 exact plus 41 previously audited exclusions. Both nonauthor reviewers approve; warm engine and all test binary hashes retained.",
+  "latest_affected_regressions": {
+    "revision": "a36b9750418699b70c752fc41980016692f2103d",
+    "schema199": 25,
+    "ordinary_legacy_passed": 3035,
+    "big_cases_passed": 4,
+    "unexpected_trace_differences": 0,
+    "report": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-assembled-20261102-093300Z/report.json"
+  },
+  "validation_policy": "Engine source is frozen after the assembled shared-rule checkpoint. Card files/provenance/tests use the same guarded target/profile/features and rebuild only affected set/assembly/test outputs. Reopen engine phase for a real missed dependency, then batch/review all shared fixes before one engine rebuild. No clean builds.",
+  "assembled_checkpoint": {
+    "phase": "late mana-completion engine reentry accepted; all276 card definitions complete; full set acceptance remains open",
+    "engine_revision": "7cb154785ff4893759854032ddf243e7beeedba3",
+    "tested_revision": "3b29b55758059e9366ee6cd487b7bef8b0fe7c06",
+    "engine_inputs_sha256": "22b3f6dc008caf8a6b72fa1ae2b46a1529ecda2aeb6766c1a5beb6660288482e",
+    "engine_digest_method": "SHA256 of each sorted tracked crates/engine path, NUL, then binary SHA256(file)",
+    "baseline_sha256": "1b5003d152a350245a2a5f8ae2aafb853f6352f54ea888568656fd1dc2011f2d",
+    "focused_engine": {
+      "passed": 387,
+      "failed": 0,
+      "targets": 44,
+      "execution_seconds": 0.8567101660155458
+    },
+    "authored_card_scenarios": {
+      "passed": 340,
+      "failed": 0,
+      "targets": 35,
+      "execution_seconds": 0.6185361629613908
+    },
+    "focused_total": {
+      "passed": 727,
+      "failed": 0,
+      "targets": 79,
+      "execution_seconds": 1.4752463289769366
+    },
+    "ordinary_legacy": {
+      "passed": 3038,
+      "failed": 0,
+      "seconds": 78.50771102399449
+    },
+    "big_games": [
+      {
+        "cards_activated": [
+          "Clue Token",
+          "Food Token",
+          "Harvester of Misery",
+          "Legion Extruder",
+          "Lost Jitte",
+          "Lotus Ring",
+          "Memory Vessel"
+        ],
+        "cards_cast": [
+          "Ancient Cornucopia",
+          "Bristlebud Farmer",
+          "Generous Plunderer",
+          "Grand Abolisher",
+          "Greed's Gambit",
+          "Hostile Investigator",
+          "Legion Extruder",
+          "Loot, the Key to Everything",
+          "Lost Jitte",
+          "Lotus Ring",
+          "Memory Vessel",
+          "Molten Duplication",
+          "Nexus of Becoming",
+          "Omenpath Journey",
+          "Territory Forge",
+          "Vaultborn Tyrant"
+        ],
+        "decisions": 2653,
+        "decisions_per_second": 253.83640506504656,
+        "deck_pair": 1,
+        "excludes": "model inference, exhaustive choice coverage",
+        "games": 3,
+        "games_per_second": 0.2870370204278702,
+        "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+        "outcomes": [
+          {
+            "decisions": 718,
+            "deck": 1,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56710
+          },
+          {
+            "decisions": 1134,
+            "deck": 1,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56711
+          },
+          {
+            "decisions": 801,
+            "deck": 1,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56712
+          }
+        ],
+        "seconds": 10.451613508,
+        "spell_colors_mask": 31,
+        "log": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/big-0/execution.log"
+      },
+      {
+        "cards_activated": [
+          "Collector's Cage",
+          "Esoteric Duplicator",
+          "Food Token",
+          "Harvester of Misery",
+          "Map Token",
+          "Pest Control",
+          "Sandstorm Salvager",
+          "Transmutation Font",
+          "Worldwalker Helm"
+        ],
+        "cards_cast": [
+          "Ancient Cornucopia",
+          "Collector's Cage",
+          "Esoteric Duplicator",
+          "Generous Plunderer",
+          "Oltec Matterweaver",
+          "Rest in Peace",
+          "Sandstorm Salvager",
+          "Sword of Wealth and Power",
+          "Torpor Orb",
+          "Transmutation Font",
+          "Vaultborn Tyrant",
+          "Worldwalker Helm"
+        ],
+        "decisions": 1859,
+        "decisions_per_second": 1397.61535785221,
+        "deck_pair": 3,
+        "excludes": "model inference, exhaustive choice coverage",
+        "games": 3,
+        "games_per_second": 2.2554309163833404,
+        "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+        "outcomes": [
+          {
+            "decisions": 1016,
+            "deck": 3,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56710
+          },
+          {
+            "decisions": 354,
+            "deck": 3,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56711
+          },
+          {
+            "decisions": 489,
+            "deck": 3,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56712
+          }
+        ],
+        "seconds": 1.330122762,
+        "spell_colors_mask": 27,
+        "log": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/big-1/execution.log"
+      },
+      {
+        "cards_activated": [
+          "Food Token",
+          "Harvester of Misery",
+          "Pest Control",
+          "Sandstorm Salvager"
+        ],
+        "cards_cast": [
+          "Ancient Cornucopia",
+          "Bristlebud Farmer",
+          "Generous Plunderer",
+          "Grand Abolisher",
+          "Loot, the Key to Everything",
+          "Nexus of Becoming",
+          "Oltec Matterweaver",
+          "Omenpath Journey",
+          "Rest in Peace",
+          "Sandstorm Salvager",
+          "Territory Forge",
+          "Torpor Orb",
+          "Vaultborn Tyrant"
+        ],
+        "decisions": 2823,
+        "decisions_per_second": 558.9327493444518,
+        "deck_pair": 2,
+        "excludes": "model inference, exhaustive choice coverage",
+        "games": 3,
+        "games_per_second": 0.5939774169441571,
+        "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+        "outcomes": [
+          {
+            "decisions": 655,
+            "deck": 2,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56710
+          },
+          {
+            "decisions": 1272,
+            "deck": 2,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56711
+          },
+          {
+            "decisions": 896,
+            "deck": 2,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56712
+          }
+        ],
+        "seconds": 5.050697071,
+        "spell_colors_mask": 27,
+        "log": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/big-2/execution.log"
+      },
+      {
+        "cards_activated": [
+          "Fomori Vault",
+          "Food Token",
+          "Harvester of Misery",
+          "Legion Extruder",
+          "Lost Jitte",
+          "Memory Vessel",
+          "Sandstorm Salvager",
+          "Transmutation Font"
+        ],
+        "cards_cast": [
+          "Collector's Cage",
+          "Generous Plunderer",
+          "Greed's Gambit",
+          "Hostile Investigator",
+          "Legion Extruder",
+          "Lost Jitte",
+          "Lotus Ring",
+          "Memory Vessel",
+          "Molten Duplication",
+          "Sandstorm Salvager",
+          "Simulacrum Synthesizer",
+          "Sword of Wealth and Power",
+          "Transmutation Font",
+          "Worldwalker Helm"
+        ],
+        "decisions": 1456,
+        "decisions_per_second": 3304.8120787612984,
+        "deck_pair": 0,
+        "excludes": "model inference, exhaustive choice coverage",
+        "games": 3,
+        "games_per_second": 6.809365546898279,
+        "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+        "outcomes": [
+          {
+            "decisions": 499,
+            "deck": 0,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56710
+          },
+          {
+            "decisions": 506,
+            "deck": 0,
+            "outcome": {
+              "Winner": "P0"
+            },
+            "seed": 56711
+          },
+          {
+            "decisions": 451,
+            "deck": 0,
+            "outcome": {
+              "Winner": "P1"
+            },
+            "seed": 56712
+          }
+        ],
+        "seconds": 0.44056968,
+        "spell_colors_mask": 31,
+        "log": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/big-3/execution.log"
+      }
+    ],
+    "strict_trace": {
+      "passed": 1,
+      "identities": 3164,
+      "unchanged_inherited_schema199": 3164,
+      "migration_prior198_exact": 2966,
+      "expected_unrepresentable": 41,
+      "expected_added": 0,
+      "unexpected_differences": 0,
+      "outcome_changes": 0,
+      "seconds": 2.124217812990537
+    },
+    "total_passing_cases": 3770,
+    "production_format_provenance_strict_workspace_clippy": "passed",
+    "independent_nonauthor_reviews": [
+      {
+        "agent": "engine_review_one",
+        "decision": "source and final runtime approved"
+      },
+      {
+        "agent": "engine_review_final",
+        "decision": "source and final runtime approved"
+      }
+    ],
+    "resource_guard": "one shared build, one Cargo job/test thread, 6 GiB cgroup; no OOM probe",
+    "compiler": {
+      "target": "<cache>/rustmage-authoring/aetherdrift/target",
+      "profile": "test; engine opt-level 1, test bodies opt-level 0",
+      "features": "rustmage-core/test-support; unchanged through card scenarios",
+      "test_build_seconds": 191.6713965460076,
+      "warm_check_seconds": 0.8167844580020756,
+      "engine_reused_after_promotion": true,
+      "all_test_binary_hashes_unchanged": true
+    },
+    "reports": {
+      "combined": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-assembled-20261102-01/report.json",
+      "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-late-mana-completion-20261102-01/report.json"
+    },
+    "previous_freeze": "docs/aetherdrift-engine-freeze-aggregate-groups.json",
+    "fixture_followup": {
+      "revision": "3b29b55758059e9366ee6cd487b7bef8b0fe7c06",
+      "changed_files": [
+        "tests/dft_mana_entry_completion_engine.rs"
+      ],
+      "core_reused": true,
+      "compile_seconds": 1.3181347279896727,
+      "source_revision": "7cb154785ff4893759854032ddf243e7beeedba3",
+      "original_failure_retained_in": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/report.json",
+      "policy": "Separate immutable consuming runs; only reviewed test fixture and evidence changed. All production inputs and all other executable hashes are unchanged.",
+      "intermediate_failed_report": "<cache>/rustmage-authoring/aetherdrift/late-mana-entry-fixture-20261102-01/report.json"
+    },
+    "compiler_scope": "One engine test compilation; two cheap test-only fixture recompilations with core fresh. Unsuccessful receipts are retained.",
+    "scope": "Existing native BIG Standard decks with deterministic policy, natural outcomes, replay and sampled owned raw/index/restore. DFT-only games and full set release acceptance remain pending.",
+    "card_admissions": {
+      "DFT_inherited": 119,
+      "DFT_local_candidates": 276,
+      "DFT_total": 276,
+      "DFT_gated": 0,
+      "known_incorrect_cards": 0,
+      "completed_set_verified": false
+    }
+  },
+  "assembled_checkpoint_history": [
+    {
+      "revision": "bb985fa7c9c45cd0eafb31f8ec99572a77b90d8d",
+      "report": "<cache>/rustmage-authoring/aetherdrift/assembled-engine-20261101-225600/report.corrected.json",
+      "original_report_preserved": true,
+      "production_format_provenance_clippy": "all passed before single test compilation",
+      "cargo_test_builds": 1,
+      "cargo_test_build_seconds": 151.0595303230075,
+      "focused": {
+        "passed": 291,
+        "failed": 0,
+        "targets": 32,
+        "execution_seconds": 0.5429340580740245
+      },
+      "ordinary_legacy": {
+        "expected": 3029,
+        "passed_before_abort": 2824,
+        "failed_assertions": 5,
+        "stack_overflow_aborts": 1,
+        "unexecuted_after_abort": 199,
+        "cached_followup_passed": 199,
+        "cached_followup_seconds": 0.6996994950022781
+      },
+      "failures": {
+        "stale_legacy_action_counts": 3,
+        "unfundable_converter_moves": 2,
+        "stack_overflow": "repeatable spell-only mana inside an activation payment child"
+      },
+      "big_games": {
+        "passed_pairings": [
+          "zero",
+          "three"
+        ],
+        "timed_out_pairings": [
+          "one",
+          "two"
+        ],
+        "timeout_seconds": 45,
+        "scope": "existing native Standard BIG decks; natural games/replay/owned search, not DFT set acceptance"
+      },
+      "trace_proof": {
+        "expected": 3007,
+        "prior198_exact": 2966,
+        "expected_unrepresentable": 41,
+        "unexpected_differences": 0,
+        "outcome_changes": 0,
+        "territory_forge_restored_exact": true,
+        "current_baseline_promoted": false
+      },
+      "runtime_diagnostics": "<cache>/rustmage-authoring/aetherdrift/cached-diagnostics-bb985-20261101-232200/report.json",
+      "diagnostics": "No Cargo; exact five assertions, remaining199 cases and two8second MI stacks; binary/revision unchanged, zero remaining processes",
+      "engine_freeze": "blocked by funding correctness/performance repairs; no card authoring or admissions yet"
+    },
+    {
+      "phase": "engine accepted; card definitions and whole-set acceptance remain open",
+      "engine_revision": "3bb915ad0edb660a64b7ab53f4b949ac1644f530",
+      "tested_revision": "d1c76ee711d2dcd07248d9cbf6d6b1a7ee9aa8fc",
+      "engine_inputs_sha256": "2d8ffdab54d91eb70ae428ff233d43f100ae9bfc9bd73f2d8faf0aab92ac9fb2",
+      "baseline_sha256": "9f97d70de2246b0d63c54a6d328bae522ce39c8e4311321bd89db6fd753b25ee",
+      "focused": {
+        "passed": 294,
+        "failed": 0,
+        "targets": 32,
+        "execution_seconds": 0.5568916119955247
+      },
+      "ordinary_legacy": {
+        "passed": 3030,
+        "failed": 0,
+        "seconds": 76.26175640099973
+      },
+      "big_games": [
+        {
+          "deck_pair": 1,
+          "games": 3,
+          "decisions": 2653,
+          "seconds": 10.020384177,
+          "games_per_second": 0.2993897186982075,
+          "decisions_per_second": 264.76030790211485,
+          "spell_colors_mask": 31
+        },
+        {
+          "deck_pair": 3,
+          "games": 3,
+          "decisions": 1859,
+          "seconds": 1.247995053,
+          "games_per_second": 2.403855682591396,
+          "decisions_per_second": 1489.5892379791349,
+          "spell_colors_mask": 27
+        },
+        {
+          "deck_pair": 2,
+          "games": 3,
+          "decisions": 2823,
+          "seconds": 4.846439877,
+          "games_per_second": 0.6190110836280576,
+          "decisions_per_second": 582.4894296940022,
+          "spell_colors_mask": 27
+        },
+        {
+          "deck_pair": 0,
+          "games": 3,
+          "decisions": 1456,
+          "seconds": 0.446948365,
+          "games_per_second": 6.712184750916361,
+          "decisions_per_second": 3257.6469991114072,
+          "spell_colors_mask": 31
+        }
+      ],
+      "strict_trace": {
+        "passed": 1,
+        "identities": 3007,
+        "seconds": 2.0359885299985763,
+        "migration_prior198_exact": 2966,
+        "expected_unrepresentable": 41,
+        "unexpected_differences": 0,
+        "outcome_changes": 0
+      },
+      "total_passing_cases": 3329,
+      "production_format_provenance_strict_workspace_clippy": "passed",
+      "independent_nonauthor_reviews": [
+        {
+          "agent": "engine_review_one",
+          "decision": "engine freeze approved"
+        },
+        {
+          "agent": "engine_review_final",
+          "decision": "engine freeze approved"
+        }
+      ],
+      "resource_guard": "one shared build, one Cargo job/test thread,6GiB cgroup; no OOM probe",
+      "compiler": {
+        "target": "<cache>/rustmage-authoring/aetherdrift/target",
+        "profile": "test; engine opt-level1, test bodies opt-level0",
+        "features": "rustmage-core/test-support; unchanged through card scenarios",
+        "test_build_seconds": 152.262286829995,
+        "warm_check_seconds": 0.3651752550067613,
+        "engine_reused": true
+      },
+      "reports": {
+        "assembled": "<cache>/rustmage-authoring/aetherdrift/assembled-engine-20261102-071400Z/report.json",
+        "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-engine-20261102-072100Z/report.json"
+      },
+      "scope": "Existing native BIG Standard decks with basics,12 natural games, full replay and sampled owned/raw/index/restore and observations; not DFT set-only or all-Standard acceptance",
+      "card_admissions": {
+        "new_during_engine_phase": 0,
+        "DFT_inherited": 119,
+        "DFT_total": 276,
+        "DFT_gated": 157
+      }
+    },
+    {
+      "phase": "engine reentry accepted; ordinary card authorship may resume; full-set acceptance remains open",
+      "engine_revision": "8657c4e6c",
+      "tested_revision": "a36b9750418699b70c752fc41980016692f2103d",
+      "engine_inputs_sha256": "b35fa13c95a42ccf943db24abf21a3ca43f05268afe239480afe62acf9cce411",
+      "engine_digest_method": "SHA256 of each sorted tracked crates/engine path, NUL, then binary SHA256(file)",
+      "baseline_sha256": "d66cd3f5d1da4935f2320e29de9b7561210df65ae5e73172da44b1f678816905",
+      "focused_engine": {
+        "passed": 336,
+        "failed": 0,
+        "targets": 39,
+        "execution_seconds": 0.6974718030105578
+      },
+      "prepared_card_scenarios": {
+        "passed": 39,
+        "failed": 0,
+        "targets": 5,
+        "execution_seconds": 0.08170767000410706
+      },
+      "focused_total": {
+        "passed": 375,
+        "failed": 0,
+        "targets": 44,
+        "execution_seconds": 0.7791794730146648
+      },
+      "ordinary_legacy": {
+        "passed": 3035,
+        "failed": 0,
+        "seconds": 77.95230166299734
+      },
+      "big_games": [
+        {
+          "cards_activated": [
+            "Clue Token",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Loot, the Key to Everything",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Nexus of Becoming",
+            "Omenpath Journey",
+            "Territory Forge",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2653,
+          "decisions_per_second": 260.52497226632124,
+          "deck_pair": 1,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.2946004209570161,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 718,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1134,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 801,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 10.183284838,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-0/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Food Token",
+            "Harvester of Misery",
+            "Map Token",
+            "Pest Control",
+            "Sandstorm Salvager",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Generous Plunderer",
+            "Oltec Matterweaver",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Sword of Wealth and Power",
+            "Torpor Orb",
+            "Transmutation Font",
+            "Vaultborn Tyrant",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1859,
+          "decisions_per_second": 1481.692150811231,
+          "deck_pair": 3,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 2.391111593563041,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 1016,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 354,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 489,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 1.2546465869999999,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-1/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Food Token",
+            "Harvester of Misery",
+            "Pest Control",
+            "Sandstorm Salvager"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Loot, the Key to Everything",
+            "Nexus of Becoming",
+            "Oltec Matterweaver",
+            "Omenpath Journey",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Territory Forge",
+            "Torpor Orb",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2823,
+          "decisions_per_second": 574.536863951409,
+          "deck_pair": 2,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.6105598979292338,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 655,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1272,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 896,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 4.913522834,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-2/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Fomori Vault",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Memory Vessel",
+            "Sandstorm Salvager",
+            "Transmutation Font"
+          ],
+          "cards_cast": [
+            "Collector's Cage",
+            "Generous Plunderer",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Sandstorm Salvager",
+            "Simulacrum Synthesizer",
+            "Sword of Wealth and Power",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1456,
+          "decisions_per_second": 3356.841173722744,
+          "deck_pair": 0,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 6.9165683524507084,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 499,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 506,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 451,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 0.433741105,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-3/execution.log"
+        }
+      ],
+      "strict_trace": {
+        "passed": 1,
+        "identities": 3031,
+        "unchanged_inherited_schema199": 3007,
+        "migration_prior198_exact": 2966,
+        "expected_unrepresentable": 41,
+        "expected_added": 24,
+        "unexpected_differences": 0,
+        "outcome_changes": 0,
+        "seconds": 1.9564084140001796
+      },
+      "total_passing_cases": 3415,
+      "production_format_provenance_strict_workspace_clippy": "passed",
+      "independent_nonauthor_reviews": [
+        {
+          "agent": "engine_review_one",
+          "decision": "source and final runtime approved"
+        },
+        {
+          "agent": "engine_review_final",
+          "decision": "source and final runtime approved"
+        }
+      ],
+      "resource_guard": "one shared build, one Cargo job/test thread, 6GiB cgroup; no OOM probe",
+      "compiler": {
+        "target": "<cache>/rustmage-authoring/aetherdrift/target",
+        "profile": "test; engine opt-level1, test bodies opt-level0",
+        "features": "rustmage-core/test-support; unchanged through card scenarios",
+        "test_build_seconds": 165.9925818920019,
+        "warm_check_seconds": 0.46553068100183737,
+        "engine_reused_after_promotion": true
+      },
+      "reports": {
+        "assembled": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-assembled-20261102-093300Z/report.json",
+        "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-engine-reentry-20261102-093400Z/report.json"
+      },
+      "previous_freeze": "docs/aetherdrift-engine-freeze-initial.json",
+      "scope": "Existing native BIG Standard decks: 12 natural games, 8791 decisions, full replay and sampled owned raw/index/restore and observations. Not DFT set-only or all-Standard acceptance.",
+      "card_admissions": {
+        "new_during_engine_reentry": 0,
+        "DFT_inherited": 119,
+        "DFT_local_candidates": 143,
+        "DFT_total": 276,
+        "DFT_gated": 133,
+        "new_local_candidate_admissions_before_reentry": 24,
+        "completed_set_verified": false
+      }
+    },
+    {
+      "phase": "engine copy-capture reentry accepted; ordinary cards may resume; full set acceptance remains open",
+      "engine_revision": "9000f120b",
+      "tested_revision": "cb1fbff78d2ef80c0eb4e15b5e9215e84f464ca9",
+      "engine_inputs_sha256": "01b5653ba659ff89071048c83ad5dd22abd29c527e5d0677ddcf05710f98de7e",
+      "engine_digest_method": "SHA256 of each sorted tracked crates/engine path, NUL, then binary SHA256(file)",
+      "baseline_sha256": "132945c01fea8a9b36352123313d7061b29309ff03ebb6a5e5fac0afcfa5ee6e",
+      "focused_engine": {
+        "passed": 346,
+        "failed": 0,
+        "targets": 40,
+        "execution_seconds": 0.6956114639906446
+      },
+      "authored_card_scenarios": {
+        "passed": 256,
+        "failed": 0,
+        "targets": 26,
+        "execution_seconds": 0.44572166599391494
+      },
+      "focused_total": {
+        "passed": 602,
+        "failed": 0,
+        "targets": 66,
+        "execution_seconds": 1.1413331299845595
+      },
+      "ordinary_legacy": {
+        "passed": 3036,
+        "failed": 0,
+        "seconds": 79.61355417899904
+      },
+      "big_games": [
+        {
+          "cards_activated": [
+            "Clue Token",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Loot, the Key to Everything",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Nexus of Becoming",
+            "Omenpath Journey",
+            "Territory Forge",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2653,
+          "decisions_per_second": 254.63617240460687,
+          "deck_pair": 1,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.28794139359736926,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 718,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1134,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 801,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 10.418786832,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-reentry-20261102-160500Z/big-0/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Food Token",
+            "Harvester of Misery",
+            "Map Token",
+            "Pest Control",
+            "Sandstorm Salvager",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Generous Plunderer",
+            "Oltec Matterweaver",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Sword of Wealth and Power",
+            "Torpor Orb",
+            "Transmutation Font",
+            "Vaultborn Tyrant",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1859,
+          "decisions_per_second": 1519.1497500427856,
+          "deck_pair": 3,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 2.4515595751093904,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 1016,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 354,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 489,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 1.223710829,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-reentry-20261102-160500Z/big-1/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Food Token",
+            "Harvester of Misery",
+            "Pest Control",
+            "Sandstorm Salvager"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Loot, the Key to Everything",
+            "Nexus of Becoming",
+            "Oltec Matterweaver",
+            "Omenpath Journey",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Territory Forge",
+            "Torpor Orb",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2823,
+          "decisions_per_second": 561.2784590384821,
+          "deck_pair": 2,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.5964702008910543,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 655,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1272,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 896,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 5.029589065,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-reentry-20261102-160500Z/big-2/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Fomori Vault",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Memory Vessel",
+            "Sandstorm Salvager",
+            "Transmutation Font"
+          ],
+          "cards_cast": [
+            "Collector's Cage",
+            "Generous Plunderer",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Sandstorm Salvager",
+            "Simulacrum Synthesizer",
+            "Sword of Wealth and Power",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1456,
+          "decisions_per_second": 3289.4263891936703,
+          "deck_pair": 0,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 6.7776642634484965,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 499,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 506,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 451,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 0.442630364,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-reentry-20261102-160500Z/big-3/execution.log"
+        }
+      ],
+      "strict_trace": {
+        "passed": 1,
+        "identities": 3144,
+        "unchanged_inherited_schema199": 3031,
+        "migration_prior198_exact": 2966,
+        "expected_unrepresentable": 41,
+        "expected_added": 113,
+        "unexpected_differences": 0,
+        "outcome_changes": 0,
+        "seconds": 2.097515180008486
+      },
+      "total_passing_cases": 3643,
+      "production_format_provenance_strict_workspace_clippy": "passed",
+      "independent_nonauthor_reviews": [
+        {
+          "agent": "engine_review_one",
+          "decision": "source and final runtime approved"
+        },
+        {
+          "agent": "engine_review_final",
+          "decision": "source and final runtime approved"
+        }
+      ],
+      "resource_guard": "one shared build, one Cargo job/test thread, 6 GiB cgroup; no OOM probe",
+      "compiler": {
+        "target": "<cache>/rustmage-authoring/aetherdrift/target",
+        "profile": "test; engine opt-level 1, test bodies opt-level 0",
+        "features": "rustmage-core/test-support; unchanged through card scenarios",
+        "test_build_seconds": 183.3957856719935,
+        "warm_check_seconds": 0.6663042019936256,
+        "engine_reused_after_promotion": true,
+        "all_test_binary_hashes_unchanged": true
+      },
+      "reports": {
+        "combined": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+        "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-permanent-copy-20261102-160800Z/report.json"
+      },
+      "previous_freeze": "docs/aetherdrift-engine-freeze-quantity.json",
+      "scope": "Existing native BIG Standard decks with deterministic policy, natural outcomes, replay and sampled owned raw/index/restore. DFT-only games and full set release acceptance remain pending.",
+      "card_admissions": {
+        "DFT_inherited": 119,
+        "DFT_local_candidates": 256,
+        "DFT_total": 276,
+        "DFT_gated": 20,
+        "completed_set_verified": false
+      }
+    },
+    {
+      "phase": "aggregate target-group engine reentry accepted; separate card-role repairs pending; full set acceptance remains open",
+      "engine_revision": "2c7ffccc6",
+      "tested_revision": "2c7ffccc6457661f3dccfcb7fe1a2189820af121",
+      "engine_inputs_sha256": "8640facefcc7438191e965bc22cb53dbacce4ef9eb7ed8a64a620cf829cae855",
+      "engine_digest_method": "SHA256 of each sorted tracked crates/engine path, NUL, then binary SHA256(file)",
+      "baseline_sha256": "eb5e136085ae5c8f2462eecf6d2a13181759af7ee51c339d98566b356cbdc1b7",
+      "focused_engine": {
+        "passed": 361,
+        "failed": 0,
+        "targets": 41,
+        "execution_seconds": 0.7207610710611334
+      },
+      "authored_card_scenarios": {
+        "passed": 334,
+        "failed": 0,
+        "targets": 34,
+        "execution_seconds": 0.6223783510213252
+      },
+      "focused_total": {
+        "passed": 695,
+        "failed": 0,
+        "targets": 75,
+        "execution_seconds": 1.3431394220824586
+      },
+      "ordinary_legacy": {
+        "passed": 3038,
+        "failed": 0,
+        "seconds": 77.91921629398712
+      },
+      "big_games": [
+        {
+          "cards_activated": [
+            "Clue Token",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Loot, the Key to Everything",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Nexus of Becoming",
+            "Omenpath Journey",
+            "Territory Forge",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2653,
+          "decisions_per_second": 270.0296460744279,
+          "deck_pair": 1,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.3053482616748148,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 718,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1134,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 801,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 9.824847155,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/aggregate-groups-reentry-20261102-165000Z/big-0/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Food Token",
+            "Harvester of Misery",
+            "Map Token",
+            "Pest Control",
+            "Sandstorm Salvager",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Generous Plunderer",
+            "Oltec Matterweaver",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Sword of Wealth and Power",
+            "Torpor Orb",
+            "Transmutation Font",
+            "Vaultborn Tyrant",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1859,
+          "decisions_per_second": 1462.9087029321677,
+          "deck_pair": 3,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 2.3607994130158705,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 1016,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 354,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 489,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 1.270755992,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/aggregate-groups-reentry-20261102-165000Z/big-1/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Food Token",
+            "Harvester of Misery",
+            "Pest Control",
+            "Sandstorm Salvager"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Loot, the Key to Everything",
+            "Nexus of Becoming",
+            "Oltec Matterweaver",
+            "Omenpath Journey",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Territory Forge",
+            "Torpor Orb",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2823,
+          "decisions_per_second": 561.2379989532352,
+          "deck_pair": 2,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.5964272039885603,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 655,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1272,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 896,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 5.029951652,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/aggregate-groups-reentry-20261102-165000Z/big-2/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Fomori Vault",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Memory Vessel",
+            "Sandstorm Salvager",
+            "Transmutation Font"
+          ],
+          "cards_cast": [
+            "Collector's Cage",
+            "Generous Plunderer",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Sandstorm Salvager",
+            "Simulacrum Synthesizer",
+            "Sword of Wealth and Power",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1456,
+          "decisions_per_second": 3302.142158812041,
+          "deck_pair": 0,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 6.803864338211623,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 499,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 506,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 451,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 0.440925899,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/aggregate-groups-reentry-20261102-165000Z/big-3/execution.log"
+        }
+      ],
+      "strict_trace": {
+        "passed": 1,
+        "identities": 3164,
+        "unchanged_inherited_schema199": 3164,
+        "migration_prior198_exact": 2966,
+        "expected_unrepresentable": 41,
+        "expected_added": 0,
+        "unexpected_differences": 0,
+        "outcome_changes": 0,
+        "seconds": 2.1042821040027775
+      },
+      "total_passing_cases": 3738,
+      "production_format_provenance_strict_workspace_clippy": "passed",
+      "independent_nonauthor_reviews": [
+        {
+          "agent": "engine_review_one",
+          "decision": "source and final runtime approved"
+        },
+        {
+          "agent": "engine_review_final",
+          "decision": "source and final runtime approved"
+        }
+      ],
+      "resource_guard": "one shared build, one Cargo job/test thread, 6 GiB cgroup; no OOM probe",
+      "compiler": {
+        "target": "<cache>/rustmage-authoring/aetherdrift/target",
+        "profile": "test; engine opt-level 1, test bodies opt-level 0",
+        "features": "rustmage-core/test-support; unchanged through card scenarios",
+        "test_build_seconds": 189.05007445400406,
+        "warm_check_seconds": 0.7665802129922668,
+        "engine_reused_after_promotion": true,
+        "all_test_binary_hashes_unchanged": true
+      },
+      "reports": {
+        "combined": "<cache>/rustmage-authoring/aetherdrift/aggregate-groups-reentry-20261102-165000Z/report.json",
+        "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-aggregate-groups-20261102-165500Z/report.json"
+      },
+      "previous_freeze": "docs/aetherdrift-engine-freeze-permanent-copy.json",
+      "scope": "Existing native BIG Standard decks with deterministic policy, natural outcomes, replay and sampled owned raw/index/restore. DFT-only games and full set release acceptance remain pending.",
+      "card_admissions": {
+        "DFT_inherited": 119,
+        "DFT_local_candidates": 276,
+        "DFT_total": 276,
+        "DFT_gated": 0,
+        "known_incorrect_cards": 2,
+        "completed_set_verified": false
+      }
+    }
+  ],
+  "engine_phase": "accepted at 3b29b55758059e9366ee6cd487b7bef8b0fe7c06; stable guarded cache rewarmed",
+  "engine_reentry": {
+    "previous_accepted_checkpoint": "819fa96ec",
+    "reason": "Exact card wiring invalidated broad initial API assumptions; no new engine build until all seven fixes and source reviews are assembled",
+    "audited_pool": {
+      "white_blue": 74,
+      "black_red": 75,
+      "green_multicolor": 80,
+      "colorless": 47
+    },
+    "ordinary_card_work": "may resume against accepted engine8657c4e6c and the same guarded target",
+    "validation_policy": "one combined guarded build after all shared followups; reuse prior engine for test-only diagnostics; no clean builds",
+    "accepted_checkpoint": {
+      "phase": "engine reentry accepted; ordinary card authorship may resume; full-set acceptance remains open",
+      "engine_revision": "8657c4e6c",
+      "tested_revision": "a36b9750418699b70c752fc41980016692f2103d",
+      "engine_inputs_sha256": "b35fa13c95a42ccf943db24abf21a3ca43f05268afe239480afe62acf9cce411",
+      "engine_digest_method": "SHA256 of each sorted tracked crates/engine path, NUL, then binary SHA256(file)",
+      "baseline_sha256": "d66cd3f5d1da4935f2320e29de9b7561210df65ae5e73172da44b1f678816905",
+      "focused_engine": {
+        "passed": 336,
+        "failed": 0,
+        "targets": 39,
+        "execution_seconds": 0.6974718030105578
+      },
+      "prepared_card_scenarios": {
+        "passed": 39,
+        "failed": 0,
+        "targets": 5,
+        "execution_seconds": 0.08170767000410706
+      },
+      "focused_total": {
+        "passed": 375,
+        "failed": 0,
+        "targets": 44,
+        "execution_seconds": 0.7791794730146648
+      },
+      "ordinary_legacy": {
+        "passed": 3035,
+        "failed": 0,
+        "seconds": 77.95230166299734
+      },
+      "big_games": [
+        {
+          "cards_activated": [
+            "Clue Token",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Loot, the Key to Everything",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Nexus of Becoming",
+            "Omenpath Journey",
+            "Territory Forge",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2653,
+          "decisions_per_second": 260.52497226632124,
+          "deck_pair": 1,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.2946004209570161,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 718,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1134,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 801,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 10.183284838,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-0/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Food Token",
+            "Harvester of Misery",
+            "Map Token",
+            "Pest Control",
+            "Sandstorm Salvager",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Generous Plunderer",
+            "Oltec Matterweaver",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Sword of Wealth and Power",
+            "Torpor Orb",
+            "Transmutation Font",
+            "Vaultborn Tyrant",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1859,
+          "decisions_per_second": 1481.692150811231,
+          "deck_pair": 3,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 2.391111593563041,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 1016,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 354,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 489,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 1.2546465869999999,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-1/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Food Token",
+            "Harvester of Misery",
+            "Pest Control",
+            "Sandstorm Salvager"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Loot, the Key to Everything",
+            "Nexus of Becoming",
+            "Oltec Matterweaver",
+            "Omenpath Journey",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Territory Forge",
+            "Torpor Orb",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2823,
+          "decisions_per_second": 574.536863951409,
+          "deck_pair": 2,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.6105598979292338,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 655,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1272,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 896,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 4.913522834,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-2/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Fomori Vault",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Memory Vessel",
+            "Sandstorm Salvager",
+            "Transmutation Font"
+          ],
+          "cards_cast": [
+            "Collector's Cage",
+            "Generous Plunderer",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Sandstorm Salvager",
+            "Simulacrum Synthesizer",
+            "Sword of Wealth and Power",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1456,
+          "decisions_per_second": 3356.841173722744,
+          "deck_pair": 0,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 6.9165683524507084,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 499,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 506,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 451,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 0.433741105,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-20261102-092500Z/big-3/execution.log"
+        }
+      ],
+      "strict_trace": {
+        "passed": 1,
+        "identities": 3031,
+        "unchanged_inherited_schema199": 3007,
+        "migration_prior198_exact": 2966,
+        "expected_unrepresentable": 41,
+        "expected_added": 24,
+        "unexpected_differences": 0,
+        "outcome_changes": 0,
+        "seconds": 1.9564084140001796
+      },
+      "total_passing_cases": 3415,
+      "production_format_provenance_strict_workspace_clippy": "passed",
+      "independent_nonauthor_reviews": [
+        {
+          "agent": "engine_review_one",
+          "decision": "source and final runtime approved"
+        },
+        {
+          "agent": "engine_review_final",
+          "decision": "source and final runtime approved"
+        }
+      ],
+      "resource_guard": "one shared build, one Cargo job/test thread, 6GiB cgroup; no OOM probe",
+      "compiler": {
+        "target": "<cache>/rustmage-authoring/aetherdrift/target",
+        "profile": "test; engine opt-level1, test bodies opt-level0",
+        "features": "rustmage-core/test-support; unchanged through card scenarios",
+        "test_build_seconds": 165.9925818920019,
+        "warm_check_seconds": 0.46553068100183737,
+        "engine_reused_after_promotion": true
+      },
+      "reports": {
+        "assembled": "<cache>/rustmage-authoring/aetherdrift/engine-reentry-assembled-20261102-093300Z/report.json",
+        "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-engine-reentry-20261102-093400Z/report.json"
+      },
+      "previous_freeze": "docs/aetherdrift-engine-freeze-initial.json",
+      "scope": "Existing native BIG Standard decks: 12 natural games, 8791 decisions, full replay and sampled owned raw/index/restore and observations. Not DFT set-only or all-Standard acceptance.",
+      "card_admissions": {
+        "new_during_engine_reentry": 0,
+        "DFT_inherited": 119,
+        "DFT_local_candidates": 143,
+        "DFT_total": 276,
+        "DFT_gated": 133,
+        "new_local_candidate_admissions_before_reentry": 24,
+        "completed_set_verified": false
+      }
+    }
+  },
+  "pre_reentry_status_history": {
+    "latest_compile_checkpoint": {
+      "revision": "8c8e1a53f",
+      "production_check": "passed in 5.63 seconds",
+      "all_targets": "passed in 43.88 seconds",
+      "report": "<cache>/rustmage-authoring/aetherdrift/review-checkpoint-20261101-213600/result.json"
+    },
+    "latest_focused_followups": [
+      {
+        "revision": "7bcf95379",
+        "scope": "copy16+linked8+retained7+lookback7 and projectedpowerup1",
+        "passed": 39,
+        "failed": 0,
+        "report": "<cache>/rustmage-authoring/aetherdrift/new-core-20261101-202859/result.json",
+        "command_seconds": [
+          1.5683665199903771,
+          0.8665686470048968,
+          43.182058001999394
+        ]
+      },
+      {
+        "revision": "db13683e8",
+        "scope": "tax18; one known deferred funding gap",
+        "passed": 17,
+        "failed": 1,
+        "report": "<cache>/rustmage-authoring/aetherdrift/tax-20261101-203852/result.json",
+        "command_seconds": 1.0176801930065267
+      }
+    ],
+    "current_runtime_evidence": "All3329 pass:294 focused across32targets,3030 ordinary legacy,4BIG and1strict promoted trace. BIG1/2 former timeouts now10.020/4.846seconds. Prior1982966exact+41auditedunsupported, no unexpected/outcome drift. Link regenerated; warm Cargo .365seconds with enginefresh=true and all33executables unchanged. Two independent nonauthor engine reviews approve freeze.",
+    "latest_affected_regressions": {
+      "revision": "8c8e1a53f",
+      "schema199": {
+        "passed": 13,
+        "failed": 0
+      },
+      "hybrid": {
+        "passed": 37,
+        "failed": 0
+      },
+      "stoneglider": {
+        "passed": 3,
+        "failed": 0
+      },
+      "bounded_big": {
+        "passed": 0,
+        "timed_out_case": true,
+        "timeout_seconds": 45,
+        "status": "performance blocker; no timeout increase"
+      },
+      "report": "<cache>/rustmage-authoring/aetherdrift/review-checkpoint-20261101-213600/result.json",
+      "peak_memory_gib": 3.1
+    }
+  },
+  "admissions_status": "276/276 local definitions with focused outcomes; no remaining card source blocker; full-set games/release acceptance remain pending",
+  "implemented_engine_clusters": [
+    "speed scalars/grants/replacements and exact mana quality",
+    "crew/saddle participant events, toughness and direct designation",
+    "queries/searches, ability presence and historical entry/exile batches",
+    "exhaust observer/reuse/discount/copy plus exert obligations",
+    "snapshot group keyword grants/removal and nonland untap",
+    "successful-entry witnesses, lasting forms/keywords and delayed return obligations",
+    "typed union/ranged costs and actual versus declared paid facts",
+    "all-counter parity, signed group base stats and player attack groups/keywords",
+    "live static creature/subtype effects, union modifiers and Aura eligibility",
+    "effective entry counters/prohibitions and zero-result continuation",
+    "actual caster and attack history plus original-controller delayed target packets",
+    "destruction outcome reward, post-mill threshold, capped rummage and mandatory fallback",
+    "source-controlled duration and combat restriction with projected layer-two dependencies",
+    "main-relative extra combats and repeated source-independent combat packets",
+    "all/nonland name choices and capped private mixed-zone named exile search",
+    "deferred mana headers and exact nested child continuation; current-combat token requirement with exact live-incarnation de-duplication; private chosen-card discard/draw",
+    "independent hidden exile/play rights and route-specific graveyard costs; paid additional-cost reservations released before mana funding",
+    "as-entry artifact/creature copying, fresh copied choices and simultaneous departing blueprints",
+    "pre-entry selected exiles, actual-result counters/links, whole-batch exact-object reservation and complete projected graveyard inventory",
+    "retained immutable linked activations and copiable0/0 exceptions; pre-event graveyard exile lookback and shared projected power-up reduction",
+    "named activation increases, immutable post-cost mana output, nested payment identity/continuations and exact external sacrifice/exert rollback receipts",
+    "acquired nonmana independent usage and exact counter-cost receipts; temporary acquired Embalm graveyard activations with white/Zombie/no-cost copy exceptions"
+  ],
+  "copy_capture_reentry": {
+    "previous_accepted_checkpoint": "fb878868d",
+    "observed_case": "dft_green_multi_cards_final::mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token",
+    "cause": "capture_copy_cast_classified returns early for ordinary permanents and gates CopyCastSpell demand by instant/sorcery type",
+    "remaining_api_audit": "Final BR and inherited colorless APIs reread; no other concrete missing primitive found. Root six new machine definitions use existing chosen types, X counters, search, exhaust copying, targeted mana and equip paths.",
+    "card_work": "may resume against accepted 9000f120b and the same guarded target",
+    "validation": "one additional core test compilation after full source reviews; retain guarded warm target and unchanged profile/features",
+    "status": "accepted; see aetherdrift-engine-freeze.json"
+  },
+  "focused_member_receipts": "docs/aetherdrift-focused-card-evidence.json",
+  "controller_role_reentry": {
+    "source_base": "ff1cf92bc",
+    "found_in_independent_review": "engine_review_one",
+    "affected_cards": [
+      "Trade the Helm",
+      "Demonic Junker"
+    ],
+    "cause": "Symmetric DifferentControllers discards per-target controller roles; relation-specific target groups also require both aggregate opcodes to consume all groups.",
+    "engine_scope": "Two existing aggregate opcodes in the existing run_program cross-group preservation list; synthetic legality/interaction/owned tests and scoped prior198 assurance, no new wire shape.",
+    "card_phase": "resolved at faf0f3395; actual role6/6, Junker10/10, Trade12/12, all core fresh; no remaining card source blocker",
+    "other_DFT_group_audit": "Plow Through Fight, Run Over PowerDamage and Rise from Wreck ReturnAllTargetsToHand already preserve cross-group targets; no additional concrete aggregate dependency found.",
+    "status": "engine and both separate card-role repairs accepted; all focused responses/regressions pass"
+  },
+  "remaining_card_blockers": [],
+  "late_mana_completion_reentry": {
+    "observed_case": "DFT_ARCHETYPES_V1 pair1 seed921502 swappedtrue decision398",
+    "parent": "Draconautics Engineer activation0 requiresR; lastTreasure lateG choice leaves onlyConcede",
+    "diagnostic": "<cache>/rustmage-authoring/aetherdrift/dft-concession-diagnostic-20261102-01/diagnostic.log",
+    "cause": "EffectMana domain enumeration and advertised mana_choices lack the completion check already applied to initial mana actions; own entry projections also add raw a.production.",
+    "batch_scope": [
+      "shared pure post-cost output completion query for legal/raw/index/advertised choices",
+      "native/borrowed/granted/acquired and nested parent announcement chains with frozen output quality/tap bonus/active-instance ownership",
+      "mandatory Plot and existing guided FaceUp/Attack completion semantics, exact plot subject",
+      "receipt-aware existential OWN entry projection, including dynamic nonzero previews",
+      "preserve full standalone/ordinary resolving/optional ResolutionMana domains and exact foreign-choice selective rollback escape",
+      "retain feasible mana-lot allocation plans for direct borrowedBF/GY and announced nestedPayCosts routes",
+      "retain existing owned fixed output receipt only when an announced external-cost mana ability must restore Plot/FaceUp/Resolution/Attack caller"
+    ],
+    "card_work": "parked; all276 typed card-role definitions already corrected, no new card-specific engine branch",
+    "validation": "source audit and both nonauthor reviews before one combined core build; no policy-only workaround",
+    "diagnostic_sweep": {
+      "report": "<cache>/rustmage-authoring/aetherdrift/dft-remaining-pair-diagnostics-20261102-01/report.json",
+      "complete_pairings": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ],
+      "natural_games_in_those_pairings": 64,
+      "other_failure": "pair8 seed922200 swappedtrue decision278 hits same wrong-color late output while casting",
+      "scope": "old-engine diagnostics; not full-corpus acceptance"
+    },
+    "tests": "Three disjoint generic targets authored in isolated worktrees; one shared engine owner, root sole compiler; no build before complete source and both nonauthor reviews.",
+    "status": "shared engine accepted with all26 new interaction cases; full fixed DFT game corpus must now be rerun",
+    "accepted_checkpoint": {
+      "phase": "late mana-completion engine reentry accepted; all276 card definitions complete; full set acceptance remains open",
+      "engine_revision": "7cb154785ff4893759854032ddf243e7beeedba3",
+      "tested_revision": "3b29b55758059e9366ee6cd487b7bef8b0fe7c06",
+      "engine_inputs_sha256": "22b3f6dc008caf8a6b72fa1ae2b46a1529ecda2aeb6766c1a5beb6660288482e",
+      "engine_digest_method": "SHA256 of each sorted tracked crates/engine path, NUL, then binary SHA256(file)",
+      "baseline_sha256": "1b5003d152a350245a2a5f8ae2aafb853f6352f54ea888568656fd1dc2011f2d",
+      "focused_engine": {
+        "passed": 387,
+        "failed": 0,
+        "targets": 44,
+        "execution_seconds": 0.8567101660155458
+      },
+      "authored_card_scenarios": {
+        "passed": 340,
+        "failed": 0,
+        "targets": 35,
+        "execution_seconds": 0.6185361629613908
+      },
+      "focused_total": {
+        "passed": 727,
+        "failed": 0,
+        "targets": 79,
+        "execution_seconds": 1.4752463289769366
+      },
+      "ordinary_legacy": {
+        "passed": 3038,
+        "failed": 0,
+        "seconds": 78.50771102399449
+      },
+      "big_games": [
+        {
+          "cards_activated": [
+            "Clue Token",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Loot, the Key to Everything",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Nexus of Becoming",
+            "Omenpath Journey",
+            "Territory Forge",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2653,
+          "decisions_per_second": 253.83640506504656,
+          "deck_pair": 1,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.2870370204278702,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 718,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1134,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 801,
+              "deck": 1,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 10.451613508,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/big-0/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Food Token",
+            "Harvester of Misery",
+            "Map Token",
+            "Pest Control",
+            "Sandstorm Salvager",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Collector's Cage",
+            "Esoteric Duplicator",
+            "Generous Plunderer",
+            "Oltec Matterweaver",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Sword of Wealth and Power",
+            "Torpor Orb",
+            "Transmutation Font",
+            "Vaultborn Tyrant",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1859,
+          "decisions_per_second": 1397.61535785221,
+          "deck_pair": 3,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 2.2554309163833404,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 1016,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 354,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 489,
+              "deck": 3,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 1.330122762,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/big-1/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Food Token",
+            "Harvester of Misery",
+            "Pest Control",
+            "Sandstorm Salvager"
+          ],
+          "cards_cast": [
+            "Ancient Cornucopia",
+            "Bristlebud Farmer",
+            "Generous Plunderer",
+            "Grand Abolisher",
+            "Loot, the Key to Everything",
+            "Nexus of Becoming",
+            "Oltec Matterweaver",
+            "Omenpath Journey",
+            "Rest in Peace",
+            "Sandstorm Salvager",
+            "Territory Forge",
+            "Torpor Orb",
+            "Vaultborn Tyrant"
+          ],
+          "decisions": 2823,
+          "decisions_per_second": 558.9327493444518,
+          "deck_pair": 2,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 0.5939774169441571,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 655,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 1272,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 896,
+              "deck": 2,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 5.050697071,
+          "spell_colors_mask": 27,
+          "log": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/big-2/execution.log"
+        },
+        {
+          "cards_activated": [
+            "Fomori Vault",
+            "Food Token",
+            "Harvester of Misery",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Memory Vessel",
+            "Sandstorm Salvager",
+            "Transmutation Font"
+          ],
+          "cards_cast": [
+            "Collector's Cage",
+            "Generous Plunderer",
+            "Greed's Gambit",
+            "Hostile Investigator",
+            "Legion Extruder",
+            "Lost Jitte",
+            "Lotus Ring",
+            "Memory Vessel",
+            "Molten Duplication",
+            "Sandstorm Salvager",
+            "Simulacrum Synthesizer",
+            "Sword of Wealth and Power",
+            "Transmutation Font",
+            "Worldwalker Helm"
+          ],
+          "decisions": 1456,
+          "decisions_per_second": 3304.8120787612984,
+          "deck_pair": 0,
+          "excludes": "model inference, exhaustive choice coverage",
+          "games": 3,
+          "games_per_second": 6.809365546898279,
+          "includes": "Standard BIG decks with basic lands, deterministic smoke policy, natural outcomes, complete raw replay, sampled owned/raw/index/restore and observation equality",
+          "outcomes": [
+            {
+              "decisions": 499,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56710
+            },
+            {
+              "decisions": 506,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P0"
+              },
+              "seed": 56711
+            },
+            {
+              "decisions": 451,
+              "deck": 0,
+              "outcome": {
+                "Winner": "P1"
+              },
+              "seed": 56712
+            }
+          ],
+          "seconds": 0.44056968,
+          "spell_colors_mask": 31,
+          "log": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/big-3/execution.log"
+        }
+      ],
+      "strict_trace": {
+        "passed": 1,
+        "identities": 3164,
+        "unchanged_inherited_schema199": 3164,
+        "migration_prior198_exact": 2966,
+        "expected_unrepresentable": 41,
+        "expected_added": 0,
+        "unexpected_differences": 0,
+        "outcome_changes": 0,
+        "seconds": 2.124217812990537
+      },
+      "total_passing_cases": 3770,
+      "production_format_provenance_strict_workspace_clippy": "passed",
+      "independent_nonauthor_reviews": [
+        {
+          "agent": "engine_review_one",
+          "decision": "source and final runtime approved"
+        },
+        {
+          "agent": "engine_review_final",
+          "decision": "source and final runtime approved"
+        }
+      ],
+      "resource_guard": "one shared build, one Cargo job/test thread, 6 GiB cgroup; no OOM probe",
+      "compiler": {
+        "target": "<cache>/rustmage-authoring/aetherdrift/target",
+        "profile": "test; engine opt-level 1, test bodies opt-level 0",
+        "features": "rustmage-core/test-support; unchanged through card scenarios",
+        "test_build_seconds": 191.6713965460076,
+        "warm_check_seconds": 0.8167844580020756,
+        "engine_reused_after_promotion": true,
+        "all_test_binary_hashes_unchanged": true
+      },
+      "reports": {
+        "combined": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-assembled-20261102-01/report.json",
+        "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-late-mana-completion-20261102-01/report.json"
+      },
+      "previous_freeze": "docs/aetherdrift-engine-freeze-aggregate-groups.json",
+      "fixture_followup": {
+        "revision": "3b29b55758059e9366ee6cd487b7bef8b0fe7c06",
+        "changed_files": [
+          "tests/dft_mana_entry_completion_engine.rs"
+        ],
+        "core_reused": true,
+        "compile_seconds": 1.3181347279896727,
+        "source_revision": "7cb154785ff4893759854032ddf243e7beeedba3",
+        "original_failure_retained_in": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-reentry-20261102-01/report.json",
+        "policy": "Separate immutable consuming runs; only reviewed test fixture and evidence changed. All production inputs and all other executable hashes are unchanged.",
+        "intermediate_failed_report": "<cache>/rustmage-authoring/aetherdrift/late-mana-entry-fixture-20261102-01/report.json"
+      },
+      "compiler_scope": "One engine test compilation; two cheap test-only fixture recompilations with core fresh. Unsuccessful receipts are retained.",
+      "scope": "Existing native BIG Standard decks with deterministic policy, natural outcomes, replay and sampled owned raw/index/restore. DFT-only games and full set release acceptance remain pending.",
+      "card_admissions": {
+        "DFT_inherited": 119,
+        "DFT_local_candidates": 276,
+        "DFT_total": 276,
+        "DFT_gated": 0,
+        "known_incorrect_cards": 0,
+        "completed_set_verified": false
+      }
+    }
+  },
+  "whole_set_games": {
+    "source_revision": "9848e4caff86c49f737633ae1906612c4268e9bb",
+    "report": "<cache>/rustmage-authoring/aetherdrift/dft-only-shards-20261102-02/report.json",
+    "report_sha256": "313d3b967a2f37a1da0bc5c8aa85d1a953e69991c3d0a11da4c63355f5565cbe",
+    "benchmark": {
+      "workload": "DFT_ARCHETYPES_V1",
+      "scope": "Same exact80 fixed cases as verification; test profile, engine opt-level1. Includes game construction/rules/action emission/shared observation-only smoke policy/telemetry; excludes replay/owned checks, traces, model inference and network. Not all-Standard throughput.",
+      "games": 80,
+      "decisions": 67835,
+      "seconds": 112.212445358,
+      "games_per_second": 0.7129333982943679,
+      "decisions_per_second": 604.5229634162305,
+      "same_cases_outcomes_decisions_witnesses_as_verification": true
+    },
+    "receipt": "docs/aetherdrift-game-acceptance.json"
+  },
+  "completed_set_verified": true,
+  "full_set_acceptance": "docs/aetherdrift-acceptance.json"
+}

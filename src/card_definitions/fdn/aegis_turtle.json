@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4476cb3c0aa4892b9dd4be8883a8d32b0bb96920b39a77a00ed73339cf991989"
   },
-  "physical_metadata_sha256": "17538ce3df4519f2b36107fe5b27eda56e7b719664551a49af1d8cb6ab5a2b93"
+  "physical_metadata_sha256": "17538ce3df4519f2b36107fe5b27eda56e7b719664551a49af1d8cb6ab5a2b93",
+  "has_rules_abilities": false,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AegisTurtle.java",
+  "java_sha256": "f7b79880806e5a6d4cf113368136e37892d43ee8e0ec45eba090f115c30008b8"
 }

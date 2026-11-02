@@ -1,0 +1,1498 @@
+{
+  "base_revision": "fb878868d",
+  "engine_phase": "accepted cf5046f15, source9000f120b; card-only changes",
+  "cards": [
+    {
+      "name": "Country Roads",
+      "definition": "src/card_definitions/dft/country_roads.rs",
+      "oracle_id": "c5a39f76-dd1b-442c-9f52-08561ecb91ad",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {W}.\n{1}{W}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CountryRoads.java",
+        "sha256": "84da319acc5b0f8559ffc0d74274d0a877d561e9975580d938d0fb8af33defba"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/WhiteManaAbility.java",
+          "sha256": "36c9c240bb0e9509d304d9300d0a157085253b4ab5d9a52cbdf1d051a43221b6"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
+    },
+    {
+      "name": "Reef Roads",
+      "definition": "src/card_definitions/dft/reef_roads.rs",
+      "oracle_id": "32438050-5ae7-4c19-bcaf-5a07a673e0e0",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {U}.\n{1}{U}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/ReefRoads.java",
+        "sha256": "76d37c584d1d05188a1b573e2cfca163c023ecf08ad74ba2e81f375fa03fc162"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BlueManaAbility.java",
+          "sha256": "8b0ffaec3d6002607e0a62e142031604a31556313e44830d9ad44026872cdf1f"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
+    },
+    {
+      "name": "Foul Roads",
+      "definition": "src/card_definitions/dft/foul_roads.rs",
+      "oracle_id": "d4e4c8a5-e97b-4295-a403-d17834f73502",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {B}.\n{1}{B}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/f/FoulRoads.java",
+        "sha256": "6b963ca24382171ccbe509630bff7eae54bc034f1430ac1e4ea45b159f7b8557"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+          "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
+    },
+    {
+      "name": "Rocky Roads",
+      "definition": "src/card_definitions/dft/rocky_roads.rs",
+      "oracle_id": "a659c29f-aaca-44c5-8426-cdafcb195f86",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {R}.\n{1}{R}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RockyRoads.java",
+        "sha256": "56ce9024b7eb881795873f48af6dbcc2e35e51a1a668145e305b21fdb4f3f135"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+          "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
+    },
+    {
+      "name": "Wild Roads",
+      "definition": "src/card_definitions/dft/wild_roads.rs",
+      "oracle_id": "36fbc8ba-bb4c-4e5e-9031-78c36e376851",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {G}.\n{1}{G}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/w/WildRoads.java",
+        "sha256": "589f127215ecb4dc5996d7ca4b8e10ab309c19e2059bf46499eb3b533879bea8"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+          "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "passed in accepted engine reentry checkpoint3415",
+      "test_target": "dft_colorless_cards_roads"
+    },
+    {
+      "name": "Amonkhet Raceway",
+      "definition": "src/card_definitions/dft/amonkhet_raceway.rs",
+      "oracle_id": "fe174586-d36b-40f6-babd-1f98e76eec22",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add {C}.\nMax speed \u2014 {T}: Target creature gains haste until end of turn.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/AmonkhetRaceway.java",
+        "sha256": "5e6753b2e4ab563b5948ab43fbaba4bac78580a816c998779c93d1940991017c"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+          "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{T}: Add {C}.",
+        "Max speed \u2014 {T}: Target creature gains haste until end of turn."
+      ],
+      "outcome_scenarios": [
+        "all_three_raceways_really_start_engines_and_supply_unconditional_colorless_mana",
+        "amonkhet_haste_targets_either_player_and_survives_source_departure_until_cleanup"
+      ],
+      "test_target": "dft_colorless_cards_raceways",
+      "runtime_status": "passed7/7; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
+    },
+    {
+      "name": "Avishkar Raceway",
+      "definition": "src/card_definitions/dft/avishkar_raceway.rs",
+      "oracle_id": "e2c35551-1ba5-4424-baf9-821b49bbcc8c",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add {C}.\nMax speed \u2014 {3}, {T}, Discard a card: Draw a card.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/AvishkarRaceway.java",
+        "sha256": "4b15583e2088181442771bbcbbc106689298ff25c670cf8fec9bc2d83a77d39b"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+          "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+          "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{T}: Add {C}.",
+        "Max speed \u2014 {3}, {T}, Discard a card: Draw a card."
+      ],
+      "outcome_scenarios": [
+        "all_three_raceways_really_start_engines_and_supply_unconditional_colorless_mana",
+        "avishkar_pays_three_taps_and_discards_before_drawing_with_no_empty_hand_route"
+      ],
+      "test_target": "dft_colorless_cards_raceways",
+      "runtime_status": "passed7/7; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
+    },
+    {
+      "name": "Muraganda Raceway",
+      "definition": "src/card_definitions/dft/muraganda_raceway.rs",
+      "oracle_id": "b5fa5651-d714-44d6-867b-be0e3224b7ed",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add {C}.\nMax speed \u2014 {T}: Add {C}{C}.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MuragandaRaceway.java",
+        "sha256": "f5a24981d9bb9e5a048e4fbf6dfd73cfb8c0956254be9ca09960d5c06e95c09b"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+          "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+          "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{T}: Add {C}.",
+        "Max speed \u2014 {T}: Add {C}{C}."
+      ],
+      "outcome_scenarios": [
+        "all_three_raceways_really_start_engines_and_supply_unconditional_colorless_mana",
+        "muraganda_max_speed_mana_is_two_colorless_and_uses_one_tap_at_instant_speed"
+      ],
+      "test_target": "dft_colorless_cards_raceways",
+      "runtime_status": "passed7/7; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
+    },
+    {
+      "name": "Night Market",
+      "definition": "src/card_definitions/dft/night_market.rs",
+      "oracle_id": "4cdb9f80-d08f-4986-99c8-573166d66082",
+      "oracle_text": "This land enters tapped. As it enters, choose a color.\n{T}: Add one mana of the chosen color.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/n/NightMarket.java",
+        "sha256": "85278c866806694ced6469c2275a12fea266cf2afef82295be923cf3b2df02d5"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAsItEntersChooseColorAbility.java",
+          "sha256": "ae5f335e82c104afe8d7165f2d404c4ad5e1972a28225b7b9af732c30e8b125d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseColorEffect.java",
+          "sha256": "bbc363d77d1883e5473b95e94ecb24c6d33f8c03a85dd2c6d570c56d112dcba6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceEffect.java",
+          "sha256": "a912f8d2328afba2be2060a9b044621afd2d83bf48f05489962eec2ee29cff0d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+          "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaChosenColorEffect.java",
+          "sha256": "e129dbded6a8eeaa978804934e34f9b3c5992ad5c560692e1fa5120b8c3f2e48"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+          "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+          "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ],
+      "printed_obligations": [
+        "This land enters tapped. As it enters, choose a color.",
+        "{T}: Add one mana of the chosen color.",
+        "Cycling {3} ({3}, Discard this card: Draw a card.)"
+      ],
+      "outcome_scenarios": [
+        "night_market_chooses_every_color_as_it_enters_tapped_then_produces_only_that_color",
+        "night_market_entry_choice_owns_independent_raw_index_and_restored_branches",
+        "night_market_cycles_for_three_at_instant_speed_without_entering_or_choosing_a_color"
+      ],
+      "test_target": "dft_colorless_cards_raceways",
+      "runtime_status": "passed7/7; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
+    },
+    {
+      "name": "Racers' Scoreboard",
+      "definition": "src/card_definitions/dft/racers_scoreboard.rs",
+      "oracle_id": "54c2b3b3-e247-4146-8045-d49480b795f2",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nWhen this artifact enters, draw two cards, then discard a card.\nMax speed \u2014 Spells you cast cost {1} less to cast.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RacersScoreboard.java",
+        "sha256": "c0b5109f3d3d54b63656e65a76810d017b90adcc85f913c7fb3108592dc4b064"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+          "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "When this artifact enters, draw two cards, then discard a card.",
+        "Max speed \u2014 Spells you cast cost {1} less to cast."
+      ],
+      "outcome_scenarios": [
+        "all_three_artifacts_start_speed_only_on_their_actual_paid_entry",
+        "scoreboard_draws_two_before_choosing_exactly_one_discard_even_after_it_leaves",
+        "scoreboard_discount_is_live_own_controller_generic_only_and_requires_max_speed"
+      ],
+      "test_target": "dft_colorless_cards_speed",
+      "runtime_status": "passed5/5; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-speed-20261102-101000Z/report.json"
+    },
+    {
+      "name": "Starting Column",
+      "definition": "src/card_definitions/dft/starting_column.rs",
+      "oracle_id": "d608a3fa-faee-44a4-9ab6-be701d3b7a49",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add one mana of any color.\nMax speed \u2014 {T}, Sacrifice this artifact: Draw two cards, then discard a card.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/StartingColumn.java",
+        "sha256": "59c66d47490784e6383af865092a53ea33851457273698b53c6758cb91eab7fa"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+          "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+          "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{T}: Add one mana of any color.",
+        "Max speed \u2014 {T}, Sacrifice this artifact: Draw two cards, then discard a card."
+      ],
+      "outcome_scenarios": [
+        "all_three_artifacts_start_speed_only_on_their_actual_paid_entry",
+        "starting_column_produces_each_color_and_max_speed_sacrifices_before_draw_two_discard_one"
+      ],
+      "test_target": "dft_colorless_cards_speed",
+      "runtime_status": "passed5/5; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-speed-20261102-101000Z/report.json"
+    },
+    {
+      "name": "Walking Sarcophagus",
+      "definition": "src/card_definitions/dft/walking_sarcophagus.rs",
+      "oracle_id": "791b8ac8-8db8-44b4-8c85-fcc9017c17ef",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 This creature gets +1/+2.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/w/WalkingSarcophagus.java",
+        "sha256": "1fce5f3536e7665b40f73f976526b1ac4d5097d494d6280201b337e27dcc9408"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 This creature gets +1/+2."
+      ],
+      "outcome_scenarios": [
+        "all_three_artifacts_start_speed_only_on_their_actual_paid_entry",
+        "walking_sarcophagus_uses_only_its_live_controllers_max_speed_and_bonus_is_not_cumulative"
+      ],
+      "test_target": "dft_colorless_cards_speed",
+      "runtime_status": "passed5/5; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-speed-20261102-101000Z/report.json"
+    },
+    {
+      "name": "Aetherjacket",
+      "definition": "src/card_definitions/dft/aetherjacket.rs",
+      "oracle_id": "062c8e40-dea7-4df7-bcaa-f1d696fe61c3",
+      "oracle_text": "Flying, vigilance\n{2}, {T}, Sacrifice this creature: Destroy another target artifact. Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/Aetherjacket.java",
+        "sha256": "e7338cd94f3d8c39326f1459483068c16c0617ddd3464130b0f6eeb9ca49b439"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        }
+      ],
+      "printed_obligations": [
+        "Flying, vigilance",
+        "{2}, {T}, Sacrifice this creature: Destroy another target artifact. Activate only as a sorcery."
+      ],
+      "outcome_scenarios": [
+        "utility_artifacts_have_their_actual_paid_bodies_and_matrix_draws_one",
+        "aetherjacket_pays_two_taps_and_sacrifices_at_sorcery_speed_to_destroy_another_artifact"
+      ],
+      "test_target": "dft_colorless_cards_utility",
+      "runtime_status": "passed 4/4, including accepted permanent-copy combined checkpoint"
+    },
+    {
+      "name": "Guidelight Matrix",
+      "definition": "src/card_definitions/dft/guidelight_matrix.rs",
+      "oracle_id": "98005890-d566-4a27-906f-625513171e85",
+      "oracle_text": "When this artifact enters, draw a card.\n{2}, {T}: Target Mount you control becomes saddled until end of turn. Activate only as a sorcery.\n{2}, {T}: Target Vehicle you control becomes an artifact creature until end of turn.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/g/GuidelightMatrix.java",
+        "sha256": "788adabea9f787848c36c36c7000b464bcf237262476fd465fb5f5247df70421"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/SaddleTargetMountEffect.java",
+          "sha256": "38abe18bf44f271b3020329312ad1109cef78b1d16df259dfad2be920e2f936f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+          "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeTargetEffect.java",
+          "sha256": "95ebcf49ca842a8831f4925cfff4199bdd0740c37f0dbe77a7c542a73272cc67"
+        }
+      ],
+      "printed_obligations": [
+        "When this artifact enters, draw a card.",
+        "{2}, {T}: Target Mount you control becomes saddled until end of turn. Activate only as a sorcery.",
+        "{2}, {T}: Target Vehicle you control becomes an artifact creature until end of turn."
+      ],
+      "outcome_scenarios": [
+        "utility_artifacts_have_their_actual_paid_bodies_and_matrix_draws_one",
+        "guidelight_matrix_uses_separate_mount_sorcery_and_vehicle_instant_abilities"
+      ],
+      "test_target": "dft_colorless_cards_utility",
+      "runtime_status": "passed 4/4, including accepted permanent-copy combined checkpoint"
+    },
+    {
+      "name": "Ticket Tortoise",
+      "definition": "src/card_definitions/dft/ticket_tortoise.rs",
+      "oracle_id": "952083c5-9ffa-4cd9-915f-b7de7f3e5326",
+      "oracle_text": "Defender\nWhen this creature enters, if an opponent controls more lands than you, you create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TicketTortoise.java",
+        "sha256": "79d1f26f727477b4838ebda3553e45292eebd5931bd7b9a46c60d1deaf5f2d80"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/OpponentControlsMoreCondition.java",
+          "sha256": "1851991ffc9adb3363d04f26a3532eac00d36f97b6aa6baa70bf1eaf53360ee3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+          "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+          "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+        }
+      ],
+      "printed_obligations": [
+        "Defender",
+        "When this creature enters, if an opponent controls more lands than you, you create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")"
+      ],
+      "outcome_scenarios": [
+        "utility_artifacts_have_their_actual_paid_bodies_and_matrix_draws_one",
+        "ticket_tortoise_checks_more_lands_on_entry_and_again_at_resolution"
+      ],
+      "test_target": "dft_colorless_cards_utility",
+      "runtime_status": "passed 4/4, including accepted permanent-copy combined checkpoint"
+    },
+    {
+      "name": "Lifecraft Engine",
+      "definition": "src/card_definitions/dft/lifecraft_engine.rs",
+      "oracle_id": "caa69b51-1efd-4d0e-803b-914a83ccb836",
+      "oracle_text": "As this Vehicle enters, choose a creature type.\nVehicle creatures you control are the chosen creature type in addition to their other types.\nEach creature you control of the chosen type other than this Vehicle gets +1/+1.\nCrew 3",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LifecraftEngine.java",
+        "sha256": "509b54cda70e60cd793d513f8f81bf00d0d325429fd3686394fecbfef830507a"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+          "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+          "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllOfChosenSubtypeEffect.java",
+          "sha256": "aa088319449679f38b3d77f34e8939565afe24be2f2b7b2d374454e4c6df7128"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+          "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        }
+      ],
+      "printed_obligations": [
+        "As this Vehicle enters, choose a creature type.",
+        "Vehicle creatures you control are the chosen creature type in addition to their other types.",
+        "Each creature you control of the chosen type other than this Vehicle gets +1/+1.",
+        "Crew 3"
+      ],
+      "outcome_scenarios": [
+        "lifecraft_actual_entry_choice_changes_only_own_creature_vehicles_and_other_chosen_creatures"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "passed 11/11; engine reused",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
+    },
+    {
+      "name": "Marketback Walker",
+      "definition": "src/card_definitions/dft/marketback_walker.rs",
+      "oracle_id": "0405e0a9-6d02-4691-bdb8-59c72b824dab",
+      "oracle_text": "This creature enters with X +1/+1 counters on it.\n{4}: Put a +1/+1 counter on this creature.\nWhen this creature dies, draw a card for each +1/+1 counter on it.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MarketbackWalker.java",
+        "sha256": "8f6dffbcd406674f250ea1b3b005e749e4e616dd583b14e08ba6861e068fa763"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+          "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java",
+          "sha256": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+          "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ],
+      "printed_obligations": [
+        "This creature enters with X +1/+1 counters on it.",
+        "{4}: Put a +1/+1 counter on this creature.",
+        "When this creature dies, draw a card for each +1/+1 counter on it."
+      ],
+      "outcome_scenarios": [
+        "marketback_pays_twice_x_adds_repeatable_counters_and_draws_exact_death_lki",
+        "marketback_zero_x_dies_without_counters_and_draws_zero"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "passed 11/11; engine reused",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
+    },
+    {
+      "name": "Marshals' Pathcruiser",
+      "definition": "src/card_definitions/dft/marshals_pathcruiser.rs",
+      "oracle_id": "60f20f32-b6db-4ee7-a0aa-535647e6fcd5",
+      "oracle_text": "When this Vehicle enters, search your library for a basic land card, reveal it, put it into your hand, then shuffle.\nExhaust \u2014 {W}{U}{B}{R}{G}: This Vehicle becomes an artifact creature. Put two +1/+1 counters on it. (Activate each exhaust ability only once.)\nCrew 5",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MarshalsPathcruiser.java",
+        "sha256": "18a3068385208771779fca31cd7c8fefbd7e75cfb137b6fdbe7adff23a8b91a4"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+          "sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        }
+      ],
+      "printed_obligations": [
+        "When this Vehicle enters, search your library for a basic land card, reveal it, put it into your hand, then shuffle.",
+        "Exhaust \u2014 {W}{U}{B}{R}{G}: This Vehicle becomes an artifact creature. Put two +1/+1 counters on it. (Activate each exhaust ability only once.)",
+        "Crew 5"
+      ],
+      "outcome_scenarios": [
+        "pathcruiser_actual_entry_searches_only_basic_lands_privately_and_shuffles_even_when_declined",
+        "pathcruiser_crew_five_is_temporary_while_five_color_exhaust_is_permanent_and_once"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "passed 11/11; engine reused",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
+    },
+    {
+      "name": "Pit Automaton",
+      "definition": "src/card_definitions/dft/pit_automaton.rs",
+      "oracle_id": "49bfecc3-6258-454e-a8fd-fc49098a0898",
+      "oracle_text": "Defender\n{T}: Add {C}{C}. Spend this mana only to activate abilities.\n{2}, {T}: When you next activate an exhaust ability that isn't a mana ability this turn, copy it. You may choose new targets for the copy.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/p/PitAutomaton.java",
+        "sha256": "e4c582f67465020449977a155f6a2e07d3e1be4e9a0f8c89422a50fb89cb15f8"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+          "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColorlessManaAbility.java",
+          "sha256": "a33a4fadca48e2602ea78ec9a7a27e8e53659b047720c5cfffc2d34a27a51a6c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalColorlessManaEffect.java",
+          "sha256": "f5ba3fd57b7cff9f184695673821963516c5834505063f7a319d8c344076d97b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/builder/common/ActivatedAbilityManaBuilder.java",
+          "sha256": "5e3d352765c77caf9ff18b8b1738d63e867238acad62818d22d515ef364e7cb5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+          "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+          "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+        }
+      ],
+      "printed_obligations": [
+        "Defender",
+        "{T}: Add {C}{C}. Spend this mana only to activate abilities.",
+        "{2}, {T}: When you next activate an exhaust ability that isn't a mana ability this turn, copy it. You may choose new targets for the copy."
+      ],
+      "outcome_scenarios": [
+        "pit_actual_body_defender_and_two_mana_pay_abilities_but_cannot_cast_spells",
+        "pit_delayed_next_exhaust_survives_source_departure_ignores_ordinary_activations_and_is_consumed_once",
+        "pit_delayed_exhaust_callback_expires_at_cleanup"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "passed 11/11; engine reused",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
+    },
+    {
+      "name": "Radiant Lotus",
+      "definition": "src/card_definitions/dft/radiant_lotus.rs",
+      "oracle_id": "307be184-176a-40a8-944c-48aa00cfdd29",
+      "oracle_text": "{T}, Sacrifice one or more artifacts: Choose a color. Target player adds three mana of the chosen color for each artifact sacrificed this way. (Activate only as an instant.)",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RadiantLotus.java",
+        "sha256": "c9e8d78a1fef15267982597a78690ee14d85312781c90715278d0b4ce23739a1"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeXTargetCost.java",
+          "sha256": "94158ee058a114f997a3a00678d5c4e9bacbea9fca01a959dec64c1cbc8d74cc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+          "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+        }
+      ],
+      "printed_obligations": [
+        "{T}, Sacrifice one or more artifacts: Choose a color. Target player adds three mana of the chosen color for each artifact sacrificed this way. (Activate only as an instant.)"
+      ],
+      "outcome_scenarios": [
+        "radiant_lotus_paid_entry_and_ranged_self_sacrifice_use_stack_and_controller_chooses_target_players_color",
+        "radiant_lotus_cost_selection_has_independent_owned_raw_index_restore_after_parent_disposal"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "passed 11/11; engine reused",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
+    },
+    {
+      "name": "Rover Blades",
+      "definition": "src/card_definitions/dft/rover_blades.rs",
+      "oracle_id": "0394846e-bc27-4d67-988e-b08a389690de",
+      "oracle_text": "Double strike\nEquipped creature has double strike.\nEquip {4}\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn. Creatures can't be attached to other permanents.)",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RoverBlades.java",
+        "sha256": "9cab143b7d5e36f74cd3e0d68fd8e32295a41180564f6ec7df0e2d5316d6dc01"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+          "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+          "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        }
+      ],
+      "printed_obligations": [
+        "Double strike",
+        "Equipped creature has double strike.",
+        "Equip {4}",
+        "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn. Creatures can't be attached to other permanents.)"
+      ],
+      "outcome_scenarios": [
+        "rover_equips_only_own_creature_at_sorcery_speed_then_crews_as_double_striker_and_detaches"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "passed 11/11; engine reused",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ],
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-machine-fixtures-20261102-162300Z/report.json"
+    }
+  ]
+}

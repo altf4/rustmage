@@ -3,10 +3,30 @@
   "catalogue_id": 3207,
   "oracle_id": "ab7c0256-eea9-4e0d-932d-c25460eed836",
   "facts_sha256": "de4ccaaab66cc00316a2dc807a2f27234f47a21728a27989bbe6eee4c0fb09a9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e9e156aed288b2b8ec0c880b4ff0035aae498fdb9110bdd07b3c58f377a6debe"
   },
-  "physical_metadata_sha256": "7ae030158e3660a6d3925f98e86e64cca42d4829b180f7e8de23cd6545994efd"
+  "physical_metadata_sha256": "7ae030158e3660a6d3925f98e86e64cca42d4829b180f7e8de23cd6545994efd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PossessionEngine.java",
+  "java_sha256": "63f1f317fa50463ff954dca72688eb225d3f27f373e96a8bd7c1dc479598bef4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlTargetEffect.java",
+      "sha256": "93e055d129c924686ebca800aee72c6797220dfc56b829c70b715dd06a8c09ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackBlockTargetEffect.java",
+      "sha256": "82e32ded451331b18c7b25a1e3f0e39a4fde5bf85c978981e935e06c948337b1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

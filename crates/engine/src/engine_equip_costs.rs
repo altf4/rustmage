@@ -10,6 +10,9 @@ impl Game {
         ability: &ActivatedAbility,
     ) -> ActivatedAbility {
         let mut readiness = *ability;
+        if readiness.exhaust && exhaust::reuse_available(self, actor) {
+            readiness.exhaust = false;
+        }
         if self.first_equip_zero_available(actor, ability) {
             readiness.cost = ActivationCost::ZERO;
         }
@@ -129,8 +132,7 @@ impl Game {
         };
         if matches!(a.item.kind, StackKind::ActivatedAbility { .. }) {
             let mut proposal = a.clone();
-            proposal.cost = Some(cost);
-            proposal.activation_cost_route = a.activation_route_for_index(index);
+            proposal.select_cost(index);
             if a.equip_zero_available
                 && proposal.activation_cost_route == ActivationCostRoute::Printed
                 && let StackKind::ActivatedAbility { ability } = proposal.item.kind

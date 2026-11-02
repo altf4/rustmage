@@ -1,4 +1,4 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Full pinned Oracle/XMage reviewed; paired DFT scenarios exercise actual land-play, entry and mana outcomes.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Land,
     triggers: &[TriggeredAbility {

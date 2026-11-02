@@ -66,11 +66,25 @@ impl Game {
             LibraryDestination::Top
                 | LibraryDestination::Bottom
                 | LibraryDestination::SecondFromTop
+                | LibraryDestination::NthFromTop(_)
         ));
         let owner = self.state.objects[object.card as usize].owner;
         let card = self.state.objects[object.card as usize].card;
         let token = self.state.objects[object.card as usize].is_token();
         let prior_top = self.public_library_top(owner);
+        let nth_position = if let LibraryDestination::NthFromTop(n) = destination {
+            assert!(n > 0, "library positions are one-based");
+            self.state.players[owner.index()]
+                .library
+                .iter()
+                .enumerate()
+                .rev()
+                .filter(|(_, id)| self.state.objects[**id as usize].is_card())
+                .nth(usize::from(n.saturating_sub(2)))
+                .map(|(index, _)| index)
+        } else {
+            None
+        };
         let old_top_position = self.state.players[owner.index()]
             .library
             .iter()
@@ -82,11 +96,19 @@ impl Game {
             if !token
                 && matches!(
                     destination,
-                    LibraryDestination::Bottom | LibraryDestination::SecondFromTop
+                    LibraryDestination::Bottom
+                        | LibraryDestination::SecondFromTop
+                        | LibraryDestination::NthFromTop(_)
                 )
             {
                 assert_eq!(library.pop(), Some(object.card));
-                let index = if destination == LibraryDestination::SecondFromTop {
+                let index = if let LibraryDestination::NthFromTop(n) = destination {
+                    if n == 1 {
+                        library.len()
+                    } else {
+                        nth_position.unwrap_or(0)
+                    }
+                } else if destination == LibraryDestination::SecondFromTop {
                     old_top_position.unwrap_or(0)
                 } else {
                     0
@@ -95,6 +117,9 @@ impl Game {
             }
             if event.was_card
                 && (destination == LibraryDestination::Top
+                    || matches!(destination, LibraryDestination::NthFromTop(1))
+                    || (matches!(destination, LibraryDestination::NthFromTop(_))
+                        && old_top_position.is_none())
                     || (destination == LibraryDestination::SecondFromTop
                         && old_top_position.is_none()))
             {
@@ -117,6 +142,25 @@ impl Game {
             }));
         }
         placed
+    }
+    pub(super) fn put_targets_nth_from_top(&mut self, item: &SpellView, n: u16) {
+        assert!(n > 0, "library positions are one-based");
+        let Some(source) = item.source else { return };
+        let targets: Vec<_> = item
+            .targets
+            .iter()
+            .copied()
+            .filter(|b| self.valid_library_target(item, *b))
+            .collect();
+        for target in targets {
+            if let Target::Card(id) = target.target {
+                self.move_target_to_library(
+                    source.object,
+                    self.object_ref(id),
+                    LibraryDestination::NthFromTop(n),
+                );
+            }
+        }
     }
     /// A source move has no target and never publishes a target-movement payload.
     pub(super) fn put_source_third_from_top(&mut self, item: &SpellView) {

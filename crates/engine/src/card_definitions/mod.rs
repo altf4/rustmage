@@ -40,6 +40,25 @@ impl CardRules {
     };
     pub const fn checked_effect(&self) -> Effect {
         assert!(
+            self.activated.len() <= activation_slots::FIRST_RESERVED as usize,
+            "authored activation slots overlap reserved engine templates"
+        );
+        if let Some(false) = self.extras.has_rules_abilities {
+            assert!(
+                self.triggers.is_empty()
+                    && self.activated.is_empty()
+                    && self.static_groups.is_empty()
+                    && self.extras.static_ability_groups.is_empty()
+                    && self.extras.entry_copy.is_none()
+                    && self.extras.entry_exile_counters.is_none(),
+                "abilityless definition has rules abilities"
+            );
+            assert!(
+                self.keywords.0 == 0 && self.aura.is_none() && self.extras.aura.is_none(),
+                "abilityless definition has keywords or enchant ability"
+            );
+        }
+        assert!(
             !matches!(self.effect, Effect::Unsupported),
             "complete authored card lacks behavior"
         );
@@ -165,6 +184,8 @@ pub const fn object(kinds: u8) -> TargetRule {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub struct CardExtras {
+    /// Explicit source-audited absence/presence of rules abilities, including outside the battlefield.
+    pub has_rules_abilities: Option<bool>,
     pub transforming_double_face: bool,
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
@@ -201,6 +222,8 @@ pub struct CardExtras {
     pub battle_defense: u64,
     pub as_turned_face_up_counters: &'static [(CounterKind, u64)],
     pub entry_choice: Option<EntryChoiceKind>,
+    pub entry_copy: Option<EntryCopySpec>,
+    pub entry_exile_counters: Option<EntryExileCountersSpec>,
     pub chosen_entry_counters: Option<CounterKind>,
     pub static_modifiers: &'static [StaticModifier],
     pub equipment: Option<EquipmentSpec>,
@@ -276,12 +299,15 @@ pub struct CardExtras {
     pub uncounterable: bool,
     /// This Aura may enchant an artifact or a non-Aura enchantment.
     pub aura_artifact_or_non_aura_enchantment: bool,
+    /// Additional live subtype accepted by this Aura’s ordinary kind union.
+    pub aura_kind_or_subtype: Option<&'static str>,
     pub enchanted_modifiers: &'static [EnchantedModifier],
     pub flash_surcharge: Option<ManaCost>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        has_rules_abilities: None,
         transforming_double_face: false,
         targets_up_to_x: false,
         life_x_cost: false,
@@ -311,6 +337,8 @@ impl CardExtras {
         hand_cast_entry_counters: &[],
         named_activation_lock: false,
         entry_choice: None,
+        entry_copy: None,
+        entry_exile_counters: None,
         chosen_entry_counters: None,
         static_modifiers: &[],
         equipment: None,
@@ -380,12 +408,17 @@ impl CardExtras {
         static_cast_restriction: 0,
         uncounterable: false,
         aura_artifact_or_non_aura_enchantment: false,
+        aura_kind_or_subtype: None,
         enchanted_modifiers: &[],
         flash_surcharge: None,
     };
 }
 
 pub fn rules(card: Card) -> Option<&'static CardRules> {
+    #[cfg(feature = "test-support")]
+    if let Some(rules) = super::fixture_rules::rules(card) {
+        return Some(rules);
+    }
     super::generated::catalogue()
         .rules
         .get(card.index())

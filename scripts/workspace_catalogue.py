@@ -64,7 +64,11 @@ rustmage-core = {{ path = "../../engine", version = "=0.1.0" }}
                       'use crate::cards::*;',
                       'use crate::cards::InitialCounters as Counters;',
                       'use super::{CardRules, CardExtras, generic, one, object};',
-                      f'include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/{card["path"]}"));', '}']
+                      f'include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/{card["path"]}"));',
+                      'const _: () = assert!(' +
+                      ('matches!(RULES.extras.has_rules_abilities, Some(false))' if records[card['index']].get('has_rules_abilities') is False
+                       else '!matches!(RULES.extras.has_rules_abilities, Some(false))') +
+                      ', "authored ability-presence fact differs from provenance");', '}']
         lines += ['}', '#[rustfmt::skip]', f'pub static ENTRIES: [CatalogueEntry; {len(members)}] = [']
         for offset, card in enumerate(members):
             definition = definition_lines[card['index']].strip().removesuffix(',')

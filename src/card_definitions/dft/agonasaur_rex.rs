@@ -1,4 +1,4 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Full Oracle and pinned XMage reviewed; typed costs, events and keyword contracts.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(8, 8),
     triggers: &[TriggeredAbility {

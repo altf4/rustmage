@@ -50,6 +50,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     nightmare: false,
                     golem: false,
                     fractal: false,
+                    zombie: false,
                 }),
                 keywords: Keywords::VIGILANCE,
             },

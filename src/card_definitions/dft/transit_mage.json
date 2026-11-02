@@ -3,10 +3,20 @@
   "catalogue_id": 4659,
   "oracle_id": "991efbf1-299d-4892-aeab-8ff9827f7168",
   "facts_sha256": "ca4751725801a9066c2e6d495c06ab61dac4c9e0df1797dc690edda6110837d2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a0467ca1f7f1acdbdb5d60f77b1c475933b57b8a3eb54363538b0ccec7631d59"
   },
-  "physical_metadata_sha256": "bfc67b4990f1c3300e006b63c6d0416064f95e968076d939ab66d1de96c980e9"
+  "physical_metadata_sha256": "bfc67b4990f1c3300e006b63c6d0416064f95e968076d939ab66d1de96c980e9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TransitMage.java",
+  "java_sha256": "f332245fa298bf74246e2a8b50c9a7e6ad147a71523dd9c56e08430388e7ab5b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ]
 }

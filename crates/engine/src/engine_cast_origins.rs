@@ -150,6 +150,9 @@ impl Game {
         })
     }
     pub(super) fn visible_library_top(&self, viewer: Player, owner: Player) -> Option<ObjectRef> {
+        if let Some(object) = self.private_library_top(viewer, owner) {
+            return Some(object);
+        }
         if self.library_top_deferred(owner) {
             return None;
         }

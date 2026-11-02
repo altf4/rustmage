@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "48ba0e971db4bd4a69361820947c87be65cae926bb0fc5bdcdc9f88618502030"
   },
-  "physical_metadata_sha256": "beb0e621bc2874df5c0dfa82b77c4396d6a9d54a1e43f37b5ce756a35d76f1d2"
+  "physical_metadata_sha256": "beb0e621bc2874df5c0dfa82b77c4396d6a9d54a1e43f37b5ce756a35d76f1d2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpotcycleScouter.java",
+  "java_sha256": "7bcb0b056c3039a46aad5745be06d0c38044d35b951077361be7837d2d9beac7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

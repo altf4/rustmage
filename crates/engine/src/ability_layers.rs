@@ -53,8 +53,16 @@ pub enum StaticAbilityFragment {
     CastLinkedExileAtThreshold,
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
+    /// Use live toughness rather than power when paying Crew or Saddle costs.
+    CrewSaddleWithToughness,
     /// A layer-six activated-ability template granted to this source at max speed.
     SourceMaxSpeedActivation(u16),
+    /// Generic increase for activations whose actual source has this chosen name.
+    NamedActivationGenericIncrease(u32),
+    /// During own turn, ignore spent exhaust use before the first exhaust activation.
+    ReuseExhaustBeforeFirstActivationOwnTurn,
+    /// Generic reduction for exhaust abilities of other controlled permanents.
+    OtherControlledExhaustGenericReduction(u32),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
@@ -67,6 +75,16 @@ pub enum StaticAbilityFragment {
     ReplaceLifePaymentWithLibraryExile,
     /// During combat no spells or nonmana activated abilities may be started.
     NoSpellsOrNonmanaDuringCombat,
+
+    /// Cast this exact owned graveyard card normally while the live predicate holds.
+    /// This grants neither land plays nor flashback's alternative cost/destination.
+    SelfGraveyardCastIf(StatValue),
+
+    /// This exact owned graveyard card has a separate ordinary-mana casting route.
+    SelfGraveyardCastWithAdditionalCosts {
+        life: u32,
+        additional: crate::cards::AdditionalCost,
+    },
 
     /// Grants its controller the permanent enduring-story designation at threshold.
     Storied,
@@ -84,6 +102,8 @@ pub enum StaticAbilityFragment {
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Double each controller draw, including their normal draw-step draw, while true.
+    ConditionalDoubleDraw(StatValue),
     /// Add one to a controller draw instruction while their hand has at most one card.
     AdditionalDrawWithAtMostOneCard,
     /// Increase opponents' noncreature spell costs by generic mana.
@@ -121,13 +141,30 @@ pub enum StaticAbilityFragment {
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
     ChosenCreatureType,
+    /// Add this source’s type to controlled creatures, optionally of a required subtype.
+    ControlledCreatureSubtype {
+        grant: CreatureSubtypeGrant,
+        required_subtype: Option<&'static str>,
+    },
+    /// This source adds artifact and creature during another player’s turn.
+    SourceOffTurnCreature,
     /// This land is the chosen basic land type (CR305.7).
     ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
+    /// Additional counters on other controlled entrants, selected by effective mana value.
+    OtherControlledEntryCountersByManaValue {
+        filter: ReplacementFilter,
+        kind: CounterKind,
+        maximum: u64,
+        at_most: u16,
+        above: u16,
+    },
     ChosenModifier(ChosenModifier),
     /// Grant keywords to creatures of the source's chosen creature type.
     ChosenTypeKeywords(Keywords),
     /// Grant keywords to controlled battlefield permanents matching a live kind mask.
+    /// Any creature attacking an opponent player of this source controller.
+    OpponentPlayerAttackerKeywords(Keywords),
     ControlledPermanentKeywords {
         kinds: u16,
         keywords: Keywords,
@@ -254,6 +291,11 @@ pub enum StaticAbilityFragment {
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
+    /// One layer-7c effect applies once to the union of its live creature groups.
+    CreatureGroupBonus {
+        filters: &'static [CreatureFilter],
+        stats: Stats,
+    },
     /// Live earlier-layer predicate gates an ordinary creature-group bonus.
     ConditionalCreatureModifier {
         condition: StatValue,
@@ -308,6 +350,14 @@ pub enum StaticAbilityFragment {
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,
     StaticCastRestriction(u16, u8),
+}
+
+/// An immutable named creature subtype or the exact source’s as-entry choice.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CreatureSubtypeGrant {
+    Named(&'static str),
+    Chosen,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

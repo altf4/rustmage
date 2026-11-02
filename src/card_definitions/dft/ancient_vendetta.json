@@ -3,10 +3,35 @@
   "catalogue_id": 161,
   "oracle_id": "6f053f0d-c9c7-4fcd-b218-a29d1d080104",
   "facts_sha256": "bb9387c72306ca93a33d346db93b1efbfc6b874f832177a25e90b79fc140ede4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0c439700e1994ddbf73794c2ceec89309f2c9da5c159a9adfdd43566adff67ba"
   },
-  "physical_metadata_sha256": "265f4a6010f9ad584e0a0f009a38f78a1a4491af9b0b9c93c6530620e983f5e8"
+  "physical_metadata_sha256": "265f4a6010f9ad584e0a0f009a38f78a1a4491af9b0b9c93c6530620e983f5e8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AncientVendetta.java",
+  "java_sha256": "05c14b9e302eba212122ce4082ad9dfb3c54d0ce4472d732aeb6d089a10ed804",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseACardNameEffect.java",
+      "sha256": "33f32c237aec9329b59275757fadc7b1a4b63f898c44999e9169de81e30a3561"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchTargetGraveyardHandLibraryForCardNameAndExileEffect.java",
+      "sha256": "016001641a5c77bb2787f141b904ad653803e5b9311f49324edbaba71defc90b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ]
 }

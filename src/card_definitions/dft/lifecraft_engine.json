@@ -3,10 +3,36 @@
   "catalogue_id": 2491,
   "oracle_id": "caa69b51-1efd-4d0e-803b-914a83ccb836",
   "facts_sha256": "b3dfe4f76b4c14447d09fb505c887fb366ac4589dadc36136efa19f483c04630",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "177fbc6098a0ee9d0234242a8a730c2c0a0677425b0994ea9f438f1877a48f24"
-  },
-  "physical_metadata_sha256": "12f8fdbd38db97a5d78869a66554996b7ab96a198c6887c3e7558b8bed38b9ac"
+  "complete": true,
+  "physical_metadata_sha256": "12f8fdbd38db97a5d78869a66554996b7ab96a198c6887c3e7558b8bed38b9ac",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LifecraftEngine.java",
+  "java_sha256": "509b54cda70e60cd793d513f8f81bf00d0d325429fd3686394fecbfef830507a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+      "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllOfChosenSubtypeEffect.java",
+      "sha256": "aa088319449679f38b3d77f34e8939565afe24be2f2b7b2d374454e4c6df7128"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

@@ -3,10 +3,40 @@
   "catalogue_id": 2503,
   "oracle_id": "17fae94e-558f-449a-b30c-e3c37a068b79",
   "facts_sha256": "72cab838c387d8cf25d0c9f4374e9ee5a99a6c6839f5f4be443c558ee8a1e407",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5d32215dc1c0be5b0a372379d81097b7967235434d38a815158d4eaf460e4854"
   },
-  "physical_metadata_sha256": "93a6aaa2709cdeb3ece6bba2dafe7229a7216fc5a061c0d9e33b5036d0bca170"
+  "physical_metadata_sha256": "93a6aaa2709cdeb3ece6bba2dafe7229a7216fc5a061c0d9e33b5036d0bca170",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LightwheelEnhancements.java",
+  "java_sha256": "09379aeed832c63824a73a75bc6619d1ef38f3d02c983c627a64104a4ceb774c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+      "sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MayCastFromGraveyardSourceAbility.java",
+      "sha256": "5fabb3b07028c6709d74af5be237564ca277070effac3353b6bb847a12a76962"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+      "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+      "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+    }
+  ]
 }

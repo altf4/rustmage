@@ -12,6 +12,7 @@ impl Game {
                     ability.condition.event(),
                     TriggerCondition::CreatureAbilityActivated
                         | TriggerCondition::NonmanaAbilityActivated
+                        | TriggerCondition::ExhaustAbilityActivated
                         | TriggerCondition::LoyaltyAbilityActivated
                         | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                         | TriggerCondition::OpponentLoyaltyAbilityActivated
@@ -62,6 +63,7 @@ impl Game {
     }
     pub(super) fn committed_activation_observers(&mut self, item: &SpellView) {
         self.commit_activation_use(item);
+        self.committed_exhaust_activation(item);
         let Some(identity) = item.source else {
             return;
         };

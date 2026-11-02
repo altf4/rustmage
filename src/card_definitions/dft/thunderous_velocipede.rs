@@ -1,18 +1,41 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+// One deduplicated entry replacement counts creatures OR Vehicles using entry-preview values.
+const GROUPS: &[StaticAbilityGroup] = &[
+    StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
     },
-    entry: EntryTapped::Never,
+    StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[
+            StaticAbilityFragment::OtherControlledEntryCountersByManaValue {
+                filter: ReplacementFilter::CreatureOrVehicle,
+                kind: CounterKind::PlusOne,
+                maximum: 4,
+                at_most: 1,
+                above: 3,
+            },
+        ],
+    },
+];
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
     keywords: Keywords::TRAMPLE,
+    static_groups: GROUPS,
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost::ZERO,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Crew { minimum: 3 }],
+        sorcery: false,
+        once_per_turn: false,
+    }],
     extras: &CardExtras {
+        static_ability_groups: GROUPS,
         vehicle_stats: Some(Stats {
             power: 5,
             toughness: 5,

@@ -59,11 +59,12 @@ pub(super) fn reduce(
 /// Ordinary activations retain their allocation-free mana-options traversal.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) struct ActivationManaCosts {
-    bases: crate::cards::ManaCostOptions,
+    bases: crate::cards::mana_symbols::ManaOptions,
     power_up: Option<Box<PowerUpCosts>>,
     base: Option<ManaCost>,
     reduction_index: usize,
     generic_discount: u32,
+    generic_increase: u32,
     x: u64,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -88,8 +89,12 @@ impl Iterator for ActivationManaCosts {
                 continue;
             };
             self.reduction_index += 1;
-            if let Some(cost) = reduce(self.base.unwrap(), reduction, self.generic_discount, self.x)
-            {
+            if let Some(cost) = reduce(
+                self.base.unwrap(),
+                reduction,
+                self.generic_discount,
+                self.x + u64::from(self.generic_increase),
+            ) {
                 return Some(cost);
             }
         }
@@ -162,62 +167,15 @@ impl Game {
                 && u64::from(self.power_up_count(object, definition, ability, slot))
                     < self.power_up_limit(object.card)
     }
-    pub(super) fn power_up_generic_discount(
-        &self,
-        source: CardId,
-        definition: Card,
-        ability: u16,
-    ) -> u32 {
-        if !definition.power_up_abilities().contains(&ability) || !self.is_creature(source) {
-            return 0;
-        }
-        let controller = self.state.objects[source as usize].controller;
-        self.state
-            .objects
-            .iter()
-            .enumerate()
-            .filter(|(id, o)| {
-                *id != source as usize
-                    && o.zone == Zone::Battlefield
-                    && o.controller == controller
-                    && o.card.power_up_other_creature_reduction() != 0
-                    && self.printed_abilities_available(*id as CardId)
-            })
-            .fold(0u32, |total, (_, o)| {
-                total.saturating_add(o.card.power_up_other_creature_reduction())
-            })
-    }
     pub(super) fn power_up_costs(
         &self,
         object: ObjectRef,
         definition: Card,
         ability: u16,
     ) -> Option<Box<PowerUpCosts>> {
-        if !definition.power_up_abilities().contains(&ability) {
-            return None;
-        }
-        let source = &self.state.objects[object.card as usize];
-        let reductions = if source.zone == Zone::Battlefield
-            && self.object_ref(object.card) == object
-            && self.entered_this_turn(object)
-        {
-            let mana_definition = self.copiable_recipe(object).definition;
-            let (colored, generic) = mana_definition.cost();
-            std::iter::once(ManaCost { colored, generic })
-                .chain(
-                    mana_definition
-                        .power_up_mana_cost_alternatives()
-                        .iter()
-                        .copied(),
-                )
-                .collect()
-        } else {
-            vec![ManaCost {
-                colored: [0; 6],
-                generic: 0,
-            }]
-        };
-        Some(Box::new(PowerUpCosts { reductions }))
+        ability_world::CharacteristicWorld::activation_power_up_costs(
+            self, object, definition, ability,
+        )
     }
     pub(super) fn item_power_up_costs(&self, item: &SpellView) -> Option<Box<PowerUpCosts>> {
         let StackKind::ActivatedAbility { ability } = item.kind else {
@@ -234,12 +192,15 @@ impl Game {
         x: u32,
     ) -> ActivationManaCosts {
         ActivationManaCosts {
-            bases: definition.activation(ability).cost.mana_options(),
+            bases: definition.activation_cost_options(ability),
             power_up: self.power_up_costs(self.object_ref(source), definition, ability),
             base: None,
             reduction_index: 0,
             generic_discount: self.activation_generic_discount(source, definition, ability),
-            x: u64::from(x) * u64::from(definition.activation(ability).x_symbols()),
+            generic_increase: ability_world::CharacteristicWorld::named_activation_generic_increase(
+                self, source,
+            ),
+            x: u64::from(x) * u64::from(definition.activation_x_symbols(ability)),
         }
     }
     pub(super) fn record_power_up_use(&mut self, item: &SpellView, ability: u16) {

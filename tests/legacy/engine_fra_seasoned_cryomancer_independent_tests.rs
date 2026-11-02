@@ -191,6 +191,7 @@ fn seasoned_copied_reflexive_retargets_with_same_public_limit() {
             object: None,
         }];
         g.state.resolving = Some(Resolution {
+            chosen_card_name: None,
             chosen_creature_type: None,
             target_counter_removal: None,
             linked_copy: None,

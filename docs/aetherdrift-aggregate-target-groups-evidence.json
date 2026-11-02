@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "scope": "generic aggregate target-group execution only; ordinary Trade the Helm and Demonic Junker role declarations are a separate card-only followup",
+  "base_revision": "ff1cf92bc",
+  "engine_contract": "ExchangeControlTargets and DestroyTargetsThenSourceCountersIfOwnCreature consume the complete already revalidated target set, regardless of the active SelectGroup cursor; every other instruction retains current scoping.",
+  "rules_source": {
+    "path": "<cache>/rustmage-authoring/rules/MagicCompRules-20260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "rules": [
+      "115.3: independent target occurrences can select the same object when each occurrence permits it",
+      "608.2b: revalidate each target against its declared role; all illegal prevents resolution, one illegal does not invalidate unrelated legal targets",
+      "701.12a/b: exchange is all-or-neither and the completed control exchange is simultaneous"
+    ]
+  },
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "full_sources_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TradeTheHelm.java",
+      "sha256": "acb7b399bd8c5fe83446f7e9a76291ddb5bf108e8d8dffbc78cf724386d71710"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/d/DemonicJunker.java",
+      "sha256": "ed519af94de773ec01f9517dee7f1217a74bef67aef22a316ad2f6b8250db3e2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/ExchangeControlTargetEffect.java",
+      "sha256": "5f8ad7b5c00c2f908e9649cb00107a9595979e02d6b8d8242b41d7f6aab88d20"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ForEachPlayerTargetsAdjuster.java",
+      "sha256": "0983e17113baf50a95495f9aac7c2218adf8b0c7350303f390e2ecdfd2576971"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/EachTargetPointer.java",
+      "sha256": "47409331c6a257595e641b63cb1eefe96070813dc4c8f37ce103a9220176a190"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ],
+  "oracle_contracts": [
+    {
+      "name": "Trade the Helm",
+      "oracle": "Exchange control of target artifact or creature you control and target artifact or creature an opponent controls.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "roles": "required own artifact-or-creature group0 and required opponent artifact-or-creature group1; both roles remain independently qualified against the original packet controller",
+      "outcome": "Both legal -> simultaneous permanent exchange; either illegal or absent -> no exchange. If another effect swaps both before resolution, both targets become illegal and their new controllers remain."
+    },
+    {
+      "name": "Demonic Junker",
+      "oracle": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nWhen this Vehicle enters, for each player, destroy up to one target creature that player controls. If a creature you controlled was destroyed this way, put two +1/+1 counters on this Vehicle.\nCrew 2",
+      "roles": "optional own creature group0 and optional opposing creature group1; each checked against original queued controller",
+      "outcome": "Destroy every remaining legal target in one deduplicated simultaneous batch; once-only reward iff actual destruction includes original queued-controller creature. Counters require exact source still on battlefield, even if source control changed."
+    }
+  ],
+  "source_discrepancy": "Pinned DemonicJunkerEffect loops target pointers and applies counters inside that loop, making its reward depend on order; printed Oracle requires one reward after all destruction. Existing generic actual-outcome opcode already follows Oracle; this repair preserves its one-batch/dedup/reward behavior while supplying both target groups.",
+  "existing_group_demand_audit": [
+    {
+      "definition": "dft/plow_through.rs",
+      "consumer": "Fight { source:0,recipient:1 }",
+      "result": "already excluded from active-group narrowing; no change"
+    },
+    {
+      "definition": "dft/run_over.rs",
+      "consumer": "PowerDamage { source:0,recipient:1 }",
+      "result": "already excluded; no change"
+    },
+    {
+      "definition": "dft/rise_from_the_wreck.rs",
+      "consumer": "ReturnAllTargetsToHand",
+      "result": "already excluded; no change"
+    },
+    {
+      "definition": "dft/trade_the_helm.rs",
+      "consumer": "ExchangeControlTargets",
+      "result": "new exclusion; role-specific card followup required"
+    },
+    {
+      "definition": "dft/demonic_junker.rs",
+      "consumer": "DestroyTargetsThenSourceCountersIfOwnCreature",
+      "result": "new exclusion; role-specific card followup required"
+    },
+    {
+      "definition": "synthetic/burglar_s_plot.rs",
+      "consumer": "ExchangeControlTargets on Single(two targets)",
+      "result": "inherited one-group semantics retained, with an actual Adventure packet compatibility contrast"
+    }
+  ],
+  "unchanged_contracts": [
+    "resolve_top independently filters each BoundTarget using target_spec.group(bound.group) before execution",
+    "exchange_control_targets requires exactly two exact live surviving targets; record_control_exchange records both changes at one timestamp",
+    "destroy_targets_outcome deduplicates exact IDs, filters destruction prevention, moves its full recipient batch once, then publishes zone events",
+    "SelectGroup still narrows ordinary Destroy and other group-local instructions",
+    "no CardId/name branch; no new action, public/owned field, snapshot state or schema marker"
+  ],
+  "prior198": {
+    "new_population": "selected multi-group ExchangeControlTargets declarations/packets, including nested declared modes and recursively owned copy events",
+    "guard": "plan_program_supported uses the resolved plan/program pair; rejects only Groups length>1 with ExchangeControlTargets while preserving inherited Single(two targets), one-element Groups and unrelated grouped programs",
+    "reward": "DestroyTargetsThenSourceCountersIfOwnCreature was already schema199-only under program_supported; preserve that existing rejection at every group count",
+    "opaque": "active/suspended announcements/resolution already rejected; no erasure or trace baseline write",
+    "tests": [
+      "prior_198_rejects_multigroup_aggregate_exchange_but_preserves_single_occurrence_and_unrelated_groups",
+      "prior_198_keeps_real_burglars_plot_single_group_capture_eligible"
+    ]
+  },
+  "tests": {
+    "target": "dft_aggregate_target_groups_engine",
+    "cases": 15,
+    "coverage": [
+      "both seats and active SelectGroup0/1",
+      "valid exchange, wrong-role/incomplete transactional rejection, one/all controller-role invalid, departed/blinked exact references",
+      "own-only/enemy-only/both/neither optional destruction groups and independent control changes",
+      "actual destruction/prevention/indestructible reward contrast",
+      "source-control change uses original packet roles/reward but counters exact current source; blink never rebinds counters",
+      "one simultaneous death-batch trigger and dedup across repeated group bindings",
+      "ordinary group-local Destroy preserved",
+      "raw/index final-pass equivalence, owned restore, parent drop and branch divergence"
+    ]
+  },
+  "validation": "No Cargo/linker run by author. rustfmt, JSON parsing and git diff --check only. Root owns one guarded combined build and runtime/strict trace acceptance; both independent nonauthor source reviews required before integration."
+}

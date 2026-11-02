@@ -39,3 +39,14 @@ pub(super) fn different(left: Card, right: Card) -> Option<bool> {
             .any(|a| right.iter().any(|b| crate::card_names::same_name(a, b))),
     )
 }
+
+/// Exact rules names of a physical card outside the battlefield and stack.
+/// Structured face metadata supplies split/Room halves, and only the front of
+/// double-faced and adventurer cards. Display separators are never parsed.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn matches(card: Card, name: crate::CardName) -> bool {
+    names(card).map_or_else(
+        || name.matches(card.name()),
+        |names| names.iter().any(|candidate| name.matches(candidate)),
+    )
+}

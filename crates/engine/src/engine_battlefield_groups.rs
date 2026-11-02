@@ -1,5 +1,6 @@
 //! Non-targeted battlefield sets, frozen before simultaneous movement or damage.
 use super::*;
+use crate::cards::AnimationSpec;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn grant_permanent_group_keywords(
@@ -13,6 +14,40 @@ impl Game {
         };
         let recipients = self.battlefield_group(item, filters);
         self.grant_keyword_effects(&recipients, source.object, keywords);
+    }
+    pub(super) fn remove_permanent_group_keywords(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        keywords: Keywords,
+    ) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let keywords = keywords.without(keywords.resolution_rules());
+        let recipients = self.battlefield_group(item, filters);
+        if recipients.is_empty() || keywords == Keywords::NONE {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        for id in recipients {
+            let recipient = self.object_ref(id);
+            self.state
+                .roles
+                .as_mut()
+                .unwrap()
+                .keyword_effects
+                .push(KeywordEffectView {
+                    recipient,
+                    origin: KeywordEffectOrigin::ResolutionRemoval {
+                        source: source.object,
+                    },
+                    keywords,
+                    rules: Keywords::NONE,
+                    timestamp,
+                    expires_turn: Some(self.state.turn),
+                });
+        }
     }
     pub(super) fn grow_permanent_group(
         &mut self,
@@ -54,6 +89,51 @@ impl Game {
             };
         }
     }
+    pub(super) fn grow_filtered_scaled(
+        &mut self,
+        item: &SpellView,
+        filter: CountFilter,
+        amount: AmountValue,
+        power: i32,
+        toughness: i32,
+    ) {
+        assert!(
+            filter.zone == CountZone::Battlefield,
+            "growth recipients are battlefield permanents"
+        );
+        let Some(source) = item.source else { return };
+        let amount = i128::try_from(self.item_amount(amount, item))
+            .capacity("filtered growth quantity exhausted");
+        let delta = Stats {
+            power: i128::from(power)
+                .checked_mul(amount)
+                .capacity("filtered power growth exhausted"),
+            toughness: i128::from(toughness)
+                .checked_mul(amount)
+                .capacity("filtered toughness growth exhausted"),
+        };
+        let affected: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                Self::count_object_matches(
+                    filter,
+                    source.object,
+                    item.controller,
+                    *id as CardId,
+                    object,
+                    &|id| self.granted_subtypes(id),
+                    &|id, object| self.object_kinds(id, object),
+                )
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect();
+        for recipient in affected {
+            self.state.objects[recipient.card as usize].growth += delta;
+        }
+    }
     pub(super) fn put_permanent_counters_scaled(
         &mut self,
         item: &SpellView,
@@ -75,26 +155,19 @@ impl Game {
         self.effect_counters(affected, replacements::ResumeMode::Program);
     }
 
-    fn battlefield_filter_matches(
+    pub(super) fn battlefield_filter_matches(
         &self,
         filter: BattlefieldFilter,
         actor: Player,
         id: CardId,
     ) -> bool {
-        let object = &self.state.objects[id as usize];
-        object.zone == Zone::Battlefield
-            && (filter.kinds == 0 || self.current_kinds(id) & filter.kinds != 0)
-            && (filter.relation == -1 || (object.controller == actor) == (filter.relation == 0))
-            && (!filter.nonland || self.current_kinds(id) & 2 == 0)
-            && filter.tapped.is_none_or(|tapped| object.tapped == tapped)
-            && (filter.without == Keywords::NONE || !self.keywords(id).intersects(filter.without))
-            && filter
-                .subtype
-                .is_none_or(|subtype| self.has_subtype(id, subtype))
-            && (filter.max_mana == u32::MAX
-                || self.object_mana_value(id) <= u64::from(filter.max_mana))
+        filter_matches_in_world(self, filter, actor, id)
     }
-    fn battlefield_group(&self, item: &SpellView, filters: &[BattlefieldFilter]) -> Vec<CardId> {
+    pub(super) fn battlefield_group(
+        &self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+    ) -> Vec<CardId> {
         (0..self.state.objects.len())
             .filter_map(|id| {
                 let id = id as CardId;
@@ -256,4 +329,74 @@ impl Game {
             .collect();
         self.apply_damage_batch(&events);
     }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn animate_permanent_group(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        spec: AnimationSpec,
+    ) {
+        let recipients: Vec<_> = self
+            .battlefield_group(item, filters)
+            .into_iter()
+            .map(|id| self.object_ref(id))
+            .collect();
+        for recipient in recipients {
+            self.change_object_form(
+                recipient,
+                spec,
+                characteristic_layers::AnimationTypeMode::AddCreature,
+            );
+        }
+    }
+    pub(super) fn return_graveyard_with_delayed_sacrifice(
+        &mut self,
+        item: &SpellView,
+        filter: crate::SearchFilter,
+    ) {
+        let moves = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Graveyard
+                    && object.owner == item.controller
+                    && object.is_card()
+                    && self.object_search_filter_matches(filter, *id as CardId)
+            })
+            .map(|(id, _)| {
+                let mut movement = self.entry_move(id as CardId, Zone::Battlefield, false);
+                movement.controller = item.controller;
+                movement
+            })
+            .collect();
+        self.stage_entries_with_delayed_sacrifice(moves, item);
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn filter_matches_in_world<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    filter: BattlefieldFilter,
+    actor: Player,
+    id: CardId,
+) -> bool {
+    let object = world.object(id);
+    object.zone == Zone::Battlefield
+        && (filter.kinds == 0 || world.kinds(id) & filter.kinds != 0)
+        && (filter.relation == -1 || (object.controller == actor) == (filter.relation == 0))
+        && (!filter.nonland || world.kinds(id) & 2 == 0)
+        && filter.tapped.is_none_or(|tapped| object.tapped == tapped)
+        && (filter.without == Keywords::NONE
+            || !characteristic_query::CharacteristicQuery::in_world(world)
+                .keywords(id)
+                .intersects(filter.without))
+        && filter
+            .subtype
+            .is_none_or(|subtype| world.subtypes(id).has(world.definition(id), subtype))
+        && (filter.max_mana == u32::MAX || world.mana_value(id) <= u64::from(filter.max_mana))
 }

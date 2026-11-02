@@ -14,6 +14,10 @@ pub enum KeywordEffectOrigin {
     Resolution {
         source: ObjectRef,
     },
+    /// Source-independent loss of exactly the recorded keyword mask until cleanup.
+    ResolutionRemoval {
+        source: ObjectRef,
+    },
     ResolutionUntilNextTurn {
         source: ObjectRef,
         controller: Player,
@@ -48,6 +52,8 @@ impl Card {
                             | StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterCreature { .. }
+                            | StaticAbilityFragment::SourceOffTurnCreature
+                            | StaticAbilityFragment::ControlledCreatureSubtype { .. }
                             | StaticAbilityFragment::SourceGraveyardAllTypes { .. }
                             | StaticAbilityFragment::SourceConditionalKeywords { .. }
                             | StaticAbilityFragment::SourceCounterKeywords { .. }
@@ -60,6 +66,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit

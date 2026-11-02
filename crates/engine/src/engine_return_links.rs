@@ -59,6 +59,8 @@ fn is_false(value: &bool) -> bool {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct DelayedReturnView {
+    #[serde(skip_serializing_if = "is_false")]
+    pub own_end_step: bool,
     pub id: u64,
     pub source: ObjectRef,
     pub source_card: Card,
@@ -149,6 +151,7 @@ impl Game {
             return;
         };
         let view = DelayedReturnView {
+            own_end_step: false,
             id: self.next_stack_id(),
             source: source.object,
             source_card: source.card,
@@ -392,7 +395,12 @@ impl Game {
         let Some(rows) = self.state.delayed_returns.take() else {
             return;
         };
+        let mut retained = Vec::new();
         for row in *rows {
+            if row.view.own_end_step && row.view.controller != self.state.active {
+                retained.push(row);
+                continue;
+            }
             let mut item = row.item;
             item.id = self.next_stack_id();
             item.kind = StackKind::DelayedReturn;
@@ -402,6 +410,9 @@ impl Game {
             item.target_type_slots = None;
             item.mode = None;
             self.state.pending_triggers.push(item);
+        }
+        if !retained.is_empty() {
+            self.state.delayed_returns = Some(Box::new(retained));
         }
     }
     pub(super) fn resolve_delayed_return(&mut self, item: &SpellView) {

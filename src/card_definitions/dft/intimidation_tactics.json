@@ -3,10 +3,35 @@
   "catalogue_id": 2199,
   "oracle_id": "121bd1af-da21-4937-a911-377c5b430796",
   "facts_sha256": "aea6eb7617c1e6338cc881192be7d06e63c5e8008501e857a928daf2c3b39130",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ed5b710ee08d273587334c072cc694b4aee2d64fef895a9d12aa7e9c92733c36"
   },
-  "physical_metadata_sha256": "45eb17812c715238071018a0ebc2cbe8e7fde8fc74421f1b6e2f8ccb60e8964e"
+  "physical_metadata_sha256": "45eb17812c715238071018a0ebc2cbe8e7fde8fc74421f1b6e2f8ccb60e8964e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IntimidationTactics.java",
+  "java_sha256": "2be6c30994a6f6d348157d9d93f8c7597158ac5dba9a67c713b844ad648e2e7e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileCardYouChooseTargetOpponentEffect.java",
+      "sha256": "d23c3dfee698bf398d0aa9d6585c731a80871af5911b417f77e48b768ddcfc0f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ]
 }

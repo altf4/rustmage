@@ -3,7 +3,7 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
     pub(super) fn refresh_source_bound_copies(&mut self) {
-        let Some(rows) = &self.game.state.temporary_copies else {
+        let Some(rows) = self.temporary_copy_rows_state() else {
             return;
         };
         let changes = rows

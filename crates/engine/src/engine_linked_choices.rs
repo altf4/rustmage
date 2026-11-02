@@ -47,6 +47,8 @@ pub struct KeepTypesView {
 pub struct LinkedExileView {
     pub source: ObjectRef,
     pub exiled: ObjectRef,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ability_origin: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -520,7 +522,11 @@ impl Game {
                     .linked_choices
                     .get_or_insert_default()
                     .links
-                    .push(LinkedExileView { source, exiled });
+                    .push(LinkedExileView {
+                        source,
+                        exiled,
+                        ability_origin: None,
+                    });
             }
         }
     }

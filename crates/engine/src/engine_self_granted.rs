@@ -123,11 +123,8 @@ impl Game {
             let rules = definition.activation(ability);
             assert!(
                 rules.origin == ActivationOrigin::Battlefield
-                    && !rules.once_per_turn
-                    && !rules.exhaust
-                    && !definition.power_up_abilities().contains(&ability)
-                    && rules.mana_production().is_none(),
-                "unsupported granted activation lifecycle"
+                    && !definition.power_up_abilities().contains(&ability),
+                "unsupported granted source-zone or power-up lifecycle"
             );
         }
         self.state

@@ -226,6 +226,7 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    AttackThisCombat,
     CounterOtherWizards,
     Counters {
         kind: CounterKind,
@@ -307,6 +308,7 @@ enum Event {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
+    CreatedAttackThisCombat(Vec<ObjectRef>),
     AmassSubtype {
         source: ObjectRef,
         recipient: ObjectRef,
@@ -393,7 +395,8 @@ impl ReplacementState {
                 .work
                 .iter()
                 .map(|w| match w {
-                    Work::AnimateCreated { created, .. } => {
+                    Work::CreatedAttackThisCombat(created)
+                    | Work::AnimateCreated { created, .. } => {
                         created.len() * std::mem::size_of::<ObjectRef>()
                     }
                     Work::Damage(b) => {
@@ -483,6 +486,14 @@ fn global_counters_prohibited<W: super::ability_world::CharacteristicWorld + ?Si
             && world.fragment_available(id, |f| matches!(f, StaticAbilityFragment::CounterProhibition(mask) if *mask & kinds != 0))
     })
 }
+/// A live global prohibition makes the entrant’s effective types relevant even
+/// when no amount-replacement effect exists. Incoming general providers are absent.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn entry_kind_sensitive<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+) -> bool {
+    global_counters_prohibited(world, u16::MAX)
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn counters_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
@@ -522,19 +533,58 @@ fn placement_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn matches_filter(filter: ReplacementFilter, p: &CounterPlacement) -> bool {
-    let subtype = |s| p.subtypes.has(p.card, s);
+    matches_filter_values(
+        filter,
+        p.kind,
+        p.subtypes,
+        p.card,
+        p.power,
+        p.protector,
+        p.controller,
+    )
+}
+fn matches_filter_values(
+    filter: ReplacementFilter,
+    kinds: u16,
+    subtypes: GrantedSubtypes,
+    card: Card,
+    power: i128,
+    protector: Option<Player>,
+    controller: Player,
+) -> bool {
+    let subtype = |s| subtypes.has(card, s);
     match filter {
-        ReplacementFilter::CreaturePowerAtMost(maximum) => p.kind & 1 != 0 && p.power <= maximum,
+        ReplacementFilter::CreaturePowerAtMost(maximum) => kinds & 1 != 0 && power <= maximum,
         ReplacementFilter::Permanent => true,
         ReplacementFilter::BattleProtectedByOpponent => {
-            p.kind & crate::cards::BATTLE_KIND != 0 && p.protector == Some(p.controller.other())
+            kinds & crate::cards::BATTLE_KIND != 0 && protector == Some(controller.other())
         }
-        ReplacementFilter::Creature => p.kind & 1 != 0,
-        ReplacementFilter::CreatureOrVehicle => p.kind & 1 != 0 || subtype("Vehicle"),
+        ReplacementFilter::Creature => kinds & 1 != 0,
+        ReplacementFilter::CreatureOrVehicle => kinds & 1 != 0 || subtype("Vehicle"),
         ReplacementFilter::CreatureSpacecraftPlanet => {
-            p.kind & 1 != 0 || subtype("Spacecraft") || subtype("Planet")
+            kinds & 1 != 0 || subtype("Spacecraft") || subtype("Planet")
         }
     }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn entry_filter_matches<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    filter: ReplacementFilter,
+    id: CardId,
+) -> bool {
+    matches_filter_values(
+        filter,
+        world.kinds(id),
+        world.subtypes(id),
+        world.definition(id),
+        if matches!(filter, ReplacementFilter::CreaturePowerAtMost(_)) {
+            world.power(id)
+        } else {
+            0
+        },
+        world.battle_protector(world.reference(id)),
+        world.object(id).controller,
+    )
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn counter_applies(spec: ReplacementSpec, p: &CounterPlacement) -> bool {
@@ -961,6 +1011,14 @@ impl Game {
                         event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
                     }
+                    ReplacementSpec::ConditionalControlledDamageToOpponentPlus {
+                        condition,
+                        ..
+                    } => {
+                        event.source.controller == object.controller
+                            && self.damage_recipient_controller(event) != object.controller
+                            && self.stat_value(condition, source, object.controller) != 0
+                    }
                     ReplacementSpec::NoncombatDamagePlusSourcePower
                     | ReplacementSpec::NoncombatDamageToOpponentPlus(_) => {
                         !event.combat
@@ -1084,7 +1142,8 @@ impl Game {
                     .checked_mul(2)
                     .capacity("damage replacement quantity exhausted")
             }
-            ReplacementSpec::NoncombatDamageToOpponentPlus(amount) => {
+            ReplacementSpec::NoncombatDamageToOpponentPlus(amount)
+            | ReplacementSpec::ConditionalControlledDamageToOpponentPlus { amount, .. } => {
                 event.amount = event
                     .amount
                     .checked_add(i128::from(amount))
@@ -1310,7 +1369,9 @@ impl Game {
                 }
             }
         }
-        placements.retain(|p| p.amount.has_any());
+        // A prohibited entry still has to commit the cleared result back to
+        // EntryMove.counters. Ordinary zero placements have no continuation.
+        placements.retain(|p| p.entry_index.is_some() || p.amount.has_any());
         if placements.is_empty() && player_counters == [[0; 5]; 2] && proliferated.is_none() {
             if mode == ResumeMode::ActivationCosts {
                 self.record_cast_mana_counter_cost(&[]);
@@ -2133,6 +2194,10 @@ impl Game {
             }
             if state.active.is_none() {
                 match state.work.pop_front() {
+                    Some(Work::CreatedAttackThisCombat(created)) => {
+                        self.require_created_attacks_this_combat(&created);
+                        continue;
+                    }
                     Some(Work::AnimateCreated { created, spec }) => {
                         self.animate_created_noncreatures(&created, spec);
                         continue;
@@ -2489,7 +2554,8 @@ impl Game {
                             .as_ref()
                             .and_then(|b| b.moves.get(index))
                             .cloned()
-                        && (movement.ghost_vacuum_after.is_some()
+                        && (movement.requires_characteristic_preview()
+                            || entry_kind_sensitive(self)
                             || entry_power_sensitive(
                                 self,
                                 movement.controller,
@@ -2545,6 +2611,11 @@ impl Game {
                                     &batch.recipes,
                                     temporary,
                                 );
+                                if matches!(batch.completion, TokenCompletion::AttackThisCombat) {
+                                    state
+                                        .work
+                                        .push_front(Work::CreatedAttackThisCombat(created.clone()));
+                                }
                                 if let TokenCompletion::AnimateNoncreatures(spec) = batch.completion
                                 {
                                     state.work.push_front(Work::AnimateCreated {
@@ -2588,6 +2659,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::CounterOtherWizards
+                                        | TokenCompletion::AttackThisCombat
                                         | TokenCompletion::JobAttach(_)
                                         | TokenCompletion::AttachCreatedTo(_)
                                         | TokenCompletion::Counters { .. }
@@ -2625,6 +2697,9 @@ impl Game {
                                         capture,
                                     ),
                                 };
+                                if matches!(batch.completion, TokenCompletion::AttackThisCombat) {
+                                    self.require_created_attacks_this_combat(&created);
+                                }
                                 if matches!(batch.completion, TokenCompletion::CounterOtherWizards)
                                 {
                                     let others = self

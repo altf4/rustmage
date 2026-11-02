@@ -22,11 +22,6 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
       "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/target/targetpointer/EachTargetPointer.java",
-      "sha256": "47409331c6a257595e641b63cb1eefe96070813dc4c8f37ce103a9220176a190"
     }
   ]
 }

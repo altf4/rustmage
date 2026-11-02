@@ -1,16 +1,37 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete Oracle and pinned Exhaust/ActivateAbility source bodies reviewed.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(4, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InZone {
+            zone: TargetZone::Graveyard,
+            event: &TriggerCondition::ExhaustAbilityActivated,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ReturnSourceToBattlefield { tapped: false }],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: true,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            generic: 2,
+            colored: [0, 0, 0, 0, 2, 0],
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::PutCounters {
+            subject: Subject::Source,
+            kind: CounterKind::PlusOne,
+            amount: 2,
+        }],
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    extras: &CardExtras {
+        exhaust_mask: 1,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

@@ -19,14 +19,35 @@ fn lotus_produces_three_of_one_chosen_color_and_sacrifices() {
         for color in 0..5 {
             let mut g = scenario(p);
             let id = token(&mut g, p, 5453);
-            let actions: Vec<_> = g
-                .legal_actions()
-                .into_iter()
+            let offered = g.legal_actions();
+            let actions: Vec<_> = offered
+                .iter()
                 .filter(|a| {
                     matches!(a,
-                Action::ActivateMana { card, .. } if *card == id)
+                Action::ActivateMana { card, production, .. }
+                    if *card == id && *production != [0; 6])
                 })
+                .cloned()
                 .collect();
+            let late = offered
+                .iter()
+                .filter(|action| {
+                    matches!(action,
+                Action::ActivateMana { card, production: [0, 0, 0, 0, 0, 0], .. }
+                    if *card == id)
+                })
+                .count();
+            assert_eq!(late, 1, "one unselected direct start");
+            assert_eq!(
+                offered
+                    .iter()
+                    .filter(|action| matches!(action,
+                Action::AnnounceMana { card, production: [0, 0, 0, 0, 0, 0], .. }
+                    if *card == id))
+                    .count(),
+                1,
+                "one unselected announcement"
+            );
             assert_eq!(actions.len(), 5);
             let action = actions
                 .into_iter()
@@ -48,6 +69,52 @@ fn lotus_produces_three_of_one_chosen_color_and_sacrifices() {
                 expected[color] += 3;
                 assert_eq!(g.state.players[p.index()].mana, expected);
             }
+            g.restore(&saved).unwrap();
+            act(
+                &mut g,
+                Action::AnnounceMana {
+                    card: id,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production: [0; 6],
+                },
+            );
+            pay(&mut g);
+            assert_ne!(
+                g.object_view(id).zone,
+                Zone::Battlefield,
+                "sacrifice is already paid"
+            );
+            assert_eq!(
+                g.state.players[p.index()].mana,
+                before,
+                "output awaits the chosen color"
+            );
+            assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
+            let choices = g.legal_actions();
+            assert_eq!(
+                choices
+                    .iter()
+                    .filter(|a| matches!(a, Action::ChooseMana { .. }))
+                    .count(),
+                5
+            );
+            let mut production = [0; 6];
+            production[color] = 3;
+            let choice = Action::ChooseMana { production };
+            assert!(choices.contains(&choice));
+            let pending = g.snapshot();
+            let mut expected = before;
+            expected[color] += 3;
+            let mut indexed = g.clone();
+            let index = choices.iter().position(|a| a == &choice).unwrap();
+            indexed.apply_index(p, indexed.revision(), index).unwrap();
+            act(&mut g, choice.clone());
+            assert_eq!(g.state.players[p.index()].mana, expected);
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            g.restore(&pending).unwrap();
+            act(&mut g, choice);
+            assert_eq!(g.snapshot(), indexed.snapshot());
         }
     }
 }

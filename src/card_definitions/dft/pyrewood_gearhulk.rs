@@ -1,16 +1,31 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// The frozen other-creature group gains temporary stats/keywords; all prevention is disabled.
+const OTHERS: CreatureFilter = CreatureFilter {
+    relation: 0,
+    other: true,
+    subtype: None,
+    keyword: Keywords::NONE,
+    attacking: false,
+    tokens: None,
+    artifact: false,
+};
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(7, 7),
     keywords: Keywords::VIGILANCE.union(Keywords::MENACE),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::GrowCreatures {
+                filter: OTHERS,
+                power: 2,
+                toughness: 2,
+            },
+            Instruction::GrantCreatures {
+                filter: OTHERS,
+                keywords: Keywords::VIGILANCE.union(Keywords::MENACE),
+            },
+            Instruction::DamageCannotBePreventedThisTurn,
+        ],
+    }],
     ..CardRules::EMPTY
 };

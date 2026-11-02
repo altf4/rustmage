@@ -3,9 +3,19 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum HandChoiceKind {
+    LookDiscardDraw,
     DeployCreatures,
+    DeployPermanents,
     RevealSubset,
     DiscardRevealed,
+    /// Mandatory one-card choice from a publicly revealed hand, using a positive kind union.
+    DiscardRevealedKinds {
+        kinds: u16,
+    },
+    /// Permanent unlinked exile; source departure cannot revoke the choice or its result.
+    ExileRevealedKinds {
+        kinds: u16,
+    },
     ExileRevealedOrCreature,
     ExileRevealedLinked,
     /// Choose a controlled permanent of the requested subtype or reveal a hand card.
@@ -21,6 +31,8 @@ pub struct HandChoiceView {
     pub selected: Vec<ObjectRef>,
     pub candidates: Vec<ObjectRef>,
     pub optional: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inspected_cards: Option<Vec<ObjectView>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -123,6 +135,22 @@ impl Game {
         );
         self.state.linked_choices.get_or_insert_default().hand = Some(Box::new(interaction));
         self.state.pending = Pending::HandCardChoice { player: actor };
+    }
+    pub(super) fn start_private_hand_discard_draw(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::LookDiscardDraw,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item.source.expect("object-backed hand choice").object,
+            required: 0,
+            selected: Vec::new(),
+            candidates: self.exact_hand(victim),
+        });
+        true
     }
     pub(super) fn start_hand_subset_discard(
         &mut self,
@@ -231,6 +259,44 @@ impl Game {
         });
         true
     }
+    pub(super) fn start_revealed_hand_kind_choice(
+        &mut self,
+        item: &SpellView,
+        kinds: u16,
+        exile: bool,
+    ) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        let hand = self.exact_hand(victim);
+        // Revealing is mandatory even when the whole hand fails the filter.
+        self.reveal_hand_refs(&hand);
+        let candidates: Vec<_> = hand
+            .into_iter()
+            .filter(|r| self.current_kinds(r.card) & kinds != 0)
+            .collect();
+        if candidates.is_empty() {
+            return false;
+        }
+        self.set_hand_interaction(HandInteraction {
+            kind: if exile {
+                HandChoiceKind::ExileRevealedKinds { kinds }
+            } else {
+                HandChoiceKind::DiscardRevealedKinds { kinds }
+            },
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item
+                .source
+                .expect("object-backed revealed hand choice")
+                .object,
+            required: 1,
+            selected: Vec::new(),
+            candidates,
+        });
+        true
+    }
     fn hand_choice_candidate(&self, interaction: &HandInteraction, reference: ObjectRef) -> bool {
         if !interaction.candidates.contains(&reference)
             || interaction.selected.contains(&reference)
@@ -240,9 +306,18 @@ impl Game {
         }
         let o = &self.state.objects[reference.card as usize];
         match interaction.kind {
-            HandChoiceKind::DeployCreatures => unreachable!(),
-            HandChoiceKind::RevealSubset | HandChoiceKind::DiscardRevealed => {
+            HandChoiceKind::DeployCreatures | HandChoiceKind::DeployPermanents => unreachable!(),
+            HandChoiceKind::LookDiscardDraw
+            | HandChoiceKind::RevealSubset
+            | HandChoiceKind::DiscardRevealed => {
                 o.zone == Zone::Hand && Some(o.owner) == interaction.victim && o.is_card()
+            }
+            HandChoiceKind::DiscardRevealedKinds { kinds }
+            | HandChoiceKind::ExileRevealedKinds { kinds } => {
+                o.zone == Zone::Hand
+                    && Some(o.owner) == interaction.victim
+                    && o.is_card()
+                    && self.current_kinds(reference.card) & kinds != 0
             }
             HandChoiceKind::ExileRevealedLinked => {
                 o.zone == Zone::Hand
@@ -266,7 +341,7 @@ impl Game {
         }
     }
     pub(super) fn visit_hand_card_choices(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
-        if self.hand_deployment().is_some() {
+        if self.hand_deployment_active() {
             return self.visit_hand_deployment(emit);
         }
         let interaction = self
@@ -279,7 +354,9 @@ impl Game {
             .unwrap();
         if matches!(
             interaction.kind,
-            HandChoiceKind::ExileRevealedOrCreature | HandChoiceKind::Behold
+            HandChoiceKind::ExileRevealedOrCreature
+                | HandChoiceKind::Behold
+                | HandChoiceKind::LookDiscardDraw
         ) && emit(Action::ChooseHandCard { object: None })
         {
             return true;
@@ -296,7 +373,7 @@ impl Game {
             })
     }
     pub(super) fn choose_hand_card(&mut self, object: Option<ObjectRef>) {
-        if self.hand_deployment().is_some() {
+        if self.hand_deployment_active() {
             self.choose_hand_deployment(object);
             return;
         }
@@ -322,8 +399,22 @@ impl Game {
         }
         if let Some(object) = object {
             match interaction.kind {
-                HandChoiceKind::DiscardRevealed => {
+                HandChoiceKind::LookDiscardDraw => {
+                    self.discard_batch_with_after(
+                        &[object.card],
+                        None,
+                        Some(interaction.controller),
+                        Some(discard_events::DiscardAfter::DrawFixed(
+                            interaction.victim.unwrap(),
+                            1,
+                        )),
+                    );
+                }
+                HandChoiceKind::DiscardRevealed | HandChoiceKind::DiscardRevealedKinds { .. } => {
                     self.discard_batch_caused(&[object.card], None, Some(interaction.controller))
+                }
+                HandChoiceKind::ExileRevealedKinds { .. } => {
+                    self.move_object(object.card, Zone::Exile);
                 }
                 HandChoiceKind::ExileRevealedOrCreature => {
                     self.exile_objects_until_source_leaves(interaction.source, &[object])
@@ -367,7 +458,9 @@ impl Game {
                         self.untap_objects(&[land.card], untap_rules::UntapCause::Effect);
                     }
                 }
-                HandChoiceKind::RevealSubset | HandChoiceKind::DeployCreatures => unreachable!(),
+                HandChoiceKind::RevealSubset
+                | HandChoiceKind::DeployCreatures
+                | HandChoiceKind::DeployPermanents => unreachable!(),
             }
         }
         if interaction.kind == HandChoiceKind::Behold {
@@ -380,7 +473,7 @@ impl Game {
         {
             return None;
         }
-        if self.hand_deployment().is_some() {
+        if self.hand_deployment_active() {
             return self.hand_deployment_view(viewer);
         }
         let interaction = self.state.linked_choices.as_ref()?.hand.as_ref()?;
@@ -396,9 +489,20 @@ impl Game {
                 .copied()
                 .filter(|&r| self.hand_choice_candidate(interaction, r))
                 .collect(),
+            inspected_cards: (interaction.kind == HandChoiceKind::LookDiscardDraw).then(|| {
+                interaction
+                    .candidates
+                    .iter()
+                    .copied()
+                    .filter(|&r| self.hand_choice_candidate(interaction, r))
+                    .map(|r| self.object_view(r.card))
+                    .collect()
+            }),
             optional: matches!(
                 interaction.kind,
-                HandChoiceKind::ExileRevealedOrCreature | HandChoiceKind::Behold
+                HandChoiceKind::ExileRevealedOrCreature
+                    | HandChoiceKind::Behold
+                    | HandChoiceKind::LookDiscardDraw
             ),
         })
     }

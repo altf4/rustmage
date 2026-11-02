@@ -12,9 +12,30 @@ fn loot_mana_counts_distinct_controlled_creature_powers_and_each_color() {
         g.state.players[player.index()].mana = [0; 6];
         assert_eq!(stats(&g, loot).0, stats(&g, same).0);
         assert_ne!(stats(&g, loot).0, stats(&g, other).0);
-        let actions: Vec<_> = g.legal_actions().into_iter().filter(|action| {
-            matches!(action, Action::ActivateMana { card, ability: 0, .. } if *card == loot)
-        }).collect();
+        let offered = g.legal_actions();
+        let actions: Vec<_> = offered
+            .iter()
+            .filter(|action| {
+                matches!(action, Action::ActivateMana { card, ability: 0, production, .. }
+                if *card == loot && *production != [0; 6])
+            })
+            .cloned()
+            .collect();
+        let late = offered.iter().filter(|action| {
+            matches!(action, Action::ActivateMana { card, ability: 0, production: [0, 0, 0, 0, 0, 0], .. }
+                if *card == loot)
+        }).count();
+        assert_eq!(late, 1, "one unselected direct start");
+        assert_eq!(
+            offered
+                .iter()
+                .filter(|action| matches!(action,
+            Action::AnnounceMana { card, ability: 0, production: [0, 0, 0, 0, 0, 0], .. }
+                if *card == loot))
+                .count(),
+            1,
+            "one unselected announcement"
+        );
         assert_eq!(actions.len(), 5);
         assert!(actions.iter().all(|action| matches!(action,
             Action::ActivateMana { production, .. } if production.iter().sum::<u32>() == 2 && production.iter().filter(|n| **n != 0).count() == 1)));
@@ -25,6 +46,52 @@ fn loot_mana_counts_distinct_controlled_creature_powers_and_each_color() {
         g.restore(&before).unwrap();
         act(&mut g, actions[0].clone());
         assert_eq!(g.state.players[player.index()].mana.iter().sum::<u32>(), 2);
+
+        g.restore(&before).unwrap();
+        act(
+            &mut g,
+            Action::AnnounceMana {
+                card: loot,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0; 6],
+            },
+        );
+        pay(&mut g);
+        assert!(
+            g.object_view(loot).tapped,
+            "tap cost precedes output choice"
+        );
+        assert_eq!(g.state.players[player.index()].mana, [0; 6]);
+        assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
+        let choices = g.legal_actions();
+        assert_eq!(
+            choices
+                .iter()
+                .filter(|a| matches!(a, Action::ChooseMana { .. }))
+                .count(),
+            5
+        );
+        for color in 0..5 {
+            let mut production = [0; 6];
+            production[color] = 2;
+            assert!(choices.contains(&Action::ChooseMana { production }));
+        }
+        let pending = g.snapshot();
+        let choice = Action::ChooseMana {
+            production: [0, 0, 0, 0, 2, 0],
+        };
+        let mut indexed = g.clone();
+        let index = choices.iter().position(|a| a == &choice).unwrap();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut g, choice.clone());
+        assert_eq!(g.state.players[player.index()].mana, [0, 0, 0, 0, 2, 0]);
+        assert_eq!(g.snapshot(), indexed.snapshot());
+        g.restore(&pending).unwrap();
+        act(&mut g, choice);
+        assert_eq!(g.snapshot(), indexed.snapshot());
     }
 }
 

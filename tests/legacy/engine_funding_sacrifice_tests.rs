@@ -1754,3 +1754,132 @@ fn hartford_restless_reef_color_is_seen_in_speculative_funding_world() {
         assert!(world.subtypes(reef).has(world.object(reef).card, "Shark"));
     }
 }
+
+#[test]
+fn spell_only_repeat_mana_stays_bounded_inside_multiple_unfunded_converters() {
+    use crate::cards::authored::CardRules;
+    use crate::cards::fixture_rules;
+    use crate::engine::zone_replacements::TEST_PREVENT_ZONE_MOVE;
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+        }
+    }
+    const CONVERTER: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            cycling: false,
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                generic: 1,
+                mana_component: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::Choice {
+                mask: 31,
+                amount: 2,
+            })],
+            sorcery: false,
+            once_per_turn: true,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _reset = Reset;
+    let _source = crate::cards::sacrifice_mana_fixture::Guard::artifact_only();
+    let _rules = fixture_rules::activate(&[(
+        Card::from_name("Barrels of Blasting Jelly").unwrap(),
+        &CONVERTER,
+    )]);
+    for player in [Player::P0, Player::P1] {
+        let mut g = setup(player);
+        let source = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+        g.state.objects[source as usize].card = Card::test_index(5437);
+        let converters = [
+            named(
+                &mut g,
+                player,
+                "Barrels of Blasting Jelly",
+                Zone::Battlefield,
+            ),
+            named(
+                &mut g,
+                player,
+                "Barrels of Blasting Jelly",
+                Zone::Battlefield,
+            ),
+        ];
+        let artifact = named(&mut g, player, "Gilded Lotus", Zone::Hand);
+        g.state.players[player.index()].mana = [0; 6];
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(Some(g.object_ref(source))));
+        let goal = FundingGoal {
+            actor: player,
+            required: [0, 1, 0, 0, 0, 0],
+            generic: 2,
+            reserve: None,
+            source: None,
+        };
+        let purpose = mana_lots::Purpose::Spell(mana_lots::Source::in_world(&g, artifact));
+        let mut world = FundingState::from_game(&g, &goal);
+        world.set_purpose(purpose);
+        assert!(
+            world
+                .moves(&goal)
+                .iter()
+                .all(|step| { !converters.contains(&world.resources[step.resource].id) })
+        );
+        assert!(
+            world
+                .deferred_moves(&goal)
+                .iter()
+                .any(|step| { converters.contains(&world.resources[step.resource].id) })
+        );
+        // A projected child cannot spend these lots, but its final artifact
+        // parent can spend three. Keep all three before equating excess units.
+        let mut child_goal = goal.clone();
+        child_goal.required = [0; 6];
+        child_goal.generic = 1;
+        child_goal.source = Some((
+            g.object_ref(converters[0]),
+            0,
+            Counters::default(),
+            Card::from_name("Barrels of Blasting Jelly").unwrap(),
+            None,
+        ));
+        world.purpose =
+            mana_lots::Purpose::Activation(mana_lots::Source::in_world(&g, converters[0]));
+        let mut previous = world.key(&child_goal);
+        for amount in 1..=5 {
+            let step = world
+                .moves(&child_goal)
+                .into_iter()
+                .find(|step| world.resources[step.resource].id == source)
+                .unwrap();
+            world = child(&world, &step);
+            assert_eq!(world.mana[4], amount);
+            assert_eq!(
+                mana_lots::available(world.mana, &world.lots, world.purpose)[4],
+                0,
+            );
+            assert_eq!(
+                mana_lots::available(world.mana, &world.lots, purpose)[4],
+                amount,
+            );
+            let next = world.key(&child_goal);
+            assert_eq!(previous == next, amount > 3);
+            previous = next;
+        }
+        let saved = g.snapshot();
+        assert!(!g.can_fund_for(goal.clone(), purpose));
+        assert!(!g.can_fund_for(goal.clone(), mana_lots::Purpose::Other));
+        assert_eq!(g.snapshot(), saved);
+        // One ordinary green starts a converter. Its blue output plus the
+        // parent's restricted green can then fund the same exact spell goal.
+        g.state.players[player.index()].mana[4] = 1;
+        assert!(g.can_fund_for(goal, purpose));
+        TEST_PREVENT_ZONE_MOVE.with(|p| p.set(None));
+    }
+}

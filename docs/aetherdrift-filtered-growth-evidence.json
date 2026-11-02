@@ -1,0 +1,94 @@
+{
+  "scope": "Generic signed CountFilter group-growth engine repair; no ordinary card definitions/admissions.",
+  "instruction": "GrowFilteredScaled{filter:CountFilter,amount:AmountValue,power:i32,toughness:i32}",
+  "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "full_sources_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WinterCursedRider.java",
+      "sha256": "04d05cf05c21f1b2da1a4746ff402660c20753b8a955725b40ea8b3129a81cc5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileXFromYourGraveCost.java",
+      "sha256": "edc1df419657570d2142ea48c35cc10c1a8ea0dd2e2eda91c4c1575a80dde569"
+    }
+  ],
+  "semantics": [
+    "Filter uses existing earlier-layer card kinds, excluded kinds, owner/controller relation, subtype and exact other-source reference. Growth recipients must be battlefield permanents.",
+    "Amount is sampled once, signed multipliers are checked once, and the recipient set is frozen before any growth changes. The resolution modifier stays on those incarnations through later type/control changes and expires through existing cleanup growth reset.",
+    "Nonmana variable exile costs use PaidAdditionalCostSelectionCount for declared X, including replacement-modified payment; actual successful departures remain a separate frozen count.",
+    "The new amount-bearing instruction participates in all existing source-quantity, named-counter-quantity and cast-symbol collectors, preserving frozen facts after departure."
+  ],
+  "owned_state_fields_added": 0,
+  "public_wire_fields_added": 0,
+  "schema199": "New immutable program variant explicitly rejected by prior198 program_supported; central marker unchanged.",
+  "focused_target": "dft_filtered_growth_engine",
+  "tests": [
+    "signed_filter_excludes_artifact_creatures_and_exact_source_for_both_seats_at_zero_and_two",
+    "declared_nonmana_x_survives_a_prevented_exile_and_bad_cost_choices_are_transactional",
+    "affected_membership_stays_frozen_through_later_type_changes_and_new_entries",
+    "a_source_new_incarnation_is_other_than_the_independent_resolving_source",
+    "one_scalar_is_sampled_before_modifying_its_source_and_all_recipients",
+    "owned_counter_cost_selection_and_group_resolution_match_raw_index_and_restore",
+    "signed_growth_registers_toughness_and_named_counter_lki_before_source_sacrifice",
+    "local_quantity_snapshots_follow_counter_payment_before_the_source_is_sacrificed",
+    "borrowed_and_acquired_programs_freeze_actual_recipient_quantities_not_donor_stats",
+    "suspended_parent_quantities_refresh_after_nested_mana_counter_cost_and_survive_owned_restore",
+    "activated_equipment_count_is_frozen_before_source_sacrifice_detaches_equipment"
+  ],
+  "validation": {
+    "rustfmt": "passed",
+    "git_diff_check": "passed",
+    "Cargo": "Not run by author; root guarded validation required."
+  },
+  "activation_lki_reentry": {
+    "runtime_failure": "Frozen90e34ca54 native source-toughness sacrifice scenario resolved +0 instead of the last battlefield toughness5; source_quantity_lki was never initialized by activated packet constructors.",
+    "rule_sources": [
+      {
+        "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf",
+        "rules": [
+          "113.7a",
+          "608.2h"
+        ],
+        "interpretation": "An independent ability uses the exact source's last known information when that source has left its expected public zone. Counter costs are paid before source sacrifice; copied/granted ability definitions do not replace the recipient's actual characteristics."
+      }
+    ],
+    "repairs": [
+      "Register only quantities read by the final immutable program, including recursive modal/nested amount consumers. Native packet, final borrowed/acquired/retained origin binding, common announcement and direct payment use the same opt-in helper.",
+      "Use actual exact source incarnation for quantities even when the ability definition belongs to a donor or grantor. Preserve frozen facts when nested payment already moved the source.",
+      "Refresh local named-counter and public source quantities after payment changes counters and before the local packet's source departure; local packets are outside State during committed source costs.",
+      "Include all suspended mana-announcement ancestor packets in immutable source-demand scans and mutable source/counter departure capture. No Game cloning, new hot-object fields or new wire shape."
+    ],
+    "focused_contrasts": [
+      {
+        "test": "local_quantity_snapshots_follow_counter_payment_before_the_source_is_sacrificed",
+        "outcome": "2/3 source with two +1 counters removes one, then sacrifices: source toughness4 and remaining +1 count1 yield recipient7/3 or4/3, not initial8/3 or5/3."
+      },
+      {
+        "test": "borrowed_and_acquired_programs_freeze_actual_recipient_quantities_not_donor_stats",
+        "outcome": "2/3 recipient plus two +1 counters sacrifices to a foreign1/7 donor program: amount5, recipient8/3. Recipient has no printed slot0 program."
+      },
+      {
+        "test": "suspended_parent_quantities_refresh_after_nested_mana_counter_cost_and_survive_owned_restore",
+        "outcome": "Parent costs two generic with one initial colorless; another ability on its source costs one generic, removes one +1 counter, sacrifices that source and adds two colorless. Suspended parent must use last toughness4 or remaining counter1 after the nested payment. Raw/index/independent owned children and restore produce identical outcomes after parent disposal. A mana cost is deliberate: a zero-mana child instead uses the immediate ActivateMana route."
+      },
+      {
+        "test": "activated_equipment_count_is_frozen_before_source_sacrifice_detaches_equipment",
+        "outcome": "Two attached Equipment controlled by different players count2 before source sacrifice; a loose Equipment is excluded, resulting in recipient5/3."
+      }
+    ],
+    "compatibility": "No fields, enum variants or schema marker added. Existing opt-in source/counter quantity fields retain their wire shapes and absent serialization; only activated consumers that actually read the corresponding quantities gain corrected receipts.",
+    "fixture_corrections": [
+      "Hand deployment Ajani printed starting loyalty is4; simultaneously incoming Doubling Season must not double it to8.",
+      "Flash Fang Guardian enters on opponent's turn. After resolution activeP1 receives priority; pass to controllerP0 before P0 activates its Vehicle crew ability."
+    ],
+    "author_validation": {
+      "rustfmt": "passed (edition2024)",
+      "diff_check": "passed",
+      "Cargo": "Not run; root sole guarded validation owner."
+    }
+  }
+}

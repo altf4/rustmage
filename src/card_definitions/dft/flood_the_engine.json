@@ -3,10 +3,40 @@
   "catalogue_id": 1562,
   "oracle_id": "e16e2199-d821-49fd-94a0-30ecebd8bd4c",
   "facts_sha256": "a7b3d8e62c892d6302f1f5449a73e21e39064444faf46a8f5903a3958b8d504b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "23c0ad4f0bea6a67e14c60563224fb25907585aa7b09a2624ae674ee19c9395b"
   },
-  "physical_metadata_sha256": "17d10f521f3415edba08e99161bc1d0e3c089ee1c79f69bbe090f519ec570d2d"
+  "physical_metadata_sha256": "17d10f521f3415edba08e99161bc1d0e3c089ee1c79f69bbe090f519ec570d2d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FloodTheEngine.java",
+  "java_sha256": "7d1bfec33cf1cea9f6e65234dd8d54abb39bab10dac8920219bdf646da14cd5c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+      "sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+      "sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+      "sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+    }
+  ]
 }

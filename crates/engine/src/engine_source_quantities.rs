@@ -52,9 +52,12 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             }
             Instruction::UpToTargets(value)
             | Instruction::IfAmountAtLeast { value, .. }
+            | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
+            | Instruction::DestroyTargetsAtMostManaValue(value)
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }
+            | Instruction::SearchScaled { maximum: value, .. }
             | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
             | Instruction::SetCreatureForm { base: value, .. }
             | Instruction::MoveCountersFromSource { amount: value, .. }
@@ -67,12 +70,14 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::DamageScaled(value)
             | Instruction::AddColorlessScaled(value)
             | Instruction::AddManaScaled { amount: value, .. }
+            | Instruction::AddManaChosenScaled { amount: value, .. }
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
+            | Instruction::GrowFilteredScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
@@ -95,6 +100,13 @@ impl Game {
             .chain(self.state.resolving.iter().map(|r| &r.item))
             .chain(self.state.announcing.iter().map(|a| &a.item))
             .chain(self.state.activation_payment.iter().map(|p| &p.item))
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .iter()
+                    .flat_map(|frames| frames.iter())
+                    .map(|frame| &frame.announcement.item),
+            )
     }
     pub(super) fn source_equipment_count(&self, source: ObjectRef) -> Option<u64> {
         (self.on_battlefield(source.card) && self.object_ref(source.card) == source).then(|| {
@@ -130,6 +142,63 @@ impl Game {
                     .then(|| self.source_equipment_count(source.reference).unwrap_or(0)),
             })
         })
+    }
+    /// Bind to the final immutable activation program, not a same-index printed
+    /// ability on a borrower or acquired recipient. Only requested facts allocate.
+    pub(super) fn bind_activation_source_quantities(
+        &self,
+        item: &mut SpellView,
+        program: &[Instruction],
+    ) {
+        let Some(source) = item.source.map(|source| source.object) else {
+            return;
+        };
+        if !self
+            .state
+            .objects
+            .get(source.card as usize)
+            .is_some_and(|object| object.generation == source.generation)
+        {
+            // A mana payment may already have sacrificed the source. Its exact
+            // departure facts must survive final payment of the parent ability.
+            return;
+        }
+        item.source_counter_lki = card_quantities::counter_quantity_facts(program, |kind| {
+            self.source_counter_quantity_live(source, kind)
+                .expect("exact activated quantity source")
+        });
+        let (toughness, equipment) = selected(program);
+        item.source_quantity_lki = (toughness || equipment)
+            .then(|| self.source_quantity_facts(program, &self.object_view(source.card)))
+            .flatten();
+    }
+    /// The local paying packet is outside State during its own source costs.
+    /// Refresh after counter payment and before any source-departure cost.
+    pub(super) fn refresh_local_source_quantities(&self, item: &mut SpellView) {
+        let Some(source) = item.source.map(|source| source.object) else {
+            return;
+        };
+        if item.source_quantity_lki.is_none()
+            || !self
+                .state
+                .objects
+                .get(source.card as usize)
+                .is_some_and(|object| object.generation == source.generation)
+        {
+            return;
+        }
+        let view = self.object_view(source.card);
+        let saved = item.source_quantity_lki.as_mut().unwrap();
+        if saved.toughness.is_some() {
+            saved.toughness = Some(if view.is_creature() {
+                view.toughness
+            } else {
+                0
+            });
+        }
+        if saved.equipment_count.is_some() {
+            saved.equipment_count = Some(self.source_equipment_count(source).unwrap_or(0));
+        }
     }
     /// Freeze before ANY member commits. Live queries remain authoritative until
     /// the source actually leaves; a failed/skipped move cannot bind a new object.
@@ -193,6 +262,13 @@ impl Game {
                     .activation_payment
                     .iter_mut()
                     .map(|p| &mut p.item),
+            )
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .iter_mut()
+                    .flat_map(|frames| frames.iter_mut())
+                    .map(|frame| &mut frame.announcement.item),
             )
         {
             if let Some(saved) = &mut item.source_quantity_lki

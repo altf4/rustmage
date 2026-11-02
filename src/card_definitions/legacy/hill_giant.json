@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "07d5a98f4da208ad050146cbc7e4520821052149684e263d4438c8f7b51eab31"
   },
-  "physical_metadata_sha256": "b4708e9741bebc1cc93ef66356b0d9c4663cb718bdc2504eead449fb8c50027b"
+  "physical_metadata_sha256": "b4708e9741bebc1cc93ef66356b0d9c4663cb718bdc2504eead449fb8c50027b",
+  "has_rules_abilities": false,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HillGiant.java",
+  "java_sha256": "b965e1100883f199c6a028bf4885a9b39f2f78751e1f9c3720861dfbb5a0de05"
 }

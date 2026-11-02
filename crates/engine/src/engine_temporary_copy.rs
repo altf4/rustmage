@@ -11,6 +11,8 @@ pub struct CopyTypes {
     pub nightmare: bool,
     pub golem: bool,
     pub fractal: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub zombie: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -59,6 +61,11 @@ impl CopyDeadline {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct RetainedActivationOrigin {
+    pub ability_origin: Option<u64>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CopyLayerView {
     pub recipe: CopyRecipe,
     pub origin: u64,
@@ -68,6 +75,8 @@ pub struct CopyLayerView {
     /// The independent timestamp of this layer's hand-setting ability, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hand_timestamp: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub retained_link_origin: Option<RetainedActivationOrigin>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -101,6 +110,35 @@ pub(super) struct Row {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Row {
+    pub(super) fn as_entry(
+        object: ObjectRef,
+        physical_card: Card,
+        physical_kind: CopyKind,
+        original_recipe: Option<CopyRecipe>,
+        recipe: CopyRecipe,
+        origin: u64,
+    ) -> Self {
+        Self {
+            object,
+            physical_card,
+            physical_kind,
+            original_recipe,
+            original_used: 0,
+            original_provider_time: None,
+            original_hand_time: None,
+            layers: vec![Layer {
+                value: CopyLayerView {
+                    recipe,
+                    origin,
+                    provider_timestamp: 0,
+                    deadline: CopyDeadline::WhileSource { source: object },
+                    hand_timestamp: None,
+                    retained_link_origin: None,
+                },
+                used_abilities: 0,
+            }],
+        }
+    }
     pub(super) fn active(&self) -> &Layer {
         self.layers.last().expect("live temporary copy has a layer")
     }
@@ -183,6 +221,7 @@ impl Game {
                     nightmare: previous.nightmare || value.nightmare,
                     golem: previous.golem || value.golem,
                     fractal: previous.fractal || value.fractal,
+                    zombie: previous.zombie || value.zombie,
                 }
             })
             .or(old.types);
@@ -367,6 +406,28 @@ impl Game {
             );
         }
     }
+    /// Install the already-chosen layer before entry providers/events inspect the entrant.
+    pub(super) fn install_entry_copy(
+        &mut self,
+        object: ObjectRef,
+        physical_card: Card,
+        recipe: CopyRecipe,
+    ) {
+        let origin = self.state.roles.get_or_insert_default().next_acquisition();
+        let row = Row::as_entry(
+            object,
+            physical_card,
+            self.state.objects[object.card as usize].copy_kind,
+            self.copy_recipe(object),
+            recipe,
+            origin,
+        );
+        self.state
+            .temporary_copies
+            .get_or_insert_default()
+            .push(row.clone());
+        self.materialize_copy_row(&row, false);
+    }
     pub(super) fn apply_temporary_copy(
         &mut self,
         object: ObjectRef,
@@ -413,6 +474,7 @@ impl Game {
                 provider_timestamp: origin,
                 deadline,
                 hand_timestamp: None,
+                retained_link_origin: None,
             },
             used_abilities: 0,
         });
@@ -614,7 +676,7 @@ impl Game {
         let Some(source) = item.source else {
             return;
         };
-        let bit = 1u64 << ability;
+        let bit = 1u64.checked_shl(u32::from(ability)).unwrap_or(0);
         if self.copy_ability_origin(source.object) == item.source_ability_origin {
             self.state.objects[source.id as usize].used_abilities |= bit;
         } else if let Some(rows) = &mut self.state.temporary_copies

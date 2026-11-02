@@ -16,6 +16,7 @@ pub enum ManaRestrictionView {
     ExceptCastFromHand,
     CastFromExile,
     ArtifactSpell,
+    ArtifactSpellOrActivation,
     ExceptNonArtifactSpells,
     SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
@@ -148,6 +149,9 @@ impl Quality {
                 ManaRestriction::CreatureActivation => ManaRestrictionView::CreatureActivation,
                 ManaRestriction::AbilityActivation => ManaRestrictionView::AbilityActivation,
                 ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
+                ManaRestriction::ArtifactSpellOrActivation => {
+                    ManaRestrictionView::ArtifactSpellOrActivation
+                }
                 ManaRestriction::ExceptNonArtifactSpells => {
                     ManaRestrictionView::ExceptNonArtifactSpells
                 }
@@ -228,6 +232,11 @@ impl Quality {
             ManaRestrictionView::ArtifactSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
             }
+            ManaRestrictionView::ArtifactSpellOrActivation => match purpose {
+                Purpose::Spell(facts) => facts.kinds & 16 != 0,
+                Purpose::Activation(_) => true,
+                Purpose::Other => false,
+            },
             ManaRestrictionView::ExceptNonArtifactSpells => {
                 !matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 == 0)
             }
@@ -589,24 +598,54 @@ impl Game {
     }
     // Capture before announcement costs can remove the producer or its choice.
     // The exact source reference identifies this announcement, not a live lookup.
-    pub(super) fn capture_announced_mana_quality(&mut self, item: &SpellView) {
+    pub(super) fn announced_mana_recipe(
+        &self,
+        item: &SpellView,
+        selected: Option<Mana>,
+    ) -> Option<ManaProduction> {
         let StackKind::ActivatedAbility { ability } = item.kind else {
-            return;
+            return None;
         };
-        let Some(source) = item.source else {
-            return;
-        };
-        let quality = source
-            .card
-            .activation(ability)
-            .mana_production()
-            .and_then(|production| self.mana_quality(production, source.object.card))
-            .map(|quality| quality.with_definition(source.card));
-        if let Some(quality) = quality {
+        let source = item.source?;
+        if matches!(
+            ability,
+            Card::GRANTED_TAP_MANA | Card::GRANTED_SACRIFICE_MANA
+        ) {
+            let origin = item.attachment_trigger.as_ref()?;
+            ability_world::CharacteristicWorld::granted_mana(self, source.id)
+                .into_iter()
+                .find(|grant| {
+                    grant.source == origin.grantor
+                        && grant.sacrifice == (ability == Card::GRANTED_SACRIFICE_MANA)
+                        && selected.is_none_or(|selected| {
+                            grant.production.accepts_at_start(self, source.id, selected)
+                        })
+                })
+                .map(|grant| grant.production)
+        } else {
+            source.card.activation(ability).mana_production()
+        }
+    }
+    pub(super) fn announced_mana_quality(
+        &self,
+        item: &SpellView,
+        selected: Option<Mana>,
+    ) -> Option<(ObjectRef, Quality)> {
+        let source = item.source?;
+        self.announced_mana_recipe(item, selected)
+            .and_then(|recipe| self.mana_quality(recipe, source.id))
+            .map(|quality| (source.object, quality.with_definition(source.card)))
+    }
+    pub(super) fn capture_announced_mana_quality(
+        &mut self,
+        item: &SpellView,
+        production: Option<Mana>,
+    ) {
+        if let Some(quality) = self.announced_mana_quality(item, production) {
             self.state
                 .mana_lots
                 .get_or_insert_default()
-                .announcement_quality = Some((source.object, quality));
+                .announcement_quality = Some(quality);
         }
     }
     pub(super) fn mountain_tap_bonus(&self, actor: Player, card: CardId) -> u32 {

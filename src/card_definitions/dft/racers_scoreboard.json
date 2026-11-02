@@ -3,10 +3,41 @@
   "catalogue_id": 3331,
   "oracle_id": "54c2b3b3-e247-4146-8045-d49480b795f2",
   "facts_sha256": "7eb18fdff212b28d0264fa93da6cd7c91923696f4c693c4e0eb7f98bde5ceb68",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "b641e8338003731c2a8aaaee64dfe97e28a1afb6ea9dd5f4c9cbb3cd338519f1"
-  },
-  "physical_metadata_sha256": "8bffb057b218531373f4d07c0403a3b1946199145dc10636de9068a63766e736"
+  "complete": true,
+  "physical_metadata_sha256": "8bffb057b218531373f4d07c0403a3b1946199145dc10636de9068a63766e736",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RacersScoreboard.java",
+  "java_sha256": "c0b5109f3d3d54b63656e65a76810d017b90adcc85f913c7fb3108592dc4b064",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+      "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+      "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+      "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    }
+  ]
 }

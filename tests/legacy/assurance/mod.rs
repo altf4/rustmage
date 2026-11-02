@@ -56,6 +56,7 @@ mod requested_reduction;
 mod requested_sunderflock;
 mod requested_waterbend;
 mod schema198;
+mod schema199;
 
 #[path = "../engine_sos_black_red_tests.rs"]
 mod sos_black_red;

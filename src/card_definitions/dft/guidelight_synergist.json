@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "06c34f10b86329cce99a4993166b030be3e72c614dd9f225d02f8449ce70c861"
   },
-  "physical_metadata_sha256": "0966020eda471083c220fc7c5ad216798d6856c9385d0a70ab7b2321d1d6d084"
+  "physical_metadata_sha256": "0966020eda471083c220fc7c5ad216798d6856c9385d0a70ab7b2321d1d6d084",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GuidelightSynergist.java",
+  "java_sha256": "b4bf7d5bac72f5b7ce02979bc4dd0bb97c43fa07ddbca3ddef513514d7041a50",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ]
 }

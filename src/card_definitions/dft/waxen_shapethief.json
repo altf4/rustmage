@@ -3,10 +3,25 @@
   "catalogue_id": 5006,
   "oracle_id": "6c540822-4ceb-4ebf-b777-da172ada3f1b",
   "facts_sha256": "fed3ccdbfd4e550c75a5e5b4fc4b8e39379e655581c8af3ee12d8edfdc021f2e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5d05888e9f7fc2e970f72390f27a8077cb74eae051fd364f68e6780a0b4da421"
   },
-  "physical_metadata_sha256": "979059eea04ad70da7ad61088903c3e3084e1680cdfa719a8fe779a86d7bbbcb"
+  "physical_metadata_sha256": "979059eea04ad70da7ad61088903c3e3084e1680cdfa719a8fe779a86d7bbbcb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WaxenShapethief.java",
+  "java_sha256": "dd1d8bc93ea5ae4cb5ed11eddb4637570cf8eb34e647e942936a49b00f2bc3f3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
+      "sha256": "256e2224f1087a614a7e4826dcdd43873e9e5b50236b9904affb8408698fe8fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    }
+  ]
 }

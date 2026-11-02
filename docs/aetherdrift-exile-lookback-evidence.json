@@ -1,0 +1,51 @@
+{
+  "scope": "engine-only pre-event observer correction; no ordinary definitions or admissions",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Ketramose, the New Dawn",
+      "oracle_id": "de41ad94-b9d7-4c2b-bfa6-394d18737228",
+      "facts_sha256": "9153c395ea3df03521a3d443f5b04e4dac3c703163f32cc4e87add1e2b0d9302",
+      "oracle_text": "Menace, lifelink, indestructible\nKetramose can't attack or block unless there are seven or more cards in exile.\nWhenever one or more cards are put into exile from graveyards and/or the battlefield during your turn, you draw a card and lose 1 life."
+    },
+    {
+      "name": "Kaya, Spirits' Justice",
+      "oracle_id": "0a094c5f-cefb-4ba1-90c8-dd78ae8efe95",
+      "facts_sha256": "f4abaf2ea991aa4bac1fb3b4411a4098dc03ec3f1c3636ae387dcf01ac08be3d",
+      "oracle_text": "Whenever one or more creatures you control and/or creature cards in your graveyard are put into exile, you may choose a creature card from among them. Until end of turn, target token you control becomes a copy of it, except it has flying.\n+2: Surveil 2, then exile a card from a graveyard.\n+1: Create a 1/1 white and black Spirit creature token with flying.\n\u22122: Exile target creature you control. For each other player, exile up to one target creature that player controls."
+    }
+  ],
+  "complete_java_bodies_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/k/KetramoseTheNewDawn.java",
+      "sha256": "9003ba35e2b5f18ec53dd5f7f53aae3808f81e72111f6dfccf86378b7cae7abc"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/k/KayaSpiritsJustice.java",
+      "sha256": "0a665c595996d60bafbaf307985b784e5612b89f5bf64acf65154dda13a447de"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/BatchTriggeredAbility.java",
+      "sha256": "e2891aafe6a447fbb1347f9b0a52cf2b8f79bc566e7518933f12bd4ed503ad86"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    }
+  ],
+  "primary_rules": {
+    "url": "https://media.wizards.com/2025/downloads/MagicCompRules%2020250919.pdf",
+    "rule": "603.10a",
+    "contract": "Both battlefield and graveyard departures use ability existence and controller immediately before the event."
+  },
+  "discrepancy": "The previous engine combined pre-event battlefield observers with post-event graveyard observers. Ketramose marks its batch ability as leaves-the-battlefield; Kaya does not explicitly set that flag in its main Java class. The shared Rust event rule follows CR603.10a for both conditions rather than copying post-event eligibility.",
+  "implementation": [
+    "Use the already-frozen shared pre-event ObjectView population for both exile event conditions.",
+    "Do not create triggers for simultaneous incoming observers or ability restoration; preserve departing/newly blanked observers and their old controller.",
+    "Preserve physical-card/global versus own-creature filtering and exact successful exile links.",
+    "No new state, wire fields, or hot allocations; remove post-event population merging."
+  ],
+  "tests": "tests/dft_exile_lookback.rs: seven independent scenarios, both seats and event qualifiers, departing/new/blanked/restored/stolen sources, physical noncreature contrast, owned raw/index/restore through foreign Aura choice",
+  "validation": "pending guarded integrated run",
+  "review": "Defect independently identified by audit_black_red; complete fix requires two nonauthor scoped reviews at final engine head."
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "phase": "engine only, ordinary Possession Engine definition unchanged",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/p/PossessionEngine.java",
+      "sha256": "63f1f317fa50463ff954dca72688eb225d3f27f373e96a8bd7c1dc479598bef4",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlTargetEffect.java",
+      "sha256": "93e055d129c924686ebca800aee72c6797220dfc56b829c70b715dd06a8c09ed",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackBlockTargetEffect.java",
+      "sha256": "82e32ded451331b18c7b25a1e3f0e39a4fde5bf85c978981e935e06c948337b1",
+      "read": "complete body"
+    }
+  ],
+  "oracle_contract": "Gain control of target opponent-controlled creature and prohibit its attack/block for as long as the resolving controller continuously controls the exact source Vehicle. Leaving, blinking or losing control ends the duration irreversibly. Later source ability removal does not end it. Different target controller effects may override layer two while combat prohibition persists.",
+  "architecture": "One existing sparse SourceLinkedEffectView row with typed ControlAndCombatLockWhileControlled kind carries captured controller/source/recipient. Layer-two dependency algorithm evaluates source control conditions against the projected result. Actual change_controller removes ended rows irreversibly; speculative payment worlds prune their private copied rows after control projection.",
+  "expected_outcomes": [
+    "successful transfer and attack/block prohibition in both seats",
+    "already-ended duration never starts",
+    "source control loss/regain cannot reactivate row",
+    "source blanking retains resolved effect; target blink never rebinds",
+    "newer target control overrides layer two without canceling combat restriction",
+    "sacrificing a ControlAttached Aura ends source control and victim link in actual/speculative worlds",
+    "owned children and snapshot restore retain independent duration state"
+  ],
+  "target": "tests/dft_control_duration.rs",
+  "remaining": "Ordinary card must additionally wire ETB opponent-only target, printed Vehicle stats, crew3 and full provenance. Engine fixtures do not admit it."
+}

@@ -2,6 +2,42 @@
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    /// CR602.2b/601.2f: determine increases before reductions after the last
+    /// target/X choice. Nothing in the subsequent payment window resamples it.
+    pub(super) fn freeze_activation_total(&mut self) {
+        let Some(a) = self.state.announcing.as_ref() else {
+            return;
+        };
+        let StackKind::ActivatedAbility { ability } = a.item.kind else {
+            return;
+        };
+        if !a.pay_window || a.total_cost.is_some() {
+            return;
+        }
+        let source = a.item.source.expect("activation source");
+        let choice = a.raw_activation_choice();
+        let increase =
+            ability_world::CharacteristicWorld::named_activation_generic_increase(self, source.id);
+        let discount = self.item_activation_discount(&a.item);
+        let x = if choice.route == ActivationCostRoute::Printed {
+            u64::from(a.item.x.unwrap_or(0)) * u64::from(source.card.activation_x_symbols(ability))
+        } else {
+            0
+        };
+        let base = power_up::reduce(
+            choice.base,
+            choice.reduction,
+            discount,
+            x + u64::from(increase),
+        )
+        .expect("validated activation total");
+        let total = self.selected_activation_target_cost(&a.item, base);
+        let a = self.state.announcing.as_mut().unwrap();
+        a.activation_generic_increase = increase;
+        a.activation_discount = discount;
+        a.total_cost = Some(total);
+    }
+
     fn activation_target_total(
         &self,
         actor: Player,
@@ -67,6 +103,44 @@ impl Game {
         }
         base
     }
+    /// Keep acquired activation identity in the same payment context used by
+    /// announcement. A printed slot at the same index has independent history.
+    pub(super) fn initial_activation_packet_target_fundable(
+        &self,
+        packet: &SpellView,
+        counter_payment: &Counters,
+    ) -> bool {
+        let StackKind::ActivatedAbility { ability } = packet.kind else {
+            unreachable!("activated packet");
+        };
+        let source = packet.source.expect("activated packet source");
+        let mut proposal =
+            self.payment_announcement(packet.clone(), counter_payment.clone(), None, None);
+        let options = proposal.cost_options().count();
+        (0..options).any(|slot| {
+            proposal.select_cost(slot);
+            if !Self::activation_target_sensitive(source.card, ability) {
+                return self.activation_packet_fundable(&proposal);
+            }
+            let spec = proposal
+                .plan
+                .single()
+                .expect("one-target activation cost modifier");
+            self.visit_item_targets(packet, spec.rule, |target| {
+                let mut candidate = proposal.clone();
+                candidate.item.targets.push(self.bind_target(target));
+                candidate.total_cost = Some(self.activation_target_total(
+                    packet.controller,
+                    source.object,
+                    source.card,
+                    ability,
+                    target,
+                    proposal.cost.expect("selected activation cost"),
+                ));
+                self.activation_packet_fundable(&candidate)
+            })
+        })
+    }
     pub(super) fn initial_activation_target_fundable(
         &self,
         goal: FundingGoal,
@@ -78,7 +152,48 @@ impl Game {
         let ability = definition.activation(*index);
         if *counters == Counters::default() && self.first_equip_zero_available(goal.actor, ability)
         {
-            return true;
+            let mut packet = self.activation_packet(goal.actor, source.card, *index);
+            packet.set_source_definition(*definition);
+            let announcement = self.payment_announcement(packet, counters.clone(), None, None);
+            let purpose = self.purpose_for_item(&announcement.item);
+            for (slot, base) in announcement.cost_options().enumerate() {
+                if announcement.activation_route_for_index(slot)
+                    != ActivationCostRoute::FirstEquipZero
+                {
+                    continue;
+                }
+                let fund = |total: ManaCost| {
+                    self.can_fund_for(
+                        FundingGoal {
+                            source: None,
+                            reserve: None,
+                            actor: goal.actor,
+                            required: total.colored,
+                            generic: total.generic,
+                        },
+                        purpose,
+                    )
+                };
+                if !Self::activation_target_sensitive(*definition, *index) {
+                    if fund(base) {
+                        return true;
+                    }
+                } else {
+                    let spec = plan.single().expect("one-target activation cost modifier");
+                    if self.visit_targets(spec.rule, goal.actor, *source, |target| {
+                        fund(self.activation_target_total(
+                            goal.actor,
+                            *source,
+                            *definition,
+                            *index,
+                            target,
+                            base,
+                        ))
+                    }) {
+                        return true;
+                    }
+                }
+            }
         }
         if !Self::activation_target_sensitive(*definition, *index) {
             return self.activation_can_fund(goal, ability.cost.additional);
@@ -111,10 +226,6 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             unreachable!();
         };
-        // Before the optional declaration, at least the captured zero route is fundable.
-        if a.equip_zero_available && a.cost.is_none() {
-            return true;
-        }
         let test = |base: ManaCost| {
             let free = a.activation_cost_route == ActivationCostRoute::FirstEquipZero;
             let goal = FundingGoal {

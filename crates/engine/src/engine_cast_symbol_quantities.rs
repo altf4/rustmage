@@ -22,9 +22,12 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         }
         Instruction::UpToTargets(value)
         | Instruction::IfAmountAtLeast { value, .. }
+        | Instruction::IfAmountParity { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }
+        | Instruction::DestroyTargetsAtMostManaValue(value)
         | Instruction::DiscardScaled(_, value)
         | Instruction::AddCastEntryCounters { amount: value, .. }
+        | Instruction::SearchScaled { maximum: value, .. }
         | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
         | Instruction::SetCreatureForm { base: value, .. }
         | Instruction::MoveCountersFromSource { amount: value, .. }
@@ -37,12 +40,14 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::DamageScaled(value)
         | Instruction::AddColorlessScaled(value)
         | Instruction::AddManaScaled { amount: value, .. }
+        | Instruction::AddManaChosenScaled { amount: value, .. }
         | Instruction::AddCombatRedScaled(value)
         | Instruction::Mobilize { amount: value, .. }
         | Instruction::CounterUnlessPayScaled { amount: value, .. }
         | Instruction::PutCountersScaled { amount: value, .. }
         | Instruction::PutPermanentCountersScaled { amount: value, .. }
         | Instruction::GrowScaled { amount: value, .. }
+        | Instruction::GrowFilteredScaled { amount: value, .. }
         | Instruction::GrowCreaturesScaled { amount: value, .. }
         | Instruction::GrowPermanentGroupScaled { amount: value, .. }
         | Instruction::CreateTokensScaled { amount: value, .. }

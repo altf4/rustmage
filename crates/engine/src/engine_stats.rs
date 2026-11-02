@@ -7,6 +7,7 @@ use super::*;
 impl Game {
     // Reuse sparse event indexes for explicit graveyard observers.
     pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
+        self.register_activation_observer(id);
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers.iter().any(|a| {
             a.condition.origin() == Some(TargetZone::Graveyard)
@@ -88,6 +89,7 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
+                    | TriggerCondition::CreaturesAttackYou
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
@@ -149,6 +151,7 @@ impl Game {
                 TriggerCondition::PermanentCardsEnterYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
                     | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
+                    | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies
@@ -211,16 +214,22 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                             | crate::cards::StaticAbilityFragment::Storied
+                            | crate::cards::StaticAbilityFragment::StartYourEngines
+                            | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn
+                            | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
+                            | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
+                            | crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_)
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                            | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
@@ -250,8 +259,12 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }
                             | crate::cards::StaticAbilityFragment::SourceGraveyardBonus { .. }
                             | crate::cards::StaticAbilityFragment::ConditionalCreatureModifier { .. }
+                            | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
+                            | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)

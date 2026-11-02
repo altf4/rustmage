@@ -214,7 +214,8 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
             if row.definition.legacy_subtype_mana_activation(ability) {
                 continue;
             }
-            if row.definition.grants_activation(ability)
+            if (row.definition.grants_activation(ability)
+                && !world.source_activation_template_available(row.donor.card, ability))
                 || row.definition.self_granted_activation_template(ability)
             {
                 continue;
@@ -232,6 +233,19 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 acquisition: row.first_slot,
             });
         }
+        for acquired in embalm::abilities(world, row.donor.card) {
+            result.push(BorrowedDescriptor {
+                source: row.source,
+                donor: row.donor,
+                zone: Zone::Graveyard,
+                definition: row.definition,
+                ability: embalm::ACTIVATION_INDEX,
+                slot: 0,
+                used: false,
+                once_per_turn: false,
+                acquisition: acquired.acquisition,
+            });
+        }
         if world.kinds(row.donor.card) & 2 != 0 {
             let subtypes = world.subtypes(row.donor.card);
             for (color, subtype) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
@@ -247,7 +261,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                     donor: row.donor,
                     zone: Zone::Graveyard,
                     definition: row.definition,
-                    ability: u16::MAX - 1 - color as u16,
+                    ability: crate::cards::activation_slots::intrinsic(color),
                     slot,
                     used: false,
                     once_per_turn: false,

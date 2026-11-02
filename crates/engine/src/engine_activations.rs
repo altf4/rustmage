@@ -213,34 +213,9 @@ impl Game {
         definition: Card,
         ability: u16,
     ) -> u32 {
-        let subtype_discount =
-            definition
-                .activation_subtype_discount(ability)
-                .map_or(0, |subtype| {
-                    let controller = self.state.objects[source as usize].controller;
-                    u32::try_from(
-                        self.state
-                            .objects
-                            .iter()
-                            .enumerate()
-                            .filter(|(id, object)| {
-                                object.zone == Zone::Battlefield
-                                    && object.controller == controller
-                                    && self.has_subtype(*id as CardId, subtype)
-                            })
-                            .count(),
-                    )
-                    .unwrap_or(u32::MAX)
-                });
-        self.power_up_generic_discount(source, definition, ability)
-            .saturating_add(subtype_discount)
-            .saturating_add(
-                definition
-                    .activation_counter_discount(ability)
-                    .map_or(0, |kind| {
-                        u32::try_from(self.counter_count(source, kind)).unwrap_or(u32::MAX)
-                    }),
-            )
+        ability_world::CharacteristicWorld::activation_generic_discount(
+            self, source, definition, ability,
+        )
     }
     pub(super) fn item_activation_discount(&self, item: &SpellView) -> u32 {
         match item.kind {
@@ -410,7 +385,18 @@ impl Game {
             && !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && (!ability.cost.sacrifice
                 || !ability_world::CharacteristicWorld::sacrifice_prohibited(self, card))
-            && self.printed_abilities_available(card)
+            && if self.state.objects[card as usize]
+                .card
+                .grants_activation(index as u16)
+            {
+                ability_world::CharacteristicWorld::source_activation_template_available(
+                    self,
+                    card,
+                    index as u16,
+                )
+            } else {
+                self.printed_abilities_available(card)
+            }
             && (ability.mana_production().is_some()
                 || (!self.nonmana_actions_prohibited() && !self.named_activation_prohibited(card)))
             && self.activation_guard_available(ability.guard, card, actor)
@@ -447,7 +433,11 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         if object.zone != ability.source_zone()
-            || object.controller != actor
+            || (if object.zone == Zone::Battlefield {
+                object.controller
+            } else {
+                object.owner
+            }) != actor
             || (ability.sorcery && !sorcery)
             || ((ability.once_per_turn || ability.exhaust)
                 && object.used_abilities & (1u64 << index) != 0)
@@ -490,6 +480,68 @@ impl Game {
         true
     }
 
+    pub(super) fn visit_intrinsic_mana(
+        &self,
+        card: CardId,
+        actor: Player,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        use ability_world::CharacteristicWorld;
+        let Some(color) = self.intrinsic_mana_color(card) else {
+            return false;
+        };
+        let ability = Card::intrinsic_mana_activation_index(color);
+        if !self.activation_cost_available(
+            card,
+            self.state.objects[card as usize].card.activation(ability),
+            usize::from(ability),
+            actor,
+            false,
+        ) {
+            return false;
+        }
+        if self.named_activation_generic_increase(card) == 0 {
+            return emit(Action::TapMana { card });
+        }
+        let mut production = [0; 6];
+        production[color] = 1;
+        let packet = self.activation_packet(actor, card, ability);
+        self.mana_packet_fundable(&packet, Counters::default(), production)
+            && emit(Action::AnnounceMana {
+                card,
+                ability,
+                counter_payment: Counters::default(),
+                production,
+            })
+    }
+    pub(super) fn granted_mana_packet(
+        &self,
+        actor: Player,
+        card: CardId,
+        grantor: ObjectRef,
+        production: Mana,
+    ) -> Option<SpellView> {
+        let grant = ability_world::CharacteristicWorld::granted_mana(self, card)
+            .into_iter()
+            .find(|g| {
+                g.source == grantor && g.production.accepts_at_start(self, card, production)
+            })?;
+        let ability = if grant.sacrifice {
+            Card::GRANTED_SACRIFICE_MANA
+        } else {
+            Card::GRANTED_TAP_MANA
+        };
+        let mut item = self.activation_packet(actor, card, ability);
+        item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
+            grantor,
+            granting_card: self.state.objects[grantor.card as usize].card,
+            recipient: self.object_ref(card),
+            defender: None,
+            granted: true,
+            origin: self.copy_ability_origin(grantor),
+        }));
+        Some(item)
+    }
     pub(super) fn visit_granted_mana(
         &self,
         card: CardId,
@@ -514,13 +566,32 @@ impl Game {
             {
                 continue;
             }
-            if grant.production.in_world(self, card).visit(|production| {
-                emit(Action::TapGrantedMana {
-                    card,
-                    grantor: grant.source,
-                    production,
-                })
-            }) {
+            let increase =
+                ability_world::CharacteristicWorld::named_activation_generic_increase(self, card);
+            if grant.production.visit_at_start_with_fixed_choice(
+                self,
+                card,
+                grant.sacrifice || increase != 0,
+                |production| {
+                    if increase == 0 {
+                        emit(Action::TapGrantedMana {
+                            card,
+                            grantor: grant.source,
+                            production,
+                        })
+                    } else {
+                        let packet = self
+                            .granted_mana_packet(actor, card, grant.source, production)
+                            .expect("live grant");
+                        self.mana_packet_fundable(&packet, Counters::default(), production)
+                            && emit(Action::AnnounceGrantedMana {
+                                card,
+                                grantor: grant.source,
+                                production,
+                            })
+                    }
+                },
+            ) {
                 return true;
             }
         }
@@ -537,7 +608,9 @@ impl Game {
         let object = &self.state.objects[card as usize];
         for (index, ability) in object.card.activations().iter().enumerate() {
             if object.card.legacy_subtype_mana_activation(index as u16)
-                || object.card.grants_activation(index as u16)
+                || (object.card.grants_activation(index as u16)
+                    && (ability.mana_production().is_none()
+                        || !ability_world::CharacteristicWorld::source_activation_template_available(self, card, index as u16)))
                 || object.card.self_granted_activation_template(index as u16)
             {
                 continue;
@@ -545,20 +618,27 @@ impl Game {
             if !self.activation_cost_available(card, ability, index, actor, sorcery) {
                 continue;
             }
-            if let Some(minimum) = ability.crew_minimum() {
-                if self.crew_fundable(self.object_ref(card), actor, minimum)
-                    && emit(Action::AnnounceActivate {
-                        card,
-                        ability: index as u16,
-                        counter_payment: Counters::default(),
+            if ability.crew_minimum().is_some() || ability.saddle_minimum().is_some() {
+                if self
+                    .activation_mana_costs(card, object.card, index as u16, 0)
+                    .any(|cost| {
+                        self.initial_activation_target_fundable(
+                            FundingGoal {
+                                reserve: None,
+                                actor,
+                                required: cost.colored,
+                                generic: cost.generic,
+                                source: Some((
+                                    self.object_ref(card),
+                                    index as u16,
+                                    Counters::default(),
+                                    object.card,
+                                    None,
+                                )),
+                            },
+                            ability.targets,
+                        )
                     })
-                {
-                    return true;
-                }
-                continue;
-            }
-            if let Some(minimum) = ability.saddle_minimum() {
-                if self.saddle_fundable(self.object_ref(card), actor, minimum)
                     && emit(Action::AnnounceActivate {
                         card,
                         ability: index as u16,
@@ -609,14 +689,20 @@ impl Game {
                     );
                     if targets_available && fundable() {
                         let done = if let Some(production) = ability.mana_production() {
-                            production.in_world(self, card).visit(|production| {
-                                emit(Action::AnnounceMana {
-                                    card,
-                                    ability: index as u16,
-                                    counter_payment: counter_payment.clone(),
-                                    production,
-                                })
-                            })
+                            self.visit_activation_mana_outputs(
+                                production,
+                                card,
+                                object.card,
+                                index as u16,
+                                |production| {
+                                    emit(Action::AnnounceMana {
+                                        card,
+                                        ability: index as u16,
+                                        counter_payment: counter_payment.clone(),
+                                        production,
+                                    })
+                                },
+                            )
                         } else {
                             emit(Action::AnnounceActivate {
                                 card,
@@ -681,15 +767,21 @@ impl Game {
                                     return;
                                 }
                                 if let Some(production) = ability.mana_production() {
-                                    done = production.in_world(self, card).visit(|production| {
-                                        emit(Action::ActivateMana {
-                                            card,
-                                            ability: index as u16,
-                                            payment,
-                                            counter_payment: counter_payment.clone(),
-                                            production,
-                                        })
-                                    });
+                                    done = self.visit_activation_mana_outputs(
+                                        production,
+                                        card,
+                                        object.card,
+                                        index as u16,
+                                        |production| {
+                                            emit(Action::ActivateMana {
+                                                card,
+                                                ability: index as u16,
+                                                payment,
+                                                counter_payment: counter_payment.clone(),
+                                                production,
+                                            })
+                                        },
+                                    );
                                     return;
                                 }
                                 let plan = ability.targets;
@@ -773,7 +865,13 @@ impl Game {
         ability: u16,
     ) -> SpellView {
         self.state.passes = 0;
-        SpellView {
+        let mut item = self.activation_packet(actor, card, ability);
+        item.id = self.next_stack_id();
+        item
+    }
+    /// An uncommitted header for legality/funding only; it never enters an event queue.
+    pub(super) fn activation_packet(&self, actor: Player, card: CardId, ability: u16) -> SpellView {
+        let mut item = SpellView {
             source: Some(StackSourceView {
                 id: card,
                 object: self.object_ref(card),
@@ -815,9 +913,22 @@ impl Game {
             x: None,
             loyalty_x: None,
             reflexive_target_limit: None,
-            attachment_trigger: None,
+            attachment_trigger:
+                ability_world::CharacteristicWorld::source_activation_template_available(
+                    self, card, ability,
+                )
+                .then(|| {
+                    Box::new(AttachmentTriggerView {
+                        grantor: self.object_ref(card),
+                        granting_card: self.state.objects[card as usize].card,
+                        recipient: self.object_ref(card),
+                        defender: None,
+                        granted: true,
+                        origin: self.copy_ability_origin(self.object_ref(card)),
+                    })
+                }),
             cast: None,
-            id: self.next_stack_id(),
+            id: self.state.next_stack_id,
             kind: StackKind::ActivatedAbility { ability },
             source_transform: self.state.objects[card as usize]
                 .card
@@ -843,17 +954,9 @@ impl Game {
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
             craft_materials: None,
+            paid_additional_cost: None,
             exiled_trigger_cards: None,
-            source_counter_lki: self.state.objects[card as usize]
-                .card
-                .activations()
-                .get(usize::from(ability))
-                .and_then(|ability| {
-                    card_quantities::counter_quantity_facts(ability.program, |kind| {
-                        self.source_counter_quantity_live(self.object_ref(card), kind)
-                            .expect("live activated source")
-                    })
-                }),
+            source_counter_lki: None,
             source_quantity_lki: None,
             event_player: None,
             event_object: None,
@@ -866,7 +969,15 @@ impl Game {
             controller: actor,
             targets: Vec::new(),
             mode: None,
+        };
+        if let Some(definition) = self.state.objects[card as usize]
+            .card
+            .activations()
+            .get(usize::from(ability))
+        {
+            self.bind_activation_source_quantities(&mut item, definition.program);
         }
+        item
     }
 
     pub(super) fn pay_activation(
@@ -904,9 +1015,10 @@ impl Game {
         item: &mut SpellView,
         payment: Mana,
         counter_payment: Counters,
-        ability: u16,
+        _ability: u16,
         definition: &ActivatedAbility,
     ) -> Option<ActivationPaymentPhase> {
+        self.bind_activation_source_quantities(item, definition.program);
         if !self.start_activation_payment(item, payment, counter_payment, definition) {
             return None;
         }
@@ -914,7 +1026,7 @@ impl Game {
         if self.state.replacements.is_some() {
             return Some(ActivationPaymentPhase::AfterLoyalty);
         }
-        self.pay_activation_tap(item, ability, definition);
+        self.pay_activation_tap(item, definition);
         self.pay_activation_source_counter(item);
         if self.state.replacements.is_some() {
             return Some(ActivationPaymentPhase::AfterSourceCounter);
@@ -927,12 +1039,12 @@ impl Game {
     pub(super) fn resume_activation_costs(
         &mut self,
         item: &mut SpellView,
-        ability: u16,
+        _ability: u16,
         definition: &ActivatedAbility,
         phase: ActivationPaymentPhase,
     ) -> Option<ActivationPaymentPhase> {
         if phase == ActivationPaymentPhase::AfterLoyalty {
-            self.pay_activation_tap(item, ability, definition);
+            self.pay_activation_tap(item, definition);
             self.pay_activation_source_counter(item);
             if self.state.replacements.is_some() {
                 return Some(ActivationPaymentPhase::AfterSourceCounter);
@@ -964,7 +1076,8 @@ impl Game {
                     && !cost.discard
                     && !cost.exile_self
                     && cost.remove.is_none()
-                    && cost.loyalty.is_none(),
+                    && cost.loyalty.is_none()
+                    && !definition.exerts(),
                 "unpaid source cost"
             );
             return false;
@@ -1005,6 +1118,9 @@ impl Game {
             return;
         };
         let definition = source.card.activation(ability);
+        if self.record_external_exhaust_use(item, ability) {
+            return;
+        }
         let Some(object) = self.state.objects.get(source.id as usize) else {
             return;
         };
@@ -1022,7 +1138,11 @@ impl Game {
                     })
                 })
         });
-        if item.self_granted_activation.is_none() && !external_planeswalker_grant {
+        if item.self_granted_activation.is_none()
+            && !external_planeswalker_grant
+            && !item.is_retained_copy_activation()
+            && ability != embalm::ACTIVATION_INDEX
+        {
             if let Some(slot) = item.borrowed_slot {
                 self.record_borrowed_use(source.object, slot, definition.exhaust);
             } else {
@@ -1055,12 +1175,7 @@ impl Game {
 
     /// Tap is a distinct cost phase: a later counter replacement choice must
     /// not repeat the tap event when payment resumes.
-    fn pay_activation_tap(
-        &mut self,
-        item: &mut SpellView,
-        ability: u16,
-        definition: &ActivatedAbility,
-    ) {
+    fn pay_activation_tap(&mut self, item: &mut SpellView, definition: &ActivatedAbility) {
         let source = item.source.expect("activated ability has an object source");
         let cost = definition.cost;
         // Capture the tap event before a subsequent sacrifice/discard/exile
@@ -1071,11 +1186,12 @@ impl Game {
                 item.mana_tap_bonus = (bonus > 0).then_some(bonus);
             }
             self.tap_objects(&[source.id]);
-            if let Some(grant) = &item.attachment_trigger
-                && source.card.grants_activation(ability)
-            {
-                self.tap_objects(&[grant.grantor.card]);
+            if let Some(grantor) = item.attached_activation_tap_cost() {
+                self.tap_objects(&[grantor.card]);
             }
+        }
+        if definition.exerts() {
+            self.exert_source(source.object, item.controller);
         }
     }
 
@@ -1102,6 +1218,7 @@ impl Game {
         let source = item.source.expect("activated ability has an object source");
         let cost = definition.cost;
         self.refresh_local_source_counter_quantities(item);
+        self.refresh_local_source_quantities(item);
         // Costs and real mana activations may briefly reach the threshold before
         // the same payment sacrifices its source. Speculative planning never does.
         self.refresh_enduring_stories();

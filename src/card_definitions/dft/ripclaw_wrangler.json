@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0635487e5aa32f6a394ba8d735cb9fdbf7b78b5853969a9ce5eec00c3ea68232"
   },
-  "physical_metadata_sha256": "6d46a130d82bb977231c4ff2702500a608bbf1c9987e20acd08cece607f8e77a"
+  "physical_metadata_sha256": "6d46a130d82bb977231c4ff2702500a608bbf1c9987e20acd08cece607f8e77a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RipclawWrangler.java",
+  "java_sha256": "c8d7ab4b357945c9118f37f69b20d5dd921f433b86a9ad2f24fee8bc54127166",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+      "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetDiscard.java",
+      "sha256": "f165d4061cca290e354f611246bf39c1157977742d5d9ae93fca883b22118668"
+    }
+  ]
 }

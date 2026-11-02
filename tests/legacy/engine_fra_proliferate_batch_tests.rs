@@ -71,6 +71,7 @@ fn proliferate_is_non_targeted_repeatable_and_snapshot_owned() {
         g.state.players[p.index()].poison_counters = 1;
         let item = g.activation_item(p, source, 0);
         g.state.resolving = Some(Resolution {
+            chosen_card_name: None,
             chosen_creature_type: None,
             target_counter_removal: None,
             linked_copy: None,

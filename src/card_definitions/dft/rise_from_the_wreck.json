@@ -3,10 +3,45 @@
   "catalogue_id": 3537,
   "oracle_id": "8eeb83b4-dca1-497e-a6b7-0485807aeef3",
   "facts_sha256": "77134a0442588b137b61dd1180e6a8475d4c76968a9727185dc097eb1c75e814",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8b0be5c42d3700561ea64d9251ab82c1a16740da58b3dfc02bb2c7575857478a"
   },
-  "physical_metadata_sha256": "c0ccc599dd8fe15418a768106e178aa2e30b6037cae9c0b0ca552ef59a106226"
+  "physical_metadata_sha256": "c0ccc599dd8fe15418a768106e178aa2e30b6037cae9c0b0ca552ef59a106226",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RiseFromTheWreck.java",
+  "java_sha256": "056062b2ce18abb85a9aa741078ff4dbaee41cfc092f49b4de9f5c19d6137862",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+      "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/NoAbilityPredicate.java",
+      "sha256": "c3a93e4d13102359be1081b02d0b55939eae3b2f67ac48c3713167d2f8aea0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/EachTargetPointer.java",
+      "sha256": "47409331c6a257595e641b63cb1eefe96070813dc4c8f37ce103a9220176a190"
+    }
+  ]
 }

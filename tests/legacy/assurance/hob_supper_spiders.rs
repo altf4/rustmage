@@ -473,6 +473,7 @@ fn supper_food_failed_payment_and_late_life_capacity_failure_roll_back_the_actua
         Action::AnnounceSelfGrantedAbility {
             source,
             grant_timestamp: timestamp,
+            counter_payment: Counters::default(),
         },
     );
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];

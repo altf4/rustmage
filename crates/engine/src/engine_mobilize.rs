@@ -215,6 +215,15 @@ impl Game {
         }) {
             self.grant_keyword_effects(&ids, source.object, Keywords::HASTE);
         }
+        self.register_delayed_sacrifice(item, tokens);
+    }
+    pub(super) fn register_delayed_sacrifice(&mut self, item: &SpellView, tokens: Vec<ObjectRef>) {
+        if tokens.is_empty() {
+            return;
+        }
+        let Some(source) = item.source else {
+            return;
+        };
         let id = self.next_stack_id();
         let batch = DelayedBatch {
             view: DelayedSacrificeView {
@@ -307,6 +316,7 @@ impl Game {
                 loyalty_counters_paid: 0,
                 exiled_symbol_cards: None,
                 craft_materials: None,
+                paid_additional_cost: None,
                 exiled_trigger_cards: None,
                 source_counter_lki: None,
                 source_quantity_lki: None,

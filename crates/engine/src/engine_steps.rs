@@ -23,6 +23,9 @@ pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        if step == Step::BeginCombat {
+            self.queue_begin_combat_this_turn();
+        }
         if step == Step::Upkeep
             && let Some(rows) = self.state.delayed_upkeep_tokens.take()
         {
@@ -165,6 +168,7 @@ impl Game {
             source_counter_payment: None,
             exiled_symbol_cards: None,
             craft_materials: None,
+            paid_additional_cost: None,
             exiled_trigger_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
@@ -346,6 +350,9 @@ impl Game {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 return !self.case_solved(source) && p.life_gained_this_turn >= n;
             }
+            StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
+                return self.declared_attack_subtypes_all(player, subtypes);
+            }
             StepGuard::Always => return true,
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
@@ -386,6 +393,10 @@ impl Game {
                 return self.put_counter_on_source_this_turn(source, player);
             }
             StepGuard::YourTurn => return self.state.active == player,
+            StepGuard::YourMainPhase => {
+                return self.state.active == player
+                    && matches!(self.state.step, Step::Main1 | Step::Main2);
+            }
             StepGuard::SourceCreature => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source

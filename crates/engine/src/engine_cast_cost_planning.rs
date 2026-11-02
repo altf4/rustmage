@@ -29,7 +29,7 @@ impl CostContext {
         if selected.is_empty() {
             selected.extend(a.additional);
         }
-        let mut exact = a.additional.is_some();
+        let mut exact = a.additional.is_some() || a.additional_group_complete;
         if let Some(f) = &a.forage {
             selected = f.selected.clone();
             exact = f.complete();
@@ -75,11 +75,8 @@ impl CostContext {
                     let StackKind::ActivatedAbility { ability } = a.item.kind else {
                         return None;
                     };
-                    let cost = a.item.source?.card.activation(ability).cost;
-                    Some(ManaCost {
-                        colored: cost.colored,
-                        generic: cost.generic.saturating_sub(a.activation_discount),
-                    })
+                    let _ = ability;
+                    a.cost_options().next()
                 }),
             source: a
                 .item
@@ -160,7 +157,7 @@ impl FundingState<'_> {
         // count every object there even if it is an opponent's, a token, or not
         // actually sacrificable, and ignore all card-characteristic filters.
         let potential_graveyard = graveyard.saturating_add(battlefield);
-        let possible = match spec.kind {
+        let possible = match spec.kind.payment_kind() {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
@@ -173,11 +170,14 @@ impl FundingState<'_> {
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand => battlefield > 0,
-            EffectChoiceKind::SacrificeDifferentNames(n) | EffectChoiceKind::TapPermanents(n) => {
-                battlefield >= usize::from(n)
-            }
+            EffectChoiceKind::SacrificeRange { minimum: n }
+            | EffectChoiceKind::SacrificeDifferentNames(n)
+            | EffectChoiceKind::TapPermanents(n) => battlefield >= usize::from(n),
             EffectChoiceKind::ExileGraveyard => potential_graveyard > 0,
-            EffectChoiceKind::ExileGraveyardCards(n) => potential_graveyard >= usize::from(n),
+            EffectChoiceKind::ExileGraveyardCards(n)
+            | EffectChoiceKind::ExileGraveyardRange { minimum: n } => {
+                potential_graveyard >= usize::from(n)
+            }
             // Any one potential card is treated as sufficient for a positive
             // weight. Its future face, colors and value need not be stable.
             EffectChoiceKind::CollectEvidence(n)
@@ -195,6 +195,23 @@ impl FundingState<'_> {
         !possible
     }
     pub(super) fn set_cost_context(&mut self, a: Option<&Announcement>) {
+        // Alternative spell costs are intentionally unset while choices are
+        // enumerated. Only contributor activations need this separate receipt.
+        self.contributors = a
+            .filter(|a| {
+                matches!(a.item.kind, StackKind::ActivatedAbility { .. })
+                    && a.item.program().is_some_and(|(_, program)| {
+                        matches!(
+                            program,
+                            [Instruction::Crew { .. }] | [Instruction::BecomeSaddled { .. }]
+                        )
+                    })
+            })
+            .and_then(|a| {
+                self.game
+                    .contributor_requirement(&self.game.funding_goal(a))
+            });
+        self.power_sensitive |= self.contributors.is_some();
         self.install_cost_context(a.and_then(CostContext::from_announcement));
         if let Some(a) = a.filter(|a| a.cast_costs.is_some())
             && let Some(frame) = &a.convoke
@@ -213,6 +230,9 @@ impl FundingState<'_> {
         }
     }
     pub(super) fn set_payment_context(&mut self, a: &Announcement) {
+        self.payment_source = a.item.source.map(|s| s.object);
+        self.exhaust_source_reuse_authorized = a.exhaust_reuse_authorized;
+        self.source_use_independent = a.item.self_granted_activation.is_some();
         if a.cast_costs.is_none() && a.additional_cost().is_some() {
             let mut shadow = a.clone();
             shadow.cast_costs = Some(Box::default());
@@ -251,42 +271,48 @@ impl FundingState<'_> {
         source: ObjectRef,
     ) -> bool {
         let o = self.object(r.card);
-        if spec.kind == EffectChoiceKind::SacrificeAttachedEquipment
+        if spec.kind.payment_kind() == EffectChoiceKind::SacrificeAttachedEquipment
             && o.attached_to != Some(source)
         {
             return false;
         }
         let craft = matches!(
-            spec.kind,
-            EffectChoiceKind::ExileControlledOrGraveyard | EffectChoiceKind::ExileCraftNonlands(_)
+            spec.kind.payment_kind(),
+            EffectChoiceKind::ExileControlledOrGraveyard
+                | EffectChoiceKind::ExileCraftNonlands(_)
+                | EffectChoiceKind::ExileGraveyardRange { .. }
         );
-        if matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_))
-            && !additional_costs::has_craft_activated_ability(self, r.card)
+        if matches!(
+            spec.kind.payment_kind(),
+            EffectChoiceKind::ExileCraftNonlands(_)
+        ) && !additional_costs::has_craft_activated_ability(self, r.card)
         {
             return false;
         }
         let spec = spec.in_zone(o.zone);
         (!craft || !CharacteristicWorld::graveyard_exile_prohibited(self, r.card))
             && (!matches!(
-                spec.kind,
+                spec.kind.payment_kind(),
                 EffectChoiceKind::Sacrifice
+                    | EffectChoiceKind::SacrificeRange { .. }
                     | EffectChoiceKind::SacrificeDifferentNames(_)
                     | EffectChoiceKind::SacrificeAttachedEquipment
             ) || !self.sacrifice_prohibited(r.card))
-            && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+            && (spec.kind.payment_kind() != EffectChoiceKind::ReturnUnblockedAttacker
                 || (self.game.ninjutsu_attacker(self.actor, r) && self.attacking(r.card)))
             && self.reference(r.card) == r
             && (r != source
                 || !matches!(
-                    spec.kind,
+                    spec.kind.payment_kind(),
                     EffectChoiceKind::Discard
                         | EffectChoiceKind::DiscardNamed(_)
                         | EffectChoiceKind::DiscardMatchingLegendary
                         | EffectChoiceKind::DiscardLegendary
                 ) && !spec.filter.other)
             && (!spec.filter.source_only || r == source)
-            && (spec.kind != EffectChoiceKind::DiscardLegendary || self.legendary(r.card))
-            && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
+            && (spec.kind.payment_kind() != EffectChoiceKind::DiscardLegendary
+                || self.legendary(r.card))
+            && (spec.kind.payment_kind() != EffectChoiceKind::DiscardMatchingLegendary
                 || additional_costs::legendary_name_match(self, self.actor, r.card))
             && Game::additional_object_matches(
                 spec,
@@ -330,7 +356,9 @@ impl FundingState<'_> {
                 let o = self.object(r.card);
                 let prevented = self.zone_move_prevented(*r, requested);
                 if requested != Zone::Graveyard {
-                    return if prevented { vec![None] } else { vec![Some(requested)] };
+                    return if prevented || (requested == Zone::Exile && self.graveyard_exile_prohibited(r.card)) {
+                        vec![None]
+                    } else { vec![Some(requested)] };
                 }
                 let own = o.card.zone_replacement();
                 let shuffle = own == Some(crate::cards::ZoneReplacementRule::RevealShuffleSelf)
@@ -400,9 +428,10 @@ impl FundingState<'_> {
                         if !self
                             .payment_departures
                             .iter()
-                            .any(|(reference, _)| reference == r)
+                            .any(|(reference, _, _)| reference == r)
                         {
-                            n.payment_departures.retain(|(reference, _)| reference != r);
+                            n.payment_departures
+                                .retain(|(reference, _, _)| reference != r);
                         }
                         next.push(n);
                         continue;
@@ -427,6 +456,11 @@ impl FundingState<'_> {
                         n.graveyard_left[owner.index()] = true;
                     }
                     let face_down_physical = n.projected_face_down_physical(*r);
+                    let physical_copy = n
+                        .temporary_copy_rows_state()
+                        .as_ref()
+                        .and_then(|rows| rows.iter().find(|row| row.object == *r))
+                        .map(|row| (row.physical_card, row.physical_kind));
                     n.resources[i].object.zone = zone;
                     n.resources[i].object.generation = n.resources[i]
                         .object
@@ -436,7 +470,12 @@ impl FundingState<'_> {
                     // Departure facts above retain the old face; the new object
                     // outside stack/battlefield has only its physical front.
                     let object = &mut n.resources[i].object;
-                    n.game.restore_projected_copy_identity(*r, object);
+                    if let Some((card, kind)) = physical_copy {
+                        object.card = card;
+                        object.copy_kind = kind;
+                    } else {
+                        n.game.restore_projected_copy_identity(*r, object);
+                    }
                     if let Some(physical) = face_down_physical {
                         object.card = physical.front_face();
                     } else if !object.is_token() && !object.is_spell_copy() {
@@ -789,7 +828,9 @@ impl FundingState<'_> {
             let card = resource.object.card;
             if self
                 .mana_activations(resource.id)
-                .any(|(_, a, borrowed)| borrowed.is_some() || !Self::only_tap_mana(a))
+                .any(|(_, a, borrowed, acquired)| {
+                    borrowed.is_some() || acquired.is_some() || !Self::only_tap_mana(a)
+                })
                 || CharacteristicWorld::granted_mana(self, resource.id)
                     .iter()
                     .any(|g| g.sacrifice)
@@ -1004,7 +1045,7 @@ impl FundingState<'_> {
         let Some(mut spec) = c.additional else {
             return true;
         };
-        if let EffectChoiceKind::DiscardOrLife(life) = spec.kind {
+        if let EffectChoiceKind::DiscardOrLife(life) = spec.kind.payment_kind() {
             if !c.exact && self.life >= i128::from(life) {
                 let mut next = self.clone();
                 next.pay_projected_life(next.actor, life, &[]);
@@ -1022,7 +1063,14 @@ impl FundingState<'_> {
         let mut evidence_min = None;
         let mut counters = None;
         let mut any_graveyard = false;
-        match spec.kind {
+        match spec.kind.payment_kind() {
+            EffectChoiceKind::SacrificeRange { minimum } => {
+                amount = c.selected.len().max(usize::from(minimum));
+            }
+            EffectChoiceKind::ExileGraveyardRange { minimum } => {
+                destination = Zone::Exile;
+                amount = c.selected.len().max(usize::from(minimum));
+            }
             EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => match c.forage {
                 Some(ForageRoute::Black) => return self.complete_cost_rows(later, remaining),
                 Some(ForageRoute::Food) => spec = forage::food_cost(),
@@ -1137,7 +1185,10 @@ impl FundingState<'_> {
         selected: &mut Vec<ObjectRef>,
     ) -> bool {
         let enough = evidence_min.map_or(
-            if matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_)) {
+            if matches!(
+                spec.kind.payment_kind(),
+                EffectChoiceKind::ExileCraftNonlands(_)
+            ) {
                 selected.len() >= amount
             } else {
                 selected.len() == amount
@@ -1154,9 +1205,9 @@ impl FundingState<'_> {
             if remaining.is_empty() {
                 return true;
             }
-            let success = if spec.kind == EffectChoiceKind::Behold {
+            let success = if spec.kind.payment_kind() == EffectChoiceKind::Behold {
                 self.complete_cost_rows(later, remaining)
-            } else if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) {
+            } else if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
                 let mut next = self.clone();
                 for r in selected.iter() {
                     let i = next.resources.iter().position(|v| v.id == r.card).unwrap();
@@ -1175,7 +1226,10 @@ impl FundingState<'_> {
         if c.exact
             || evidence_min.is_none()
                 && selected.len() >= amount
-                && !matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_))
+                && !matches!(
+                    spec.kind.payment_kind(),
+                    EffectChoiceKind::ExileCraftNonlands(_)
+                )
         {
             return false;
         }
@@ -1184,10 +1238,12 @@ impl FundingState<'_> {
             if selected.contains(&r) {
                 continue;
             }
-            if matches!(spec.kind, EffectChoiceKind::SacrificeDifferentNames(_))
-                && selected
-                    .iter()
-                    .any(|s| crate::card_names::same_name(self.name(s.card), self.name(r.card)))
+            if matches!(
+                spec.kind.payment_kind(),
+                EffectChoiceKind::SacrificeDifferentNames(_)
+            ) && selected
+                .iter()
+                .any(|s| crate::card_names::same_name(self.name(s.card), self.name(r.card)))
             {
                 continue;
             }

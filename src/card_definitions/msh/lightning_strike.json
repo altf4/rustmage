@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "edcd909baffe7e4b01541694a6b39baa997c081b7d01a49384d7c20ec59f88c7"
   },
-  "physical_metadata_sha256": "7d1695324167d677fd384f2bb1cd174a9219da6ee1d084948b926b16306c823b"
+  "physical_metadata_sha256": "7d1695324167d677fd384f2bb1cd174a9219da6ee1d084948b926b16306c823b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LightningStrike.java",
+  "java_sha256": "a7f63ee848cb2838b01010b9b2abac717c49bce25a747dd38438fcf2fb43f427",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterAnyTarget.java",
+      "sha256": "39d309804844b705a2400ce7086858449831db75048e836f777b66d5d0af18e5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+      "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayer.java",
+      "sha256": "f43a3bbef4f7d2f923cddf063aa48211aad59848ccefcdace9b08a40b5cd67ab"
+    }
+  ]
 }

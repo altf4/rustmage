@@ -18,6 +18,8 @@ pub enum SourceLinkedEffectKind {
     /// Source-independent prohibition ending at the recipient’s first untap.
     PreventActivationsUntilUntapped,
     Control,
+    /// One fixed resolving controller; losing source control ends both effects forever.
+    ControlAndCombatLockWhileControlled,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -43,8 +45,11 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
         && (row.kind == SourceLinkedEffectKind::PreventDamageBy
             || (world.object(row.recipient.card).zone == Zone::Battlefield
                 && world.reference(row.recipient.card) == row.recipient))
-        && (row.kind != SourceLinkedEffectKind::PreventUntap
-            || world.object(row.source.card).controller == row.controller)
+        && (!matches!(
+            row.kind,
+            SourceLinkedEffectKind::PreventUntap
+                | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+        ) || world.object(row.source.card).controller == row.controller)
         && (row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
             || world.object(row.recipient.card).tapped)
 }
@@ -62,8 +67,11 @@ impl Game {
         // remains independent and has already happened even when this fails.
         if !self.on_battlefield(source.object.card)
             || self.object_ref(source.object.card) != source.object
-            || (kind == SourceLinkedEffectKind::PreventUntap
-                && self.state.objects[source.object.card as usize].controller != item.controller)
+            || (matches!(
+                kind,
+                SourceLinkedEffectKind::PreventUntap
+                    | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+            ) && self.state.objects[source.object.card as usize].controller != item.controller)
         {
             return;
         }
@@ -76,7 +84,11 @@ impl Game {
         if recipients.is_empty() {
             return;
         }
-        if kind == SourceLinkedEffectKind::Control {
+        if matches!(
+            kind,
+            SourceLinkedEffectKind::Control
+                | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+        ) {
             for &recipient in &recipients {
                 self.ensure_control_base(recipient);
             }
@@ -92,7 +104,11 @@ impl Game {
                 timestamp,
             });
         }
-        if kind == SourceLinkedEffectKind::Control {
+        if matches!(
+            kind,
+            SourceLinkedEffectKind::Control
+                | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+        ) {
             self.refresh_controllers();
         } else {
             self.refresh_copy_grant_availability();
@@ -206,6 +222,7 @@ impl Game {
             || self.state.mana_announcement_stack.is_some()
             || self.state.cast_rollback.is_some()
             || self.state.stack_copy_data.is_some()
+            || self.state.delayed_target_events.is_some()
             || self.state.paradigm.is_some()
             || self.state.entry_batch.is_some()
             || self
@@ -231,6 +248,12 @@ impl Game {
                 .delayed_artifact_copies
                 .as_ref()
                 .is_some_and(|rows| !rows.is_empty())
+            || self.state.combat_rules.as_ref().is_some_and(|rules| {
+                rules
+                    .begin_combat_this_turn
+                    .as_ref()
+                    .is_some_and(|rows| !rows.is_empty())
+            })
             || self
                 .state
                 .delayed_attack_this_turn
@@ -367,7 +390,12 @@ impl Game {
     pub(super) fn end_control_linked_effects(&mut self, reference: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
             state.source_linked_effects.retain(|row| {
-                row.source != reference || row.kind != SourceLinkedEffectKind::PreventUntap
+                row.source != reference
+                    || !matches!(
+                        row.kind,
+                        SourceLinkedEffectKind::PreventUntap
+                            | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+                    )
             });
         }
     }

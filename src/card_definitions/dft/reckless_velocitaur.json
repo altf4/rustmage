@@ -3,10 +3,45 @@
   "catalogue_id": 3423,
   "oracle_id": "367420cb-e77b-4d0c-9a83-0deee28f6d36",
   "facts_sha256": "2685a3ced05863d82344e2d492787dc8a7af730e9cf133e88b98d02e2e454374",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3a83a665c7009a358520955aba111a8cfaaa86f4adacd5082fe25bdf4f313790"
   },
-  "physical_metadata_sha256": "f75cd28f796651b6e026040091ef5214d871dac1b0810b76a0bed0b2274f7d7c"
+  "physical_metadata_sha256": "f75cd28f796651b6e026040091ef5214d871dac1b0810b76a0bed0b2274f7d7c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RecklessVelocitaur.java",
+  "java_sha256": "073e1cd696f8632cf351b45ed9ad8e5bac78d93e4a255e06f5ae167ae64ef06d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+      "sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CrewsVehicleSourceTriggeredAbility.java",
+      "sha256": "7c5b25d1fb306a4340b5f91b84c2830c9b6e0320bbdfbbe68bb0cb1fa6718095"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }

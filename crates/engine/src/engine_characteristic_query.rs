@@ -333,6 +333,24 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             }
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
+                    if let StaticAbilityFragment::CreatureGroupBonus {
+                        filters,
+                        stats: bonus,
+                    } = *fragment
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                        && filters.iter().any(|&filter| {
+                            self.creature_matches(
+                                filter,
+                                object.controller,
+                                self.object_ref(source),
+                                id,
+                            )
+                        })
+                    {
+                        stats += bonus;
+                    }
                     if let StaticAbilityFragment::ConditionalCreatureModifier {
                         condition,
                         modifier,
@@ -472,17 +490,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
     pub(super) fn attachment_bonus(&self, id: CardId) -> (Stats, Keywords) {
         let mut stats = Stats::default();
         let mut keywords = Keywords::NONE;
-        if !self.on_battlefield(id) || !self.is_creature(id) {
+        if !self.on_battlefield(id) {
             return (stats, keywords);
         }
-        let target = self.object_ref(id);
         let evaluation = self.evaluation.as_ref();
         for &source in self.attachment_sources() {
             let object = self.object(source);
             if object.zone != Zone::Battlefield {
                 continue;
             }
-            if object.attached_to == Some(target) && !self.is_creature(source) {
+            if CharacteristicWorld::attached(self, self.object_ref(source), id) {
                 if let Some(evaluation) = &evaluation {
                     for (index, group) in object.card.static_ability_groups().iter().enumerate() {
                         if !evaluation.group_available(self.object_ref(source), index) {
@@ -1121,7 +1138,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 None
             },
             provided_ability_origin: if obj.zone == Zone::Battlefield {
-                self.copied_grant_origin(self.reference(id))
+                CharacteristicWorld::provided_origin(self, self.reference(id))
             } else {
                 None
             },
@@ -1170,6 +1187,15 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.world.stored_recipe(id)
+    }
+    fn provided_origin(&self, object: ObjectRef) -> Option<u64> {
+        self.world.provided_origin(object)
+    }
+    fn temporary_copy_rows_state(&self) -> &temporary_copy::Rows {
+        self.world.temporary_copy_rows_state()
+    }
+    fn face_down(&self, id: CardId) -> bool {
+        self.world.face_down(id)
     }
     fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
         self.world.temporary_copy_view(object)

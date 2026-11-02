@@ -3,10 +3,30 @@
   "catalogue_id": 1702,
   "oracle_id": "fdbd8a95-1dc8-4df2-bab0-a93d1941a405",
   "facts_sha256": "483375fc2cf9371a7a36d9f1bb44145e3fbf243749cc2113ec5d01ce48757761",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5e3293d461a958bafb6d8a0b101dc58c608cb917106efdd33a6af2055bda9766"
   },
-  "physical_metadata_sha256": "037e9da026d445def07e6433bc105de2fe113ca2c6681b6d630c5fae9184593e"
+  "physical_metadata_sha256": "037e9da026d445def07e6433bc105de2fe113ca2c6681b6d630c5fae9184593e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GearseekerSerpent.java",
+  "java_sha256": "ff1eadf74e6a39c932f072a20a3c364bf90b61a2bf15daee3891b4a1305375be",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityForArtifactsAbility.java",
+      "sha256": "5a56fb3667271af8fb5c5ac996d502bf9f3aa7e870415ed1a232b4da05388aa6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+      "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+    }
+  ]
 }

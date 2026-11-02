@@ -1,16 +1,13 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Optional zone choices preserve reveal/shuffle rules and the authored abilityless fact.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 4),
     keywords: Keywords::REACH,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::SearchLibraryAndOrGraveyardToHand(
+            SearchFilter::AllOf(&[SearchFilter::Creature, SearchFilter::NoAbilities]),
+        )],
+    }],
     ..CardRules::EMPTY
 };

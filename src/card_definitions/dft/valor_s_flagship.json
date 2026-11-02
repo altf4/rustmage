@@ -3,10 +3,40 @@
   "catalogue_id": 4835,
   "oracle_id": "a3023de2-61e7-4f46-aa4a-09d08ee7d939",
   "facts_sha256": "a9f0c95e1a8ae63e5dd4b9dd02c29aefd209da712b755596b7eddfe3e357d946",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "695225cd724c2ad320aa294f491448794e86cf5b737dbce9ef36f8650859548f"
   },
-  "physical_metadata_sha256": "e6e5ee1d31f57d603926d3a1ae17906debd13cb2492d4f50d2365e01dd340789"
+  "physical_metadata_sha256": "e6e5ee1d31f57d603926d3a1ae17906debd13cb2492d4f50d2365e01dd340789",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/ValorsFlagship.java",
+  "java_sha256": "2c4a7d99d791aebe35d6c0508b7c21f21a5f2d730f19d8b5ba14aa9778b00095",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+      "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/EffectKeyValue.java",
+      "sha256": "f3d92e04fec099ffc04453e48ec3ca41730605fe82cf2b928d3be1ce9760aa1e"
+    }
+  ]
 }

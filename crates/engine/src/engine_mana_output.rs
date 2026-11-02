@@ -1,0 +1,322 @@
+//! Owned recipe and choices for mana whose costs may change its quantity.
+use super::*;
+use ability_world::CharacteristicWorld;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum ManaOutputChoice {
+    Color(u8),
+    Allocation(Mana),
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ManaOutput {
+    pub recipe: ManaProduction,
+    pub choice: Option<ManaOutputChoice>,
+    pub instance: mana_announcements::ManaActivationKey,
+    pub controller: Player,
+    pub quality: Option<mana_lots::Quality>,
+    pub source_power: i128,
+    /// Only speculative not-yet-payable starts carry this cost.
+    pub deferred_cost: Option<ManaCost>,
+    pub resume: Option<Box<Pending>>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManaOutput {
+    pub(super) fn new<W: CharacteristicWorld + ?Sized>(
+        world: &W,
+        recipe: ManaProduction,
+        selected: Mana,
+        instance: mana_announcements::ManaActivationKey,
+        controller: Player,
+        quality: Option<mana_lots::Quality>,
+    ) -> Self {
+        let recipe = if recipe.base() == ManaProduction::ChosenColor {
+            recipe.in_world(world, instance.source.card)
+        } else {
+            recipe.base()
+        };
+        let choice = match recipe {
+            ManaProduction::Choice { .. }
+            | ManaProduction::TapSourcePowerChoice { .. }
+            | ManaProduction::DistinctCreaturePowers => {
+                let mut colors = selected.iter().enumerate().filter(|(_, n)| **n != 0);
+                colors.next().and_then(|(color, _)| {
+                    colors
+                        .next()
+                        .is_none()
+                        .then_some(ManaOutputChoice::Color(color as u8))
+                })
+            }
+            ManaProduction::Combination { .. } if selected != [0; 6] => {
+                Some(ManaOutputChoice::Allocation(selected))
+            }
+            _ => None,
+        };
+        Self {
+            recipe,
+            choice,
+            instance,
+            controller,
+            quality,
+            source_power: world.power(instance.source.card),
+            deferred_cost: None,
+            resume: None,
+        }
+    }
+    pub(super) fn domain<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        fallback: i128,
+    ) -> ManaProduction {
+        let source = self.instance.source;
+        let live = world.reference(source.card) == source
+            && world.object(source.card).zone
+                == self
+                    .instance
+                    .definition
+                    .activation(self.instance.ability)
+                    .source_zone();
+        match self.recipe {
+            ManaProduction::SourcePower { color }
+            | ManaProduction::TapSourcePowerChoice { mask: color }
+                if !live || world.kinds(source.card) & 1 == 0 =>
+            {
+                let power = if live {
+                    0
+                } else {
+                    world.departed_source_power(source).unwrap_or(fallback)
+                };
+                let amount = u32::try_from(power.max(0)).capacity("mana representation exhausted");
+                if let ManaProduction::SourcePower { color } = self.recipe {
+                    let mut mana = [0; 6];
+                    mana[usize::from(color)] = amount;
+                    ManaProduction::Fixed(mana)
+                } else if amount == 0 {
+                    ManaProduction::Fixed([0; 6])
+                } else {
+                    ManaProduction::Choice {
+                        mask: color,
+                        amount,
+                    }
+                }
+            }
+            recipe => recipe.in_world_for_controller(world, source.card, self.controller),
+        }
+    }
+    pub(super) fn visit<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        fallback: i128,
+        mut emit: impl FnMut(Mana) -> bool,
+    ) -> bool {
+        let domain = self.domain(world, fallback);
+        match self.choice {
+            Some(ManaOutputChoice::Color(color)) => match domain {
+                ManaProduction::Choice { mask, amount } if mask & (1 << color) != 0 => {
+                    let mut mana = [0; 6];
+                    mana[usize::from(color)] = amount;
+                    emit(mana)
+                }
+                ManaProduction::Fixed(mana) if mana == [0; 6] => emit(mana),
+                _ => false,
+            },
+            Some(ManaOutputChoice::Allocation(mana)) => domain.visit(|m| m == mana && emit(m)),
+            None => domain.visit(emit),
+        }
+    }
+    pub(super) fn bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self
+                .resume
+                .as_ref()
+                .map_or(0, |p| std::mem::size_of::<Pending>() + p.owned_bytes())
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManaProduction {
+    pub(super) fn has_late_choice(self) -> bool {
+        matches!(
+            self.base(),
+            Self::Choice { .. }
+                | Self::Combination { .. }
+                | Self::TapSourcePowerChoice { .. }
+                | Self::DistinctCreaturePowers
+        )
+    }
+    /// Planning fixed domains uses concrete outputs once; real costly actions
+    /// may additionally retain an unselected choice until those costs finish.
+    pub(super) fn visit_at_start_with_fixed_choice<W: CharacteristicWorld + ?Sized>(
+        self,
+        world: &W,
+        source: CardId,
+        late_fixed: bool,
+        mut emit: impl FnMut(Mana) -> bool,
+    ) -> bool {
+        let mut zero = false;
+        if self.in_world(world, source).visit(|mana| {
+            zero |= mana == [0; 6];
+            emit(mana)
+        }) {
+            return true;
+        }
+        let late_dynamic = matches!(
+            self.base(),
+            Self::TapSourcePowerChoice { .. } | Self::DistinctCreaturePowers
+        );
+        (late_dynamic || (late_fixed && self.has_late_choice())) && !zero && emit([0; 6])
+    }
+    pub(super) fn accepts_at_start<W: CharacteristicWorld + ?Sized>(
+        self,
+        world: &W,
+        source: CardId,
+        selected: Mana,
+    ) -> bool {
+        self.visit_at_start_with_fixed_choice(world, source, true, |mana| mana == selected)
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    /// One domain for the observation and checked raw/index actions. Only an
+    /// owned paid activation has an enclosing payment promise to preserve.
+    pub(super) fn visit_effect_mana_choices(&self, mut emit: impl FnMut(Mana) -> bool) -> bool {
+        let Pending::EffectMana { production, .. } = self.state.pending else {
+            return false;
+        };
+        let owned = self
+            .state
+            .announcing
+            .as_ref()
+            .is_some_and(|a| a.mana_output.is_some());
+        // A foreign choice can already have stranded the parent. CR605 requires
+        // finishing this captured child before the existing rollback/replay.
+        let escaping = self.foreign_cast_choice_pending()
+            && self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.capture.is_some());
+        production.visit(|mana| {
+            (!owned || escaping || self.mana_output_choice_fundable(mana)) && emit(mana)
+        })
+    }
+    pub(super) fn visit_activation_mana_outputs(
+        &self,
+        production: ManaProduction,
+        source: CardId,
+        definition: Card,
+        index: u16,
+        emit: impl FnMut(Mana) -> bool,
+    ) -> bool {
+        let late_fixed = matches!(
+            production.base(),
+            ManaProduction::Choice { .. } | ManaProduction::Combination { .. }
+        ) && self.fixed_mana_choice_can_be_late(source, definition, index);
+        // Pure tap-only fixed mana has no intervening information choice and
+        // retains its original concrete action set. Real costs retain a full
+        // late color/allocation route after those costs have been paid.
+        production.visit_at_start_with_fixed_choice(self, source, late_fixed, emit)
+    }
+    pub(super) fn mana_output(&self, item: &SpellView, selected: Mana) -> Option<Box<ManaOutput>> {
+        let recipe = self.announced_mana_recipe(item, Some(selected))?;
+        let instance = item.mana_activation_key()?;
+        if matches!(recipe.base(), ManaProduction::Fixed(_))
+            && !matches!(
+                instance.ability,
+                Card::GRANTED_TAP_MANA | Card::GRANTED_SACRIFICE_MANA
+            )
+        {
+            return None;
+        }
+        Some(Box::new(ManaOutput::new(
+            self,
+            recipe,
+            selected,
+            instance,
+            item.controller,
+            self.announced_mana_quality(item, Some(selected))
+                .map(|(_, quality)| quality),
+        )))
+    }
+    pub(super) fn start_direct_mana_output(
+        &mut self,
+        item: SpellView,
+        counters: Counters,
+        payment: Mana,
+        production: Mana,
+    ) -> bool {
+        let Some(mut output) = self.mana_output(&item, production) else {
+            return false;
+        };
+        if self.state.announcing.is_none() {
+            output.resume = Some(Box::new(self.state.pending.clone()));
+        }
+        self.suspend_mana_announcement();
+        let mut a = self.payment_announcement(item, counters, Some(production), None);
+        let slot = a
+            .cost_options()
+            .position(|cost| {
+                payment.iter().zip(cost.colored).all(|(p, c)| *p >= c)
+                    && payment.into_iter().map(u64::from).sum::<u64>()
+                        == cost.colored.into_iter().map(u64::from).sum::<u64>()
+                            + u64::from(cost.generic)
+            })
+            .expect("legal direct mana payment has a cost option");
+        a.select_cost(slot);
+        a.total_cost = a.cost;
+        a.payment = Some(payment);
+        a.mana_output = Some(output);
+        self.state.pending = Pending::PayCosts {
+            player: a.item.controller,
+        };
+        self.state.announcing = Some(a);
+        self.finish_announcement();
+        true
+    }
+    pub(super) fn finish_mana_output(&mut self, mut a: Announcement) {
+        let output = a.mana_output.as_ref().expect("owned mana output");
+        let source = a.item.source.expect("mana source");
+        let domain = output.domain(self, source.facts.power);
+        if output.choice.is_none()
+            && matches!(
+                domain,
+                ManaProduction::Choice { .. } | ManaProduction::Combination { .. }
+            )
+        {
+            self.state.pending = Pending::EffectMana {
+                player: a.item.controller,
+                production: domain,
+                recipients: std::array::from_fn(|i| i == a.item.controller.index()),
+            };
+            self.state.announcing = Some(a);
+            return;
+        }
+        let mut production = None;
+        output.visit(self, source.facts.power, |mana| {
+            production = Some(mana);
+            true
+        });
+        let production = production.expect("frozen mana choice remains legal after costs");
+        self.complete_mana_output(&mut a, production);
+    }
+    pub(super) fn complete_mana_output(&mut self, a: &mut Announcement, production: Mana) {
+        let output = a.mana_output.take().expect("owned paid mana output");
+        self.add_quality_mana(a.item.controller, production, output.quality);
+        self.produce_mountain_tap_bonus(a.item.controller, a.item.mana_tap_bonus.unwrap_or(0));
+        self.committed_mana_reflexive(&a.item);
+        if self.restore_mana_announcement() {
+            self.reopen_evidence_after_mana_sacrifice(output.instance.source.card);
+            return;
+        }
+        if let Some(pending) = output.resume {
+            self.state.pending = *pending;
+        } else if let Some(payment) = &self.state.attack_payment {
+            self.state.pending = Pending::AttackPayment {
+                player: payment.player,
+            };
+        } else {
+            self.state.pending = Pending::Priority;
+        }
+    }
+}

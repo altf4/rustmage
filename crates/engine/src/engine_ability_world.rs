@@ -16,6 +16,11 @@ thread_local! {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) trait CharacteristicWorld {
+    fn departed_source_power(&self, source: ObjectRef) -> Option<i128> {
+        self.game()
+            .contributor_source_facts(source)
+            .map(|facts| facts.power)
+    }
     fn power(&self, id: CardId) -> i128 {
         characteristic_query::CharacteristicQuery::in_world(self)
             .stats(id)
@@ -37,6 +42,11 @@ pub(super) trait CharacteristicWorld {
         self.graveyard_borrowing_state()
             .as_ref()
             .map_or(&[], |rows| rows.as_slice())
+    }
+    fn exhaust_activated_this_turn(&self, player: Player) -> bool {
+        self.game().state.players[player.index()]
+            .turn_facts
+            .exhaust_activated_this_turn
     }
     fn has_enduring_story(&self, player: Player) -> bool {
         self.game().state.players[player.index()].enduring_story
@@ -73,14 +83,231 @@ pub(super) trait CharacteristicWorld {
             .map(|r| r.value)
     }
     fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
-        // A copied linked ability does not inherit choices made for an earlier
-        // ability instance, even when its printed definition is identical.
-        self.ability_origin(object.card)
-            .is_none()
-            .then(|| self.raw_entry_value(object))
-            .flatten()
+        // Fresh choices belong to the copied ability’s acquisition, not merely
+        // its physical object. Older choices remain dormant under a later copy.
+        self.entry_values()
+            .iter()
+            .find(|row| row.object == object && row.origin == self.ability_origin(object.card))
+            .map(|row| row.value)
     }
 
+    /// Costs use the actual source's current name, independent of the card
+    /// defining an indexed, borrowed or externally granted ability.
+    fn fixed_mana_choice_can_be_late(&self, source: CardId, definition: Card, index: u16) -> bool {
+        let mut cost = definition.activation(index).cost;
+        cost.tap = false;
+        cost != ActivationCost::ZERO
+            || definition.activation_put_counter(index).is_some()
+            || self.named_activation_generic_increase(source) != 0
+    }
+    fn activation_generic_discount(&self, source: CardId, definition: Card, ability: u16) -> u32 {
+        let controller = self.object(source).controller;
+        let subtype = definition
+            .activation_subtype_discount(ability)
+            .map_or(0, |subtype| {
+                (0..self.game().state.objects.len())
+                    .filter(|&id| {
+                        let id = id as CardId;
+                        let object = self.object(id);
+                        object.zone == Zone::Battlefield
+                            && object.controller == controller
+                            && self.subtypes(id).has(object.card, subtype)
+                    })
+                    .count()
+                    .try_into()
+                    .unwrap_or(u32::MAX)
+            });
+        let power_up =
+            if definition.power_up_abilities().contains(&ability) && self.kinds(source) & 1 != 0 {
+                (0..self.game().state.objects.len())
+                    .filter_map(|id| {
+                        let id = id as CardId;
+                        let object = self.object(id);
+                        (id != source
+                            && object.zone == Zone::Battlefield
+                            && object.controller == controller
+                            && self.printed_abilities_available(id))
+                        .then_some(object.card.power_up_other_creature_reduction())
+                    })
+                    .fold(0u32, u32::saturating_add)
+            } else {
+                0
+            };
+        exhaust::generic_discount(self, source, definition, ability)
+            .saturating_add(power_up)
+            .saturating_add(subtype)
+            .saturating_add(
+                definition
+                    .activation_counter_discount(ability)
+                    .map_or(0, |kind| {
+                        self.counter_count(source, kind)
+                            .try_into()
+                            .unwrap_or(u32::MAX)
+                    }),
+            )
+    }
+    fn activation_power_up_costs(
+        &self,
+        object: ObjectRef,
+        definition: Card,
+        ability: u16,
+    ) -> Option<Box<power_up::PowerUpCosts>> {
+        if !definition.power_up_abilities().contains(&ability) {
+            return None;
+        }
+        let source = self.object(object.card);
+        let reductions = if source.zone == Zone::Battlefield
+            && self.reference(object.card) == object
+            && self.entered_this_turn(object)
+        {
+            self.recipe(object.card).power_up_mana_reductions()
+        } else {
+            vec![ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            }]
+        };
+        Some(Box::new(power_up::PowerUpCosts { reductions }))
+    }
+    fn projected_self_grant_used(&self, _source: ObjectRef, _timestamp: u64) -> bool {
+        false
+    }
+    fn self_grant_activation_used(
+        &self,
+        source: ObjectRef,
+        timestamp: u64,
+        definition: Card,
+        ability: u16,
+        actor: Player,
+    ) -> bool {
+        let rules = definition.activation(ability);
+        let spent = self.projected_self_grant_used(source, timestamp)
+            || self
+                .game()
+                .state
+                .granted_exhaust_uses
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .any(|row| {
+                    row.source == source
+                        && row.grantor == source
+                        && row.origin == Some(timestamp)
+                        && row.definition == definition
+                        && row.ability == ability
+                        && (rules.exhaust || row.turn == self.game().state.turn)
+                });
+        spent && ((rules.exhaust && !exhaust::reuse_available(self, actor)) || rules.once_per_turn)
+    }
+    fn crew_saddle_eligible(&self, source: ObjectRef, actor: Player, object: ObjectRef) -> bool {
+        let o = self.object(object.card);
+        object != source
+            && self.reference(object.card) == object
+            && o.zone == Zone::Battlefield
+            && o.controller == actor
+            && !o.tapped
+            && self.kinds(object.card) & 1 != 0
+    }
+    fn departed_source_subtypes(&self, source: ObjectRef) -> Option<(Card, GrantedSubtypes)> {
+        self.game()
+            .contributor_source_facts(source)
+            .map(|facts| (facts.card, facts.granted_subtypes))
+    }
+    fn crew_saddle_subject_matches(
+        &self,
+        source: ObjectRef,
+        subtype: &str,
+        fallback: bool,
+    ) -> bool {
+        if self.reference(source.card) == source
+            && self.object(source.card).zone == Zone::Battlefield
+        {
+            self.subtypes(source.card)
+                .has(self.definition(source.card), subtype)
+        } else {
+            self.departed_source_subtypes(source)
+                .map_or(fallback, |(card, subtypes)| subtypes.has(card, subtype))
+        }
+    }
+    #[cfg(feature = "test-support")]
+    fn crew_saddle_contribution(&self, card: CardId, subject: CardId, subtype: &str) -> i128 {
+        self.crew_saddle_contribution_for(
+            card,
+            self.subtypes(subject)
+                .has(self.definition(subject), subtype),
+        )
+    }
+    #[cfg(feature = "test-support")]
+    fn crew_saddle_contribution_for(&self, card: CardId, subject_matches: bool) -> i128 {
+        let (base, bonus) = self.crew_saddle_contribution_terms(card, subject_matches);
+        base.checked_add(bonus)
+            .capacity("individual crew/saddle quantity representation exhausted")
+    }
+    fn crew_saddle_contribution_terms(&self, card: CardId, subject_matches: bool) -> (i128, i128) {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        let uses_toughness = |fragment: &crate::cards::StaticAbilityFragment| {
+            matches!(
+                fragment,
+                crate::cards::StaticAbilityFragment::CrewSaddleWithToughness
+            )
+        };
+        if self
+            .definition(card)
+            .static_ability_groups()
+            .iter()
+            .any(|g| g.fragments.iter().any(uses_toughness))
+            && query.continuous_fragment_available(card, uses_toughness)
+        {
+            return (query.stats(card).toughness, 0);
+        }
+        let bonus = if subject_matches
+            && query
+                .keywords(card)
+                .contains(Keywords::CREW_SADDLE_PLUS_TWO)
+        {
+            2
+        } else {
+            0
+        };
+        (query.stats(card).power, bonus)
+    }
+    fn named_activation_generic_increase(&self, id: CardId) -> u32 {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        self.static_sources()
+            .iter()
+            .copied()
+            .fold(0u32, |total, source| {
+                let provider = self.object(source);
+                if provider.zone != Zone::Battlefield
+                    || !matches!(self.entry_value(self.reference(source)),
+                    Some(EntryChoiceValue::CardName(chosen)) if self.rules_name_matches(id, chosen))
+                {
+                    return total;
+                }
+                provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|g| g.fragments)
+                    .fold(total, |total, fragment| {
+                        let crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(
+                            amount,
+                        ) = *fragment
+                        else {
+                            return total;
+                        };
+                        if query.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        }) {
+                            total
+                                .checked_add(amount)
+                                .capacity("activation cost increase exhausted")
+                        } else {
+                            total
+                        }
+                    })
+            })
+    }
     fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
         self.game().battle_protector(object)
     }
@@ -95,8 +322,21 @@ pub(super) trait CharacteristicWorld {
             .then(|| self.game().copy_ability_origin(self.reference(id)))
             .flatten()
     }
+    fn provided_origin(&self, object: ObjectRef) -> Option<u64> {
+        self.game().copied_grant_origin(object)
+    }
+    fn face_down(&self, id: CardId) -> bool {
+        self.game().is_face_down(self.reference(id))
+    }
+    fn temporary_copy_rows_state(&self) -> &temporary_copy::Rows {
+        &self.game().state.temporary_copies
+    }
     fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
-        self.game().temporary_copy_view(object)
+        self.temporary_copy_rows_state()
+            .as_ref()?
+            .iter()
+            .find(|row| row.object == object)
+            .map(temporary_copy::Row::view)
     }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.game().copy_recipe(self.reference(id))
@@ -108,6 +348,9 @@ pub(super) trait CharacteristicWorld {
         self.kinds(id) & 16 != 0 && self.subtypes(id).has(self.definition(id), "Equipment")
     }
     fn mana_value(&self, id: CardId) -> u64 {
+        if self.recipe(id).exceptions.embalm {
+            return 0;
+        }
         let object = self.object(id);
         let Some(front) = object.card.face_parent() else {
             return object.card.fixed_mana_value();
@@ -251,11 +494,36 @@ pub(super) trait CharacteristicWorld {
         self.game().state.players[player.index()].life_lost_this_turn > 0
     }
     fn attacking(&self, id: CardId) -> bool;
+    /// Exact current combat subject in this actual or projected world.
+    fn attacking_defender(&self, id: CardId) -> Option<CombatDefender> {
+        if !self.attacking(id)
+            || self.object(id).zone != Zone::Battlefield
+            || self.reference(id) != self.game().object_ref(id)
+        {
+            return None;
+        }
+        self.game()
+            .state
+            .attackers
+            .iter()
+            .find(|row| row.card == id)?
+            .defender
+    }
 
     /// Effective string name in this actual or speculative object world.
     /// Name-changing effects belong here, before later characteristic layers.
     fn name(&self, id: CardId) -> &'static str {
         characteristic_layers::name(self, id)
+    }
+    fn rules_name_matches(&self, id: CardId, chosen: crate::CardName) -> bool {
+        let current = self.name(id);
+        if !matches!(self.object(id).zone, Zone::Battlefield | Zone::Stack)
+            && current == self.definition(id).name()
+            && let Some(names) = outside_names::names(self.definition(id))
+        {
+            return names.iter().any(|name| chosen.matches(name));
+        }
+        chosen.matches(current)
     }
     fn colors(&self, id: CardId) -> u8 {
         characteristic_layers::colors(self, id)
@@ -801,6 +1069,47 @@ pub(super) trait CharacteristicWorld {
                 }
             }
     }
+    /// Availability of an exact immutable activation template granted to its
+    /// own source. This is not a printed-ability permission or a flattened tap
+    /// mana grant: the activation retains its slot, costs and use identity.
+    fn source_activation_template_available(&self, id: CardId, index: u16) -> bool {
+        let object = self.object(id);
+        let Some(ability) = object.card.activations().get(usize::from(index)) else {
+            return false;
+        };
+        if object.zone != ability.source_zone()
+            || !object.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| matches!(fragment,
+                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) if *slot == index))
+            })
+        {
+            return false;
+        }
+        let controller = if object.zone == Zone::Battlefield {
+            object.controller
+        } else {
+            object.owner
+        };
+        if self.game().state.players[controller.index()].speed < 4 {
+            return false;
+        }
+        match object.zone {
+            Zone::Battlefield => {
+                // The evaluator itself uses only the immutable template +
+                // speed predicate, never this query, so evaluation is acyclic.
+                ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
+                    .grants
+                    .iter()
+                    .any(|grant| {
+                        grant.source == self.reference(id)
+                            && grant.granting_card == object.card
+                            && grant.kind == ability_order::GrantedAbilityKind::Template(index)
+                    })
+            }
+            Zone::Hand | Zone::Graveyard => true,
+            _ => false,
+        }
+    }
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
         // Animation grants only keywords. It cannot remove a provider's printed
         // ability or change a mana grant, so only removal needs layer-six order.
@@ -924,9 +1233,10 @@ pub(super) trait CharacteristicWorld {
     }
     fn attached(&self, source: ObjectRef, recipient: CardId) -> bool {
         self.attachment_link(source, self.reference(recipient))
-            && (self.is_aura(source.card) || self.is_equipment(source.card))
             && self.kinds(source.card) & 1 == 0
-            && self.kinds(recipient) & 1 != 0
+            && ((self.is_aura(source.card)
+                && aura_kind_matches(self, self.definition(source.card), recipient))
+                || (self.is_equipment(source.card) && self.kinds(recipient) & 1 != 0))
     }
     fn live_applies(&self, source: ObjectRef, effect: &LiveStaticEffect, id: CardId) -> bool {
         let target = self.object(id);
@@ -996,6 +1306,28 @@ impl CharacteristicWorld for Game {
 }
 
 /// Evaluate the printed Aura restriction in either live or projected worlds.
+/// Shared live enchant restriction for actual attachment/SBA and speculative entry.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn aura_kind_matches<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    aura: Card,
+    id: CardId,
+) -> bool {
+    let Some(spec) = aura.aura() else {
+        return false;
+    };
+    let kinds = world.kinds(id);
+    let kind_match = if spec.kinds == 0 {
+        kinds & (1 | 2 | 16 | 32 | 64 | 256) != 0
+    } else {
+        kinds & u16::from(spec.kinds) != 0
+            || aura
+                .aura_kind_or_subtype()
+                .is_some_and(|subtype| world.subtypes(id).has(world.definition(id), subtype))
+    };
+    kind_match && aura_artifact_or_non_aura_enchantment(world, aura, id)
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn aura_artifact_or_non_aura_enchantment<W: CharacteristicWorld + ?Sized>(
     world: &W,
@@ -1017,8 +1349,18 @@ impl ManaProduction {
         world: &W,
         source: CardId,
     ) -> Self {
+        self.in_world_for_controller(world, source, world.object(source).controller)
+    }
+    pub(super) fn in_world_for_controller<W: CharacteristicWorld + ?Sized>(
+        self,
+        world: &W,
+        source: CardId,
+        controller: Player,
+    ) -> Self {
         match self {
-            Self::Tagged { production, .. } => production.in_world(world, source),
+            Self::Tagged { production, .. } => {
+                production.in_world_for_controller(world, source, controller)
+            }
             Self::TapSourcePowerChoice { mask } => {
                 let amount = u32::try_from(power_after_source_tap(world, source).max(0))
                     .capacity("mana representation exhausted");
@@ -1053,7 +1395,6 @@ impl ManaProduction {
                     source,
                     object,
                 };
-                let controller = tapped.object(source).controller;
                 let mut powers = Vec::new();
                 for id in 0..tapped.game().state.objects.len() {
                     let id = id as CardId;
@@ -1075,7 +1416,6 @@ impl ManaProduction {
                 }
             }
             Self::MonocoloredPermanentColors => {
-                let controller = world.object(source).controller;
                 let mut mask = 0u8;
                 for id in 0..world.game().state.objects.len() {
                     let id = id as CardId;
@@ -1094,7 +1434,6 @@ impl ManaProduction {
                 Self::Fixed(mana)
             }
             Self::CountSubtype { color, subtype } => {
-                let controller = world.object(source).controller;
                 let count = world
                     .game()
                     .state
@@ -1129,6 +1468,12 @@ struct SourceTappedWorld<'a, W: CharacteristicWorld + ?Sized> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<'_, W> {
+    fn departed_source_power(&self, source: ObjectRef) -> Option<i128> {
+        self.parent.departed_source_power(source)
+    }
+    fn departed_source_subtypes(&self, source: ObjectRef) -> Option<(Card, GrantedSubtypes)> {
+        self.parent.departed_source_subtypes(source)
+    }
     fn game(&self) -> &Game {
         self.parent.game()
     }
@@ -1147,6 +1492,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn life(&self, p: Player) -> i128 {
         self.parent.life(p)
+    }
+    fn exhaust_activated_this_turn(&self, player: Player) -> bool {
+        self.parent.exhaust_activated_this_turn(player)
     }
     fn has_enduring_story(&self, player: Player) -> bool {
         self.parent.has_enduring_story(player)

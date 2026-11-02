@@ -83,6 +83,14 @@ impl RoleState {
             .capacity("Role timestamps exhausted");
         self.clock
     }
+    /// Ability acquisitions need distinct origins even during deferred entry timestamps.
+    pub(super) fn next_acquisition(&mut self) -> u64 {
+        self.clock = self
+            .clock
+            .checked_add(1)
+            .capacity("Ability origins exhausted");
+        self.clock
+    }
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()

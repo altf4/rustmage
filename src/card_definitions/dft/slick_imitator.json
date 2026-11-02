@@ -3,10 +3,30 @@
   "catalogue_id": 3921,
   "oracle_id": "5482ddb1-7f7d-492a-aa3d-67c037062cc3",
   "facts_sha256": "df8cc6163b2cb3be2e66f6041359008d8982bb0a710ef042fefb2bd1c5deb7a8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0f59749afbf0cef34529f35619350fb7174ea57761e1b8200bd0e899beee882a"
   },
-  "physical_metadata_sha256": "f06a17bad581ab599c380645004642d49cffeb2ff11aaef3042d3347e1fbf034"
+  "physical_metadata_sha256": "f06a17bad581ab599c380645004642d49cffeb2ff11aaef3042d3347e1fbf034",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SlickImitator.java",
+  "java_sha256": "e33bb222bd5e51ce69368c5a8f17a7f55c25afd49531c9ccd003f76aa2059b3c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+      "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+      "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+    }
+  ]
 }

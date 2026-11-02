@@ -1,0 +1,87 @@
+{
+  "scope": "Generic chosen-X non-targeted entry graveyard exile and exact-result counters/linking; retained-activation copy followup remains a separate engine task. No ordinary card definitions/admissions.",
+  "oracle": {
+    "name": "Mimeoplasm, Revered One",
+    "oracle_id": "2b8c2882-dbca-466a-a0af-dd1d65edfe7c",
+    "facts_sha256": "65b685245135ea62816cb0aee59d2f3e29af47a2feb8aeea624317929c012318",
+    "printings": [
+      "214",
+      "392",
+      "405",
+      "415",
+      "486"
+    ],
+    "oracle_text": "As Mimeoplasm enters, exile up to X creature cards from your graveyard. It enters with three +1/+1 counters on it for each creature card exiled this way.\n{2}: Mimeoplasm becomes a copy of target creature card exiled with it, except it's 0/0 and has this ability."
+  },
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "complete_java_bodies_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MimeoplasmReveredOne.java",
+      "sha256": "bf649223c521a37bdce2d9029688214736044ab965a3b7a1e5e8f31fd27d9062"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+      "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInExile.java",
+      "sha256": "6f780da5ddeae8d933e0ae6900c6b38ff1e466089310d72c487ac3b6159f9b0c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/util/functions/CopyApplier.java",
+      "sha256": "82b30d931a3e310abd321918f97eb3ec6d8bf1e93bd665e7ddc66ed032a2fcdf"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyEffect.java",
+      "sha256": "4e27230c09fc613d065b165fb57332f3ac4f8bf1fb2f7b33212f155535d8df0b"
+    }
+  ],
+  "interface": "CardExtras::entry_exile_counters:Option<EntryExileCountersSpec{filter,kind,per_card}>; maximum is entrant chosen X",
+  "semantics": [
+    "All copied-blueprint replacements finish before the entry-exile phase. Choose up to X own graveyard cards incrementally without targeting; simultaneous not-yet-present entrants are unavailable.",
+    "Selected identities remain exact. Only actual successful Exile ZoneChange results produce counters and links; the link source is the exact successfully entered incarnation.",
+    "Counters enter the existing intrinsic entry counter pipeline before doubling/prohibition. The actual successful exile count is captured once.",
+    "Funding enumerates completions of the chosen prefix and applies the same movement success/prohibition checks. Zero selections remain legal.",
+    "Existing true GraveyardCardsCannotBeExiled prohibition had been cost-only; common actual effect planning now stops the prohibited event before replacement selection, and projected departures agree. Prohibited activation costs remain unavailable."
+  ],
+  "wire": [
+    "Action::ChooseEntryExile{object}",
+    "Action::FinishEntryExile",
+    "pending kind entry_exile",
+    "Observation.entry_exile optional omittedNone; view{entrant,maximum,selected,candidates}",
+    "LinkedExileView.ability_origin optional omittedNone"
+  ],
+  "owned_state": "EntryMove.exile_preparation:Option<Box<Preparation{done,selection_closed,selected,exiled}>>; no hot Object fields",
+  "tests": [
+    "chosen_x_entry_exiles_only_own_creature_cards_and_links_the_new_entrant",
+    "optional_entry_selection_can_finish_below_x_and_x_zero_has_no_choice",
+    "simultaneous_graveyard_entrants_are_unavailable_for_the_entry_exile_choice",
+    "prevented_selected_exile_grants_neither_entry_counters_nor_a_link_in_actual_or_projection",
+    "true_graveyard_exile_prohibition_stops_effects_and_projected_moves_without_a_replacement_choice",
+    "partial_entry_exile_selection_is_owned_across_raw_index_restore_and_parent_disposal",
+    "a_prevented_exile_selection_is_reserved_across_all_simultaneous_entry_replacements",
+    "projected_entry_exiles_include_nonmana_graveyard_cards_and_every_optional_count"
+  ],
+  "validation": {
+    "rustfmt": "passed edition2024",
+    "git_diff_check": "passed",
+    "Cargo": "No Cargo by author; root guarded build/scenarios pending.",
+    "first_integrated_run": "Root focused200816:all6initial linked-entry scenarios passed.",
+    "projection_inventory_followup": "Prepare the opt-in entry projection before scanning graveyard candidates, so ordinary nonmana graveyard cards absent from initial mana resources are still selectable. Eighthregression expects counter outcomes0,3,6."
+  },
+  "remaining": "Self-bound permanent copy with base0/0 and immutable retained linked activated ability is not in this commit.",
+  "peer_review_followup": {
+    "rule": "614.13b",
+    "source": "https://media.wizards.com/2025/downloads/MagicCompRules%2020250919.pdf",
+    "semantics": "Reserve every exact selected identity across all entry replacements in the same simultaneous batch, even if the attempted move is prohibited or prevented.",
+    "test": "New seventh actual/projected simultaneous-entrant regression pending root."
+  }
+}

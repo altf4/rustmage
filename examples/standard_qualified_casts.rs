@@ -363,7 +363,8 @@ impl SurveilWitness {
                     LibraryDestination::Graveyard => &partial.graveyard,
                     LibraryDestination::Bottom
                     | LibraryDestination::Shuffle
-                    | LibraryDestination::SecondFromTop => {
+                    | LibraryDestination::SecondFromTop
+                    | LibraryDestination::NthFromTop(_) => {
                         panic!("invalid surveil destination")
                     }
                 };

@@ -13,7 +13,7 @@ pub(super) const DONOR_SLOT_WIDTH: u64 = 1;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub(super) struct SlotRow {
-    source: ObjectRef,
+    pub(super) source: ObjectRef,
     acquisition: u64,
     graveyard: bool,
     pub(super) definition: Option<Card>,
@@ -157,7 +157,7 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                     donor: link.exiled,
                     zone: Zone::Exile,
                     definition: card.card,
-                    ability: u16::MAX - 1 - color as u16,
+                    ability: crate::cards::activation_slots::intrinsic(color),
                     slot,
                     used: false,
                     once_per_turn: link.once_per_turn,
@@ -193,7 +193,8 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
 fn assign_slots<W: CharacteristicWorld + ?Sized>(world: &W, abilities: &mut [Descriptor]) {
     let mut rows = world.borrowed_slots().to_vec();
     for ability in abilities {
-        let intrinsic = ability.ability >= u16::MAX - 5 && ability.ability < u16::MAX;
+        let intrinsic = ability.ability >= crate::cards::activation_slots::INTRINSIC_COLORLESS
+            && ability.ability < crate::cards::activation_slots::INTRINSIC_FALLBACK;
         let definition = (!intrinsic).then_some(ability.definition);
         let graveyard = ability.zone == Zone::Graveyard;
         let matching = |row: &&SlotRow| {
@@ -262,7 +263,8 @@ pub(super) fn refreshed_slots<W: CharacteristicWorld + ?Sized>(world: &W) -> Slo
     }
     for id in sources {
         for ability in inventory(world, id, false) {
-            let intrinsic = ability.ability >= u16::MAX - 5 && ability.ability < u16::MAX;
+            let intrinsic = ability.ability >= crate::cards::activation_slots::INTRINSIC_COLORLESS
+                && ability.ability < crate::cards::activation_slots::INTRINSIC_FALLBACK;
             let row = SlotRow {
                 source: ability.source,
                 acquisition: ability.acquisition,
@@ -346,16 +348,20 @@ impl Game {
     ) -> SpellView {
         self.refresh_graveyard_borrowing();
         let descriptor = self.borrowed_descriptor(card, exiled, index);
-        let mut item = self.activation_item(actor, card, index);
+        let mut item = self.borrowed_activation_packet(actor, descriptor);
+        item.id = self.next_stack_id();
+        self.state.passes = 0;
+        item
+    }
+    pub(super) fn borrowed_activation_packet(
+        &self,
+        actor: Player,
+        descriptor: Descriptor,
+    ) -> SpellView {
+        let mut item = self.activation_packet(actor, descriptor.source.card, descriptor.ability);
+        item.attachment_trigger = None;
         item.set_source_definition(descriptor.definition);
-        item.source_counter_lki =
-            card_quantities::counter_quantity_facts(descriptor.rules().program, |kind| {
-                self.source_counter_quantity_live(
-                    item.source.expect("activated ability has source").object,
-                    kind,
-                )
-                .expect("live inherited source")
-            });
+        self.bind_activation_source_quantities(&mut item, descriptor.rules().program);
         item.source_copy_recipe = Some(Box::new(
             self.copiable_recipe(item.source.expect("activated ability has source").object),
         ));
@@ -488,19 +494,7 @@ impl Game {
                 descriptor.ability,
                 Some(descriptor.slot),
             ) || descriptor.used
-                && (descriptor.once_per_turn || ability.once_per_turn || ability.exhaust)
-            {
-                continue;
-            }
-            if ability
-                .crew_minimum()
-                .is_some_and(|minimum| !self.crew_fundable(descriptor.source, actor, minimum))
-            {
-                continue;
-            }
-            if ability
-                .saddle_minimum()
-                .is_some_and(|minimum| !self.saddle_fundable(descriptor.source, actor, minimum))
+                && (descriptor.once_per_turn || readiness.once_per_turn || readiness.exhaust)
             {
                 continue;
             }
@@ -528,6 +522,38 @@ impl Game {
                 ability,
                 self.counter_amounts(card),
                 |counter_payment| {
+                    if let Some(production) = ability.mana_production() {
+                        let packet = self.borrowed_activation_packet(actor, *descriptor);
+                        return self.visit_activation_mana_outputs(
+                            production,
+                            card,
+                            descriptor.definition,
+                            descriptor.ability,
+                            |production| {
+                                self.mana_packet_fundable(
+                                    &packet,
+                                    counter_payment.clone(),
+                                    production,
+                                ) && emit(if descriptor.zone == Zone::Graveyard {
+                                    Action::AnnounceGraveyardBorrowedMana {
+                                        card,
+                                        graveyard: descriptor.donor,
+                                        ability: descriptor.ability,
+                                        counter_payment: counter_payment.clone(),
+                                        production,
+                                    }
+                                } else {
+                                    Action::AnnounceBorrowedMana {
+                                        card,
+                                        exiled: descriptor.donor,
+                                        ability: descriptor.ability,
+                                        counter_payment: counter_payment.clone(),
+                                        production,
+                                    }
+                                })
+                            },
+                        );
+                    }
                     let fundable = self
                         .activation_mana_costs(card, descriptor.definition, descriptor.ability, 0)
                         .any(|cost| {
@@ -563,43 +589,21 @@ impl Game {
                     if !fundable || !targets_available {
                         return false;
                     }
-                    if let Some(production) = ability.mana_production() {
-                        production.in_world(self, card).visit(|production| {
-                            emit(if descriptor.zone == Zone::Graveyard {
-                                Action::AnnounceGraveyardBorrowedMana {
-                                    card,
-                                    graveyard: descriptor.donor,
-                                    ability: descriptor.ability,
-                                    counter_payment: counter_payment.clone(),
-                                    production,
-                                }
-                            } else {
-                                Action::AnnounceBorrowedMana {
-                                    card,
-                                    exiled: descriptor.donor,
-                                    ability: descriptor.ability,
-                                    counter_payment: counter_payment.clone(),
-                                    production,
-                                }
-                            })
-                        })
+                    emit(if descriptor.zone == Zone::Graveyard {
+                        Action::AnnounceGraveyardBorrowedAbility {
+                            card,
+                            graveyard: descriptor.donor,
+                            ability: descriptor.ability,
+                            counter_payment,
+                        }
                     } else {
-                        emit(if descriptor.zone == Zone::Graveyard {
-                            Action::AnnounceGraveyardBorrowedAbility {
-                                card,
-                                graveyard: descriptor.donor,
-                                ability: descriptor.ability,
-                                counter_payment,
-                            }
-                        } else {
-                            Action::AnnounceBorrowedAbility {
-                                card,
-                                exiled: descriptor.donor,
-                                ability: descriptor.ability,
-                                counter_payment,
-                            }
-                        })
-                    }
+                        Action::AnnounceBorrowedAbility {
+                            card,
+                            exiled: descriptor.donor,
+                            ability: descriptor.ability,
+                            counter_payment,
+                        }
+                    })
                 },
             ) {
                 return true;

@@ -19,28 +19,7 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     fn has_live_program_grant(&self, source: ObjectRef) -> bool {
-        use crate::cards::StaticAbilityFragment as F;
-        self.on_battlefield(source.card)
-            && self.object_ref(source.card) == source
-            && self.printed_abilities_available(source.card)
-            && self.state.objects[source.card as usize]
-                .card
-                .static_ability_groups()
-                .iter()
-                .flat_map(|group| group.fragments)
-                .any(|fragment| {
-                    matches!(
-                        fragment,
-                        F::AttachmentTrigger(_)
-                            | F::SourceMaxSpeedActivation(_)
-                            | F::AttachmentActivation(_)
-                            | F::ControlledPlaneswalkerActivation(_)
-                            | F::ControlledPlaneswalkerAttackLimit
-                            | F::GrantInstantSorceryStorm { .. }
-                            | F::CascadeFromHand { .. }
-                            | F::HandMiracle { .. }
-                    )
-                })
+        program_grant_active(self, source)
     }
     pub(super) fn copied_grant_origin(&self, source: ObjectRef) -> Option<u64> {
         self.state
@@ -100,4 +79,33 @@ impl Game {
             }
         }
     }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+) -> bool {
+    use crate::cards::StaticAbilityFragment as F;
+    world.object(source.card).zone == Zone::Battlefield
+        && world.reference(source.card) == source
+        && world.printed_abilities_available(source.card)
+        && world
+            .definition(source.card)
+            .static_ability_groups()
+            .iter()
+            .flat_map(|group| group.fragments)
+            .any(|fragment| {
+                matches!(
+                    fragment,
+                    F::AttachmentTrigger(_)
+                        | F::SourceMaxSpeedActivation(_)
+                        | F::AttachmentActivation(_)
+                        | F::ControlledPlaneswalkerActivation(_)
+                        | F::ControlledPlaneswalkerAttackLimit
+                        | F::GrantInstantSorceryStorm { .. }
+                        | F::CascadeFromHand { .. }
+                        | F::HandMiracle { .. }
+                )
+            })
 }

@@ -1,0 +1,173 @@
+{
+  "schema": 1,
+  "scope": "Generic trigger contracts only; no ordinary card authorship or admissions",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "reviewed_complete_sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/a/AdrenalineJockey.java",
+      "sha256": "0c85ceaca77bbb277aaec45b3d030ef57e6c09bc8ea7ec9626c4426f17e54938"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MarchOfTheWorldOoze.java",
+      "sha256": "a0a87713b50413cdaedca465346de6d3ff197e872ad90fdd0702c6d6e78d1fde"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GontiNightMinister.java",
+      "sha256": "c5424bb70e72e8778b8b6e71ce30aa6ab28127d4fbeabdbadf14415a553c632b"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/f/FearlessSwashbuckler.java",
+      "sha256": "cdd438528d1dbbe3b2a641f012ba45a3220bbab8cf96deccc57569a1ea6bcdd4"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GrimJavelineer.java",
+      "sha256": "cccf295ed40611f1ff26aad03eba7925a02af437142bb03c31054d3d2bcdbcb0"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/c/CaptainHowlerSeaScourge.java",
+      "sha256": "e360a5de11eabd51c206912086d493766e30088fb321a4958816de605d6bc13f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastAllTriggeredAbility.java",
+      "sha256": "7837dc850438ff0b6ee06931b9578252338a1abd3306475a94d92d1333df4988"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastOpponentTriggeredAbility.java",
+      "sha256": "84626f91214806489e0cd62e2dfae9fb0f0e510af41d84ca8bdd20d94ca9d9f3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/WhenTargetDiesDelayedTriggeredAbility.java",
+      "sha256": "06ed400e2766a16d28d9e0895026249164e27f66fc03481e105d4a574c6fc137"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DiscardOneOrMoreCardsTriggeredAbility.java",
+      "sha256": "17c33c5f2864a8d4d2cfcf51583cf47143a7883ef869322f4be26d61d2bd57d4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDiscardValue.java",
+      "sha256": "bf74affd38bc41fae8b232bdff16ec3388bd8aeaeff12b154699fbb07fc1f9ee"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenTargetEffect.java",
+      "sha256": "899cbb24bb096977a1368027ba991506de15e4dcda39c6378a05daef65c295a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ],
+  "oracle": [
+    {
+      "name": "Adrenaline Jockey",
+      "oracle_id": "c3dc6b0e-8790-4bd3-b166-63b2dc77488f",
+      "oracle_text": "Whenever a player casts a spell, if it's not their turn, this creature deals 4 damage to them.\nWhenever you activate an exhaust ability, put a +1/+1 counter on this creature."
+    },
+    {
+      "name": "Captain Howler, Sea Scourge",
+      "oracle_id": "46c99d67-8307-4af0-afd0-377714806614",
+      "oracle_text": "Ward\u2014{2}, Pay 2 life.\nWhenever you discard one or more cards, target creature gets +2/+0 until end of turn for each card discarded this way. Whenever that creature deals combat damage to a player this turn, you draw a card."
+    },
+    {
+      "name": "Fearless Swashbuckler",
+      "oracle_id": "6a6cdb3e-c850-4b3c-bf4b-c53dd4eaf56e",
+      "oracle_text": "Haste\nVehicles you control have haste.\nWhenever you attack, if a Pirate and a Vehicle attacked this combat, draw three cards, then discard two cards."
+    },
+    {
+      "name": "Gonti, Night Minister",
+      "oracle_id": "e16f79c1-ffbb-4893-b62a-d4e9d15e2b16",
+      "oracle_text": "Whenever a player casts a spell they don't own, that player creates a Treasure token.\nWhenever a creature deals combat damage to one of your opponents, its controller looks at the top card of that opponent's library and exiles it face down. They may play that card for as long as it remains exiled. Mana of any type can be spent to cast a spell this way."
+    },
+    {
+      "name": "Grim Javelineer",
+      "oracle_id": "bd31487e-e95a-4d90-8c85-742aa83c3e90",
+      "oracle_text": "Whenever you attack, target attacking creature gets +1/+0 until end of turn. When that creature dies this turn, surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)"
+    },
+    {
+      "name": "March of the World Ooze",
+      "oracle_id": "a04696c4-4138-47e2-8da4-81d61748519f",
+      "oracle_text": "Creatures you control have base power and toughness 6/6 and are Oozes in addition to their other types.\nWhenever an opponent casts a spell, if it's not their turn, you create a 3/3 green Elephant creature token."
+    }
+  ],
+  "contracts": [
+    {
+      "obligation": "Actual caster off-turn qualification",
+      "api": "CastFilter::CasterOffTurn",
+      "test": "cast_off_turn_uses_actual_caster_independently_of_observer_controller",
+      "regression": "legacy_observer_relative_opponents_turn_wrapper_keeps_its_meaning"
+    },
+    {
+      "obligation": "Physical owner differs from actual caster; fixed caster token beneficiary",
+      "api": "CastFilter::NotOwnedByCaster + existing CreateTokensFor(CastingPlayer) with owned cast event",
+      "test": "foreign_owned_spell_creates_treasure_for_caster_after_observer_leaves",
+      "regression": "copying_a_foreign_spell_does_not_create_an_extra_cast_event"
+    },
+    {
+      "obligation": "Declared Pirate and Vehicle this combat, including one attacker satisfying both; history survives departures/type changes",
+      "api": "StepGuard::DeclaredAttackSubtypesAll + sparse queried-subtype declaration history",
+      "tests": [
+        "one_declared_attacker_can_be_both_pirate_and_vehicle_and_history_survives_departures",
+        "separately_declared_pirate_and_vehicle_qualify_but_later_type_gain_cannot_rewrite_history",
+        "declaration_history_is_opt_in_and_never_synthesized_from_live_attackers"
+      ]
+    },
+    {
+      "obligation": "Exact target creature dies this turn; original controller surveils",
+      "api": "DelayTargetEvent(DiesOnce) + immutable delayed template",
+      "tests": [
+        "delayed_death_surveillance_keeps_original_controller_and_private_owned_choice",
+        "delayed_death_requires_exact_creature_death_and_expires_at_cleanup"
+      ]
+    },
+    {
+      "obligation": "Every combat damage event to a player this turn draws for original triggering ability controller, independent of watched creature abilities or grantor departure",
+      "api": "DelayTargetEvent(CombatDamageToPlayer)",
+      "tests": [
+        "delayed_combat_draw_is_original_controllers_and_repeats_for_double_strike_and_stacked_clauses",
+        "delayed_combat_draw_persists_while_the_watched_creature_loses_all_abilities"
+      ]
+    }
+  ],
+  "oracle_over_xmage": {
+    "Captain Howler, Sea Scourge": "Oracle creates a separate delayed clause with the original triggering ability controller as you. Java GainAbilityTargetEffect would instead make the recipient controller draw. Generic owned delayed packets retain the original controller and do not grant a target ability."
+  },
+  "history_performance": "No history buffer in games without publicly present subtype guards. Only queried subtype memberships are frozen, never hidden card identity or whole ObjectViews. Actual declaration boundary records; put-attacking and later live characteristics cannot synthesize history. Rows clear after combat, after all end-combat priority and triggers have finished.",
+  "validation": {
+    "cargo": "Not run by author: root owns guarded integrated validation",
+    "target": "dft_trigger_facts_engine",
+    "scenario_count": 11
+  },
+  "outside_cluster": [
+    "Gonti face-down exile/play permissions",
+    "March static base power/type effects",
+    "Howler discard amount packet and ward",
+    "ordinary card definitions and admissions"
+  ]
+}

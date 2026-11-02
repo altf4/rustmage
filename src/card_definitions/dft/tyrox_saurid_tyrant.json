@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e99d52a44aed7f3a91f5f69442b17d1b7e85265c6fed1841f386b733cbbec389"
   },
-  "physical_metadata_sha256": "555f07bd6a5a56aa1e0bf0d123d5a0c1c0201694d32a19ceeaafae4d2cd00f07"
+  "physical_metadata_sha256": "555f07bd6a5a56aa1e0bf0d123d5a0c1c0201694d32a19ceeaafae4d2cd00f07",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TyroxSauridTyrant.java",
+  "java_sha256": "5776b59d6ccb518d92eab18e601eef79da41b541c03517aeb7a87f5dbd0760be",
+  "xmage_dependencies": [],
+  "has_rules_abilities": false
 }

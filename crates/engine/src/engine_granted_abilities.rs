@@ -29,7 +29,8 @@ impl Game {
                 !a.condition.is_granted()
                     && matches!(
                         a.condition.event(),
-                        TriggerCondition::ScryOrSurveil
+                        TriggerCondition::SelfCrewsOrSaddles
+                            | TriggerCondition::ScryOrSurveil
                             | TriggerCondition::Proliferated(_)
                             | TriggerCondition::PermanentCardsEnterYourGraveyard
                             | TriggerCondition::CreatureCardsEnterYourGraveyard

@@ -11,7 +11,14 @@ pub struct CombatDamagePlayerView {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct CombatRulesState {
     pub additional_combats: u64,
+    pub after_main: Option<MainPhaseCombatView>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Cold delayed packets use one pointer when absent"
+    )]
+    pub begin_combat_this_turn: Option<Box<Vec<SpellView>>>,
     pub must_be_blocked: Vec<ObjectRef>,
+    pub must_attack_this_combat: Vec<ObjectRef>,
     pub damaged_players: Vec<CombatDamagePlayerView>,
     excess: Option<ExcessDamage>,
 }
@@ -29,7 +36,15 @@ struct ExcessDamage {
 impl CombatRulesState {
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
-            + self.must_be_blocked.len() * std::mem::size_of::<ObjectRef>()
+            + self.begin_combat_this_turn.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<SpellView>>()
+                    + rows
+                        .iter()
+                        .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
+                        .sum::<usize>()
+            })
+            + (self.must_be_blocked.len() + self.must_attack_this_combat.len())
+                * std::mem::size_of::<ObjectRef>()
             + self.damaged_players.len() * std::mem::size_of::<CombatDamagePlayerView>()
     }
 }
@@ -399,7 +414,7 @@ impl Game {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
-    pub(super) fn x_symbols(&self) -> u32 {
+    pub(crate) fn x_symbols(&self) -> u32 {
         u32::try_from(
             self.program
                 .iter()
@@ -430,13 +445,14 @@ impl Announcement {
                         .card
                         .life_x_cost()
             }
-            StackKind::ActivatedAbility { ability } => self
-                .item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .activation(ability)
-                .has_x_cost(),
+            StackKind::ActivatedAbility { ability } => {
+                self.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card
+                    .activation_x_symbols(ability)
+                    > 0
+            }
             _ => false,
         }
     }

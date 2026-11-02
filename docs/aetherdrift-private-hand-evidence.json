@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "phase": "engine only; ordinary Oildeep definition unchanged",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/o/OildeepGearhulk.java",
+      "sha256": "84b96fba5b935e7db8e2116e63646d1d66061a80dfacb1512d352336eb82023e",
+      "read": "complete full printed card class and custom effect"
+    }
+  ],
+  "rule": "Look at target player hand privately. Choosing zero is legal even when empty. Choosing any exact card causes that player to attempt its discard, then draw one regardless of prevention/replacement, because the condition is the choice, not successful discard.",
+  "architecture": "Reuse owned HandInteraction and ChooseHandCard. New optional inspected_cards only appears for the authorized viewer; no public known_hand reveal. DiscardAfter::DrawFixed preserves the instruction order across suspended discard-to-battlefield entry choices.",
+  "tests": [
+    "private look and decline in both seats",
+    "land permitted, self/other target, source departure",
+    "empty hand keeps same optional phase",
+    "exile and prevention still draw for chosen card",
+    "wrong hand rejected with rollback; owned raw/index/restore/parent disposal",
+    "suspended replacement entry completes before fixed draw with owned life choice"
+  ],
+  "target": "tests/dft_private_hand.rs (6 scenarios)",
+  "remaining": "Ordinary card still needs correct ETB mandatory player target, printed lifelink/ward1, costs/statistics and provenance. Engine fixtures do not admit it."
+}

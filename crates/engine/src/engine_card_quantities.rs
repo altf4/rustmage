@@ -12,6 +12,13 @@ pub struct SourceCounterQuantityView {
 fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
     fn amount(value: AmountValue, kinds: &mut Vec<CounterKind>) {
         match value {
+            AmountValue::SourceTotalCounters => {
+                for kind in CounterKind::ALL {
+                    if !kinds.contains(&kind) {
+                        kinds.push(kind);
+                    }
+                }
+            }
             AmountValue::SourceCounterQuantity(kind) => {
                 if !kinds.contains(&kind) {
                     kinds.push(kind);
@@ -54,9 +61,12 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             }
             Instruction::UpToTargets(value)
             | Instruction::IfAmountAtLeast { value, .. }
+            | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
+            | Instruction::DestroyTargetsAtMostManaValue(value)
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }
+            | Instruction::SearchScaled { maximum: value, .. }
             | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
             | Instruction::SetCreatureForm { base: value, .. }
             | Instruction::MoveCountersFromSource { amount: value, .. }
@@ -69,12 +79,14 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::DamageScaled(value)
             | Instruction::AddColorlessScaled(value)
             | Instruction::AddManaScaled { amount: value, .. }
+            | Instruction::AddManaChosenScaled { amount: value, .. }
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
+            | Instruction::GrowFilteredScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
@@ -166,6 +178,13 @@ impl Game {
                     .activation_payment
                     .iter_mut()
                     .map(|p| &mut p.item),
+            )
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .iter_mut()
+                    .flat_map(|frames| frames.iter_mut())
+                    .map(|frame| &mut frame.announcement.item),
             )
         {
             if item

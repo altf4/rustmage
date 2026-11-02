@@ -1,0 +1,1415 @@
+{
+  "phase": "engine reentry; card authorship held",
+  "engine_revision": "3bb915ad0edb660a64b7ab53f4b949ac1644f530",
+  "card_branch_head": "39a02b347",
+  "remaining_identities": 62,
+  "confirmed_missing_dependencies": [
+    {
+      "id": "attached_permanent_untap",
+      "card": "Silken Strength",
+      "proof": [
+        "cards.rs has TapAttached and Untap/UntapSource/UntapEventObject but no UntapAttached/UntapSubject",
+        "engine_programs.rs zone trigger assigns entering_object to Aura; UntapEventObject therefore selects Aura, not enchanted permanent",
+        "Untap iterates targeted item.targets, empty for nontargeted SelfEnters; source_attachment cannot be addressed by that instruction"
+      ],
+      "reuse": "Mirror TapAttached through attached_permanent, which handles noncreature Vehicle and source current/LKI exact attachment; do not use attached_subject creature gate.",
+      "tests": [
+        "unanimated Vehicle untaps on Aura entry",
+        "Aura reattached before trigger resolves untaps current attachment",
+        "Aura departed uses last attachment; stale recipient incarnation does not untap",
+        "REACH before animation actual+funding is already proved by dft_static_types projected_aura_entry_accepts_the_same_noncreature_vehicle_as_actual_entry"
+      ]
+    },
+    {
+      "id": "signed_scaled_nonartifact_creature_group",
+      "card": "Winter, Cursed Rider",
+      "proof": [
+        "GrowCreaturesScaled can sample amount and multiply by-1 but CreatureFilter.artifact false means ANY, not nonartifact",
+        "excluding_subtype excludes a creature/land subtype, not artifact card type",
+        "GrowPermanentGroupScaled is symmetric positive-only; BattlefieldFilter has no excluded-kind predicate"
+      ],
+      "reuse": "CountFilter already supports kind1 exclude16 other:true relationAny. Extend a generic counted-group signed scaled growth operation rather than add name branches.",
+      "amount": "Use PaidAdditionalCostSelectionCount (declared X), not actual successful exile count. Replacement-modified exile costs remain paid under118.11.",
+      "tests": [
+        "both players nonartifact creatures shrink-X; artifact creatures and exact source are excluded",
+        "choose0 and2 artifactGY cards; prevent one exile but declaredX remains2",
+        "freeze affected exact recipients and quantity at resolution, preserve through type/control changes and cleanup",
+        "cost and owned/raw/index/restore contrasts"
+      ]
+    },
+    {
+      "id": "optional_simultaneous_hand_permanent_batch",
+      "card": "Redshift, Rocketeer Chief",
+      "proof": [
+        "PutHandPermanent.maximum is selected card MV, not count",
+        "start_hand_permanent passes amount1",
+        "complete_effect_choice handles HandPermanent using selected.first() and stage_entries(vec![movement]) even if generic ChooseObjects requested more"
+      ],
+      "reuse": "Private optional exact selection0..all permanent cards followed by one existing EntryMove batch. Reuse entry copies/exiles/Aura choices and successful result machinery; do not loop one-card entry.",
+      "tests": [
+        "decline0 and select2 different permanents; no moves/entry triggers until Finish",
+        "opponent cannot see private hand candidates or partial selections",
+        "mixed permanent card types; nonpermanent excluded; source controller hand only",
+        "simultaneous entrant interactions, replacement/prevention, ordinary entry triggers and Aura/as-entry copy eligibility",
+        "raw/index children survive parent drop and restore selection/resolution"
+      ]
+    }
+  ],
+  "preserved_partial_work": {
+    "stash": "72a522417be3fc19d15d07f63985ff5a68d9acef",
+    "name": "dft-green-spells-engine-reentry-wip",
+    "scope": "Seven partial independent spell/search definitions; provenance remains gated; no engine/shared/generated edits"
+  },
+  "silken_reach_audit": "No gap: AttachmentKeywords path uses world.attached including Aura kind-or-subtype union, no creature gate; dft_static_types already asserts unanimated Vehicle REACH in actual/projected worlds.",
+  "samut_composition": "Speed is bounded0..4. Four ConditionalCreatureModifier fragments in one printed static group implement exact live+speed/+0 to other controlled creatures, without new engine. A direct dynamic-group stat API would be optional simplification, not a missing legal rule.",
+  "full_primary_classes_and_reusables": "Full pinned main/reusable source bodies from the initial whole-set audit reused; Redshift/Winter/Silken complete primary+specific helpers reread for this reentry. No new engine/card authorship after pause.",
+  "reread_gap_helper_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAttachedEffect.java",
+      "sha256": "2fa3c394587eff1a4e2a1e1be58a4924f310b3375c714b839b672186dc8136f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileXFromYourGraveCost.java",
+      "sha256": "edc1df419657570d2142ea48c35cc10c1a8ea0dd2e2eda91c4c1575a80dde569"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+      "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/common/ActivatedAbilityManaBuilder.java",
+      "sha256": "5e3d352765c77caf9ff18b8b1738d63e867238acad62818d22d515ef364e7cb5"
+    }
+  ],
+  "cards": [
+    {
+      "name": "Aatchik, Emerald Radian",
+      "oracle_id": "405c4a7b-dbb3-48a1-9205-7dbe6e2ad363",
+      "oracle_facts_sha256": "6d77329883a011a251442cc7d51c03688e261c3141400a90fc09003b02f35a0d",
+      "oracle_body": "When Aatchik enters, create a 1/1 green Insect creature token for each artifact and/or creature card in your graveyard.\nWhenever another Insect you control dies, put a +1/+1 counter on Aatchik. Each opponent loses 1 life.",
+      "obligations": [
+        "When Aatchik enters, create a 1/1 green Insect creature token for each artifact and/or creature card in your graveyard.",
+        "Whenever another Insect you control dies, put a +1/+1 counter on Aatchik. Each opponent loses 1 life."
+      ],
+      "typed_bindings": [
+        "SelfEnters -> CreateTokensScaled(Card5249, CountFilter graveyard kind17 cards_only)",
+        "CreatureDies relationYou other:true subtypeInsect -> PutCounters Source1 + LoseLife Opponent1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/AatchikEmeraldRadian.java",
+        "sha256": "1190b2929818c38c17ebf58b1b2e916a3ac66cffc83c76dda9ce52b829ac20e4",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Apocalypse Runner",
+      "oracle_id": "0ca1f76d-ae77-490a-8b32-d30ad33afc2d",
+      "oracle_facts_sha256": "ebb90c4305c04dab3b8d24a57fede2fe3a2c6a800f738bd8d7f83effdb5e255b",
+      "oracle_body": "{T}: Target creature you control with power 2 or less gains lifelink until end of turn and can't be blocked this turn.\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "obligations": [
+        "{T}: Target creature you control with power 2 or less gains lifelink until end of turn and can't be blocked this turn.",
+        "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "typed_bindings": [
+        "TargetRule::Filtered controlled Creature + power<=2; GrantKeywords LIFELINK + UNBLOCKABLE",
+        "Crew3 + vehicle_stats"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/ApocalypseRunner.java",
+        "sha256": "ba854def6b52b4a359152e27c5fb671b9ce810539555ce77efd0b7d2e5ae80dd",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Beastrider Vanguard",
+      "oracle_id": "19a0d191-64c0-4e8a-8cb0-bf680cc681bb",
+      "oracle_facts_sha256": "a5dc502e8f3b4671700b0c389d03df2e8288b5d1792dea0ecb09a88491f92360",
+      "oracle_body": "{4}{G}: Look at the top three cards of your library. You may reveal a permanent card from among them and put it into your hand. Put the rest on the bottom of your library in any order.",
+      "obligations": [
+        "{4}{G}: Look at the top three cards of your library. You may reveal a permanent card from among them and put it into your hand. Put the rest on the bottom of your library in any order."
+      ],
+      "typed_bindings": [
+        "ActivatedAbility cost4G -> SelectLibrary look3 Fixed1 Kinds371 optional reveal BottomAny"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BeastriderVanguard.java",
+        "sha256": "091b4463c1e22a95bb1500e20de0f4c21e0af9ef96dcb5b2654574bf395ca402",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Bestow Greatness",
+      "oracle_id": "58a17110-b2a7-4dbc-bba5-5ed3728ad261",
+      "oracle_facts_sha256": "13d2f6b4258f1d2fbc428f5b059645b195fabe5c10d27b20e7c0677637abc572",
+      "oracle_body": "Target creature gets +4/+4 and gains trample until end of turn.",
+      "obligations": [
+        "Target creature gets +4/+4 and gains trample until end of turn."
+      ],
+      "typed_bindings": [
+        "Creature target -> Grow Targets4/4 + GrantKeywords TRAMPLE until cleanup"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BestowGreatness.java",
+        "sha256": "5f86fc1d5843dc1fce111a242ac13296ce96257efb561d3d70be8d89241534db",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Boosted Sloop",
+      "oracle_id": "cec10abd-2a2d-4d89-9ecc-ea50c2ac1538",
+      "oracle_facts_sha256": "a8e3b63a7d7b9431dce1eee34029f063e029ba94df67cbac51d00e62a5ec7889",
+      "oracle_body": "Menace\nWhenever you attack, draw a card, then discard a card.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "obligations": [
+        "Menace",
+        "Whenever you attack, draw a card, then discard a card.",
+        "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "typed_bindings": [
+        "MENACE; AttackDeclared minimum1 -> Draw1 then Discard1; Crew1 vehicle_stats"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BoostedSloop.java",
+        "sha256": "d320f5d8896aa7c73d42b571c37b4de75cccfc84477e638bbd75630e003e3990",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Brightglass Gearhulk",
+      "oracle_id": "0c7019a7-3cca-481a-9af0-abedb89c15ad",
+      "oracle_facts_sha256": "5423d0e27ec435d05cdf07de9f46ec7f7b52262e492d0b70294ba8e25746699a",
+      "oracle_body": "First strike, trample\nWhen this creature enters, you may search your library for up to two artifact, creature, and/or enchantment cards with mana value 1 or less, reveal them, put them into your hand, then shuffle.",
+      "obligations": [
+        "First strike, trample",
+        "When this creature enters, you may search your library for up to two artifact, creature, and/or enchantment cards with mana value 1 or less, reveal them, put them into your hand, then shuffle."
+      ],
+      "typed_bindings": [
+        "FIRST_STRIKE + TRAMPLE",
+        "SelfEnters -> May skip1 -> Search KindsManaValue kind49 MV0..1 maximum2 Hand reveal"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BrightglassGearhulk.java",
+        "sha256": "d85733576748d4422d63fdaa856cdba78f80586677dd3dbeaf5697f10b43b9cd",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Broadside Barrage",
+      "oracle_id": "dbf9feb3-0751-47bd-a8dc-ed1c076cf8c7",
+      "oracle_facts_sha256": "9e736c17b128a73b2286f9f6b4908b0e968e7719976b3f81734c97b16b491e57",
+      "oracle_body": "Broadside Barrage deals 5 damage to target creature or planeswalker. Draw a card, then discard a card.",
+      "obligations": [
+        "Broadside Barrage deals 5 damage to target creature or planeswalker. Draw a card, then discard a card."
+      ],
+      "typed_bindings": [
+        "TargetRule Object BF kinds65 -> Damage5, Draw1, Discard1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BroadsideBarrage.java",
+        "sha256": "73db04f9712c5c5519139f4f280ccc1420f2894ecc2c315004f1a63a14cbb64b",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Broken Wings",
+      "oracle_id": "5e316864-d55c-496f-8f46-773567896864",
+      "oracle_facts_sha256": "79b557a28dda8ec34dde026adc0b79d30620ce8a17e91433db3c58e3ab219b4a",
+      "oracle_body": "Destroy target artifact, enchantment, or creature with flying.",
+      "obligations": [
+        "Destroy target artifact, enchantment, or creature with flying."
+      ],
+      "typed_bindings": [
+        "Union artifact/enchantment Object kinds48 and Creature Filtered FLYING -> Destroy"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BrokenWings.java",
+        "sha256": "9c0d0d06af528f17e17895087cbc86ff185cec264b68be190753ae0a492f62f8",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Broodheart Engine",
+      "oracle_id": "1b759831-abe8-4996-a897-3c6d6d30a1c7",
+      "oracle_facts_sha256": "dc2bb8bd1427daee733fb53e4f5f478bd2991b370b6094796685d3b27ac26c65",
+      "oracle_body": "At the beginning of your upkeep, surveil 1.\n{2}{B}{G}, {T}, Sacrifice this artifact: Return target creature or Vehicle card from your graveyard to the battlefield. Activate only as a sorcery.",
+      "obligations": [
+        "At the beginning of your upkeep, surveil 1.",
+        "{2}{B}{G}, {T}, Sacrifice this artifact: Return target creature or Vehicle card from your graveyard to the battlefield. Activate only as a sorcery."
+      ],
+      "typed_bindings": [
+        "AtStep Upkeep relationYou -> Surveil1",
+        "Activated sorcery cost2BG tap sacrifice; ownGY Creature-or-Vehicle union -> ReturnToBattlefield"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BroodheartEngine.java",
+        "sha256": "afff87694e3977dae6b06005fa9658153a242638b99f1a36ab36e8e4b7044e67",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Captain Howler, Sea Scourge",
+      "oracle_id": "46c99d67-8307-4af0-afd0-377714806614",
+      "oracle_facts_sha256": "5fc2d5c1354102b2730bd2780a8c409ad87c1e85f239d2a763e17b1020a53559",
+      "oracle_body": "Ward\u2014{2}, Pay 2 life.\nWhenever you discard one or more cards, target creature gets +2/+0 until end of turn for each card discarded this way. Whenever that creature deals combat damage to a player this turn, you draw a card.",
+      "obligations": [
+        "Ward\u2014{2}, Pay 2 life.",
+        "Whenever you discard one or more cards, target creature gets +2/+0 until end of turn for each card discarded this way. Whenever that creature deals combat damage to a player this turn, you draw a card."
+      ],
+      "typed_bindings": [
+        "Ward -> CounterRelatedUnlessPayManaLife generic2 life2",
+        "Discarded one-or-more -> GrowScaled target power2 toughness0 AmountValue::DiscardEventAmount; DelayTargetEvent CombatDamageToPlayer Draw originalController1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CaptainHowlerSeaScourge.java",
+        "sha256": "e360a5de11eabd51c206912086d493766e30088fb321a4958816de605d6bc13f",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Caradora, Heart of Alacria",
+      "oracle_id": "a9d60d80-bcef-45e0-8ded-d70bd3c2780f",
+      "oracle_facts_sha256": "634fb435308defb63d7e63bbd7934dba7319a34dcdc4227c15fff7621d3d2beb",
+      "oracle_body": "When Caradora enters, you may search your library for a Mount or Vehicle card, reveal it, put it into your hand, then shuffle.\nIf one or more +1/+1 counters would be put on a creature or Vehicle you control, that many plus one +1/+1 counters are put on it instead.",
+      "obligations": [
+        "When Caradora enters, you may search your library for a Mount or Vehicle card, reveal it, put it into your hand, then shuffle.",
+        "If one or more +1/+1 counters would be put on a creature or Vehicle you control, that many plus one +1/+1 counters are put on it instead."
+      ],
+      "typed_bindings": [
+        "SelfEnters -> May + Search AnyOf subtypeMount/Vehicle maximum1 Hand reveal",
+        "ReplacementSpec::Counters filterCreatureOrVehicle factor1 add1 effects_only:false kindPlusOne"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CaradoraHeartOfAlacria.java",
+        "sha256": "055fe29793347a5f6fb81a1a338be7ff2ad10b02bb3c25f7f166f0fe09c7b599",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Cloudspire Coordinator",
+      "oracle_id": "65d8b481-ebe9-4029-98a8-dd4693340bff",
+      "oracle_facts_sha256": "de015a24ddef35ee04a34f494fbf3d0ee48e674ee08ec19f51965ba1af498891",
+      "oracle_body": "When this creature enters, scry 2.\n{T}: Create X 1/1 colorless Pilot creature tokens, where X is the number of Mounts and/or Vehicles that entered the battlefield under your control this turn. The tokens have \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
+      "obligations": [
+        "When this creature enters, scry 2.",
+        "{T}: Create X 1/1 colorless Pilot creature tokens, where X is the number of Mounts and/or Vehicles that entered the battlefield under your control this turn. The tokens have \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
+      ],
+      "typed_bindings": [
+        "SelfEnters -> Scry2",
+        "Tap activation -> CreateTokensScaled Card5422 AmountValue StatValue::MountOrVehicleEntriesThisTurn"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CloudspireCoordinator.java",
+        "sha256": "56adad5950dfd80905d1ac48b1a94868b3c5705b456d6eea852de5e876922b9b",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Cloudspire Skycycle",
+      "oracle_id": "f7467fce-61e4-401a-8a3d-b0a2bc347088",
+      "oracle_facts_sha256": "5a6538f7d6ebd9797931fa248a9c3ab48821b97c796558ba80fd3f3648bb9740",
+      "oracle_body": "Flying\nWhen this Vehicle enters, distribute two +1/+1 counters among one or two other target Vehicles and/or creatures you control.\nCrew 1",
+      "obligations": [
+        "Flying",
+        "When this Vehicle enters, distribute two +1/+1 counters among one or two other target Vehicles and/or creatures you control.",
+        "Crew 1"
+      ],
+      "typed_bindings": [
+        "FLYING; Crew1 vehicle_stats",
+        "SelfEnters optional1..2 other controlled creature/Vehicle union -> DistributeCounters total2 kindPlusOne"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CloudspireSkycycle.java",
+        "sha256": "36c4e9bfccaec757ba726a3a8480b0e820922b0b51b8dfcf09f522b5fa90c4af",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Coalstoke Gearhulk",
+      "oracle_id": "2cdbaa4e-8907-49dc-9fa9-0df70db3bf23",
+      "oracle_facts_sha256": "87db31853697cec56e087d3516a2e8605b01c03e8e94f99b5a1796930690c409",
+      "oracle_body": "Menace, deathtouch\nWhen this creature enters, put target creature card with mana value 4 or less from a graveyard onto the battlefield under your control with a finality counter on it. That creature gains menace, deathtouch, and haste. At the beginning of your next end step, exile that creature.",
+      "obligations": [
+        "Menace, deathtouch",
+        "When this creature enters, put target creature card with mana value 4 or less from a graveyard onto the battlefield under your control with a finality counter on it. That creature gains menace, deathtouch, and haste. At the beginning of your next end step, exile that creature."
+      ],
+      "typed_bindings": [
+        "MENACE + DEATHTOUCH",
+        "SelfEnters anyGY creature MV<=4 -> CaptureEntryResult, ReturnToBattlefieldWithCounter Finality, GrantEntryResultKeywords MENACE/DEATHTOUCH/HASTE permanent, ScheduleEntryResultExile own_end_step:true"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CoalstokeGearhulk.java",
+        "sha256": "14453ee6aaf01a4a507e64d90466c0ced79223bba60030a75b24855ed3272cbc",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Debris Beetle",
+      "oracle_id": "2b15d571-2f90-44f7-9153-20ed51253045",
+      "oracle_facts_sha256": "d6cab1abc3e58d7364f673c9f28415a6a5b9e2b932c3562c4c3d902d106da554",
+      "oracle_body": "Trample\nWhen this Vehicle enters, each opponent loses 3 life and you gain 3 life.\nCrew 2",
+      "obligations": [
+        "Trample",
+        "When this Vehicle enters, each opponent loses 3 life and you gain 3 life.",
+        "Crew 2"
+      ],
+      "typed_bindings": [
+        "TRAMPLE; SelfEnters -> LoseLife Opponent3 + GainLife Controller3; Crew2 vehicle_stats"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DebrisBeetle.java",
+        "sha256": "a0d1d5b9d91a6922218bd62a3135473034ae5a86d933ee768900dd4889e8cd21",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Defend the Rider",
+      "oracle_id": "561af57d-d43d-4d98-9ef6-18a0843f22ae",
+      "oracle_facts_sha256": "e8cbf0b99160cfcab79b0732769b58152fc414f604a53cd352f8bcb6815b0120",
+      "oracle_body": "Choose one \u2014\n\u2022 Target permanent you control gains hexproof and indestructible until end of turn.\n\u2022 Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
+      "obligations": [
+        "Choose one \u2014",
+        "\u2022 Target permanent you control gains hexproof and indestructible until end of turn.",
+        "\u2022 Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
+      ],
+      "typed_bindings": [
+        "Effect::Modal protection own permanent HEXPROOF/INDESTRUCTIBLE",
+        "Modal token Card5422 Pilot1/1 colorless CREW_SADDLE_PLUS_TWO"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DefendTheRider.java",
+        "sha256": "68992b2ba9491e0e16cd3b37dcd21b8ea698eec72919a97fba58304ca2bd2034",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Dredger's Insight",
+      "oracle_id": "3f21c1c6-7992-4036-ad3e-b599153e54fe",
+      "oracle_facts_sha256": "6a9d54f937863d80396a1c7c13e12a38145893c7c7482a5418627d15f3676fcc",
+      "oracle_body": "Whenever one or more artifact and/or creature cards leave your graveyard, you gain 1 life.\nWhen this enchantment enters, mill four cards. You may put an artifact, creature, or land card from among the milled cards into your hand. (To mill four cards, put the top four cards of your library into your graveyard.)",
+      "obligations": [
+        "Whenever one or more artifact and/or creature cards leave your graveyard, you gain 1 life.",
+        "When this enchantment enters, mill four cards. You may put an artifact, creature, or land card from among the milled cards into your hand. (To mill four cards, put the top four cards of your library into your graveyard.)"
+      ],
+      "typed_bindings": [
+        "CardsLeaveGraveyardKinds17 -> GainLife1",
+        "SelfEnters -> Mill Fixed4, SelectMilled Kinds19 Range0..1 Hand"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DredgersInsight.java",
+        "sha256": "b49a2f25d4c086cbba4aad2551c00cdf34e52d0c2490fb4a5d30373dc8f34e7b",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Dune Drifter",
+      "oracle_id": "b32649cb-bf5c-45fa-86f0-8bf4e8555f06",
+      "oracle_facts_sha256": "af7b7ab0c9584170065fb8608a168bc6bd6bfd3fe2ccad209e45e50c113d172a",
+      "oracle_body": "When this Vehicle enters, return target artifact or creature card with mana value X or less from your graveyard to the battlefield.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "obligations": [
+        "When this Vehicle enters, return target artifact or creature card with mana value X or less from your graveyard to the battlefield.",
+        "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "typed_bindings": [
+        "CardExtras.x_symbols1; SelfEnters owns event.x; ownGY artifact/creature union ManaValueAtMost ChosenX -> ReturnToBattlefield",
+        "Crew2 vehicle_stats3/3"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DuneDrifter.java",
+        "sha256": "8b78d95a33e7816c1c149ff819a05e716553ad2302cb993220d64153d5c76ab3",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Embalmed Ascendant",
+      "oracle_id": "2f4d7988-3f5b-45d7-9838-02897d7180be",
+      "oracle_facts_sha256": "00a7d0ea060570972efd257743c3aca31af5f07fbf49fbda9a654b8a33592bc0",
+      "oracle_body": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nWhen this creature enters, create a 2/2 black Zombie creature token.\nMax speed \u2014 Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life.",
+      "obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "When this creature enters, create a 2/2 black Zombie creature token.",
+        "Max speed \u2014 Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life."
+      ],
+      "typed_bindings": [
+        "StaticAbilityFragment::StartYourEngines",
+        "SelfEnters -> CreateTokens existing2/2 blackZombie recipe",
+        "TriggerCondition::When guard ControllerSpeed>=4 + CreatureDies relationYou -> LoseLife Opponent1 + GainLife Controller1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/e/EmbalmedAscendant.java",
+        "sha256": "5fccea9df2807d5a8b0ff316faa64258cef5e346c57cbd0de0aa5a4cb2c9712c",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Explosive Getaway",
+      "oracle_id": "c844cc98-b8b9-447d-92ee-64f4a4906e7c",
+      "oracle_facts_sha256": "568233bbc1a4a97d6e09c788fe6a23132323466bd976c4cdf9780b2b0fee0cfa",
+      "oracle_body": "Exile up to one target artifact or creature. Return it to the battlefield under its owner's control at the beginning of the next end step.\nExplosive Getaway deals 4 damage to each creature.",
+      "obligations": [
+        "Exile up to one target artifact or creature. Return it to the battlefield under its owner's control at the beginning of the next end step.",
+        "Explosive Getaway deals 4 damage to each creature."
+      ],
+      "typed_bindings": [
+        "UpTo1 artifact/creature target -> BlinkUntilEndStep under_owner:true",
+        "DamageCreatures filter all amount4"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/e/ExplosiveGetaway.java",
+        "sha256": "407e3ab957541865805276e95d0d94c7df033e652c8d556306dee6029c350a7c",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Fang-Druid Summoner",
+      "oracle_id": "1a9bfe76-6c74-4393-b04e-461422a29ddb",
+      "oracle_facts_sha256": "23ed7a177525840b47774603a4418f11c440a9394f29fdfb221648eda26a51be",
+      "oracle_body": "Reach\nWhen this creature enters, you may search your library and/or graveyard for a creature card with no abilities, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+      "obligations": [
+        "Reach",
+        "When this creature enters, you may search your library and/or graveyard for a creature card with no abilities, reveal it, and put it into your hand. If you search your library this way, shuffle."
+      ],
+      "typed_bindings": [
+        "REACH",
+        "SelfEnters -> SearchLibraryAndOrGraveyardToHand AllOf Creature NoAbilities"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/f/FangDruidSummoner.java",
+        "sha256": "708bac534ab03db985f8e9dd794c8ebd4e3906e1ddfa8991c8a95f0ed1534859",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Far Fortune, End Boss",
+      "oracle_id": "8b9734c1-7185-40f6-8582-9f87109e3a09",
+      "oracle_facts_sha256": "6e97ff26dc7ffeb2a569e1eeabffb1263d6d7f5679e7f88c543ef689fac94dd1",
+      "oracle_body": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nWhenever you attack, Far Fortune deals 1 damage to each opponent.\nMax speed \u2014 If a source you control would deal damage to an opponent or a permanent an opponent controls, it deals that much damage plus 1 instead.",
+      "obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Whenever you attack, Far Fortune deals 1 damage to each opponent.",
+        "Max speed \u2014 If a source you control would deal damage to an opponent or a permanent an opponent controls, it deals that much damage plus 1 instead."
+      ],
+      "typed_bindings": [
+        "StartYourEngines",
+        "AttackDeclared minimum1 -> DamagePlayers Opponent1",
+        "ReplacementSpec::ConditionalControlledDamageToOpponentPlus condition speed>=4 amount1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/f/FarFortuneEndBoss.java",
+        "sha256": "d77dacc999b3b1cac45fc336519815513f996f2887d92744ff263b787e65a51f",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Fearless Swashbuckler",
+      "oracle_id": "6a6cdb3e-c850-4b3c-bf4b-c53dd4eaf56e",
+      "oracle_facts_sha256": "ba07ec41f85d9ebef2b0b1082e9f59b20fca4e5f5d1366d8be20a1809cc89888",
+      "oracle_body": "Haste\nVehicles you control have haste.\nWhenever you attack, if a Pirate and a Vehicle attacked this combat, draw three cards, then discard two cards.",
+      "obligations": [
+        "Haste",
+        "Vehicles you control have haste.",
+        "Whenever you attack, if a Pirate and a Vehicle attacked this combat, draw three cards, then discard two cards."
+      ],
+      "typed_bindings": [
+        "HASTE; controlled Vehicle keyword grant HASTE",
+        "AttackDeclared guard DeclaredAttackSubtypesAll Pirate/Vehicle -> Draw3 Discard2"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/f/FearlessSwashbuckler.java",
+        "sha256": "cdd438528d1dbbe3b2a641f012ba45a3220bbab8cf96deccc57569a1ea6bcdd4",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Gastal Thrillseeker",
+      "oracle_id": "d185ad9f-c7fc-41f0-b852-4fe2cde0a8ae",
+      "oracle_facts_sha256": "bb97a5466910c0c0048c39ad1ca9c9283d98ea262f6477155d2b6c1f64fa811a",
+      "oracle_body": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nWhen this creature enters, it deals 1 damage to target opponent and you gain 1 life.\nMax speed \u2014 This creature has deathtouch and haste.",
+      "obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "When this creature enters, it deals 1 damage to target opponent and you gain 1 life.",
+        "Max speed \u2014 This creature has deathtouch and haste."
+      ],
+      "typed_bindings": [
+        "StartYourEngines",
+        "SelfEnters target Opponent -> Damage1 GainLife Controller1",
+        "SourceConditionalKeywords speed>=4 DEATHTOUCH/HASTE"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/g/GastalThrillseeker.java",
+        "sha256": "3e616ba01205fca74acb0c4da4a8d4fdc7e6cfa7431299be344b7996ccced091",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Guidelight Pathmaker",
+      "oracle_id": "f8103865-5086-4f16-a35a-a56acdab1547",
+      "oracle_facts_sha256": "fa99a9ccd3f1d040f5d904b8258c4fd61688ff8bffb68e84919ffef6028299f7",
+      "oracle_body": "Vigilance\nWhen this Vehicle enters, you may search your library for an artifact card and reveal it. Put it onto the battlefield if its mana value is 2 or less. Otherwise, put it into your hand. If you search your library this way, shuffle.\nCrew 2",
+      "obligations": [
+        "Vigilance",
+        "When this Vehicle enters, you may search your library for an artifact card and reveal it. Put it onto the battlefield if its mana value is 2 or less. Otherwise, put it into your hand. If you search your library this way, shuffle.",
+        "Crew 2"
+      ],
+      "typed_bindings": [
+        "VIGILANCE; Crew2 vehicle_stats",
+        "SelfEnters May + Search Artifact maximum1 BattlefieldIfManaValueAtMostElseHand2 reveal"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/g/GuidelightPathmaker.java",
+        "sha256": "b6fbfb2c101c75f75f5111fb7d169716e8956d345165a7c84be4fabfa2727755",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Haunt the Network",
+      "oracle_id": "7e074b14-0ec8-439b-9b83-5f7c1a904384",
+      "oracle_facts_sha256": "f921577c9cafee89e4c1871395cac56dd40f8fdae337ecfab0068ad7ed05df11",
+      "oracle_body": "Choose target opponent. Create two 1/1 colorless Thopter artifact creature tokens with flying. Then the chosen player loses X life and you gain X life, where X is the number of artifacts you control.",
+      "obligations": [
+        "Choose target opponent. Create two 1/1 colorless Thopter artifact creature tokens with flying. Then the chosen player loses X life and you gain X life, where X is the number of artifacts you control."
+      ],
+      "typed_bindings": [
+        "Opponent target; CreateTokens Card5266 amount2; DrainLifeScaled CountFilter ownBF artifact after token creation"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HauntTheNetwork.java",
+        "sha256": "807e635181491e075b6f9d33456569fadae375a0413c0232c0f899eda6d763f8",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Haunted Hellride",
+      "oracle_id": "47944bf1-b954-4143-b479-45c10071e35a",
+      "oracle_facts_sha256": "7b2fca4a367b0988238e48e871f3216dc6810bc4abd8a4de5a3a1e6a8d5a8a2a",
+      "oracle_body": "Whenever you attack, target creature you control gets +1/+0 and gains deathtouch until end of turn. Untap it.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "obligations": [
+        "Whenever you attack, target creature you control gets +1/+0 and gains deathtouch until end of turn. Untap it.",
+        "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "typed_bindings": [
+        "AttackDeclared minimum1 own Creature target -> Grow1/0, GrantKeywords DEATHTOUCH, Untap",
+        "Crew1 vehicle_stats"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HauntedHellride.java",
+        "sha256": "ba965ba511afafb390179fc3bd6c989e31622b150f7b1d236edf2a048e589c55",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Hazard of the Dunes",
+      "oracle_id": "799664fc-279c-40c1-8e40-44a68c38801b",
+      "oracle_facts_sha256": "bfbc338f065a0126e86909c5be34e035d13ecb05509d86f50dd4c77a5a6b7036",
+      "oracle_body": "Reach, trample\nExhaust \u2014 {6}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+      "obligations": [
+        "Reach, trample",
+        "Exhaust \u2014 {6}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
+      ],
+      "typed_bindings": [
+        "REACH/TRAMPLE",
+        "Exhaust cost6G -> PutCounters Source PlusOne3; exhaust_mask1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HazardOfTheDunes.java",
+        "sha256": "5fc327ac9fb945947748d96b69319764a0ff878c9a71efa710f8339885e702aa",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Ketramose, the New Dawn",
+      "oracle_id": "de41ad94-b9d7-4c2b-bfa6-394d18737228",
+      "oracle_facts_sha256": "9153c395ea3df03521a3d443f5b04e4dac3c703163f32cc4e87add1e2b0d9302",
+      "oracle_body": "Menace, lifelink, indestructible\nKetramose can't attack or block unless there are seven or more cards in exile.\nWhenever one or more cards are put into exile from graveyards and/or the battlefield during your turn, you draw a card and lose 1 life.",
+      "obligations": [
+        "Menace, lifelink, indestructible",
+        "Ketramose can't attack or block unless there are seven or more cards in exile.",
+        "Whenever one or more cards are put into exile from graveyards and/or the battlefield during your turn, you draw a card and lose 1 life."
+      ],
+      "typed_bindings": [
+        "MENACE/LIFELINK/INDESTRUCTIBLE",
+        "CombatRestriction attack/block unless CountFilter Exile allPlayers cards_only>=7",
+        "When YourTurn CardsExiledFromBattlefieldOrGraveyard -> Draw1 LoseLife Controller1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/k/KetramoseTheNewDawn.java",
+        "sha256": "9003ba35e2b5f18ec53dd5f7f53aae3808f81e72111f6dfccf86378b7cae7abc",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Kolodin, Triumph Caster",
+      "oracle_id": "45682055-d02a-450c-a41d-aa67162ff015",
+      "oracle_facts_sha256": "32f189c01b0af050e2e96d4e1f87904ba6f69a419296b82d48433735d1691923",
+      "oracle_body": "Mounts and Vehicles you control have haste.\nWhenever a Mount you control enters, it becomes saddled until end of turn.\nWhenever a Vehicle you control enters, it becomes an artifact creature until end of turn.",
+      "obligations": [
+        "Mounts and Vehicles you control have haste.",
+        "Whenever a Mount you control enters, it becomes saddled until end of turn.",
+        "Whenever a Vehicle you control enters, it becomes an artifact creature until end of turn."
+      ],
+      "typed_bindings": [
+        "ControlledSubtypeKeywords Mount/Vehicle HASTE",
+        "PermanentEntersYou Mount include_source:true -> MarkSaddled Entering",
+        "PermanentEntersYou Vehicle include_source:true -> AnimateSubject Entering EndOfTurn artifact addCreature"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/k/KolodinTriumphCaster.java",
+        "sha256": "a803712d619f0e57b0e0905a1738550eb7c9131bc30ac1ebb3d6f7f1ff1a0d22",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Lagorin, Soul of Alacria",
+      "oracle_id": "f7b6f5d4-b122-4ab4-a2c2-449ac781359a",
+      "oracle_facts_sha256": "821e451e79dc47e0055a42c0de7c21b1b33a62f110f651d2cd13d76e141af0ac",
+      "oracle_body": "Flying\nWhenever Lagorin attacks while saddled, put a +1/+1 counter on each of up to two target Mounts and/or Vehicles.\nSaddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+      "obligations": [
+        "Flying",
+        "Whenever Lagorin attacks while saddled, put a +1/+1 counter on each of up to two target Mounts and/or Vehicles.",
+        "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
+      ],
+      "typed_bindings": [
+        "FLYING; Saddle1",
+        "SelfAttacksWhileSaddled upTo2 Mount/Vehicle anyController -> PutCounters Targets PlusOne1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LagorinSoulOfAlacria.java",
+        "sha256": "e0b90f3af22445a34f7c931496c91234f05783edfa5e252b3ee3956b33eee646",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Loot, the Pathfinder",
+      "oracle_id": "68c7e459-0932-4644-a3c0-9a1eae1db7a3",
+      "oracle_facts_sha256": "b8bd5375d90aeeed53762ed169e3eff99d5130b5c9d28513d1f97bc90be7e040",
+      "oracle_body": "Double strike, vigilance, haste\nExhaust \u2014 {G}, {T}: Add three mana of any one color. (Activate each exhaust ability only once.)\nExhaust \u2014 {U}, {T}: Draw three cards.\nExhaust \u2014 {R}, {T}: Loot deals 3 damage to any target.",
+      "obligations": [
+        "Double strike, vigilance, haste",
+        "Exhaust \u2014 {G}, {T}: Add three mana of any one color. (Activate each exhaust ability only once.)",
+        "Exhaust \u2014 {U}, {T}: Draw three cards.",
+        "Exhaust \u2014 {R}, {T}: Loot deals 3 damage to any target."
+      ],
+      "typed_bindings": [
+        "DOUBLE_STRIKE/VIGILANCE/HASTE",
+        "Exhaust G tap -> AddMana Choice31 amount3; Exhaust U tap -> Draw3; Exhaust R tap Any target -> Damage3; exhaust_mask7"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LootThePathfinder.java",
+        "sha256": "b8113c794c218b10bc59810b3ed7167b751ae9c8a97e9b1feec966972fca07b7",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Loxodon Surveyor",
+      "oracle_id": "970f26d4-c916-444a-a2d2-4c1f5bb5556b",
+      "oracle_facts_sha256": "bbab4bb4b699ef5ee5a0e8e8a454fe839f7fcb7e6311d93974ab5e23243a26ae",
+      "oracle_body": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 {3}, Exile this card from your graveyard: Draw a card.",
+      "obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card."
+      ],
+      "typed_bindings": [
+        "StartYourEngines",
+        "SourceMaxSpeedActivation0; GY activation generic3 exile_self -> Draw1, exact owner/controller grant machinery"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LoxodonSurveyor.java",
+        "sha256": "a035f724cdc09d30e009edb4cfa0716c4a7e9b0db5eeea4f30a2f9a9cd7a8a65",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Lumbering Worldwagon",
+      "oracle_id": "7e60a641-1f2d-45ff-b3f2-d389be938b22",
+      "oracle_facts_sha256": "8f63c415bb3cd9b7edb85165a02adc64a447ccfdeea9470315f443830a848189",
+      "oracle_body": "This Vehicle's power is equal to the number of lands you control.\nWhenever this Vehicle enters or attacks, you may search your library for a basic land card, put it onto the battlefield tapped, then shuffle.\nCrew 4",
+      "obligations": [
+        "This Vehicle's power is equal to the number of lands you control.",
+        "Whenever this Vehicle enters or attacks, you may search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+        "Crew 4"
+      ],
+      "typed_bindings": [
+        "DynamicStats power CountFilter ownBF Lands + fixed Vehicle toughness4",
+        "SelfEntersOrAttacks -> May + Search BasicLand maximum1 Battlefield tapped",
+        "Crew4"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LumberingWorldwagon.java",
+        "sha256": "446ed88a577071e045f6d2cd706719b4867924f4911f2ca73a4faaf4f167cab6",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "March of the World Ooze",
+      "oracle_id": "a04696c4-4138-47e2-8da4-81d61748519f",
+      "oracle_facts_sha256": "5c59733d6090fd40b178f4616f290e095cb6129f49ae08388fab81e8800ac499",
+      "oracle_body": "Creatures you control have base power and toughness 6/6 and are Oozes in addition to their other types.\nWhenever an opponent casts a spell, if it's not their turn, you create a 3/3 green Elephant creature token.",
+      "obligations": [
+        "Creatures you control have base power and toughness 6/6 and are Oozes in addition to their other types.",
+        "Whenever an opponent casts a spell, if it's not their turn, you create a 3/3 green Elephant creature token."
+      ],
+      "typed_bindings": [
+        "ControlledCreatureSubtype NamedOoze; LiveBase recipients ownCreatures Fixed6/6",
+        "SpellCast relationOpponent filter CasterOffTurn -> CreateTokens Card5301 Elephant3/3"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MarchOfTheWorldOoze.java",
+        "sha256": "a0a87713b50413cdaedca465346de6d3ff197e872ad90fdd0702c6d6e78d1fde",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Mendicant Core, Guidelight",
+      "oracle_id": "b20d74a4-0e08-4779-972a-499f1a2be15a",
+      "oracle_facts_sha256": "d2503d271839f5d811d524f9281df43bb2d3595968e5ea4aeba94e911ed210a3",
+      "oracle_body": "Mendicant Core's power is equal to the number of artifacts you control.\nStart your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 Whenever you cast an artifact spell, you may pay {1}. If you do, copy it. (The copy becomes a token.)",
+      "obligations": [
+        "Mendicant Core's power is equal to the number of artifacts you control.",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 Whenever you cast an artifact spell, you may pay {1}. If you do, copy it. (The copy becomes a token.)"
+      ],
+      "typed_bindings": [
+        "DynamicStats power CountFilter ownBF artifact; StartYourEngines",
+        "When speed>=4 SpellCast artifact relationYou -> MayPayMana generic1 + CopyCastSpell prior_spells:false"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MendicantCoreGuidelight.java",
+        "sha256": "c7cfbe7bdb7011e5639048d1c4f1506df656677c5f7ef9716403f35a1cc2e88f",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Mimeoplasm, Revered One",
+      "oracle_id": "2b8c2882-dbca-466a-a0af-dd1d65edfe7c",
+      "oracle_facts_sha256": "65b685245135ea62816cb0aee59d2f3e29af47a2feb8aeea624317929c012318",
+      "oracle_body": "As Mimeoplasm enters, exile up to X creature cards from your graveyard. It enters with three +1/+1 counters on it for each creature card exiled this way.\n{2}: Mimeoplasm becomes a copy of target creature card exiled with it, except it's 0/0 and has this ability.",
+      "obligations": [
+        "As Mimeoplasm enters, exile up to X creature cards from your graveyard. It enters with three +1/+1 counters on it for each creature card exiled this way.",
+        "{2}: Mimeoplasm becomes a copy of target creature card exiled with it, except it's 0/0 and has this ability."
+      ],
+      "typed_bindings": [
+        "CardExtras.x_symbols1 + entry_exile_counters Creature PlusOne per_card3",
+        "Activated cost2 target LinkedExileCreature -> CopySourceFromLinkedExile base0/0; retained immutable activation/original link acquisition supported"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MimeoplasmReveredOne.java",
+        "sha256": "bf649223c521a37bdce2d9029688214736044ab965a3b7a1e5e8f31fd27d9062",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Molt Tender",
+      "oracle_id": "9a39ca64-e1a9-42ef-8efd-6aa3edde3d93",
+      "oracle_facts_sha256": "9e604cfb72d5e84f33bb0238b37b507e46cbb6827554649c0238111a6891ce44",
+      "oracle_body": "{T}: Mill a card. (Put the top card of your library into your graveyard.)\n{T}, Exile a card from your graveyard: Add one mana of any color.",
+      "obligations": [
+        "{T}: Mill a card. (Put the top card of your library into your graveyard.)",
+        "{T}, Exile a card from your graveyard: Add one mana of any color."
+      ],
+      "typed_bindings": [
+        "Tap -> Mill Fixed1",
+        "Tap + ExileGraveyard anyCard additional cost -> AddMana Choice31 amount1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MoltTender.java",
+        "sha256": "8198b9817ba9622ecb581a276582592f4334b85386096c72ad018aabebbf2aac",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Oildeep Gearhulk",
+      "oracle_id": "aff0740f-51d5-41c7-ac13-97c298cfd743",
+      "oracle_facts_sha256": "1659fb88cb9078b409db85b98375cc936c3e667da390f8c275b103390a72b774",
+      "oracle_body": "Lifelink, ward {1}\nWhen this creature enters, look at target player's hand. You may choose a card from it. If you do, that player discards that card, then draws a card.",
+      "obligations": [
+        "Lifelink, ward {1}",
+        "When this creature enters, look at target player's hand. You may choose a card from it. If you do, that player discards that card, then draws a card."
+      ],
+      "typed_bindings": [
+        "LIFELINK; Ward -> CounterUnlessPay generic1",
+        "SelfEnters target Player -> LookTargetHandMayDiscardThenDraw"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/o/OildeepGearhulk.java",
+        "sha256": "84b96fba5b935e7db8e2116e63646d1d66061a80dfacb1512d352336eb82023e",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Oviya, Automech Artisan",
+      "oracle_id": "b01649b8-b0b5-4cf6-aea7-291f3407859e",
+      "oracle_facts_sha256": "9f090aed37b8221c145ee4c2b9f8465a6a7a45c59c35dce8ad57e267423971e2",
+      "oracle_body": "Each creature that's attacking one of your opponents has trample.\n{G}, {T}: You may put a creature or Vehicle card from your hand onto the battlefield. If you put an artifact onto the battlefield this way, put two +1/+1 counters on it.",
+      "obligations": [
+        "Each creature that's attacking one of your opponents has trample.",
+        "{G}, {T}: You may put a creature or Vehicle card from your hand onto the battlefield. If you put an artifact onto the battlefield this way, put two +1/+1 counters on it."
+      ],
+      "typed_bindings": [
+        "OpponentPlayerAttackerKeywords TRAMPLE",
+        "G tap -> CaptureEntryResult + PutHandFiltered AnyOf Creature/SubtypeVehicle + PutEntryResultCountersIfKinds artifact16 PlusOne2"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/o/OviyaAutomechArtisan.java",
+        "sha256": "99f4ea95bf78ced36cf6f477cf4f42abe55fe32a268a5f080ee87dfdaf0608da",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Plow Through",
+      "oracle_id": "a5492d28-b1bf-408d-a048-8f200158d6b1",
+      "oracle_facts_sha256": "67d7b7cb809b7ae79ee7ac5afdc2961b7542fb535105c8536321def8ec5c5361",
+      "oracle_body": "Choose one \u2014\n\u2022 Target creature you control fights target creature an opponent controls. (Each deals damage equal to its power to the other.)\n\u2022 Destroy target Vehicle.",
+      "obligations": [
+        "Choose one \u2014",
+        "\u2022 Target creature you control fights target creature an opponent controls. (Each deals damage equal to its power to the other.)",
+        "\u2022 Destroy target Vehicle."
+      ],
+      "typed_bindings": [
+        "Effect::Modal own/opposing Creature grouped targets -> Fight source0 recipient1",
+        "Modal any Vehicle target -> Destroy"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/p/PlowThrough.java",
+        "sha256": "2503e88e88e5930fd57b27ade233e5782be326139146515e32069cd95311d519",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Point the Way",
+      "oracle_id": "0ffe9c8b-e0cb-4a29-bc14-649dbec5d1f3",
+      "oracle_facts_sha256": "12b7aa1b365b055f1ad5f1193152a850c1481177e84f465e7aeca5e0e9f59298",
+      "oracle_body": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{3}{G}, Sacrifice this enchantment: Search your library for up to X basic land cards, where X is your speed. Put those cards onto the battlefield tapped, then shuffle.",
+      "obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{3}{G}, Sacrifice this enchantment: Search your library for up to X basic land cards, where X is your speed. Put those cards onto the battlefield tapped, then shuffle."
+      ],
+      "typed_bindings": [
+        "StartYourEngines",
+        "3G sacrifice source -> SearchScaled BasicLand tapped Battlefield maximum StatValue::ControllerSpeed"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/p/PointTheWay.java",
+        "sha256": "98b5a859e76c5d996a8d715687d614ec2c62fb57dde27a9225ed2e6bb8dc1a9a",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Pothole Mole",
+      "oracle_id": "8a8bc537-b69f-441d-a10e-d7f17f2f75bb",
+      "oracle_facts_sha256": "b7ab134bc7ae09f3d4421824cec75d49534247f4bf5a0952bd138aef1067249d",
+      "oracle_body": "When this creature enters, mill three cards, then you may return a land card from your graveyard to your hand. (To mill three cards, put the top three cards of your library into your graveyard.)",
+      "obligations": [
+        "When this creature enters, mill three cards, then you may return a land card from your graveyard to your hand. (To mill three cards, put the top three cards of your library into your graveyard.)"
+      ],
+      "typed_bindings": [
+        "SelfEnters -> Mill Fixed3, CollectGraveyard, SelectMilled Kinds2 Range0..1 Hand"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/p/PotholeMole.java",
+        "sha256": "ad0f4d576e4afafb8009bbc0f46d6ca31c01a9fc771dd65991215beb212ab8af",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Pyrewood Gearhulk",
+      "oracle_id": "c4c6083a-b0b5-4c6b-9f11-9f4fe38417c2",
+      "oracle_facts_sha256": "41d6b7734bd0357a1cdbeef3cd0bb109df91b3349d6ad4db67bcdfd266141ddf",
+      "oracle_body": "Vigilance, menace\nWhen this creature enters, other creatures you control get +2/+2 and gain vigilance and menace until end of turn. Damage can't be prevented this turn.",
+      "obligations": [
+        "Vigilance, menace",
+        "When this creature enters, other creatures you control get +2/+2 and gain vigilance and menace until end of turn. Damage can't be prevented this turn."
+      ],
+      "typed_bindings": [
+        "VIGILANCE/MENACE",
+        "SelfEnters -> GrowCreatures own other:true2/2; GrantCreatures same VIGILANCE/MENACE; DamageCannotBePreventedThisTurn"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/p/PyrewoodGearhulk.java",
+        "sha256": "d1395e90f5b366afa081d035eaf8a141d4862c2cf7d449a0c40530082d8a3195",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Redshift, Rocketeer Chief",
+      "oracle_id": "582c7e54-d64c-4ffb-ae5f-d2752b3ed10b",
+      "oracle_facts_sha256": "a567c00c783bdc02674feb29cc9b14e18dd65b825925666cccfb81236a5f4c3e",
+      "oracle_body": "Vigilance\n{T}: Add X mana of any one color, where X is Redshift's power. Spend this mana only to activate abilities.\nExhaust \u2014 {10}{R}{G}: Put any number of permanent cards from your hand onto the battlefield. (Activate each exhaust ability only once.)",
+      "obligations": [
+        "Vigilance",
+        "{T}: Add X mana of any one color, where X is Redshift's power. Spend this mana only to activate abilities.",
+        "Exhaust \u2014 {10}{R}{G}: Put any number of permanent cards from your hand onto the battlefield. (Activate each exhaust ability only once.)"
+      ],
+      "typed_bindings": [
+        "VIGILANCE; TapSourcePowerChoice mask31 tagged ManaRestriction::AbilityActivation",
+        "BLOCKED: no existing any-number simultaneous hand-permanent entry instruction"
+      ],
+      "status": "blocked",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RedshiftRocketeerChief.java",
+        "sha256": "944137d0116de9bbcbc5704ee417fc1af43634bb001336dd5717dc371c4004af",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Regal Imperiosaur",
+      "oracle_id": "83a76601-ef59-4888-af70-5088dd1f504c",
+      "oracle_facts_sha256": "07ad80bab34407a84dcfcb4e45643c41a01e64fbd0dd91d8297c9d68863033dd",
+      "oracle_body": "Other Dinosaurs you control get +1/+1.",
+      "obligations": [
+        "Other Dinosaurs you control get +1/+1."
+      ],
+      "typed_bindings": [
+        "StaticModifier own other:true subtypeDinosaur stats1/1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RegalImperiosaur.java",
+        "sha256": "a935f4fe260a9a2175d7caa2098173a92ddfbd78e1e252a5a4649551479cf645",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Riptide Gearhulk",
+      "oracle_id": "f3838ff1-5403-4f3f-8531-36029c13fcfc",
+      "oracle_facts_sha256": "3b3ea07d3591d8c26dcaf0af432422493e4311325f05cf93fd95de625ba0e5fb",
+      "oracle_body": "Double strike\nProwess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nWhen this creature enters, for each opponent, put up to one target nonland permanent that player controls into its owner's library third from the top.",
+      "obligations": [
+        "Double strike",
+        "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+        "When this creature enters, for each opponent, put up to one target nonland permanent that player controls into its owner's library third from the top."
+      ],
+      "typed_bindings": [
+        "DOUBLE_STRIKE; SpellCast noncreature relationYou -> Grow Source1/1 (prowess)",
+        "SelfEnters upTo1 opponent nonland permanent -> OwnerLibraryNthFromTop3"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RiptideGearhulk.java",
+        "sha256": "d668cd70f6f5a308cd797f4aa15902e4c1db7b0a7efcf19c3b9a8fcbd239030f",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Rise from the Wreck",
+      "oracle_id": "8eeb83b4-dca1-497e-a6b7-0485807aeef3",
+      "oracle_facts_sha256": "77134a0442588b137b61dd1180e6a8475d4c76968a9727185dc097eb1c75e814",
+      "oracle_body": "Return up to one target creature card, up to one target Mount card, up to one target Vehicle card, and up to one target creature card with no abilities from your graveyard to your hand.",
+      "obligations": [
+        "Return up to one target creature card, up to one target Mount card, up to one target Vehicle card, and up to one target creature card with no abilities from your graveyard to your hand."
+      ],
+      "typed_bindings": [
+        "Four optional independent TargetPlan groups ownGY Creature, subtypeMount, subtypeVehicle, Creature+NoAbilities -> ReturnAllTargetsToHand; duplicate identities across groups allowed by bound.group check"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RiseFromTheWreck.java",
+        "sha256": "056062b2ce18abb85a9aa741078ff4dbaee41cfc092f49b4de9f5c19d6137862",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Run Over",
+      "oracle_id": "2b1bec38-5aaf-4ca0-9a04-fb4367c59c1e",
+      "oracle_facts_sha256": "4f6ae0aab5ed2245859a42aa03bd95488b59c16bb42543f1a56be6a4bff87b7a",
+      "oracle_body": "This spell costs {1} less to cast if it targets a Mount or Vehicle you control.\nTarget creature you control deals damage equal to its power to target creature an opponent controls.",
+      "obligations": [
+        "This spell costs {1} less to cast if it targets a Mount or Vehicle you control.",
+        "Target creature you control deals damage equal to its power to target creature an opponent controls."
+      ],
+      "typed_bindings": [
+        "TargetCostReduction own Mount-or-Vehicle generic1",
+        "Own/opposing Creature groups -> PowerDamage source0 recipient1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RunOver.java",
+        "sha256": "787b69d64b916eda40ebee90211bf895aba9ba89e2a73ac8be4382063261cc5b",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Sab-Sunen, Luxa Embodied",
+      "oracle_id": "07e15387-f346-4fa0-b556-d1c52d4acc07",
+      "oracle_facts_sha256": "6b9c67463c857bd0061e7d7e621e3a0c2565b6466b7bd636ecb824472c421745",
+      "oracle_body": "Reach, trample, indestructible\nSab-Sunen can't attack or block unless it has an even number of counters on it. (Zero is even.)\nAt the beginning of your first main phase, put a +1/+1 counter on Sab-Sunen. Then if it has an odd number of counters on it, draw two cards.",
+      "obligations": [
+        "Reach, trample, indestructible",
+        "Sab-Sunen can't attack or block unless it has an even number of counters on it. (Zero is even.)",
+        "At the beginning of your first main phase, put a +1/+1 counter on Sab-Sunen. Then if it has an odd number of counters on it, draw two cards."
+      ],
+      "typed_bindings": [
+        "REACH/TRAMPLE/INDESTRUCTIBLE",
+        "CombatRestriction unless Parity SourceTotalCounters even",
+        "AtStep Main1 own -> PutCounters Source1, IfAmountParity SourceTotalCounters odd, Draw2"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SabSunenLuxaEmbodied.java",
+        "sha256": "06011d385238a444bf547b6e506e87b4c72e176093d57a0e655855c3b8046075",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Samut, the Driving Force",
+      "oracle_id": "ee89c719-5ae8-4316-bfd0-cfe3684b5859",
+      "oracle_facts_sha256": "fbe5653dd80e783c082bfcca8ec0ab663850eec4cc1e572a9e2c0775e5b4c270",
+      "oracle_body": "First strike, vigilance, haste\nStart your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nOther creatures you control get +X/+0, where X is your speed.\nNoncreature spells you cast cost {X} less to cast, where X is your speed.",
+      "obligations": [
+        "First strike, vigilance, haste",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Other creatures you control get +X/+0, where X is your speed.",
+        "Noncreature spells you cast cost {X} less to cast, where X is your speed."
+      ],
+      "typed_bindings": [
+        "FIRST_STRIKE/VIGILANCE/HASTE; StartYourEngines",
+        "Faithful bounded composition: one printed group with four ConditionalCreatureModifier fragments at speed>=1/2/3/4, each own other:true +1/+0",
+        "CostReduction noncreature source_only:false amount SpellReductionAmount::Stat ControllerSpeed factor1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SamutTheDrivingForce.java",
+        "sha256": "a68d294df4de2b5268ab80cf4302fce947bd64e231a42ed3830b7dfd69be9fe0",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Silken Strength",
+      "oracle_id": "53a59ba9-f4e9-460b-928a-ce6d7ae883f7",
+      "oracle_facts_sha256": "08de9fdc3894d80de44340cd98636ce33a7c569d7d73ec98f62d51974a27175c",
+      "oracle_body": "Flash\nEnchant creature or Vehicle\nWhen this Aura enters, untap enchanted permanent.\nEnchanted permanent gets +1/+2 and has reach.",
+      "obligations": [
+        "Flash",
+        "Enchant creature or Vehicle",
+        "When this Aura enters, untap enchanted permanent.",
+        "Enchanted permanent gets +1/+2 and has reach."
+      ],
+      "typed_bindings": [
+        "FLASH; AuraSpec creature kinds1 + aura_kind_or_subtype Vehicle; AttachmentStats1/2 + AttachmentKeywords REACH",
+        "BLOCKED: no nontargeted attached-permanent untap instruction"
+      ],
+      "status": "blocked",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SilkenStrength.java",
+        "sha256": "196c64b5684f9f673782932d4ae1d8e76ed19edece4993353274aca634fe3916",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Sita Varma, Masked Racer",
+      "oracle_id": "3b9bc41a-a43f-4be7-9452-f61f5ad5b482",
+      "oracle_facts_sha256": "1e8367227aa210605d755d1ace7fb36012b3c4e5ade06427348101756bd6aeee",
+      "oracle_body": "Exhaust \u2014 {X}{G}{G}{U}: Put X +1/+1 counters on Sita Varma. Then you may have the base power and toughness of each other creature you control become equal to Sita Varma's power until end of turn. (Activate each exhaust ability only once.)",
+      "obligations": [
+        "Exhaust \u2014 {X}{G}{G}{U}: Put X +1/+1 counters on Sita Varma. Then you may have the base power and toughness of each other creature you control become equal to Sita Varma's power until end of turn. (Activate each exhaust ability only once.)"
+      ],
+      "typed_bindings": [
+        "Exhaust XGGU ActivationX + PutCountersScaled ChosenX",
+        "May -> SetPermanentGroupBaseStats ownCreatures exclude_source:true power/toughness ResolvedStatValue::SourcePower"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SitaVarmaMaskedRacer.java",
+        "sha256": "3f4a435c77560048377ba61c9b39d0b8f2119d827d2d43c724470a2d9e8c4f80",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Skyserpent Seeker",
+      "oracle_id": "5da8b86a-a7be-4fb5-9a45-a47d5cb4b372",
+      "oracle_facts_sha256": "927b0961dd5c7b602bfeb53989db2b187e81f7561cef0f386ae4a9e6107cb740",
+      "oracle_body": "Flying, deathtouch\nExhaust \u2014 {4}: Reveal cards from the top of your library until you reveal two land cards. Put those land cards onto the battlefield tapped and the rest on the bottom of your library in a random order. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)",
+      "obligations": [
+        "Flying, deathtouch",
+        "Exhaust \u2014 {4}: Reveal cards from the top of your library until you reveal two land cards. Put those land cards onto the battlefield tapped and the rest on the bottom of your library in a random order. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
+      ],
+      "typed_bindings": [
+        "FLYING/DEATHTOUCH",
+        "Exhaust4 -> SelectLibraryTo UntilKindsCount land2, All Lands BattlefieldTapped remainder BottomRandom; PutCounters Source1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SkyserpentSeeker.java",
+        "sha256": "6c3b21c3a25d74437f552b07e6d84167768e39a71dcad067e0d356b14e371b26",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Stampeding Scurryfoot",
+      "oracle_id": "7b860806-0118-40f8-861b-225a7c1cf151",
+      "oracle_facts_sha256": "ea2e183598dd24742427e0c261e2c74646cb7b72a1cd9bb95239bc0605f29674",
+      "oracle_body": "Exhaust \u2014 {3}{G}: Put a +1/+1 counter on this creature. Create a 3/3 green Elephant creature token. (Activate each exhaust ability only once.)",
+      "obligations": [
+        "Exhaust \u2014 {3}{G}: Put a +1/+1 counter on this creature. Create a 3/3 green Elephant creature token. (Activate each exhaust ability only once.)"
+      ],
+      "typed_bindings": [
+        "Exhaust3G -> PutCounters Source1 + CreateTokens Card5301 Elephant3/3; exhaust_mask1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/StampedingScurryfoot.java",
+        "sha256": "5cfa627f78454bb205ebd2426cc0067052885e0ed5b8d0551c4d59ab425823b4",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Thundering Broodwagon",
+      "oracle_id": "817464d8-1e2d-4e12-96f8-5c7ec9b3e681",
+      "oracle_facts_sha256": "bf9fa74d581ae087e7e6b3b88e99165a77fc9770b85cc55d836f040e42e3d6ca",
+      "oracle_body": "Reach, menace\nWhen this Vehicle enters, destroy target nonland permanent an opponent controls with mana value 4 or less.\nCrew 3\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "obligations": [
+        "Reach, menace",
+        "When this Vehicle enters, destroy target nonland permanent an opponent controls with mana value 4 or less.",
+        "Crew 3",
+        "Cycling {2} ({2}, Discard this card: Draw a card.)"
+      ],
+      "typed_bindings": [
+        "REACH/MENACE; Crew3 vehicle_stats; Cycling2 discard Draw1",
+        "SelfEnters target opponent nonland Object MV<=4 -> Destroy"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/ThunderingBroodwagon.java",
+        "sha256": "296f00e14ac2ebb538ee3970c3e6f7582ab07a4c211658e87babf97d086befe5",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Thunderous Velocipede",
+      "oracle_id": "899007b5-6a07-4491-9104-bb537106b07d",
+      "oracle_facts_sha256": "8870d1dd905808e749b3c45a814734e404dcb649258b552568447149ff2804e6",
+      "oracle_body": "Trample\nEach other Vehicle and creature you control enters with an additional +1/+1 counter on it if its mana value is 4 or less. Otherwise, it enters with three additional +1/+1 counters on it.\nCrew 3",
+      "obligations": [
+        "Trample",
+        "Each other Vehicle and creature you control enters with an additional +1/+1 counter on it if its mana value is 4 or less. Otherwise, it enters with three additional +1/+1 counters on it.",
+        "Crew 3"
+      ],
+      "typed_bindings": [
+        "TRAMPLE; Crew3 vehicle_stats",
+        "OtherControlledEntryCountersByManaValue CreatureOrVehicle kindPlusOne maximum4 at_most1 above3"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/ThunderousVelocipede.java",
+        "sha256": "af33093119bb3eedb1ed365651ff3b78110557abe265f6cad50851e17b0e39d5",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Veloheart Bike",
+      "oracle_id": "fa123b21-518a-4f1d-9629-c44576d45f21",
+      "oracle_facts_sha256": "3268aecd11947ac0910c06c73538d0f79c4c4477f83da0a5e734e8a519670fc8",
+      "oracle_body": "When this Vehicle enters, you gain 2 life.\n{T}: Add one mana of any color.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "obligations": [
+        "When this Vehicle enters, you gain 2 life.",
+        "{T}: Add one mana of any color.",
+        "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "typed_bindings": [
+        "SelfEnters GainLife Controller2; Tap AddMana Choice31 amount1; Crew2 vehicle_stats4/2"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/v/VeloheartBike.java",
+        "sha256": "b55f833fee29433efd767c320c36e200d5c0dd671e61aeff7fdcb398d0c7b8c2",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Veteran Beastrider",
+      "oracle_id": "29f1484c-91b6-436a-a6be-3ab8b58c0fc1",
+      "oracle_facts_sha256": "2f0fda3ee69f6d702365ca2627a3d15a87048667f65e91c90dd933ffffc85279",
+      "oracle_body": "At the beginning of your end step, untap each creature you control.\n{2}{G}{W}: Creatures you control get +1/+1 until end of turn.",
+      "obligations": [
+        "At the beginning of your end step, untap each creature you control.",
+        "{2}{G}{W}: Creatures you control get +1/+1 until end of turn."
+      ],
+      "typed_bindings": [
+        "AtStep End relationYou -> UntapCreatures own",
+        "2GW activation -> GrowCreatures own1/1"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/v/VeteranBeastrider.java",
+        "sha256": "43df49fe7843c5e65ff6083ab108e6ae64b3610b95197a50334fbc39c1d5b159",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Voyage Home",
+      "oracle_id": "5c0cbc44-6c31-44fe-a3da-a97a37a01726",
+      "oracle_facts_sha256": "cddc1d490053e370f7a0da1f0548c8635707cbecb630f1dd327a5814ee537f4e",
+      "oracle_body": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nYou draw three cards and gain 3 life.",
+      "obligations": [
+        "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
+        "You draw three cards and gain 3 life."
+      ],
+      "typed_bindings": [
+        "CostReduction source_only:true Stat CountFilter own artifact factor1 (affinity)",
+        "Draw Controller3 + GainLife Controller3"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/v/VoyageHome.java",
+        "sha256": "cfd80505156471d1e0a6b445cf178dac5e5a48b20aa98a18733247316962854e",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Winter, Cursed Rider",
+      "oracle_id": "343833c1-19fd-4e8f-b82e-0f20903caaff",
+      "oracle_facts_sha256": "35d8f6b33fb4a5a7d6888a76ad557aa5a27fc55a9b0fdeef4194c005dbe6537e",
+      "oracle_body": "Ward\u2014Pay 2 life.\nArtifacts you control have \"Ward\u2014Pay 2 life.\"\nExhaust \u2014 {2}{U}{B}, {T}, Exile X artifact cards from your graveyard: Each other nonartifact creature gets -X/-X until end of turn. (Activate each exhaust ability only once.)",
+      "obligations": [
+        "Ward\u2014Pay 2 life.",
+        "Artifacts you control have \"Ward\u2014Pay 2 life.\"",
+        "Exhaust \u2014 {2}{U}{B}, {T}, Exile X artifact cards from your graveyard: Each other nonartifact creature gets -X/-X until end of turn. (Activate each exhaust ability only once.)"
+      ],
+      "typed_bindings": [
+        "Ward CounterRelatedUnlessPayLife2; ConditionalWard Fixed1 CountFilter ownBF artifact -> independent granted Ward life2",
+        "Exhaust2UB tap + variable own artifactGY exile0..X captures PaidAdditionalCostSelectionCount",
+        "BLOCKED: GrowCreaturesScaled cannot exclude artifact card type"
+      ],
+      "status": "blocked",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/w/WinterCursedRider.java",
+        "sha256": "04d05cf05c21f1b2da1a4746ff402660c20753b8a955725b40ea8b3129a81cc5",
+        "full_primary_class_read": true
+      }
+    },
+    {
+      "name": "Zahur, Glory's Past",
+      "oracle_id": "fb82cd81-0e71-43ab-88f9-b1fa158f5138",
+      "oracle_facts_sha256": "f61bf5e59c68e4d22c3ef86a5806a93c0a51990eda7af90ed2fe9db16498c55f",
+      "oracle_body": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nSacrifice another creature: Surveil 1. Activate only once each turn.\nMax speed \u2014 Whenever a nontoken creature you control dies, create a tapped 2/2 black Zombie creature token.",
+      "obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Sacrifice another creature: Surveil 1. Activate only once each turn.",
+        "Max speed \u2014 Whenever a nontoken creature you control dies, create a tapped 2/2 black Zombie creature token."
+      ],
+      "typed_bindings": [
+        "StartYourEngines",
+        "Once-per-turn source activation additional Sacrifice Creature other:true -> Surveil1",
+        "When speed>=4 CreatureDies own nontoken:true -> CreateTokens existing2/2 blackZombie tapped"
+      ],
+      "status": "supported by frozen typed primitives/composition",
+      "xmage": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/z/ZahurGlorysPast.java",
+        "sha256": "025d683efbb85fc76c6cb27823a539ff1c99d5a46fabf1dae813dba1e4fcafae",
+        "full_primary_class_read": true
+      }
+    }
+  ]
+}

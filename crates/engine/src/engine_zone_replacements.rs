@@ -378,6 +378,16 @@ impl Game {
         requested: Zone,
         rules: FrozenRules,
     ) -> Plan {
+        // A true prohibition stops the event before replacement selection; it
+        // must never become a competing "prevent" replacement or a paid cost.
+        if requested == Zone::Exile && self.graveyard_exile_prohibited(before.id) {
+            return Plan {
+                destination: requested,
+                prevented: true,
+                shuffle: false,
+                reflexive: None,
+            };
+        }
         #[cfg(feature = "test-support")]
         let test_redirect = requested == Zone::Exile
             && TEST_REDIRECT_EXILE_TO_BATTLEFIELD

@@ -6,7 +6,7 @@ use ability_world::CharacteristicWorld;
 #[derive(Clone)]
 pub(super) struct PaymentContinuation<'g> {
     head: &'g Announcement,
-    outer: &'g [mana_announcements::ManaAnnouncement],
+    pub(super) outer: &'g [mana_announcements::ManaAnnouncement],
     quality: Option<&'g mana_lots::Quality>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -24,10 +24,109 @@ impl PaymentContinuation<'_> {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Announcement {
+    fn collect_funding_references(&self, exact: &mut HashSet<CardId>) {
+        let mut add = |object: ObjectRef| {
+            exact.insert(object.card);
+        };
+        if let Some(source) = self.item.source {
+            add(source.object);
+        }
+        if let Some(object) = self.additional {
+            add(object);
+        }
+        if let Some(objects) = &self.additional_group {
+            for &object in objects.iter() {
+                add(object);
+            }
+        }
+        if let Some(objects) = &self.creature_counter_cost {
+            for &(object, _) in objects.iter() {
+                add(object);
+            }
+        }
+        if let Some(forage) = &self.forage {
+            for &object in &forage.selected {
+                add(object);
+            }
+        }
+        if let Some(evidence) = &self.evidence {
+            for &object in &evidence.selected {
+                add(object);
+            }
+        }
+        if let Some(casualty) = &self.casualty {
+            for row in casualty.iter() {
+                add(row.grant.source);
+                if let Some(object) = row.sacrifice {
+                    add(object);
+                }
+            }
+        }
+        if let Some(convoke) = &self.convoke {
+            for row in &convoke.selected {
+                add(row.object);
+            }
+            for &object in &convoke.improvised {
+                add(object);
+            }
+        }
+        if let Some(costs) = &self.cast_costs {
+            for &object in &costs.teammates {
+                add(object);
+            }
+            for row in &costs.clauses {
+                match row.clause {
+                    CastCostClause::Blight {
+                        selected: Some(object),
+                        ..
+                    }
+                    | CastCostClause::Harmonize(object) => add(object),
+                    _ => (),
+                }
+            }
+        }
+        if let Some(object) = self.harmonizer.flatten() {
+            add(object);
+        }
+        if let Some(object) = &self.free_hand_permission {
+            add(**object);
+        }
+        if let Some(grant) = &self.item.attachment_trigger {
+            add(grant.grantor);
+            add(grant.recipient);
+        }
+        if let Some(object) = self.item.attached_activation_tap_cost() {
+            add(object);
+        }
+        if let Some(object) = self.item.source_attachment {
+            add(object);
+        }
+        for target in &self.item.targets {
+            if let Some(object) = target.object {
+                add(object);
+            }
+        }
+        if let Some(objects) = &self.item.craft_materials {
+            for &object in objects.iter() {
+                add(object);
+            }
+        }
+        if let Some(subject) = &self.item.reflexive_subject {
+            add(subject.object);
+            for &object in &subject.additional_objects {
+                add(object);
+            }
+        }
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
 pub(super) struct EntryProjection {
     /// Opt-in restoration origins; these are copy changes, never entry history.
     pub copy_origins: Vec<(ObjectRef, Option<u64>)>,
+    pub provided_origins: Vec<(ObjectRef, Option<u64>)>,
+    pub temporary_copies: temporary_copy::Rows,
     pub manifested: Vec<(ObjectRef, Card)>,
     pub static_sources: Vec<CardId>,
     pub attachment_sources: Vec<CardId>,
@@ -59,6 +158,8 @@ impl EntryProjection {
         });
         Self {
             copy_origins: Vec::new(),
+            provided_origins: Vec::new(),
+            temporary_copies: w.temporary_copy_rows_state().clone(),
             manifested: w
                 .game
                 .state
@@ -249,6 +350,27 @@ impl FundingState<'_> {
         .unwrap_or(false)
     }
 
+    /// CR614.12 eligibility is read from this entrant alone in its pre-entry world.
+    pub(super) fn entry_counter_bonus_by_mana_value(
+        &self,
+        movement: &entries::EntryMove,
+        filter: ReplacementFilter,
+        maximum: u64,
+        at_most: u16,
+        above: u16,
+    ) -> Option<u64> {
+        self.with_entry_preview(&movement.replacement_preview(), |world| {
+            let id = movement.before.id;
+            replacements::entry_filter_matches(world, filter, id).then(|| {
+                u64::from(if CharacteristicWorld::mana_value(world, id) <= maximum {
+                    at_most
+                } else {
+                    above
+                })
+            })
+        })
+        .flatten()
+    }
     fn with_entry_preview<T>(
         &self,
         movement: &entries::EntryMove,
@@ -310,6 +432,9 @@ impl FundingState<'_> {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 !self.game.case_solved(source) && state.life_gained_this_turn >= n
             }
+            StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
+                self.game.declared_attack_subtypes_all(player, subtypes)
+            }
             StepGuard::Always => true,
             StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
@@ -319,6 +444,9 @@ impl FundingState<'_> {
                 steps::attached_controller_turn(self, source, self.active)
             }
             StepGuard::YourTurn => self.active == player,
+            StepGuard::YourMainPhase => {
+                self.active == player && matches!(self.game.state.step, Step::Main1 | Step::Main2)
+            }
             StepGuard::GainedLife => self.gained_life(player),
             StepGuard::ScriedOrSurveilledThisTurn => state.scried_or_surveilled_this_turn,
             StepGuard::LoyaltyAbilityActivatedThisTurn => state.loyalty_ability_activated_this_turn,
@@ -527,6 +655,16 @@ impl FundingState<'_> {
             };
             counters.add(CounterKind::PlusOne, amount);
         }
+        if let Some(spec) = card.entry_exile_counters()
+            && let Some(preparation) = &m.exile_preparation
+        {
+            counters.add(
+                spec.kind,
+                (preparation.exiled.len() as u64)
+                    .checked_mul(u64::from(spec.per_card))
+                    .capacity("entry exile counters"),
+            );
+        }
         if m.cast_origin.is_some() {
             for &(kind, n) in card.cast_entry_counters() {
                 counters.add(kind, n)
@@ -612,8 +750,8 @@ impl FundingState<'_> {
     }
     fn initialize_entry_tap(&self, m: &mut entries::EntryMove) -> Vec<entry_tap::EntryTapEffect> {
         let mut effects = Vec::new();
-        let kinds = if m.ghost_vacuum_after.is_some() {
-            self.preview_entry_view(m)
+        let kinds = if m.requires_characteristic_preview() {
+            self.preview_entry_view(&m.replacement_preview())
                 .map_or_else(|| m.entry_kinds(), |view| view.kinds)
         } else {
             m.entry_kinds()
@@ -694,6 +832,19 @@ impl FundingState<'_> {
         actual: Option<&entries::EntryBatch>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        let initial = initial || actual.is_some_and(|batch| batch.copying);
+        let actual = actual.filter(|batch| !batch.copying);
+        if moves.iter().any(entry_copies::needs_copy) {
+            let mut choices = Vec::new();
+            return self.visit_entry_copy_choices(moves, &mut choices, &mut |moves| {
+                self.visit_entry_moves(moves, initial, actual, emit)
+            });
+        }
+        if moves.iter().any(entry_exiles::needs_exile) {
+            return self.visit_entry_exile_choices(moves, &mut |world, moves| {
+                world.visit_entry_moves(moves, initial, actual, emit)
+            });
+        }
         let mut taps = actual.map_or_else(Vec::new, |b| b.tap_events[b.tap_next..].to_vec());
         if initial {
             for (index, m) in moves.iter_mut().enumerate() {
@@ -881,16 +1032,7 @@ impl FundingState<'_> {
             && !characteristic_query::CharacteristicQuery::in_world(self)
                 .keywords(target.card)
                 .contains(Keywords::PROTECTION_EVERYTHING)
-            && if spec.kinds == 0 {
-                CharacteristicWorld::kinds(self, target.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
-            } else {
-                CharacteristicWorld::kinds(self, target.card) & u16::from(spec.kinds) != 0
-            }
-            && ability_world::aura_artifact_or_non_aura_enchantment(
-                self,
-                m.before.card,
-                target.card,
-            )
+            && ability_world::aura_kind_matches(self, m.before.card, target.card)
             && match spec.relation {
                 0 => o.controller == m.controller,
                 1 => o.controller != m.controller,
@@ -940,10 +1082,14 @@ impl FundingState<'_> {
                 crate::cards::EntryChoiceKind::LandCardName => {
                     choices.extend(crate::CardName::lands().map(EntryChoiceValue::CardName));
                 }
-                crate::cards::EntryChoiceKind::CardNameAfterOpponentHand => {
+                crate::cards::EntryChoiceKind::CardName
+                | crate::cards::EntryChoiceKind::NonlandCardName
+                | crate::cards::EntryChoiceKind::CardNameAfterOpponentHand => {
                     // Names absent from this world are equivalent for cost completion.
                     let mut unmatched = false;
-                    for name in crate::CardName::all() {
+                    for name in crate::CardName::all().filter(|name| {
+                        kind != crate::cards::EntryChoiceKind::NonlandCardName || !name.is_land()
+                    }) {
                         let present = self.resources.iter().any(|r| name.matches(self.name(r.id)));
                         if present || !unmatched {
                             choices.push(EntryChoiceValue::CardName(name));
@@ -1045,6 +1191,22 @@ impl FundingState<'_> {
                 }
                 for group in provider.card.static_ability_groups() {
                     for fragment in group.fragments {
+                        if let crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue {
+                            filter, kind, maximum, at_most, above,
+                        } = *fragment
+                            && self.fragment_available(id, |f| std::ptr::eq(f, fragment))
+                        {
+                            for movement in &mut moves {
+                                if movement.destination == Zone::Battlefield
+                                    && !movement.skipped
+                                    && movement.controller == provider.controller
+                                    && movement.before.reference != self.reference(id)
+                                    && let Some(amount) = self.entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
+                                {
+                                    movement.counters.add(kind, amount);
+                                }
+                            }
+                        }
                         let crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(subtype) =
                             fragment
                         else {
@@ -1104,6 +1266,16 @@ impl FundingState<'_> {
         if m.skipped || m.destination != Zone::Battlefield || m.counters.is_empty() || processed {
             return self.visit_entry_counters(moves, order, at + 1, actual, emit);
         }
+        let type_sensitive =
+            m.requires_characteristic_preview() || replacements::entry_kind_sensitive(self);
+        let preview = if current.is_none()
+            && (type_sensitive
+                || replacements::entry_power_sensitive(self, m.controller, m.before.card))
+        {
+            self.preview_entry_view(&m.replacement_preview())
+        } else {
+            None
+        };
         let (placement, mut used) = current.map_or_else(
             || {
                 (
@@ -1114,32 +1286,22 @@ impl FundingState<'_> {
                         owner: m.before.owner,
                         controller: m.controller,
                         protector: m.battle_protector,
-                        subtypes: if m.ghost_vacuum_after.is_some() {
-                            self.preview_entry_view(&m.replacement_preview())
-                                .map_or_else(
-                                    || Game::entry_replacement_subtypes(m),
-                                    |view| view.granted_subtypes,
-                                )
+                        subtypes: if type_sensitive {
+                            preview.as_ref().map_or_else(
+                                || Game::entry_replacement_subtypes(m),
+                                |view| view.granted_subtypes,
+                            )
                         } else {
                             Game::entry_replacement_subtypes(m)
                         },
-                        kind: if m.ghost_vacuum_after.is_some() {
-                            self.preview_entry_view(&m.replacement_preview())
+                        kind: if type_sensitive {
+                            preview
+                                .as_ref()
                                 .map_or_else(|| m.entry_kinds(), |view| view.kinds)
                         } else {
                             m.entry_kinds()
                         },
-                        power: if m.ghost_vacuum_after.is_some()
-                            || replacements::entry_power_sensitive(
-                                self,
-                                m.controller,
-                                m.before.card,
-                            ) {
-                            self.preview_entry_view(&m.replacement_preview())
-                                .map_or(m.before.power, |view| view.power)
-                        } else {
-                            m.before.power
-                        },
+                        power: preview.as_ref().map_or(m.before.power, |view| view.power),
                         amount: m.counters.clone(),
                         effect: true,
                         entry_index: Some(index),
@@ -1152,7 +1314,8 @@ impl FundingState<'_> {
         );
         let refresh = |placement: &replacements::CounterPlacement| {
             let mut refreshed = placement.clone();
-            if m.ghost_vacuum_after.is_some()
+            if m.requires_characteristic_preview()
+                || replacements::entry_kind_sensitive(self)
                 || replacements::entry_power_sensitive(self, m.controller, m.before.card)
             {
                 let mut movement = m.clone();
@@ -1211,7 +1374,10 @@ impl FundingState<'_> {
     }
     fn entry_has_timestamp(m: &entries::EntryMove) -> bool {
         let card = m.before.card;
-        m.artifact_return
+        m.copy_preparation
+            .as_ref()
+            .is_some_and(|copy| copy.recipe.is_some())
+            || m.artifact_return
             || m.enchantment_return
             || m.ghost_vacuum_after.is_some()
             || m.food_return.is_some()
@@ -1243,14 +1409,26 @@ impl FundingState<'_> {
                 continue;
             }
             let face_down_physical = next.projected_face_down_physical(m.before.reference);
+            let physical_copy = next
+                .temporary_copy_rows_state()
+                .as_ref()
+                .and_then(|rows| rows.iter().find(|row| row.object == m.before.reference))
+                .map(|row| (row.physical_card, row.physical_kind));
+            let physical_card =
+                physical_copy.map_or(next.object(m.before.id).card, |value| value.0);
             let row = next
                 .resources
                 .iter_mut()
                 .find(|r| r.id == m.before.id)
                 .expect("entry resource retained");
             let o = &mut row.object;
-            next.game
-                .restore_projected_copy_identity(m.before.reference, o);
+            if let Some((card, kind)) = physical_copy {
+                o.card = card;
+                o.copy_kind = kind;
+            } else {
+                next.game
+                    .restore_projected_copy_identity(m.before.reference, o);
+            }
             o.card = if m.destination == Zone::Battlefield && m.manifest_original.is_some() {
                 m.before.card
             } else if let Some(physical) = face_down_physical
@@ -1332,14 +1510,29 @@ impl FundingState<'_> {
                 if o.card.attachment_bonus().is_some() && !p.attachment_sources.contains(&row.id) {
                     p.attachment_sources.push(row.id)
                 }
-                if let Some(value) = m.choice {
-                    p.entry_values.push(entry_choices::ChoiceRow {
-                        object: source,
-                        value,
-                    });
-                }
             }
             next.project_copy_departure(m.before.reference, source);
+            if m.destination == Zone::Battlefield
+                && let Some(recipe) = m.copy_preparation.as_ref().and_then(|copy| copy.recipe)
+            {
+                next.install_projected_entry_copy(source, physical_card, recipe);
+            }
+        }
+        for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && let Some(value) = m.choice
+            {
+                let source = next.reference(m.before.id);
+                let origin = next.ability_origin(source.card);
+                next.entry_projection.as_mut().unwrap().entry_values.push(
+                    entry_choices::ChoiceRow {
+                        object: source,
+                        value,
+                        origin,
+                    },
+                );
+            }
         }
         for &i in order {
             let m = &moves[i];
@@ -1351,7 +1544,21 @@ impl FundingState<'_> {
             if !Self::entry_has_timestamp(m) {
                 continue;
             }
+            let entry_copy = m
+                .copy_preparation
+                .as_ref()
+                .is_some_and(|copy| copy.recipe.is_some());
+            if entry_copy {
+                p.roles.next_timestamp();
+            }
             let timestamp = p.register(source, m.before.card);
+            if entry_copy
+                && let Some(rows) = p.temporary_copies.as_mut()
+                && let Some(row) = rows.iter_mut().find(|row| row.object == source)
+            {
+                row.original_provider_time = Some(timestamp - 1);
+                row.layers.last_mut().unwrap().value.provider_timestamp = timestamp;
+            }
             keyword_counters::sync_effects(
                 &mut p.roles,
                 source,
@@ -1413,6 +1620,21 @@ impl FundingState<'_> {
                     recipient,
                     timestamp,
                 });
+            }
+        }
+        for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && m.copy_preparation
+                    .as_ref()
+                    .is_some_and(|copy| copy.recipe.is_some())
+            {
+                let source = next.reference(m.before.id);
+                let active = copy_grant_origins::program_grant_active(&next, source);
+                let p = next.entry_projection.as_mut().unwrap();
+                let origin = active.then(|| p.roles.next_timestamp());
+                p.provided_origins.retain(|(object, _)| *object != source);
+                p.provided_origins.push((source, origin));
             }
         }
         // CR611.2e: surrounding characteristic effects exist as entrants enter,
@@ -1596,7 +1818,10 @@ impl Game {
         }
         if !matches!(
             action,
-            Action::ChooseEntryBehold { .. }
+            Action::ChooseEntryCopy { .. }
+                | Action::ChooseEntryExile { .. }
+                | Action::FinishEntryExile
+                | Action::ChooseEntryBehold { .. }
                 | Action::ChooseEntryValue { .. }
                 | Action::ChooseEntryLife { .. }
                 | Action::ChooseAuraAttachment { .. }
@@ -1638,7 +1863,11 @@ impl Game {
             .as_deref()
             .and_then(|frames| frames.split_last())
             .filter(|_| a.production.is_some());
-        let (mut world, goal) = if transaction {
+        let (mut world, goal) = if a.mana_output.is_some() {
+            // The owned child has already paid. Its continuation is a frozen
+            // parent declaration or a non-announcement resume, never its costs.
+            (self.paid_mana_parent_world(a), None)
+        } else if transaction {
             (self.cast_cost_world(a), None)
         } else if let Some((parent, outer)) = nested {
             let goal = self.funding_goal(&parent.announcement);
@@ -1662,11 +1891,7 @@ impl Game {
                 parent.quality.as_ref().map(|(_, q)| q),
             );
             (world, Some(goal))
-        } else if a.cast_costs.is_some()
-            || a.item
-                .cast
-                .is_some_and(|cast| cast.method == CastMethod::Disguise)
-        {
+        } else {
             let goal = self.funding_goal(a);
             let mut world = FundingState::from_game_with_convoke(
                 self,
@@ -1681,29 +1906,16 @@ impl Game {
             world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(a);
             (world, Some(goal))
-        } else {
-            return true;
         };
         let mut complete = |w: &FundingState<'_>| {
-            if let Some(goal) = &goal {
-                let mut next = w.clone();
-                if let Some(production) = a.production {
-                    for (pool, amount) in next.mana.iter_mut().zip(production) {
-                        *pool += u128::from(amount);
-                    }
-                    next.mana[3] = next.mana[3]
-                        .checked_add(u128::from(a.item.mana_tap_bonus.unwrap_or(0)))
-                        .capacity("mana representation exhausted");
-                    if let Some((_, quality)) = self
-                        .state
-                        .mana_lots
-                        .as_ref()
-                        .and_then(|m| m.announcement_quality.as_ref())
-                    {
-                        mana_lots::add_lot(&mut next.lots, *quality, production.map(u128::from));
-                    }
-                }
-                next.reachable(goal, &mut HashSet::new())
+            if a.mana_output.is_some() {
+                w.visit_paid_mana_output(a, None, &mut |completed| {
+                    completed.paid_mana_parent_fundable(a)
+                })
+            } else if let Some(goal) = &goal {
+                w.visit_paid_mana_output(a, None, &mut |completed| {
+                    completed.reachable(goal, &mut HashSet::new())
+                })
             } else {
                 w.cost_completion()
             }
@@ -1720,6 +1932,40 @@ impl Game {
         world.entry_projection.as_mut().unwrap().counter =
             self.projected_entry_counter(counter_choice);
         match action {
+            Some(Action::ChooseEntryExile { object }) => {
+                let index = self.current_entry_exile_index().unwrap();
+                batch.moves[index]
+                    .exile_preparation
+                    .get_or_insert_default()
+                    .selected
+                    .push(*object);
+            }
+            Some(Action::FinishEntryExile) => {
+                let index = self.current_entry_exile_index().unwrap();
+                batch.moves[index]
+                    .exile_preparation
+                    .get_or_insert_default()
+                    .selection_closed = true;
+            }
+            Some(Action::ChooseEntryCopy { object }) => {
+                let index = batch
+                    .moves
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, m)| entry_copies::needs_copy(m))
+                    .min_by_key(|(i, m)| (m.controller != self.state.active, *i))
+                    .map(|(i, _)| i)
+                    .expect("pending entry-copy choice");
+                if let Some(object) = object {
+                    let recipe = entry_copies::blueprint_in_world(&world, object.card);
+                    entry_copies::apply_blueprint(&mut batch.moves[index], recipe);
+                } else {
+                    batch.moves[index]
+                        .copy_preparation
+                        .get_or_insert_default()
+                        .done = true;
+                }
+            }
             Some(Action::ChooseEntryValue { value }) => {
                 let i = self
                     .current_entry_value_index()
@@ -1824,6 +2070,9 @@ impl<'g> FundingState<'g> {
         step: &FundingMove,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        if step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
+            return self.visit_deferred(step, emit);
+        }
         if step.external.is_none()
             && self.cast_costs.is_none()
             && self.continuation.is_none()
@@ -1844,12 +2093,19 @@ impl<'g> FundingState<'g> {
             && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0
         {
             let mut next = self.clone();
-            next.apply(step, false);
-            return emit(&next);
+            let bonus = next.apply(step, false);
+            if let Some(production) = next.singleton_output(step) {
+                next.add_funding_output(step, bonus, production);
+                return emit(&next);
+            }
+            return next.visit_output(step, bonus, emit);
         }
         let external = if let Some(external) = step.external {
             let source = &self.resources[step.resource];
-            let card = step.frozen.as_ref().map_or(source.object.card, |f| f.0);
+            let card = step.frozen.as_ref().map_or_else(
+                || step.self_grant.map_or(source.object.card, |g| g.0),
+                |f| f.0,
+            );
             let ability = step
                 .borrowed
                 .map_or_else(|| card.activation(step.ability.unwrap()), |b| b.rules());
@@ -1857,7 +2113,13 @@ impl<'g> FundingState<'g> {
                 return false;
             };
             if external.kind != spec.kind
-                || !self.cost_object(spec, external.object, self.reference(source.id))
+                || !self.cost_object(
+                    spec,
+                    external.object,
+                    step.output
+                        .as_ref()
+                        .map_or_else(|| self.reference(source.id), |o| o.instance.source),
+                )
             {
                 return false;
             }
@@ -1866,17 +2128,19 @@ impl<'g> FundingState<'g> {
             None
         };
         let source = &self.resources[step.resource];
-        let reference = self.reference(source.id);
+        let reference = step
+            .output
+            .as_ref()
+            .map_or_else(|| self.reference(source.id), |o| o.instance.source);
         let mut next = self.clone();
         // Keep the post-payment counter snapshot until replacement planning.
         // Paying away the final Finality counter must differ from sacrificing
         // a permanent which still has one after the counter cost.
-        next.apply(step, true);
-        let departed = source.object.zone == Zone::Battlefield
-            && next.object(source.id).zone != Zone::Battlefield;
+        let bonus = next.apply(step, true);
+        let departed = source.object.zone != next.object(source.id).zone;
         let destination = next.object(source.id).zone;
         if departed {
-            next.resources[step.resource].object.zone = Zone::Battlefield;
+            next.resources[step.resource].object.zone = source.object.zone;
         }
         // The staged source remains present until a replacement plan commits.
         next.refresh_control_projection();
@@ -1893,7 +2157,12 @@ impl<'g> FundingState<'g> {
                 return false;
             }
         }
-        next.visit_mana_cost_departures(reference, departed.then_some(destination), external, emit)
+        next.visit_mana_cost_departures(
+            reference,
+            departed.then_some(destination),
+            external,
+            &mut |world| world.visit_output(step, bonus, emit),
+        )
     }
     pub(super) fn visit_mana_cost_departures(
         &self,
@@ -1923,31 +2192,207 @@ impl<'g> FundingState<'g> {
             self.visit_linked_returns(&mut after_source)
         }
     }
+    pub(super) fn continuation_memo_safe(&self) -> bool {
+        // An initial copy profile is immutable for this query, just like its
+        // Game's rule tables. Changed recipes and projected entries still need
+        // the old complete-world search. Source-bound layers remain outside
+        // early reuse, including hidden layers which could become active.
+        self.entry_projection.is_none()
+            && self.copy_recipes == self.game.state.copy_recipes
+            && self
+                .game
+                .state
+                .temporary_copies
+                .as_ref()
+                .is_none_or(|rows| {
+                    rows.iter().all(|row| {
+                        row.layers
+                            .iter()
+                            .all(|layer| layer.value.deadline.source().is_none())
+                    })
+                })
+    }
+    pub(super) fn scoped_continuation_query(&self) -> Option<Self> {
+        if self.continuation_memo.is_some()
+            || self.continuation.is_none()
+            || !self.continuation_memo_safe()
+        {
+            return None;
+        }
+        let current = self.continuation.as_deref()?;
+        let mut memo = ContinuationMemo::default();
+        current.head.collect_funding_references(&mut memo.exact);
+        for frame in current.outer {
+            frame
+                .announcement
+                .collect_funding_references(&mut memo.exact);
+        }
+        if let Some(payment) = self
+            .game
+            .state
+            .crew
+            .as_ref()
+            .and_then(|c| c.payment.as_deref())
+        {
+            memo.contributors = true;
+            memo.exact.insert(payment.source.card);
+            memo.exact.extend(payment.selected.iter().map(|r| r.card));
+        }
+        if let Some(payment) = self.game.state.saddle_payment.as_deref() {
+            memo.contributors = true;
+            memo.exact.insert(payment.source.card);
+            memo.exact.extend(payment.selected.iter().map(|r| r.card));
+        }
+        memo.contributors |= self.contributors.is_some();
+        // The profile itself is fixed, but copied recipients may otherwise
+        // resemble an ordinary basic whose colors, types or power differ.
+        if let Some(rows) = &self.copy_recipes {
+            memo.exact.extend(rows.iter().map(|row| row.object.card));
+        }
+        if let Some(rows) = &self.game.state.temporary_copies {
+            memo.exact.extend(rows.iter().map(|row| row.object.card));
+        }
+        if let Some(rows) = &self.game.state.self_granted_abilities {
+            memo.exact.extend(rows.iter().map(|r| r.recipient.card));
+        }
+        if let Some(rows) = &self.game.state.borrowed_links {
+            for row in rows.iter() {
+                memo.exact.insert(row.source.card);
+                memo.exact.insert(row.exiled.card);
+            }
+        }
+        for row in &self.game.state.exile_links {
+            memo.exact.insert(row.source.card);
+            memo.exact.insert(row.exiled.card);
+        }
+        let mut query = self.clone();
+        query.continuation_memo = Some(Rc::new(memo));
+        Some(query)
+    }
     pub(super) fn set_funding_continuation(
         &mut self,
         head: &'g Announcement,
         outer: &'g [mana_announcements::ManaAnnouncement],
         quality: Option<&'g mana_lots::Quality>,
     ) {
-        self.continuation = (head.production.is_some() && !outer.is_empty()).then(|| {
-            Box::new(PaymentContinuation {
-                head,
-                outer,
-                quality,
-            })
-        });
+        // A caller installing a new immutable chain starts a separate query.
+        // Only the explicit parent transition below restores its scoped cache.
+        self.continuation_memo = None;
+        // The child constructor retained its own costs and mana witnesses.
+        // Every enclosing payment also needs its exact nonmana objects, even
+        // when they have no mana ability or continuous-effect provider role.
+        let mut retained = HashSet::new();
+        head.collect_funding_references(&mut retained);
+        for frame in outer {
+            frame.announcement.collect_funding_references(&mut retained);
+        }
+        if let Some(payment) = self
+            .game
+            .state
+            .crew
+            .as_ref()
+            .and_then(|crew| crew.payment.as_deref())
+        {
+            retained.insert(payment.source.card);
+            retained.extend(payment.selected.iter().map(|object| object.card));
+        }
+        if let Some(payment) = self.game.state.saddle_payment.as_deref() {
+            retained.insert(payment.source.card);
+            retained.extend(payment.selected.iter().map(|object| object.card));
+        }
+        let mut missing = retained
+            .into_iter()
+            .filter(|id| !self.resources.iter().any(|resource| resource.id == *id))
+            .collect::<Vec<_>>();
+        missing.sort_unstable();
+        for id in missing {
+            // An already projected resource must never be replaced with its
+            // Game snapshot. Absent objects still use the current world view;
+            // exact incarnation checks remain the payment's responsibility.
+            let object = self.object(id).clone();
+            let attacking = self.attacking(id);
+            self.resources.push(Resource {
+                id,
+                object,
+                attacking,
+            });
+        }
+        if !outer.is_empty() {
+            // Each actual ancestor has already selected its cost before opening
+            // a mana window. Count every frozen payment conservatively, even
+            // though strict spell-only lots can only pay the final spell. If a
+            // future route has an unlocked cost, retain exact lot amounts.
+            let demand = std::iter::once(head)
+                .chain(outer.iter().map(|frame| &frame.announcement))
+                .try_fold(0u128, |total, announcement| {
+                    announcement.total_cost.or(announcement.cost).map(|cost| {
+                        total
+                            + cost.colored.into_iter().map(u128::from).sum::<u128>()
+                            + u128::from(cost.generic)
+                    })
+                });
+            self.spell_lot_demand = self
+                .spell_lot_demand
+                .zip(demand)
+                .map(|(previous, demand)| previous.max(demand));
+        }
+        self.active_mana_keys = Some(
+            std::iter::once(head)
+                .chain(outer.iter().map(|frame| &frame.announcement))
+                .filter(|a| a.production.is_some())
+                .filter_map(|a| a.item.mana_activation_key())
+                .collect(),
+        );
+        let terminal = head
+            .mana_output
+            .as_ref()
+            .and_then(|o| o.resume.as_deref())
+            .is_some_and(|pending| self.game.guided_mana_goal(pending).is_some());
+        self.continuation =
+            (head.production.is_some() && (!outer.is_empty() || terminal)).then(|| {
+                Box::new(PaymentContinuation {
+                    head,
+                    outer,
+                    quality,
+                })
+            });
     }
     pub(super) fn complete_funding_continuation(&self, goal: &FundingGoal) -> bool {
+        self.complete_funding_continuation_for(goal, None)
+    }
+    pub(super) fn complete_funding_continuation_for(
+        &self,
+        goal: &FundingGoal,
+        forced_payment: Option<Mana>,
+    ) -> bool {
+        self.visit_funding_continuation_plans(goal, forced_payment, false, &mut |_| true)
+    }
+    pub(super) fn visit_funding_continuation_allocations(
+        &self,
+        goal: &FundingGoal,
+        forced_payment: Option<Mana>,
+        emit: &mut dyn FnMut(&[[u64; 6]]) -> bool,
+    ) -> bool {
+        self.visit_funding_continuation_plans(goal, forced_payment, true, emit)
+    }
+    fn visit_funding_continuation_plans(
+        &self,
+        goal: &FundingGoal,
+        forced_payment: Option<Mana>,
+        independent_plans: bool,
+        emit: &mut dyn FnMut(&[[u64; 6]]) -> bool,
+    ) -> bool {
+        if !independent_plans && let Some(query) = self.scoped_continuation_query() {
+            return query.visit_funding_continuation_plans(goal, forced_payment, false, emit);
+        }
         let Some(current) = self.continuation.as_deref() else {
-            return self.cost_completion();
+            return self.cost_completion() && emit(&[]);
         };
         let a = current.head;
         let Some(production) = a.production else {
             return self.cost_completion();
         };
-        let Some((parent, outer)) = current.outer.split_last() else {
-            return false;
-        };
+        let parent = current.outer.split_last();
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return false;
         };
@@ -1961,11 +2406,14 @@ impl<'g> FundingState<'g> {
         }) else {
             return false;
         };
-        let parent_goal = self.game.funding_goal(&parent.announcement);
+        let parent_goal = parent.map(|(parent, _)| self.game.funding_goal(&parent.announcement));
         let purpose = self.payment_purpose(goal);
         let mut found = false;
         let pool = mana_lots::available(self.mana, &self.lots, purpose);
         funding_payments(pool, goal.required, goal.generic, |payment| {
+            if forced_payment.is_some_and(|forced| concrete_payment(payment) != forced) {
+                return;
+            }
             if found {
                 return;
             }
@@ -1993,12 +2441,19 @@ impl<'g> FundingState<'g> {
                     ability: Some(ability),
                     grantor: None,
                     borrowed: None,
+                    self_grant: a.item.self_granted_activation.as_ref().map(|g| {
+                        (
+                            a.item.source.expect("self-granted source").card,
+                            g.grant_timestamp,
+                        )
+                    }),
                     payment,
                     counters: a.counter_payment.clone(),
                     production,
                     quality: current.quality.copied(),
                     allocation,
                     external,
+                    output: a.mana_output.clone(),
                     frozen: Some(Box::new((
                         a.item
                             .source
@@ -2007,13 +2462,31 @@ impl<'g> FundingState<'g> {
                         a.item.borrowed_slot,
                     ))),
                 };
-                found = self.visit_applied(&step, &mut |w| {
+                // A visited-world memo answers one existential question, not
+                // every physical plan. Distinct allocations may converge on the
+                // same successful suffix; retain that suffix independently for
+                // each plan while preserving pruning within its boolean query.
+                let query = independent_plans.then(|| {
+                    let mut query = self.clone();
+                    query.continuation_memo = None;
+                    query.scoped_continuation_query().unwrap_or(query)
+                });
+                let query = query.as_ref().unwrap_or(self);
+                let viable = query.visit_applied(&step, &mut |w| {
+                    let Some((parent, outer)) = parent else {
+                        return a
+                            .mana_output
+                            .as_ref()
+                            .and_then(|o| o.resume.as_deref())
+                            .is_some_and(|pending| w.guided_mana_resume_fundable(pending));
+                    };
                     let mut next = w.clone();
                     next.set_funding_continuation(
                         &parent.announcement,
                         outer,
                         parent.quality.as_ref().map(|(_, q)| q),
                     );
+                    next.continuation_memo = query.continuation_memo.clone();
                     next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
                         && parent
@@ -2025,13 +2498,138 @@ impl<'g> FundingState<'g> {
                             .has_convoke();
                     next.set_payment_context(&parent.announcement);
                     next.reachable_with_evidence(
-                        &parent_goal,
+                        parent_goal.as_ref().expect("parent goal"),
                         parent.announcement.evidence.as_ref().map(|e| e.threshold),
                         &mut HashSet::new(),
                     )
                 });
+                if viable {
+                    found = emit(&step.allocation);
+                }
             });
         });
         found
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl FundingState<'_> {
+    fn install_projected_entry_copy(
+        &mut self,
+        object: ObjectRef,
+        physical_card: Card,
+        recipe: CopyRecipe,
+    ) {
+        let physical_kind = self.object(object.card).copy_kind;
+        let original_recipe = self.stored_recipe(object.card);
+        let origin = self
+            .entry_projection
+            .as_mut()
+            .unwrap()
+            .roles
+            .next_acquisition();
+        let row = temporary_copy::Row::as_entry(
+            object,
+            physical_card,
+            physical_kind,
+            original_recipe,
+            recipe,
+            origin,
+        );
+        let physical = original_recipe.unwrap_or_else(|| CopyRecipe::new(physical_card));
+        let recipe = recipe.with_copy_effect_faces(physical.face_structure());
+        if let Some(rows) = self.copy_recipes.as_mut() {
+            rows.retain(|row| row.object != object);
+        }
+        let recipes = self.copy_recipes.get_or_insert_default();
+        let index = recipes.partition_point(|row| row.object.card < object.card);
+        recipes.insert(index, copies::CopyRow { object, recipe });
+        let target = &mut self
+            .resources
+            .iter_mut()
+            .find(|r| r.id == object.card)
+            .unwrap()
+            .object;
+        target.card = recipe.definition;
+        target.copy_kind = if physical_kind == CopyKind::Token || physical_card.is_token() {
+            CopyKind::Token
+        } else {
+            CopyKind::Physical
+        };
+        let p = self.entry_projection.as_mut().unwrap();
+        p.copy_origins.retain(|(source, _)| *source != object);
+        p.copy_origins.push((object, Some(origin)));
+        p.copy_origins.sort_by_key(|(source, _)| *source);
+        p.temporary_copies.get_or_insert_default().push(row);
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl FundingState<'_> {
+    fn visit_entry_copy_choices(
+        &self,
+        moves: Vec<entries::EntryMove>,
+        seen: &mut Vec<(usize, CopyRecipe)>,
+        emit: &mut dyn FnMut(Vec<entries::EntryMove>) -> bool,
+    ) -> bool {
+        let Some(index) = moves
+            .iter()
+            .enumerate()
+            .filter(|(_, m)| entry_copies::needs_copy(m))
+            .min_by_key(|(i, m)| (m.controller != self.active, *i))
+            .map(|(i, _)| i)
+        else {
+            return emit(moves);
+        };
+        let movement = &moves[index];
+        let spec = movement.before.card.entry_copy().unwrap();
+        let mut ids = (0..self.game.state.objects.len())
+            .map(|id| id as CardId)
+            .collect::<Vec<_>>();
+        ids.extend(self.resources.iter().map(|resource| resource.id));
+        ids.sort_unstable();
+        ids.dedup();
+        let candidates = ids
+            .into_iter()
+            .filter(|&id| {
+                !moves
+                    .iter()
+                    .any(|m| m.before.id == id && m.before.zone != Zone::Battlefield)
+                    && spec.filters.iter().any(|&filter| {
+                        battlefield_groups::filter_matches_in_world(
+                            self,
+                            filter,
+                            movement.controller,
+                            id,
+                        )
+                    })
+            })
+            .map(|id| entry_copies::blueprint_in_world(self, id))
+            .collect::<Vec<_>>();
+        if spec.optional || candidates.is_empty() {
+            let mut declined = moves.clone();
+            declined[index]
+                .copy_preparation
+                .get_or_insert_default()
+                .done = true;
+            if self.visit_entry_copy_choices(declined, seen, emit) {
+                return true;
+            }
+        }
+        for recipe in candidates {
+            // Repeated copy choices with an identical flat blueprint have the
+            // same eventual entry; avoid cycling only inside existential funding search.
+            if seen.contains(&(index, recipe)) {
+                continue;
+            }
+            let mut branch = moves.clone();
+            entry_copies::apply_blueprint(&mut branch[index], recipe);
+            seen.push((index, recipe));
+            if self.visit_entry_copy_choices(branch, seen, emit) {
+                return true;
+            }
+            seen.pop();
+        }
+        false
     }
 }

@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete Oracle/XMage: the committed contribution event binds the exact Mount or Vehicle.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(3, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::When {
+            guard: StepGuard::YourMainPhase,
+            event: &TriggerCondition::SelfCrewsOrSaddles,
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::Grow {
+                subject: Subject::Entering,
+                power: 2,
+                toughness: 0,
+            },
+            Instruction::GrantKeywords {
+                subject: Subject::Entering,
+                keywords: Keywords::TRAMPLE,
+            },
+        ],
+    }],
     ..CardRules::EMPTY
 };

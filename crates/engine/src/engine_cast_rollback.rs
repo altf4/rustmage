@@ -193,7 +193,10 @@ impl Game {
             if actor != rollback.player
                 && matches!(
                     action,
-                    Action::ChooseEntryBehold { .. }
+                    Action::ChooseEntryCopy { .. }
+                        | Action::ChooseEntryExile { .. }
+                        | Action::FinishEntryExile
+                        | Action::ChooseEntryBehold { .. }
                         | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }
                         | Action::ChooseAuraAttachment { .. }
@@ -237,6 +240,7 @@ impl Game {
             | Action::AnnounceFree { card, .. }
             | Action::AnnounceFreeFromPermission { card, .. }
             | Action::AnnounceCounterGraveyard { card }
+            | Action::AnnounceGraveyardAdditionalCosts { card }
             | Action::Cast { card, .. }
             | Action::BeginCast { card, .. } => card,
             Action::CastExiledDuringResolution { object, .. } => object.card,

@@ -1,0 +1,12 @@
+{
+  "name": "@token/servo_1_1_colorless_artifact",
+  "catalogue_id": 5487,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "has_rules_abilities": false,
+  "physical_metadata_sha256": "ba7540086256207e71af788fc59e06d3c8f8b145a1d5e875bf12376b0aa609e6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/ServoToken.java",
+  "java_sha256": "3a9fb93d317b2003652c987592517e8b3d58bafb23e7fc01d62b38dbb6dc6cc2"
+}

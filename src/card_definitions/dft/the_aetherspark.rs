@@ -1,4 +1,4 @@
-// Complete Oracle and pinned XMage implementation.
+// Reverified complete typed behavior against pinned DFT Oracle and full XMage sources.
 const fn loyalty(amount: i32) -> ActivationCost {
     ActivationCost {
         loyalty: Some(amount),

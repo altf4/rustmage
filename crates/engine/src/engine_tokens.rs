@@ -219,7 +219,7 @@ impl Game {
                     self.state.objects[id as usize].attached_to = Some(recipient);
                     self.record_role(self.object_ref(id), recipient, timestamp.unwrap());
                 }
-                self.record_nonland_entry(controller, self.current_kinds(id));
+                self.record_nonland_entry(controller, id, self.current_kinds(id));
                 self.register_battlefield_sources(id);
                 events.push(ZoneChange {
                     was_card: false,

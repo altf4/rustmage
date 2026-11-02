@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "status": "test-only split passed exact equivalence and refreshed full release acceptance; hosted CI is tracked on PR569",
+  "failed_ci": "https://github.com/altf4/rustmage/actions/runs/41501312541",
+  "original_published_head": "6410026b76b6fbcba240fb22a39d58526bb21636",
+  "test_only_source": "1e173cf26c7d7d351cb557c5388fb614850a4c16",
+  "changed_files": [
+    "tests/legacy/assurance/fra_complete_games.rs"
+  ],
+  "failure": "Existing FRA64 complete-game monolith exceeded unchanged45-second scenario limit on hostedCPU; no rule assertion failure.",
+  "source_reviewers": [
+    "engine_review_one",
+    "engine_review_final"
+  ],
+  "source_review_decision": "both independently approved exactc3a75a171",
+  "constraints": "No engine/card/workload/deck/seed/policy/decision-cap/time-limit change; all64 cases and all original replay/owned/mechanic/color obligations preserved.",
+  "comparison": {
+    "games": 64,
+    "decisions": 41363,
+    "exact_per_game_fields_and_digests": true,
+    "exact_aggregate_witnesses": true,
+    "actual_spell_colors": 31,
+    "expected_test_count": 10,
+    "all_ten_pass": true
+  },
+  "focused_followup_report": "<cache>/rustmage-authoring/aetherdrift/fra-ci-shards-20261102-01/report.json",
+  "original64_receipt": "<cache>/rustmage-authoring/aetherdrift/fra64-ci-diagnostic-20261102-01/games.json",
+  "original64_receipt_sha256": "8d7392caa138ab0c84e58084fe16371e4c4ee3370a304849adbb1362078b7013",
+  "split64_receipt": "<cache>/rustmage-authoring/aetherdrift/fra-ci-shards-20261102-01/shards.json",
+  "split64_receipt_sha256": "9c9513d3e31c92b42e65e36ea7e9faad659ea54ee042cb00c275fc7f5b3f7445",
+  "engine_reused": true,
+  "other79_test_executable_hashes_unchanged": true,
+  "legacy_target_compile_seconds": 21.777884785988135,
+  "focused_execution_seconds": 52.605459090991644,
+  "largest8_game_shard_seconds": 20.90250258,
+  "per_pair_seconds": {
+    "0": 3.078125172,
+    "1": 1.121407234,
+    "2": 1.950494841,
+    "3": 5.343416488,
+    "4": 1.3837817430000001,
+    "5": 20.90250258,
+    "6": 1.893105551,
+    "7": 3.858664606
+  },
+  "native_case_count_change": "3770\u21923777 because one64-game scenario becomes eight8-game scenarios; game coverage is identical.",
+  "DFT_game_receipt_reuse": "All80DFT case runtime/card/metadata/workload inputs are unchanged; previous full DFT gameplay/benchmark receipt remains applicable.",
+  "full_release_acceptance": "docs/aetherdrift-acceptance.json",
+  "validated_revision": "2d2b750ce37a917c6b7c1a9f232fae4435765134",
+  "published_PR": "https://github.com/altf4/rustmage/pull/569"
+}

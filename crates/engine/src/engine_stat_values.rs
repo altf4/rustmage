@@ -132,6 +132,37 @@ impl Game {
             }
             StatValue::Fixed(n) => i128::from(n),
             StatValue::HasEnduringStory => i128::from(enduring_story),
+            StatValue::SourceTotalCounters => objects()
+                .find(|(id, object)| *id == source.card && object.generation == source.generation)
+                .map_or(0, |_| {
+                    CounterKind::ALL
+                        .into_iter()
+                        .map(|kind| i128::from(counter_count(source.card, kind)))
+                        .sum()
+                }),
+            StatValue::Parity { value, odd } => i128::from(
+                (self.stat_value_with(
+                    *value,
+                    source,
+                    owner,
+                    objects,
+                    subtypes,
+                    kinds,
+                    names,
+                    colors,
+                    legendary,
+                    mana_value,
+                    counter_count,
+                    has_counters,
+                    life,
+                    opponent_life,
+                    attacking,
+                    enduring_story,
+                    life_lost,
+                ) % 2
+                    != 0)
+                    == odd,
+            ),
             StatValue::SourceCounters(kind) => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |_| i128::from(counter_count(source.card, kind))),
@@ -210,6 +241,9 @@ impl Game {
             StatValue::ControllerHandSize => objects()
                 .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand && o.is_card())
                 .count() as i128,
+            StatValue::MountOrVehicleEntriesThisTurn => {
+                i128::from(self.state.players[owner.index()].mount_or_vehicle_entries_this_turn)
+            }
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
             }
@@ -347,6 +381,16 @@ impl Game {
                     .capacity("life gain count representation exhausted")
             }
             StatValue::ControllerLife => life,
+            StatValue::ControllerSpeed => i128::from(self.state.players[owner.index()].speed),
+            StatValue::OpponentControlsMoreLands => {
+                let mut counts = [0usize; 2];
+                for (id, object) in objects() {
+                    if object.zone == Zone::Battlefield && kinds(id, object) & 2 != 0 {
+                        counts[object.controller.index()] += 1;
+                    }
+                }
+                i128::from(counts[owner.other().index()] > counts[owner.index()])
+            }
             StatValue::OpponentLifeAtMost(maximum) => {
                 i128::from(opponent_life <= i128::from(maximum))
             }
@@ -525,6 +569,9 @@ impl Game {
             AmountValue::ControllerHandDeficit(n) => {
                 u128::from(n).saturating_sub(self.hand_count(owner) as u128)
             }
+            AmountValue::SourceTotalCounters => self
+                .stat_value(StatValue::SourceTotalCounters, source, owner)
+                .max(0) as u128,
             AmountValue::SourceCounterQuantity(kind) => {
                 u128::from(self.source_counter_quantity_live(source, kind).unwrap_or(0))
             }
@@ -534,6 +581,8 @@ impl Game {
             | AmountValue::TargetPlayerCreatureCount
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount
+            | AmountValue::PaidAdditionalCostCount
+            | AmountValue::PaidAdditionalCostSelectionCount
             | AmountValue::ChosenX
             | AmountValue::ReflexiveTargetLimit
             | AmountValue::ManaSpent
@@ -552,6 +601,7 @@ impl Game {
             | AmountValue::SourceToughness
             | AmountValue::SourceEquipmentCount
             | AmountValue::LifeEventAmount
+            | AmountValue::DiscardEventAmount
             | AmountValue::DamageEventAmount
             | AmountValue::CreatureCombatDamageAmount
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.

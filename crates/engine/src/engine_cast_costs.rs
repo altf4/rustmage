@@ -84,6 +84,12 @@ impl Announcement {
         }
     }
     pub(super) fn initialize_alternative_life(&mut self) {
+        if let Some((life, _)) = self.self_graveyard_cast_cost() {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            if life != 0 {
+                self.add_cast_cost_clause(CastCostClause::Life(life));
+            }
+        }
         if self
             .item
             .cast
@@ -331,7 +337,8 @@ impl Game {
             CastCostClause::Additional => {
                 let spec = a.additional_cost().unwrap();
                 let p = a.item.controller;
-                let selected = a.additional.is_some() || a.additional_life;
+                let selected =
+                    a.additional.is_some() || a.additional_group_complete || a.additional_life;
                 self.state.announcing = Some(a);
                 if selected {
                     self.state.pending = Pending::PayCosts { player: p };

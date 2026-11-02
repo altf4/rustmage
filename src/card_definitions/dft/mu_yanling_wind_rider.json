@@ -3,10 +3,40 @@
   "catalogue_id": 2870,
   "oracle_id": "aaafcd69-6295-4d79-8e67-98df0c9bae88",
   "facts_sha256": "1106dde51cbbf1710e42589f5d9c0153f9c7ab5e53d18af53ba037e830bd8c61",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "09ce02e0fea6be9be736e9c1ec68dc948804e20503ff0ce815c37ceb7b075136"
   },
-  "physical_metadata_sha256": "febc59f304def6fe6913ea9f8507dc837995204205be59b36fb293d414f778fa"
+  "physical_metadata_sha256": "febc59f304def6fe6913ea9f8507dc837995204205be59b36fb293d414f778fa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MuYanlingWindRider.java",
+  "java_sha256": "cb1658e2ca4417c1ba914e421e0388433db82d9e8ae9cea193ee100750290b54",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/VehicleToken.java",
+      "sha256": "f58f5a3dec5c8be46cb2a93f6c37029a75d40b141480a343154a6c8728f0478b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/OneOrMoreCombatDamagePlayerTriggeredAbility.java",
+      "sha256": "bd049af604d636cbafb61dcbb6ef46b80207734f4f606bc6c902f017ada0a2e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/OneOrMoreDamagePlayerTriggeredAbility.java",
+      "sha256": "6b1a39143a4330ceea86033cef9212e4ebea416fa70ee2ba30a55b3aded6b92b"
+    }
+  ]
 }

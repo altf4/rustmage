@@ -6,6 +6,7 @@ use super::*;
 fn self_replacing_effect(g: &mut Game, player: Player, source: CardId) {
     let item = g.activation_item(player, source, 0);
     g.state.resolving = Some(Resolution {
+        chosen_card_name: None,
         chosen_creature_type: None,
         target_counter_removal: None,
         linked_copy: None,

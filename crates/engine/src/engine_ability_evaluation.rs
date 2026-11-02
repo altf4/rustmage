@@ -141,6 +141,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::SourceMaxSpeedActivation(ability) => {
             if id != source.card
+                || provider.card.activation(ability).source_zone() != provider.zone
                 || world.game().state.players[provider.controller.index()].speed < 4
             {
                 return None;
@@ -202,6 +203,15 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 abilities: vec![key(ability)],
                 mana: Vec::new(),
             });
+        }
+        StaticAbilityFragment::OpponentPlayerAttackerKeywords(keywords) => {
+            if world.kinds(id) & 1 == 0
+                || !matches!(world.attacking_defender(id), Some(CombatDefender::Player(player))
+                    if player != provider.controller)
+            {
+                return None;
+            }
+            keywords
         }
         StaticAbilityFragment::ControlledPermanentKeywords { kinds, keywords } => {
             if !own || world.kinds(id) & kinds == 0 {
@@ -369,7 +379,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
             source.zone == Zone::Battlefield
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| matches!(
-                        fragment, StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
+                        fragment, StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
                     ))
                 })
         })
@@ -559,6 +569,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
@@ -688,9 +699,13 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     started_earlier: false,
                     timestamp: row.timestamp,
                     recipients: vec![row.recipient.card],
-                    action: LayerSixAction::Grant {
-                        keywords: row.keywords,
-                        abilities: Vec::new(),
+                    action: if matches!(row.origin, KeywordEffectOrigin::ResolutionRemoval { .. }) {
+                        LayerSixAction::RemoveKeywords(row.keywords)
+                    } else {
+                        LayerSixAction::Grant {
+                            keywords: row.keywords,
+                            abilities: Vec::new(),
+                        }
                     },
                 });
             }

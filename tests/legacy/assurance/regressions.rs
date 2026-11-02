@@ -4803,7 +4803,7 @@ fn prior_schema184_state_supported(state: &State) -> bool {
 
 #[test]
 fn schema184_preserves_old_bytes_and_rejects_changed_card_and_paid_offer() {
-    assert_eq!(OBSERVATION_SCHEMA, 198);
+    assert_eq!(OBSERVATION_SCHEMA, 199);
     let old = r#"[{"resolution_free_casts":{"paid":null},"other":true}]"#;
     assert_eq!(project_prior_schema184(old).unwrap(), old);
     for card in ["Chandra, Torch of Defiance", "@emblem/fra-chandra-torch"] {
@@ -7516,6 +7516,7 @@ fn trace_candidate_with_prepared_observation_audit(
     }
 
     let mut journal = Vec::new();
+    let mut prior199_journal_supported = true;
     let offered = g.legal_actions().contains(&opening);
     assert!(
         offered,
@@ -7523,6 +7524,12 @@ fn trace_candidate_with_prepared_observation_audit(
         card.identity()
     );
     let status = if offered {
+        if schema_projection.is_some_and(|schema| schema < 199) {
+            prior199_journal_supported &= super::schema199::prior_schema199_actions_supported(
+                &g,
+                std::slice::from_ref(&opening),
+            );
+        }
         act(&mut g, opening.clone());
         journal.push(opening);
         for _ in 0..63 {
@@ -7565,6 +7572,14 @@ fn trace_candidate_with_prepared_observation_audit(
                     })
                     .clone()
             };
+            if schema_projection.is_some_and(|schema| schema < 199) {
+                // Validate while the exact source/borrowed definition still
+                // exists, before a paid sacrifice or later copy can replace it.
+                prior199_journal_supported &= super::schema199::prior_schema199_actions_supported(
+                    &g,
+                    std::slice::from_ref(&action),
+                );
+            }
             act(&mut g, action.clone());
             journal.push(action);
         }
@@ -7604,7 +7619,25 @@ fn trace_candidate_with_prepared_observation_audit(
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 198) {
+    if schema_projection.is_some_and(|schema| schema < 199) {
+        if !prior199_journal_supported
+            || !super::schema199::prior_schema199_state_supported(&g.state)
+            || views
+                .iter()
+                .any(|view| !super::schema199::prior_schema199_actions_supported(&g, &view.actions))
+        {
+            projection_error = Some(
+                "new Aetherdrift state, offered action or opaque continuation cannot be projected to schema 198"
+                    .to_owned(),
+            );
+        } else {
+            match super::schema199::project_prior_schema199(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 198) {
         if !super::schema198::prior_schema198_state_supported(&g.state) {
             projection_error = Some(
                 "new Hartford state or opaque continuation cannot be projected to schema 197"
@@ -8312,6 +8345,7 @@ fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
                     source_card: packet.source.expect("object-backed packet").card,
                     controller: player,
                     returning: link,
+                    own_end_step: false,
                 };
                 g.state.delayed_returns = Some(Box::new(vec![return_links::DelayedReturn {
                     view,
@@ -9339,6 +9373,9 @@ fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
                 components: Vec::new(),
             })),
             temporary_copy: None,
+            delayed_sacrifice: None,
+            captures_result: false,
+            copying: false,
             discard_context: None,
             moves: Vec::new(),
             choices: Vec::new(),

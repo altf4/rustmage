@@ -1,4 +1,4 @@
-// Direct typed behavior from complete pinned Oracle and XMage sources.
+// Complete pinned Oracle/XMage: optional exact graveyard landfall and live life-conditioned haste.
 const GROUPS: &[StaticAbilityGroup] = &[
     StaticAbilityGroup {
         line: 0,

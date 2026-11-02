@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/m/MonumentToEndurance.java",
   "java_sha256": "18bb55015854f90879a8c711d2f8d4ddd06324956393f431d59b32756f801bd1",
-  "rules_tests": "src/assurance/hartford_discard.rs",
+  "rules_tests": "tests/dft_colorless_cards_inherited_artifacts.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

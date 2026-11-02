@@ -3,10 +3,25 @@
   "catalogue_id": 638,
   "oracle_id": "829e121f-d2fa-40ef-afc7-9b2072a949d7",
   "facts_sha256": "f991d1df5b1e21a145a7cc2272a9f40f29a937146c77c13ef637af6f4e4c39f2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "055a47949ae66d093224760a427fc3e71eae6e8b20ec669c4cbe006433c295d1"
   },
-  "physical_metadata_sha256": "07fd7428c8676bb330029765db248bdc3f3aaf1b1a5aeaca9b015d885f95a407"
+  "physical_metadata_sha256": "07fd7428c8676bb330029765db248bdc3f3aaf1b1a5aeaca9b015d885f95a407",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CanyonVaulter.java",
+  "java_sha256": "b6458746466db07f17842c2faeb0eef3ff50d13d6160762da181c2dff788db30",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CrewsVehicleSourceTriggeredAbility.java",
+      "sha256": "7c5b25d1fb306a4340b5f91b84c2830c9b6e0320bbdfbbe68bb0cb1fa6718095"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

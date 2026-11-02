@@ -1,0 +1,1064 @@
+{
+  "scope": "47 colorless/land DFT members; read-only full main-class and typed-definition audit",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Aetherjacket",
+      "oracle_id": "062c8e40-dea7-4df7-bcaa-f1d696fe61c3",
+      "facts_sha256": "1ef39bd9be06f555b42fc5f21c9c1111db3fd824baeb14923cdf577655df0781",
+      "oracle_text": "Flying, vigilance\n{2}, {T}, Sacrifice this creature: Destroy another target artifact. Activate only as a sorcery.",
+      "definition": "src/card_definitions/dft/aetherjacket.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "ActivatedAbility sorcery + tap + sacrifice; TargetRule Object other artifact; Destroy; flying/vigilance"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Paid activation destroys only another artifact; no instant-speed activation; sacrificed-source LKI survives; source cannot target itself"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/a/Aetherjacket.java",
+          "sha256": "e7338cd94f3d8c39326f1459483068c16c0617ddd3464130b0f6eeb9ca49b439"
+        }
+      ]
+    },
+    {
+      "name": "Amonkhet Raceway",
+      "oracle_id": "fe174586-d36b-40f6-babd-1f98e76eec22",
+      "facts_sha256": "7a5d44e0c7c6cb3d53c3970bbb0ed8e5d36f3f7cc87f0ccc76614d202f1ee485",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add {C}.\nMax speed \u2014 {T}: Target creature gains haste until end of turn.",
+      "definition": "src/card_definitions/dft/amonkhet_raceway.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "StartYourEngines; SourceMaxSpeedActivation; grant target haste"
+      ],
+      "engine_dependencies": [
+        "speed_scalar_and_gates"
+      ],
+      "expected_outcomes": [
+        "No haste activation below speed four; at four tap and grant target haste until cleanup; ordinary colorless mana at any speed"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/a/AmonkhetRaceway.java",
+          "sha256": "5e6753b2e4ab563b5948ab43fbaba4bac78580a816c998779c93d1940991017c"
+        }
+      ]
+    },
+    {
+      "name": "Avishkar Raceway",
+      "oracle_id": "e2c35551-1ba5-4424-baf9-821b49bbcc8c",
+      "facts_sha256": "08c18b8515b1e359f7c094bbd396b683506e4060e264575320db0f042a682c60",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add {C}.\nMax speed \u2014 {3}, {T}, Discard a card: Draw a card.",
+      "definition": "src/card_definitions/dft/avishkar_raceway.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "StartYourEngines; SourceMaxSpeedActivation; discard additional cost; Draw"
+      ],
+      "engine_dependencies": [
+        "speed_scalar_and_gates"
+      ],
+      "expected_outcomes": [
+        "Discard paid before draw; max-speed gate and tapped-source rejection; colorless mana remains available"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/a/AvishkarRaceway.java",
+          "sha256": "4b15583e2088181442771bbcbbc106689298ff25c670cf8fec9bc2d83a77d39b"
+        }
+      ]
+    },
+    {
+      "name": "Bleachbone Verge",
+      "oracle_id": "2b8144a0-08d2-4c28-9fd7-5d90f90105e4",
+      "facts_sha256": "6aa5d7f46dd76c54a7313f190c1eda121070580e1732cd05a10153b023fe2107",
+      "oracle_text": "{T}: Add {B}.\n{T}: Add {W}. Activate only if you control a Plains or a Swamp.",
+      "definition": "src/card_definitions/dft/bleachbone_verge.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "ControlSubtypeAny; fixed primary and gated secondary mana"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Primary mana unconditional; either printed basic-land subtype unlocks secondary mana; printed type loss and funding sacrifice invalidate gate"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/b/BleachboneVerge.java",
+          "sha256": "955e056898ffee6e18c22ac0655679f0380e6958dad07d074c9de572b53d89c2"
+        }
+      ]
+    },
+    {
+      "name": "Bloodfell Caves",
+      "oracle_id": "64e29bfc-9313-4e8c-808c-bc27f6b018a6",
+      "facts_sha256": "87bcaf44b9335e6635696a3a426c20a400f738f08861700ecb8161a9c91e6a15",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {B} or {R}.",
+      "definition": "src/card_definitions/tdm/bloodfell_caves.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/b/BloodfellCaves.java",
+          "sha256": "a73c1a7aefe9a4bc9567e58e4c5a341d26ce6c16ac9fd32fd418307491ced1ad"
+        }
+      ]
+    },
+    {
+      "name": "Blossoming Sands",
+      "oracle_id": "45429b2c-be3b-4b2e-9bab-a059ccbda8cd",
+      "facts_sha256": "f4a08f5ed04f3c8b6fee1de0d3159595ea8a3d2865e90f86ee246b3aa449102f",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {G} or {W}.",
+      "definition": "src/card_definitions/tdm/blossoming_sands.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/b/BlossomingSands.java",
+          "sha256": "0d1815d89d70b007eb5434653c7714025977a2d4753153ec39ee0717490f7f1e"
+        }
+      ]
+    },
+    {
+      "name": "Camera Launcher",
+      "oracle_id": "b46bac37-5b45-4be5-93d0-76e48dbd9f74",
+      "facts_sha256": "5f6d80cd86185f24c237cdddf3ca7260dd0c0bcefcc88da6a324191be7a603d1",
+      "oracle_text": "Exhaust \u2014 {3}: Put a +1/+1 counter on this creature. Create a 1/1 colorless Thopter artifact creature token with flying. (Activate each exhaust ability only once.)",
+      "definition": "src/card_definitions/dft/camera_launcher.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "exhaust bit/use history; PutCounters Source; Thopter factory"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "First paid exhaust adds one counter and one 1/1 colorless artifact flying Thopter; repeat rejected across turns; blink resets exact-object use"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/c/CameraLauncher.java",
+          "sha256": "d38b7d7e0c4602f473c56ac315f7c908ce6dd7278e635206a3ba3785e6b1f083"
+        }
+      ]
+    },
+    {
+      "name": "Country Roads",
+      "oracle_id": "c5a39f76-dd1b-442c-9f52-08561ecb91ad",
+      "facts_sha256": "c1b2e42e23d92ce7cd4b47d2426a8eaef26bbc7ff9b043f1575b24c016796142",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {W}.\n{1}{W}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "definition": "src/card_definitions/dft/country_roads.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "EntryTapped::UnlessControlsEitherSubtype(\"Mount\", \"Vehicle\") (actual and funding worlds)"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Mount-only and Vehicle-only each allow untapped entry; neither forces tapped; exact colored mana; sorcery sacrifice creates 1/1 colorless Pilot contributing three to both crew/saddle"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/c/CountryRoads.java",
+          "sha256": "84da319acc5b0f8559ffc0d74274d0a877d561e9975580d938d0fb8af33defba"
+        }
+      ]
+    },
+    {
+      "name": "Dismal Backwater",
+      "oracle_id": "865a2194-fca0-446e-aae3-ca475cd66e00",
+      "facts_sha256": "2818b0af8052055e32175a211055d43f9e1e1ce79c7d7aaa678c31ca55e48df7",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {U} or {B}.",
+      "definition": "src/card_definitions/tdm/dismal_backwater.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/d/DismalBackwater.java",
+          "sha256": "c3f3fd90fee617972571380f5a3c0b34d000432b2f012e53dba3b120931907b6"
+        }
+      ]
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+      "oracle_text": "({T}: Add {G}.)",
+      "definition": "src/card_definitions/fra/forest.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "intrinsic basic land mana; unlimited basic-land deck copies"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "One tap produces printed mana; tapped land unavailable; Standard deck validation permits more than four basics"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage/src/main/java/mage/cards/basiclands/Forest.java",
+          "sha256": "77b52732425a0d2b9a8f53d2fff7014dab7897b56b23b69792872d8c95955716"
+        }
+      ]
+    },
+    {
+      "name": "Foul Roads",
+      "oracle_id": "d4e4c8a5-e97b-4295-a403-d17834f73502",
+      "facts_sha256": "62b60b67ef77abc410b832145b7aed2dfdbcffccb60c745d3b56a6110c01fcd3",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {B}.\n{1}{B}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "definition": "src/card_definitions/dft/foul_roads.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "EntryTapped::UnlessControlsEitherSubtype(\"Mount\", \"Vehicle\") (actual and funding worlds)"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Mount-only and Vehicle-only each allow untapped entry; neither forces tapped; exact colored mana; sorcery sacrifice creates 1/1 colorless Pilot contributing three to both crew/saddle"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/f/FoulRoads.java",
+          "sha256": "6b963ca24382171ccbe509630bff7eae54bc034f1430ac1e4ea45b159f7b8557"
+        }
+      ]
+    },
+    {
+      "name": "Guidelight Matrix",
+      "oracle_id": "98005890-d566-4a27-906f-625513171e85",
+      "facts_sha256": "aa03aeaacb3369ff3160bbc5f0937488d9f8aac862455fa397dd640cd782b632",
+      "oracle_text": "When this artifact enters, draw a card.\n{2}, {T}: Target Mount you control becomes saddled until end of turn. Activate only as a sorcery.\n{2}, {T}: Target Vehicle you control becomes an artifact creature until end of turn.",
+      "definition": "src/card_definitions/dft/guidelight_matrix.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "ETB draw; targeted AnimationSpec EndOfTurn"
+      ],
+      "engine_dependencies": [
+        "saddle_target"
+      ],
+      "expected_outcomes": [
+        "ETB draws once; sorcery-only targeted own Mount saddle works even without printed saddle; vehicle animation works at instant speed and clears at cleanup"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/g/GuidelightMatrix.java",
+          "sha256": "788adabea9f787848c36c36c7000b464bcf237262476fd465fb5f5247df70421"
+        }
+      ]
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "facts_sha256": "9663433a19f0b70520d2598600be1ddac39dd97fd02f80811dcce06dd0cbaf26",
+      "oracle_text": "({T}: Add {U}.)",
+      "definition": "src/card_definitions/fra/island.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "intrinsic basic land mana; unlimited basic-land deck copies"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "One tap produces printed mana; tapped land unavailable; Standard deck validation permits more than four basics"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage/src/main/java/mage/cards/basiclands/Island.java",
+          "sha256": "5a9765a9f49e22aa89884834780c0cd7c8e2cc8696daab1d841fd13f40c58c96"
+        }
+      ]
+    },
+    {
+      "name": "Jungle Hollow",
+      "oracle_id": "6de714e1-446d-4fb9-9e3d-bcd3ec6af9ca",
+      "facts_sha256": "c55f4acd0a02e4f4e57bf9b2800abc6cf6f49a36ccf82e6177936f917cb36f14",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {B} or {G}.",
+      "definition": "src/card_definitions/tdm/jungle_hollow.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/j/JungleHollow.java",
+          "sha256": "231aa74231e6b0f1835e2f5508c0fa55e3d6fe8c339ebbb068888f71207b1108"
+        }
+      ]
+    },
+    {
+      "name": "Lifecraft Engine",
+      "oracle_id": "caa69b51-1efd-4d0e-803b-914a83ccb836",
+      "facts_sha256": "b3dfe4f76b4c14447d09fb505c887fb366ac4589dadc36136efa19f483c04630",
+      "oracle_text": "As this Vehicle enters, choose a creature type.\nVehicle creatures you control are the chosen creature type in addition to their other types.\nEach creature you control of the chosen type other than this Vehicle gets +1/+1.\nCrew 3",
+      "definition": "src/card_definitions/dft/lifecraft_engine.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "entry_choice CreatureType; ChosenModifier other; crew 3"
+      ],
+      "engine_dependencies": [
+        "chosen_type_vehicle_group"
+      ],
+      "expected_outcomes": [
+        "Choice precedes entry; animated own Vehicles gain chosen type; other chosen-type creatures gain one on both axes; source excluded; type/ability-removal and funding projection agree"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/l/LifecraftEngine.java",
+          "sha256": "509b54cda70e60cd793d513f8f81bf00d0d325429fd3686394fecbfef830507a"
+        }
+      ]
+    },
+    {
+      "name": "Marketback Walker",
+      "oracle_id": "0405e0a9-6d02-4691-bdb8-59c72b824dab",
+      "facts_sha256": "1ae1c17c53f132b197b20ef64dfe06f0402488b3ec898aa4ea4c52fe69f663c7",
+      "oracle_text": "This creature enters with X +1/+1 counters on it.\n{4}: Put a +1/+1 counter on this creature.\nWhen this creature dies, draw a card for each +1/+1 counter on it.",
+      "definition": "src/card_definitions/dft/marketback_walker.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "x_symbols=2 metadata; AddCastEntryCounters ChosenX; SourceCounterQuantity death LKI; DrawScaled"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "X=2 costs four generic and enters with two counters; activation adds one; death draws exact pre-departure counter count; X=0 dies to SBA and draws zero"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/m/MarketbackWalker.java",
+          "sha256": "8f6dffbcd406674f250ea1b3b005e749e4e616dd583b14e08ba6861e068fa763"
+        }
+      ]
+    },
+    {
+      "name": "Marshals' Pathcruiser",
+      "oracle_id": "60f20f32-b6db-4ee7-a0aa-535647e6fcd5",
+      "facts_sha256": "edeb891e23aa8edba75797ada64285b10e752fc04b27d530e1e9223bbc1035da",
+      "oracle_text": "When this Vehicle enters, search your library for a basic land card, reveal it, put it into your hand, then shuffle.\nExhaust \u2014 {W}{U}{B}{R}{G}: This Vehicle becomes an artifact creature. Put two +1/+1 counters on it. (Activate each exhaust ability only once.)\nCrew 5",
+      "definition": "src/card_definitions/dft/marshals_pathcruiser.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "search basic land to hand with reveal/shuffle; AnimateSource Permanent; exhaust; counters; crew 5"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "ETB optional failed basic search shuffles and hides library; five-color exhaust permanently animates 6/5 and adds two counters; repeat use illegal; crew temporary animation composes"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/m/MarshalsPathcruiser.java",
+          "sha256": "18a3068385208771779fca31cd7c8fefbd7e75cfb137b6fdbe7adff23a8b91a4"
+        }
+      ]
+    },
+    {
+      "name": "Monument to Endurance",
+      "oracle_id": "e69e8de4-b521-4888-8074-17f1efe2f345",
+      "facts_sha256": "034ad53734cc609f80f92a70dffa96393d87fcec13361c02d93c39a76d60600f",
+      "oracle_text": "Whenever you discard a card, choose one that hasn't been chosen this turn \u2014\n\u2022 Draw a card.\n\u2022 Create a Treasure token.\n\u2022 Each opponent loses 3 life.",
+      "definition": "src/card_definitions/dft/monument_to_endurance.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "Discarded one_or_more=false; ModalOncePerTurn; Draw/Treasure/LoseLife"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Three separate discarded cards can select all three modes once; fourth has no unused mode; turn reset and exact new incarnation reset; mode reserved on announcement"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/m/MonumentToEndurance.java",
+          "sha256": "18bb55015854f90879a8c711d2f8d4ddd06324956393f431d59b32756f801bd1"
+        }
+      ]
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+      "oracle_text": "({T}: Add {R}.)",
+      "definition": "src/card_definitions/fra/mountain.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "intrinsic basic land mana; unlimited basic-land deck copies"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "One tap produces printed mana; tapped land unavailable; Standard deck validation permits more than four basics"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage/src/main/java/mage/cards/basiclands/Mountain.java",
+          "sha256": "be959d0f5a3db621a31d32104ae445a033cd10907a237a4f8630b3457df13a73"
+        }
+      ]
+    },
+    {
+      "name": "Muraganda Raceway",
+      "oracle_id": "b5fa5651-d714-44d6-867b-be0e3224b7ed",
+      "facts_sha256": "dd9a2932115764899bdaa20491f5e914695311d0b8647b19e798d21dc16273b9",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add {C}.\nMax speed \u2014 {T}: Add {C}{C}.",
+      "definition": "src/card_definitions/dft/muraganda_raceway.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "StartYourEngines; SourceMaxSpeedActivation fixed two colorless mana"
+      ],
+      "engine_dependencies": [
+        "speed_scalar_and_gates"
+      ],
+      "expected_outcomes": [
+        "One-colorless mana before four speed; two at four as mana ability including funding; suppression disables source grant"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/m/MuragandaRaceway.java",
+          "sha256": "f5a24981d9bb9e5a048e4fbf6dfd73cfb8c0956254be9ca09960d5c06e95c09b"
+        }
+      ]
+    },
+    {
+      "name": "Night Market",
+      "oracle_id": "4cdb9f80-d08f-4986-99c8-573166d66082",
+      "facts_sha256": "c6baee043bb5f0dc1b57d41c874e563f4f22dc189b91e21e93c2c1b2c56ec2ec",
+      "oracle_text": "This land enters tapped. As it enters, choose a color.\n{T}: Add one mana of the chosen color.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+      "definition": "src/card_definitions/dft/night_market.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "entry_choice Color; EntryTapped Always; ManaProduction ChosenColor; cycling 3"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Enters tapped with mandatory color choice; only chosen color available after untap; cycling discards and draws without entry choice"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/n/NightMarket.java",
+          "sha256": "85278c866806694ced6469c2275a12fea266cf2afef82295be923cf3b2df02d5"
+        }
+      ]
+    },
+    {
+      "name": "Pit Automaton",
+      "oracle_id": "49bfecc3-6258-454e-a8fd-fc49098a0898",
+      "facts_sha256": "d314d021684ed5230621b1c7afe2a43ad4bafb92fb5ea666332cc9a5b22f90b3",
+      "oracle_text": "Defender\n{T}: Add {C}{C}. Spend this mana only to activate abilities.\n{2}, {T}: When you next activate an exhaust ability that isn't a mana ability this turn, copy it. You may choose new targets for the copy.",
+      "definition": "src/card_definitions/dft/pit_automaton.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "defender; tagged fixed mana AbilityActivation; CopyCapturedActivatedAbility/retarget infrastructure"
+      ],
+      "engine_dependencies": [
+        "delayed_next_exhaust_copy"
+      ],
+      "expected_outcomes": [
+        "Two colorless pay only activated abilities; delayed next nonmana exhaust produces one copy with optional new targets; mana exhaust ignored; multiple delayed observers; expires this turn and survives source departure"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/p/PitAutomaton.java",
+          "sha256": "e4c582f67465020449977a155f6a2e07d3e1be4e9a0f8c89422a50fb89cb15f8"
+        }
+      ]
+    },
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+      "oracle_text": "({T}: Add {W}.)",
+      "definition": "src/card_definitions/fra/plains.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "intrinsic basic land mana; unlimited basic-land deck copies"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "One tap produces printed mana; tapped land unavailable; Standard deck validation permits more than four basics"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage/src/main/java/mage/cards/basiclands/Plains.java",
+          "sha256": "da74b1b93697ec78ec2fc7665715f40c60e393e43845b88c8f5c491bc38c8eaf"
+        }
+      ]
+    },
+    {
+      "name": "Racers' Scoreboard",
+      "oracle_id": "54c2b3b3-e247-4146-8045-d49480b795f2",
+      "facts_sha256": "7eb18fdff212b28d0264fa93da6cd7c91923696f4c693c4e0eb7f98bde5ceb68",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nWhen this artifact enters, draw two cards, then discard a card.\nMax speed \u2014 Spells you cast cost {1} less to cast.",
+      "definition": "src/card_definitions/dft/racers_scoreboard.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "StartYourEngines; ETB Draw then Discard; generic SpellReduction",
+        "SpellReduction.guard accepts StepGuard expression: only speed scalar is missing"
+      ],
+      "engine_dependencies": [
+        "speed_scalar_and_gates"
+      ],
+      "expected_outcomes": [
+        "Draw two then discard one; no discount below speed four; at four reduce generic of all spells by one but never colored cost; funding projection after source sacrifice removes reduction"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/r/RacersScoreboard.java",
+          "sha256": "c0b5109f3d3d54b63656e65a76810d017b90adcc85f913c7fb3108592dc4b064"
+        }
+      ]
+    },
+    {
+      "name": "Radiant Lotus",
+      "oracle_id": "307be184-176a-40a8-944c-48aa00cfdd29",
+      "facts_sha256": "e78917eb52553300f1eed47b094f9e9cfa798c03fe66872fcc76f7087302cae3",
+      "oracle_text": "{T}, Sacrifice one or more artifacts: Choose a color. Target player adds three mana of the chosen color for each artifact sacrificed this way. (Activate only as an instant.)",
+      "definition": "src/card_definitions/dft/radiant_lotus.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "tap cost; targeted player plan; owned choice/paying framework"
+      ],
+      "engine_dependencies": [
+        "variable_sacrifice_activation_cost",
+        "target_player_scaled_chosen_mana"
+      ],
+      "expected_outcomes": [
+        "Must sacrifice at least one own artifact; simultaneous sacrifice may include Lotus; successful count captured; controller chooses one color at resolution and targeted player receives triple count; target invalidation fizzles; no mana-ability timing"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/r/RadiantLotus.java",
+          "sha256": "c9e8d78a1fef15267982597a78690ee14d85312781c90715278d0b4ce23739a1"
+        }
+      ]
+    },
+    {
+      "name": "Reef Roads",
+      "oracle_id": "32438050-5ae7-4c19-bcaf-5a07a673e0e0",
+      "facts_sha256": "d7d4c0675e7676527f98042913e4ce901b0d89e7ec87551031673bc441edb6f6",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {U}.\n{1}{U}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "definition": "src/card_definitions/dft/reef_roads.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "EntryTapped::UnlessControlsEitherSubtype(\"Mount\", \"Vehicle\") (actual and funding worlds)"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Mount-only and Vehicle-only each allow untapped entry; neither forces tapped; exact colored mana; sorcery sacrifice creates 1/1 colorless Pilot contributing three to both crew/saddle"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/r/ReefRoads.java",
+          "sha256": "76d37c584d1d05188a1b573e2cfca163c023ecf08ad74ba2e81f375fa03fc162"
+        }
+      ]
+    },
+    {
+      "name": "Riverpyre Verge",
+      "oracle_id": "510a6ac5-f098-4145-ac07-771b1b6f7cdf",
+      "facts_sha256": "db184c8ab3c88a34a7f92125db99df9beaebc1ba02de3e3fae944fda055362f3",
+      "oracle_text": "{T}: Add {R}.\n{T}: Add {U}. Activate only if you control an Island or a Mountain.",
+      "definition": "src/card_definitions/dft/riverpyre_verge.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "ControlSubtypeAny; fixed primary and gated secondary mana"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Primary mana unconditional; either printed basic-land subtype unlocks secondary mana; printed type loss and funding sacrifice invalidate gate"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/r/RiverpyreVerge.java",
+          "sha256": "6c9205347937fa4f8da949231625c18fc6b2c65c5e92af193b313dedde70debd"
+        }
+      ]
+    },
+    {
+      "name": "Rocky Roads",
+      "oracle_id": "a659c29f-aaca-44c5-8426-cdafcb195f86",
+      "facts_sha256": "034d8d343fb8e9183d3663eebc947c339f25d4275904f61144f43394306dfa05",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {R}.\n{1}{R}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "definition": "src/card_definitions/dft/rocky_roads.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "EntryTapped::UnlessControlsEitherSubtype(\"Mount\", \"Vehicle\") (actual and funding worlds)"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Mount-only and Vehicle-only each allow untapped entry; neither forces tapped; exact colored mana; sorcery sacrifice creates 1/1 colorless Pilot contributing three to both crew/saddle"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/r/RockyRoads.java",
+          "sha256": "56ce9024b7eb881795873f48af6dbcc2e35e51a1a668145e305b21fdb4f3f135"
+        }
+      ]
+    },
+    {
+      "name": "Rover Blades",
+      "oracle_id": "0394846e-bc27-4d67-988e-b08a389690de",
+      "facts_sha256": "6938b36c126ce26221575baad32749d614ac992a8678aab8c4feba2f8e0ca247",
+      "oracle_text": "Double strike\nEquipped creature has double strike.\nEquip {4}\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn. Creatures can't be attached to other permanents.)",
+      "definition": "src/card_definitions/dft/rover_blades.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "EquipmentSpec double strike; equip four; crew two; vehicle 2/2; creature attachment SBA"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Equipped creature double-strikes; crew makes source 2/2 double striker and detaches it; cannot re-equip creature source; cleanup restores equipment behavior"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/r/RoverBlades.java",
+          "sha256": "9cab143b7d5e36f74cd3e0d68fd8e32295a41180564f6ec7df0e2d5316d6dc01"
+        }
+      ]
+    },
+    {
+      "name": "Rugged Highlands",
+      "oracle_id": "6c922206-6e68-4dcd-9559-88da1074f2c4",
+      "facts_sha256": "229cf0320f309f152fce970274deb5cd20e5eabedf38738216ad6abefc770e3b",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {R} or {G}.",
+      "definition": "src/card_definitions/tdm/rugged_highlands.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/r/RuggedHighlands.java",
+          "sha256": "e1389891d0960047285f93457773914416ae896c48a64d0b8194a95dae4b57f7"
+        }
+      ]
+    },
+    {
+      "name": "Scoured Barrens",
+      "oracle_id": "d37f858e-03c8-4594-9b92-cd03699a1591",
+      "facts_sha256": "4053aab61d910da51664239329dbf26b8086df47e5ea058ef58a71ecea1b14bd",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {W} or {B}.",
+      "definition": "src/card_definitions/tdm/scoured_barrens.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/s/ScouredBarrens.java",
+          "sha256": "c34c47f8a72ad7e94c01c1d9202d307bd5cd466cf6b986cb6dfea5a5a2e714bc"
+        }
+      ]
+    },
+    {
+      "name": "Scrap Compactor",
+      "oracle_id": "7f113875-a411-463b-8b4d-91d1dee95c2a",
+      "facts_sha256": "93db9c73a35aa50bf10a8f48e1deaf1e0eedf99316ad5a7252105ca6c2bb58e2",
+      "oracle_text": "{3}, {T}, Sacrifice this artifact: It deals 3 damage to target creature.\n{6}, {T}, Sacrifice this artifact: Destroy target creature or Vehicle.",
+      "definition": "src/card_definitions/dft/scrap_compactor.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "paid tap sacrifice source; Damage 3; Destroy CreatureOrVehicle"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Each activation pays exact mana and source sacrifice; first cannot target noncreature Vehicle; second can; stale target fizzles and preserves paid sacrifice"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/s/ScrapCompactor.java",
+          "sha256": "26920fc44427dc309a86ca1f397d59aeaa55b07bea9095c45ad0c77587e7f59c"
+        }
+      ]
+    },
+    {
+      "name": "Skybox Ferry",
+      "oracle_id": "09726c3d-f700-4bf4-a9e7-326fe41b0a4a",
+      "facts_sha256": "31d058f434fffc4c71984200982344fe9290ecb8857c6991051bd26cfb128bb6",
+      "oracle_text": "Flying\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "definition": "src/card_definitions/dft/skybox_ferry.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "crew 2; vehicle 4/4 flying; cycling 2"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Crew paid with total power two animates flying 4/4 through cleanup; summoning sickness behavior; cycling discards/draws as activated ability"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/s/SkyboxFerry.java",
+          "sha256": "ee3b4ac241a42ec8f12b7de91d70e76663b9ae05ee102393fe95a9df5adff336"
+        }
+      ]
+    },
+    {
+      "name": "Starting Column",
+      "oracle_id": "d608a3fa-faee-44a4-9ab6-be701d3b7a49",
+      "facts_sha256": "6509a39f472f216927ec72cf3e569a96ff7cc57dbb3084df3f8c03b9daf70534",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add one mana of any color.\nMax speed \u2014 {T}, Sacrifice this artifact: Draw two cards, then discard a card.",
+      "definition": "src/card_definitions/dft/starting_column.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "StartYourEngines; any-color mana; SourceMaxSpeedActivation with tap sacrifice; draw then discard"
+      ],
+      "engine_dependencies": [
+        "speed_scalar_and_gates"
+      ],
+      "expected_outcomes": [
+        "All five mana colors available; at four speed tap-sacrifice draws two then forces discard one; below four no nonmana activation"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/s/StartingColumn.java",
+          "sha256": "59c66d47490784e6383af865092a53ea33851457273698b53c6758cb91eab7fa"
+        }
+      ]
+    },
+    {
+      "name": "Sunbillow Verge",
+      "oracle_id": "a202276b-1f1b-4277-95ee-26877a204f5e",
+      "facts_sha256": "3705f1ca8c1b9e069e7c0cb5c41326f2be02c1c348106267f303b414c4cc9f17",
+      "oracle_text": "{T}: Add {W}.\n{T}: Add {R}. Activate only if you control a Mountain or a Plains.",
+      "definition": "src/card_definitions/dft/sunbillow_verge.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "ControlSubtypeAny; fixed primary and gated secondary mana"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Primary mana unconditional; either printed basic-land subtype unlocks secondary mana; printed type loss and funding sacrifice invalidate gate"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/s/SunbillowVerge.java",
+          "sha256": "d8cd35c0aa37fb15fb9b617b1370b85dd060a38206e4520851b6a98e2999e4c7"
+        }
+      ]
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+      "oracle_text": "({T}: Add {B}.)",
+      "definition": "src/card_definitions/fra/swamp.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "intrinsic basic land mana; unlimited basic-land deck copies"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "One tap produces printed mana; tapped land unavailable; Standard deck validation permits more than four basics"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage/src/main/java/mage/cards/basiclands/Swamp.java",
+          "sha256": "b292314acab07bf9e658419b7c2cebf25c9cf7fe0267792c1cdfb73d9ebd3855"
+        }
+      ]
+    },
+    {
+      "name": "Swiftwater Cliffs",
+      "oracle_id": "2f4ad084-2062-44c0-9975-15f100204531",
+      "facts_sha256": "6336b71c23cc0b2c2653de5565d259f91a9a81c0aa13274c19e580784bcf893e",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {U} or {R}.",
+      "definition": "src/card_definitions/tdm/swiftwater_cliffs.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/s/SwiftwaterCliffs.java",
+          "sha256": "ff8cb12b116402b92b76c33790b8062174e794b0b8f1df872b69f7e0f285f3c2"
+        }
+      ]
+    },
+    {
+      "name": "The Aetherspark",
+      "oracle_id": "483c747a-b602-4747-95bc-72c2c17ed509",
+      "facts_sha256": "acb50a009f6688a1dcdbec3a47fdfdfa83f083579bec6521e0abe70f4997dd98",
+      "oracle_text": "As long as The Aetherspark is attached to a creature, The Aetherspark can't be attacked and has \"Whenever equipped creature deals combat damage during your turn, put that many loyalty counters on The Aetherspark.\"\n+1: Attach The Aetherspark to up to one target creature you control. Put a +1/+1 counter on that creature.\n\u22125: Draw two cards.\n\u221210: Add ten mana of any one color.",
+      "definition": "src/card_definitions/dft/the_aetherspark.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "attachment attack prevention; attached combat damage amount; loyalty activated abilities; optional own target; any-one-color mana"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Initial four loyalty; +1 attachment and +1 counter or zero targets; attached cannot be attacked; own-turn equipped damage adds exact loyalty; opponent turn does not; -5 draws two; -10 chooses one color ten mana; loyalty payment can kill source and effect remains"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/t/TheAetherspark.java",
+          "sha256": "c1a9dbe55b2d29476a31602c8595c8470978e3fd94de4f52690f606cf14cf121"
+        }
+      ]
+    },
+    {
+      "name": "Thornwood Falls",
+      "oracle_id": "ec96cde2-f1e6-495c-94e2-3e8ae79e556c",
+      "facts_sha256": "5ebd81c56f1f374992f7adfcf3a8310d0b5f935de2bde64169799fd60211603a",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {G} or {U}.",
+      "definition": "src/card_definitions/tdm/thornwood_falls.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/t/ThornwoodFalls.java",
+          "sha256": "49342818c4d39d4bc4c69ddae94f07d461ab79c3a49782ae7b1c6f3041e24e67"
+        }
+      ]
+    },
+    {
+      "name": "Ticket Tortoise",
+      "oracle_id": "952083c5-9ffa-4cd9-915f-b7de7f3e5326",
+      "facts_sha256": "754a47d230ab9681a8d4290d1205d970ab165ff92a85a014623e87e17fe5ae54",
+      "oracle_text": "Defender\nWhen this creature enters, if an opponent controls more lands than you, you create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+      "definition": "src/card_definitions/dft/ticket_tortoise.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "defender; intervening If wrapper; treasure factory"
+      ],
+      "engine_dependencies": [
+        "opponent_controls_more_lands"
+      ],
+      "expected_outcomes": [
+        "ETB only queues when opponent strictly has more lands; recheck condition at resolution; exactly one Treasure on success; equality does not qualify"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/t/TicketTortoise.java",
+          "sha256": "79d1f26f727477b4838ebda3553e45292eebd5931bd7b9a46c60d1deaf5f2d80"
+        }
+      ]
+    },
+    {
+      "name": "Tranquil Cove",
+      "oracle_id": "5d641bf6-0f93-4189-8dc1-ec7ea446dade",
+      "facts_sha256": "33707136abf946fdc5c10d480652b62b961fccec48c57a41771dfcb384edc8ab",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {W} or {U}.",
+      "definition": "src/card_definitions/tdm/tranquil_cove.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/t/TranquilCove.java",
+          "sha256": "5e133ca3c55c2e1640f4e7c24bd9ef65cc010a23cb276c276d7cb70dd3381dba"
+        }
+      ]
+    },
+    {
+      "name": "Walking Sarcophagus",
+      "oracle_id": "791b8ac8-8db8-44b4-8c85-fcc9017c17ef",
+      "facts_sha256": "6f3f7df865dcd31690a811f1767ee3a7f13046965f308a7273b4f17f97df9424",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 This creature gets +1/+2.",
+      "definition": "src/card_definitions/dft/walking_sarcophagus.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "StartYourEngines; ConditionalCreatureModifier"
+      ],
+      "engine_dependencies": [
+        "speed_scalar_and_gates"
+      ],
+      "expected_outcomes": [
+        "Base 2/1 before max speed; 3/3 at speed four; suppression removes self bonus without clearing player speed"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/w/WalkingSarcophagus.java",
+          "sha256": "1fce5f3536e7665b40f73f976526b1ac4d5097d494d6280201b337e27dcc9408"
+        }
+      ]
+    },
+    {
+      "name": "Wastewood Verge",
+      "oracle_id": "c6e0574c-3e2b-4c40-b17a-05bce3d49309",
+      "facts_sha256": "3c1f05b1073c467a0149817c08bda12fce59f93c884765032a60894da1a0ad19",
+      "oracle_text": "{T}: Add {G}.\n{T}: Add {B}. Activate only if you control a Swamp or a Forest.",
+      "definition": "src/card_definitions/dft/wastewood_verge.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "ControlSubtypeAny; fixed primary and gated secondary mana"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Primary mana unconditional; either printed basic-land subtype unlocks secondary mana; printed type loss and funding sacrifice invalidate gate"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/w/WastewoodVerge.java",
+          "sha256": "3752ecba56da0b2beb75d84271dd204e163a217603c81283fde55a54c46efa9b"
+        }
+      ]
+    },
+    {
+      "name": "Wild Roads",
+      "oracle_id": "36fbc8ba-bb4c-4e5e-9031-78c36e376851",
+      "facts_sha256": "5f4eda469a01ac63556804cb076ab3868394e387277e1ff7895435928246f386",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {G}.\n{1}{G}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "definition": "src/card_definitions/dft/wild_roads.json",
+      "inherited_complete": false,
+      "existing_support": [
+        "EntryTapped::UnlessControlsEitherSubtype(\"Mount\", \"Vehicle\") (actual and funding worlds)"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Mount-only and Vehicle-only each allow untapped entry; neither forces tapped; exact colored mana; sorcery sacrifice creates 1/1 colorless Pilot contributing three to both crew/saddle"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/w/WildRoads.java",
+          "sha256": "589f127215ecb4dc5996d7ca4b8e10ab309c19e2059bf46499eb3b533879bea8"
+        }
+      ]
+    },
+    {
+      "name": "Willowrush Verge",
+      "oracle_id": "c52eaa87-9251-4a47-83fd-04e582ade612",
+      "facts_sha256": "49efb4c3bad601c80430df817e28576636934337065a089467d95ed282a617a2",
+      "oracle_text": "{T}: Add {U}.\n{T}: Add {G}. Activate only if you control a Forest or an Island.",
+      "definition": "src/card_definitions/dft/willowrush_verge.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "ControlSubtypeAny; fixed primary and gated secondary mana"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Primary mana unconditional; either printed basic-land subtype unlocks secondary mana; printed type loss and funding sacrifice invalidate gate"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/w/WillowrushVerge.java",
+          "sha256": "3d6c6dc56558fecc449250328f336bdad78b0791f53d65cfadd87e46b977c389"
+        }
+      ]
+    },
+    {
+      "name": "Wind-Scarred Crag",
+      "oracle_id": "b0af0c54-2a59-4075-8543-d41ff20c4c87",
+      "facts_sha256": "2e536f6826c2b508f3d81621829d75f7dd9d5a18306a393cf97097d5c95bce9a",
+      "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {R} or {W}.",
+      "definition": "src/card_definitions/tdm/wind_scarred_crag.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "EntryTapped Always; SelfEnters gain one; two-color mana choice"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Land enters tapped; triggered gain one uses stack; after untap either printed color available; one use taps source"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/w/WindScarredCrag.java",
+          "sha256": "8047d44347473f07c90906a82f0c7339e7092a9150b36833c9841069ddaceef7"
+        }
+      ]
+    },
+    {
+      "name": "Wreck Remover",
+      "oracle_id": "89c89499-23a8-412d-9406-1a7ffc88c64d",
+      "facts_sha256": "5a05924ed48dcd5f07e1293331fd14fe1bc649aa83c571be6dfb35d37e9ee16e",
+      "oracle_text": "Whenever this creature enters or attacks, exile up to one target card from a graveyard. You gain 1 life.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "definition": "src/card_definitions/dft/wreck_remover.json",
+      "inherited_complete": true,
+      "existing_support": [
+        "SelfEntersOrAttacks optional graveyard target; Exile; GainLife; cycling 2"
+      ],
+      "engine_dependencies": [],
+      "expected_outcomes": [
+        "Zero-target trigger still gains one; valid target exiled then gain; announced target leaving/reentering makes all targets illegal and no life gain; cycling draws"
+      ],
+      "acceptance": "pending focused independent scenarios and shared proofs",
+      "xmage_sources": [
+        {
+          "source": "Mage.Sets/src/mage/cards/w/WreckRemover.java",
+          "sha256": "78a554832072b94de4f18aac8b2b74ce20e12c66ca22cee195e1c1bccbc6a9e2"
+        }
+      ]
+    }
+  ]
+}

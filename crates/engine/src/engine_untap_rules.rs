@@ -12,6 +12,9 @@ pub(super) enum UntapCause {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     fn has_untap_rules(&self) -> bool {
+        if self.state.exertions.is_some() {
+            return true;
+        }
         if self.state.roles.as_ref().is_some_and(|state| {
             state
                 .source_linked_effects
@@ -59,6 +62,14 @@ impl Game {
     }
     pub(super) fn untap_allowed(&self, id: CardId, cause: UntapCause) -> bool {
         let recipient = self.object_ref(id);
+        if let UntapCause::ControllerStep(player) = cause
+            && self.state.exertions.as_ref().is_some_and(|rows| {
+                rows.iter()
+                    .any(|row| row.object == recipient && row.player == player)
+            })
+        {
+            return false;
+        }
         if self.state.roles.as_ref().is_some_and(|state| {
             state.source_linked_effects.iter().any(|row| {
                 row.recipient == recipient
@@ -191,5 +202,8 @@ impl Game {
             })
             .collect();
         self.untap_objects(&ids, UntapCause::ControllerStep(self.state.active));
+        // CR701.43: all overlapping exertions for this player's next actual
+        // untap expire together, even if another player now controls a recipient.
+        self.expire_exertions(self.state.active);
     }
 }

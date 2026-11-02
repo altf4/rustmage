@@ -3,10 +3,20 @@
   "catalogue_id": 4701,
   "oracle_id": "aaa14260-2537-4668-8517-c825118777cc",
   "facts_sha256": "2a221da87dd15d2b6dce55163c90b98357f03fd3aaede35cc8cc81448a77ab75",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "145289ebe4cd544b70a8d7e639e799d6ad3cccb321d0293461ce14ffa369ee4d"
   },
-  "physical_metadata_sha256": "251cf81e150673703b37e5a2dd6c507dd23ab2b3c67b138f03912f479e2f2179"
+  "physical_metadata_sha256": "251cf81e150673703b37e5a2dd6c507dd23ab2b3c67b138f03912f479e2f2179",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TuneUp.java",
+  "java_sha256": "48d60d387eeba87ab1e6de9bdf732f7b6ac3abfb8f168bc7272a791d74bab0f1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    }
+  ]
 }

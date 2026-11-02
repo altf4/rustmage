@@ -1,4 +1,4 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Full pinned Oracle/XMage: printed creature stats and no rules abilities.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(7, 2),
     triggers: &[],
@@ -12,5 +12,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     },
     entry: EntryTapped::Never,
     keywords: Keywords::NONE,
+    extras: &CardExtras {
+        has_rules_abilities: Some(false),
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

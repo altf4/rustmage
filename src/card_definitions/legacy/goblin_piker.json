@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9ec73f2638da05c201b543412a94204f655578f37e789cce95ff35e4bc64ca4e"
   },
-  "physical_metadata_sha256": "4e687c51fb4104c66431bd8c7784685b1ec0085dce50c28269ab8ba91ec54559"
+  "physical_metadata_sha256": "4e687c51fb4104c66431bd8c7784685b1ec0085dce50c28269ab8ba91ec54559",
+  "has_rules_abilities": false,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GoblinPiker.java",
+  "java_sha256": "8792a312f9b24b9782c34288d535098c78bf02c5b3c449c52483fc6b29fefcdd"
 }

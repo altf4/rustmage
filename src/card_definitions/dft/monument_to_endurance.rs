@@ -1,4 +1,4 @@
-// Every discarded card independently announces one mode unused by this object this turn.
+// Reverified complete typed behavior against pinned DFT Oracle and full XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
     triggers: &[TriggeredAbility {

@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "133604bf5c457876b93b3f40721363457429e246744ef57c5ac5972eecd821f4"
   },
-  "physical_metadata_sha256": "900bbc1f7991dfd1fb3511e8eaebedcc8d2afbb1c815fbf62a8dbd91ab22d6bf"
+  "physical_metadata_sha256": "900bbc1f7991dfd1fb3511e8eaebedcc8d2afbb1c815fbf62a8dbd91ab22d6bf",
+  "has_rules_abilities": false,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SavannahLions.java",
+  "java_sha256": "980430c5ec4b71978798b40c1f694c8ee59260f1d292eb5d305ab7f6f72d5382"
 }

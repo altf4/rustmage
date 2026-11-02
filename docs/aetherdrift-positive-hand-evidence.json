@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "engine_base_revision": "819fa96ec",
+  "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "Generic shared engine repair only. Ordinary card files/admissions remain parked until this reopened engine checkpoint is validated and reviewed.",
+  "affected_cards": [
+    {
+      "name": "Gastal Raider",
+      "oracle_id": "26c09127-8225-4ba2-9f97-f5558b1c41b5",
+      "facts_sha256": "039cab49c48c6a8f3eb93273fa0e9c9dfa0eb119393309414024d7aa74138702",
+      "oracle_text": "Start your engines!\nWhen this creature enters, target opponent reveals their hand. You choose an instant or sorcery card from it. That player discards that card.\nMax speed \u2014 This creature gets +1/+1 and has menace."
+    },
+    {
+      "name": "Intimidation Tactics",
+      "oracle_id": "121bd1af-da21-4937-a911-377c5b430796",
+      "facts_sha256": "aea6eb7617c1e6338cc881192be7d06e63c5e8008501e857a928daf2c3b39130",
+      "oracle_text": "Target opponent reveals their hand. You choose an artifact or creature card from it. Exile that card.\nCycling {3} ({3}, Discard this card: Draw a card.)"
+    }
+  ],
+  "gap": "No existing typed instruction can require a positive artifact|creature or instant|sorcery hand choice with permanent unlinked exile/discard after a public whole-hand reveal. Exclusion filters cannot express a positive union generally, and linked exile has source-dependent return/play behavior.",
+  "api": {
+    "instruction": "RevealTargetHandChoose { kinds: u16, exile: bool }",
+    "positive_union": "kinds & actual card kinds != 0; creature1, instant4, sorcery8, artifact16",
+    "wire": "HandChoiceKind::DiscardRevealedKinds { kinds } and ExileRevealedKinds { kinds }; no new Action, pending kind, HandChoiceView field, or HandInteraction field",
+    "continuation": "Existing exact candidate refs, chooser/controller/victim and source-ref storage. Choice is mandatory if matching cards exist; no priority window is added. Existing public hand knowledge is retained for both players.",
+    "movement": "Discard uses discard_batch_caused with the frozen effect controller as opponent cause; exile uses the ordinary unlinked Zone::Exile move. No link or return permission is created.",
+    "source_independence": "No current battlefield/source-controller requirement; captured controller and victim persist through source departure/blink/control changes.",
+    "schema199": "Reject both new kind discriminants and new immutable programs for prior198. Existing opaque hand choice guard covers owned pending state. Keep inherited hand kinds byte-exact. No marker or trace-baseline edit."
+  },
+  "sources": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/i/IntimidationTactics.java",
+      "sha256": "2be6c30994a6f6d348157d9d93f8c7597158ac5dba9a67c713b844ad648e2e7e",
+      "review": "complete body"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/g/GastalRaider.java",
+      "sha256": "8bbe85cb8262365b5ec282f3480d183efdd0b2f407fb76ac3c5275bbd14d8844",
+      "review": "complete body"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileCardYouChooseTargetOpponentEffect.java",
+      "sha256": "d23c3dfee698bf398d0aa9d6585c731a80871af5911b417f77e48b768ddcfc0f",
+      "review": "complete body"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+      "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d",
+      "review": "complete body"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterInstantOrSorceryCard.java",
+      "sha256": "db9067aef3b3de09992c261f493c6a4bee2e08850f8b9eec9a8a05f92674abfc",
+      "review": "complete body"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e",
+      "review": "complete body"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+      "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88",
+      "review": "complete body"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863",
+      "review": "complete body"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+      "review": "FILTER_CARD_ARTIFACT_OR_CREATURE definition and FILTER_CARD_INSTANT_OR_SORCERY alias (remaining catalogue unrelated)"
+    }
+  ],
+  "focused_tests": {
+    "target": "dft_revealed_hand_selection_engine",
+    "cases": 7,
+    "tests": [
+      "positive_unions_offer_each_artifact_creature_instant_and_sorcery_once",
+      "no_matching_card_still_reveals_the_whole_hand_without_an_optional_choice",
+      "captured_chooser_and_unlinked_exile_survive_source_departure_and_reentry",
+      "frozen_candidate_set_rejects_a_reentered_hand_card_and_an_unseen_new_card",
+      "public_selection_is_owned_across_raw_index_parent_disposal_and_restore",
+      "discard_uses_the_opponent_cause_and_waits_for_owned_replacement_entry",
+      "prevented_discard_or_exile_finishes_the_chosen_card_effect_without_reselection"
+    ]
+  },
+  "schema_test": "legacy::engine::assurance::schema199::prior_198_rejects_positive_revealed_hand_selection_but_preserves_old_discard",
+  "verification": "Author ran rustfmt and git diff --check only; no Cargo. Root integrates and owns guarded production/all-target/focused validation.",
+  "remaining_api_recheck": "docs/aetherdrift-audit/black-red-api-recheck.json records all63 remaining identities; positive-kind hand choice was the sole additional shared dependency found."
+}
