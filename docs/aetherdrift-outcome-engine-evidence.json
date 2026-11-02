@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "phase": "engine only; no ordinary card admissions",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GreasewrenchGoblin.java",
+      "sha256": "f4a3f451de7f46c12f9b72cf84d92aa300720aa5f918381be66bc8893f38e5bd",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MomentumBreaker.java",
+      "sha256": "4726bbffe839c99519d22fbcf7da848413a1ab2b540dabfb4c3066b232b17b6c",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/q/QuagFeast.java",
+      "sha256": "b7ad53a42dc0ec067927b827320a47b13da538987e8f3c26413c28f46327a236",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/d/DemonicJunker.java",
+      "sha256": "ed519af94de773ec01f9517dee7f1217a74bef67aef22a316ad2f6b8250db3e2",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardAndDrawThatManyEffect.java",
+      "sha256": "f188e2031a5963432940d75ad39ec5b881cdd84feed7c7e136bc404996e1f01d",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeEffect.java",
+      "sha256": "c6d6af5f7c0f53c978e092e82dd8123b8da86ae9d5c3ec21321b28ecea0cd967",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ForEachPlayerTargetsAdjuster.java",
+      "sha256": "0983e17113baf50a95495f9aac7c2218adf8b0c7350303f390e2ecdfd2576971",
+      "read": "complete body"
+    }
+  ],
+  "oracle_source": "data/sets/dft.json and full-body audit records in docs/aetherdrift-audit/",
+  "obligations": [
+    {
+      "card": "Greasewrench Goblin",
+      "rule": "Optional discard zero through two, then draw actual discarded count and independently put a counter",
+      "tests": [
+        "capped_rummage_zero_one_two_are_optional_and_draw_exact_counts",
+        "rummage_pending_choice_branches_raw_index_and_restore_without_private_leaks",
+        "rummage_draws_actual_discards_after_prevention_and_redirection"
+      ]
+    },
+    {
+      "card": "Momentum Breaker",
+      "rule": "Opponent must sacrifice a legal creature or Vehicle if possible; otherwise mandatory discard. Cannot elect discard while able to sacrifice.",
+      "tests": [
+        "sacrifice_fallback_cannot_discard_while_creature_or_uncrewed_vehicle_is_available",
+        "sacrifice_fallback_discards_when_matching_permanents_absent_or_prohibited"
+      ]
+    },
+    {
+      "card": "Quag Feast",
+      "rule": "Target legality does not include dynamic graveyard threshold; mill precedes threshold, replaced mill does not grow graveyard, all-target illegality fizzles entire spell",
+      "tests": [
+        "post_mill_threshold_uses_current_graveyard_and_does_not_restrict_announced_target",
+        "post_mill_threshold_uses_replaced_mill_and_stale_target_fizzles_before_mill"
+      ]
+    },
+    {
+      "card": "Demonic Junker",
+      "rule": "Actual destruction of any own creature awards exactly two source counters once. Indestructible, shield, prevented moves and stale incarnations do not count. Exile redirection still counts.",
+      "tests": [
+        "destruction_reward_happens_once_only_for_actual_own_creature_destruction",
+        "destruction_reward_counts_exile_replacement_but_never_rebinds_source"
+      ],
+      "xmage_discrepancy": "Java places reward inside target loop and overwrites giveCounters; Rust follows Oracle single once-after-all destruction conditional."
+    }
+  ],
+  "remaining": "Ordinary definitions must wire every remaining obligation, including affinity/crew, start your engines, triggered target groups, activated costs and source counters. This engine fixture is not card acceptance."
+}

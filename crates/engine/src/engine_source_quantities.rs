@@ -54,6 +54,7 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::IfAmountAtLeast { value, .. }
             | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
+            | Instruction::DestroyTargetsAtMostManaValue(value)
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }
             | Instruction::SearchScaled { maximum: value, .. }

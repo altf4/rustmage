@@ -5245,6 +5245,47 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::DiscardUpToDraw { maximum } => {
+                    if self.start_discard_up_to_draw(&item, maximum) {
+                        return;
+                    }
+                }
+                Instruction::OpponentSacrificeIfAbleElseDiscard { any } => {
+                    if self.opponent_sacrifice_else_discard(&item, any) {
+                        return;
+                    }
+                }
+                Instruction::DestroyTargetsAtMostManaValue(amount) => {
+                    let maximum = self.item_amount(amount, &item);
+                    let targets: Vec<_> = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|bound| {
+                            self.same_target_object(*bound)
+                                && matches!(bound.target, Target::Card(id)
+                                if u128::from(self.object_mana_value(id)) <= maximum)
+                        })
+                        .collect();
+                    self.destroy_targets_outcome(&targets);
+                }
+                Instruction::DestroyTargetsThenSourceCountersIfOwnCreature { kind, amount } => {
+                    let events = self.destroy_targets_outcome(&item.targets);
+                    if events.iter().any(|event| {
+                        event.moved
+                            && event.before.zone == Zone::Battlefield
+                            && event.before.kinds & 1 != 0
+                            && event.before.controller == item.controller
+                    }) && let Some(source) = item.source
+                        && self.on_battlefield(source.id)
+                        && self.object_ref(source.id) == source.object
+                    {
+                        self.effect_counters(
+                            vec![(source.object, Counters::of(kind, u64::from(amount)))],
+                            replacements::ResumeMode::Program,
+                        );
+                    }
+                }
                 Instruction::DiscardUpToOneDraw => {
                     if self.start_discard_up_to_one_draw(&item) {
                         return;

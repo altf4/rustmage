@@ -423,6 +423,9 @@ pub mod blocking;
 pub mod combat_restrictions;
 pub use combat_restrictions::AttackPaymentView;
 #[doc(hidden)]
+#[path = "engine_outcome_effects.rs"]
+pub mod outcome_effects;
+#[doc(hidden)]
 #[path = "engine_effect_choices.rs"]
 pub mod effect_choices;
 #[doc(hidden)]

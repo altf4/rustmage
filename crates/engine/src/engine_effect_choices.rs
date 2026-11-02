@@ -462,7 +462,10 @@ impl Game {
         self.advance_effect_choice()
     }
     pub(super) fn start_discard_up_to_one_draw(&mut self, item: &SpellView) -> bool {
-        let pending = self.start_discard_any_draw(item, PlayerSet::Controller, 0, false);
+        self.start_discard_up_to_draw(item, 1)
+    }
+    pub(super) fn start_discard_up_to_draw(&mut self, item: &SpellView, maximum: u16) -> bool {
+        self.start_discard_any_draw(item, PlayerSet::Controller, 0, false);
         if let Some(choice) = self
             .state
             .resolving
@@ -470,9 +473,9 @@ impl Game {
             .and_then(|r| r.choice.as_mut())
             && let Some(draw) = &mut choice.discard_draw
         {
-            draw.limit = Some(1);
+            draw.limit = Some(usize::from(maximum));
         }
-        pending
+        self.advance_effect_choice()
     }
     pub(super) fn start_greatest_power_choice(&mut self, item: &SpellView) -> bool {
         let mut filter = evidence::cost(0).filter;

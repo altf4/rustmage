@@ -1751,6 +1751,21 @@ pub enum Instruction {
         required_all: bool,
     },
     DiscardUpToOneDraw,
+    /// Choose zero through `maximum` cards; draw only the actual discard count.
+    DiscardUpToDraw {
+        maximum: u16,
+    },
+    /// Mandatory opponent sacrifice, falling back to discard only if none is legal.
+    OpponentSacrificeIfAbleElseDiscard {
+        any: &'static [CostMatch],
+    },
+    /// Compare current target mana values at this instruction, after prior effects.
+    DestroyTargetsAtMostManaValue(AmountValue),
+    /// Reward once if an actual destruction included a creature controlled by this packet.
+    DestroyTargetsThenSourceCountersIfOwnCreature {
+        kind: CounterKind,
+        amount: u16,
+    },
 
     AdditionalCombat,
     ExtraTurn {
