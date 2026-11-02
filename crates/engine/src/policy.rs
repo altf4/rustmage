@@ -629,7 +629,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::CancelAttackDeclaration
             | Action::AbortAttackPayment
             | Action::AbortFaceUpPayment => -100,
-            Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
+            Action::Pass
+            | Action::FinishAttackers
+            | Action::FinishBlockers
+            | Action::FinishAdditionalCostGroup => 0,
         }
     };
     actions

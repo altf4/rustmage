@@ -157,7 +157,6 @@ impl EntryMove {
             before,
             source_before: None,
             craft_materials: None,
-            paid_additional_cost: None,
             zone_plan: None,
             destination,
             tapped,
