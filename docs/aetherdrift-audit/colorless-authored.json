@@ -1,6 +1,6 @@
 {
   "base_revision": "fb878868d",
-  "engine_phase": "frozen; no engine changes",
+  "engine_phase": "accepted cf5046f15, source9000f120b; card-only changes",
   "cards": [
     {
       "name": "Country Roads",
@@ -974,7 +974,7 @@
         "aetherjacket_pays_two_taps_and_sacrifices_at_sorcery_speed_to_destroy_another_artifact"
       ],
       "test_target": "dft_colorless_cards_utility",
-      "runtime_status": "pending focused run"
+      "runtime_status": "passed 4/4, including accepted permanent-copy combined checkpoint"
     },
     {
       "name": "Guidelight Matrix",
@@ -1043,7 +1043,7 @@
         "guidelight_matrix_uses_separate_mount_sorcery_and_vehicle_instant_abilities"
       ],
       "test_target": "dft_colorless_cards_utility",
-      "runtime_status": "pending focused run"
+      "runtime_status": "passed 4/4, including accepted permanent-copy combined checkpoint"
     },
     {
       "name": "Ticket Tortoise",
@@ -1096,7 +1096,397 @@
         "ticket_tortoise_checks_more_lands_on_entry_and_again_at_resolution"
       ],
       "test_target": "dft_colorless_cards_utility",
-      "runtime_status": "pending focused run"
+      "runtime_status": "passed 4/4, including accepted permanent-copy combined checkpoint"
+    },
+    {
+      "name": "Lifecraft Engine",
+      "definition": "src/card_definitions/dft/lifecraft_engine.rs",
+      "oracle_id": "caa69b51-1efd-4d0e-803b-914a83ccb836",
+      "oracle_text": "As this Vehicle enters, choose a creature type.\nVehicle creatures you control are the chosen creature type in addition to their other types.\nEach creature you control of the chosen type other than this Vehicle gets +1/+1.\nCrew 3",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LifecraftEngine.java",
+        "sha256": "509b54cda70e60cd793d513f8f81bf00d0d325429fd3686394fecbfef830507a"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+          "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+          "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllOfChosenSubtypeEffect.java",
+          "sha256": "aa088319449679f38b3d77f34e8939565afe24be2f2b7b2d374454e4c6df7128"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+          "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        }
+      ],
+      "printed_obligations": [
+        "As this Vehicle enters, choose a creature type.",
+        "Vehicle creatures you control are the chosen creature type in addition to their other types.",
+        "Each creature you control of the chosen type other than this Vehicle gets +1/+1.",
+        "Crew 3"
+      ],
+      "outcome_scenarios": [
+        "lifecraft_actual_entry_choice_changes_only_own_creature_vehicles_and_other_chosen_creatures"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "pending focused run",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ]
+    },
+    {
+      "name": "Marketback Walker",
+      "definition": "src/card_definitions/dft/marketback_walker.rs",
+      "oracle_id": "0405e0a9-6d02-4691-bdb8-59c72b824dab",
+      "oracle_text": "This creature enters with X +1/+1 counters on it.\n{4}: Put a +1/+1 counter on this creature.\nWhen this creature dies, draw a card for each +1/+1 counter on it.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MarketbackWalker.java",
+        "sha256": "8f6dffbcd406674f250ea1b3b005e749e4e616dd583b14e08ba6861e068fa763"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+          "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java",
+          "sha256": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+          "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ],
+      "printed_obligations": [
+        "This creature enters with X +1/+1 counters on it.",
+        "{4}: Put a +1/+1 counter on this creature.",
+        "When this creature dies, draw a card for each +1/+1 counter on it."
+      ],
+      "outcome_scenarios": [
+        "marketback_pays_twice_x_adds_repeatable_counters_and_draws_exact_death_lki",
+        "marketback_zero_x_dies_without_counters_and_draws_zero"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "pending focused run",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ]
+    },
+    {
+      "name": "Marshals' Pathcruiser",
+      "definition": "src/card_definitions/dft/marshals_pathcruiser.rs",
+      "oracle_id": "60f20f32-b6db-4ee7-a0aa-535647e6fcd5",
+      "oracle_text": "When this Vehicle enters, search your library for a basic land card, reveal it, put it into your hand, then shuffle.\nExhaust \u2014 {W}{U}{B}{R}{G}: This Vehicle becomes an artifact creature. Put two +1/+1 counters on it. (Activate each exhaust ability only once.)\nCrew 5",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MarshalsPathcruiser.java",
+        "sha256": "18a3068385208771779fca31cd7c8fefbd7e75cfb137b6fdbe7adff23a8b91a4"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+          "sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        }
+      ],
+      "printed_obligations": [
+        "When this Vehicle enters, search your library for a basic land card, reveal it, put it into your hand, then shuffle.",
+        "Exhaust \u2014 {W}{U}{B}{R}{G}: This Vehicle becomes an artifact creature. Put two +1/+1 counters on it. (Activate each exhaust ability only once.)",
+        "Crew 5"
+      ],
+      "outcome_scenarios": [
+        "pathcruiser_actual_entry_searches_only_basic_lands_privately_and_shuffles_even_when_declined",
+        "pathcruiser_crew_five_is_temporary_while_five_color_exhaust_is_permanent_and_once"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "pending focused run",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ]
+    },
+    {
+      "name": "Pit Automaton",
+      "definition": "src/card_definitions/dft/pit_automaton.rs",
+      "oracle_id": "49bfecc3-6258-454e-a8fd-fc49098a0898",
+      "oracle_text": "Defender\n{T}: Add {C}{C}. Spend this mana only to activate abilities.\n{2}, {T}: When you next activate an exhaust ability that isn't a mana ability this turn, copy it. You may choose new targets for the copy.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/p/PitAutomaton.java",
+        "sha256": "e4c582f67465020449977a155f6a2e07d3e1be4e9a0f8c89422a50fb89cb15f8"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+          "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColorlessManaAbility.java",
+          "sha256": "a33a4fadca48e2602ea78ec9a7a27e8e53659b047720c5cfffc2d34a27a51a6c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalColorlessManaEffect.java",
+          "sha256": "f5ba3fd57b7cff9f184695673821963516c5834505063f7a319d8c344076d97b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/builder/common/ActivatedAbilityManaBuilder.java",
+          "sha256": "5e3d352765c77caf9ff18b8b1738d63e867238acad62818d22d515ef364e7cb5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+          "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+          "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+        }
+      ],
+      "printed_obligations": [
+        "Defender",
+        "{T}: Add {C}{C}. Spend this mana only to activate abilities.",
+        "{2}, {T}: When you next activate an exhaust ability that isn't a mana ability this turn, copy it. You may choose new targets for the copy."
+      ],
+      "outcome_scenarios": [
+        "pit_actual_body_defender_and_two_mana_pay_abilities_but_cannot_cast_spells",
+        "pit_delayed_next_exhaust_survives_source_departure_ignores_ordinary_activations_and_is_consumed_once",
+        "pit_delayed_exhaust_callback_expires_at_cleanup"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "pending focused run",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ]
+    },
+    {
+      "name": "Radiant Lotus",
+      "definition": "src/card_definitions/dft/radiant_lotus.rs",
+      "oracle_id": "307be184-176a-40a8-944c-48aa00cfdd29",
+      "oracle_text": "{T}, Sacrifice one or more artifacts: Choose a color. Target player adds three mana of the chosen color for each artifact sacrificed this way. (Activate only as an instant.)",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RadiantLotus.java",
+        "sha256": "c9e8d78a1fef15267982597a78690ee14d85312781c90715278d0b4ce23739a1"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeXTargetCost.java",
+          "sha256": "94158ee058a114f997a3a00678d5c4e9bacbea9fca01a959dec64c1cbc8d74cc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+          "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+        }
+      ],
+      "printed_obligations": [
+        "{T}, Sacrifice one or more artifacts: Choose a color. Target player adds three mana of the chosen color for each artifact sacrificed this way. (Activate only as an instant.)"
+      ],
+      "outcome_scenarios": [
+        "radiant_lotus_paid_entry_and_ranged_self_sacrifice_use_stack_and_controller_chooses_target_players_color",
+        "radiant_lotus_cost_selection_has_independent_owned_raw_index_restore_after_parent_disposal"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "pending focused run",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ]
+    },
+    {
+      "name": "Rover Blades",
+      "definition": "src/card_definitions/dft/rover_blades.rs",
+      "oracle_id": "0394846e-bc27-4d67-988e-b08a389690de",
+      "oracle_text": "Double strike\nEquipped creature has double strike.\nEquip {4}\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn. Creatures can't be attached to other permanents.)",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RoverBlades.java",
+        "sha256": "9cab143b7d5e36f74cd3e0d68fd8e32295a41180564f6ec7df0e2d5316d6dc01"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+          "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+          "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        }
+      ],
+      "printed_obligations": [
+        "Double strike",
+        "Equipped creature has double strike.",
+        "Equip {4}",
+        "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn. Creatures can't be attached to other permanents.)"
+      ],
+      "outcome_scenarios": [
+        "rover_equips_only_own_creature_at_sorcery_speed_then_crews_as_double_striker_and_detaches"
+      ],
+      "test_target": "dft_colorless_cards_machines",
+      "runtime_status": "pending focused run",
+      "shared_proofs": [
+        "dft_static_types",
+        "dft_exhaust_engine",
+        "dft_variable_costs_engine",
+        "dft_mana_output",
+        "dft_entry_counters"
+      ]
     }
   ]
 }

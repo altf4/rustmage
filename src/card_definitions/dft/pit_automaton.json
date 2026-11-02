@@ -3,10 +3,56 @@
   "catalogue_id": 3173,
   "oracle_id": "49bfecc3-6258-454e-a8fd-fc49098a0898",
   "facts_sha256": "d314d021684ed5230621b1c7afe2a43ad4bafb92fb5ea666332cc9a5b22f90b3",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "45816b89f47e80961ee42722e6ac7d89748e5d086f96fa5c1c39504279ba6083"
-  },
-  "physical_metadata_sha256": "7028fc8c13c96ad3c7f7d75833a1af6cd7afb3c56dd4254f1bfdc70ec0e92ca5"
+  "complete": true,
+  "physical_metadata_sha256": "7028fc8c13c96ad3c7f7d75833a1af6cd7afb3c56dd4254f1bfdc70ec0e92ca5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PitAutomaton.java",
+  "java_sha256": "e4c582f67465020449977a155f6a2e07d3e1be4e9a0f8c89422a50fb89cb15f8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColorlessManaAbility.java",
+      "sha256": "a33a4fadca48e2602ea78ec9a7a27e8e53659b047720c5cfffc2d34a27a51a6c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalColorlessManaEffect.java",
+      "sha256": "f5ba3fd57b7cff9f184695673821963516c5834505063f7a319d8c344076d97b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/common/ActivatedAbilityManaBuilder.java",
+      "sha256": "5e3d352765c77caf9ff18b8b1738d63e867238acad62818d22d515ef364e7cb5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    }
+  ]
 }
