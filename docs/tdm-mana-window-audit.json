@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "scope": "D:MANA_PAYMENT_WINDOW",
+  "identified_during": "Independent Behold/free-route review and Sidisi proposal audit before card authoring",
+  "authority": {
+    "current_cr": {
+      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "sections": [
+        "117.1d",
+        "118.5",
+        "601.2f-g",
+        "605.3a"
+      ]
+    },
+    "primary_rules_interpretation": {
+      "url": "https://apps.magicjudges.org/forum/topic/42243/?page=1",
+      "author": "Nathan Long, Magic Rules NetRep",
+      "date": "2018-03-26",
+      "summary": "A zero mana cost requires acknowledgment but no mana payment, so casting Mox Opal does not grant a mana-ability opportunity. This interpretation is corroborated against the pinned current CR, not treated as a new2026 ruling."
+    }
+  },
+  "concrete_risks": [
+    "Zero/free/reduced spell and activation payment menus can offer illegal mana actions.",
+    "Speculative mana search can incorrectly create a missing Behold/sacrifice witness even when the casting or activation has no mana-payment window.",
+    "A positive total remains a mana payment even if Convoke/Delve later pay all of it; effect/hybrid alternatives need their actual positive choice preserved."
+  ],
+  "ownership": "a-g owns shared FundingGoal final-total predicate/action+proposal enforcement; s-z narrow Sidisi guard will compose with or yield to it at integration.",
+  "planned_proofs": [
+    "Actual supported zero-cost physical spell and ordinary Priority mana availability.",
+    "Filtered free Dragon casting and zero reduced Equipment activation.",
+    "Positive tax/colored/hybrid/Convoke/Delve controls.",
+    "Nonmana witness cannot be invented through a closed mana window; actual prior Priority setup remains legal."
+  ],
+  "status": "Audited, unimplemented/unvalidated; root adds this81st dependency rather than claiming the original80 audit groups exhaust all interactions.",
+  "card_definitions_or_admission_changes": false,
+  "full_engine_gate": false
+}

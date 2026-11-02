@@ -90,7 +90,10 @@
       "cards": [
         "Breaching Dragonstorm"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "pending shared-rule implementation and acceptance",
+      "blocking_engine_dependencies": [
+        "D:MANA_PAYMENT_WINDOW"
+      ]
     },
     {
       "id": "A07",
@@ -126,7 +129,10 @@
       "cards": [
         "Dracogenesis"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "pending shared-rule implementation and acceptance",
+      "blocking_engine_dependencies": [
+        "D:MANA_PAYMENT_WINDOW"
+      ]
     },
     {
       "id": "A11",
@@ -144,7 +150,10 @@
       "cards": [
         "Dragonfire Blade"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction)."
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction).",
+      "blocking_engine_dependencies": [
+        "D:MANA_PAYMENT_WINDOW"
+      ]
     },
     {
       "id": "A13",
@@ -557,7 +566,10 @@
       "cards": [
         "Sidisi, Regent of the Mire"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "pending shared-rule implementation and acceptance",
+      "blocking_engine_dependencies": [
+        "D:MANA_PAYMENT_WINDOW"
+      ]
     },
     {
       "id": "C:POST_ENTRY_RETURN_COUNTERS",
@@ -702,6 +714,26 @@
         "Cori-Steel Cutter"
       ],
       "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (optional attachment)."
+    },
+    {
+      "id": "D:MANA_PAYMENT_WINDOW",
+      "description": "Final zero totals do not open a mana-payment window",
+      "required_change": "Use the locked/proposed actual mana total to gate real and speculative mana actions. A free, explicit-zero or fully reduced cost has no mana-payment window. Do not invent future nonmana witnesses through mana children. Preserve Priority mana actions, positive tax/hybrid alternatives and positive totals later paid with Convoke/Delve.",
+      "cards": [
+        "Mox Jasper",
+        "Dracogenesis",
+        "Dragonfire Blade",
+        "Breaching Dragonstorm",
+        "Sidisi, Regent of the Mire"
+      ],
+      "status": "New cross-cutting dependency identified during independent casting review; complete primary-rule audit recorded, a-g authoring focused final-total guard and outcome tests. No passing checkpoint yet.",
+      "authority": [
+        "CR117.1d",
+        "CR118.5",
+        "CR601.2f-g",
+        "CR605.3a",
+        "https://apps.magicjudges.org/forum/topic/42243/?page=1"
+      ]
     }
   ],
   "acceptance": {
@@ -731,13 +763,13 @@
     "latest_assembled_compile_seconds": 155.7269442360266,
     "latest_assembled_scenario_seconds": 1.1519135490816552,
     "scoped_reviewed_audit_groups_including_aliases": 49,
-    "total_audit_groups_including_aliases": 80,
+    "total_audit_groups_including_aliases": 81,
     "current_hot_layout_bytes": {
       "Object": 160,
       "ObjectView": 544,
       "State": 4976
     },
-    "additional_implemented_tested_groups_pending_review": 16
+    "additional_implemented_tested_groups_pending_review": 22
   },
   "active_checkpoints": {
     "fixed_endure": {
@@ -851,6 +883,16 @@
       "commit": "81a729a8c9a76648b4d48989b60985ef16787526",
       "status": "99 owner cases and35 matching root cases pass; two independent scoped reviews pending.",
       "integration": "d4fa3594e"
+    },
+    "mana_payment_window": {
+      "owner": "/root/tdm_audit_a_g",
+      "evidence": "docs/tdm-mana-window-audit.json",
+      "status": "New final-total legal-action/funding interaction; implementation and focused proof in progress. Earlier scoped cost proofs do not establish this shared contract."
+    },
+    "search_color_sequences": {
+      "commit": "4fc84c0087f0eb89445c1a03e80657213b077b84",
+      "evidence": "docs/tdm-search-color-sequences-evidence.json",
+      "status": "Six owner groups pass129 selected scenarios; integration and independent reviews pending. U64 allocation domain and new ColorCounter action join global schema acceptance."
     }
   }
 }

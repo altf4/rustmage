@@ -18,8 +18,8 @@ Complete whole-set source and dependency audit before changing behavior. Three
 disjoint audit partitions cover all 275 resolved identities; the separate
 [Cori-Steel Cutter audit](tdm-cori-steel-audit.json) covers the final identity.
 The [complete dependency ledger](tdm-engine-audit.json) reconciles all 276 source
-audits and records 80 dependency/proof groups, including duplicate group aliases.
-Shared engine implementation is in progress. **49 of the80 audit/proof groups**, including aliases, have scoped implementation, focused evidence and two independent nonauthor reviews. Another16 groups have owner tests passing with reviews or review repairs pending. Counts are not weighted by complexity. Full integrated engine acceptance remains open; card authorship stays gated until all dependencies pass and are reviewed.
+audits and records 81 dependency/proof groups, including duplicate group aliases.
+Shared engine implementation is in progress. **49 of the81 audit/proof groups**, including aliases, have scoped implementation, focused evidence and two independent nonauthor reviews. Another22 groups have owner tests passing with reviews or review repairs pending. Counts are not weighted by complexity. Independent casting review identified an81st cross-cutting dependency: zero/free/reduced final totals must not open a mana-payment window or invent payment witnesses. Its primary-rule audit is in `tdm-mana-window-audit.json`; it is being fixed before card authorship. Full integrated engine acceptance remains open; card authorship stays gated until all dependencies pass and are reviewed.
 
 The reviewed fixed Endure repair covers: use the exact permanent's
 current controller, retain its last battlefield controller after departure, and
