@@ -345,6 +345,137 @@
         "obsolete self-granted activation lifecycle guard rejects newly supported once/mana instances",
         "same-zone no-op copy fixture must mark its row skipped; corrected172c2c7dd"
       ]
+    },
+    {
+      "revision": "6d04ec2a0",
+      "status": "250/252passed; remaining invalid Vehicle-creature-type fixture correcteddb13683e8,17/18taxrerunpasses; one known deferred funding gap remains",
+      "targets": {
+        "dft_activation_tax": {
+          "passed": 16,
+          "failed": 2
+        },
+        "dft_attack_groups": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_cast_permissions_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_combat_schedule": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_combat_tokens": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_control_duration": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_crew": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_deferred_mana": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_entry_copies": {
+          "passed": 16,
+          "failed": 0
+        },
+        "dft_entry_counters": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_entry_results": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_exert_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_exhaust_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_exile_lookback": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_fixture_rules": {
+          "passed": 2,
+          "failed": 0
+        },
+        "dft_group_engine": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_linked_entry": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_named_search": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_outcomes_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_private_hand": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_quantities_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_queries": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_retained_copy": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_speed_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_grants": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_static_types": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_trigger_facts_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_variable_costs_engine": {
+          "passed": 11,
+          "failed": 0
+        }
+      },
+      "passed": 250,
+      "failed": 2,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-203234/result.json",
+      "command_seconds": 124.70797207800206,
+      "production_check_seconds": 5.478992214004393,
+      "all_target_check_seconds": 43.530548238995834,
+      "all_target_check": "passed",
+      "resource_report": "<cache>/rustmage-build-reports/268295f35f874feb8cef688153c14cf5.json",
+      "remaining_failures": [
+        "initial parent legality does not yet model a granted mana header announced before grantor sacrifice while paying its tax",
+        "invalid Vehicle-as-creature-type fixture, correcteddb13683e8 and independently rerun17/18"
+      ]
     }
   ],
   "earlier_focused_runs": [
@@ -371,7 +502,7 @@
   ],
   "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
   "pending": "Finish all engine blockers and focused/shared contract proofs plus independent reviews before ordinary DFT definitions. Then complete card behavior/provenance, inherited119 verification, legal set-only complete games/replay/owned search, full release acceptance, README counts, one completed-set PR and two independent nonauthor reviews.",
-  "throughput": "0 new whole cards admitted during engine phase. Latest execution229/232cases;20.27s test-only command after reusable engine/sets compile102.89s. Last all-target compile check before tax/copyextensions passed7.13s at a26d56dc. No set simulation benchmark or all-Standard performance claim.",
+  "throughput": "0 new whole cards admitted during engine phase. Full252-scenario run124.71s(command includes engine/set/test compile);250pass2fail. Test-onlytax18rerun1.02s/0.96sbuild correctedonefixture,17pass1knownrealgap. Retained-copy measured Object160,ObjectView512,CopyRecipe64,CopyExceptions20,CopyLayerView136bytes. No set simulation benchmark or all-Standard throughput claim.",
   "implemented_engine_clusters_pending_final_review": [
     "speed scalars/grants/replacements and exact mana quality",
     "crew/saddle participant events, toughness and direct designation",
@@ -395,8 +526,8 @@
     "retained immutable linked activation and copiable0/0 exception; root pre-event graveyard exile lookback correction; shared projected power-up reduction (compile-checked, focused execution pending)"
   ],
   "remaining_engine_blockers": [
-    "complete taxed mana initial deferred funding and acquired lifecycle, plus exact contributor source LKI",
-    "validate retained Mimeoplasm copies and all later copy/entry/projection fixes",
+    "deferred initial funding of costed mana with frozen source/grant identity and exact actual/projected completion",
+    "resolve characteristic-dependent mana output after costs through shared cold receipt/late color choice",
     "temporary acquired Embalm graveyard activation and copiable token exceptions",
     "two independent nonauthor scoped reviews covering every final engine change, plus broad existing regressions",
     "final schema199 integration/previous198 trace equality and final cache warm before cards"
@@ -445,9 +576,32 @@
     "contracts": "full deterministic replay plus sampled wrong-actor, owned raw/index children, observations and restore"
   },
   "latest_compile_checkpoint": {
-    "revision": "a75dbc810",
-    "production_check": "passed5.58s",
-    "all_targets": "two missing test-only FundingGoal/FundingState imports in new power-up scenario;fixed612496fe5; rerun pending",
-    "report": "<cache>/rustmage-authoring/aetherdrift/compile-20261101-201309/result.json"
-  }
+    "revision": "6d04ec2a0",
+    "production_check": "passed5.48s",
+    "all_targets": "passed43.53s",
+    "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-203234/result.json"
+  },
+  "latest_focused_followups": [
+    {
+      "revision": "7bcf95379",
+      "scope": "copy16+linked8+retained7+lookback7 and projectedpowerup1",
+      "passed": 39,
+      "failed": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/new-core-20261101-202859/result.json",
+      "command_seconds": [
+        1.5683665199903771,
+        0.8665686470048968,
+        43.182058001999394
+      ]
+    },
+    {
+      "revision": "db13683e8",
+      "scope": "tax18; one known deferred funding gap",
+      "passed": 17,
+      "failed": 1,
+      "report": "<cache>/rustmage-authoring/aetherdrift/tax-20261101-203852/result.json",
+      "command_seconds": 1.0176801930065267
+    }
+  ],
+  "current_runtime_evidence": "Combined evidence251/252focusedscenarios: full6d04ec2a0engine run250pass2fail, test-onlydb13683e8 corrects one invalid fixture; granted-mana deferred initial funding remains open. All-target compile passed43.53s. Later ManaOutput/Embalm still require new runs."
 }
