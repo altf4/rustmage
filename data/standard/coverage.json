@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5b36bbdb999b7b0e3c0b1db58ebd6b39f070ec57bd3fef70893ec1740b388fb7",
+  "catalogue_version": "c6cfa465de5056eadb56751599ad7e9a3923c3a63698e7c3ea502cc201f1a828",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3046,
-  "implemented_total": 3052,
+  "implemented_standard_cards": 3058,
+  "implemented_total": 3064,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 147,
-      "gated": 112
+      "complete": 159,
+      "gated": 100
     },
     "dsk": {
       "total": 264,
@@ -1674,8 +1674,8 @@
     {
       "name": "Apocalypse Runner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/apocalypse_runner.rs",
       "set": "dft"
     },
@@ -7882,8 +7882,8 @@
     {
       "name": "Daring Mechanic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/daring_mechanic.rs",
       "set": "dft"
     },
@@ -13818,8 +13818,8 @@
     {
       "name": "Gearseeker Serpent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/gearseeker_serpent.rs",
       "set": "dft"
     },
@@ -19690,8 +19690,8 @@
     {
       "name": "Lagorin, Soul of Alacria",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/lagorin_soul_of_alacria.rs",
       "set": "dft"
     },
@@ -20226,8 +20226,8 @@
     {
       "name": "Lightwheel Enhancements",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/lightwheel_enhancements.rs",
       "set": "dft"
     },
@@ -20738,8 +20738,8 @@
     {
       "name": "Lotusguard Disciple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/lotusguard_disciple.rs",
       "set": "dft"
     },
@@ -20778,8 +20778,8 @@
     {
       "name": "Loxodon Surveyor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/loxodon_surveyor.rs",
       "set": "dft"
     },
@@ -22162,8 +22162,8 @@
     {
       "name": "Midnight Mangler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/midnight_mangler.rs",
       "set": "dft"
     },
@@ -28666,8 +28666,8 @@
     {
       "name": "Roadside Assistance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/roadside_assistance.rs",
       "set": "dft"
     },
@@ -36882,8 +36882,8 @@
     {
       "name": "Thundering Broodwagon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/thundering_broodwagon.rs",
       "set": "dft"
     },
@@ -36906,8 +36906,8 @@
     {
       "name": "Thunderous Velocipede",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/thunderous_velocipede.rs",
       "set": "dft"
     },
@@ -38610,8 +38610,8 @@
     {
       "name": "Unstoppable Plan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/unstoppable_plan.rs",
       "set": "dft"
     },
