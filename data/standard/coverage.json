@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "adffae3b593a741fb50ad623ade948d7bd143ff0588e307e29e6c0748923c878",
+  "catalogue_version": "04955664083ba98a80e79d45f7210c3cd2ac1ce0fdfa02a55cbf0987cd9b22af",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3120,
-  "implemented_total": 3126,
+  "implemented_standard_cards": 3133,
+  "implemented_total": 3139,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 221,
-      "gated": 38
+      "complete": 234,
+      "gated": 25
     },
     "dsk": {
       "total": 264,
@@ -2618,8 +2618,8 @@
     {
       "name": "Back on Track",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/back_on_track.rs",
       "set": "dft"
     },
@@ -5362,8 +5362,8 @@
     {
       "name": "Captain Howler, Sea Scourge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/captain_howler_sea_scourge.rs",
       "set": "dft"
     },
@@ -5458,8 +5458,8 @@
     {
       "name": "Carrion Cruiser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/carrion_cruiser.rs",
       "set": "dft"
     },
@@ -13722,8 +13722,8 @@
     {
       "name": "Gastal Blockbuster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/gastal_blockbuster.rs",
       "set": "dft"
     },
@@ -16194,8 +16194,8 @@
     {
       "name": "Hellish Sideswipe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/hellish_sideswipe.rs",
       "set": "dft"
     },
@@ -17794,8 +17794,8 @@
     {
       "name": "Intimidation Tactics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/intimidation_tactics.rs",
       "set": "dft"
     },
@@ -18954,8 +18954,8 @@
     {
       "name": "Ketramose, the New Dawn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/ketramose_the_new_dawn.rs",
       "set": "dft"
     },
@@ -21946,8 +21946,8 @@
     {
       "name": "Mendicant Core, Guidelight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/mendicant_core_guidelight.rs",
       "set": "dft"
     },
@@ -22274,8 +22274,8 @@
     {
       "name": "Mimeoplasm, Revered One",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/mimeoplasm_revered_one.rs",
       "set": "dft"
     },
@@ -27698,8 +27698,8 @@
     {
       "name": "Redshift, Rocketeer Chief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/redshift_rocketeer_chief.rs",
       "set": "dft"
     },
@@ -31298,8 +31298,8 @@
     {
       "name": "Sita Varma, Masked Racer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/sita_varma_masked_racer.rs",
       "set": "dft"
     },
@@ -40634,8 +40634,8 @@
     {
       "name": "Wickerfolk Indomitable",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/wickerfolk_indomitable.rs",
       "set": "dft"
     },
@@ -40874,8 +40874,8 @@
     {
       "name": "Winter, Cursed Rider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/winter_cursed_rider.rs",
       "set": "dft"
     },
