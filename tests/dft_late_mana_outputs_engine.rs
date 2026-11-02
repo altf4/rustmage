@@ -453,3 +453,221 @@ fn declining_an_outer_resolution_does_not_excuse_stranding_its_real_mana_child()
         assert_eq!(g.state.players[p.index()].mana, RED);
     }
 }
+
+#[test]
+fn late_combination_allocations_complete_the_colored_spell_parent_without_hiding_spare_sources() {
+    const RG: Mana = [0, 0, 0, 1, 1, 0];
+    const GG: Mana = [0, 0, 0, 0, 2, 0];
+    const SOURCE: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                tap: true,
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Combination {
+                mask: (1 << 3) | (1 << 4),
+                amount: 2,
+            })],
+            ..BASE
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, &SOURCE)]);
+    let every_allocation = BTreeSet::from([RED_TWO, RG, GG]);
+    for p in [Player::P0, Player::P1] {
+        let mut priority = scenario(p);
+        let producer = put(&mut priority, p, "Grizzly Bears", Zone::Battlefield);
+        priority.state.players[p.index()].mana = [0; 6];
+        act(&mut priority, late_start(producer));
+        assert_eq!(late_choices(&priority, p), every_allocation);
+        act(&mut priority, choice(GG));
+        assert_eq!(priority.state.pending, Pending::Priority);
+        assert_eq!(priority.state.players[p.index()].mana, GG);
+
+        for spare_mountain in [false, true] {
+            let expected = if spare_mountain {
+                every_allocation.clone()
+            } else {
+                BTreeSet::from([RED_TWO, RG])
+            };
+            for output in expected.iter().copied() {
+                let mut g = scenario(p);
+                let producer = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+                let mountain =
+                    spare_mountain.then(|| put(&mut g, p, "Mountain", Zone::Battlefield));
+                let spell = put(&mut g, p, "Lightning Strike", Zone::Hand);
+                g.state.players[p.index()].mana = [0; 6];
+                act(&mut g, Action::AnnounceCast { card: spell });
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    },
+                );
+                if g.legal_actions().contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                }
+                act(&mut g, late_start(producer));
+                assert_eq!(g.object_view(producer).zone, Zone::Graveyard);
+                assert_eq!(late_choices(&g, p), expected);
+                if !spare_mountain {
+                    reject(&mut g, choice(GG));
+                }
+                act(&mut g, choice(output));
+                if output == GG {
+                    act(
+                        &mut g,
+                        Action::TapMana {
+                            card: mountain.unwrap(),
+                        },
+                    );
+                }
+                pay(&mut g);
+                settle(&mut g);
+                assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+                assert_eq!(g.state.players[p.other().index()].life, 17);
+                assert_eq!(
+                    g.state.players[p.index()].mana,
+                    if output == GG { GREEN } else { [0; 6] }
+                );
+                if let Some(mountain) = mountain {
+                    assert_eq!(g.object_view(mountain).tapped, output == GG);
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_or_reverse() {
+    const TWO: Mana = [0, 0, 0, 0, 0, 2];
+    const ONE: Mana = [0, 0, 0, 0, 0, 1];
+    const PRODUCER: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                generic: 1,
+                mana_component: true,
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed(TWO))],
+            ..BASE
+        }],
+        ..CardRules::EMPTY
+    };
+    const TAX: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::AttackControllerTax {
+                amount: 2,
+                condition: StatValue::Fixed(1),
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &PRODUCER),
+        (Card::from_name("Ghost Vacuum").unwrap(), &TAX),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        for abort in [false, true] {
+            let mut parent = scenario(p);
+            put(&mut parent, p.other(), "Ghost Vacuum", Zone::Battlefield);
+            let attacker = put(&mut parent, p, "Bear Cub", Zone::Battlefield);
+            let attacker_ref = parent.object_ref(attacker);
+            let producer = put(&mut parent, p, "Grizzly Bears", Zone::Battlefield);
+            parent.state.players[p.index()].mana = ONE;
+            parent.state.step = Step::Attackers;
+            parent.state.pending = Pending::Attackers;
+            act(&mut parent, Action::Attack { card: attacker });
+            let declaration = parent.snapshot();
+            act(&mut parent, Action::FinishAttackers);
+            assert_eq!(parent.state.pending, Pending::AttackPayment { player: p });
+            assert!(parent.object_view(attacker).tapped);
+            act(
+                &mut parent,
+                Action::AnnounceMana {
+                    card: producer,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production: TWO,
+                },
+            );
+            assert_eq!(parent.state.pending, Pending::PayCosts { player: p });
+            assert!(
+                parent
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .mana_output
+                    .is_some()
+            );
+            let saved = parent.snapshot();
+            let mut raw = parent.clone();
+            let mut indexed = parent.clone();
+            let mut restored = parent.clone();
+            restored.restore(&saved).unwrap();
+            drop(parent);
+            for (n, g) in [&mut raw, &mut indexed, &mut restored]
+                .into_iter()
+                .enumerate()
+            {
+                if n == 1 {
+                    let index = g
+                        .legal_actions()
+                        .iter()
+                        .position(|a| matches!(a, Action::PayCosts { .. }))
+                        .unwrap();
+                    g.apply_index(p, g.revision(), index).unwrap();
+                } else {
+                    pay(g);
+                }
+                assert!(
+                    g.state.announcing.is_none(),
+                    "completed child header is released"
+                );
+                assert!(g.state.mana_announcement_stack.is_none());
+                assert_eq!(g.state.pending, Pending::AttackPayment { player: p });
+                assert_eq!(g.state.players[p.index()].mana, TWO);
+                assert!(g.object_view(producer).tapped);
+                let receipt = g.state.attack_payment.as_ref().unwrap();
+                assert_eq!(receipt.player, p);
+                assert_eq!(receipt.generic, 2);
+                assert_eq!(receipt.attackers, vec![attacker_ref]);
+                let visible = g.observe(p).attack_payment.unwrap();
+                assert_eq!(visible.player, p);
+                assert_eq!(visible.generic, 2);
+                reject(g, Action::PayAttackCost { payment: ONE });
+                if abort {
+                    act(g, Action::AbortAttackPayment);
+                    assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
+                    act(g, Action::ChooseManaRollback { keep: false });
+                    assert_eq!(g.snapshot(), declaration);
+                    assert!(!g.object_view(attacker).tapped);
+                    assert!(!g.object_view(producer).tapped);
+                    assert_eq!(g.state.players[p.index()].mana, ONE);
+                } else {
+                    act(g, Action::PayAttackCost { payment: TWO });
+                    assert!(g.state.attack_payment.is_none());
+                    assert_eq!(g.state.attackers.len(), 1);
+                    assert_eq!(g.state.attackers[0].card, attacker);
+                    assert_eq!(
+                        g.state.attackers[0].defender,
+                        Some(CombatDefender::Player(p.other()))
+                    );
+                    assert_eq!(g.object_ref(attacker), attacker_ref);
+                    assert!(g.object_view(attacker).tapped);
+                    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                }
+            }
+            assert_eq!(raw.snapshot(), indexed.snapshot());
+            assert_eq!(raw.snapshot(), restored.snapshot());
+        }
+    }
+}

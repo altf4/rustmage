@@ -44,6 +44,20 @@
         "optional_resolution_payment_keeps_all_colors_because_the_resolution_can_decline"
       ],
       "outcomes": "All5colors remain offered and observed; ordinary spell continues; optional request either paysR for3life or choosesG and declines."
+    },
+    {
+      "risk": "Combination outputs need colored completion, rather than merely sufficient total mana or a direct deficit heuristic.",
+      "proofs": [
+        "late_combination_allocations_complete_the_colored_spell_parent_without_hiding_spare_sources"
+      ],
+      "outcomes": "Both seats: native Lightning Strike1R offers exactly RR/RG after the tapped+sacrificed RG-two producer, rejectsGG transactionally, and deals3 after either allocation. A spare Mountain restoresGG eligibility and paysR withG left; priority preserves all3 allocations."
+    },
+    {
+      "risk": "An owned fixed mana output paid outside an ordinary spell/activation must resume the exact attack-cost receipt.",
+      "proofs": [
+        "fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_or_reverse"
+      ],
+      "outcomes": "Both seats: actual tax2 AttackPayment with one exact attacker suspends for announced{1}+tap fixedCC. Parent-dropped raw/index/restored children release their header, retain frozen generic2/attacker incarnation, and either payCC to commit that attack or abort/reverse the mana event to the original declaration snapshot."
     }
   ],
   "required_existing_shared_regressions": [
@@ -57,8 +71,15 @@
       "target": "dft_deferred_mana",
       "scenario": "nested_costed_mana_announcements_reject_all_active_ancestor_instances",
       "outcome": "Real deferred ancestry/resume and anti-recursion behavior stays intact."
+    },
+    {
+      "target": "legacy",
+      "scenario": "dain_rollback_restores_declaration_and_mana_actions",
+      "source": "tests/legacy/assurance/hob_dain.rs",
+      "outcome": "Existing tax cancellation contract restores original selected declaration and reverses chosen mana actions; new owned announced fixture applies the same semantics to its fixed-output receipt."
     }
   ],
   "privacy": "Only actor Observation.mana_choices exposes the filtered domain; opposite viewer remains empty. Legal/observe enumeration preserves snapshot and revision.",
-  "validation": "No Cargo/linker run. Root owns one combined frozen-source validation after independent engine review."
+  "validation": "No Cargo/linker run. Root owns one combined frozen-source validation after independent engine review.",
+  "scenario_count": 11
 }
