@@ -1087,7 +1087,8 @@ impl Game {
                     self.remember_public_hand(object);
                 }
             }
-            EffectChoiceKind::FilteredCost { .. }
+            EffectChoiceKind::ColorCounter { .. }
+            | EffectChoiceKind::FilteredCost { .. }
             | EffectChoiceKind::TargetAttackingReturn { .. }
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)

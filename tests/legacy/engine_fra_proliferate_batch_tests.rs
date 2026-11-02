@@ -81,6 +81,7 @@ fn proliferate_is_non_targeted_repeatable_and_snapshot_owned() {
             immediate_blink_return: None,
             connive: None,
             optional_wheel: None,
+            color_sequence: None,
             proliferate: None,
             explore: None,
             evidence: None,

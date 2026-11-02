@@ -27,6 +27,7 @@ fn emrakul_copy_ability_in_resolution(g: &mut Game, copier: &SpellView) {
         sacrificed_power: None,
         discard_after: None,
         optional_wheel: None,
+        color_sequence: None,
         proliferate: None,
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],

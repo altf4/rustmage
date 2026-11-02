@@ -39,6 +39,42 @@ impl EffectChoice {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn start_color_counter_choice(
+        &mut self,
+        color: crate::cards::ChoiceColor,
+        subtype: &'static str,
+    ) {
+        let r = self.state.resolving.as_ref().unwrap();
+        let sequence = r.color_sequence.as_ref().unwrap();
+        let player = sequence.player;
+        let mut required = [0; 2];
+        required[player.index()] = sequence.selected.len() as u32 + 1;
+        let mut selected = [Vec::new(), Vec::new()];
+        selected[player.index()] = sequence
+            .selected
+            .iter()
+            .map(|(_, object)| *object)
+            .collect();
+        let source = r.item.source.expect("object-backed color choice").object;
+        self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
+            discard_draw: None,
+            discarded: None,
+            kind: EffectChoiceKind::ColorCounter { color, subtype },
+            filter: evidence::cost(0).filter,
+            amount: 1,
+            source,
+            required,
+            selected,
+            skip_to: None,
+            greatest_value: [None; 2],
+            discard_mana_value_life: None,
+            hand_defender: None,
+            entry_life_bonus: None,
+            hand_entry_filter: None,
+            equipment_recipient: None,
+        }));
+        self.state.pending = Pending::EffectChoice { player };
+    }
     pub(super) fn start_ward_discard_choice(&mut self, item: &SpellView, payer: Player) {
         let mut required = [0; 2];
         required[payer.index()] = 1;
@@ -121,6 +157,9 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if let EffectChoiceKind::ColorCounter { color, subtype } = choice.kind {
+            return self.color_counter_candidate(player, color, subtype, object);
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
             return o.zone == Zone::Exile
                 && o.is_card()
@@ -1674,6 +1713,19 @@ impl Game {
     }
 
     pub(super) fn choose_effect_object(&mut self, player: Player, object: ObjectRef) {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .is_some_and(|c| matches!(c.kind, EffectChoiceKind::ColorCounter { .. }))
+        {
+            self.choose_color_counter_recipient(object);
+            self.run_program();
+            return;
+        }
         self.state
             .resolving
             .as_mut()

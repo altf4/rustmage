@@ -16,6 +16,7 @@ fn self_replacing_effect(g: &mut Game, player: Player, source: CardId) {
         immediate_blink_return: None,
         connive: None,
         optional_wheel: None,
+        color_sequence: None,
         proliferate: None,
         explore: None,
         evidence: None,

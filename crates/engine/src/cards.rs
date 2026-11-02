@@ -841,6 +841,8 @@ pub enum SearchFilter {
     Any,
     NoAbilities,
     Colorless,
+    /// Cards containing at least one requested WUBRG color.
+    Colors(u8),
     Nonland,
     ManaValue {
         minimum: u64,
@@ -871,6 +873,7 @@ impl SearchFilter {
             Self::Any => true,
             Self::NoAbilities => !card.has_rules_abilities(),
             Self::Colorless => card.colors() == 0,
+            Self::Colors(colors) => card.colors() & colors != 0,
             Self::Nonland => !card.is_land(),
             Self::ManaValue { minimum, maximum } => {
                 (minimum..=maximum).contains(&card.fixed_mana_value())
@@ -961,6 +964,11 @@ pub enum DelayedTargetEvent {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    /// One mandatory-if-possible nontarget recipient for the current color.
+    ColorCounter {
+        color: ChoiceColor,
+        subtype: &'static str,
+    },
     /// Apply one ordinary payment operation with an additional typed OR filter.
     FilteredCost {
         action: CostAction,
@@ -1495,6 +1503,14 @@ pub enum Instruction {
     SearchDifferentNames(SearchSpec),
     /// Distinct-name search capped by the triggering entry's chosen X.
     SearchDifferentNamesChosenX(SearchSpec),
+    /// One private search whose selected cards must fill distinct color roles.
+    SearchDistinctColors {
+        spec: SearchSpec,
+        colors: u8,
+    },
+    /// Freeze chosen spell X as a creature-card mana-value bound, independent
+    /// of the SearchSpec's cardinality bound.
+    SearchCreaturesUpToChosenX(SearchSpec),
     RandomLinkedExileToBattlefield,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
@@ -1890,6 +1906,8 @@ pub enum Instruction {
     DamageDivided {
         total: u16,
     },
+    /// Sample once as targets are announced, retaining total/shares on copies.
+    DamageDividedScaled(AmountValue),
     DistributeCounters {
         total: u16,
         kind: CounterKind,
@@ -2310,6 +2328,14 @@ pub enum Instruction {
     RevealTargetHandExileLinked,
     /// Reveal the full target hand, then optionally link one nonland exile.
     RevealTargetHandMayExileLinked,
+    /// Exile top cards one at a time until an actual nonland exile. Offer only
+    /// spells at or below the inclusive bound; otherwise put that card in hand.
+    /// All other exiled cards stay in exile.
+    ExileUntilNonlandCastOrHand {
+        maximum_mana_value: u64,
+    },
+    /// Optional one-card discard; actual nonland discard queues this template.
+    MayDiscardNonlandReflexive(u16),
     /// Each distinct linked card owner creates one token sized by the sum of
     /// all cards still in exile for this exact acquired linked ability pair.
     CreateSizedTokensForLinkedExileOwners {
@@ -2978,6 +3004,11 @@ pub enum Instruction {
     PutSourceCountersOnTargets,
     /// The complete frozen multiset on the independent creature which died.
     PutEventCountersOnTargets,
+    /// Choose one controlled permanent of the subtype for every WUBRG color,
+    /// place simultaneous +1/+1 counters, and win for five distinct successes.
+    PutColorCountersAndWin {
+        subtype: &'static str,
+    },
     /// Destroy the exact untargeted entrant, independently of later type/control.
     DestroyEntering,
     /// Choose and remove up to this many counters from one targeted permanent.

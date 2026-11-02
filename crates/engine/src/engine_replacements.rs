@@ -132,7 +132,7 @@ struct CounterBatch {
     player_effect: [bool; 2],
     next_player: usize,
     proliferated: Option<Player>,
-    completion: Option<Box<CounterReflexiveCompletion>>,
+    completion: Option<Box<CounterCompletion>>,
     placements: Vec<CounterPlacement>,
     next: usize,
     used: Vec<(ObjectRef, u16)>,
@@ -199,6 +199,12 @@ fn current_player_counter(
         return None;
     }
     Some((event.player, event.kind))
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+enum CounterCompletion {
+    Reflexive(CounterReflexiveCompletion),
+    ColorRecipients { packet: u64 },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -375,7 +381,11 @@ impl ReplacementState {
                     .sum::<usize>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                 + b.completion.as_ref().map_or(0, |c| {
-                    std::mem::size_of::<CounterReflexiveCompletion>() + c.item.owned_bytes()
+                    std::mem::size_of::<CounterCompletion>()
+                        + match c.as_ref() {
+                            CounterCompletion::Reflexive(r) => r.item.owned_bytes(),
+                            CounterCompletion::ColorRecipients { .. } => 0,
+                        }
                 })
         };
         let token_bytes = |b: &TokenBatch| {
@@ -1265,7 +1275,7 @@ impl Game {
         mut placements: Vec<CounterPlacement>,
         player_counters: [[u64; 5]; 2],
         proliferated: Option<Player>,
-        completion: Option<Box<CounterReflexiveCompletion>>,
+        completion: Option<Box<CounterCompletion>>,
         activation_cost: bool,
     ) {
         for placement in &mut placements {
@@ -1277,6 +1287,9 @@ impl Game {
             self.record_cast_mana_counter_cost(&placements);
         }
         let completed = completion.as_ref().is_some_and(|c| {
+            let CounterCompletion::Reflexive(c) = c.as_ref() else {
+                return false;
+            };
             placements.iter().any(|p| {
                 p.entry_index.is_none()
                     && c.item
@@ -1332,6 +1345,19 @@ impl Game {
                 }
             }
         }
+        if let Some(CounterCompletion::ColorRecipients { packet }) = completion.as_deref() {
+            let recipients = placements
+                .iter()
+                .filter(|p| {
+                    p.entry_index.is_none()
+                        && p.amount.get(CounterKind::PlusOne) > 0
+                        && self.on_battlefield(p.object.card)
+                        && self.object_ref(p.object.card) == p.object
+                })
+                .map(|p| p.object)
+                .collect::<Vec<_>>();
+            self.record_color_counter_recipients(*packet, &recipients);
+        }
         self.controlled_creature_counter_events(
             placements
                 .iter()
@@ -1359,9 +1385,52 @@ impl Game {
             self.proliferated_event(player);
         }
         if completed {
-            let completion = completion.unwrap();
+            let CounterCompletion::Reflexive(completion) = *completion.unwrap() else {
+                unreachable!()
+            };
             self.queue_reflexive(&completion.item, completion.ability, None);
         }
+    }
+    pub(super) fn place_color_counter_batch(
+        &mut self,
+        player: Player,
+        packet: u64,
+        changes: Vec<(ObjectRef, Counters)>,
+    ) {
+        let placements = changes
+            .into_iter()
+            .filter_map(|(object, amount)| {
+                if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
+                    return None;
+                }
+                let o = &self.state.objects[object.card as usize];
+                Some(CounterPlacement {
+                    placed_by: player,
+                    object,
+                    amount,
+                    card: o.card,
+                    owner: o.owner,
+                    controller: o.controller,
+                    protector: self.battle_protector(object),
+                    subtypes: self.granted_subtypes(object.card),
+                    kind: self.current_kinds(object.card),
+                    power: self.stats(object.card).power,
+                    effect: true,
+                    entry_index: None,
+                    private: false,
+                })
+            })
+            .collect();
+        self.stage_counter_placements_inner(
+            placements,
+            [[0; 5]; 2],
+            None,
+            true,
+            None,
+            ResumeMode::Program,
+            Some(Box::new(CounterCompletion::ColorRecipients { packet })),
+            Vec::new(),
+        );
     }
     pub(super) fn stage_counter_placements(
         &mut self,
@@ -1391,7 +1460,7 @@ impl Game {
         player_effect: bool,
         proliferated: Option<Player>,
         mode: ResumeMode,
-        completion: Option<Box<CounterReflexiveCompletion>>,
+        completion: Option<Box<CounterCompletion>>,
         self_effects: Vec<SelfPlayerCounterReplacement>,
     ) {
         for placement in &mut placements {
@@ -1529,11 +1598,13 @@ impl Game {
             true,
             None,
             ResumeMode::Program,
-            Some(Box::new(CounterReflexiveCompletion {
-                item: item.clone(),
-                kind,
-                ability,
-            })),
+            Some(Box::new(CounterCompletion::Reflexive(
+                CounterReflexiveCompletion {
+                    item: item.clone(),
+                    kind,
+                    ability,
+                },
+            ))),
             Vec::new(),
         );
     }

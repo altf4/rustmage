@@ -53,6 +53,7 @@ pub(super) struct Resolution {
     pub sacrificed_power: Option<Box<i128>>,
     pub discard_after: Option<discard_events::DiscardAfter>,
     pub optional_wheel: Option<OptionalWheel>,
+    pub color_sequence: Option<Box<super::color_sequences::ColorCounterSequence>>,
     pub discards: [usize; 2],
     pub selected_discards: [Vec<CardId>; 2],
     pub milled: Vec<ObjectRef>,
@@ -1404,6 +1405,7 @@ impl Game {
             cast_creature_subjects: None,
             copy_event: None,
             target_allocations: None,
+            announced_division: None,
             captured_artifact_copy: None,
             source_copy_recipe: source
                 .copy_recipe
@@ -2855,6 +2857,7 @@ impl Game {
             remembered_creatures: Vec::new(),
             discard_after: None,
             optional_wheel: None,
+            color_sequence: None,
             discards: [0; 2],
             mana_payment: None,
             forage: None,
@@ -3048,6 +3051,9 @@ impl Game {
             }
             self.finish_cascade();
             if self.advance_replacements(false) {
+                return;
+            }
+            if self.advance_color_counter_sequence() {
                 return;
             }
             if self.advance_proliferate() {
@@ -5051,6 +5057,15 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ExileUntilNonlandCastOrHand { maximum_mana_value } => {
+                    if self.start_exile_until_nonland_cast_or_hand(&item, maximum_mana_value) {
+                        return;
+                    }
+                }
+                Instruction::MayDiscardNonlandReflexive(ability) => {
+                    self.start_optional_nonland_reflexive_discard(&item, ability);
+                    return;
+                }
                 Instruction::RevealTargetHandMayExileLinked => {
                     if self.start_optional_revealed_hand_link(&item) {
                         return;
@@ -5519,7 +5534,9 @@ impl Game {
                 }
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
                 Instruction::ExileOtherNightmares => self.exile_other_nightmares(item.controller),
-                Instruction::DamageDivided { .. } => self.damage_divided(&item),
+                Instruction::DamageDivided { .. } | Instruction::DamageDividedScaled(_) => {
+                    self.damage_divided(&item)
+                }
                 Instruction::DistributeCounters { kind, .. }
                 | Instruction::DistributeCountersX { kind } => {
                     self.distribute_counters(&item, kind)
@@ -5733,6 +5750,17 @@ impl Game {
                     {
                         self.move_object(id, Zone::Graveyard);
                     }
+                }
+                Instruction::PutColorCountersAndWin { subtype } => {
+                    self.state.resolving.as_mut().unwrap().color_sequence =
+                        Some(Box::new(color_sequences::ColorCounterSequence {
+                            player: item.controller,
+                            subtype,
+                            next: 0,
+                            selected: Vec::new(),
+                            successful: Vec::new(),
+                            placed: false,
+                        }));
                 }
                 Instruction::PutEventCountersOnTargets => {
                     let event = item.event_object.as_ref().expect("counter event facts");
@@ -6007,6 +6035,8 @@ impl Game {
                     return;
                 }
                 Instruction::Search(spec)
+                | Instruction::SearchDistinctColors { spec, .. }
+                | Instruction::SearchCreaturesUpToChosenX(spec)
                 | Instruction::SearchScaled { spec, .. }
                 | Instruction::SearchDamageReceived(spec)
                 | Instruction::SearchTargetController(spec)
@@ -6017,6 +6047,27 @@ impl Game {
                 | Instruction::SearchDifferentNames(spec)
                 | Instruction::SearchDifferentNamesChosenX(spec) => {
                     let mut spec = spec;
+                    let distinct_colors =
+                        if let Instruction::SearchDistinctColors { colors, .. } = instruction {
+                            assert!(colors & !0x1f == 0, "only WUBRG search roles");
+                            spec.filter = crate::SearchFilter::Colors(colors);
+                            spec.maximum = spec.maximum.min(u64::from(colors.count_ones()));
+                            colors
+                        } else {
+                            0
+                        };
+                    if matches!(instruction, Instruction::SearchCreaturesUpToChosenX(_)) {
+                        assert_eq!(
+                            spec.filter,
+                            crate::SearchFilter::Creature,
+                            "chosen-X creature search requires a creature filter"
+                        );
+                        spec.filter = crate::SearchFilter::KindsManaValue {
+                            kinds: 1,
+                            minimum: 0,
+                            maximum: u64::from(item.x.unwrap_or(0)),
+                        };
+                    }
                     if let Instruction::SearchScaled { maximum, .. } = instruction {
                         spec.maximum =
                             u64::try_from(self.item_amount(maximum, &item)).unwrap_or(u64::MAX);
@@ -6089,6 +6140,7 @@ impl Game {
                                 Instruction::SearchDifferentNames(_)
                                     | Instruction::SearchDifferentNamesChosenX(_)
                             ),
+                            distinct_colors,
                             selected: Vec::new(),
                             battlefield: None,
                             destination_pending: false,
@@ -6119,6 +6171,7 @@ impl Game {
                             entry_counters: &[],
                             minimum: 0,
                             different_names: false,
+                            distinct_colors: 0,
                             selected: Vec::new(),
                             battlefield: None,
                             destination_pending: false,

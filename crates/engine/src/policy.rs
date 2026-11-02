@@ -200,6 +200,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::PutHandCreature { .. }
             | Action::PutHandPermanent { .. }
             | Action::PutHandLand { .. }
+            | Action::ChooseColorCounter { .. }
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
             | Action::SelectGraveyardReturn { .. }

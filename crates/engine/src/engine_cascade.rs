@@ -10,6 +10,9 @@ pub struct CascadeView {
     /// Discover puts this card into its owner's hand if it was not cast.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discovered: Option<ObjectRef>,
+    /// A Breaching-style instruction leaves the rest of its exiles in exile.
+    #[serde(skip_serializing_if = "is_false")]
+    pub keep_exiled: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -125,6 +128,7 @@ impl Game {
             maximum_mana_value: maximum,
             exiled,
             discovered: if discover { eligible } else { None },
+            keep_exiled: false,
         }));
         if let Some(object) = eligible {
             self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
@@ -150,6 +154,60 @@ impl Game {
         false
     }
 
+    pub(super) fn start_exile_until_nonland_cast_or_hand(
+        &mut self,
+        item: &SpellView,
+        maximum_mana_value: u64,
+    ) -> bool {
+        let mut exiled = Vec::new();
+        let mut found = None;
+        while let Some(card) = self.top_library_card(item.controller) {
+            let nonland = !self.state.objects[card as usize].card.is_land();
+            let events = self.move_objects_raw(&[card], Zone::Exile);
+            let moved = events
+                .iter()
+                .find(|e| e.moved && e.destination == Zone::Exile)
+                .map(|event| event.after);
+            self.finish_zone_events(&events, &[]);
+            if let Some(object) = moved {
+                exiled.push(object);
+                if nonland {
+                    found = Some(object);
+                    break;
+                }
+            } else if self.top_library_card(item.controller) == Some(card) {
+                break;
+            }
+        }
+        let Some(object) = found else {
+            return false;
+        };
+        self.state.resolving.as_mut().unwrap().cascade = Some(Box::new(CascadeView {
+            controller: item.controller,
+            maximum_mana_value,
+            exiled,
+            discovered: Some(object),
+            keep_exiled: true,
+        }));
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
+            paid: None,
+            casts_remaining: Some(1),
+            pending_cast: None,
+            remaining_mana_value: None,
+            alternative_cost: None,
+            maximum_mana_value: maximum_mana_value.checked_add(1),
+            origin: Zone::Exile,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player: item.controller,
+            remaining: vec![object],
+        }));
+        self.state.pending = Pending::ResolutionCasts {
+            player: item.controller,
+        };
+        true
+    }
     pub(super) fn finish_cascade(&mut self) {
         if self.state.resolution_free_casts.is_some() {
             return;
@@ -162,6 +220,9 @@ impl Game {
             && self.state.objects[object.card as usize].zone == Zone::Exile
         {
             self.move_object(object.card, Zone::Hand);
+        }
+        if rows.keep_exiled {
+            return;
         }
         let mut cards: Vec<_> = rows
             .exiled

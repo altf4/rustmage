@@ -563,6 +563,8 @@ pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView, UntilNextTurn
 pub mod live_static_stats;
 pub use live_static_stats::LiveStaticSourceView;
 #[doc(hidden)]
+#[path = "engine_color_sequences.rs"]
+pub mod color_sequences;
 #[path = "engine_search.rs"]
 pub mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
@@ -755,7 +757,7 @@ define_actions! {
     FinishStackTargets,
     FinishCraftMaterials,
     FinishAdditionalCostGroup,
-    AllocateTargetAmount { amount: u32 },
+    AllocateTargetAmount { amount: u64 },
     RestoreStackTarget { index: u32 },
     SetStackTarget { index: u32, target: Target },
     ChooseCollectEvidence { collect: bool },
@@ -794,6 +796,7 @@ define_actions! {
     ProliferatePlayer { player: Player },
     FinishProliferate,
     ChooseArmy { object: ObjectRef },
+    ChooseColorCounter { object: ObjectRef },
     ChooseJace { object: ObjectRef },
     FinishLandSelection,
     DeclineHandEntry,
@@ -1543,6 +1546,9 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub target_allocations: Option<Box<Vec<TargetAllocation>>>,
+    /// Public resolving division frozen at announcement, not source-departure LKI.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub announced_division: Option<Box<u64>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub mana_copy_sources: Option<Box<Vec<(ManaCopySource, u64)>>>,
@@ -1834,6 +1840,10 @@ impl SpellView {
                 .sacrificed_power
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<i128>())
+            + self
+                .announced_division
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<u64>())
             + self.target_allocations.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<TargetAllocation>>()
                     + rows.len() * std::mem::size_of::<TargetAllocation>()
@@ -3170,6 +3180,9 @@ pub struct LibraryChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct SearchChoiceView {
     pub filter: crate::SearchFilter,
+    /// Optional distinct WUBRG roles for this private search selection.
+    #[serde(skip_serializing_if = "is_zero_u8")]
+    pub distinct_colors: u8,
     pub minimum: u64,
     pub maximum: u64,
     pub destination: crate::SearchDestination,
@@ -4899,6 +4912,9 @@ impl Game {
                             EffectChoiceKind::GraveyardCreatures { .. } => {
                                 Action::SelectGraveyardReturn { object }
                             }
+                            EffectChoiceKind::ColorCounter { .. } => {
+                                Action::ChooseColorCounter { object }
+                            }
                             EffectChoiceKind::AmassGoblins(_) => Action::ChooseArmy { object },
                             EffectChoiceKind::EmpowerJace(_) => Action::ChooseJace { object },
                             EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
@@ -6289,6 +6305,7 @@ impl Game {
                         .exact_x_targets(&announcement.item)
                         .is_none_or(|required| count == required)
                     && (count > 0
+                        || announcement.item.has_scaled_division()
                         || announcement
                             .item
                             .division_total()
@@ -6467,6 +6484,7 @@ impl Game {
                             if s.objects[card as usize].is_card()
                                 && choice.spec.filter.matches(s.objects[card as usize].card)
                                 && !choice.selected.contains(&card)
+                                && choice.colors_allow(self, card)
                                 && (!choice.different_names
                                     || !choice.selected.iter().any(|&id| {
                                         crate::card_names::same_name(
@@ -7864,6 +7882,7 @@ impl Game {
             Action::PutHandCreature { object }
             | Action::PutHandPermanent { object }
             | Action::PutHandLand { object }
+            | Action::ChooseColorCounter { object }
             | Action::ChooseArmy { object }
             | Action::ChooseJace { object }
             | Action::SelectGraveyardReturn { object }
@@ -11077,6 +11096,7 @@ impl Game {
                     .filter(|choice| choice.battlefield.is_none() && !choice.destination_pending)
                     .map(|choice| SearchChoiceView {
                         filter: choice.spec.filter,
+                        distinct_colors: choice.distinct_colors,
                         minimum: choice.minimum,
                         maximum: choice.spec.maximum,
                         destination: choice.spec.destination,
@@ -11526,6 +11546,10 @@ impl Game {
                             std::mem::size_of::<Vec<programs::TargetCardFacts>>()
                                 + values.len() * std::mem::size_of::<programs::TargetCardFacts>()
                         })
+                        + resolution
+                            .color_sequence
+                            .as_ref()
+                            .map_or(0, |f| f.owned_bytes())
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())

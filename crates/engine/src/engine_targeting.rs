@@ -750,6 +750,16 @@ impl Game {
             spec.max = usize::try_from(self.item_amount(*value, item)).unwrap_or(usize::MAX);
             plan = TargetPlan::Single(spec);
         }
+        if item.has_scaled_division() {
+            if let TargetPlan::Single(mut spec) = plan {
+                if let Some(total) = item.division_total() {
+                    spec.max = spec.max.min(usize::try_from(total).unwrap_or(usize::MAX));
+                }
+                plan = TargetPlan::Single(spec);
+            } else {
+                panic!("scaled division requires one homogeneous target group");
+            }
+        }
         if item.kind == StackKind::Spell
             && item
                 .source
@@ -1405,6 +1415,7 @@ impl Game {
         {
             self.state.pending = Pending::Harmonize { player };
         } else {
+            self.capture_announcement_division();
             let improvise = improvise::potential(
                 self,
                 self.state
@@ -2099,6 +2110,7 @@ impl Game {
             source_copy_recipe: None,
             source_ability_origin: None,
             target_allocations: None,
+            announced_division: None,
             mana_copy_sources: None,
             is_copy: false,
             ninjutsu_defender: None,
@@ -2210,6 +2222,7 @@ impl Game {
             // Prepaid declarations settle their deferred costs in the caller.
             // A spell is still only a proposal here, so do not fire cast triggers.
             let mut item = item;
+            self.capture_division(&mut item);
             self.capture_transform_stack_serial(&mut item);
             self.state.stack.push(item);
             return false;

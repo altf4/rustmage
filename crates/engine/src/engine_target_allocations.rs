@@ -5,28 +5,36 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TargetAllocation {
     pub target: BoundTarget,
-    pub amount: u32,
+    pub amount: u64,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TargetAmountChoiceView {
     pub target: BoundTarget,
-    pub remaining: u32,
-    pub minimum: u32,
-    pub maximum: u32,
+    pub remaining: u64,
+    pub minimum: u64,
+    pub maximum: u64,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
-    pub(super) fn division_total(&self) -> Option<u32> {
+    pub(super) fn division_total(&self) -> Option<u64> {
         self.program()?
             .1
             .iter()
             .find_map(|instruction| match instruction {
                 Instruction::DamageDivided { total }
-                | Instruction::DistributeCounters { total, .. } => Some(u32::from(*total)),
-                Instruction::DistributeCountersX { .. } => self.x,
+                | Instruction::DistributeCounters { total, .. } => Some(u64::from(*total)),
+                Instruction::DistributeCountersX { .. } => self.x.map(u64::from),
+                Instruction::DamageDividedScaled(_) => self.announced_division.as_deref().copied(),
                 _ => None,
             })
+    }
+    pub(super) fn has_scaled_division(&self) -> bool {
+        self.program().is_some_and(|(_, program)| {
+            program
+                .iter()
+                .any(|i| matches!(i, Instruction::DamageDividedScaled(_)))
+        })
     }
     pub(super) fn allocate_single_target(&mut self) {
         if self.targets.len() == 1
@@ -46,6 +54,43 @@ impl SpellView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn capture_division(&self, item: &mut SpellView) {
+        if item.announced_division.is_some() {
+            return;
+        }
+        if let Some(value) = item.program().and_then(|(_, program)| {
+            program.iter().find_map(|i| {
+                if let Instruction::DamageDividedScaled(value) = i {
+                    Some(*value)
+                } else {
+                    None
+                }
+            })
+        }) {
+            item.announced_division = Some(Box::new(
+                u64::try_from(self.item_amount(value, item))
+                    .capacity("announced division representation exhausted"),
+            ));
+        }
+    }
+    pub(super) fn capture_announcement_division(&mut self) {
+        if !self
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .item
+            .has_scaled_division()
+        {
+            return;
+        }
+        let mut item = self.state.announcing.as_ref().unwrap().item.clone();
+        self.capture_division(&mut item);
+        let plan = self.target_spec(&item);
+        let a = self.state.announcing.as_mut().unwrap();
+        a.item.announced_division = item.announced_division;
+        a.plan = plan;
+    }
     pub(super) fn target_amount_choice(&self) -> Option<TargetAmountChoiceView> {
         if !matches!(self.state.pending, Pending::TargetAmount { .. }) {
             return None;
@@ -56,10 +101,13 @@ impl Game {
             .target_allocations
             .as_deref()
             .map_or(&[][..], |v| v.as_slice());
-        let used: u32 = selected.iter().map(|row| row.amount).sum();
+        let used = selected
+            .iter()
+            .try_fold(0u64, |sum, row| sum.checked_add(row.amount))
+            .capacity("declared division exhausted");
         let target = *item.targets.get(selected.len())?;
         let others =
-            u32::try_from(item.targets.len() - selected.len() - 1).expect("bounded targets");
+            u64::try_from(item.targets.len() - selected.len() - 1).expect("bounded targets");
         let remaining = total.checked_sub(used).expect("bounded allocation");
         Some(TargetAmountChoiceView {
             target,
@@ -81,7 +129,7 @@ impl Game {
             false
         }
     }
-    pub(super) fn choose_target_amount(&mut self, amount: u32) {
+    pub(super) fn choose_target_amount(&mut self, amount: u64) {
         let choice = self.target_amount_choice().expect("announced division");
         let a = self.state.announcing.as_mut().unwrap();
         a.item

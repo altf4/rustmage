@@ -378,6 +378,7 @@ fn hob_storied_transient_threshold_inside_one_typed_resolution() {
         remembered_creatures: Vec::new(),
         discard_after: None,
         optional_wheel: None,
+        color_sequence: None,
         discards: [0; 2],
         selected_discards: [vec![], vec![]],
         milled: vec![],

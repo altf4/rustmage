@@ -18,11 +18,43 @@ pub(super) struct SearchChoice {
     pub entry_counters: &'static [(CounterKind, u64)],
     pub minimum: u64,
     pub different_names: bool,
+    pub distinct_colors: u8,
     pub selected: Vec<CardId>,
     pub battlefield: Option<Vec<CardId>>,
     pub destination_pending: bool,
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SearchChoice {
+    pub(super) fn colors_allow(&self, game: &Game, candidate: CardId) -> bool {
+        if self.distinct_colors == 0 {
+            return true;
+        }
+        // A bit in reachable denotes a set of occupied WUBRG roles. There are
+        // only32 such sets; no greedy commitment of a multicolor card is made.
+        let mut reachable = 1u32;
+        for &card in self.selected.iter().chain(std::iter::once(&candidate)) {
+            let available = game.state.objects[card as usize].card.colors() & self.distinct_colors;
+            let mut next = 0u32;
+            for occupied in 0u8..32 {
+                if reachable & (1u32 << occupied) == 0 {
+                    continue;
+                }
+                for color in 0..5 {
+                    let role = 1u8 << color;
+                    if available & role != 0 && occupied & role == 0 {
+                        next |= 1u32 << (occupied | role);
+                    }
+                }
+            }
+            reachable = next;
+            if reachable == 0 {
+                return false;
+            }
+        }
+        true
+    }
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn resolution_target_controller(&self) -> Option<Player> {
@@ -333,6 +365,7 @@ impl Game {
                 entry_counters: &[],
                 minimum: 0,
                 different_names: false,
+                distinct_colors: 0,
                 selected: Vec::new(),
                 battlefield: None,
                 destination_pending: false,

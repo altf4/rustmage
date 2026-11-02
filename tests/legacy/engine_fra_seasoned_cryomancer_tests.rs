@@ -365,6 +365,7 @@ fn seasoned_copied_reflexive_preserves_target_limit_and_resolves_twice() {
             sacrificed_power: None,
             discard_after: None,
             optional_wheel: None,
+            color_sequence: None,
             proliferate: None,
             discards: [0; 2],
             selected_discards: [Vec::new(), Vec::new()],

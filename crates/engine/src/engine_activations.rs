@@ -899,6 +899,7 @@ impl Game {
             cast_creature_subjects: None,
             copy_event: None,
             target_allocations: None,
+            announced_division: None,
             captured_artifact_copy: None,
             source_copy_recipe: self
                 .copy_recipe(self.object_ref(card))
