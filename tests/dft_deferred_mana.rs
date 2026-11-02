@@ -149,3 +149,36 @@ fn payable_parent_does_not_authorize_a_child_with_an_unpayable_color() {
     settle(&mut g);
     assert_eq!(g.state.players[1].cards_drawn_this_turn, 2);
 }
+
+#[test]
+fn a_resolved_child_can_be_activated_again_while_funding_its_restored_parent() {
+    const TWO_BLUE: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 2, 0, 0, 0, 0,
+            ]))],
+            ..ABILITY
+        }],
+        ..SOURCE
+    };
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &TWO_BLUE)]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let forest = put(&mut g, Player::P0, "Forest", Zone::Battlefield);
+    let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
+    g.state.players[0].mana = [0; 6];
+    act(&mut g, Action::AnnounceCast { card: spell });
+    // Completing the first activation leaves only two mana. Its preflight must
+    // permit a fresh activation after resolution to finish the enclosing spell.
+    act(&mut g, announce(source, [0, 2, 0, 0, 0, 0]));
+    act(&mut g, Action::TapMana { card: forest });
+    pay(&mut g);
+    assert!(g.state.mana_announcement_stack.is_none());
+    assert_eq!(g.state.players[0].mana, [0, 2, 0, 0, 0, 0]);
+    act(&mut g, announce(source, [0, 2, 0, 0, 0, 0]));
+    pay(&mut g);
+    pay(&mut g);
+    settle(&mut g);
+    assert_eq!(g.state.players[0].cards_drawn_this_turn, 2);
+    assert_eq!(g.state.players[0].mana, [0; 6]);
+}

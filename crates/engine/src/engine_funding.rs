@@ -84,6 +84,9 @@ pub(super) struct FundingState<'g> {
     cast_costs: Option<Box<CostContext>>,
     entry_projection: Option<Box<EntryProjection>>,
     continuation: Option<Box<PaymentContinuation<'g>>>,
+    /// A projected completion removes only its resolved child from CR605.3c's
+    /// active-instance chain; the real game's immutable active frames stay intact.
+    active_mana_keys: Option<Box<Vec<mana_announcements::ManaActivationKey>>>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
     graveyard_borrowing: graveyard_borrowing::Rows,
     borrowed_slots: borrowed_activations::SlotRows,
@@ -846,6 +849,7 @@ impl<'g> FundingState<'g> {
             cast_costs: None,
             entry_projection: None,
             continuation: None,
+            active_mana_keys: None,
             cost_group: game
                 .state
                 .announcing
@@ -1394,7 +1398,13 @@ impl<'g> FundingState<'g> {
     }
     fn moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
         let mut moves = Vec::new();
-        let active_mana = self.game.active_mana_activation_keys();
+        let actual_active;
+        let active_mana = if let Some(keys) = self.active_mana_keys.as_deref() {
+            keys.as_slice()
+        } else {
+            actual_active = self.game.active_mana_activation_keys();
+            &actual_active
+        };
         for (resource, entry) in self.resources.iter().enumerate() {
             let object = &entry.object;
             if object.zone != Zone::Battlefield || object.controller != goal.actor {
@@ -4083,59 +4093,39 @@ impl Game {
         let Some(frames) = self.state.mana_announcement_stack.as_deref() else {
             return true;
         };
-        let (frame, outer) = frames.split_last().expect("nonempty mana frame chain");
-        let child = self
+        let mut child = self
             .state
             .announcing
             .as_ref()
-            .expect("child mana announcement");
-        let goal = self.funding_goal(&frame.announcement);
-        let mut state = FundingState::from_game_with_convoke(
-            self,
-            &goal,
-            frame
-                .announcement
-                .item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .has_convoke(),
-        );
-        state.set_payment_context(&frame.announcement);
-        state.set_purpose(self.purpose_for_item(&frame.announcement.item));
-        state.set_funding_continuation(
-            &frame.announcement,
-            outer,
-            frame.quality.as_ref().map(|(_, q)| q),
-        );
-        state.moves(&goal).into_iter().any(|step| {
-            if child
-                .item
-                .source
-                .is_none_or(|source| state.resources[step.resource].id != source.id)
-                || step.ability
-                    != match child.item.kind {
-                        StackKind::ActivatedAbility { ability } => Some(ability),
-                        _ => None,
-                    }
-                || step.counters != child.counter_payment
-                || Some(step.production) != child.production
-                || step.borrowed.map(|v| v.slot) != child.item.borrowed_slot
-                || payment.is_some_and(|p| concrete_payment(step.payment) != p)
-                || external
-                    .or(child.additional)
-                    .is_some_and(|wanted| step.external.is_none_or(|cost| cost.object != wanted))
-            {
-                return false;
-            }
-            state.visit_applied(&step, &mut |next| {
-                next.reachable_with_evidence(
-                    &goal,
-                    frame.announcement.evidence.as_ref().map(|e| e.threshold),
-                    &mut HashSet::new(),
-                )
-            })
-        })
+            .expect("child mana announcement")
+            .clone();
+        child.additional = external.or(child.additional);
+        let goal = self.funding_goal(&child);
+        let quality = self
+            .state
+            .mana_lots
+            .as_ref()
+            .and_then(|m| m.announcement_quality.as_ref())
+            .map(|(_, q)| q);
+        let mut state = FundingState::from_game(self, &goal);
+        state.set_purpose(self.purpose_for_item(&child.item));
+        state.set_payment_context(&child);
+        state.set_funding_continuation(&child, frames, quality);
+        if let Some(payment) = payment {
+            // This is completion of an existing CR602 announcement. It must not
+            // pass through moves(), which enumerates only new legal activations
+            // and correctly excludes every active mana-ability instance.
+            state.obligations(&goal)
+                && source_exile_payable(&state, &goal)
+                && mana_loyalty_placement_payable(&state, &goal)
+                && state.complete_funding_continuation_for(&goal, Some(payment))
+        } else {
+            state.reachable_with_evidence(
+                &goal,
+                child.evidence.as_ref().map(|e| e.threshold),
+                &mut HashSet::new(),
+            )
+        }
     }
     pub(super) fn deferred_mana_fundable(
         &self,

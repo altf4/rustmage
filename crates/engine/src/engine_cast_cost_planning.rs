@@ -216,6 +216,8 @@ impl FundingState<'_> {
         }
     }
     pub(super) fn set_payment_context(&mut self, a: &Announcement) {
+        self.payment_source = a.item.source.map(|s| s.object);
+        self.exhaust_source_reuse_authorized = a.exhaust_reuse_authorized;
         if a.cast_costs.is_none() && a.additional_cost().is_some() {
             let mut shadow = a.clone();
             shadow.cast_costs = Some(Box::default());

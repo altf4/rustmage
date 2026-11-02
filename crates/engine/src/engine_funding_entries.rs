@@ -1968,6 +1968,13 @@ impl<'g> FundingState<'g> {
         outer: &'g [mana_announcements::ManaAnnouncement],
         quality: Option<&'g mana_lots::Quality>,
     ) {
+        self.active_mana_keys = Some(Box::new(
+            std::iter::once(head)
+                .chain(outer.iter().map(|frame| &frame.announcement))
+                .filter(|a| a.production.is_some())
+                .filter_map(|a| a.item.mana_activation_key())
+                .collect(),
+        ));
         self.continuation = (head.production.is_some() && !outer.is_empty()).then(|| {
             Box::new(PaymentContinuation {
                 head,
@@ -1977,6 +1984,13 @@ impl<'g> FundingState<'g> {
         });
     }
     pub(super) fn complete_funding_continuation(&self, goal: &FundingGoal) -> bool {
+        self.complete_funding_continuation_for(goal, None)
+    }
+    pub(super) fn complete_funding_continuation_for(
+        &self,
+        goal: &FundingGoal,
+        forced_payment: Option<Mana>,
+    ) -> bool {
         let Some(current) = self.continuation.as_deref() else {
             return self.cost_completion();
         };
@@ -2005,6 +2019,9 @@ impl<'g> FundingState<'g> {
         let mut found = false;
         let pool = mana_lots::available(self.mana, &self.lots, purpose);
         funding_payments(pool, goal.required, goal.generic, |payment| {
+            if forced_payment.is_some_and(|forced| concrete_payment(payment) != forced) {
+                return;
+            }
             if found {
                 return;
             }
