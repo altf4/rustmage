@@ -203,7 +203,7 @@ impl FundingState<'_> {
                     && a.item.program().is_some_and(|(_, program)| {
                         matches!(
                             program,
-                            [Instruction::Crew { .. }] | [Instruction::Saddle { .. }]
+                            [Instruction::Crew { .. }] | [Instruction::BecomeSaddled { .. }]
                         )
                     })
             })
