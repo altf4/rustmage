@@ -5761,8 +5761,8 @@ impl Card {
             return rules.activated;
         }
         #[cfg(feature = "test-support")]
-        if self == Card::from_name("Fanatical Firebrand").unwrap()
-            && issue_93_copy_cost_fixture::enabled()
+        if issue_93_copy_cost_fixture::enabled()
+            && self == Card::from_name("Fanatical Firebrand").unwrap()
         {
             return issue_93_copy_cost_fixture::abilities();
         }
@@ -6179,6 +6179,9 @@ pub mod issue_93_mana_counter_fixture {
     }
     pub(super) fn counter_kind(card: Card) -> Option<CounterKind> {
         let mode = MODE.with(|enabled| enabled.get());
+        if mode == 0 {
+            return None;
+        }
         let loot = card == Card::from_name("Loot, the Pathfinder").unwrap();
         let devotee = card == Card::from_name("Abzan Devotee").unwrap();
         match mode {
