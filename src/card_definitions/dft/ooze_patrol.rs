@@ -1,16 +1,26 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Count the full current graveyard after milling, with artifact/creature union deduplication.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::Mill(PlayerSet::Controller, 2),
+            Instruction::PutCountersScaled {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: AmountValue::Stat(StatValue::Count(CountFilter {
+                    zone: CountZone::Graveyard,
+                    relation: 0,
+                    kind: 17,
+                    exclude: 0,
+                    subtype: None,
+                    basic: false,
+                    other: false,
+                    cards_only: true,
+                })),
+            },
+        ],
+    }],
     ..CardRules::EMPTY
 };

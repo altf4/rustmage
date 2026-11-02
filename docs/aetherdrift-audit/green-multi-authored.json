@@ -24,10 +24,29 @@
         "Exhaust \u2014 {2}{G}{G}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
         "Whenever you activate an exhaust ability, return this card from your graveyard to the battlefield."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Exhaust \u2014 {2}{G}{G}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        },
+        {
+          "obligation": "Whenever you activate an exhaust ability, return this card from your graveyard to the battlefield.",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        }
+      ]
     },
     {
       "name": "Agonasaur Rex",
@@ -69,7 +88,13 @@
           ]
         }
       ],
-      "validation": "pending root focused run"
+      "validation": {
+        "passed": 5,
+        "scenario_seconds": 0.025,
+        "guarded_run_seconds": 4.003,
+        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
+        "engine_fresh": true
+      }
     },
     {
       "name": "Alacrian Jaguar",
@@ -107,7 +132,13 @@
           ]
         }
       ],
-      "validation": "pending root focused run"
+      "validation": {
+        "passed": 5,
+        "scenario_seconds": 0.025,
+        "guarded_run_seconds": 4.003,
+        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
+        "engine_fresh": true
+      }
     },
     {
       "name": "Apocalypse Runner",
@@ -150,7 +181,13 @@
           ]
         }
       ],
-      "validation": "pending root focused run"
+      "validation": {
+        "passed": 5,
+        "scenario_seconds": 0.025,
+        "guarded_run_seconds": 4.003,
+        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
+        "engine_fresh": true
+      }
     },
     {
       "name": "Beastrider Vanguard",
@@ -181,10 +218,29 @@
         "Exhaust abilities of other permanents you control cost {2} less to activate.",
         "Exhaust \u2014 {4}{R}{G}: Creatures and Vehicles you control gain trample until end of turn. Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Exhaust abilities of other permanents you control cost {2} less to activate.",
+          "scenario": [
+            "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {4}{R}{G}: Creatures and Vehicles you control gain trample until end of turn. Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+          ]
+        }
+      ]
     },
     {
       "name": "Boosted Sloop",
@@ -341,10 +397,41 @@
         "Whenever this creature attacks while saddled, put a +1/+1 counter on it.",
         "Saddle 1"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "This creature enters with a +1/+1 counter on it.",
+          "scenario": [
+            "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+          ]
+        },
+        {
+          "obligation": "{1}{G}, Remove two +1/+1 counters from this creature: Destroy target artifact.",
+          "scenario": [
+            "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+          ]
+        },
+        {
+          "obligation": "Whenever this creature attacks while saddled, put a +1/+1 counter on it.",
+          "scenario": [
+            "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+          ]
+        },
+        {
+          "obligation": "Saddle 1",
+          "scenario": [
+            "district_mascot_entry_and_saddled_attack_fund_two_counter_removal_even_if_source_dies"
+          ]
+        }
+      ]
     },
     {
       "name": "Dredger's Insight",
@@ -378,10 +465,35 @@
         "Exile an artifact or creature card from your graveyard: This Vehicle becomes an artifact creature until end of turn.",
         "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance, trample",
+          "scenario": [
+            "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires"
+          ]
+        },
+        {
+          "obligation": "Exile an artifact or creature card from your graveyard: This Vehicle becomes an artifact creature until end of turn.",
+          "scenario": [
+            "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires"
+          ]
+        },
+        {
+          "obligation": "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "earthrumbler_pays_a_filtered_graveyard_exile_or_exact_crew_three_and_animation_expires"
+          ]
+        }
+      ]
     },
     {
       "name": "Elvish Refueler",
@@ -390,10 +502,29 @@
         "During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.",
         "Exhaust \u2014 {1}{G}: Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "elvish_refueler_reuses_only_one_spent_exhaust_before_this_turns_first_exhaust"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.",
+          "scenario": [
+            "elvish_refueler_reuses_only_one_spent_exhaust_before_this_turns_first_exhaust"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {1}{G}: Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "elvish_refueler_reuses_only_one_spent_exhaust_before_this_turns_first_exhaust"
+          ]
+        }
+      ]
     },
     {
       "name": "Embalmed Ascendant",
@@ -427,10 +558,29 @@
         "Flash",
         "When this creature enters, another target creature or Vehicle you control gets +2/+2 until end of turn."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "fang_guardian_flashes_in_and_targets_only_another_controlled_creature_or_vehicle"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Flash",
+          "scenario": [
+            "fang_guardian_flashes_in_and_targets_only_another_controlled_creature_or_vehicle"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, another target creature or Vehicle you control gets +2/+2 until end of turn.",
+          "scenario": [
+            "fang_guardian_flashes_in_and_targets_only_another_controlled_creature_or_vehicle"
+          ]
+        }
+      ]
     },
     {
       "name": "Fang-Druid Summoner",
@@ -490,10 +640,32 @@
         "{G}: Target creature gains trample until end of turn.",
         "Exhaust \u2014 {3}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities",
+        "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "{G}: Target creature gains trample until end of turn.",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities",
+            "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {3}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities",
+            "boom_scholar_discount_excludes_itself_and_trample_freezes_creature_vehicle_union"
+          ]
+        }
+      ]
     },
     {
       "name": "Guidelight Pathmaker",
@@ -565,7 +737,13 @@
           ]
         }
       ],
-      "validation": "pending root focused run"
+      "validation": {
+        "passed": 5,
+        "scenario_seconds": 0.025,
+        "guarded_run_seconds": 4.003,
+        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
+        "engine_fresh": true
+      }
     },
     {
       "name": "Ketramose, the New Dawn",
@@ -706,7 +884,13 @@
           ]
         }
       ],
-      "validation": "pending root focused run"
+      "validation": {
+        "passed": 5,
+        "scenario_seconds": 0.025,
+        "guarded_run_seconds": 4.003,
+        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
+        "engine_fresh": true
+      }
     },
     {
       "name": "Mimeoplasm, Revered One",
@@ -750,10 +934,23 @@
       "printed_obligations": [
         "When this creature enters, mill two cards, then put a +1/+1 counter on this creature for each artifact and/or creature card in your graveyard. (To mill two cards, put the top two cards of your library into your graveyard.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "ooze_patrol_counts_entire_graveyard_after_two_mills_and_deduplicates_artifact_creature"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "When this creature enters, mill two cards, then put a +1/+1 counter on this creature for each artifact and/or creature card in your graveyard. (To mill two cards, put the top two cards of your library into your graveyard.)",
+          "scenario": [
+            "ooze_patrol_counts_entire_graveyard_after_two_mills_and_deduplicates_artifact_creature"
+          ]
+        }
+      ]
     },
     {
       "name": "Oviya, Automech Artisan",
@@ -823,10 +1020,35 @@
         "Whenever you activate an exhaust ability, create a 1/1 colorless Thopter artifact creature token with flying.",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        },
+        {
+          "obligation": "Whenever you activate an exhaust ability, create a 1/1 colorless Thopter artifact creature token with flying.",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        },
+        {
+          "obligation": "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "afterburner_and_aetherhive_observe_actual_exhaust_and_greenbelt_has_both_abilities"
+          ]
+        }
+      ]
     },
     {
       "name": "Redshift, Rocketeer Chief",
@@ -884,10 +1106,35 @@
         "Exhaust \u2014 {3}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
         "Crew 1"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_exhaust",
+      "outcome_proofs": [
+        "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
+      ],
+      "shared_contracts": [
+        "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Whenever this Vehicle attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+          "scenario": [
+            "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {3}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
+          ]
+        },
+        {
+          "obligation": "Crew 1",
+          "scenario": [
+            "rocketeer_exhaust_is_permanent_crew_is_temporary_and_attack_treasure_is_usable"
+          ]
+        }
+      ]
     },
     {
       "name": "Run Over",
@@ -998,7 +1245,13 @@
           ]
         }
       ],
-      "validation": "pending root focused run"
+      "validation": {
+        "passed": 5,
+        "scenario_seconds": 0.025,
+        "guarded_run_seconds": 4.003,
+        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
+        "engine_fresh": true
+      }
     },
     {
       "name": "Thundering Broodwagon",
@@ -1076,7 +1329,13 @@
           ]
         }
       ],
-      "validation": "pending root focused run"
+      "validation": {
+        "passed": 5,
+        "scenario_seconds": 0.025,
+        "guarded_run_seconds": 4.003,
+        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
+        "engine_fresh": true
+      }
     },
     {
       "name": "Veteran Beastrider",
@@ -1138,7 +1397,13 @@
           ]
         }
       ],
-      "validation": "pending root focused run"
+      "validation": {
+        "passed": 5,
+        "scenario_seconds": 0.025,
+        "guarded_run_seconds": 4.003,
+        "report": "<cache>/aetherdrift/card-green-basics-20261102-073300Z/report.json",
+        "engine_fresh": true
+      }
     },
     {
       "name": "Winter, Cursed Rider",

@@ -1,17 +1,27 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Actual exhaust activations create the existing complete colorless flying Thopter recipe.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Permanent,
     keywords: Keywords::VIGILANCE,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ExhaustAbilityActivated,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CreateTokens {
+            token: Card(5266),
+            amount: 1,
+            tapped: false,
+        }],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost::ZERO,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Crew { minimum: 1 }],
+        sorcery: false,
+        once_per_turn: false,
+    }],
     extras: &CardExtras {
         vehicle_stats: Some(Stats {
             power: 3,
