@@ -5,6 +5,7 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryMove {
+    pub exile_preparation: Option<Box<entry_exiles::Preparation>>,
     pub copy_preparation: Option<Box<entry_copies::Preparation>>,
     pub delayed_return_exile: Option<Box<SpellView>>,
     pub choice: Option<EntryChoiceValue>,
@@ -164,6 +165,7 @@ impl EntryMove {
     }
     pub(super) fn from_view(before: ObjectView, destination: Zone, tapped: bool) -> Self {
         EntryMove {
+            exile_preparation: None,
             copy_preparation: None,
             delayed_return_exile: None,
             choice: None,
@@ -241,10 +243,10 @@ impl EntryBatch {
                 .map(|m| {
                     m.delayed_return_exile.as_ref().map_or(0, |item| {
                         std::mem::size_of::<SpellView>() + item.owned_bytes()
-                    }) + m
-                        .copy_preparation
-                        .as_ref()
-                        .map_or(0, |_| std::mem::size_of::<entry_copies::Preparation>())
+                    }) + m.exile_preparation.as_ref().map_or(0, |p| p.bytes())
+                        + m.copy_preparation
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<entry_copies::Preparation>())
                         + m.counters.owned_bytes()
                         + m.before.owned_bytes()
                         + m.source_before
@@ -463,7 +465,11 @@ impl Game {
             tap_events: Vec::new(),
             tap_next: 0,
         };
-        if batch.moves.iter().any(entry_copies::needs_copy) {
+        if batch
+            .moves
+            .iter()
+            .any(|m| entry_copies::needs_copy(m) || entry_exiles::needs_exile(m))
+        {
             self.state.entry_batch = Some(Box::new(batch));
         } else {
             self.initialize_entry_batch(batch);
@@ -637,6 +643,16 @@ impl Game {
             movement
                 .counters
                 .remove(CounterKind::Defense, movement.before.card.printed_defense());
+        }
+        if let Some(spec) = movement.before.card.entry_exile_counters()
+            && let Some(preparation) = &movement.exile_preparation
+        {
+            movement.counters.add(
+                spec.kind,
+                (preparation.exiled.len() as u64)
+                    .checked_mul(u64::from(spec.per_card))
+                    .capacity("entry exile counters"),
+            );
         }
         self.apply_cast_entry_counters(movement);
         if movement.destination == Zone::Battlefield && movement.cast_origin.is_some() {
@@ -905,6 +921,20 @@ impl Game {
                     .is_some_and(|copy| copy.recipe.is_some())
                 {
                     copy_results.push(event.after);
+                }
+                if let Some(preparation) = &movement.exile_preparation {
+                    let ability_origin = self.copy_ability_origin(event.after);
+                    for &exiled in &preparation.exiled {
+                        self.state
+                            .linked_choices
+                            .get_or_insert_default()
+                            .links
+                            .push(linked_choices::LinkedExileView {
+                                source: event.after,
+                                exiled,
+                                ability_origin,
+                            });
+                    }
                 }
                 if let Some(materials) = movement.craft_materials.as_deref() {
                     for &exiled in materials {
@@ -1242,7 +1272,7 @@ impl Game {
                 batch.resume = Some(self.state.pending.clone());
             }
             if batch.copying {
-                if self.advance_entry_copies() {
+                if self.advance_entry_copies() || self.advance_entry_exiles() {
                     return true;
                 }
                 let batch = *self.state.entry_batch.take().unwrap();

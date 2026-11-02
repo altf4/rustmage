@@ -34,6 +34,10 @@ pub use hand_choices::{HandChoiceKind, HandChoiceView};
 pub mod self_granted;
 pub use self_granted::{SelfGrantedAbilityKind, SelfGrantedAbilityView};
 #[doc(hidden)]
+#[path = "engine_entry_exiles.rs"]
+pub mod entry_exiles;
+pub use entry_exiles::EntryExileChoiceView;
+#[doc(hidden)]
 #[path = "engine_entry_copies.rs"]
 pub mod entry_copies;
 pub use entry_copies::EntryCopyChoiceView;
@@ -837,6 +841,8 @@ define_actions! {
     ChooseEntryBehold { object: Option<ObjectRef> },
     ChooseEntryValue { value: EntryChoiceValue },
     ChooseEntryCopy { object: Option<ObjectRef> },
+    ChooseEntryExile { object: ObjectRef },
+    FinishEntryExile,
     ChooseCreatureType { creature_type: crate::cards::CreatureType },
     ChooseEntryLife {
         pay: bool,
@@ -2437,6 +2443,9 @@ enum Pending {
     EntryCopy {
         player: Player,
     },
+    EntryExile {
+        player: Player,
+    },
     EntryValue {
         player: Player,
     },
@@ -3476,6 +3485,8 @@ pub struct Observation {
     pub entry_timestamps: Option<entries::EntryTimestampView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entry_copy: Option<EntryCopyChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_exile: Option<EntryExileChoiceView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
     pub evidence: Option<EvidenceView>,
@@ -3973,6 +3984,7 @@ impl Game {
             | Pending::CreatureTypeChoice { player }
             | Pending::EntryValue { player }
             | Pending::EntryCopy { player }
+            | Pending::EntryExile { player }
             | Pending::LandCardName { player }
             | Pending::CardName { player, .. }
             | Pending::EntryLife { player }
@@ -4599,6 +4611,16 @@ impl Game {
             Pending::LinkedChoice { .. } => {
                 if self.visit_linked_choices(&mut emit) {
                     return true;
+                }
+            }
+            Pending::EntryExile { .. } => {
+                if emit(Action::FinishEntryExile) {
+                    return true;
+                }
+                for object in self.entry_exile_candidates() {
+                    if emit(Action::ChooseEntryExile { object }) {
+                        return true;
+                    }
                 }
             }
             Pending::EntryCopy { .. } => {
@@ -6456,6 +6478,8 @@ impl Game {
             }
             Action::ChooseEntryValue { value } => self.choose_entry_value(value),
             Action::ChooseEntryCopy { object } => self.choose_entry_copy(object),
+            Action::ChooseEntryExile { object } => self.choose_entry_exile(object),
+            Action::FinishEntryExile => self.finish_entry_exile(),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseEntryBehold { object } => self.choose_entry_behold(object),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
@@ -9989,6 +10013,7 @@ impl Game {
                             .map(|link| LinkedExileView {
                                 source: link.source,
                                 exiled: link.exiled,
+                                ability_origin: link.ability_origin,
                             }),
                     )
                     .filter(|link| self.can_view_hideaway(viewer, link.exiled))
@@ -10302,6 +10327,7 @@ impl Game {
                 Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
                 Pending::EntryCopy { .. } => "entry_copy",
+                Pending::EntryExile { .. } => "entry_exile",
                 Pending::LandCardName { .. } => "land_card_name",
                 Pending::CardName { .. } => "card_name",
                 Pending::EntryLife { .. } => "entry_life",
@@ -10412,6 +10438,7 @@ impl Game {
             entry_replacement: self.entry_tap_view(viewer),
             entry_timestamps: self.entry_timestamp_view(viewer),
             entry_copy: self.entry_copy_view(viewer),
+            entry_exile: self.entry_exile_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),

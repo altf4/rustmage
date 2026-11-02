@@ -9,6 +9,7 @@ fn projected_linked_exile_counts_only_matching_exiled_incarnations() {
         let source = named(&mut g, p, "Keen-Eyed Curator", Zone::Battlefield);
         let exiled = named(&mut g, p, "Solemn Simulacrum", Zone::Exile);
         let link = linked_choices::LinkedExileView {
+            ability_origin: None,
             source: g.object_ref(source),
             exiled: g.object_ref(exiled),
         };

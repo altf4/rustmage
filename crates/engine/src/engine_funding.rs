@@ -13,6 +13,9 @@ use cast_cost_planning::CostContext;
 pub mod funding_entries;
 use funding_entries::{EntryProjection, PaymentContinuation};
 #[doc(hidden)]
+#[path = "engine_funding_entry_exiles.rs"]
+pub mod funding_entry_exiles;
+#[doc(hidden)]
 #[path = "engine_funding_linked_copies.rs"]
 pub mod funding_linked_copies;
 

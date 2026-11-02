@@ -43,6 +43,7 @@ pub(super) fn apply_blueprint(movement: &mut entries::EntryMove, recipe: CopyRec
         .intrinsic_keywords()
         .union(recipe.overrides.map_or(Keywords::NONE, |o| o.keywords));
     movement.before.copy_recipe = Some(recipe);
+    movement.exile_preparation = None;
     movement.choice = None;
     movement.life_paid = None;
     movement.attachment = None;

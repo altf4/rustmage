@@ -2573,6 +2573,7 @@ impl Game {
                             || !source.card.cast_entry_counters().is_empty()
                             || source.card.entry_choice().is_some()
                             || source.card.entry_copy().is_some()
+                            || source.card.entry_exile_counters().is_some()
                             || self.has_entry_counter_replacements(source.card)
                             || source.card.kind_mask() & crate::cards::BATTLE_KIND != 0
                         {
@@ -7787,6 +7788,7 @@ impl Game {
                                         .expect("instruction requires an object source")
                                         .object,
                                     exiled: event.after,
+                                    ability_origin: item.source_ability_origin,
                                 });
                         }
                     }

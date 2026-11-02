@@ -344,7 +344,9 @@ impl FundingState<'_> {
                 let o = self.object(r.card);
                 let prevented = self.zone_move_prevented(*r, requested);
                 if requested != Zone::Graveyard {
-                    return if prevented { vec![None] } else { vec![Some(requested)] };
+                    return if prevented || (requested == Zone::Exile && self.graveyard_exile_prohibited(r.card)) {
+                        vec![None]
+                    } else { vec![Some(requested)] };
                 }
                 let own = o.card.zone_replacement();
                 let shuffle = own == Some(crate::cards::ZoneReplacementRule::RevealShuffleSelf)

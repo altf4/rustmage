@@ -194,6 +194,8 @@ impl Game {
                 && matches!(
                     action,
                     Action::ChooseEntryCopy { .. }
+                        | Action::ChooseEntryExile { .. }
+                        | Action::FinishEntryExile
                         | Action::ChooseEntryBehold { .. }
                         | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }

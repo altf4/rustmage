@@ -558,6 +558,16 @@ impl FundingState<'_> {
             };
             counters.add(CounterKind::PlusOne, amount);
         }
+        if let Some(spec) = card.entry_exile_counters()
+            && let Some(preparation) = &m.exile_preparation
+        {
+            counters.add(
+                spec.kind,
+                (preparation.exiled.len() as u64)
+                    .checked_mul(u64::from(spec.per_card))
+                    .capacity("entry exile counters"),
+            );
+        }
         if m.cast_origin.is_some() {
             for &(kind, n) in card.cast_entry_counters() {
                 counters.add(kind, n)
@@ -731,6 +741,11 @@ impl FundingState<'_> {
             let mut choices = Vec::new();
             return self.visit_entry_copy_choices(moves, &mut choices, &mut |moves| {
                 self.visit_entry_moves(moves, initial, actual, emit)
+            });
+        }
+        if moves.iter().any(entry_exiles::needs_exile) {
+            return self.visit_entry_exile_choices(moves, &mut |world, moves| {
+                world.visit_entry_moves(moves, initial, actual, emit)
             });
         }
         let mut taps = actual.map_or_else(Vec::new, |b| b.tap_events[b.tap_next..].to_vec());
@@ -1707,6 +1722,8 @@ impl Game {
         if !matches!(
             action,
             Action::ChooseEntryCopy { .. }
+                | Action::ChooseEntryExile { .. }
+                | Action::FinishEntryExile
                 | Action::ChooseEntryBehold { .. }
                 | Action::ChooseEntryValue { .. }
                 | Action::ChooseEntryLife { .. }
@@ -1825,6 +1842,21 @@ impl Game {
         world.entry_projection.as_mut().unwrap().counter =
             self.projected_entry_counter(counter_choice);
         match action {
+            Some(Action::ChooseEntryExile { object }) => {
+                let index = self.current_entry_exile_index().unwrap();
+                batch.moves[index]
+                    .exile_preparation
+                    .get_or_insert_default()
+                    .selected
+                    .push(*object);
+            }
+            Some(Action::FinishEntryExile) => {
+                let index = self.current_entry_exile_index().unwrap();
+                batch.moves[index]
+                    .exile_preparation
+                    .get_or_insert_default()
+                    .selection_closed = true;
+            }
             Some(Action::ChooseEntryCopy { object }) => {
                 let index = batch
                     .moves
