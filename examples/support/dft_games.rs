@@ -1,5 +1,6 @@
 //! One legal DFT workload for native replay assurance and a separate plain benchmark.
-//! Action selection always delegates to the shared actor-observation smoke policy.
+//! Action selection delegates to the shared actor-observation smoke policy after
+//! generic public-state filters avoid redundant preparation and rejected attacks.
 use super::*;
 use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet};
@@ -67,28 +68,29 @@ pub struct Report {
     pub decisions: usize,
     pub measurement: &'static str,
 }
+pub const REQUIRED_MECHANICS: [&str; 15] = [
+    "speed_started",
+    "speed_increased",
+    "max_speed",
+    "exhaust_paid",
+    "crew_paid",
+    "saddled_attack",
+    "cycling",
+    "exert_paid",
+    "discard",
+    "token_created",
+    "graveyard_return",
+    "embalm_paid",
+    "embalmed_token",
+    "as_entry_copy",
+    "extra_combat",
+];
 impl Report {
     pub fn missing_mechanics(&self) -> Vec<&'static str> {
-        [
-            "speed_started",
-            "speed_increased",
-            "max_speed",
-            "exhaust_paid",
-            "crew_paid",
-            "saddled_attack",
-            "cycling",
-            "exert_paid",
-            "discard",
-            "token_created",
-            "graveyard_return",
-            "embalm_paid",
-            "embalmed_token",
-            "as_entry_copy",
-            "extra_combat",
-        ]
-        .into_iter()
-        .filter(|m| self.witnesses.get(*m).copied().unwrap_or(0) == 0)
-        .collect()
+        REQUIRED_MECHANICS
+            .into_iter()
+            .filter(|m| self.witnesses.get(*m).copied().unwrap_or(0) == 0)
+            .collect()
     }
 }
 pub fn cases(seeds_per_pair: u64) -> Vec<(usize, u64, Player, bool)> {
@@ -110,6 +112,10 @@ pub fn cases(seeds_per_pair: u64) -> Vec<(usize, u64, Player, bool)> {
             })
         })
         .collect()
+}
+/// Public immutable deck evidence, also used to authenticate sharded reports.
+pub fn deck_reports() -> Result<Vec<DeckReport>, String> {
+    decks().map(|(decks, _)| decks.into_iter().map(|deck| deck.report).collect())
 }
 fn decks() -> Result<(Vec<Deck>, usize), String> {
     let source: serde_json::Value = serde_json::from_str(include_str!("../../data/sets/dft.json"))
@@ -481,6 +487,38 @@ fn digest(mut hash: u64, actor: Player, action: &Action) -> u64 {
     }
     hash
 }
+/// This is a strategy filter, not a legality rule. Re-crewing can be legal
+/// (including for tap triggers), but is unnecessary merely to prepare an already
+/// animated Vehicle. Inspect only public effective views and immutable programs;
+/// preserve activations that also have other effects, such as adding counters.
+fn redundant_preparation(
+    observation: &Observation,
+    action: &Action,
+    finish_crew: bool,
+    finish_saddle: bool,
+) -> bool {
+    match action {
+        Action::ChooseCrewer { .. } => finish_crew,
+        Action::ChooseSaddler { .. } => finish_saddle,
+        Action::AnnounceActivate { card, ability, .. }
+        | Action::BeginActivate { card, ability, .. }
+        | Action::Activate { card, ability, .. } => observation
+            .objects
+            .iter()
+            .find(|object| object.id == *card && object.zone == Zone::Battlefield)
+            .and_then(|object| {
+                rustmage_core::cards::authored::rules(object.card)
+                    .and_then(|rules| rules.activated.get(usize::from(*ability)))
+                    .map(|ability| (object, ability))
+            })
+            .is_some_and(|(object, ability)| match ability.program {
+                [rustmage_core::cards::Instruction::Crew { .. }] => object.kinds & 1 != 0,
+                [rustmage_core::cards::Instruction::BecomeSaddled { .. }] => object.saddled,
+                _ => false,
+            }),
+        _ => false,
+    }
+}
 pub fn run(
     cases: &[(usize, u64, Player, bool)],
     mode: Mode,
@@ -535,10 +573,19 @@ pub fn run(
                 ));
             }
             game.legal_actions_into(&mut actions);
+            let actor = game.actor().unwrap();
+            let before = game.observe(actor);
+            // Offered completion already includes special contribution rules
+            // (toughness, as-though bonuses, etc.); never recompute those here.
+            let finish_crew = actions.contains(&Action::FinishCrew);
+            let finish_saddle = actions.contains(&Action::FinishSaddle);
             let eligible: Vec<(usize, Action)> = actions
                 .iter()
                 .cloned()
                 .enumerate()
+                .filter(|(_, action)| {
+                    !redundant_preparation(&before, action, finish_crew, finish_saddle)
+                })
                 .filter(|(_, action)| match action {
                     Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {
                         !rejected_attacks.contains(card)
@@ -546,10 +593,12 @@ pub fn run(
                     _ => true,
                 })
                 .collect();
+            if eligible.is_empty() {
+                return Err("workload strategy filtered every legal action".into());
+            }
             let offered: Vec<Action> = eligible.iter().map(|(_, action)| action.clone()).collect();
             let index = eligible[crate_policy(&game, &offered)].0;
             let action = actions[index].clone();
-            let actor = game.actor().unwrap();
             match action {
                 Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {
                     pending_attack = Some(card)
@@ -569,7 +618,6 @@ pub fn run(
             if matches!(action, Action::Concede) {
                 return Err("smoke policy selected concession".into());
             }
-            let before = game.observe(actor);
             if mode.verifies() {
                 hash = digest(hash, actor, &action);
                 trace.push((actor, action.clone()));
@@ -689,7 +737,7 @@ pub fn run(
         } else {
             "benchmark"
         },
-        scope: "Ten exactly 60-card Standard decks; physical DFT members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory",
+        scope: "Ten exactly 60-card Standard decks; physical DFT members only; max four nonbasic copies, 28 basic lands; natural terminals; shared observation-only smoke policy with generic rejected-attack memory and redundant pure Crew/Saddle preparation filters",
         pool_members,
         unique_cases: cases.iter().copied().collect::<BTreeSet<_>>().len(),
         decks: decks.into_iter().map(|d| d.report).collect(),
