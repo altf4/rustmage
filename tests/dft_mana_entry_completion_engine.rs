@@ -402,6 +402,13 @@ fn a_fixed_prefix_inside_a_root_plot_mana_child_cannot_exile_the_plotted_hand_su
     };
     const PLOT_SUBJECT: CardRules = CardRules {
         effect: Effect::Creature(1, 2),
+        extras: &CardExtras {
+            plot_cost: Some(ManaCost {
+                colored: [0, 0, 0, 1, 0, 0],
+                generic: 1,
+            }),
+            ..CardExtras::EMPTY
+        },
         activated: &[ActivatedAbility {
             origin: ActivationOrigin::Hand,
             cost: ActivationCost {
