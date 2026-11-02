@@ -2133,6 +2133,29 @@ pub enum Instruction {
     SearchHandAndOrLibrary(SearchFilter),
     /// Remember the exact result of the immediately following library search.
     CaptureSearchResult,
+    /// Capture the first attempted entry of the next entry operation, including failure/decline.
+    CaptureEntryResult,
+    AnimateEntryResultIfSubtype {
+        subtype: &'static str,
+        spec: AnimationSpec,
+    },
+    PutEntryResultCountersIfKinds {
+        kinds: u16,
+        kind: CounterKind,
+        amount: u16,
+    },
+    GrantEntryResultKeywords {
+        keywords: Keywords,
+        permanent: bool,
+    },
+    ScheduleEntryResultExile {
+        own_end_step: bool,
+    },
+    ReturnGraveyardWithDelayedSacrifice(SearchFilter),
+    AnimatePermanentGroup {
+        filters: &'static [BattlefieldFilter],
+        spec: AnimationSpec,
+    },
     /// Optionally behold a subtype, then untap the searched-for permanent.
     BeholdToUntapSearchResult(&'static str),
     /// Untap the searched permanent if its controller controls enough lands.

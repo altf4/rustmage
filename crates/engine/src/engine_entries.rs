@@ -90,6 +90,8 @@ pub(super) struct AtomicCostCheckpoint {
 pub(super) struct EntryBatch {
     pub atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     pub temporary_copy: Option<Box<SpellView>>,
+    pub delayed_sacrifice: Option<Box<SpellView>>,
+    pub captures_result: bool,
     pub discard_context: Option<discard_events::DiscardContext>,
     pub moves: Vec<EntryMove>,
     pub choices: Vec<usize>,
@@ -202,6 +204,9 @@ impl EntryBatch {
                     + a.components.len() * std::mem::size_of::<(ObjectRef, Zone)>()
             })
             + self.temporary_copy.as_ref().map_or(0, |item| {
+                std::mem::size_of::<SpellView>() + item.owned_bytes()
+            })
+            + self.delayed_sacrifice.as_ref().map_or(0, |item| {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             })
             + self.discard_context.as_ref().map_or(0, |c| c.owned_bytes())
@@ -360,24 +365,31 @@ impl Game {
         EntryMove::from_view(self.object_view(id), destination, tapped)
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
-        self.stage_entries_inner(moves, shuffle_after, None, None, None);
+        self.stage_entries_inner(moves, shuffle_after, None, None, None, None);
     }
     pub(super) fn stage_discard_entries(
         &mut self,
         moves: Vec<EntryMove>,
         context: discard_events::DiscardContext,
     ) {
-        self.stage_entries_inner(moves, None, Some(context), None, None);
+        self.stage_entries_inner(moves, None, Some(context), None, None, None);
     }
     pub(super) fn stage_temporary_copy_entries(&mut self, moves: Vec<EntryMove>, item: &SpellView) {
-        self.stage_entries_inner(moves, None, None, Some(Box::new(item.clone())), None);
+        self.stage_entries_inner(moves, None, None, Some(Box::new(item.clone())), None, None);
     }
     pub(super) fn stage_atomic_cost_entries(
         &mut self,
         moves: Vec<EntryMove>,
         checkpoint: AtomicCostCheckpoint,
     ) {
-        self.stage_entries_inner(moves, None, None, None, Some(Box::new(checkpoint)));
+        self.stage_entries_inner(moves, None, None, None, Some(Box::new(checkpoint)), None);
+    }
+    pub(super) fn stage_entries_with_delayed_sacrifice(
+        &mut self,
+        moves: Vec<EntryMove>,
+        item: &SpellView,
+    ) {
+        self.stage_entries_inner(moves, None, None, None, None, Some(Box::new(item.clone())));
     }
     fn stage_entries_inner(
         &mut self,
@@ -386,6 +398,7 @@ impl Game {
         discard_context: Option<discard_events::DiscardContext>,
         temporary_copy: Option<Box<SpellView>>,
         atomic_cost: Option<Box<AtomicCostCheckpoint>>,
+        delayed_sacrifice: Option<Box<SpellView>>,
     ) {
         if atomic_cost.is_none() && self.replay_frozen_mana_entries() {
             return;
@@ -394,6 +407,24 @@ impl Game {
             self.state.entry_batch.is_none(),
             "one entry transaction at a time"
         );
+        let mut captures_result = false;
+        if let Some(frame) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|r| r.search_result.as_mut())
+        {
+            if frame.capture_next_entry {
+                frame.capture_next_entry = false;
+                frame.origin = moves.first().map(|m| m.before.reference);
+                frame.entered = None;
+                captures_result = true;
+            } else if !frame.closed {
+                captures_result = moves
+                    .iter()
+                    .any(|m| Some(m.before.reference) == frame.origin);
+            }
+        }
         let mut tap_events = Vec::new();
         for (index, movement) in moves.iter_mut().enumerate() {
             movement.choose_battle_protector();
@@ -539,6 +570,8 @@ impl Game {
         let mut batch = EntryBatch {
             atomic_cost,
             temporary_copy,
+            delayed_sacrifice,
+            captures_result,
             discard_context,
             moves,
             choices,
@@ -1081,7 +1114,17 @@ impl Game {
             self.capture_return_attachment_entry(origin, &events);
         }
         self.capture_selected_library_entry(&events);
-        self.capture_search_result_entry(&events);
+        if batch.captures_result {
+            self.capture_search_result_entry(&events);
+        }
+        if let Some(item) = &batch.delayed_sacrifice {
+            let recipients = events
+                .iter()
+                .filter(|event| event.moved && event.destination == Zone::Battlefield)
+                .map(|event| event.after)
+                .collect();
+            self.register_delayed_sacrifice(item, recipients);
+        }
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);
         } else {

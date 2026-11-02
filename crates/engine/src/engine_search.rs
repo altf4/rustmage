@@ -1,4 +1,4 @@
-//! Private qualified library searches, owned selections and public hand knowledge.
+//! Private qualified searches, owned selections, and exact successful entry results.
 use super::*;
 use crate::SearchDestination;
 
@@ -7,6 +7,8 @@ use crate::SearchDestination;
 pub(super) struct SearchResult {
     pub origin: Option<ObjectRef>,
     pub entered: Option<ObjectRef>,
+    pub capture_next_entry: bool,
+    pub closed: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -156,6 +158,7 @@ impl Game {
             .as_mut()
         {
             frame.origin = origin;
+            frame.closed = false;
         }
         if choice.spec.destination == SearchDestination::Top {
             // Searching does not change the found card's zone or incarnation.
@@ -251,13 +254,18 @@ impl Game {
         else {
             return;
         };
-        if let Some(event) = events.iter().find(|event| {
-            Some(event.before.reference) == frame.origin
-                && event.moved
-                && event.destination == Zone::Battlefield
-        }) {
-            frame.entered = Some(event.after);
+        if frame.closed {
+            return;
         }
+        frame.closed = true;
+        frame.entered = events
+            .iter()
+            .find(|event| {
+                Some(event.before.reference) == frame.origin
+                    && event.moved
+                    && event.destination == Zone::Battlefield
+            })
+            .map(|event| event.after);
     }
 }
 
@@ -330,5 +338,20 @@ impl Game {
         } else {
             self.run_program();
         }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn captured_entry_result(&self) -> Option<ObjectRef> {
+        self.state
+            .resolving
+            .as_ref()?
+            .search_result
+            .as_ref()?
+            .entered
+            .filter(|object| {
+                self.on_battlefield(object.card) && self.object_ref(object.card) == *object
+            })
     }
 }

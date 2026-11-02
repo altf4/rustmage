@@ -5674,6 +5674,74 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::CaptureEntryResult => {
+                    self.state.resolving.as_mut().unwrap().search_result =
+                        Some(Box::new(search::SearchResult {
+                            capture_next_entry: true,
+                            ..search::SearchResult::default()
+                        }));
+                }
+                Instruction::AnimateEntryResultIfSubtype { subtype, spec } => {
+                    if let Some(recipient) = self.captured_entry_result()
+                        && self.has_subtype(recipient.card, subtype)
+                    {
+                        self.change_object_form(
+                            recipient,
+                            spec,
+                            characteristic_layers::AnimationTypeMode::AddCreature,
+                        );
+                    }
+                }
+                Instruction::PutEntryResultCountersIfKinds {
+                    kinds,
+                    kind,
+                    amount,
+                } => {
+                    if let Some(recipient) = self.captured_entry_result()
+                        && self.current_kinds(recipient.card) & kinds != 0
+                    {
+                        self.effect_counters(
+                            vec![(recipient, Counters::of(kind, u64::from(amount)))],
+                            replacements::ResumeMode::Program,
+                        );
+                    }
+                }
+                Instruction::GrantEntryResultKeywords {
+                    keywords,
+                    permanent,
+                } => {
+                    if let (Some(recipient), Some(source)) =
+                        (self.captured_entry_result(), item.source)
+                    {
+                        self.grant_keyword_effects(&[recipient.card], source.object, keywords);
+                        if permanent && keywords != Keywords::NONE {
+                            self.state
+                                .roles
+                                .as_mut()
+                                .unwrap()
+                                .keyword_effects
+                                .last_mut()
+                                .unwrap()
+                                .expires_turn = None;
+                        }
+                    }
+                }
+                Instruction::ScheduleEntryResultExile { own_end_step } => {
+                    if item.source.is_some()
+                        && let Some(recipient) = self.captured_entry_result()
+                    {
+                        self.register_delayed_return_exile(&item, recipient);
+                        if let Some(rows) = self.state.delayed_returns.as_mut() {
+                            rows.last_mut().unwrap().view.own_end_step = own_end_step;
+                        }
+                    }
+                }
+                Instruction::ReturnGraveyardWithDelayedSacrifice(filter) => {
+                    self.return_graveyard_with_delayed_sacrifice(&item, filter);
+                }
+                Instruction::AnimatePermanentGroup { filters, spec } => {
+                    self.animate_permanent_group(&item, filters, spec);
+                }
                 Instruction::CaptureSearchResult => {
                     self.state.resolving.as_mut().unwrap().search_result =
                         Some(Box::new(search::SearchResult::default()));

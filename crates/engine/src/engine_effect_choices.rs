@@ -1192,6 +1192,18 @@ impl Game {
         ) {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let Some(reference) = choice.selected[player.index()].first().copied() else {
+                if let Some(frame) = self
+                    .state
+                    .resolving
+                    .as_mut()
+                    .unwrap()
+                    .search_result
+                    .as_mut()
+                    && frame.capture_next_entry
+                {
+                    frame.capture_next_entry = false;
+                    frame.closed = true;
+                }
                 self.state.resolving.as_mut().unwrap().choice = None;
                 return false;
             };
@@ -1641,6 +1653,23 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::HandPermanent { .. }
+                | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandLand { .. }
+        ) && let Some(frame) = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .search_result
+            .as_mut()
+            && frame.capture_next_entry
+        {
+            frame.capture_next_entry = false;
+            frame.closed = true;
+        }
         let resolution = self.state.resolving.as_ref().unwrap();
         let ward_victim = resolution
             .program

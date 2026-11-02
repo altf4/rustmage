@@ -295,3 +295,50 @@ impl Game {
         self.apply_damage_batch(&events);
     }
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn animate_permanent_group(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        spec: AnimationSpec,
+    ) {
+        let recipients: Vec<_> = self
+            .battlefield_group(item, filters)
+            .into_iter()
+            .map(|id| self.object_ref(id))
+            .collect();
+        for recipient in recipients {
+            self.change_object_form(
+                recipient,
+                spec,
+                characteristic_layers::AnimationTypeMode::AddCreature,
+            );
+        }
+    }
+    pub(super) fn return_graveyard_with_delayed_sacrifice(
+        &mut self,
+        item: &SpellView,
+        filter: crate::SearchFilter,
+    ) {
+        let moves = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Graveyard
+                    && object.owner == item.controller
+                    && object.is_card()
+                    && self.object_search_filter_matches(filter, *id as CardId)
+            })
+            .map(|(id, _)| {
+                let mut movement = self.entry_move(id as CardId, Zone::Battlefield, false);
+                movement.controller = item.controller;
+                movement
+            })
+            .collect();
+        self.stage_entries_with_delayed_sacrifice(moves, item);
+    }
+}
