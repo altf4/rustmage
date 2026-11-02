@@ -107,7 +107,7 @@ impl Game {
     pub fn improvise_choice(&self) -> Option<ImproviseChoiceView> {
         if !matches!(
             self.state.pending,
-            Pending::Convoke { .. } | Pending::Improvise { .. }
+            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Delve { .. }
         ) {
             return None;
         }
@@ -147,7 +147,10 @@ impl Game {
         let Some(f) = &a.convoke else {
             return true;
         };
-        f.selected
+        (f.delved.is_empty() || self.item_delve(&a.item)
+            && f.delved.iter().all(|&object| super::delve::eligible(self,
+                a.item.controller, object, a.item.source.map(|s| s.object))))
+            && f.selected
             .iter()
             .all(|s| self.convoke_eligible(a.item.controller, s.object))
             && (f.improvised.is_empty()

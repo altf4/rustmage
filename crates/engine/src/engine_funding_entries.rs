@@ -15,11 +15,15 @@ impl PaymentContinuation<'_> {
         self.head
             .additional
             .is_some_and(|selected| selected.card == id)
+            || self.head.convoke.as_ref().is_some_and(|frame|
+                frame.delved.iter().any(|selected| selected.card == id))
             || self.outer.iter().any(|frame| {
                 frame
                     .announcement
                     .additional
                     .is_some_and(|selected| selected.card == id)
+                    || frame.announcement.convoke.as_ref().is_some_and(|contributors|
+                        contributors.delved.iter().any(|selected| selected.card == id))
             })
     }
 }
@@ -70,6 +74,7 @@ impl Announcement {
             for &object in &convoke.improvised {
                 add(object);
             }
+            for &object in &convoke.delved { add(object); }
         }
         if let Some(costs) = &self.cast_costs {
             for &object in &costs.teammates {

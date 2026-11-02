@@ -766,7 +766,8 @@ impl<'g> FundingState<'g> {
     fn set_purpose(&mut self, purpose: mana_lots::Purpose) {
         self.purpose = purpose;
         let needs_improvise_resources = matches!(purpose, mana_lots::Purpose::Spell(spell) if improvise::potential(self, spell.card));
-        if self.waterbend == 0 && !needs_improvise_resources {
+        let needs_delve_resources = matches!(purpose, mana_lots::Purpose::Spell(_)) && delve::potential(self);
+        if self.waterbend == 0 && !needs_improvise_resources && !needs_delve_resources {
             return;
         }
         for (id, _) in self.game.state.objects.iter().enumerate() {
@@ -775,7 +776,7 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             let object = ability_world::CharacteristicWorld::object(self, id);
-            if object.zone == Zone::Battlefield {
+            if object.zone == Zone::Battlefield || needs_delve_resources && object.zone == Zone::Graveyard {
                 self.resources.push(Resource {
                     id,
                     object: object.clone(),
@@ -788,7 +789,10 @@ impl<'g> FundingState<'g> {
         matches!(self.purpose, mana_lots::Purpose::Spell(spell) if improvise::available(self, self.actor, spell.card))
     }
     fn has_contributions(&self) -> bool {
-        self.convoke || self.improvise_available() || self.waterbend != 0
+        self.convoke || self.improvise_available() || self.delve_available() || self.waterbend != 0
+    }
+    pub(super) fn delve_available(&self) -> bool {
+        matches!(self.purpose, mana_lots::Purpose::Spell(spell) if delve::available(self, self.actor, spell.card))
     }
     fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
@@ -3149,6 +3153,11 @@ impl<'g> FundingState<'g> {
         !payable(upper, adjusted.required, adjusted.generic)
     }
     fn optimistic(&self, goal: &FundingGoal) -> bool {
+        // A later mana sacrifice may both add graveyard payment resources and
+        // change whether delve is granted. Battlefield mana alone is no bound.
+        if matches!(self.purpose, mana_lots::Purpose::Spell(_)) && delve::potential(self) {
+            return true;
+        }
         if self.resources.iter().any(|r| {
             r.object.zone != Zone::Battlefield && self.mana_activations(r.id).next().is_some()
         }) {
@@ -3350,13 +3359,17 @@ impl<'g> FundingState<'g> {
         if self.waterbend != 0 {
             return waterbend::masks(self, self.actor, self.waterbend, &[]);
         }
-        improvise::masks(
+        let mut masks = improvise::masks(
             self,
             self.actor,
             self.convoke,
             self.improvise_available(),
             &[],
-        )
+        );
+        if self.delve_available() {
+            masks[0] += delve::count(self, self.actor, self.payment_source, &[]);
+        }
+        masks
     }
     fn evidence_value(&self) -> u128 {
         // A mana payment may exile an existing graveyard card or create new
@@ -4173,6 +4186,7 @@ impl Game {
         let mut proposal = a.clone();
         proposal.harmonizer = Some(object);
         proposal.total_cost = Some(total);
+        if delve::potential(self) { proposal.add_cast_cost_clause(CastCostClause::Mana); }
         if let Some(reference) = object {
             proposal.add_cast_cost_clause(CastCostClause::Harmonize(reference));
         }
@@ -4203,13 +4217,18 @@ impl Game {
         }
         if a.item
             .cast
-            .is_some_and(|c| c.method == CastMethod::Harmonize)
+            .is_some_and(|c| c.method.is_harmonize())
         {
-            if self.harmonize_choice_fundable(a, None) {
+            let mut selected = a.clone();
+            selected.cost = Some(cost);
+            if let Some(object) = selected.harmonizer {
+                return self.harmonize_choice_fundable(&selected, object);
+            }
+            if self.harmonize_choice_fundable(&selected, None) {
                 return true;
             }
             return (0..self.state.objects.len())
-                .any(|id| self.harmonize_choice_fundable(a, Some(self.object_ref(id as CardId))));
+                .any(|id| self.harmonize_choice_fundable(&selected, Some(self.object_ref(id as CardId))));
         }
         if let StackKind::ActivatedAbility { ability } = a.item.kind
             && Self::activation_target_sensitive(
@@ -4638,7 +4657,7 @@ impl Game {
                     .map(|f| f.remaining)
                     .or(announcement.total_cost)
                     .unwrap_or_else(|| {
-                        if announcement
+                        if announcement.payment_x_symbols() > 0 || announcement
                             .item
                             .source
                             .expect("cost announcement has object source")
@@ -4736,6 +4755,7 @@ impl Game {
             Pending::PayCosts { .. }
                 | Pending::Convoke { .. }
                 | Pending::Improvise { .. }
+                | Pending::Delve { .. }
                 | Pending::Waterbend { .. }
         ) {
             return None;
@@ -4747,7 +4767,7 @@ impl Game {
                     .is_none_or(|i| c.clauses[usize::from(i)].clause != CastCostClause::Mana)
         }) && !matches!(
             self.state.pending,
-            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Waterbend { .. }
+            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Delve { .. } | Pending::Waterbend { .. }
         ) {
             return None;
         }
@@ -5053,10 +5073,10 @@ impl Game {
         if done {
             return true;
         }
-        if (announcement
+        if (delve::potential(self) || announcement
             .item
             .cast
-            .is_some_and(|c| c.method == CastMethod::Harmonize || c.blight == Some(true))
+            .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true))
             || announcement.ordered_craft()
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement
@@ -5073,6 +5093,7 @@ impl Game {
         }
         // Closing the mana window can precede a nonmana cost that restores
         // the grant. Individual artifact selections still require it live.
+        let delving = self.item_delve(&announcement.item);
         let artifact = self.item_improvise(&announcement.item)
             || (announcement.item.kind == StackKind::Spell
                 && announcement.cast_costs.is_some()
@@ -5085,7 +5106,7 @@ impl Game {
                         .card,
                 ));
         let waterbend = self.item_waterbend(&announcement.item) != 0;
-        if (convoke || artifact || waterbend)
+        if (convoke || artifact || delving || waterbend)
             && (if state.has_ordered_convoke() {
                 state.cost_completion()
             } else {
@@ -5101,6 +5122,7 @@ impl Game {
             })
             && ((convoke && emit(Action::BeginConvoke))
                 || (artifact && emit(Action::BeginImprovise))
+                || (delving && emit(Action::BeginDelve))
                 || (waterbend && emit(Action::BeginWaterbend)))
         {
             return true;
@@ -5376,6 +5398,7 @@ impl Game {
             Pending::PayCosts { .. }
             | Pending::Convoke { .. }
             | Pending::Improvise { .. }
+                | Pending::Delve { .. }
             | Pending::Waterbend { .. } => {
                 let a = self.state.announcing.as_ref().unwrap();
                 (

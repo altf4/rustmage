@@ -230,6 +230,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::EntryMode(_)
                             | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { .. }
+                            | crate::cards::StaticAbilityFragment::SpellDelve(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat

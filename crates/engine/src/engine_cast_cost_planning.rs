@@ -20,6 +20,7 @@ pub(super) struct CostContext {
     mana: Option<ManaCost>,
     teammates: Vec<ObjectRef>,
     teamwork_exact: bool,
+    delve_selected: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CostContext {
@@ -58,6 +59,7 @@ impl CostContext {
             }
         }
         Some(Box::new(Self {
+            delve_selected: a.convoke.as_ref().is_some_and(|f| !f.delved.is_empty()),
             source_counter_reservation,
             teammates: c.teammates.clone(),
             teamwork_exact: false,
@@ -213,6 +215,12 @@ impl FundingState<'_> {
             });
         self.power_sensitive |= self.contributors.is_some();
         self.install_cost_context(a.and_then(CostContext::from_announcement));
+        if let Some(source) = a.and_then(|a| a.item.source) {
+            self.payment_source = Some(source.object);
+            if a.is_some_and(|a| a.item.kind == StackKind::Spell) {
+                self.project_cost_spell_source(source.object);
+            }
+        }
         if let Some(a) = a.filter(|a| a.cast_costs.is_some())
             && let Some(frame) = &a.convoke
         {
@@ -226,6 +234,13 @@ impl FundingState<'_> {
                 {
                     r.object.tapped = true;
                 }
+            }
+            if !frame.delved.is_empty() {
+                let mut projected = None;
+                self.cost_departures(&frame.delved, Zone::Exile, &mut |next| {
+                    projected = Some(next.clone()); true
+                });
+                if let Some(next) = projected { *self = next; }
             }
         }
     }
@@ -243,6 +258,7 @@ impl FundingState<'_> {
         }
     }
     fn install_cost_context(&mut self, context: Option<Box<CostContext>>) {
+        if let Some(context) = &context { self.payment_source = Some(context.source); }
         self.cast_costs = context;
         if self.cast_costs.is_some() {
             self.power_sensitive = true;
@@ -262,6 +278,34 @@ impl FundingState<'_> {
                     });
                 }
             }
+        }
+        if let Some(source) = self.cast_costs.as_ref().map(|context| context.source) {
+            self.project_cost_spell_source(source);
+        }
+    }
+    fn project_cost_spell_source(&mut self, source: ObjectRef) {
+        // CR601.2a precedes mana abilities and every cost payment. A borrowed
+        // proposal has already left its origin, even before the real card has
+        // moved. Excluding it only from Delve leaves it available to a mana
+        // child's external graveyard cost. Keep the bound proposal reference;
+        // this shadow move does not allocate a new live incarnation.
+        if !matches!(self.purpose, mana_lots::Purpose::Spell(_))
+            || self.game.state.objects.get(source.card as usize).is_none()
+            || self.reference(source.card) != source
+        { return; }
+        let index = self.resources.iter().position(|resource| resource.id == source.card)
+            .unwrap_or_else(|| {
+                let object = self.object(source.card).clone();
+                self.resources.push(Resource { id: source.card, object, attacking: false });
+                self.resources.len() - 1
+            });
+        let object = &mut self.resources[index].object;
+        if matches!(object.zone, Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Library) {
+            if object.zone == Zone::Graveyard {
+                self.graveyard_left[object.owner.index()] = true;
+            }
+            object.zone = Zone::Stack;
+            object.controller = self.actor;
         }
     }
     pub(super) fn cost_object(
@@ -894,6 +938,7 @@ impl FundingState<'_> {
             && matches!(a.program, [Instruction::AddMana(_)])
     }
     fn mana_clause_payable(&self, c: &CostContext) -> bool {
+        if c.delve_selected && !self.delve_available() { return false; }
         let Some(cost) = c.mana else {
             return false;
         };
@@ -937,6 +982,15 @@ impl FundingState<'_> {
             return true;
         }
         for resource in &self.resources {
+            let object = self.reference(resource.id);
+            if self.delve_available() && delve::eligible(self, c.actor, object, self.payment_source)
+                && cost.generic > 0 {
+                let mut context = c.clone();
+                context.mana.as_mut().unwrap().generic -= 1;
+                context.delve_selected = true;
+                if self.cost_departures(&[object], Zone::Exile, &mut |next|
+                    next.complete_convoke_clause(&context, later, rest)) { return true; }
+            }
             if resource.object.zone != Zone::Battlefield
                 || resource.object.controller != c.actor
                 || resource.object.tapped
@@ -1036,6 +1090,25 @@ impl FundingState<'_> {
         cost.generic = generic;
         self.resources[index].object.tapped = true;
         true
+    }
+    pub(in crate::engine) fn project_delver(&mut self, object: ObjectRef) -> bool {
+        if !self.delve_available() || !delve::eligible(self, self.actor, object, self.payment_source) {
+            return false;
+        }
+        let Some(context) = self.cast_costs.as_mut() else {
+            return false;
+        };
+        let Some(cost) = context.mana.as_mut() else {
+            return false;
+        };
+        let Some(remaining) = cost.generic.checked_sub(1) else { return false; };
+        cost.generic = remaining;
+        context.delve_selected = true;
+        let mut projected = None;
+        self.cost_departures(&[object], Zone::Exile, &mut |next| {
+            projected = Some(next.clone()); true
+        });
+        if let Some(next) = projected { *self = next; true } else { false }
     }
     fn complete_additional(
         &self,
@@ -1360,6 +1433,7 @@ impl Game {
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(purpose);
         world.install_cost_context(Some(Box::new(CostContext {
+            delve_selected: false,
             actor: goal.actor,
             source: *source,
             source_counter_reservation: Counters::default(),
@@ -1566,7 +1640,7 @@ impl Game {
         }
         if a.item
             .cast
-            .is_some_and(|c| c.method == CastMethod::Harmonize)
+            .is_some_and(|c| c.method.is_harmonize())
         {
             return self.harmonize_choice_fundable(&a, None)
                 || (0..self.state.objects.len()).any(|id| {
@@ -1603,6 +1677,7 @@ impl Game {
         world.set_purpose(purpose);
         if world.cast_costs.is_none() {
             world.install_cost_context(Some(Box::new(CostContext {
+                delve_selected: false,
                 teammates: Vec::new(),
                 teamwork_exact: false,
                 actor: goal.actor,
@@ -1666,10 +1741,10 @@ impl Game {
                     .card
                     == spell.card
         });
-        let ordered_additional = additional
+        let ordered_additional = delve::potential(self) || additional
             .is_some_and(|a| matches!(a.kind, EffectChoiceKind::DiscardOrLife(_)))
             || additional.is_some()
-                && (spell.card.has_convoke() || improvise::potential(self, spell.card));
+                && (spell.card.has_convoke() || improvise::potential(self, spell.card) || delve::potential(self));
         if !ordered_additional
             && extra.is_empty()
             && current.is_none_or(|a| a.casualty.is_none() && a.cast_costs.is_none())
@@ -1750,7 +1825,7 @@ impl Game {
                         paid: false,
                     });
                 }
-                if spell.card.has_convoke() || improvise::potential(self, spell.card) {
+                if spell.card.has_convoke() || improvise::potential(self, spell.card) || delve::potential(self) {
                     clauses.push(CastCostRow {
                         clause: CastCostClause::Mana,
                         paid: false,
@@ -1765,12 +1840,13 @@ impl Game {
                     }
                 }
                 let context = CostContext {
+                    delve_selected: false,
                     teammates: current
                         .and_then(|a| a.cast_costs.as_ref())
                         .map_or_else(Vec::new, |c| c.teammates.clone()),
                     teamwork_exact: false,
                     actor: goal.actor,
-                    mana: (spell.card.has_convoke() || improvise::potential(self, spell.card))
+                    mana: (spell.card.has_convoke() || improvise::potential(self, spell.card) || delve::potential(self))
                         .then_some(ManaCost {
                             colored: attempt.required,
                             generic: attempt.generic,
@@ -1818,6 +1894,7 @@ impl Game {
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(purpose);
         world.install_cost_context(Some(Box::new(CostContext {
+            delve_selected: false,
             actor: goal.actor,
             source,
             source_counter_reservation: Counters::default(),

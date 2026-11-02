@@ -188,10 +188,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::BeginConvoke
             | Action::BeginImprovise
+            | Action::BeginDelve
             | Action::BeginWaterbend
             | Action::BeginOrderedCosts => 40,
             Action::ChooseConvoker { .. }
             | Action::ChooseImproviser { .. }
+            | Action::ChooseDelver { .. }
             | Action::ChooseWaterbender { .. }
             | Action::ChooseHarmonizer { .. } => 50,
             Action::ChooseMobilizeDefender { .. } | Action::ChooseHandDefender { .. } => 50,
@@ -319,6 +321,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceFreeFromPermission { .. }
             | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
+            | Action::AnnounceGrantedHarmonize { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceGraveyardAdditionalCosts { .. }
             | Action::AnnounceCast { .. }

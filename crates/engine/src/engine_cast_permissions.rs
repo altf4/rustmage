@@ -406,6 +406,11 @@ impl Game {
         }) else {
             return false;
         };
+        if method == CastMethod::GrantedHarmonize && (definition.is_land()
+            || !self.has_graveyard_cast(actor, card, GraveyardCastKind::Harmonize)
+            || crate::cards::mana_symbols::printed_cost(definition.info().mana_cost).is_none()) {
+            return false;
+        }
         if !self.spell_graveyard_requirement_holds(actor, card, definition) {
             return false;
         }
@@ -445,6 +450,7 @@ impl Game {
                 | CastMethod::Mayhem
                 | CastMethod::Miracle
         ) && definition.x_symbols() > 0
+            && (method != CastMethod::Harmonize || definition.harmonize_x_symbols() == 0)
         {
             item.x = Some(0);
         }
@@ -471,6 +477,7 @@ impl Game {
                     | CastMethod::Free
                     | CastMethod::Flashback
                     | CastMethod::Harmonize
+                    | CastMethod::GrantedHarmonize
                     | CastMethod::Mayhem
                     | CastMethod::Miracle
             )

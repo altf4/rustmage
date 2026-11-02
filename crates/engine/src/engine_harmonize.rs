@@ -2,6 +2,26 @@
 use super::*;
 use ability_world::CharacteristicWorld;
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl CastMethod {
+    pub(super) fn is_harmonize(self) -> bool {
+        matches!(self, Self::Harmonize | Self::GrantedHarmonize)
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Announcement {
+    pub(super) fn payment_x_symbols(&self) -> u32 {
+        let card = self.item.source.expect("object-backed cost").card;
+        match self.item.cast.map(|cast| cast.method) {
+            Some(CastMethod::Harmonize) => u32::from(card.harmonize_x_symbols()),
+            Some(CastMethod::GrantedHarmonize) => crate::cards::mana_symbols::printed_cost(
+                card.info().mana_cost,
+            ).map_or(0, |cost| cost.x_symbols),
+            _ => u32::from(card.x_symbols()),
+        }
+    }
+}
+
 /// One untapped controlled creature may be tapped; its power is sampled as the
 /// total spell cost is determined, before mana abilities or payment alter it.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -46,13 +66,15 @@ impl Game {
         };
         let base = Self::announcement_base_cost(a);
         let extra = Self::announcement_optional_reduction(a) + u64::from(discount);
-        let Some(total) = self.target_spell_cost_with_extra(
+        let source = a.item.source.expect("harmonize has a source");
+        let x = a.item.x.unwrap_or(0);
+        let Some(total) = self.scalar_x_total_with_symbols(
             a.item.controller,
-            a.item
-                .source
-                .expect("cost announcement has object source")
-                .id,
+            source.id,
             base,
+            x,
+            source.card,
+            a.payment_x_symbols(),
             &a.item.targets,
             extra,
         ) else {

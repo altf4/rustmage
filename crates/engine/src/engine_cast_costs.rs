@@ -172,7 +172,7 @@ impl Announcement {
                 || self
                     .item
                     .cast
-                    .is_some_and(|c| c.method == CastMethod::Harmonize || c.blight == Some(true)))
+                    .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true)))
         {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
@@ -218,9 +218,7 @@ impl Game {
             costs.active = None;
             if clause == CastCostClause::Mana {
                 costs.mana_paid = true;
-                if let Some(frame) = &a.convoke {
-                    self.tap_objects(&frame.objects().iter().map(|s| s.card).collect::<Vec<_>>());
-                }
+                self.pay_mana_contributors(a);
             }
             if clause == CastCostClause::Additional {
                 a.additional_paid = true;
@@ -263,6 +261,15 @@ impl Game {
                 self.state.announcing = Some(a);
             }
             CastCostClause::Mana => {
+                let delving = self.item_delve(&a.item);
+                let contributors = a.item.kind == StackKind::Spell &&
+                    (a.item.source.unwrap().card.has_convoke() || self.item_improvise(&a.item) || delving);
+                if contributors && a.convoke.is_none() {
+                    a.convoke = Some(Box::new(convoke::ConvokeSelection {
+                        remaining: a.total_cost.expect("locked mana cost"),
+                        selected: Vec::new(), improvised: Vec::new(), delved: Vec::new(),
+                    }));
+                }
                 self.state.pending = if a
                     .item
                     .source
@@ -283,6 +290,8 @@ impl Game {
                     Pending::Improvise {
                         player: a.item.controller,
                     }
+                } else if delving {
+                    Pending::Delve { player: a.item.controller }
                 } else {
                     Pending::PayCosts {
                         player: a.item.controller,

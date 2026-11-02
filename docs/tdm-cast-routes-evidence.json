@@ -1,0 +1,593 @@
+{
+  "schema": 1,
+  "scope": "C:GRANTED_HARMONIZE + C:GRANTED_DELVE and printed alternate-X casting support; shared engine only, no TDM definitions or admissions",
+  "base_revision": "53f44068468385f16b5594c2472a8742bed14241",
+  "branch": "codex/tdm-cast-routes",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/ability_layers.rs",
+      "sha256": "71044e032d90c760c16ae513dbe3a2e027b6d7de9ca6549a5622d5577d55bd37"
+    },
+    {
+      "path": "crates/engine/src/card_definitions/mod.rs",
+      "sha256": "20c650a86d6eac7ac7472c4dacc17b9c19975173de058e7c646dfafe31f196a9"
+    },
+    {
+      "path": "crates/engine/src/cards.rs",
+      "sha256": "9455f34cf64c197673e59449b84754decfefbb3b1fb5443b8ba8894a6f6d16de"
+    },
+    {
+      "path": "crates/engine/src/engine.rs",
+      "sha256": "03a35b24b86b4db9c2714ff9ea8599750f796172f49d65e527608bf624bd0e04"
+    },
+    {
+      "path": "crates/engine/src/engine_cast_cost_planning.rs",
+      "sha256": "08ca936d3b3265cdc644ae505da9fcfe5ef3e83b7e50005d55eae1df472087e4"
+    },
+    {
+      "path": "crates/engine/src/engine_cast_costs.rs",
+      "sha256": "5c788e6e6219736698d2f1a8417ef6fe46273acfad95d482ac548d1e000cb395"
+    },
+    {
+      "path": "crates/engine/src/engine_cast_permissions.rs",
+      "sha256": "de12f8a22dec404312ee0580551d27a34fd3f7400927d67fea057ba6a82598f3"
+    },
+    {
+      "path": "crates/engine/src/engine_cast_rollback.rs",
+      "sha256": "1bc857f8dacf780fa2907022b3146ee85142e372bc10dba2d641091855acd01d"
+    },
+    {
+      "path": "crates/engine/src/engine_combat_allocations.rs",
+      "sha256": "73ee57707a9d92b8d0483ed5a8a05cf54d8bda74b5b4974b1f59ca8a8602614f"
+    },
+    {
+      "path": "crates/engine/src/engine_convoke.rs",
+      "sha256": "e7278463ff069c09730d680d32fcae3660bac97be188549f4bd908986ab46477"
+    },
+    {
+      "path": "crates/engine/src/engine_delve.rs",
+      "sha256": "a55ae987985b1b2287d8968eb0c85842701bdfc851f5c8a0509536f2bb32fe86"
+    },
+    {
+      "path": "crates/engine/src/engine_funding.rs",
+      "sha256": "bf0c9fcc777111562c84548503645b359166c66cd91888d85bcfb83b92c1b2a0"
+    },
+    {
+      "path": "crates/engine/src/engine_funding_entries.rs",
+      "sha256": "95a63db4009951cd3c429eeccf34da8e898a2c6a4c7325764f813d018f09e22e"
+    },
+    {
+      "path": "crates/engine/src/engine_harmonize.rs",
+      "sha256": "189b4e51b71175cb51a08d76a29ab63540aedc75cde09f82a4a5661c3fcb8535"
+    },
+    {
+      "path": "crates/engine/src/engine_improvise.rs",
+      "sha256": "8d6d73e4ac053f267abb25c413dbdcc7c93723d0df8fd43f32325380b4b9d5dc"
+    },
+    {
+      "path": "crates/engine/src/engine_scalar_x.rs",
+      "sha256": "fde23c6d9a351ec0c252ce76ba7e63f9be26ec02169ff29916307ae5c299c27e"
+    },
+    {
+      "path": "crates/engine/src/engine_spell_costs.rs",
+      "sha256": "e327abf51775a685529ad7da8f42ede636f5d4e7c57f677a4ae80ae5fb54ea94"
+    },
+    {
+      "path": "crates/engine/src/engine_stats.rs",
+      "sha256": "0e0030197bb974a4e58e7227de34a9d2b80ffbd8a7bdbcb26910d41545923aae"
+    },
+    {
+      "path": "crates/engine/src/engine_targeting.rs",
+      "sha256": "98fba4d9d6a8b54903ce01b2b6cf6edfd4dcd8217106f33e60fc0a267b695d5b"
+    },
+    {
+      "path": "crates/engine/src/engine_waterbend.rs",
+      "sha256": "aa9b4c10368c191c8cc5ab1bd79fca3229c4b5d525744d87a42fdbb36925635d"
+    },
+    {
+      "path": "crates/engine/src/policy.rs",
+      "sha256": "5b0dca199e09cfea91f8abc0ff73e015c431e5fe85adb0643f6a535288174d3e"
+    },
+    {
+      "path": "tests/legacy/engine_additional_bound_tests.rs",
+      "sha256": "5da42f0c213956748d4b03d0e3d311a03cf8f4fd646f072d1712059a83a78b4f"
+    },
+    {
+      "path": "tests/tdm_cast_routes.rs",
+      "sha256": "b8fc087b6556a18798243d55c1e5fa7147c86b7e4f6bf054c83fc1da362282f4"
+    }
+  ],
+  "source_authority": {
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "complete_classes_read": [
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/s/SongcrafterMage.java",
+        "sha256": "8a998d849e999b2e7bd97b51ab9a5761fc60fb9dbdc082e138d2eb891909e603"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/t/TevalArbiterOfVirtue.java",
+        "sha256": "9fcf1fa50f89f3ea8c39682325eb7fd96f9fd0ff737f7a9defccd4a1be2f0f13"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NaturesRhythm.java",
+        "sha256": "3a17973e60216769760b842b096d20923811633b70335237e2b34a75ddf18331"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+        "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/keyword/DelveAbility.java",
+        "sha256": "27ff5af89ce6082ac6d9e746c13c9206a06c8a6bbe687c0ce3ae78550d7075da"
+      }
+    ],
+    "comprehensive_rules": {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "effective": "2026-09-25",
+      "local_path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "rules": [
+        "107.3a-b",
+        "118.9a,d",
+        "118.11",
+        "601.2a,b,e,f,g,h",
+        "702.1b (Past in Flames / Fire // Ice example)",
+        "702.66a-c",
+        "702.180a",
+        "709.3",
+        "712.11"
+      ]
+    },
+    "release_notes": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+    "prior_full_audit": {
+      "path": "/tmp/tdm-audit-s-z.json",
+      "sha256": "ae3752a6478cdf2957bc68a79b4044a9465bb1820543e3c569cf3e52dc9b3656"
+    }
+  },
+  "rules_and_architecture": [
+    "Grant an exact graveyard incarnation Harmonize through cleanup; permission survives departure of the granting permanent and is distinct from intrinsic Harmonize.",
+    "Parse immutable printed mana notation using the existing shared printed_cost parser/options. The selected definition supplies actual colors, hybrid/twobrid alternatives and X count; mana value never substitutes for mana cost.",
+    "Intrinsic Harmonize separately declares its alternate-cost X symbol count. Generic payment X and printed mana-value X are independent inputs; ordinary X interval search stays bounded by threshold segments and binary search.",
+    "Harmonize keeps its existing optional creature declaration, locked power discount, ordered tap clause and exact source exile replacement on every stack departure.",
+    "Delve is a generic-only mana payment after total cost locking, shared with existing Convoke/Improvise/Waterbend contributor state and all existing mana/additional cost participants. It does not generate mana or reduce the total cost.",
+    "Exact selected grave cards remain reserved until the mana payment commits, then ordinary simultaneous zone movement commits their exile. Borrowed cost worlds project those departures for later obligations.",
+    "Availability uses the live provider, player and selected spell definition. A source may depart after Delve payment as a later cost; losing the only grant during mana production cannot fund Delve afterward.",
+    "Before funding a proposal, the borrowed world projects the known exact spell source out of its origin to Stack, with casting controller and graveyard-left fact. The real Game is never mutated by that preview; the proposed spell cannot fuel its own or a mana child additional cost."
+  ],
+  "focused_tests": [
+    "granted_harmonize_uses_printed_colored_cost_exact_card_and_independent_duration",
+    "harmonize_grant_expires_and_does_not_follow_a_new_graveyard_incarnation",
+    "granted_and_intrinsic_harmonize_costs_remain_separate_and_countered_spell_is_exiled",
+    "granted_harmonize_preserves_hybrid_and_twobrid_symbols",
+    "x_in_printed_or_harmonize_cost_is_chosen_paid_and_does_not_change_printed_value_rules",
+    "delve_pays_only_generic_and_commits_exact_graveyard_cards",
+    "delve_respects_locked_taxes_reductions_and_harmonize_stack_origin",
+    "sacrificed_mana_producer_can_be_delved_but_a_departed_grant_cannot_supply_delve",
+    "additional_graveyard_cost_and_delve_reserve_distinct_cards_in_either_order",
+    "delve_selection_is_owned_raw_index_restorable_and_private",
+    "delve_provider_can_leave_in_a_later_cost_after_mana_is_paid",
+    "delve_uses_the_same_total_from_hand_exile_and_permitted_library_top",
+    "mana_child_must_preserve_its_ancestors_distinct_delve_resources",
+    "granted_harmonize_recomputes_the_cost_of_an_existing_selected_spell_face",
+    "harmonize_exiles_on_a_stack_departure_that_would_return_the_spell_to_hand",
+    "delve_shares_one_locked_payment_with_convoke_and_improvise",
+    "delve_cannot_pay_a_required_colorless_symbol",
+    "delve_obeys_a_live_graveyard_exile_prohibition",
+    "a_proposed_graveyard_spell_cannot_pay_a_mana_childs_graveyard_cost"
+  ],
+  "meaningful_contracts": [
+    "Both seats: exact printed U cannot be paid by generic mana or grave exiles; one ungranted identical card stays uncastable.",
+    "Actual ETB grant resolution; source removal, cleanup expiry and graveyard leave/reentry invalidation.",
+    "Separate intrinsic/granted routes, colored hybrid and twobrid payments; normal and alternate X declarations, over-domain transactional rejection and printed stack mana value.",
+    "Resolved, countered and returned-to-hand Harmonize spells all exile; selected Omen cost uses its inset symbols and Harmonize overrides Omen library shuffle.",
+    "Hand, exact granted graveyard, permitted exile and library-top origins; locked taxes and reductions compose with Delve.",
+    "Own exact physical graveyard cards only; duplicate, opponent, source and excessive contributions rejected; required C always uses real mana; live exile prohibition respected.",
+    "Convoke and Improvise each share the mana frame with Delve. Later additional costs reserve distinct grave cards, and a provider may be sacrificed only after paying the Delve-enabled mana clause.",
+    "A sacrificed mana producer becomes grave fuel; sacrificing the sole Delve provider before payment removes Delve.",
+    "A costed mana child is rejected when it strands its parent, and succeeds with one distinct additional grave card. Precast negative/positive witnesses prove a proposed graveyard spell cannot pay its own mana child, with and without Delve.",
+    "Owned raw/index children, sibling divergence, parent disposal, both observations/privacy, stale revision restore and illegal-action snapshot/revision preservation."
+  ],
+  "final_runs": [
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-focused/native.json",
+      "sha256": "398439a0e370e2c297c3eb525d3b0bf4c19e1f3e44375043f498c27173c19381",
+      "success": true,
+      "terminal": true,
+      "cases": 19,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "tdm_cast_routes",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 112.55568632099312,
+      "execution_seconds": 0.0354218170105014,
+      "total_seconds": 112.59219457700965,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-0/native.json",
+      "sha256": "112aa66a978794051665f00b683a7e9edf03216410ddc815044407789d7db2b8",
+      "success": true,
+      "terminal": true,
+      "cases": 10,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 21.76838435701211,
+      "execution_seconds": 0.05131274601444602,
+      "total_seconds": 21.82090714899823,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-1/native.json",
+      "sha256": "1fb1a63fe94fe3c3b40624a7502e5a1346cc9448dec9a775db8147365091a7be",
+      "success": true,
+      "terminal": true,
+      "cases": 11,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_variable_costs_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 1.518658463988686,
+      "execution_seconds": 0.024289041990414262,
+      "total_seconds": 1.543484940979397,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-2/native.json",
+      "sha256": "ab2990e817f8cf52330f5a7a4cbe23e841e618da8640d103622df874222340a6",
+      "success": true,
+      "terminal": true,
+      "cases": 9,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_deferred_mana",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 1.5699349899950903,
+      "execution_seconds": 0.042809340986423194,
+      "total_seconds": 1.6133515200053807,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-3/native.json",
+      "sha256": "f0ec30186850445a764e4d0e6de56e4994aa24e3f210c627668c3cb4426b0b7c",
+      "success": true,
+      "terminal": true,
+      "cases": 11,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_mana_payment_continuations_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.7669884390197694,
+      "execution_seconds": 0.05058440598077141,
+      "total_seconds": 0.8182095470256172,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-4/native.json",
+      "sha256": "eb9b421b8992dd05ec44e51798a52561effdad6d1ef107fef135046149a34226",
+      "success": true,
+      "terminal": true,
+      "cases": 4,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_mana_entry_completion_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.7664901340031065,
+      "execution_seconds": 0.041986866999650374,
+      "total_seconds": 0.8091657669865526,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-5/native.json",
+      "sha256": "82c05f66e5235d07e85f3e8c550391a762c9869e36672f400f76ef3fc8a78cb4",
+      "success": true,
+      "terminal": true,
+      "cases": 11,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_late_mana_outputs_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.9172543580061756,
+      "execution_seconds": 0.034896113007562235,
+      "total_seconds": 0.9527909280150197,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-6/native.json",
+      "sha256": "ae525dc7c5ed6d61984581bbb4ad719bd4ab261c4fe3d5efe39383891710d1dd",
+      "success": true,
+      "terminal": true,
+      "cases": 9,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "dft_cast_permissions_engine",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.8670391409832519,
+      "execution_seconds": 0.03339082500315271,
+      "total_seconds": 0.9010571839753538,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-7/native.json",
+      "sha256": "54ee6b82666f823f859fc8a424cb870bbed97ac77acb68470027c0d7275d6cee",
+      "success": true,
+      "terminal": true,
+      "cases": 1,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06460367600084282,
+      "execution_seconds": 0.033947360003367066,
+      "total_seconds": 0.0991367360111326,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-8/native.json",
+      "sha256": "eae45519adc36e65f6aacdfa9ec25b3466e63fff476e4f5dee318bc45a26c8d3",
+      "success": true,
+      "terminal": true,
+      "cases": 1,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.0644066609966103,
+      "execution_seconds": 0.03271950202179141,
+      "total_seconds": 0.09763522702269256,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-9/native.json",
+      "sha256": "eea9709c88ae0c6b1d1702ab30bef4f1fd574072da4dc0860ad9fad71dd8a869",
+      "success": true,
+      "terminal": true,
+      "cases": 1,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06510690800496377,
+      "execution_seconds": 0.024727185984374955,
+      "total_seconds": 0.09044709798763506,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-10/native.json",
+      "sha256": "04683cae48bbec781c32e3943353e09fc011461ef587ec326be1f9e6b346d9ef",
+      "success": true,
+      "terminal": true,
+      "cases": 1,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06470723400707357,
+      "execution_seconds": 0.036272511002607644,
+      "total_seconds": 0.1015881700150203,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-11/native.json",
+      "sha256": "f23b045de6c09aefc9dadc0456628b44b0d3b2ebb538afacca64aa41ef99d7f0",
+      "success": true,
+      "terminal": true,
+      "cases": 1,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06483488899539225,
+      "execution_seconds": 0.0333151730010286,
+      "total_seconds": 0.09874822600977495,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-12/native.json",
+      "sha256": "d1cd80c986aef1acb58a74bbccadc28fc1ae9dd255ad39c626ac0a5d4054a617",
+      "success": true,
+      "terminal": true,
+      "cases": 1,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06492272799368948,
+      "execution_seconds": 0.03423569499864243,
+      "total_seconds": 0.09977359700133093,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-13/native.json",
+      "sha256": "e86808db457ae55152c789b0e5b1555eb8d3fa277472b8edc89ebd9be5aea673",
+      "success": true,
+      "terminal": true,
+      "cases": 2,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06507085700286552,
+      "execution_seconds": 0.0335736759880092,
+      "total_seconds": 0.09923540498130023,
+      "timeouts": false,
+      "active_processes": []
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-14/native.json",
+      "sha256": "faceb588e6121229a8674400d6cc643d335809383820c6d18051155e8568615a",
+      "success": true,
+      "terminal": true,
+      "cases": 1,
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "legacy",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_seconds": 0.06463919201632962,
+      "execution_seconds": 0.033312196988845244,
+      "total_seconds": 0.09846332701272331,
+      "timeouts": false,
+      "active_processes": []
+    }
+  ],
+  "final_summary": {
+    "cases": 93,
+    "focused_cases": 19,
+    "inherited_cases": 74,
+    "compile_seconds": 141.24872834901907,
+    "execution_seconds": 0.5767944569815882,
+    "all_terminal": true,
+    "failed": 0,
+    "timeouts": false,
+    "resource_guard": "one Cargo job/test thread, shared 6442450944-byte limit; no OOM probe",
+    "engine_build_peak_bytes": 1911058432,
+    "engine_resource_report": "/home/altf4/.cache/rustmage-build-reports/d844fb645dc94dbba3d7bae2b7757992.json",
+    "simulation_throughput": "not measured by these bounded rules fixtures; no all-Standard performance claim"
+  },
+  "iteration_history": [
+    {
+      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-first/native.json",
+      "result": "Compile-only failure: unsupported doc comment inside define_actions macro. Corrected to ordinary comment; no scenario executed."
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-second/native.json",
+      "result": "11/13 passed. Reducer fixture omitted CardExtras.cost_reductions; the mana child used an inherited unsupported counted-exile shape."
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-third/native.json",
+      "result": "13/13 passed after wiring reducer extras and choosing the supported single-card ExileGraveyard child cost."
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-final-focused/native.json",
+      "result": "18/18 passed; this predates the final borrowed source-origin repair."
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-legacy-harmonize/native.json",
+      "result": "Compile-only failure: one existing white-box CostContext literal required delve_selected:false. Mechanical initializer repair included."
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-preflight-probe/native.json",
+      "result": "Independent final audit counterexample failed: a proposed graveyard spell could pay its mana child exile cost. Repaired by borrowed Stack source projection and refreshed all93 final cases."
+    }
+  ],
+  "limitations_and_integration": [
+    "Inherited counted mana-child shape: FundingMove external costs support ExileGraveyard and Sacrifice; ExileGraveyardCards(1) does not generate that incremental costed-mana announcement. No audited TDM mana ability uses the counted shape; no new support is claimed.",
+    "Existing CastFace Normal/Adventure/Omen/Back definitions are supported. Cease // Desist remains gated with no generated split-half mapping at this baseline; no card-specific engine mapping or full split-card support is claimed.",
+    "No Phyrexian mana extension was added to the existing printed-symbol parser; this baseline Standard metadata has no such printed symbols.",
+    "Public additions: AnnounceGrantedHarmonize{card,face}, BeginDelve, ChooseDelver, GrantedHarmonize, graveyard Harmonize permission kind, Pending::Delve and optional actor-only delve_choice observation. Root owns final schema/trace integration and inherited trace acceptance.",
+    "No suspend/storm, named entry choices, TDM card authorship/admission, full-set validation or complete-game simulation was performed in this workstream.",
+    "Two independent nonauthor reviews of final shared engine inputs remain integration requirements; this evidence is not full-set acceptance."
+  ]
+}

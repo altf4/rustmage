@@ -432,12 +432,7 @@ impl Announcement {
     pub(super) fn has_x_cost(&self) -> bool {
         match self.item.kind {
             StackKind::Spell => {
-                self.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card
-                    .x_symbols()
-                    > 0
+                self.payment_x_symbols() > 0
                     || self
                         .item
                         .source

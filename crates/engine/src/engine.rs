@@ -404,6 +404,10 @@ pub mod harmonize;
 #[path = "engine_improvise.rs"]
 pub mod improvise;
 #[doc(hidden)]
+#[path = "engine_delve.rs"]
+pub mod delve;
+pub use delve::DelveChoiceView;
+#[doc(hidden)]
 #[path = "engine_proliferate.rs"]
 pub mod proliferate;
 #[doc(hidden)]
@@ -754,9 +758,11 @@ define_actions! {
     BeginConvoke,
     ChooseHarmonizer { object: Option<ObjectRef> },
     BeginImprovise,
+    BeginDelve,
     BeginWaterbend,
     BeginOrderedCosts,
     ChooseImproviser { object: ObjectRef },
+    ChooseDelver { object: ObjectRef },
     ChooseWaterbender { object: ObjectRef },
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
@@ -926,6 +932,8 @@ define_actions! {
         card: CardId,
     },
     AnnounceHarmonize { card: CardId },
+    // Use an exact temporary grant, independently of the card's own harmonize cost.
+    AnnounceGrantedHarmonize { card: CardId, face: CastFace },
     AnnounceMayhem { card: CardId },
     AnnounceGraveyardBorrowedAbility { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters },
     AnnounceGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
@@ -1319,6 +1327,7 @@ pub enum CastMethod {
     GrantedFlashback,
     Flashback,
     Harmonize,
+    GrantedHarmonize,
     Mayhem,
     Miracle,
     Plot,
@@ -2354,6 +2363,9 @@ enum Pending {
     Improvise {
         player: Player,
     },
+    Delve {
+        player: Player,
+    },
     Waterbend {
         player: Player,
     },
@@ -3386,6 +3398,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub improvise_choice: Option<ImproviseChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub delve_choice: Option<DelveChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub waterbend_choice: Option<WaterbendChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_artifact_copies: Vec<SpellView>,
@@ -3990,6 +4004,7 @@ impl Game {
             | Pending::Harmonize { player }
             | Pending::Convoke { player }
             | Pending::Improvise { player }
+            | Pending::Delve { player }
             | Pending::Waterbend { player }
             | Pending::Mobilize { player }
             | Pending::BlightIntent { player }
@@ -4522,7 +4537,7 @@ impl Game {
                     return true;
                 }
             }
-            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Waterbend { .. } => {
+            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Delve { .. } | Pending::Waterbend { .. } => {
                 if self.visit_convoke_actions(&mut emit) {
                     return true;
                 }
@@ -5471,6 +5486,18 @@ impl Game {
                     {
                         return true;
                     }
+                    if !casting_prohibited && !self.nonhand_cast_prohibited(actor)
+                        && obj.zone == Zone::Graveyard
+                        && self.has_graveyard_cast(actor, card, GraveyardCastKind::Harmonize)
+                    {
+                        for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen, CastFace::Back] {
+                            if self.permitted_cast_available(actor, card, CastMethod::GrantedHarmonize,
+                                face, sorcery, false)
+                                && emit(Action::AnnounceGrantedHarmonize { card, face }) {
+                                return true;
+                            }
+                        }
+                    }
                     if obj.zone == Zone::Graveyard
                         && obj.card.harmonize_cost().is_some()
                         && self.permitted_cast_available(
@@ -5661,6 +5688,7 @@ impl Game {
                                     || self.exile_cast_modifiers(actor, card).0
                                     || obj.card.has_convoke()
                                     || improvise::potential(self, obj.card)
+                                    || delve::potential(self)
                                     || obj.card.additional_cost().is_some()
                                 {
                                     return self.spell_can_fund(actor, card, cost);
@@ -6976,16 +7004,19 @@ impl Game {
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
-            Action::AnnounceHarmonize { card } => {
+            Action::AnnounceHarmonize { card } | Action::AnnounceGrantedHarmonize { card, .. } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
-                item.cast.as_mut().unwrap().method = CastMethod::Harmonize;
-                if item
-                    .source
-                    .expect("cast or activated ability has a source")
-                    .card
-                    .x_symbols()
-                    > 0
-                {
+                let granted = matches!(action, Action::AnnounceGrantedHarmonize { .. });
+                if let Action::AnnounceGrantedHarmonize { face, .. } = action {
+                    self.set_cast_face(&mut item, face);
+                }
+                item.cast.as_mut().unwrap().method = if granted {
+                    CastMethod::GrantedHarmonize
+                } else {
+                    CastMethod::Harmonize
+                };
+                if !granted && item.source.expect("harmonize source").card.harmonize_x_symbols() == 0
+                    && item.source.expect("harmonize source").card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
                 // Reuse the exact-object leave-stack exile replacement.
@@ -7121,9 +7152,11 @@ impl Game {
             Action::BeginConvoke => self.begin_convoke(),
             Action::ChooseHarmonizer { object } => self.choose_harmonizer(object),
             Action::BeginImprovise => self.begin_improvise(),
+            Action::BeginDelve => self.begin_delve(),
             Action::BeginWaterbend => self.begin_waterbend(),
             Action::BeginOrderedCosts => self.begin_ordered_costs(),
             Action::ChooseImproviser { object } => self.choose_improviser(object),
+            Action::ChooseDelver { object } => self.choose_delver(object),
             Action::ChooseWaterbender { object } => self.choose_improviser(object),
             Action::ChooseConvoker {
                 object,
@@ -10171,6 +10204,7 @@ impl Game {
             } else {
                 None
             },
+            delve_choice: if owns_choice { self.delve_choice() } else { None },
             waterbend_choice: if owns_choice {
                 self.waterbend_choice()
             } else {
@@ -10379,6 +10413,7 @@ impl Game {
                 Pending::Harmonize { .. } => "harmonize",
                 Pending::Convoke { .. } => "convoke",
                 Pending::Improvise { .. } => "improvise",
+                Pending::Delve { .. } => "delve",
                 Pending::Waterbend { .. } => "waterbend",
                 Pending::Mobilize { .. } => "mobilize",
                 Pending::BlightIntent { .. } => "blight_intent",

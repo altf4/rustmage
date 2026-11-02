@@ -147,6 +147,8 @@ pub enum GraveyardCastKind {
     Play,
     Cast,
     Flashback,
+    /// This exact card gains harmonize with its printed mana cost until cleanup.
+    Harmonize,
 }
 
 /// Compact catalogue identity. The immutable definitions are shared across all
@@ -5361,6 +5363,9 @@ impl Card {
     }
     pub(crate) fn harmonize_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|r| r.extras.harmonize_cost)
+    }
+    pub(crate) fn harmonize_x_symbols(self) -> u8 {
+        authored::rules(self).map_or(0, |r| r.extras.harmonize_x_symbols)
     }
     pub(crate) fn sneak_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|r| r.extras.sneak_cost)

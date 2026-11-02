@@ -100,6 +100,7 @@ impl Game {
             },
             selected: Vec::new(),
             improvised: Vec::new(),
+            delved: Vec::new(),
         }));
         self.state.pending = Pending::Waterbend {
             player: announcement.item.controller,

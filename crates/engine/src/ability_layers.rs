@@ -145,6 +145,8 @@ pub enum StaticAbilityFragment {
     PlayLandFromGraveyard,
     SpendAnyManaForCreatures,
     SpellImprovise(CastFilter),
+    /// Controlled matching spells have delve while this provider's rule is available.
+    SpellDelve(CastFilter),
     GraveyardPermanentTypes,
     ForeignStashPlay,
     ControlAttached,

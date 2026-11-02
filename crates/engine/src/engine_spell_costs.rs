@@ -121,6 +121,9 @@ impl Game {
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
+            if a.item.cast.is_some_and(|cast| cast.method == CastMethod::GrantedHarmonize) {
+                return a.fixed_alternative_cost().expect("printed harmonize mana cost");
+            }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Mayhem) {
                 return a
                     .item
