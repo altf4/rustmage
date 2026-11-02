@@ -451,11 +451,12 @@ fn borrowed_mana_uses_the_borrowers_name_and_preserves_donor_slot_identity() {
     tax(&mut g, Player::P1, "Grizzly Bears");
     g.state.players[0].mana = TWO;
     g.refresh_graveyard_borrowing();
+    let donor_reference = g.object_ref(donor);
     act(
         &mut g,
         Action::AnnounceGraveyardBorrowedMana {
             card: source,
-            graveyard: g.object_ref(donor),
+            graveyard: donor_reference,
             ability: 0,
             counter_payment: Counters::default(),
             production: BLUE,
@@ -511,10 +512,11 @@ fn independent_self_granted_mana_instances_pay_tax_and_keep_once_per_turn_histor
     act(&mut g, first.clone());
     pay(&mut g);
     reject(&mut g, first);
+    let source_reference = g.object_ref(source);
     act(
         &mut g,
         Action::AnnounceSelfGrantedMana {
-            source: g.object_ref(source),
+            source: source_reference,
             grant_timestamp: stamps[1],
             counter_payment: Counters::default(),
             production: BLUE,
