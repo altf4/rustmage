@@ -17,8 +17,9 @@ None of those flags independently certifies all printed obligations.
 Complete whole-set source and dependency audit before changing behavior. Three
 disjoint audit partitions cover all 275 resolved identities; the separate
 [Cori-Steel Cutter audit](tdm-cori-steel-audit.json) covers the final identity.
-The complete dependency ledger will be reconciled in issue #570 before engine
-implementation. Do not begin card authorship until all shared dependencies have
+The [complete dependency ledger](tdm-engine-audit.json) reconciles all 276 source
+audits and records 77 dependency/proof groups, including duplicate group aliases.
+Shared engine implementation may now begin; all groups remain open. Do not begin card authorship until all shared dependencies have
 focused rules/contract evidence and independent reviews.
 
 The first prepared repair covers existing fixed Endure: use the exact permanent's

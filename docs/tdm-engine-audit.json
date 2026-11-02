@@ -1,0 +1,703 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "base_revision": "c87b55079c540edde1c49cc725a1e1475bebf68b",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "membership": {
+    "full_denominator": 276,
+    "resolved_oracle_identities_audited": 275,
+    "supplemental_identity_audited": "Cori-Steel Cutter",
+    "candidate_admitted": 137,
+    "gated": 138,
+    "unresolved_membership_facts": 1,
+    "independently_verified_complete_set_cards": 0
+  },
+  "phase": "whole-set source audit recorded; shared engine implementation may begin; card authoring remains gated",
+  "audit_reports": [
+    "docs/tdm-audit-a-g.json",
+    "docs/tdm-audit-g-s.json",
+    "docs/tdm-audit-s-z.json",
+    "docs/tdm-cori-steel-audit.json"
+  ],
+  "duplicate_groups": [
+    [
+      "A01",
+      "B:entry_modes",
+      "C:NAMED_ENTRY_MODE"
+    ],
+    [
+      "A02",
+      "B:endure_forbidden_counter_fallback",
+      "C:ENDURE_CORRECTNESS"
+    ]
+  ],
+  "groups": [
+    {
+      "id": "A01",
+      "description": "Finite named as-entry choices and ability/static gating",
+      "required_change": "EntryChoiceValue/Kind currently offer card-name/color/basic-type/creature-type/parity, not the printed clan choices; need exact-incarnation chosen value, public observation, copy-no-choice behavior and chosen static/trigger gates.",
+      "cards": [
+        "Barrensteppe Siege",
+        "Frostcliff Siege",
+        "Glacierwood Siege"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A02",
+      "description": "Correct Endure controller, legal choice and last-known controller",
+      "required_change": "Confirmed defect: Instruction::Endure and Pending::Endure assign player=item.controller; CR701.63a uses permanent current controller/LKI. Also forbid choosing counters where counters_prohibited. Preserve branch/restore and replacements.",
+      "cards": [
+        "Anafenza, Unyielding Lineage",
+        "Descendant of Storms",
+        "Dusyut Earthcarver",
+        "Fortress Kin-Guard"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A03",
+      "description": "Optional milled-card recovery with if-you-do-not continuation",
+      "required_change": "RecoverMilled can choose/recover exact mill result but neither decline nor successful selection branches the following program. Need selected/actual recovery outcome with printed If-you-dont semantics, no resurrection across new incarnation.",
+      "cards": [
+        "Ainok Wayfarer"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A04",
+      "description": "Combat-plus-main insertion and source-independent attack callbacks",
+      "required_change": "AdditionalCombatsAfterCurrentMain inserts consecutive combats then old successor; it does not insert a main after EACH additional combat. No source-independent one-shot/repeated nonempty declaration callback until cleanup. Need proper ordering and multiplicity, exact end-step token sacrifice reuse.",
+      "cards": [
+        "All-Out Assault",
+        "Dalkovan Encampment"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A05",
+      "description": "Greatest controlled toughness and sampled variable copiable token P/T",
+      "required_change": "No StatValue/AmountValue GreatestCreatureToughness (only StepValue total and spell-cost greatest), and no generic variable base Spirit token creation. Token must have sampled copiable X/X, not counters/temporary layer effect.",
+      "cards": [
+        "Abzan Monument"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A06",
+      "description": "Sequential top exile until first nonland with immediate optional free cast and fallback hand",
+      "required_change": "Existing ExileDamagedLibraryUntilNonland targets damage player and does not provide this exact self-library cast+chosen-spell MV8+fallback hand continuation. Implement typed owned effect using existing cast machinery; lands stay exiled and no later free permission.",
+      "cards": [
+        "Breaching Dragonstorm"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A07",
+      "description": "Per-color nontarget choices and distinct successful recipient win",
+      "required_change": "Need five mandatory-if-possible WUBRG Dragon choices, not target announcements; same Dragon may receive multiple counters but win requires5 distinct exact recipients actually receiving counters. Counter replacements/prohibitions and win restriction matter.",
+      "cards": [
+        "Call the Spirit Dragons"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A08",
+      "description": "Optional behold additional-cost choice and captured cast qualification",
+      "required_change": "Mandatory Behold OR mana cost is supported (Caustic uses FRA Countersculpt pattern); optional behold has no historical paid flag/branch usable in resolution/copies. Record exact successful cast qualification and avoid tying it to current Dragon presence.",
+      "cards": [
+        "Dispelling Exhale"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A09",
+      "description": "Global typed permanent-kind activation prohibition",
+      "required_change": "activation_prohibited currently handles source-linked until-untap and opponent-turn cast restrictions; lacks all-players artifact|creature|planeswalker permanent activation lock including mana. Extend actual and speculative characteristic queries, no zone leakage.",
+      "cards": [
+        "Clarion Conqueror"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A10",
+      "description": "Subtype-filtered free alternative cost across otherwise permitted zones",
+      "required_change": "FreeHandCast is hand-only/unfiltered; need Dragon-filtered free alternative in every otherwise authorized cast origin, preserving additional costs, X0 and prohibition on alternative-cost stacking. XMage fromHand=false confirms intended all-permitted-zone behavior.",
+      "cards": [
+        "Dracogenesis"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A11",
+      "description": "Target-subtype spell cost increase",
+      "required_change": "TargetCostReduction supports fixed discounts only; need generic+2 when the selected live target has Dragon at cost determination, integrated with guided target and funding paths and additional/free costs.",
+      "cards": [
+        "Dragon's Prey"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A12",
+      "description": "Target color-count activation reduction",
+      "required_change": "activation_target_reductions are fixed discounts for matching target rules; counter/subtype discounts do not encode distinct target colors. Need live target colors count, including0 and5, actual/speculative identical.",
+      "cards": [
+        "Dragonfire Blade"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A13",
+      "description": "Hexproof from monocolored for equipped creature",
+      "required_change": "SourceCharacteristicFilter currently Color/Instant only; QualifiedHexproof self provider cannot directly grant equipment-recipient monocolored condition. Add typed qualified attachment protection in ability layers and spell/ability source color query.",
+      "cards": [
+        "Dragonfire Blade"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A14",
+      "description": "Live any-counter controlled-creature predicate",
+      "required_change": "SourceTotalCounters exists but CountFilter cannot express another creature with any kind of counter. Need scalar/predicate querying all hot+named counters and effective current creature/control, in actual/speculative worlds and threshold/intervening-if.",
+      "cards": [
+        "Delta Bloodflies",
+        "Formation Breaker"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A15",
+      "description": "Exact delayed graveyard departure qualified by departure controller, irrespective of current creature type",
+      "required_change": "DiesOnce currently requires event.before.is_creature() and has no departure-controller filter. Official notes require draw even if target no longer creature when it enters graveyard, only under original spell controller. Add separate typed event rather than weakening all DiesOnce consumers.",
+      "cards": [
+        "Desperate Measures"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A16",
+      "description": "Untapped-subtype recipients of hexproof grant",
+      "required_change": "KeywordGrant CreatureFilter has relation/token/subtype/attacking but no tapped predicate; LiveStaticEffect conditions do not gate recipient tap status. Need live layer6 recipient qualification compatible with speculative tap payments.",
+      "cards": [
+        "Dragonologist"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A17",
+      "description": "Fixed subtype entry counters from prior provider",
+      "required_change": "OtherSubtypeEntryCounters adds COUNT of existing subtype permanents, not fixed1; OtherControlledEntryCountersByManaValue excludes source and filters by kind/MV not subtype. Need fixed controlled-Dragon entrant bonus, no application from provider entering simultaneously; complete copy/type actual and virtual handling.",
+      "cards": [
+        "Dragonstorm Globe"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A18",
+      "description": "Activation guard conjunction of own turn and graveyard departure history",
+      "required_change": "ActivationGuard has OwnTurn but not arbitrary expressions/conjunction or CardLeftGraveyardThisTurn; existing StatValue history should be reused. Guard must affect legal actions and funding, not merely skip effect at resolution.",
+      "cards": [
+        "Essence Anchor"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A19",
+      "description": "One-shot next arbitrary-spell copy callback",
+      "required_change": "CopyNextInstantSorcery skips permanent casts; CopySpellsThisTurn observes arbitrary spells repeatedly. Extend callback population/consumption for one next cast any type with independent captured packet, retain existing complete permanent-spell copy semantics and no token-creation doubling.",
+      "cards": [
+        "Flamehold Grappler"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A20",
+      "description": "Graveyard-zone creature-death observer registration",
+      "required_change": "register_graveyard_sources only registers AtStep and PlayerDamaged; no CreatureDies death index registration. Need frozen pre-event graveyard observers, correct owner as ability controller, source in graveyard BEFORE deaths and exact captured return binding.",
+      "cards": [
+        "Furious Forebear"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "A21",
+      "description": "Optional one-card discard and nonland reflexive followup",
+      "required_change": "DiscardTwoNonlandReflexive hardcodes mandatory2, whereas Glacial must first draw then OPTIONAL1 and queue only for actual nonland discard. Generic ChooseObjects Discard optional lacks a chosen-card-type conditional/DiscardAfter handoff. Reuse owned discard contexts with typed amount/optional reflexive parameters.",
+      "cards": [
+        "Glacial Dragonhunt"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "B:entry_modes",
+      "description": "entry modes",
+      "required_change": "Extend owned as-enters choices with a bounded named mode, and gate whole triggered/static/activated printed lines on its exact incarnation. No choice on an in-place copy means neither mode. Copying/entry replacements and rollback must preserve this boundary.",
+      "cards": [],
+      "status": "confirmed missing typed value and conditional providers"
+    },
+    {
+      "id": "B:counter_on_own_creature",
+      "description": "counter on own creature",
+      "required_change": "Add placement trigger qualifying recipient current/pre-entry controller and creature characteristics regardless of placing player, across every counter kind. Existing CounterPlacedByYou variants qualify placer and do not implement Hollowmurk. Apply OncePerTurn at queue time; entry counters qualify.",
+      "cards": [],
+      "status": "confirmed missing general event qualification"
+    },
+    {
+      "id": "B:death_counter_snapshot",
+      "description": "death counter snapshot",
+      "required_change": "Add a death observer matching any controlled creature with counters, freezing the whole per-kind counter multiset from its pre-death ObjectView onto each packet. Copy this snapshot to legal recipients on resolution; never read observer counters, live graveyard object counters, or a later incarnation. Include simultaneous self/other deaths and negative counters before +1/-1 annihilation.",
+      "cards": [],
+      "status": "confirmed missing captured other-object counter payload"
+    },
+    {
+      "id": "B:counter_kind_union",
+      "description": "counter kind union",
+      "required_change": "Add distinct positive counter-kind union over currently controlled creatures, using borrowed actual and speculative characteristic worlds. Count duplicate kinds once, exclude noncreatures/opponent creatures and zero counts. Source-local count or sum of per-object cardinalities is wrong.",
+      "cards": [],
+      "status": "confirmed missing scalar"
+    },
+    {
+      "id": "B:graveyard_entry_counter",
+      "description": "graveyard entry counter",
+      "required_change": "Reuse SelfGraveyardCastIf for normal paid self permission; add graveyard-cast-only exact-entry counter qualification. Existing cast_entry_counters applies any cast and hand_cast_entry_counters applies only hand. A countered spell must return graveyard rather than flashback exile. Existing Finality death replacement remains authoritative after ability loss.",
+      "cards": [],
+      "status": "confirmed missing origin-qualified entry counter metadata"
+    },
+    {
+      "id": "B:any_damage_incarnation",
+      "description": "any damage incarnation",
+      "required_change": "Add/read actual positive damage dealt across the exact permanent incarnation (combat OR noncombat), surviving turns and control/copy changes but clearing on a true zone change. Expose through actual/speculative earlier-layer stat query for conditional hexproof. Update history before damage-trigger target acquisition.",
+      "cards": [],
+      "status": "confirmed missing persistent any-damage history"
+    },
+    {
+      "id": "B:mana_spell_filter",
+      "description": "mana spell filter",
+      "required_change": "Generalize immutable produced-mana restrictions to creature spells and union spell predicates Dragon OR Omen, evaluating the selected spell face in actual/speculative funding. Existing SpellSubtype is single-subtype only; do not mark all Dragon-card faces as Dragons. Retain ordinary restrictions for extra costs and cannot fund unrelated activation/ward payments.",
+      "cards": [],
+      "status": "confirmed missing restriction forms"
+    },
+    {
+      "id": "B:variable_endure",
+      "description": "variable endure",
+      "required_change": "Extend Endure to an AmountValue and explicit subject, choosing exactly one dynamic white N/N Spirit or N +1 counters, including N0 no action. Reuse owned Pending and counter/token replacement pipeline; never require one pre-generated token card for every X. Preserve choice/recipe in raw/index branch and snapshot/restore.",
+      "cards": [],
+      "status": "confirmed missing dynamic quantity/recipe"
+    },
+    {
+      "id": "B:activation_x_life",
+      "description": "activation x life",
+      "required_change": "Add real X life payment for declared activation X alongside generic X mana, colored mana, tap and other costs. Current life_x_cost branch only handles StackKind::Spell; ActivationCost.life is fixed u16. Funding/legal X intervals and life-payment replacements must consider all cost components and restore failed attempts atomically.",
+      "cards": [],
+      "status": "confirmed missing activated X-life cost"
+    },
+    {
+      "id": "B:dynamic_exact_optional_mill",
+      "description": "dynamic exact optional mill",
+      "required_change": "Generalize existing MayMill exact-feasibility guard and MillAmount to controlled-land-count amount sampled on resolution. The choice to mill N must be unavailable when fewer than N library cards remain. Fixed MayMill3 already covers Rainveil without new machinery.",
+      "cards": [],
+      "status": "confirmed missing quantity variant"
+    },
+    {
+      "id": "B:graveyard_power_damage",
+      "description": "graveyard power damage",
+      "required_change": "Freeze a legal own graveyard creature target current power, including CDAs, for subsequent spell-source damage to an independent creature target after return-to-hand. Current AmountValue::TargetCreaturePower capture is wired only for specific Amass consumers and selected group, not this graveyard group. CR608.2b: illegal graveyard target cannot supply power and causes no damage, while an illegal battlefield target does not prevent returning the legal card.",
+      "cards": [],
+      "status": "confirmed missing reusable capture wiring"
+    },
+    {
+      "id": "B:distinct_color_search",
+      "description": "distinct color search",
+      "required_change": "Add color search predicates and a single private library search with independent distinct B/G/U slots. A multicolor card can fill one role while permitting other multicolor cards in other roles; fail-to-find any subset0..3 legal. Freeze group and move simultaneously to graveyard then shuffle once; enforce search restrictions and privacy.",
+      "cards": [],
+      "status": "confirmed missing qualified search shape"
+    },
+    {
+      "id": "B:search_result_entry_counters",
+      "description": "search result entry counters",
+      "required_change": "Extend searched-result entry operation to carry fixed/mixed counters before replacement/ETB commit. Magmatic Hellkite additionally freezes destroyed land controller before attempt, searches despite indestructibility, and searches only if target still legal. Do not add counter after entering or gate search on actual destruction.",
+      "cards": [],
+      "status": "confirmed missing counter payload on search entry"
+    },
+    {
+      "id": "B:linked_exile_attacking_copies",
+      "description": "linked exile attacking copies",
+      "required_change": "Copy exact still-linked physical exile card recipe, create tapped token per opponent attacking that opponent, and register exact results for the controller next end step (not whichever player next has end step). Reuse exile-until-source-leaves, copy/entry replacement and delayed sacrifice foundations. Handle source gone before ETB, tokens ceasing, copied noncreature physical cards, blink/rebind and departure-trigger LKI.",
+      "cards": [],
+      "status": "confirmed missing composed instruction and delayed timing"
+    },
+    {
+      "id": "B:mass_in_place_copy",
+      "description": "mass in place copy",
+      "required_change": "Generalize in-place copy recipient selection to snapshot every other currently controlled creature using one frozen legal target blueprint. Preserve counters/tap/damage/control, copy copiable exceptions, apply same EOT expiry and no entry events. EntryCopySpec optional any creature already covers Naga entry; do not add another entry-copy subsystem.",
+      "cards": [],
+      "status": "confirmed missing group recipient operation"
+    },
+    {
+      "id": "B:discard_hand_cost",
+      "description": "discard hand cost",
+      "required_change": "Support discard-entire-hand as real cost (empty hand legal), combined with mana and sacrifice transactionally; existing ActivationCost.discard means one card. For Narset may discard hand then draw, verify ordinary May+DiscardHand is sufficient under discard restrictions/replacements; use explicit optional payment continuation if not. Do not demand actual discarded-card count>0.",
+      "cards": [],
+      "status": "confirmed missing full-hand activation cost; optional resolution route needs explicit payment audit"
+    },
+    {
+      "id": "B:chosen_x_library_search",
+      "description": "chosen x library search",
+      "required_change": "Expose a qualified library search with creature MV<=chosenX and battlefield destination+shuffle. SearchScaled.maximum means number of cards, not maximum MV. Reuse harmonize chosen-X generic cost and discount logic; freeze X for search and keep free-X=0 semantics.",
+      "cards": [],
+      "status": "confirmed missing dynamic MV qualifier"
+    },
+    {
+      "id": "B:optional_behold_flash",
+      "description": "optional behold flash",
+      "required_change": "Add optional Dragon behold cast additional-cost declaration (controlled Dragon or revealed Dragon card in hand), save committed paid qualification in exact cast packet and copies, and allow Molten Exhale instant timing only through that committed route. Existing EffectChoiceKind::Behold/hand witness/reveal code can be reused but mandatory additional costs and late board checks are insufficient. Extra consequences must continue under partial target legality when printed.",
+      "cards": [],
+      "status": "confirmed missing committed optional cast marker/timing route"
+    },
+    {
+      "id": "B:mixed_entry_counter_return",
+      "description": "mixed entry counter return",
+      "required_change": "Return a target own permanent from graveyard with both hexproof and indestructible counters before entry commit and all replacements/observers. Existing ReturnToBattlefieldWithCounter carries one kind; adding second later is rules-wrong. Share mixed entry payload with search-result entry counters.",
+      "cards": [],
+      "status": "confirmed missing effect-entry mixed counter payload"
+    },
+    {
+      "id": "B:delayed_noncreature_cast_trigger",
+      "description": "delayed noncreature cast trigger",
+      "required_change": "Register source-independent repeated noncreature-cast triggered template until cleanup; source Saga may sacrifice immediately after chapter3. Target own creature when each trigger goes on stack, not at chapter resolution. Existing CopySpellsThisTurn scheduler stores specialized copy callback; generalize/reuse, do not grant a battlefield source-bound trigger.",
+      "cards": [],
+      "status": "confirmed missing generic delayed cast callback variant"
+    },
+    {
+      "id": "B:graveyard_owner_player_constraint",
+      "description": "graveyard owner player constraint",
+      "required_change": "Add graveyard owner equal to player in specified target group, at announcement and resolution. Existing ControllerOfPlayerGroup explicitly accepts battlefield only. Then shuffle chosen player library even if zero graveyard cards chosen, while early returned cards invalidate only their later bindings; isolate each optional target group and exile resolving spell.",
+      "cards": [],
+      "status": "confirmed missing target cross-group owner relationship and zero-card shuffle operation"
+    },
+    {
+      "id": "B:source_attack_without_defender",
+      "description": "source attack without defender",
+      "required_change": "Add until-cleanup source-only attack-as-though-no-defender rule without removing defender keyword. Reuse attack eligibility actual/projected/mandatory attack queries and existing continuous defender exemptions; expiry/branch/restore and copied/ability-lost recipient retain resolved permission.",
+      "cards": [],
+      "status": "confirmed missing resolved exact-object permission"
+    },
+    {
+      "id": "B:decayed_ability",
+      "description": "decayed ability",
+      "required_change": "Implement real Decayed keyword behavior: cannot block plus attack trigger scheduling sacrifice at end of combat. Keyword counter grants that ability while positive; existing CounterKind::Decayed stores values but has no active consumer. Already-queued attack sacrifice survives loss of ability/counter. Exact source reference prevents sacrificed old object affecting returned one.",
+      "cards": [],
+      "status": "confirmed missing rules, storage alone exists"
+    },
+    {
+      "id": "B:exact_x_activation_targets",
+      "description": "exact x activation targets",
+      "required_change": "Provide exact chosen-X target minimum/maximum for activated ability, including X0. Current targets_up_to_x specialization applies only StackKind::Spell and min0; UpToTargets requires min0. Coordinate legal X intervals with count of legal distinct creature targets and full variable cost feasibility, without enumerating huge X domains.",
+      "cards": [],
+      "status": "confirmed missing exact-X homogeneous activated target bound"
+    },
+    {
+      "id": "B:entered_this_turn_damage_double",
+      "description": "entered this turn damage double",
+      "required_change": "Generalize controlled-creature damage multiplier with exact entry-this-turn predicate and source LKI for departed damagers, not control-entered-this-turn or only combat damage. Preserve original damage source and affected-player replacement order with prevention; double after division/assignment. Existing unqualified DoubleCreatureDamage is broader than Neriv.",
+      "cards": [],
+      "status": "confirmed missing filtered replacement form"
+    },
+    {
+      "id": "B:chosen_source_prevention",
+      "description": "chosen source prevention",
+      "required_change": "Choose a source without targeting as spell resolves; retain source exact/permitted source identity and shield through cleanup. Replace only its next positive damage event to shield controller, consuming shield once; actual prevented amount queues independent reflexive damage-to-damager-controller and draw callback. Integrate prevention prohibitions, affected-player replacement ordering, departed source LKI and owned pending state.",
+      "cards": [],
+      "status": "confirmed missing shield state and callback"
+    },
+    {
+      "id": "B:resolution_exile_cost_success",
+      "description": "resolution exile cost success",
+      "required_change": "Current ChooseObjects ExileGraveyard followed by Reflexive uses move_objects_raw and unconditionally continues; it does not encode an exact-success reflexive cost boundary. Prove payment/replacement legality or add explicit atomic optional exile-cost-reflexive instruction. A prevented cost must not queue return trigger or leave partially mutated payment state. Ordinary replaced destinations may still count as paid according to CR118; distinguish prevention from redirection.",
+      "cards": [],
+      "status": "requires focused rules/transaction proof; current generic choice is not a ready proof"
+    },
+    {
+      "id": "B:endure_forbidden_counter_fallback",
+      "description": "endure forbidden counter fallback",
+      "required_change": "Current fixed Endure offers counters whenever exact source remains, even if an active counter prohibition prevents any counter placement. Official release notes require mandatory Spirit creation whenever counters cannot be put for any reason. Prune illegal choice and use same fallback when prohibition changes through replacement/entry transaction; preserve source-removed fallback and dynamic token variants. Use the enduring permanent current controller (or relevant departed LKI controller) as chooser and token creator. Distinguish inability to choose the counter payment from a legal payment later modified by replacement (CR118.11): a modified paid choice does not automatically create Spirit.",
+      "cards": [],
+      "status": "confirmed existing behavior defect; source-departure case already handled"
+    },
+    {
+      "id": "B:event_scaled_opponent_free_cast",
+      "description": "event scaled opponent free cast",
+      "required_change": "Reuse ResolutionFreeCasts with captured combat-damaged player, AmountValue::DamageEventAmount for exiled top-card count and maximum per-spell mana value, unlimited repeated casts, no lands. Existing ExileTargetLibraryTopCastFree requires explicit player target/fixed u16 count and has no MV ceiling. Own exact exile refs and captured X must survive source departure, responses during nested casts, mandatory extra costs, rollback and branch/restore.",
+      "cards": [],
+      "status": "confirmed missing event-scaled instruction wiring"
+    },
+    {
+      "id": "C:ENDURE_CORRECTNESS",
+      "description": "Repair existing fixed Endure to choose for the enduring permanent current controller (LKI controller after departure); impossible counter placement forces token rather than offering an ineffective branch.",
+      "required_change": "Repair existing fixed Endure to choose for the enduring permanent current controller (LKI controller after departure); impossible counter placement forces token rather than offering an ineffective branch.",
+      "cards": [
+        "Sandskitter Outrider",
+        "Sinkhole Surveyor",
+        "Warden of the Grove"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:DYNAMIC_SUBJECT_ENDURE",
+      "description": "Extend endure with an exact subject independent of ability source and dynamic sampled amount; dynamic Spirit base stats; Warden counter amount sampled at resolution including LKI.",
+      "required_change": "Extend endure with an exact subject independent of ability source and dynamic sampled amount; dynamic Spirit base stats; Warden counter amount sampled at resolution including LKI.",
+      "cards": [
+        "Warden of the Grove"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:GRANTED_HARMONIZE",
+      "description": "Temporary exact-graveyard-card Harmonize route with actual printed mana cost, symbol alternatives and X; persists independently of grantor and expires correctly.",
+      "required_change": "Temporary exact-graveyard-card Harmonize route with actual printed mana cost, symbol alternatives and X; persists independently of grantor and expires correctly.",
+      "cards": [
+        "Songcrafter Mage"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:GRANTED_DELVE",
+      "description": "A stack-rule grant supplies an alternative payment of generic total mana using exact graveyard cards; not a cost reduction and not additional or alternative cast cost.",
+      "required_change": "A stack-rule grant supplies an alternative payment of generic total mana using exact graveyard cards; not a cost reduction and not additional or alternative cast cost.",
+      "cards": [
+        "Teval, Arbiter of Virtue"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:SUSPEND",
+      "description": "Granted suspend on exact exiled physical card: time counters, owner-upkeep trigger, last-counter trigger, immediate optional free cast, permanent haste until control loss.",
+      "required_change": "Granted suspend on exact exiled physical card: time counters, owner-upkeep trigger, last-counter trigger, immediate optional free cast, permanent haste until control loss.",
+      "cards": [
+        "Taigam, Master Opportunist"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:PRINTED_STORM",
+      "description": "Storm on actual cast permanent spell, copying once per earlier actual spell from both players; preserve original spell even if it leaves stack.",
+      "required_change": "Storm on actual cast permanent spell, copying once per earlier actual spell from both players; preserve original spell even if it leaves stack.",
+      "cards": [
+        "Stormscale Scion"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:NAMED_ENTRY_MODE",
+      "description": "Persistent validated as-enters named mode choices with typed conditional static/trigger fragments and exact-incarnation public observation.",
+      "required_change": "Persistent validated as-enters named mode choices with typed conditional static/trigger fragments and exact-incarnation public observation.",
+      "cards": [
+        "Windcrag Siege"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:ATTACK_TRIGGER_DUPLICATION",
+      "description": "Additional trigger scope for own permanent abilities caused by attacking creatures, including declarations and attacking opponents, conditioned on chosen mode.",
+      "required_change": "Additional trigger scope for own permanent abilities caused by attacking creatures, including declarations and attacking opponents, conditioned on chosen mode.",
+      "cards": [
+        "Windcrag Siege"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:CONDITIONAL_SACRIFICE_PROHIBITION",
+      "description": "Grant cannot-be-sacrificed to a filtered permanent group during source controller end step, querying both actual and speculative characteristics.",
+      "required_change": "Grant cannot-be-sacrificed to a filtered permanent group during source controller end step, querying both actual and speculative characteristics.",
+      "cards": [
+        "Zurgo, Thunder's Decree"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:FIRST_COUNTER_PLACEMENT",
+      "description": "Exact recipient first positive counter-placement event per turn, irrespective of kind and placing player, including entry and multi-kind batches.",
+      "required_change": "Exact recipient first positive counter-placement event per turn, irrespective of kind and placing player, including entry and multi-kind batches.",
+      "cards": [
+        "Stalwart Successor"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:BEHOLD_RESOLUTION",
+      "description": "General optional resolving behold with branch result; reuse private hand/public permanent candidates but avoid search-result-only payoff.",
+      "required_change": "General optional resolving behold with branch result; reuse private hand/public permanent candidates but avoid search-result-only payoff.",
+      "cards": [
+        "Sarkhan, Dragon Ascendant"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:TOKEN_TEMPORARY_DELAY",
+      "description": "Ordinary untapped token creation with temporary keywords and exact-result one-shot delayed sacrifice, composing with token replacements.",
+      "required_change": "Ordinary untapped token creation with temporary keywords and exact-result one-shot delayed sacrifice, composing with token replacements.",
+      "cards": [
+        "Salt Road Skirmish"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:OPTIONAL_LINKED_EXILE_SPIRIT",
+      "description": "Always reveal hand, optionally exile nonland and link to exact source ability origin; departure makes dynamically sized Spirit for exiled-card owner.",
+      "required_change": "Always reveal hand, optionally exile nonland and link to exact source ability origin; departure makes dynamically sized Spirit for exiled-card owner.",
+      "cards": [
+        "Severance Priest"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:SACRIFICE_MANA_VALUE_TARGET",
+      "description": "Nonmana X announcement constrained by chosen other creature mana value, used to restrict graveyard target to X+1.",
+      "required_change": "Nonmana X announcement constrained by chosen other creature mana value, used to restrict graveyard target to X+1.",
+      "cards": [
+        "Sidisi, Regent of the Mire"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:POST_ENTRY_RETURN_COUNTERS",
+      "description": "Return multiple graveyard targets, retain successful new exact incarnations, then put counters after entry observers freeze facts.",
+      "required_change": "Return multiple graveyard targets, retain successful new exact incarnations, then put counters after entry observers freeze facts.",
+      "cards": [
+        "Smile at Death"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:DAMAGE_PLAYER_RESULT",
+      "description": "Remember actual positive damage recipient for resolving program conditional discard; gain life independent of damage prevention.",
+      "required_change": "Remember actual positive damage recipient for resolving program conditional discard; gain life independent of damage prevention.",
+      "cards": [
+        "Sonic Shrieker"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:EMPTY_LIBRARY_GRAVEYARD_TOP",
+      "description": "Post-mill empty-library branch plus mandatory up-to-available count5 untargeted graveyard choice and private chosen library-top order.",
+      "required_change": "Post-mill empty-library branch plus mandatory up-to-available count5 untargeted graveyard choice and private chosen library-top order.",
+      "cards": [
+        "Stillness in Motion"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:RETURN_TOKEN_DRAW_RESULT",
+      "description": "Capture target token fact before bounce and make conditional draw continuation; do not use current target ref after zone change.",
+      "required_change": "Capture target token fact before bounce and make conditional draw continuation; do not use current target ref after zone change.",
+      "cards": [
+        "Sunpearl Kirin"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:RANDOM_GRAVEYARD_EXILE_PLAY",
+      "description": "Deterministic uniform own-graveyard card selection, exact successful exile result and ordinary paid this-turn play grant.",
+      "required_change": "Deterministic uniform own-graveyard card selection, exact successful exile result and ordinary paid this-turn play grant.",
+      "cards": [
+        "Tersa Lightshatter"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:CAST_CREATURE_ENTRY_OBSERVER",
+      "description": "Observer trigger qualification of a controlled creature entry cast by that observer controller, not merely self-entry or direct put.",
+      "required_change": "Observer trigger qualification of a controlled creature entry cast by that observer controller, not merely self-entry or direct put.",
+      "cards": [
+        "The Sibsig Ceremony"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:DELAYED_CREATURE_ENTRY_DRAIN",
+      "description": "Source-independent expiring this-turn creature-entry triggered template; chapterII/III create separate observers.",
+      "required_change": "Source-independent expiring this-turn creature-entry triggered template; chapterII/III create separate observers.",
+      "cards": [
+        "Thunder of Unity"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:DRAW_RESULT_FALLBACK",
+      "description": "Detect a controlled creature with any counter then remember actual draw success to condition fallback source counter.",
+      "required_change": "Detect a controlled creature with any counter then remember actual draw success to condition fallback source counter.",
+      "cards": [
+        "Trade Route Envoy"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:PRIVATE_TOP_LAND_THEN_OPTIONAL_GRAVE",
+      "description": "Private top-card inspection with optional revealed land-to-hand and subsequent optional graveyard/leave-on-top choice.",
+      "required_change": "Private top-card inspection with optional revealed land-to-hand and subsequent optional graveyard/leave-on-top choice.",
+      "cards": [
+        "Traveling Botanist"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:SCALED_DAMAGE_DIVISION",
+      "description": "Sample dynamic amount once at triggered target announcement, freeze total and positive per-target shares.",
+      "required_change": "Sample dynamic amount once at triggered target announcement, freeze total and positive per-target shares.",
+      "cards": [
+        "Ureni, the Song Unending"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:SOURCE_POWER_MILL",
+      "description": "Resolving mill quantity from signed current/LKI source power, with floor0, and optional player target.",
+      "required_change": "Resolving mill quantity from signed current/LKI source power, with floor0, and optional player target.",
+      "cards": [
+        "Veteran Ice Climber"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:YATHAN_MILL_SEMANTICS_REVIEW",
+      "description": "Resolve existing MillThenReflexive and XMage cost behavior discrepancy for short libraries and redirected mill destinations before accepting Yathan.",
+      "required_change": "Resolve existing MillThenReflexive and XMage cost behavior discrepancy for short libraries and redirected mill destinations before accepting Yathan.",
+      "cards": [
+        "Yathan Roadwatcher"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "D:OPTIONAL_CREATED_TOKEN_ATTACHMENT",
+      "description": "Optional exact-created-token Equipment attachment",
+      "required_change": "Generalize creation completion to preserve exact created-token candidates and offer optional decline, while preserving mandatory JobAttach behavior. Existing equipment legality checks must govern attachment without targeting restrictions.",
+      "cards": [
+        "Cori-Steel Cutter"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    }
+  ],
+  "acceptance": {
+    "shared_rules_reviewed": false,
+    "card_authoring_permitted": false,
+    "set_only_complete_games": false,
+    "full_release_acceptance": false,
+    "final_two_nonauthor_reviews": false
+  },
+  "initial_checks": {
+    "source_pin_check": {
+      "definitions": 5488,
+      "source_blobs": 2512,
+      "passed": true
+    },
+    "generated_links_check_passed": true,
+    "frozen_manifest_authenticated": true
+  },
+  "measurements": {
+    "new_complete_cards": 0,
+    "cargo_builds": 0,
+    "focused_runs": 0,
+    "full_validation_runs": 0,
+    "simulation_benchmarks": []
+  }
+}
