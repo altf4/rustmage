@@ -195,10 +195,22 @@ impl FundingState<'_> {
         !possible
     }
     pub(super) fn set_cost_context(&mut self, a: Option<&Announcement>) {
-        self.contributors = a.and_then(|a| {
-            self.game
-                .contributor_requirement(&self.game.funding_goal(a))
-        });
+        // Alternative spell costs are intentionally unset while choices are
+        // enumerated. Only contributor activations need this separate receipt.
+        self.contributors = a
+            .filter(|a| {
+                matches!(a.item.kind, StackKind::ActivatedAbility { .. })
+                    && a.item.program().is_some_and(|(_, program)| {
+                        matches!(
+                            program,
+                            [Instruction::Crew { .. }] | [Instruction::Saddle { .. }]
+                        )
+                    })
+            })
+            .and_then(|a| {
+                self.game
+                    .contributor_requirement(&self.game.funding_goal(a))
+            });
         self.power_sensitive |= self.contributors.is_some();
         self.install_cost_context(a.and_then(CostContext::from_announcement));
         if let Some(a) = a.filter(|a| a.cast_costs.is_some())
