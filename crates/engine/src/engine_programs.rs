@@ -5583,7 +5583,13 @@ impl Game {
                         spec.maximum = u64::from(item.x.unwrap_or(0));
                     }
                     if matches!(instruction, Instruction::SearchTargetPlayerMovedCount(_)) {
-                        spec.maximum = resolution.moved_count.unwrap_or(0);
+                        spec.maximum = self
+                            .state
+                            .resolving
+                            .as_ref()
+                            .unwrap()
+                            .moved_count
+                            .unwrap_or(0);
                     }
                     let player = if matches!(instruction, Instruction::SearchTargetController(_)) {
                         let Some(player) = self.resolution_target_controller() else {
