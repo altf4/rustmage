@@ -8,9 +8,9 @@
   "engine_status": "frozen reviewed checkpoint; authors do not mutate shared engine",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "counts": {
-    "authored_candidates": 38,
+    "authored_candidates": 40,
     "validated_by_integrator": 35,
-    "not_started": 2
+    "not_started": 0
   },
   "validation_owner": "root integrator; no Cargo run by card author",
   "validation_targets": [
@@ -78,6 +78,12 @@
       "target": "dft_black_red_cards_final_support",
       "cases": 11,
       "scope": "3 complete cards: Chandra actual3R loyalty4, optional own-combat Vehicle/Haste and EOT; +2 actual artifact sacrifice/card discard/decline and loyalty timing/once; real3/2colorless Crew1 token; paid-7/source death/command emblem with opponent artifact contrast and three any-target damage domains. Cursecloth actual2BB/live ownZombie lord and controller changes; exact tap ownGY creature filters, native1G embalm cost/sorcery/exile, whiteZombie/no mana cost token/nativeBear identity/source departure, cleanup/stale acquisition, raw-index/restore and copiable exceptions. Daretti all-zone current own-artifact maxMV CDA, actual4R entry preselected target and optional payment, attack-source departure and all-illegal target prevents payment.",
+      "status": "pending root execution"
+    },
+    {
+      "target": "dft_black_red_cards_gonti_howlsquad",
+      "cases": 9,
+      "scope": "2 complete identities: Gonti actual2BB3/4 and actual caster-owner/observer matrix offturn/countered foreign spells creates functional untapped colorless Treasure only for caster; actual per-creature combat damage original-dealer-controller private face-down exact WhileExiled entitlement, source/dealer departure and control change, anymana paid spell nextturn, land timing/shared limit/no Treasure/reincarnation, noncombat/observer-own damage exclusions, prevented exile private look and raw-index/restore/shuffle. Howlsquad actual2R2/3 StartYourEngines, live other-controlledGoblin haste/new/controller/source changes, own-combat red1/1 mustattack exact requirement expiry, source-departure sickness contrast, maxspeed/sickness/tap gated currentGoblin mana and actual LightningStrike funding.",
       "status": "pending root execution"
     }
   ],
@@ -2363,12 +2369,70 @@
         "Whenever a creature deals combat damage to one of your opponents, its controller looks at the top card of that opponent's library and exiles it face down. They may play that card for as long as it remains exiled. Mana of any type can be spent to cast a spell this way."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "caster-foreign-owned",
         "combat-foreign-face-down-play"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "gonti_foreign_spell_treasure_belongs_to_actual_caster_even_on_an_opponents_turn_or_countered_spell",
+        "gonti_actual_combat_freezes_damage_dealer_controller_and_face_down_permission_survives_both_sources",
+        "gonti_each_damaging_creature_exiles_a_card_and_land_permissions_keep_normal_timing_and_shared_limit",
+        "gonti_noncombat_damage_and_combat_damage_to_its_controller_never_exile",
+        "gonti_prevented_exile_keeps_private_look_only_and_owns_replacement_result_across_raw_index_restore"
+      ],
+      "test_target": "dft_black_red_cards_gonti_howlsquad",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/g/GontiNightMinister.java",
+        "java_sha256": "c5424bb70e72e8778b8b6e71ce30aa6ab28127d4fbeabdbadf14415a553c632b",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+            "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffect.java",
+            "sha256": "deea4c7c61bc169d2cc284d082e13df8322434d8784d94f2a744244ad96d24d9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+            "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenTargetEffect.java",
+            "sha256": "899cbb24bb096977a1368027ba991506de15e4dcda39c6378a05daef65c295a7"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/MayLookAtTargetCardEffect.java",
+            "sha256": "6e395256649faac8f2e23ab6a5ef60663416b7fc5d49352904d42fcb4f7cbe9c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+            "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+            "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+          }
+        ]
+      },
+      "definition_sha256": "b56d3f3bb36f758c30f408dde23ead0de85bf690e7ccdc8aac19b254971eb5b9"
     },
     {
       "name": "Greasewrench Goblin",
@@ -2836,12 +2900,114 @@
         "Max speed \u2014 {T}: Add {R} for each Goblin you control."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "speed-value",
         "combat-only-token-requirement"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "howlsquad_actual_entry_starts_speed_and_live_other_goblin_haste_is_controller_relative",
+        "howlsquad_own_combat_creates_one_red_goblin_that_must_attack_this_combat_and_requirement_expires",
+        "howlsquad_queued_creation_survives_source_but_without_haste_summoning_sick_token_is_not_forced_to_attack",
+        "howlsquad_max_speed_tap_mana_counts_current_owned_goblins_including_itself_and_funds_real_red_spell"
+      ],
+      "test_target": "dft_black_red_cards_gonti_howlsquad",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/h/HowlsquadHeavy.java",
+        "java_sha256": "c1138ba0f3556938e22f75aceeff147a178e7bde06589feecad7ca7ef72bb787",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+            "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+            "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+            "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+            "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+            "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/combat/AttacksIfAbleTargetEffect.java",
+            "sha256": "cbeb390017cf463b4246fc1852db39be1dafa655db8496cdb23a6555c441da7f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+            "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/mana/DynamicManaEffect.java",
+            "sha256": "e2767b7e03907de0266b757f49728816804d3a1376c423024119380c5797ce27"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+            "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+            "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+            "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+            "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/mana/DynamicManaAbility.java",
+            "sha256": "b3d0b50f07f8a0d751bf30a6ecaca74c91fd98a7dd4e3228f71b7543a2d108da"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+            "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/game/permanent/token/GoblinToken.java",
+            "sha256": "16e001f88ad007f0445ce679eea218189f6c226eced65a5144fe17dfe7a72131"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+            "sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+          }
+        ]
+      },
+      "definition_sha256": "b1a868c17a8dfe85d59b3f719a2df8b53efa92cd78d8a8394ea9cc7adeb73025"
     },
     {
       "name": "Intimidation Tactics",
