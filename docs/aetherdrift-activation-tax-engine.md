@@ -237,3 +237,16 @@ fixture never entered the attachment-provider index, so no mana grant existed
 before the announced cast. Each fixture now asserts that exactly one real grant
 exists before funding. No production rule, cost, amount, spending restriction or
 provider-departure expectation changed. Root validation remains pending.
+
+## Finish the mana ability before reversing its parent
+
+Foreign entry choices can make an outer cast impossible while a committed mana
+ability is still awaiting its own late color/allocation choice. The rollback
+boundary now defers that parent check while the existing capture owns an active
+ManaOutput EffectMana choice, just as it already does for unfinished entry and
+replacement choices. The mana ability produces its concrete result once before
+selective retained replay is considered. The scenario asserts the unproduced
+owned capture and absence of a completed event, rejects an invalid late amount,
+compares raw/index/restore choices, then retains the exact finished event. Its
+turn-quality check uses the ordinary end-of-step keep-turn flag and separately
+proves expiry when cleanup clears that flag. Root validation is pending.

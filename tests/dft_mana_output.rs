@@ -477,6 +477,24 @@ fn a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once()
     let object = g.object_ref(remaining);
     act(&mut g, Action::ChooseAuraAttachment { object });
     assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
+    assert!(g.state.announcing.as_ref().unwrap().mana_output.is_some());
+    assert!(
+        !g.state
+            .cast_rollback
+            .as_ref()
+            .unwrap()
+            .capture
+            .as_ref()
+            .unwrap()
+            .produced
+    );
+    assert!(g.state.cast_rollback.as_ref().unwrap().events.is_empty());
+    reject(
+        &mut g,
+        Action::ChooseMana {
+            production: [2, 0, 0, 0, 0, 0],
+        },
+    );
     let saved = g.snapshot();
     let mut idx = g.clone();
     idx.restore(&saved).unwrap();
@@ -505,11 +523,16 @@ fn a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once()
     assert_eq!(g.object_view(mana).zone, Zone::Graveyard);
     assert_eq!(g.object_view(returning).card, named("Witness Protection"));
     assert_eq!(g.state.pending, Pending::Priority);
-    g.clear_step_mana(false, false);
+    g.clear_step_mana(false, true);
     assert_eq!(
         g.state.players[0].mana,
         [1, 0, 0, 0, 0, 0],
         "retained frozen quality survives replay"
+    );
+    g.clear_step_mana(false, false);
+    assert_eq!(
+        g.state.players[0].mana, [0; 6],
+        "turn retention still expires at cleanup"
     );
 }
 

@@ -4322,7 +4322,12 @@ impl Game {
                 .cast_rollback
                 .as_ref()
                 .is_some_and(|r| r.capture.is_some())
-                && (self.state.entry_batch.is_some() || self.state.replacements.is_some()))
+                && (self.state.entry_batch.is_some()
+                    || self.state.replacements.is_some()
+                    // CR605: finish the owned mana ability, including its late
+                    // color/allocation choice, before reversing its parent cast.
+                    || (matches!(self.state.pending, Pending::EffectMana { .. })
+                        && self.state.announcing.as_ref().is_some_and(|a| a.mana_output.is_some()))))
         {
             let fundable = if self.state.announcing.is_some() {
                 self.current_cast_costs_fundable()
