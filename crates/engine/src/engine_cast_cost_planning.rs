@@ -438,6 +438,11 @@ impl FundingState<'_> {
                         n.graveyard_left[owner.index()] = true;
                     }
                     let face_down_physical = n.projected_face_down_physical(*r);
+                    let physical_copy = n
+                        .temporary_copy_rows_state()
+                        .as_ref()
+                        .and_then(|rows| rows.iter().find(|row| row.object == *r))
+                        .map(|row| (row.physical_card, row.physical_kind));
                     n.resources[i].object.zone = zone;
                     n.resources[i].object.generation = n.resources[i]
                         .object
@@ -447,7 +452,12 @@ impl FundingState<'_> {
                     // Departure facts above retain the old face; the new object
                     // outside stack/battlefield has only its physical front.
                     let object = &mut n.resources[i].object;
-                    n.game.restore_projected_copy_identity(*r, object);
+                    if let Some((card, kind)) = physical_copy {
+                        object.card = card;
+                        object.copy_kind = kind;
+                    } else {
+                        n.game.restore_projected_copy_identity(*r, object);
+                    }
                     if let Some(physical) = face_down_physical {
                         object.card = physical.front_face();
                     } else if !object.is_token() && !object.is_spell_copy() {

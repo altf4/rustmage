@@ -1773,11 +1773,7 @@ impl Game {
                 parent.quality.as_ref().map(|(_, q)| q),
             );
             (world, Some(goal))
-        } else if a.cast_costs.is_some()
-            || a.item
-                .cast
-                .is_some_and(|cast| cast.method == CastMethod::Disguise)
-        {
+        } else {
             let goal = self.funding_goal(a);
             let mut world = FundingState::from_game_with_convoke(
                 self,
@@ -1792,8 +1788,6 @@ impl Game {
             world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(a);
             (world, Some(goal))
-        } else {
-            return true;
         };
         let mut complete = |w: &FundingState<'_>| {
             if let Some(goal) = &goal {

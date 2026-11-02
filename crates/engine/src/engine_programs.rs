@@ -2572,6 +2572,7 @@ impl Game {
                             || !source.card.hand_cast_entry_counters().is_empty()
                             || !source.card.cast_entry_counters().is_empty()
                             || source.card.entry_choice().is_some()
+                            || source.card.entry_copy().is_some()
                             || self.has_entry_counter_replacements(source.card)
                             || source.card.kind_mask() & crate::cards::BATTLE_KIND != 0
                         {

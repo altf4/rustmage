@@ -571,29 +571,19 @@ fn foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_ev
         }],
         ..CardRules::EMPTY
     };
-    const TAX: CardRules = CardRules {
-        effect: Effect::Permanent,
-        static_groups: &[StaticAbilityGroup {
-            line: 0,
-            first_layer: AbilityLayer::Rule,
-            fragments: &[StaticAbilityFragment::OpponentNoncreatureSpellTax(3)],
-        }],
-        ..CardRules::EMPTY
-    };
     let _scope = fixture_rules::activate(&[
         (Card::from_name("Grizzly Bears").unwrap(), &COPY),
         (Card::from_name("Llanowar Elves").unwrap(), &SAC_MANA),
-        (Card::from_name("Swiftfoot Boots").unwrap(), &TAX),
+        (Card::from_name("Swiftfoot Boots").unwrap(), &CHOOSE_NAME),
     ]);
     let mut g = scenario(Player::P0);
     let mana = put(&mut g, Player::P0, "Llanowar Elves", Zone::Battlefield);
-    put(
-        &mut g,
-        Player::P0,
-        "Cultivator's Caravan",
-        Zone::Battlefield,
-    );
+    put(&mut g, Player::P0, "Forest", Zone::Battlefield);
     let blueprint = put(&mut g, Player::P1, "Swiftfoot Boots", Zone::Battlefield);
+    g.set_entry_value(
+        g.object_ref(blueprint),
+        EntryChoiceValue::CardName(CardName::from_name("Island").unwrap()),
+    );
     let returning = put(&mut g, Player::P1, "Grizzly Bears", Zone::Exile);
     g.state.exile_links.push(ExileLink {
         source: g.object_ref(mana),
@@ -602,7 +592,7 @@ fn foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_ev
     });
     let target = put(&mut g, Player::P0, "Savannah Lions", Zone::Battlefield);
     let spell = put(&mut g, Player::P0, "Pacifism", Zone::Hand);
-    g.state.players[0].mana = [0, 0, 0, 0, 0, 3];
+    g.state.players[0].mana = [0; 6];
     assert!(
         g.legal_actions()
             .contains(&Action::AnnounceCast { card: spell })
@@ -623,10 +613,20 @@ fn foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_ev
     );
     assert_eq!(g.actor(), Some(Player::P1));
     select_copy(&mut g, blueprint);
+    assert!(matches!(
+        g.state.pending,
+        Pending::EntryValue { .. } | Pending::LandCardName { .. }
+    ));
+    act(
+        &mut g,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::CardName(CardName::from_name("Forest").unwrap()),
+        },
+    );
     assert_eq!(
         g.state.objects[spell as usize].zone,
         Zone::Hand,
-        "the added tax makes the parent cast fail"
+        "the copied named lock disables the remaining mana source"
     );
     assert_eq!(g.state.objects[mana as usize].zone, Zone::Graveyard);
     assert_eq!(
