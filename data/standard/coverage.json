@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "56a4f4a4ce69f2e311926079a7d0797af6c70662c4602fa77dab28cb15e18b4b",
+  "catalogue_version": "adffae3b593a741fb50ad623ade948d7bd143ff0588e307e29e6c0748923c878",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3110,
-  "implemented_total": 3116,
+  "implemented_standard_cards": 3120,
+  "implemented_total": 3126,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 211,
-      "gated": 48
+      "complete": 221,
+      "gated": 38
     },
     "dsk": {
       "total": 264,
@@ -23162,8 +23162,8 @@
     {
       "name": "Mu Yanling, Wind Rider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/mu_yanling_wind_rider.rs",
       "set": "dft"
     },
@@ -25858,8 +25858,8 @@
     {
       "name": "Possession Engine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/possession_engine.rs",
       "set": "dft"
     },
@@ -29338,8 +29338,8 @@
     {
       "name": "Sabotage Strategist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/sabotage_strategist.rs",
       "set": "dft"
     },
@@ -29482,8 +29482,8 @@
     {
       "name": "Salvation Engine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/salvation_engine.rs",
       "set": "dft"
     },
@@ -31434,8 +31434,8 @@
     {
       "name": "Skyseer's Chariot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/skyseer_s_chariot.rs",
       "set": "dft"
     },
@@ -31570,8 +31570,8 @@
     {
       "name": "Slick Imitator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/slick_imitator.rs",
       "set": "dft"
     },
@@ -32554,8 +32554,8 @@
     {
       "name": "Spikeshell Harrier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/spikeshell_harrier.rs",
       "set": "dft"
     },
@@ -37474,8 +37474,8 @@
     {
       "name": "Transit Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/transit_mage.rs",
       "set": "dft"
     },
@@ -38882,8 +38882,8 @@
     {
       "name": "Valor's Flagship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/valor_s_flagship.rs",
       "set": "dft"
     },
@@ -40250,8 +40250,8 @@
     {
       "name": "Waxen Shapethief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/waxen_shapethief.rs",
       "set": "dft"
     },
