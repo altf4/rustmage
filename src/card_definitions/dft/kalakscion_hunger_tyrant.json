@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3358fc873d6bca71c23a8ab7faf6643a2abe30c1be3f4cd80b72ae484de1dfed"
   },
-  "physical_metadata_sha256": "f7441f329ee2e2456ed385af88dbdb1fd0bcaa366a512bd6f0c2462e088028c8"
+  "physical_metadata_sha256": "f7441f329ee2e2456ed385af88dbdb1fd0bcaa366a512bd6f0c2462e088028c8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KalakscionHungerTyrant.java",
+  "java_sha256": "d0561e8d470f5968e510439759b65525b37ae33036c634e1a786dea8feeca689",
+  "xmage_dependencies": [],
+  "has_rules_abilities": false
 }

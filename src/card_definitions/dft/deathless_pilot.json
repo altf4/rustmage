@@ -3,10 +3,50 @@
   "catalogue_id": 1007,
   "oracle_id": "31284a0b-9bd5-4186-bd27-6b16a3597e27",
   "facts_sha256": "5838a13d0cedd09d87f1aafc74666f4a0eb4bbb0bade155dd686e45c9530a4fc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ca158076b9b0c823e1259e7222c27a22557127454246591fff33e7de2e6c0a83"
   },
-  "physical_metadata_sha256": "b0e91435d227a552eb53060f1ceea4b0ecd5efaf9fe7dcb96f3fac0ab0372d0f"
+  "physical_metadata_sha256": "b0e91435d227a552eb53060f1ceea4b0ecd5efaf9fe7dcb96f3fac0ab0372d0f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeathlessPilot.java",
+  "java_sha256": "f32f71e9940d0b86786b5061901470259218944e93aecb1d7658501b79b39d08",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+      "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+      "sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+      "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+    }
+  ]
 }

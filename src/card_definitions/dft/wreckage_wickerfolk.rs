@@ -1,4 +1,4 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete printed behavior reviewed against full pinned Oracle and XMage bodies.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 3),
     triggers: &[TriggeredAbility {
