@@ -28,9 +28,10 @@
     "After white duplicate repair, run once with the assembled batch: expect2966 exact previous-schema rows and41 explicitly unrepresentable late-route rows. Investigate any other difference; no automatic fingerprint acceptance."
   ],
   "guard_contract": [
-    "Resolve immutable native, borrowed or granted recipe for zero-production actions.",
-    "Reject positive fixed Choice/Combination sentinel; preserve genuine zero-power production.",
-    "Validate journal actions before sacrifice/copy can change their definition, and validate all final offered actions alongside owned state.",
+    "Resolve native/donor/granted raw recipe and evaluate pre-action in_world on the actual activating source, including borrowed quantities/controller.",
+    "Reject a zero sentinel if absent from the old output domain, including positive fixed and dynamic domains; preserve genuine zero-power/count and fixed amount0.",
+    "Reject ChooseMana during active Announcement.mana_output; preserve inherited resolving-spell mana choices.",
+    "Validate selected journal actions before sacrifice/copy can change their source, and validate final offered actions alongside owned state.",
     "Never erase action values from observations, journals or current fingerprints."
   ],
   "cards": [
@@ -2405,5 +2406,10 @@
       },
       "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
     }
-  ]
+  ],
+  "guard_followup": {
+    "revision_base": "c4392f48a",
+    "reason": "Final independent review extended fixed-domain scope to positive dynamic late starts and selected owned output choices.",
+    "source": "Raw borrowed recipe comes from donor; pre-action quantity is evaluated on borrower, matching the baseline visitor. Domain membership checks do not enumerate Combination allocations."
+  }
 }

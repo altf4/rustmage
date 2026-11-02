@@ -360,7 +360,7 @@
     "An active or suspended Announcement containing ManaOutput remains opaque even during the inherited EffectMana/ChooseMana public phase.",
     "No blanket false/present-field erasure is permitted; neutral new optional/bool properties are already omitted by their real serializers.",
     "Reject present counter_payment only on AnnounceSelfGrantedAbility; its empty default is omitted. Existing native activation counter-payment fields are not a new wire family.",
-    "Reject offered or selected zero sentinel only when its immutable fixed Choice/Combination domain is positive; never remove an offered action to force an inherited digest."
+    "Reject offered or selected zero sentinel when its old pre-action output domain on the actual source contains no zero; preserve genuine zero output. Reject owned ManaOutput ChooseMana before journal completion; never remove actions to force inherited digests."
   ],
   "registry": {
     "module": "tests/legacy/assurance/schema199.rs",
@@ -494,7 +494,7 @@
   "focused_tests": {
     "target": "legacy",
     "filter": "engine::assurance::schema199::",
-    "cases": 17,
+    "cases": 20,
     "coverage": [
       "byte-exact unchanged JSON and sole unsigned derived entry-count removal",
       "all new public field/action/phase families",
@@ -507,7 +507,10 @@
       "inherited null-cast linked acquisition Some remains eligible through owned branch/restore; newly public linked origins remain distinct",
       "all41 new fixed-output action capabilities backed by immutable source ledger; concrete alternatives remain eligible",
       "actual payment precedes late output, including owned restore and completed idle result",
-      "genuine SourcePower0 and fixed Choice amount0 preserved; borrowed templates resolved from donor"
+      "genuine SourcePower0 and fixed Choice amount0 preserved; borrowed templates resolved from donor",
+      "positive/zero native power-choice and distinct-power count domains; opponent creatures excluded",
+      "borrowed domain quantities use animated actual borrower with both positive and zero-power donor definitions",
+      "owned late ChooseMana rejected while inherited resolving-spell ChooseMana remains eligible"
     ]
   },
   "baseline_distinctions": [
@@ -520,8 +523,8 @@
   ],
   "offered_action_value_delta": {
     "container": "Existing mana Action.production values",
-    "new_route": "Unselected [0,0,0,0,0,0] for an immutable positive fixed Choice/Combination recipe",
-    "guard": "Typed prior_schema199_actions_supported resolves native, exile/GY borrowed and attached-grant templates. It rejects this new route while preserving genuine dynamic zero-power and fixed amount0 output. Final offered actions and selected journal actions are checked before source departure/copy.",
+    "new_route": "Unselected zero vector absent from the old pre-action output domain, including positive fixed Choice/Combination and dynamic TapSourcePowerChoice/DistinctCreaturePowers",
+    "guard": "Resolve raw recipe from native or donor definition, then evaluate in_world on the actual activating source. Reject zero if that old domain contains no zero; preserve genuine zero power/count and fixed amount0. Reject ChooseMana while an active Announcement owns ManaOutput, retaining inherited resolving-spell mana choices. Final offered and selected journal actions are checked before source departure/copy.",
     "source_evidence": "docs/aetherdrift-prior198-trace-audit.json",
     "scope": "41 new semantic route rows are unrepresentable; Territory Forge duplicate actions are a separate production bug to repair, not a schema exception."
   },

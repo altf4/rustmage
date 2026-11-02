@@ -124,18 +124,30 @@ fn wire_supported(value: &impl Serialize) -> bool {
     serde_json::to_value(value).is_ok_and(|value| check(&value).is_ok())
 }
 
-// A zero vector can now mean "choose the fixed output after paying costs".
-// This is a new action route, not zero mana production. Resolve its immutable
-// template rather than rejecting old zero-power sources that really produce 0.
+// A zero vector can now mean "choose the output after paying costs".
+// Compare with the old pre-action domain on the actual activating object:
+// borrowed definitions supply rules, while the borrower supplies quantities.
 pub(super) fn prior_schema199_actions_supported(game: &Game, actions: &[Action]) -> bool {
     use rustmage_core::engine::ability_world::CharacteristicWorld;
-    fn new_fixed_choice(recipe: Option<ManaProduction>) -> bool {
-        matches!(recipe.map(ManaProduction::base),
-            Some(ManaProduction::Choice { amount, .. } | ManaProduction::Combination { amount, .. })
-            if amount != 0)
+    fn old_domain_contains_zero(game: &Game, source: CardId, recipe: ManaProduction) -> bool {
+        // Avoid enumerating allocations: every vector in these domains has the
+        // same total, and in_world resolves all characteristic-dependent recipes.
+        match recipe.in_world(game, source) {
+            ManaProduction::Fixed(mana) => mana == [0; 6],
+            ManaProduction::Choice { mask, amount } => amount == 0 && mask & 63 != 0,
+            ManaProduction::Combination { amount, .. } => amount == 0,
+            _ => false,
+        }
     }
     actions.iter().all(|action| {
-        if !wire_supported(action) {
+        if !wire_supported(action)
+            || (matches!(action, Action::ChooseMana { .. })
+                && game
+                    .state
+                    .announcing
+                    .as_ref()
+                    .is_some_and(|a| a.mana_output.is_some()))
+        {
             return false;
         }
         let recipe = match *action {
@@ -153,14 +165,17 @@ pub(super) fn prior_schema199_actions_supported(game: &Game, actions: &[Action])
             } if production == [0; 6] => game.state.objects[card as usize]
                 .card
                 .activation(ability)
-                .mana_production(),
+                .mana_production()
+                .map(|recipe| (card, recipe)),
             Action::AnnounceBorrowedMana {
+                card,
                 exiled,
                 ability,
                 production,
                 ..
             }
             | Action::ActivateBorrowedMana {
+                card,
                 exiled,
                 ability,
                 production,
@@ -168,14 +183,17 @@ pub(super) fn prior_schema199_actions_supported(game: &Game, actions: &[Action])
             } if production == [0; 6] => game.state.objects[exiled.card as usize]
                 .card
                 .activation(ability)
-                .mana_production(),
+                .mana_production()
+                .map(|recipe| (card, recipe)),
             Action::AnnounceGraveyardBorrowedMana {
+                card,
                 graveyard,
                 ability,
                 production,
                 ..
             }
             | Action::ActivateGraveyardBorrowedMana {
+                card,
                 graveyard,
                 ability,
                 production,
@@ -183,7 +201,8 @@ pub(super) fn prior_schema199_actions_supported(game: &Game, actions: &[Action])
             } if production == [0; 6] => game.state.objects[graveyard.card as usize]
                 .card
                 .activation(ability)
-                .mana_production(),
+                .mana_production()
+                .map(|recipe| (card, recipe)),
             Action::TapGrantedMana {
                 card,
                 grantor,
@@ -191,10 +210,10 @@ pub(super) fn prior_schema199_actions_supported(game: &Game, actions: &[Action])
             } if production == [0; 6] => CharacteristicWorld::granted_mana(game, card)
                 .into_iter()
                 .find(|grant| grant.source == grantor)
-                .map(|grant| grant.production),
+                .map(|grant| (card, grant.production)),
             _ => None,
         };
-        !new_fixed_choice(recipe)
+        recipe.is_none_or(|(source, recipe)| old_domain_contains_zero(game, source, recipe))
     })
 }
 
@@ -1420,7 +1439,13 @@ fn prior_198_rejects_a_real_late_output_start_after_its_costs_complete() {
     let mut branch = game.clone();
     drop(game);
     let production = [0, 0, 0, 1, 0, 0];
-    act(&mut branch, Action::ChooseMana { production });
+    let choice = Action::ChooseMana { production };
+    assert!(branch.legal_actions().contains(&choice));
+    assert!(!prior_schema199_actions_supported(
+        &branch,
+        std::slice::from_ref(&choice)
+    ));
+    act(&mut branch, choice);
     assert_eq!(
         branch.state.players[0].mana,
         std::array::from_fn(|i| before[i] - payment[i] + production[i])
@@ -1535,4 +1560,202 @@ fn prior_198_preserves_real_zero_power_mana_and_resolves_borrowed_donor_template
         production: [1, 0, 0, 0, 0, 0],
     };
     assert!(prior_schema199_actions_supported(&game, &[inherited]));
+}
+
+#[test]
+fn prior_198_distinguishes_new_dynamic_native_starts_from_genuine_zero_domains() {
+    use card_rules::authored::CardRules;
+    const BASE: ActivatedAbility = ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[],
+        sorcery: false,
+        once_per_turn: false,
+    };
+    const POWER: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[ActivatedAbility {
+            program: &[Instruction::AddMana(ManaProduction::TapSourcePowerChoice {
+                mask: 31,
+            })],
+            ..BASE
+        }],
+        ..CardRules::EMPTY
+    };
+    const DISTINCT: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ActivatedAbility {
+            program: &[Instruction::AddMana(ManaProduction::DistinctCreaturePowers)],
+            ..BASE
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = card_rules::fixture_rules::activate(&[
+        (Card::GrizzlyBears, &POWER),
+        (Card::from_name("Prophetic Prism").unwrap(), &DISTINCT),
+    ]);
+    let mut game = scenario(Player::P0);
+    let card = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let zero = Action::AnnounceMana {
+        card,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production: [0; 6],
+    };
+    assert!(game.legal_actions().contains(&zero));
+    assert!(!prior_schema199_actions_supported(
+        &game,
+        std::slice::from_ref(&zero)
+    ));
+    game.state.objects[card as usize].growth.power = -2;
+    assert!(game.legal_actions().contains(&zero));
+    assert!(prior_schema199_actions_supported(&game, &[zero]));
+
+    let mut game = scenario(Player::P0);
+    let card = put(&mut game, Player::P0, "Prophetic Prism", Zone::Battlefield);
+    let zero = Action::AnnounceMana {
+        card,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production: [0; 6],
+    };
+    assert!(game.legal_actions().contains(&zero));
+    assert!(prior_schema199_actions_supported(
+        &game,
+        std::slice::from_ref(&zero)
+    ));
+    // A zero-power creature still contributes one distinct power; opposing
+    // creatures never contribute to this source controller's domain.
+    put(&mut game, Player::P1, "Bear Cub", Zone::Battlefield);
+    assert!(prior_schema199_actions_supported(
+        &game,
+        std::slice::from_ref(&zero)
+    ));
+    put(&mut game, Player::P0, "Aegis Turtle", Zone::Battlefield);
+    assert!(game.legal_actions().contains(&zero));
+    assert!(!prior_schema199_actions_supported(&game, &[zero]));
+}
+
+#[test]
+fn prior_198_dynamic_borrowed_domains_sample_the_borrower_not_the_donor() {
+    use card_rules::authored::CardRules;
+    const ABILITIES: &[ActivatedAbility] = &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AddMana(ManaProduction::TapSourcePowerChoice {
+            mask: 31,
+        })],
+        sorcery: false,
+        once_per_turn: false,
+    }];
+    const POSITIVE: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: ABILITIES,
+        ..CardRules::EMPTY
+    };
+    const ZERO: CardRules = CardRules {
+        effect: Effect::Creature(0, 5),
+        activated: ABILITIES,
+        ..CardRules::EMPTY
+    };
+    let _scope = card_rules::fixture_rules::activate(&[
+        (Card::GrizzlyBears, &POSITIVE),
+        (Card::from_name("Aegis Turtle").unwrap(), &ZERO),
+    ]);
+    for donor_name in ["Grizzly Bears", "Aegis Turtle"] {
+        let mut game = scenario(Player::P0);
+        let source = put(&mut game, Player::P0, "Territory Forge", Zone::Battlefield);
+        let donor = put(&mut game, Player::P1, donor_name, Zone::Exile);
+        let source_ref = game.object_ref(source);
+        let exiled = game.object_ref(donor);
+        game.state
+            .borrowed_links
+            .get_or_insert_default()
+            .push(borrowed_activations::Link {
+                source: source_ref,
+                origin: None,
+                exiled,
+                first_slot: 0,
+                width: 1,
+                once_per_turn: false,
+            });
+        game.change_object_form(
+            source_ref,
+            card_rules::AnimationSpec {
+                artifact: true,
+                creature_types: card_rules::AnimationCreatureTypes::Unchanged,
+                base: Some((0, 3)),
+                keywords: Keywords::NONE,
+                duration: card_rules::AnimationDuration::EndOfTurn,
+            },
+            characteristic_layers::AnimationTypeMode::AddCreature,
+        );
+        let zero = Action::AnnounceBorrowedMana {
+            card: source,
+            exiled,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0; 6],
+        };
+        assert!(game.legal_actions().contains(&zero), "{donor_name}");
+        assert!(
+            prior_schema199_actions_supported(&game, std::slice::from_ref(&zero)),
+            "zero borrower, {donor_name}"
+        );
+        game.state.objects[source as usize].growth.power = 3;
+        assert!(game.legal_actions().contains(&zero), "{donor_name}");
+        assert!(
+            !prior_schema199_actions_supported(&game, &[zero]),
+            "positive borrower, {donor_name}"
+        );
+    }
+}
+
+#[test]
+fn prior_198_keeps_legacy_resolving_spell_mana_choices_eligible() {
+    use card_rules::authored::CardRules;
+    const MANA_SPELL: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::AddMana(ManaProduction::Choice {
+                mask: 31,
+                amount: 1,
+            })],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = card_rules::fixture_rules::activate(&[(Card::Shock, &MANA_SPELL)]);
+    let mut game = scenario(Player::P0);
+    let card = put(&mut game, Player::P0, "Shock", Zone::Hand);
+    cast(&mut game, card, None);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert!(game.state.resolving.is_some());
+    assert!(game.state.announcing.is_none());
+    assert!(matches!(game.state.pending, Pending::EffectMana { .. }));
+    let choice = Action::ChooseMana {
+        production: [0, 0, 0, 0, 1, 0],
+    };
+    assert!(game.legal_actions().contains(&choice));
+    assert!(prior_schema199_actions_supported(
+        &game,
+        std::slice::from_ref(&choice)
+    ));
+    act(&mut game, choice);
+    assert!(game.state.resolving.is_none());
+    assert!(prior_schema199_state_supported(&game.state));
 }
