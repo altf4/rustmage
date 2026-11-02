@@ -11,73 +11,31 @@ impl Game {
         {
             return;
         }
-        let before = events
+        let Some(observers) = events
             .iter()
-            .find_map(|event| event.graveyard_observers.clone());
-        if before.is_none()
-            && !self.state.death_sources.iter().any(|&id| {
-                self.state.objects[id as usize]
-                    .card
-                    .triggers()
-                    .iter()
-                    .any(|ability| {
-                        ability.condition.event()
-                            == TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
-                    })
-            })
-        {
+            .find_map(|event| event.graveyard_observers.as_ref())
+        else {
             return;
-        }
-        let mut observers: Vec<(ObjectView, bool, bool)> = before
-            .as_ref()
-            .into_iter()
-            .flat_map(|rows| rows.iter())
-            .filter(|source| {
-                source.printed_abilities_available()
-                    && source.card.triggers().iter().any(|ability| {
-                        ability.condition.event()
-                            == TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
-                    })
-            })
-            .map(|source| {
-                let current = self.on_battlefield(source.id)
-                    && self.object_ref(source.id) == source.reference
-                    && self.state.objects[source.id as usize].controller == source.controller
-                    && self.object_view(source.id).printed_abilities_available();
-                (source.clone(), true, current)
-            })
-            .collect();
-        // Graveyard-to-exile triggers use the post-event world, including a
-        // source that entered or changed controller during this same batch.
-        for source in self.death_trigger_sources() {
-            if !source.printed_abilities_available()
-                || !source.card.triggers().iter().any(|ability| {
+        };
+        // CR603.10a: both battlefield and graveyard departures look back.
+        // A source entering or regaining its ability during this event cannot
+        // observe it; a departing or newly blanked source can.
+        for source in observers.iter().filter(|source| {
+            source.printed_abilities_available()
+                && source.card.triggers().iter().any(|ability| {
                     ability.condition.event()
                         == TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                 })
-            {
-                continue;
-            }
-            if !observers.iter().any(|(before, _, graveyard)| {
-                *graveyard
-                    && before.reference == source.reference
-                    && before.controller == source.controller
-            }) {
-                observers.push((source, false, true));
-            }
-        }
-        for (source, battlefield, graveyard) in observers {
+        }) {
             let qualifying: Vec<_> = events
                 .iter()
                 .filter(|event| {
                     event.moved
                         && event.destination == Zone::Exile
-                        && ((battlefield
-                            && event.before.zone == Zone::Battlefield
+                        && ((event.before.zone == Zone::Battlefield
                             && event.before.controller == source.controller
                             && event.before.is_creature())
-                            || (graveyard
-                                && event.before.zone == Zone::Graveyard
+                            || (event.before.zone == Zone::Graveyard
                                 && event.before.owner == source.controller
                                 && event.was_card
                                 && event.before.is_creature()))
@@ -100,7 +58,7 @@ impl Game {
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 if ability.condition.event()
                     == TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
-                    && self.queue_trigger(&source, index)
+                    && self.queue_trigger(source, index)
                 {
                     self.state
                         .pending_triggers
@@ -111,8 +69,7 @@ impl Game {
             }
         }
     }
-    /// Battlefield departures look back; graveyard departures use the completed world.
-    /// Merge the two observer populations by exact incarnation AND controller.
+    /// Both public-zone departures use the same pre-event battlefield witnesses.
     fn cards_exiled_from_public_zones_triggers(&mut self, events: &[ZoneChange]) {
         if !events.iter().any(|event| {
             event.moved
@@ -122,46 +79,21 @@ impl Game {
         }) {
             return;
         }
-        let observes = |source: &ObjectView| {
-            source.printed_abilities_available()
-                && source.card.triggers().iter().any(|ability| {
-                    ability.condition.event()
-                        == TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
-                })
-        };
-        let before = events
+        let Some(observers) = events
             .iter()
-            .find_map(|event| event.graveyard_observers.as_ref());
-        let mut observers: Vec<(ObjectView, bool, bool)> = before
-            .into_iter()
-            .flat_map(|rows| rows.iter())
-            .filter(|source| observes(source))
-            .map(|source| (source.clone(), true, false))
-            .collect();
-        for source in self.death_trigger_sources().into_iter().filter(observes) {
-            if let Some((_, _, after)) = observers.iter_mut().find(|(prior, _, _)| {
-                prior.reference == source.reference && prior.controller == source.controller
-            }) {
-                *after = true;
-            } else {
-                observers.push((source, false, true));
-            }
-        }
-        for (source, battlefield, graveyard) in observers {
-            let qualifies = events.iter().any(|event| {
-                event.moved
-                    && event.was_card
-                    && event.destination == Zone::Exile
-                    && ((battlefield && event.before.zone == Zone::Battlefield)
-                        || (graveyard && event.before.zone == Zone::Graveyard))
-            });
-            if qualifies {
-                for (index, ability) in source.card.triggers().iter().enumerate() {
-                    if ability.condition.event()
-                        == TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
-                    {
-                        self.queue_trigger(&source, index);
-                    }
+            .find_map(|event| event.graveyard_observers.as_ref())
+        else {
+            return;
+        };
+        for source in observers
+            .iter()
+            .filter(|source| source.printed_abilities_available())
+        {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event()
+                    == TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
+                {
+                    self.queue_trigger(source, index);
                 }
             }
         }
