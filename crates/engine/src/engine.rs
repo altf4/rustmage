@@ -10090,10 +10090,14 @@ impl Game {
                 .as_ref()
                 .and_then(|r| r.begin_combat_this_turn.as_deref().cloned()),
             turn_schedule: s.turn_schedule.as_deref().cloned(),
-            must_attack_this_combat: s
-                .combat_rules
-                .as_ref()
-                .map_or_else(Vec::new, |rules| rules.must_attack_this_combat.clone()),
+            must_attack_this_combat: s.combat_rules.as_ref().map_or_else(Vec::new, |rules| {
+                rules
+                    .must_attack_this_combat
+                    .iter()
+                    .copied()
+                    .filter(|r| self.on_battlefield(r.card) && self.object_ref(r.card) == *r)
+                    .collect()
+            }),
             must_be_blocked: s
                 .combat_rules
                 .as_ref()

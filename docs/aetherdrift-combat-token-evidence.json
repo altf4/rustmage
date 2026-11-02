@@ -31,6 +31,12 @@
     "tapping or optional attack tax permits zero declaration",
     "owned raw/index/restore and source-independent branch histories"
   ],
-  "target": "tests/dft_combat_tokens.rs",
-  "remaining": "Ordinary Howlsquad Heavy must wire all other printed obligations, including engines, max-speed Goblin-count restricted activation, and provenance. No inherited or new DFT admission is certified by this fixture."
+  "target": "tests/dft_combat_tokens.rs (7 scenarios)",
+  "remaining": "Ordinary Howlsquad Heavy must wire all other printed obligations, including engines, max-speed Goblin-count restricted activation, and provenance. No inherited or new DFT admission is certified by this fixture.",
+  "review_fix": {
+    "reviewer": "independent author of other engine clusters; this is a scoped peer review, not full checkpoint acceptance",
+    "finding": "Old and new generations of one reused token slot could be counted twice with attack-limit matching.",
+    "fix": "Prune old generations when recording a fresh requirement; enumerate only live exact incarnations and expose only active references.",
+    "test": "reused_token_slot_with_a_new_requirement_counts_once_under_planeswalker_attack_limits"
+  }
 }

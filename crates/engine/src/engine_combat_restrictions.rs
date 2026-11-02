@@ -292,7 +292,9 @@ impl Game {
                     .into_iter()
                     .flat_map(|rules| &rules.must_attack_this_combat)
                     .filter(move |row| {
-                        !self.state.static_sources.contains(&row.card)
+                        self.on_battlefield(row.card)
+                            && self.object_ref(row.card) == **row
+                            && !self.state.static_sources.contains(&row.card)
                             && !grants.iter().any(|grant| {
                                 grant.kind == SelfGrantedAbilityKind::AttacksEachCombat
                                     && grant.recipient.card == row.card

@@ -38,6 +38,7 @@ impl Game {
             .get_or_insert_with(Default::default)
             .must_attack_this_combat;
         for object in actual {
+            rows.retain(|old| old.card != object.card || *old == object);
             if !rows.contains(&object) {
                 rows.push(object);
             }

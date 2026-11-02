@@ -290,3 +290,60 @@ fn combat_requirement_and_live_haste_remain_owned_across_raw_index_restore() {
     assert_eq!(raw.state.attackers.len(), 1);
     assert!(indexed.state.attackers.is_empty());
 }
+
+#[test]
+fn reused_token_slot_with_a_new_requirement_counts_once_under_planeswalker_attack_limits() {
+    const LIMIT: CardRules = CardRules {
+        effect: Effect::Creature(1, 1),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::ControlledPlaneswalkerAttackLimit],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope =
+        fixture_rules::activate(&[(Card::GoblinPiker, heavy()), (Card::HillGiant, &LIMIT)]);
+    let mut g = scenario(Player::P0);
+    put(&mut g, Player::P0, "Goblin Piker", Zone::Battlefield);
+    put(&mut g, Player::P0, "Goblin Piker", Zone::Battlefield);
+    put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
+    let walker = put(
+        &mut g,
+        Player::P1,
+        "Ajani, Caller of the Pride",
+        Zone::Battlefield,
+    );
+    g.add_counter(walker, CounterKind::Loyalty, 4);
+    g.begin_step(Step::BeginCombat);
+    g.give_priority();
+    for _ in 0..20 {
+        if created(&g).len() == 1 && g.state.pending == Pending::Priority {
+            break;
+        }
+        match g.state.pending {
+            Pending::OrderTriggers { .. } => {
+                choose(&mut g, |a| matches!(a, Action::PutTrigger { .. }))
+            }
+            Pending::Priority => act(&mut g, Action::Pass),
+            _ => panic!("unexpected token trigger ordering"),
+        }
+    }
+    let first = created(&g)[0];
+    let old = g.object_ref(first);
+    g.move_object(first, Zone::Graveyard);
+    g.cease_token(first);
+    settle(&mut g);
+    let live = created(&g);
+    assert_eq!(live, vec![first]);
+    assert_ne!(g.object_ref(first), old);
+    assert_eq!(
+        g.observe(Player::P0).must_attack_this_combat,
+        vec![g.object_ref(first)]
+    );
+    attackers(&mut g);
+    reject(&mut g, Action::FinishAttackers);
+    act(&mut g, Action::Attack { card: first });
+    act(&mut g, Action::FinishAttackers);
+    assert_eq!(g.state.attackers.len(), 1);
+}
