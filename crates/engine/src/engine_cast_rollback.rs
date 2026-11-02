@@ -237,6 +237,7 @@ impl Game {
             | Action::AnnounceFree { card, .. }
             | Action::AnnounceFreeFromPermission { card, .. }
             | Action::AnnounceCounterGraveyard { card }
+            | Action::AnnounceGraveyardAdditionalCosts { card }
             | Action::Cast { card, .. }
             | Action::BeginCast { card, .. } => card,
             Action::CastExiledDuringResolution { object, .. } => object.card,

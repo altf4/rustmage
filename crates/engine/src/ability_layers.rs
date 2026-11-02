@@ -74,6 +74,12 @@ pub enum StaticAbilityFragment {
     /// During combat no spells or nonmana activated abilities may be started.
     NoSpellsOrNonmanaDuringCombat,
 
+    /// This exact owned graveyard card has a separate ordinary-mana casting route.
+    SelfGraveyardCastWithAdditionalCosts {
+        life: u32,
+        additional: crate::cards::AdditionalCost,
+    },
+
     /// Grants its controller the permanent enduring-story designation at threshold.
     Storied,
     /// This source continuously acquires activations from matching cards in its controller graveyard.

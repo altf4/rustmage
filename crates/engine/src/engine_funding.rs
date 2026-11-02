@@ -3422,6 +3422,9 @@ impl Game {
         world.reachable(&goal, &mut HashSet::new())
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.self_graveyard_cast_cost().is_some() {
+            return self.self_graveyard_announcement_fundable(a, cost);
+        }
         if a.item
             .cast
             .is_some_and(|c| c.method == CastMethod::Harmonize)
@@ -4270,6 +4273,7 @@ impl Game {
             .cast
             .is_some_and(|c| c.method == CastMethod::Harmonize || c.blight == Some(true))
             || announcement.ordered_craft()
+            || announcement.self_graveyard_cast_cost().is_some()
             || announcement
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_))))

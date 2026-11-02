@@ -23,6 +23,8 @@ pub(super) struct VisibilityOperation {
 pub(super) struct LibraryTopState {
     pub operation: Option<VisibilityOperation>,
     pub reveal: Option<LibraryRevealEvent>,
+    /// Private exact current-top knowledge, indexed by library owner.
+    pub private_known_top: Option<Box<[Option<(ObjectRef, u8)>; 2]>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -76,12 +78,56 @@ impl Game {
                     .is_some_and(|o| o.land));
         if !ongoing && let Some(s) = &mut self.state.library_top {
             s.operation = None;
-            if s.reveal.is_none() {
+            if s.reveal.is_none() && s.private_known_top.is_none() {
                 self.state.library_top = None;
             }
         }
     }
+    pub(super) fn remember_private_library_top(
+        &mut self,
+        owner: Player,
+        viewer: Player,
+        object: ObjectRef,
+    ) {
+        assert_eq!(self.top_library_card(owner), Some(object.card));
+        assert_eq!(self.object_ref(object.card), object);
+        let tops = self
+            .state
+            .library_top
+            .get_or_insert_default()
+            .private_known_top
+            .get_or_insert_with(|| Box::new([None; 2]));
+        let mask = 1 << viewer.index();
+        if let Some((prior, viewers)) = &mut tops[owner.index()]
+            && *prior == object
+        {
+            *viewers |= mask;
+        } else {
+            tops[owner.index()] = Some((object, mask));
+        }
+    }
+    pub(super) fn private_library_top(&self, viewer: Player, owner: Player) -> Option<ObjectRef> {
+        let (object, mask) = self
+            .state
+            .library_top
+            .as_ref()?
+            .private_known_top
+            .as_ref()?[owner.index()]?;
+        (mask & self.information_mask(viewer) != 0
+            && self.top_library_card(owner) == Some(object.card)
+            && self.object_ref(object.card) == object
+            && self.state.objects[object.card as usize].zone == Zone::Library)
+            .then_some(object)
+    }
     pub(super) fn library_top_changed(&mut self, player: Player) {
+        if let Some(state) = &mut self.state.library_top
+            && let Some(tops) = &mut state.private_known_top
+        {
+            tops[player.index()] = None;
+            if tops.iter().all(Option::is_none) {
+                state.private_known_top = None;
+            }
+        }
         if let Some(o) = self
             .state
             .library_top

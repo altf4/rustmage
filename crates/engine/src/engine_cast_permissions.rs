@@ -366,6 +366,14 @@ impl Game {
         independent_free: bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
+        if method == CastMethod::GraveyardAdditionalCosts
+            && (object.zone != Zone::Graveyard
+                || object.owner != actor
+                || !object.is_card()
+                || object.card.self_graveyard_cast_cost().is_none())
+        {
+            return false;
+        }
         if face == CastFace::Back
             && object.card.transforming_double_face()
             && !self
@@ -464,7 +472,7 @@ impl Game {
                 .scalar_x_intervals_for_definition(actor, card, definition)
                 .is_empty();
         }
-        let a = Announcement {
+        let mut a = Announcement {
             equip_zero_available: false,
             exhaust_reuse_authorized: false,
             activation_cost_route: ActivationCostRoute::Printed,
@@ -498,6 +506,9 @@ impl Game {
             harmonize_discount: 0,
             additional_paid: false,
         };
+        if method == CastMethod::GraveyardAdditionalCosts {
+            a.initialize_cast_costs(improvise::potential(self, definition));
+        }
         if let Some(modes) = a.item.modes() {
             return modes.iter().enumerate().any(|(index, mode)| {
                 if !available(mode.targets) {

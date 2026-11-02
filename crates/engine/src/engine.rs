@@ -173,6 +173,9 @@ pub use cast_origins::{GraveyardTypeUse, ResolutionFreeCasts, ResolutionPaidCast
 #[path = "engine_cast_permissions.rs"]
 pub mod cast_permissions;
 #[doc(hidden)]
+#[path = "engine_cast_route_costs.rs"]
+pub mod cast_route_costs;
+#[doc(hidden)]
 #[path = "engine_turn_cast_grants.rs"]
 pub mod turn_cast_grants;
 pub use turn_cast_grants::PlayerCastGrantsView;
@@ -773,6 +776,7 @@ define_actions! {
     RevealMiracle,
     DeclineMiracle,
     AnnounceCounterGraveyard { card: CardId },
+    AnnounceGraveyardAdditionalCosts { card: CardId },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
@@ -1274,6 +1278,8 @@ impl PlayerState {
 pub enum CastMethod {
     Normal,
     GraveyardCounterCost,
+    /// The card's own graveyard permission with independent added nonmana costs.
+    GraveyardAdditionalCosts,
     Free,
     ExileLife,
     Airbend,
@@ -5296,6 +5302,11 @@ impl Game {
                                 }
                             }
                         }
+                        if self.self_graveyard_cost_route_available(actor, card, sorcery)
+                            && emit(Action::AnnounceGraveyardAdditionalCosts { card })
+                        {
+                            return true;
+                        }
                         if obj.zone == Zone::Graveyard
                             && obj.card.graveyard_counter_cost().is_some()
                             && self.permitted_cast_available(
@@ -6365,6 +6376,11 @@ impl Game {
                 } else {
                     self.choose_creature_counter_cost(object, kind);
                 }
+            }
+            Action::AnnounceGraveyardAdditionalCosts { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::GraveyardAdditionalCosts;
+                self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceCounterGraveyard { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
@@ -7759,6 +7775,7 @@ impl Game {
     /// CR 701.24a randomizes cards; a transient noncard keeps its object
     /// position until the next state-based action removes it.
     fn shuffle_library_cards(&mut self, p: Player) {
+        self.library_top_changed(p);
         let library = &self.state.players[p.index()].library;
         if library
             .iter()
@@ -10800,9 +10817,13 @@ impl Game {
             + s.player_control.as_ref().map_or(0, |_| {
                 std::mem::size_of::<player_control::PlayerControlState>()
             })
-            + s.library_top
-                .as_ref()
-                .map_or(0, |_| std::mem::size_of::<library_top::LibraryTopState>())
+            + s.library_top.as_ref().map_or(0, |top| {
+                std::mem::size_of::<library_top::LibraryTopState>()
+                    + top
+                        .private_known_top
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<[Option<(ObjectRef, u8)>; 2]>())
+            })
             + s.cast_rollback.as_ref().map_or(0, |r| r.bytes())
             + self.mana_lot_bytes()
             + self.mana_announcement_bytes()

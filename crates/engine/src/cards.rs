@@ -1314,6 +1314,13 @@ pub enum Instruction {
     ReturnCraftedSourceTransformed,
     /// Privately exile top cards; paid play remains conditional on a current subtype.
     ExileOpponentTopFaceDownPlayX,
+    /// Independent, permanent exact-exile play permission for captured players.
+    ExileLibraryTopFaceDownPlay {
+        library: PlayerSet,
+        beneficiary: PlayerSet,
+        amount: u16,
+        spend_any_mana: bool,
+    },
     ExileTopFaceDownPlay {
         amount: u16,
         subtype: &'static str,

@@ -5957,6 +5957,20 @@ impl Game {
                 Instruction::ExileOpponentTopFaceDownPlayX => {
                     self.exile_opponent_top_face_down_play_x(&item)
                 }
+                Instruction::ExileLibraryTopFaceDownPlay {
+                    library,
+                    beneficiary,
+                    amount,
+                    spend_any_mana,
+                } => {
+                    self.exile_library_top_face_down_play(
+                        &item,
+                        library,
+                        beneficiary,
+                        amount,
+                        spend_any_mana,
+                    );
+                }
                 Instruction::ExileTopFaceDownPlay { amount, subtype } => {
                     self.exile_top_face_down_play(&item, amount, subtype)
                 }

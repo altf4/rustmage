@@ -103,6 +103,9 @@ impl Announcement {
         if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
             return None;
         }
+        if let Some((_, additional)) = self.self_graveyard_cast_cost() {
+            return Some(additional);
+        }
         if self
             .item
             .cast

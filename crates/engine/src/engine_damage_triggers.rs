@@ -178,6 +178,7 @@ impl Game {
                                 amount,
                                 combat,
                             },
+                            Some(dealer.controller),
                         );
                     }
                 }
@@ -192,6 +193,7 @@ impl Game {
                             amount,
                             combat,
                         },
+                        None,
                     );
                 }
             }
@@ -273,10 +275,27 @@ impl Game {
         index: usize,
         grant: Option<AttachmentTriggerView>,
         event: DamageTriggerView,
+        dealer_controller: Option<Player>,
     ) {
         if !self.queue_trigger_from(source, index, grant.map(Box::new)) {
             return;
         }
-        self.state.pending_triggers.last_mut().unwrap().damage_event = Some(event);
+        let packet = self.state.pending_triggers.last_mut().unwrap();
+        let retain_dealer_controller = packet.trigger_definition().triggers()[index]
+            .program
+            .iter()
+            .any(|instruction| {
+                matches!(
+                    instruction,
+                    Instruction::ExileLibraryTopFaceDownPlay {
+                        beneficiary: PlayerSet::EventPlayer,
+                        ..
+                    }
+                )
+            });
+        packet.damage_event = Some(event);
+        if retain_dealer_controller {
+            packet.event_player = dealer_controller;
+        }
     }
 }

@@ -320,6 +320,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceCounterGraveyard { .. }
+            | Action::AnnounceGraveyardAdditionalCosts { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }

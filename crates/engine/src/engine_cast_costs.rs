@@ -84,6 +84,12 @@ impl Announcement {
         }
     }
     pub(super) fn initialize_alternative_life(&mut self) {
+        if let Some((life, _)) = self.self_graveyard_cast_cost() {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            if life != 0 {
+                self.add_cast_cost_clause(CastCostClause::Life(life));
+            }
+        }
         if self
             .item
             .cast

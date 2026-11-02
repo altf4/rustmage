@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "scope": "Generic hidden exile entitlements and explicit self-graveyard casting cost routes; no ordinary card authorship/admissions",
+  "base": "b1fe0cfe3ee52374dfc12f9a0e2bbdeb4a9f7404",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "reviewed_complete_sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GontiNightMinister.java",
+      "sha256": "c5424bb70e72e8778b8b6e71ce30aa6ab28127d4fbeabdbadf14415a553c632b"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WickerfolkIndomitable.java",
+      "sha256": "8b85b2441a0b34af3e4307ab633a1b7ed13e60af0b0f44a1c35f0d2424f81e3a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/MayLookAtTargetCardEffect.java",
+      "sha256": "6e395256649faac8f2e23ab6a5ef60663416b7fc5d49352904d42fcb4f7cbe9c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/CanPlayCardControllerEffect.java",
+      "sha256": "f038661e1695132acc06c2886f17d98832360a6d92fbd59d3956fe87d4e78387"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/YouMaySpendManaAsAnyColorToCastTargetEffect.java",
+      "sha256": "c0e147f9570a3e6b96caac5560728bbf4372c4e86f12bee956777c59020fd214"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/MayCastFromGraveyardSourceAbility.java",
+      "sha256": "5fabb3b07028c6709d74af5be237564ca277070effac3353b6bb847a12a76962"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+      "sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+    }
+  ],
+  "reviewed_members": [
+    {
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+      "members": [
+        "makeCardPlayable(Game, Ability, Card, boolean, Duration, boolean)",
+        "makeCardPlayable(Game, Ability, Card, boolean, Duration, boolean, UUID, Condition)"
+      ]
+    }
+  ],
+  "oracle": [
+    {
+      "name": "Gonti, Night Minister",
+      "oracle_id": "e16f79c1-ffbb-4893-b62a-d4e9d15e2b16",
+      "oracle_text": "Whenever a player casts a spell they don't own, that player creates a Treasure token.\nWhenever a creature deals combat damage to one of your opponents, its controller looks at the top card of that opponent's library and exiles it face down. They may play that card for as long as it remains exiled. Mana of any type can be spent to cast a spell this way."
+    },
+    {
+      "name": "Wickerfolk Indomitable",
+      "oracle_id": "730d02c7-2f8a-47d3-99f0-e4ada7f6255c",
+      "oracle_text": "You may cast this card from your graveyard by paying 2 life and sacrificing an artifact or creature in addition to paying its other costs."
+    }
+  ],
+  "contracts": [
+    {
+      "obligation": "Actual creature-combat-damage dealer controller is the permanent look/play beneficiary, even after control changes or source/dealer departure",
+      "api": "Existing event_player frozen at damage trigger dispatch; ExileLibraryTopFaceDownPlay selectors DamagedPlayer and EventPlayer",
+      "test": "combat_exile_uses_frozen_dealer_controller_and_independent_permanent_private_permission"
+    },
+    {
+      "obligation": "Hidden exact exile permission survives source loss and turns, permits normal land play/timing or paid spells with any mana type, and never rebinds returned card",
+      "api": "Existing hidden rows, WhileExiled ExilePlayPermission, ordinary mana-quality purpose",
+      "tests": [
+        "combat_exile_uses_frozen_dealer_controller_and_independent_permanent_private_permission",
+        "hidden_land_permissions_use_normal_timing_and_one_shared_land_limit",
+        "combat_exile_rejects_noncombat_and_damage_to_observers_own_player"
+      ]
+    },
+    {
+      "obligation": "Look precedes attempted exile; prevented exile leaves private exact-top knowledge only for original beneficiary; no public-known-top mutation",
+      "api": "LibraryTopState.private_known_top optional owned record; information mask and canonical top-change/shuffle invalidation",
+      "test": "prevented_exile_retains_only_beneficiary_top_knowledge_with_owned_restore_and_invalidation",
+      "boundaries": [
+        "two-seat observations",
+        "raw/index branches, parent disposal, restore",
+        "actual top departure",
+        "new generation",
+        "shuffle",
+        "private Scry reorder retaining the same top"
+      ]
+    },
+    {
+      "obligation": "Intrinsic self-GY route pays printed mana plus2life and sacrifice artifact or creature",
+      "api": "SelfGraveyardCastWithAdditionalCosts fragment, GraveyardAdditionalCosts method, AnnounceGraveyardAdditionalCosts action, existing ordered Mana/Life/Additional transaction and projected completion",
+      "tests": [
+        "self_graveyard_route_charges_life_and_sacrifice_in_addition_to_printed_mana",
+        "route_funding_allows_tap_then_sacrifice_but_rejects_double_consumed_treasure",
+        "route_nonmana_costs_can_precede_mana_after_the_mana_window_is_closed"
+      ]
+    },
+    {
+      "obligation": "Costs attach to the permission route, not origin alone; ordinary hand and external GY cast do not pay them; no default exile replacement; ownership/timing/life/prohibition respected",
+      "tests": [
+        "normal_hand_and_external_graveyard_permission_never_inherit_intrinsic_route_costs",
+        "intrinsic_graveyard_route_rejects_wrong_owner_timing_life_and_sacrifice_legality",
+        "self_graveyard_route_charges_life_and_sacrifice_in_addition_to_printed_mana"
+      ]
+    }
+  ],
+  "validation": {
+    "cargo": "Not run by author: root owns guarded integrated validation",
+    "target": "dft_cast_permissions_engine",
+    "scenario_count": 9
+  },
+  "performance": "No new hot Object/SpellView/State fields. Damage controller uses existing optional event_player only for consumers. Private looked-top knowledge is a cold optional allocation under existing LibraryTopState. No powerset search or game clone in production query paths."
+}
