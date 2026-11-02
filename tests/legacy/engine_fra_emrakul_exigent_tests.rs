@@ -3,6 +3,7 @@ use super::*;
 fn emrakul_copy_ability_in_resolution(g: &mut Game, copier: &SpellView) {
     assert!(g.state.resolving.is_none());
     g.state.resolving = Some(Resolution {
+        chosen_card_name: None,
         chosen_creature_type: None,
         target_counter_removal: None,
         linked_copy: None,

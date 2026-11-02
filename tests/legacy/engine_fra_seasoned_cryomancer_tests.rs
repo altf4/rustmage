@@ -341,6 +341,7 @@ fn seasoned_copied_reflexive_preserves_target_limit_and_resolves_twice() {
             object: None,
         }];
         g.state.resolving = Some(Resolution {
+            chosen_card_name: None,
             chosen_creature_type: None,
             target_counter_removal: None,
             linked_copy: None,

@@ -1376,6 +1376,7 @@ fn fra_empower_scaled_zero_and_three() {
                 ]
             };
             g.state.resolving = Some(Resolution {
+                chosen_card_name: None,
                 proliferate: None,
                 chosen_creature_type: None,
                 target_counter_removal: None,

@@ -8325,6 +8325,7 @@ fn prior_schema179_inspects_hidden_delayed_return_and_earthbend_packets() {
                     source_card: packet.source.expect("object-backed packet").card,
                     controller: player,
                     returning: link,
+                    own_end_step: false,
                 };
                 g.state.delayed_returns = Some(Box::new(vec![return_links::DelayedReturn {
                     view,

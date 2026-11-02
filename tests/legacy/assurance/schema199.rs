@@ -2,6 +2,7 @@
 //! The prior-198 audit removes only derived entry-count metadata; meaningful
 //! histories, permissions, delayed effects and opaque transactions are rejected.
 use super::*;
+use crate::cards as card_rules;
 use serde::Serialize;
 
 const ENTRY_COUNT: &str = "mount_or_vehicle_entries_this_turn";
@@ -166,8 +167,8 @@ pub(super) fn project_prior_schema199(input: &str) -> Result<String, String> {
     Ok(remove_entry_count(input))
 }
 
-fn cast_filter_supported(filter: cards::CastFilter) -> bool {
-    use cards::CastFilter;
+fn cast_filter_supported(filter: card_rules::CastFilter) -> bool {
+    use card_rules::CastFilter;
     match filter {
         CastFilter::NotOwnedByCaster | CastFilter::CasterOffTurn { .. } => false,
         CastFilter::AnyOf(filters) => filters.iter().copied().all(cast_filter_supported),
@@ -233,10 +234,11 @@ fn amount_supported(value: AmountValue) -> bool {
         _ => true,
     }
 }
-fn guard_supported(guard: cards::StepGuard) -> bool {
+fn guard_supported(guard: card_rules::StepGuard) -> bool {
     match guard {
-        cards::StepGuard::YourMainPhase | cards::StepGuard::DeclaredAttackSubtypesAll(_) => false,
-        cards::StepGuard::Expression { value, .. } => stat_supported(value),
+        card_rules::StepGuard::YourMainPhase
+        | card_rules::StepGuard::DeclaredAttackSubtypesAll(_) => false,
+        card_rules::StepGuard::Expression { value, .. } => stat_supported(value),
         _ => true,
     }
 }
@@ -296,16 +298,16 @@ fn program_supported(program: &[Instruction]) -> bool {
         Instruction::Search(spec) => wire_supported(&spec),
         Instruction::SelectLibraryTo(effect)
         | Instruction::SelectLibraryThenMayTransform(effect) => {
-            !matches!(effect.look, cards::LibraryLook::UntilKindsCount { .. })
+            !matches!(effect.look, card_rules::LibraryLook::UntilKindsCount { .. })
                 && match effect.look {
-                    cards::LibraryLook::Amount(value) => amount_supported(value),
+                    card_rules::LibraryLook::Amount(value) => amount_supported(value),
                     _ => true,
                 }
                 && effect.maximum_mana_value.is_none_or(amount_supported)
                 && match effect.destination {
-                    cards::LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(value) => {
-                        amount_supported(value)
-                    }
+                    card_rules::LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(
+                        value,
+                    ) => amount_supported(value),
                     _ => true,
                 }
         }
