@@ -34,7 +34,7 @@ fn pure_exiler(card: Card) -> bool {
         && card.entry_counter_rules().is_empty()
         && card.entry_choice().is_none()
         && card.chosen_entry_counters().is_none()
-        && card.activated().iter().all(|ability| {
+        && card.activations().iter().all(|ability| {
             use crate::cards::{ActivationGuard, ActivationOrigin, EffectChoiceKind};
             ability.guard == ActivationGuard::Always
                 && ability.origin == ActivationOrigin::Battlefield
