@@ -343,6 +343,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceBorrowedAbility { .. }
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. }
+            | Action::AnnounceGrantedMana { .. }
+            | Action::AnnounceSelfGrantedMana { .. }
             | Action::AnnounceBorrowedMana { .. }
             | Action::AnnounceGraveyardBorrowedMana { .. } => -2,
             Action::PayCosts { .. }
