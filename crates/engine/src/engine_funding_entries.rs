@@ -319,6 +319,9 @@ impl FundingState<'_> {
                 steps::attached_controller_turn(self, source, self.active)
             }
             StepGuard::YourTurn => self.active == player,
+            StepGuard::YourMainPhase => {
+                self.active == player && matches!(self.game.state.step, Step::Main1 | Step::Main2)
+            }
             StepGuard::GainedLife => self.gained_life(player),
             StepGuard::ScriedOrSurveilledThisTurn => state.scried_or_surveilled_this_turn,
             StepGuard::LoyaltyAbilityActivatedThisTurn => state.loyalty_ability_activated_this_turn,

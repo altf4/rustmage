@@ -1,3 +1,4 @@
+use rustmage::Card;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 

@@ -190,6 +190,9 @@ pub mod crew;
 #[doc(hidden)]
 #[path = "engine_saddle.rs"]
 pub mod saddle;
+#[doc(hidden)]
+#[path = "engine_crew_participants.rs"]
+pub mod crew_participants;
 pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;

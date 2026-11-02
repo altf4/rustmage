@@ -543,6 +543,16 @@ impl Game {
             }
         }
     }
+    pub(super) fn animate_subject(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        spec: AnimationSpec,
+    ) {
+        for id in self.keyword_subjects(item, subject) {
+            self.change_object_form(self.object_ref(id), spec, AnimationTypeMode::AddCreature);
+        }
+    }
     pub(super) fn animate_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
         for target in &item.targets {
             if self.same_target_object(*target)

@@ -974,6 +974,7 @@ impl Game {
                     | TriggerCondition::ControlledEquippedCreatureAttacks
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
+                    | TriggerCondition::SelfCrewsOrSaddles
                     | TriggerCondition::SelfPaysTeamwork
                     | TriggerCondition::EquippedAttacks
                     | TriggerCondition::EquippedAttacksAlone
@@ -3423,6 +3424,7 @@ impl Game {
                 }
                 Instruction::Crew { .. } => self.resolve_crew(&item),
                 Instruction::BecomeSaddled { .. } => self.resolve_saddle(&item),
+                Instruction::MarkSaddled(subject) => self.mark_saddled_subject(&item, subject),
                 Instruction::AdditionalLandPlays(amount) => {
                     let granted =
                         &mut self.state.players[item.controller.index()].extra_land_plays_granted;
@@ -5512,6 +5514,9 @@ impl Game {
                     self.animate_source_with_ability_if_noncreature(&item, spec, kind)
                 }
                 Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),
+                Instruction::AnimateSubject { subject, spec } => {
+                    self.animate_subject(&item, subject, spec)
+                }
                 Instruction::AnimateNoncreatureTargets(spec) => {
                     self.animate_noncreature_targets(&item, spec)
                 }

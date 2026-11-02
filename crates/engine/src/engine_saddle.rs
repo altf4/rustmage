@@ -78,6 +78,21 @@ impl ActivatedAbility {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn crew_saddle_power(&self, card: CardId, subject: CardId, subtype: &str) -> i128 {
+        let uses_toughness = |fragment: &crate::cards::StaticAbilityFragment| {
+            matches!(
+                fragment,
+                crate::cards::StaticAbilityFragment::CrewSaddleWithToughness
+            )
+        };
+        if self.state.objects[card as usize]
+            .card
+            .static_ability_groups()
+            .iter()
+            .any(|group| group.fragments.iter().any(uses_toughness))
+            && self.continuous_fragment_available(card, uses_toughness)
+        {
+            return self.stats(card).toughness;
+        }
         let bonus = if self.has_subtype(subject, subtype)
             && self.keywords(card).contains(Keywords::CREW_SADDLE_PLUS_TWO)
         {
@@ -313,7 +328,12 @@ impl Game {
         self.finish_paid_saddle(a.item, f.selected);
     }
     pub(super) fn finish_paid_saddle(&mut self, item: SpellView, selected: Vec<ObjectRef>) {
+        let participants = self.capture_crew_saddle_participants(&selected);
         self.tap_objects(&selected.iter().map(|r| r.card).collect::<Vec<_>>());
+        self.queue_crew_saddle_participant_triggers(
+            participants,
+            item.source.expect("Saddle has an object source").object,
+        );
         self.state.priority = item.controller;
         self.push_stack_item(item);
         self.state.pending = Pending::Priority;
@@ -326,12 +346,23 @@ impl Game {
         if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
             return;
         }
-        let first = !self.is_saddled(source.object);
+        self.mark_saddled(source.object);
+    }
+    pub(super) fn mark_saddled_subject(&mut self, item: &SpellView, subject: Subject) {
+        for id in self.keyword_subjects(item, subject) {
+            self.mark_saddled(self.object_ref(id));
+        }
+    }
+    fn mark_saddled(&mut self, recipient: ObjectRef) {
+        if !self.on_battlefield(recipient.card) || self.object_ref(recipient.card) != recipient {
+            return;
+        }
+        let first = !self.is_saddled(recipient);
         if first {
-            self.state.saddled.push(source.object);
+            self.state.saddled.push(recipient);
         }
         if first {
-            let source = self.object_view(source.id);
+            let source = self.object_view(recipient.card);
             for (index, a) in source.card.triggers().iter().enumerate() {
                 if matches!(a.condition.event(), TriggerCondition::SelfSaddledFirst) {
                     self.queue_trigger(&source, index);

@@ -1694,6 +1694,8 @@ pub enum Instruction {
     BecomeSaddled {
         minimum: u16,
     },
+    /// A resolving designation, independent of any Saddle ability or payment.
+    MarkSaddled(Subject),
     ExileTopChoosePlay {
         amount: u16,
         next_turn: bool,
@@ -2075,6 +2077,11 @@ pub enum Instruction {
         kind: crate::engine::SelfGrantedAbilityKind,
     },
     AnimateTargets(AnimationSpec),
+    /// Animate an exact non-targeted entrant, source, attachment or legal target.
+    AnimateSubject {
+        subject: Subject,
+        spec: AnimationSpec,
+    },
     AnimateNoncreatureTargets(AnimationSpec),
     /// Add artifact without also granting creature or changing other characteristics.
     AddArtifactToTargets,
@@ -3834,6 +3841,7 @@ pub enum StepGuard {
     OpponentControlsMoreCreatures,
     SourceReceivedCounterThisTurn,
     YourTurn,
+    YourMainPhase,
     SourcePowerAtLeast(u16),
     SourceCreature,
     SourceToughnessAtMost(u16),
@@ -3996,6 +4004,8 @@ pub enum TriggerCondition {
     SelfAttacksWhileSaddled,
     SelfEntersOrAttacksWhileSaddled,
     SelfSaddledFirst,
+    /// This creature was tapped to pay a committed Crew or Saddle cost.
+    SelfCrewsOrSaddles,
     SelfPaysTeamwork,
     /// A paid promise belongs to this actual cast-to-battlefield entry event.
     SelfGiftEnters,

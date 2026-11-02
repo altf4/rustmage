@@ -341,12 +341,17 @@ impl Game {
                 history.push(r)
             }
         }
+        let participants = self.capture_crew_saddle_participants(&context.contributors);
         self.tap_objects(
             &context
                 .contributors
                 .iter()
                 .map(|r| r.card)
                 .collect::<Vec<_>>(),
+        );
+        self.queue_crew_saddle_participant_triggers(
+            participants,
+            item.source.expect("Crew has an object source").object,
         );
         item.crew = Some(Box::new(context));
         self.state.priority = item.controller;
