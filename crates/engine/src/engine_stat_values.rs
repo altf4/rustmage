@@ -569,6 +569,9 @@ impl Game {
             AmountValue::ControllerHandDeficit(n) => {
                 u128::from(n).saturating_sub(self.hand_count(owner) as u128)
             }
+            AmountValue::SourceTotalCounters => self
+                .stat_value(StatValue::SourceTotalCounters, source, owner)
+                .max(0) as u128,
             AmountValue::SourceCounterQuantity(kind) => {
                 u128::from(self.source_counter_quantity_live(source, kind).unwrap_or(0))
             }

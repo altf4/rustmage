@@ -1,5 +1,6 @@
 //! Resolution effects whose followups depend on legal choices or actual outcomes.
 use super::*;
+use crate::cards::{CostAction, CostMatch};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
