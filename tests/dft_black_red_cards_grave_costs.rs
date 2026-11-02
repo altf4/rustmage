@@ -39,6 +39,24 @@ fn additional(g: &mut Game, id: CardId) {
     let object = g.object_ref(id);
     act(g, Action::ChooseAdditionalCost { object });
 }
+fn pay_intrinsic_route(g: &mut Game, material: CardId) {
+    for _ in 0..8 {
+        if g.state.announcing.is_none() {
+            return;
+        }
+        match g.state.pending {
+            Pending::PayCosts { .. } => pay(g),
+            Pending::CastCosts { .. } => {
+                let costs = g.observe(g.actor().unwrap()).cast_costs.unwrap();
+                let clause = costs.clauses.iter().position(|r| !r.paid).unwrap() as u16;
+                act(g, Action::ChooseCastCost { clause });
+            }
+            Pending::AdditionalCost { .. } => additional(g, material),
+            _ => panic!("unexpected intrinsic route phase {:?}", g.state.pending),
+        }
+    }
+    panic!("intrinsic route payment bound");
+}
 fn pilots(g: &Game, p: Player) -> Vec<CardId> {
     g.state
         .objects
@@ -302,8 +320,7 @@ fn wickerfolk_intrinsic_graveyard_route_pays_life_and_either_material_then_dies_
             let cost = put(&mut g, p, name, Zone::Battlefield);
             g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 3];
             act(&mut g, route);
-            additional(&mut g, cost);
-            pay(&mut g);
+            pay_intrinsic_route(&mut g, cost);
             assert_eq!(g.state.players[p.index()].life, 18);
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
             assert_eq!(g.object_view(cost).zone, Zone::Graveyard);
@@ -369,7 +386,6 @@ fn wickerfolk_route_rejects_bad_life_timing_and_owner_and_keeps_paid_owned_branc
         Action::AnnounceGraveyardAdditionalCosts { card: foreign },
     );
     act(&mut g, route);
-    additional(&mut g, cost);
     let saved = g.snapshot();
     let mut raw = g.clone();
     let mut indexed = g.clone();
@@ -389,6 +405,8 @@ fn wickerfolk_route_rejects_bad_life_timing_and_owner_and_keeps_paid_owned_branc
     indexed.restore(&saved).unwrap();
     drop(g);
     pay(&mut indexed);
+    pay_intrinsic_route(&mut raw, cost);
+    pay_intrinsic_route(&mut indexed, cost);
     drain(&mut raw);
     drain(&mut indexed);
     assert_eq!(raw.snapshot(), indexed.snapshot());
