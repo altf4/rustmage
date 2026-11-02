@@ -6,6 +6,9 @@ use crate::cards as card_rules;
 use serde::Serialize;
 
 const ENTRY_COUNT: &str = "mount_or_vehicle_entries_this_turn";
+// This slot was unused in schema 198. Keep the historical wire value explicit:
+// the acquired row is removed by the exile cost before its packet resolves.
+const NEW_EMBALM_ACTIVATION: u16 = 65_526;
 const NEW_FIELDS: &[&str] = &[
     "after_main_combats",
     "delayed_begin_combat",
@@ -22,6 +25,13 @@ const NEW_FIELDS: &[&str] = &[
     "own_end_step",
     "to_hand",
     "entry_copy",
+    "entry_exile",
+    "embalm_abilities",
+    "retained_activation",
+    "retained_link_origin",
+    "ability_origin",
+    "embalm",
+    "zombie",
 ];
 const NEW_VARIANTS: &[&str] = &[
     "FinishAdditionalCostGroup",
@@ -29,6 +39,10 @@ const NEW_VARIANTS: &[&str] = &[
     "AnnounceGrantedMana",
     "AnnounceSelfGrantedMana",
     "ChooseEntryCopy",
+    "ChooseEntryExile",
+    "FinishEntryExile",
+    "AnnounceRetainedCopyAbility",
+    "AnnounceEmbalm",
     "GraveyardAdditionalCosts",
     "NthFromTop",
     "NonlandCardName",
@@ -46,6 +60,7 @@ const NEW_VARIANTS: &[&str] = &[
     "ControlAndCombatLockWhileControlled",
     "card_name",
     "entry_copy",
+    "entry_exile",
 ];
 
 fn check(value: &serde_json::Value) -> Result<(), String> {
@@ -67,6 +82,12 @@ fn check(value: &serde_json::Value) -> Result<(), String> {
                 && fields.contains_key("inspected_cards")
             {
                 return Err("private hand inspection has no schema 198 representation".into());
+            }
+            if fields.get("ActivatedAbility").is_some_and(|kind| {
+                kind.get("ability").and_then(serde_json::Value::as_u64)
+                    == Some(u64::from(NEW_EMBALM_ACTIVATION))
+            }) {
+                return Err("acquired embalm activation has no schema 198 representation".into());
             }
             for (key, value) in fields {
                 if NEW_FIELDS.contains(&key.as_str()) || NEW_VARIANTS.contains(&key.as_str()) {
@@ -244,7 +265,13 @@ fn guard_supported(guard: card_rules::StepGuard) -> bool {
 }
 fn target_supported(rule: TargetRule) -> bool {
     match rule {
-        TargetRule::YourSpell => false,
+        TargetRule::YourSpell | TargetRule::LinkedExileCreature { .. } => false,
+        TargetRule::Union(rules) => rules.iter().copied().all(target_supported),
+        TargetRule::Grouped { base, .. } => target_supported(*base),
+        TargetRule::ManaValueExactly { base, amount, .. }
+        | TargetRule::ManaValueAtMost { base, amount, .. } => {
+            target_supported(*base) && amount_supported(amount)
+        }
         TargetRule::Filtered { base, predicate } => {
             *predicate != TargetPredicate::NoAbilities && target_supported(*base)
         }
@@ -257,100 +284,230 @@ fn plan_supported(plan: TargetPlan) -> bool {
         TargetPlan::Groups(groups) => groups.iter().all(|spec| target_supported(spec.rule)),
     }
 }
+fn resolved_stat_supported(value: card_rules::ResolvedStatValue) -> bool {
+    match value {
+        card_rules::ResolvedStatValue::SourcePower => false,
+        card_rules::ResolvedStatValue::Stat(value)
+        | card_rules::ResolvedStatValue::Threshold { value, .. } => stat_supported(value),
+        _ => true,
+    }
+}
+fn player_supported(player: card_rules::PlayerSet) -> bool {
+    !matches!(player, card_rules::PlayerSet::SpeedBelow(_))
+}
+fn instruction_players_supported(instruction: Instruction) -> bool {
+    match instruction {
+        Instruction::EnsureGoblinArmyFor(player)
+        | Instruction::LoseLifeTargetCardManaValue(player)
+        | Instruction::LoseHalfLife(player)
+        | Instruction::LoseGame(player)
+        | Instruction::LoseGainedLife(player)
+        | Instruction::DamageDiscardAmount(player)
+        | Instruction::DiscardHand(player)
+        | Instruction::DiscardHandRememberCount(player)
+        | Instruction::ExileAttackingCreatures(player)
+        | Instruction::RevealUntilLandToGraveyard(player)
+        | Instruction::UntapPlayerCreatures(player)
+        | Instruction::ExileGraveyard(player)
+        | Instruction::DrawPowerOfTwoChosenX(player)
+        | Instruction::DiscardScaled(player, _)
+        | Instruction::AddPoison(player, _)
+        | Instruction::Mill(player, _)
+        | Instruction::DamagePlayers(player, _)
+        | Instruction::EventObjectDamagePlayers(player, _)
+        | Instruction::DamagePlayersScaled(player, _)
+        | Instruction::Draw(player, _)
+        | Instruction::DrawScaled(player, _)
+        | Instruction::Discard(player, _)
+        | Instruction::DiscardRandom(player, _)
+        | Instruction::GainLife(player, _)
+        | Instruction::GainLifeScaled(player, _)
+        | Instruction::LoseLife(player, _)
+        | Instruction::LoseLifeScaled(player, _)
+        | Instruction::AmassGoblinsScaled { player, .. }
+        | Instruction::CreateCopyTokenForPlayer { player, .. }
+        | Instruction::MayPlayer { player, .. }
+        | Instruction::GainControl {
+            controller: player, ..
+        }
+        | Instruction::ExileTopLibrary {
+            players: player, ..
+        }
+        | Instruction::DiscardAnyDraw {
+            players: player, ..
+        }
+        | Instruction::ReturnGraveyardCreatures {
+            players: player, ..
+        }
+        | Instruction::DiscardThenPutLand {
+            players: player, ..
+        }
+        | Instruction::PutPlayerCountersWithSelf {
+            players: player, ..
+        }
+        | Instruction::ChooseObjects {
+            players: player, ..
+        }
+        | Instruction::CreateTokensFor {
+            players: player, ..
+        }
+        | Instruction::PutPlayerCreatureCounters {
+            players: player, ..
+        }
+        | Instruction::GrowPlayerCreatures {
+            players: player, ..
+        } => player_supported(player),
+        Instruction::ReturnBattlefield { players, .. }
+        | Instruction::DamageBattlefield { players, .. }
+        | Instruction::DamageBattlefieldExceptSubtype { players, .. } => {
+            players.is_none_or(player_supported)
+        }
+        // The other player-bearing variants are new instructions rejected below.
+        _ => true,
+    }
+}
 fn program_supported(program: &[Instruction]) -> bool {
-    program.iter().all(|instruction| match *instruction {
-        Instruction::ExertCost
-        | Instruction::ExileLibraryTopFaceDownPlay { .. }
-        | Instruction::ChooseCardName { .. }
-        | Instruction::ExileTargetNamedCards { .. }
-        | Instruction::DelayTargetEvent { .. }
-        | Instruction::CopyNextExhaustAbility { .. }
-        | Instruction::DiscardUpToDraw { .. }
-        | Instruction::OpponentSacrificeIfAbleElseDiscard { .. }
-        | Instruction::DestroyTargetsAtMostManaValue(..)
-        | Instruction::DestroyTargetsThenSourceCountersIfOwnCreature { .. }
-        | Instruction::AdditionalCombatsAfterCurrentMain(..)
-        | Instruction::ScheduleBeginCombatThisTurn { .. }
-        | Instruction::UntapCreaturesThatAttackedThisTurn
-        | Instruction::MarkSaddled(..)
-        | Instruction::DecreaseLeadingSpeed { .. }
-        | Instruction::LookTargetHandMayDiscardThenDraw
-        | Instruction::AddManaChosenScaled { .. }
-        | Instruction::IfSacrificedVehicle { .. }
-        | Instruction::AnimateSubject { .. }
-        | Instruction::SearchScaled { .. }
-        | Instruction::SearchLibraryAndOrGraveyardToHand(..)
-        | Instruction::CaptureEntryResult
-        | Instruction::AnimateEntryResultIfSubtype { .. }
-        | Instruction::PutEntryResultCountersIfKinds { .. }
-        | Instruction::GrantEntryResultKeywords { .. }
-        | Instruction::ScheduleEntryResultExile { .. }
-        | Instruction::ReturnGraveyardWithDelayedSacrifice(..)
-        | Instruction::AnimatePermanentGroup { .. }
-        | Instruction::IfAmountParity { .. }
-        | Instruction::UntapPermanentGroup(..)
-        | Instruction::GrantCounterBearingCreatures(..)
-        | Instruction::RemovePermanentGroupKeywords { .. }
-        | Instruction::SetPermanentGroupBaseStats { .. }
-        | Instruction::OwnerLibraryNthFromTop(..)
-        | Instruction::GainControlAndPreventCombatWhileSourceControlled
-        | Instruction::CreateTokensAttackThisCombat { .. } => false,
-        Instruction::Search(spec) => wire_supported(&spec),
-        Instruction::SelectLibraryTo(effect)
-        | Instruction::SelectLibraryThenMayTransform(effect) => {
-            !matches!(effect.look, card_rules::LibraryLook::UntilKindsCount { .. })
-                && match effect.look {
-                    card_rules::LibraryLook::Amount(value) => amount_supported(value),
-                    _ => true,
-                }
-                && effect.maximum_mana_value.is_none_or(amount_supported)
+    program.iter().all(|instruction| {
+        instruction_players_supported(*instruction) && match *instruction {
+            Instruction::GrantEmbalmTargets
+            | Instruction::CreateEmbalmedSourceCopy
+            | Instruction::CopySourceFromLinkedExile { .. }
+            | Instruction::ExertCost
+            | Instruction::ExileLibraryTopFaceDownPlay { .. }
+            | Instruction::ChooseCardName { .. }
+            | Instruction::ExileTargetNamedCards { .. }
+            | Instruction::DelayTargetEvent { .. }
+            | Instruction::CopyNextExhaustAbility { .. }
+            | Instruction::DiscardUpToDraw { .. }
+            | Instruction::OpponentSacrificeIfAbleElseDiscard { .. }
+            | Instruction::DestroyTargetsAtMostManaValue(..)
+            | Instruction::DestroyTargetsThenSourceCountersIfOwnCreature { .. }
+            | Instruction::AdditionalCombatsAfterCurrentMain(..)
+            | Instruction::ScheduleBeginCombatThisTurn { .. }
+            | Instruction::UntapCreaturesThatAttackedThisTurn
+            | Instruction::MarkSaddled(..)
+            | Instruction::DecreaseLeadingSpeed { .. }
+            | Instruction::LookTargetHandMayDiscardThenDraw
+            | Instruction::AddManaChosenScaled { .. }
+            | Instruction::IfSacrificedVehicle { .. }
+            | Instruction::AnimateSubject { .. }
+            | Instruction::SearchScaled { .. }
+            | Instruction::SearchLibraryAndOrGraveyardToHand(..)
+            | Instruction::CaptureEntryResult
+            | Instruction::AnimateEntryResultIfSubtype { .. }
+            | Instruction::PutEntryResultCountersIfKinds { .. }
+            | Instruction::GrantEntryResultKeywords { .. }
+            | Instruction::ScheduleEntryResultExile { .. }
+            | Instruction::ReturnGraveyardWithDelayedSacrifice(..)
+            | Instruction::AnimatePermanentGroup { .. }
+            | Instruction::IfAmountParity { .. }
+            | Instruction::UntapPermanentGroup(..)
+            | Instruction::GrantCounterBearingCreatures(..)
+            | Instruction::RemovePermanentGroupKeywords { .. }
+            | Instruction::SetPermanentGroupBaseStats { .. }
+            | Instruction::OwnerLibraryNthFromTop(..)
+            | Instruction::GainControlAndPreventCombatWhileSourceControlled
+            | Instruction::CreateTokensAttackThisCombat { .. } => false,
+            Instruction::Search(spec) | Instruction::SearchDifferentNames(spec) => {
+                wire_supported(&spec)
+            }
+            Instruction::ChooseHalf { kind } | Instruction::ChooseObjects { kind, .. } => {
+                wire_supported(&kind)
+            }
+            Instruction::PutHandFiltered { filter, .. }
+            | Instruction::PutHandAndAttachEquipment { filter }
+            | Instruction::SearchHandAndOrLibrary(filter)
+            | Instruction::SearchLibraryAndGraveyardWithXCounters { filter, .. } => {
+                wire_supported(&filter)
+            }
+            Instruction::CopyTargetSpell { exceptions, .. }
+            | Instruction::CreateCopyTokenWithExceptions { exceptions, .. }
+            | Instruction::CreateCounteredCopyToken { exceptions, .. } => {
+                wire_supported(&exceptions)
+            }
+            Instruction::SetResolvedBaseStats {
+                power, toughness, ..
+            } => {
+                power.is_none_or(resolved_stat_supported)
+                    && toughness.is_none_or(resolved_stat_supported)
+            }
+            Instruction::GrowResolved { value, .. } => resolved_stat_supported(value),
+            Instruction::SelectLibraryTo(effect)
+            | Instruction::SelectLibraryThenMayTransform(effect) => !matches!(
+                effect.look,
+                card_rules::LibraryLook::UntilKindsCount { .. }
+            ) && match effect.look {
+                card_rules::LibraryLook::Amount(value) => amount_supported(value),
+                _ => true,
+            } && effect
+                .maximum_mana_value
+                .is_none_or(amount_supported)
                 && match effect.destination {
                     card_rules::LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(
                         value,
                     ) => amount_supported(value),
                     _ => true,
-                }
+                },
+            Instruction::EmpowerJaceScaled(value)
+            | Instruction::AmassGoblinsScaled { amount: value, .. }
+            | Instruction::ExileTopPlayScaled { amount: value, .. }
+            | Instruction::ExileTopLibrary { amount: value, .. }
+            | Instruction::PutHandPermanent { maximum: value, .. }
+            | Instruction::DamageForExcess(value)
+            | Instruction::ExileTargetLibraryPlayLife { amount: value }
+            | Instruction::ReturnGraveyardManaValue { value, .. }
+            | Instruction::DestroyManaValue { maximum: value, .. }
+            | Instruction::DamagePlayersScaled(_, value)
+            | Instruction::RemoveAbilitiesThenDestroyCreaturesManaAtMost(value)
+            | Instruction::Proliferate(value)
+            | Instruction::CreateTokensWithTemporaryKeywords { amount: value, .. }
+            | Instruction::UpToTargets(value)
+            | Instruction::IfAmountAtLeast { value, .. }
+            | Instruction::PutLandCards { maximum: value, .. }
+            | Instruction::DiscardScaled(_, value)
+            | Instruction::AddCastEntryCounters { amount: value, .. }
+            | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
+            | Instruction::SetCreatureForm { base: value, .. }
+            | Instruction::MoveCountersFromSource { amount: value, .. }
+            | Instruction::RevealTargetHandSubsetDiscard(value)
+            | Instruction::DrawScaled(_, value)
+            | Instruction::GainLifeScaled(_, value)
+            | Instruction::LoseLifeScaled(_, value)
+            | Instruction::DrainLifeScaled(value)
+            | Instruction::LoseOpponentGainSame(value)
+            | Instruction::DamageScaled(value)
+            | Instruction::AddColorlessScaled(value)
+            | Instruction::AddManaScaled { amount: value, .. }
+            | Instruction::AddCombatRedScaled(value)
+            | Instruction::Mobilize { amount: value, .. }
+            | Instruction::CounterUnlessPayScaled { amount: value, .. }
+            | Instruction::PutCountersScaled { amount: value, .. }
+            | Instruction::PutPermanentCountersScaled { amount: value, .. }
+            | Instruction::GrowScaled { amount: value, .. }
+            | Instruction::GrowCreaturesScaled { amount: value, .. }
+            | Instruction::GrowPermanentGroupScaled { amount: value, .. }
+            | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateTokensWithCounters {
+                counters: value, ..
+            } => amount_supported(value),
+            Instruction::Modal(modes)
+            | Instruction::ModalOnce(modes)
+            | Instruction::ModalOncePerTurn(modes)
+            | Instruction::ModalUpToX { modes, .. } => modes
+                .iter()
+                .all(|mode| plan_supported(mode.targets) && program_supported(mode.program)),
+            _ => true,
         }
-        Instruction::UpToTargets(value)
-        | Instruction::IfAmountAtLeast { value, .. }
-        | Instruction::PutLandCards { maximum: value, .. }
-        | Instruction::DiscardScaled(_, value)
-        | Instruction::AddCastEntryCounters { amount: value, .. }
-        | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
-        | Instruction::SetCreatureForm { base: value, .. }
-        | Instruction::MoveCountersFromSource { amount: value, .. }
-        | Instruction::RevealTargetHandSubsetDiscard(value)
-        | Instruction::DrawScaled(_, value)
-        | Instruction::GainLifeScaled(_, value)
-        | Instruction::LoseLifeScaled(_, value)
-        | Instruction::DrainLifeScaled(value)
-        | Instruction::LoseOpponentGainSame(value)
-        | Instruction::DamageScaled(value)
-        | Instruction::AddColorlessScaled(value)
-        | Instruction::AddManaScaled { amount: value, .. }
-        | Instruction::AddCombatRedScaled(value)
-        | Instruction::Mobilize { amount: value, .. }
-        | Instruction::CounterUnlessPayScaled { amount: value, .. }
-        | Instruction::PutCountersScaled { amount: value, .. }
-        | Instruction::PutPermanentCountersScaled { amount: value, .. }
-        | Instruction::GrowScaled { amount: value, .. }
-        | Instruction::GrowCreaturesScaled { amount: value, .. }
-        | Instruction::GrowPermanentGroupScaled { amount: value, .. }
-        | Instruction::CreateTokensScaled { amount: value, .. }
-        | Instruction::CreateTokensWithCounters {
-            counters: value, ..
-        } => amount_supported(value),
-        Instruction::Modal(modes)
-        | Instruction::ModalOnce(modes)
-        | Instruction::ModalOncePerTurn(modes)
-        | Instruction::ModalUpToX { modes, .. } => {
-            modes.iter().all(|mode| program_supported(mode.program))
-        }
-        _ => true,
     })
 }
 fn packet_supported(item: &SpellView) -> bool {
-    if !wire_supported(item) {
+    if matches!(
+        item.kind,
+        StackKind::ActivatedAbility {
+            ability: NEW_EMBALM_ACTIVATION
+        }
+    ) || !wire_supported(item)
+    {
         return false;
     }
     let trigger = match item.kind {
@@ -391,10 +548,17 @@ fn packet_supported(item: &SpellView) -> bool {
 /// copied entry decisions, mana ancestors or rollback checkpoints. Do not infer
 /// eligibility from a matching public view after erasing those continuations.
 pub(super) fn prior_schema199_state_supported(state: &State) -> bool {
-    if state
-        .players
-        .iter()
-        .any(|player| player.turn_facts.exhaust_activated_this_turn)
+    if matches!(
+        state.pending,
+        Pending::EntryCopy { .. } | Pending::EntryExile { .. } | Pending::CardName { .. }
+    ) || state
+        .embalm_abilities
+        .as_ref()
+        .is_some_and(|rows| !rows.is_empty())
+        || state
+            .players
+            .iter()
+            .any(|player| player.turn_facts.exhaust_activated_this_turn)
         || state
             .exertions
             .as_ref()
@@ -434,10 +598,14 @@ pub(super) fn prior_schema199_state_supported(state: &State) -> bool {
             .crew
             .as_ref()
             .is_some_and(|crew| crew.payment.is_some())
-        || state
-            .linked_choices
-            .as_ref()
-            .is_some_and(|choices| choices.has_opaque_interaction())
+        || state.linked_choices.as_ref().is_some_and(|choices| {
+            choices.has_opaque_interaction()
+                || choices.links.iter().any(|row| row.ability_origin.is_some())
+                || choices
+                    .null_cast_links
+                    .iter()
+                    .any(|row| row.ability_origin.is_some())
+        })
         || state.roles.as_ref().is_some_and(|roles| {
             roles
                 .source_linked_effects
@@ -458,10 +626,7 @@ pub(super) fn prior_schema199_state_supported(state: &State) -> bool {
                 row.original_recipe
                     .as_ref()
                     .is_some_and(|recipe| !wire_supported(recipe))
-                    || row
-                        .layers
-                        .iter()
-                        .any(|layer| !wire_supported(&layer.value.recipe))
+                    || row.layers.iter().any(|layer| !wire_supported(&layer.value))
             })
         })
         || state
@@ -689,4 +854,296 @@ fn prior_198_rejects_copied_choice_origins_after_the_entry_phase_ends() {
     assert!(!prior_schema199_state_supported(&branch.state));
     branch.restore(&saved).unwrap();
     assert!(prior_schema199_state_supported(&branch.state));
+}
+
+#[test]
+fn prior_198_preserves_neutral_copy_bytes_and_rejects_final_copy_properties() {
+    let recipe = CopyRecipe::new(Card::GrizzlyBears);
+    for bytes in [
+        serde_json::to_string(&recipe).unwrap(),
+        serde_json::to_string(&CopyTypes::default()).unwrap(),
+    ] {
+        assert_eq!(project_prior_schema199(&bytes).unwrap(), bytes);
+        for field in ["embalm", "zombie", "retained_activation"] {
+            assert!(!bytes.contains(&format!("\"{field}\"")));
+        }
+    }
+    for exceptions in [
+        CopyExceptions {
+            embalm: true,
+            ..CopyExceptions::NONE
+        },
+        CopyExceptions {
+            retained_activation: Some(card_rules::RetainedCopyActivation {
+                definition: Card::GrizzlyBears,
+                ability: 0,
+            }),
+            ..CopyExceptions::NONE
+        },
+    ] {
+        assert!(!wire_supported(&recipe.with_exceptions(exceptions)));
+    }
+    assert!(!wire_supported(&CopyTypes {
+        zombie: true,
+        ..CopyTypes::default()
+    }));
+}
+
+#[test]
+fn prior_198_rejects_final_actions_and_paid_embalm_slot_without_live_acquisition() {
+    let mut game = scenario(Player::P0);
+    let card = put(&mut game, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    let source = game.object_ref(card);
+    for action in [
+        Action::ChooseEntryExile { object: source },
+        Action::FinishEntryExile,
+        Action::AnnounceRetainedCopyAbility { source },
+        Action::AnnounceEmbalm {
+            source,
+            acquisition: 7,
+        },
+    ] {
+        assert!(!wire_supported(&action), "{action:?}");
+    }
+    assert_eq!(card_rules::activation_slots::EMBALM, NEW_EMBALM_ACTIVATION);
+    let packet = game.activation_packet(Player::P0, card, NEW_EMBALM_ACTIVATION);
+    game.move_object(card, Zone::Exile);
+    assert!(game.state.embalm_abilities.is_none());
+    assert!(prior_schema199_state_supported(&game.state));
+    assert!(!wire_supported(&packet));
+    assert!(!packet_supported(&packet));
+    let clean = game.snapshot();
+    // Paid packets can outlive the graveyard row in every retained packet family.
+    game.state.stack.push(packet.clone());
+    assert!(!prior_schema199_state_supported(&game.state));
+    game.restore(&clean).unwrap();
+    game.state.pending_triggers.push(packet.clone());
+    assert!(!prior_schema199_state_supported(&game.state));
+    game.restore(&clean).unwrap();
+    game.state.delayed_artifact_copies = Some(Box::new(vec![packet]));
+    let mut branch = game.clone();
+    drop(game);
+    assert!(!prior_schema199_state_supported(&branch.state));
+    branch.restore(&clean).unwrap();
+    assert!(prior_schema199_state_supported(&branch.state));
+}
+
+#[test]
+fn prior_198_rejects_owned_embalm_history_even_when_no_current_view_exposes_it() {
+    let mut game = scenario(Player::P0);
+    let card = put(&mut game, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    let clean = game.snapshot();
+    let object = game.object_ref(card);
+    let turn = game.state.turn;
+    game.state
+        .embalm_abilities
+        .get_or_insert_default()
+        .push(EmbalmAbilityView {
+            object,
+            acquisition: 11,
+            expires_turn: turn,
+        });
+    for viewer in [Player::P0, Player::P1] {
+        let view = game.observe(viewer);
+        assert!(view.embalm_abilities.is_some());
+        assert!(!wire_supported(&view));
+    }
+    assert!(!prior_schema199_state_supported(&game.state));
+    game.state.turn = turn.checked_add(1).unwrap();
+    assert!(game.observe(Player::P0).embalm_abilities.is_none());
+    let mut branch = game.clone();
+    drop(game);
+    assert!(!prior_schema199_state_supported(&branch.state));
+    branch.restore(&clean).unwrap();
+    assert!(prior_schema199_state_supported(&branch.state));
+}
+
+#[test]
+fn prior_198_rejects_idle_link_origins_and_lower_layer_retained_origins() {
+    let mut game = scenario(Player::P0);
+    let card = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let exiled = put(&mut game, Player::P0, "Hill Giant", Zone::Exile);
+    let source = game.object_ref(card);
+    let exiled = game.object_ref(exiled);
+    game.state
+        .linked_choices
+        .get_or_insert_default()
+        .links
+        .push(linked_choices::LinkedExileView {
+            source,
+            exiled,
+            ability_origin: None,
+        });
+    assert!(prior_schema199_state_supported(&game.state));
+    let old = serde_json::to_string(&game.observe(Player::P0)).unwrap();
+    assert_eq!(project_prior_schema199(&old).unwrap(), old);
+    let linked = game.snapshot();
+    game.state.linked_choices.as_mut().unwrap().links[0].ability_origin = Some(19);
+    assert!(!prior_schema199_state_supported(&game.state));
+    game.restore(&linked).unwrap();
+    game.state
+        .linked_choices
+        .as_mut()
+        .unwrap()
+        .null_cast_links
+        .push(linked_choices::NullCastLink {
+            source,
+            exiled,
+            ability_origin: Some(23),
+        });
+    assert!(!prior_schema199_state_supported(&game.state));
+    game.restore(&linked).unwrap();
+    game.apply_temporary_copy(
+        source,
+        CopyRecipe::new(Card::SavannahLions),
+        CopyDeadline::EndOfTurn,
+    );
+    game.apply_temporary_copy(
+        source,
+        CopyRecipe::new(Card::HillGiant),
+        CopyDeadline::EndOfTurn,
+    );
+    assert!(prior_schema199_state_supported(&game.state));
+    let plain = game.snapshot();
+    // Some(None) is meaningful: the retained template belongs to the printed acquisition.
+    game.state.temporary_copies.as_mut().unwrap()[0].layers[0]
+        .value
+        .retained_link_origin = Some(temporary_copy::RetainedActivationOrigin {
+        ability_origin: None,
+    });
+    let mut branch = game.clone();
+    drop(game);
+    assert!(!prior_schema199_state_supported(&branch.state));
+    branch.restore(&plain).unwrap();
+    assert!(prior_schema199_state_supported(&branch.state));
+    branch.state.temporary_copies.as_mut().unwrap()[0].original_recipe = Some(
+        CopyRecipe::new(Card::GrizzlyBears).with_exceptions(CopyExceptions {
+            embalm: true,
+            ..CopyExceptions::NONE
+        }),
+    );
+    assert!(!prior_schema199_state_supported(&branch.state));
+    branch.restore(&plain).unwrap();
+    branch.set_copy_recipe(
+        source,
+        CopyRecipe::new(Card::HillGiant).with_exceptions(CopyExceptions {
+            embalm: true,
+            ..CopyExceptions::NONE
+        }),
+    );
+    assert!(!prior_schema199_state_supported(&branch.state));
+}
+
+#[test]
+fn prior_198_rejects_active_and_suspended_mana_output_receipts_after_owned_restore() {
+    use card_rules::authored::CardRules;
+    const RULES: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost::ZERO,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::TapSourcePowerChoice {
+                mask: 31,
+            })],
+            sorcery: false,
+            once_per_turn: false,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = card_rules::fixture_rules::activate(&[(Card::GrizzlyBears, &RULES)]);
+    let mut game = scenario(Player::P0);
+    let card = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let clean = game.snapshot();
+    let item = game.activation_packet(Player::P0, card, 0);
+    let mut a = game.payment_announcement(item, Counters::default(), Some([0; 6]), None);
+    let output = a
+        .mana_output
+        .as_mut()
+        .expect("dynamic mana recipe retained");
+    assert!(output.choice.is_none());
+    output.resume = Some(Box::new(Pending::Priority));
+    game.state.announcing = Some(a);
+    game.state.pending = Pending::EffectMana {
+        player: Player::P0,
+        production: ManaProduction::any_color(2),
+        recipients: [true, false],
+    };
+    let active = game.snapshot();
+    let mut branch = game.clone();
+    drop(game);
+    assert!(!prior_schema199_state_supported(&branch.state));
+    branch.restore(&clean).unwrap();
+    assert!(prior_schema199_state_supported(&branch.state));
+    branch.restore(&active).unwrap();
+    let a = branch.state.announcing.take().unwrap();
+    branch.state.mana_announcement_stack =
+        Some(Box::new(vec![mana_announcements::ManaAnnouncement {
+            announcement: a,
+            pending: Pending::PayCosts { player: Player::P0 },
+            quality: None,
+        }]));
+    branch.state.pending = Pending::Priority;
+    assert!(branch.state.announcing.is_none());
+    let suspended = branch.snapshot();
+    assert!(!prior_schema199_state_supported(&branch.state));
+    branch.restore(&clean).unwrap();
+    branch.restore(&suspended).unwrap();
+    assert!(!prior_schema199_state_supported(&branch.state));
+}
+
+#[test]
+fn prior_198_rejects_new_semantics_nested_in_inherited_typed_continuations() {
+    assert!(!target_supported(TargetRule::Union(&[
+        TargetRule::Grouped {
+            base: &TargetRule::LinkedExileCreature {
+                ability_origin: Some(None)
+            },
+            constraint: TargetGroupConstraint::DifferentControllers,
+        }
+    ])));
+    for program in [
+        &[Instruction::GrantEmbalmTargets][..],
+        &[Instruction::CreateEmbalmedSourceCopy][..],
+        &[Instruction::CopySourceFromLinkedExile { base: (0, 0) }][..],
+        &[Instruction::Draw(PlayerSet::SpeedBelow(4), 1)][..],
+        &[Instruction::DamagePlayersScaled(
+            PlayerSet::Controller,
+            AmountValue::DiscardEventAmount,
+        )][..],
+        &[Instruction::GrowResolved {
+            subject: Subject::Source,
+            value: ResolvedStatValue::SourcePower,
+            power: 1,
+            toughness: 1,
+        }][..],
+        &[Instruction::ChooseObjects {
+            kind: EffectChoiceKind::FilteredCost {
+                action: card_rules::CostAction::Sacrifice,
+                any: &[card_rules::CostMatch::Kinds(16)],
+            },
+            players: PlayerSet::Controller,
+            filter: SacrificeFilter {
+                keywords: Keywords::NONE,
+                source_only: false,
+                kinds: 0,
+                nonland: false,
+                other: false,
+                tokens: None,
+                artifact_enchantment_or_token: false,
+                subtype: None,
+            },
+            amount: 1,
+            optional_skip: None,
+        }][..],
+    ] {
+        assert!(!program_supported(program), "{program:?}");
+    }
+    assert!(program_supported(&[Instruction::Draw(
+        PlayerSet::Controller,
+        1
+    )]));
 }
