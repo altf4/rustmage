@@ -13,7 +13,7 @@ Acceptance evidence:
 - `aetherdrift-focused-card-evidence.json`: all 276 definition hashes, printed-obligation mappings and passing card outcomes; 340 focused card/provenance cases.
 - `aetherdrift-engine-freeze.json`: 387 focused shared-engine cases, strict trace compatibility, two independent source/runtime approvals and warm-cache proof.
 - `aetherdrift-game-acceptance.json`: 80 fixed legal DFT-only games, 67,835 actions replayed, 3,364 owned branches, natural terminal outcomes, five spell colors and all 15 required mechanic witnesses. A separate same 80-case benchmark excludes replay/owned checks and explicitly records its profile and workload.
-- `aetherdrift-acceptance.json`: full release validator, 3,770 native cases, tooling/source/format checks, production library, Freeform simulation sample, Python binding smoke and immutable library hashes.
+- `aetherdrift-acceptance.json`: full release validator, 3,777 native cases, tooling/source/format checks, production library, Freeform simulation sample, Python binding smoke and immutable library hashes.
 - `aetherdrift-readme-count-audit.json`: reproducible 3,438/5,164 accepted-union count and 9/20 completed sets, retaining accepted upstream ECL/TMT support.
 - `aetherdrift-authoring-throughput.json`: measured 157 newly completed local candidates across the recorded parallel authoring/review/engine-reentry interval, including waiting rather than claiming isolated typing speed.
 

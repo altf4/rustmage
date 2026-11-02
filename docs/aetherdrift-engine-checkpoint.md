@@ -1,6 +1,6 @@
 # Aetherdrift engine dependency checkpoint
 
-Current acceptance: all 276 card definitions and whole-card receipts, all 3,770 native cases, the fixed 80 DFT games, and full production release/binding validation pass. See `aetherdrift-acceptance.json`. The inventory below preserves the initial engine audit and later checkpoints.
+Current acceptance: all 276 card definitions and whole-card receipts, all 3,777 native cases, the fixed 80 DFT games, and full production release/binding validation pass. See `aetherdrift-acceptance.json`. The inventory below preserves the initial engine audit and later checkpoints.
 
 All 276 pinned Oracle/main XMage implementation bodies and current typed definitions have been read across four disjoint audits. The per-card source pins, obligations, existing primitives, concrete gaps and required observable outcomes are in `docs/aetherdrift-audit/`. This is a dependency audit; actual per-card rules proofs and further reusable-source review remain pending. Starting admission remains 119/276 with no new card admission.
 

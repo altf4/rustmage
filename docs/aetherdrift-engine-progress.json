@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "DFT",
-  "phase": "all 276 members, full DFT gameplay and release acceptance passed; one PR and final published-head reviews pending",
+  "phase": "all 276 members, full DFT gameplay and release acceptance passed; published-head reviews and hosted CI are tracked on PR569",
   "membership": 276,
   "starting_admitted": 119,
   "newly_admitted": 157,

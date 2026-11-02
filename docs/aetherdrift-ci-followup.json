@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "test-only hosted-CI timeout correction passed; complete cached release refresh pending",
+  "status": "test-only split passed exact equivalence and refreshed full release acceptance; hosted CI is tracked on PR569",
   "failed_ci": "https://github.com/altf4/rustmage/actions/runs/41501312541",
   "original_published_head": "6410026b76b6fbcba240fb22a39d58526bb21636",
   "test_only_source": "1e173cf26c7d7d351cb557c5388fb614850a4c16",
@@ -44,5 +44,8 @@
     "7": 3.858664606
   },
   "native_case_count_change": "3770\u21923777 because one64-game scenario becomes eight8-game scenarios; game coverage is identical.",
-  "DFT_game_receipt_reuse": "All80DFT case runtime/card/metadata/workload inputs are unchanged; previous full DFT gameplay/benchmark receipt remains applicable."
+  "DFT_game_receipt_reuse": "All80DFT case runtime/card/metadata/workload inputs are unchanged; previous full DFT gameplay/benchmark receipt remains applicable.",
+  "full_release_acceptance": "docs/aetherdrift-acceptance.json",
+  "validated_revision": "2d2b750ce37a917c6b7c1a9f232fae4435765134",
+  "published_PR": "https://github.com/altf4/rustmage/pull/569"
 }

@@ -2,14 +2,14 @@
   "schema": 1,
   "set": "DFT",
   "status": "entire276-member gameplay, interactions and release acceptance passed; final published-head reviews remain separate",
-  "validated_revision": "5c2a5eac36ee99c99888665041fbe1ba6b26c557",
+  "validated_revision": "2d2b750ce37a917c6b7c1a9f232fae4435765134",
   "members": 276,
   "initially_admitted": 119,
   "newly_implemented_or_repaired_candidates": 157,
   "remaining_engine_blockers": [],
   "remaining_card_obligations": [],
   "full_release_validation": {
-    "head": "5c2a5eac36ee99c99888665041fbe1ba6b26c557",
+    "head": "2d2b750ce37a917c6b7c1a9f232fae4435765134",
     "terminal": true,
     "target": "<cache>/rustmage-authoring/aetherdrift/target",
     "phases": [
@@ -21,8 +21,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.8165092290000757,
-        "log": "<cache>/rustmage-validation-pgoqczqk/report/00.log",
+        "seconds": 0.8167261780181434,
+        "log": "<cache>/rustmage-validation-ewjwehg8/report/00.log",
         "name": "source pins"
       },
       {
@@ -35,8 +35,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 3.925267951999558,
-        "log": "<cache>/rustmage-validation-pgoqczqk/report/01.log",
+        "seconds": 3.9254889040021226,
+        "log": "<cache>/rustmage-validation-ewjwehg8/report/01.log",
         "name": "format"
       },
       {
@@ -5537,8 +5537,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 1.1193760679889238,
-        "log": "<cache>/rustmage-validation-pgoqczqk/report/02.log",
+        "seconds": 1.1200479210237972,
+        "log": "<cache>/rustmage-validation-ewjwehg8/report/02.log",
         "name": "card format"
       },
       {
@@ -5549,8 +5549,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 1.218206650999491,
-        "log": "<cache>/rustmage-validation-pgoqczqk/report/03.log",
+        "seconds": 1.2182640389946755,
+        "log": "<cache>/rustmage-validation-ewjwehg8/report/03.log",
         "name": "script contracts"
       },
       {
@@ -5566,8 +5566,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 1.9196267660008743,
-        "log": "<cache>/rustmage-validation-pgoqczqk/report/04.log",
+        "seconds": 11.994219915999565,
+        "log": "<cache>/rustmage-validation-ewjwehg8/report/04.log",
         "name": "clippy"
       },
       {
@@ -5577,7 +5577,7 @@
           "--target-dir",
           "<cache>/rustmage-authoring/aetherdrift/target",
           "--report",
-          "<cache>/rustmage-validation-pgoqczqk/report/native.json",
+          "<cache>/rustmage-validation-ewjwehg8/report/native.json",
           "--test-timeout",
           "45",
           "--suite-timeout",
@@ -5588,8 +5588,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 99.65936878000502,
-        "log": "<cache>/rustmage-validation-pgoqczqk/report/05.log",
+        "seconds": 104.30957712701638,
+        "log": "<cache>/rustmage-validation-ewjwehg8/report/05.log",
         "name": "native assurance"
       },
       {
@@ -5604,8 +5604,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 180.17588695099403,
-        "log": "<cache>/rustmage-validation-pgoqczqk/report/06.log",
+        "seconds": 0.11512036199565046,
+        "log": "<cache>/rustmage-validation-ewjwehg8/report/06.log",
         "name": "release build"
       },
       {
@@ -5616,8 +5616,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.2655112289940007,
-        "log": "<cache>/rustmage-validation-pgoqczqk/report/07.log",
+        "seconds": 0.3169398930040188,
+        "log": "<cache>/rustmage-validation-ewjwehg8/report/07.log",
         "name": "simulation sample"
       },
       {
@@ -5627,13 +5627,13 @@
           "--suite",
           "smoke",
           "--report",
-          "<cache>/rustmage-validation-pgoqczqk/report/python.json"
+          "<cache>/rustmage-validation-ewjwehg8/report/python.json"
         ],
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.21541607100516558,
-        "log": "<cache>/rustmage-validation-pgoqczqk/report/08.log",
+        "seconds": 0.16510856899549253,
+        "log": "<cache>/rustmage-validation-ewjwehg8/report/08.log",
         "name": "Python assurance"
       }
     ],
@@ -5641,41 +5641,41 @@
     "fresh_target": false,
     "target_preexisting": true,
     "shared_libraries": {
-      "<cache>/rustmage-validation-pgoqczqk/report/libraries/librustmage.so": "de3d4370d90e824108aec22f9a6882cadb23815fbbbd35f42b8abf9ffe67e9c8"
+      "<cache>/rustmage-validation-ewjwehg8/report/libraries/librustmage.so": "de3d4370d90e824108aec22f9a6882cadb23815fbbbd35f42b8abf9ffe67e9c8"
     },
-    "input_sha256": "e092ca2094f8195052679ac3b01d9c72ad2094f3bcccbe797c111d753c65ab75",
+    "input_sha256": "34161bfef302ef8745d785fa457e9c042b27b846f67754b04a7181d03b429f73",
     "simulation": {
-      "clone_ns": 294.79287,
+      "clone_ns": 196.0045,
       "decisions": 4941,
-      "decisions_per_second": 28025.754085493863,
+      "decisions_per_second": 25460.412999743694,
       "deck_names": [
         "native-smoke"
       ],
       "deck_rules": "Freeform",
       "decklist_archive": null,
       "games": 10,
-      "games_per_second": 56.72081377351521,
+      "games_per_second": 51.528866625670304,
       "initial_state_bytes_excluding_capacity_and_allocator": 24632,
       "max_decisions_per_game": 655,
       "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity",
       "owned_raw_index_restore_checks": false,
-      "restore_ns": 199.4592,
-      "seconds": 0.176302125
+      "restore_ns": 191.68751,
+      "seconds": 0.19406598
     },
     "changed": [],
-    "files_verified": 12877,
+    "files_verified": 12879,
     "active_processes": [],
     "success": true,
-    "seconds": 289.51180433099216,
+    "seconds": 124.23097739802324,
     "cleaned_allocated_bytes": 0,
     "complete_cards": 3158
   },
-  "full_release_report": "<cache>/rustmage-validation-pgoqczqk/report/result.json",
-  "full_release_report_sha256": "6c46c1911f4039f4667d18265e690c99c3a70437659009356871466ae597b178",
-  "native_cases": 3770,
+  "full_release_report": "<cache>/rustmage-validation-ewjwehg8/report/result.json",
+  "full_release_report_sha256": "69ec1644dbe52c665e3fe317f40303f73373a00c00f31987ff4a515536502cfd",
+  "native_cases": 3777,
   "native_test_targets": 80,
-  "native_compile_seconds": 0.7664431239973055,
-  "native_execution_seconds": 98.83798040999682,
+  "native_compile_seconds": 0.8666460500098765,
+  "native_execution_seconds": 103.3457451229915,
   "native_core_reused": true,
   "game_receipt": "docs/aetherdrift-game-acceptance.json",
   "game_corpus": {
@@ -5710,13 +5710,22 @@
   },
   "game_to_release_changed_paths": [
     "README.md",
+    "docs/aetherdrift-acceptance.json",
     "docs/aetherdrift-authoring-throughput.json",
+    "docs/aetherdrift-card-checkpoints.json",
+    "docs/aetherdrift-ci-followup.json",
+    "docs/aetherdrift-engine-checkpoint.md",
     "docs/aetherdrift-engine-progress.json",
+    "docs/aetherdrift-evidence-closure.json",
     "docs/aetherdrift-focused-card-evidence.json",
     "docs/aetherdrift-game-acceptance.json",
-    "docs/aetherdrift-readme-count-audit.json"
+    "docs/aetherdrift-implementation.md",
+    "docs/aetherdrift-readme-count-audit.json",
+    "tests/legacy/assurance/fra_complete_games.rs"
   ],
   "game_to_release_runtime_inputs_identical": true,
   "post_validation_policy": "Only acceptance evidence and progress documents are added after this passing run. Final published-head reviews must verify that the git diff from validated_revision contains only docs/ paths, with no executable, card, metadata, README or test change. No redundant engine rebuild is required for those evidence-only additions.",
-  "scope_limits": "Full DFT acceptance; not all-Standard completion. DFT throughput is test-profile engine opt1 with shared smoke policy/telemetry; release simulation sample is the separately labelled Freeform workload."
+  "scope_limits": "Full DFT acceptance; not all-Standard completion. DFT throughput is test-profile engine opt1 with shared smoke policy/telemetry; release simulation sample is the separately labelled Freeform workload.",
+  "previous_acceptance": "docs/aetherdrift-acceptance-local-initial.json",
+  "test_only_ci_followup": "docs/aetherdrift-ci-followup.json"
 }
