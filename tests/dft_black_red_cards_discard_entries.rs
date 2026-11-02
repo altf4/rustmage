@@ -29,7 +29,10 @@ fn drain(g: &mut Game) {
 fn wait_effect(g: &mut Game) {
     for _ in 0..16 {
         g.prepare_triggers();
-        if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+        if matches!(
+            g.state.pending,
+            Pending::EffectChoice { .. } | Pending::EffectDiscard { .. }
+        ) {
             return;
         }
         choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
