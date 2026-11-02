@@ -147,3 +147,13 @@ projection fails closed if the individual value cannot be represented.
 The appended projected power-up scenario also verifies the shared world query
 for entry-turn reduction after a new projected incarnation. These follow-up
 scenario outcomes remain pending the integration owner's guarded run.
+
+The initial integrated fourteen-case run passed twelve cases. It exposed an old
+self-grant creation assertion which still rejected mana, once-per-turn and
+exhaust templates despite the new exact acquired-use and mana paths. The guard
+now permits those supported lifecycles, while retaining its explicit unsupported
+source-zone/power-up lifecycle boundary. The retained self-granted nested/once
+scenario verifies the repair; its outcome is pending the next root run. The
+other failed case revealed initial-parent funding's missing deferred-grant
+snapshot route and remains open while the shared ManaOutput completion repair
+is authored. Neither failing expectation was weakened.
