@@ -168,7 +168,7 @@ const EXILE_BLOCKER_MANA: CardRules = CardRules {
 const SIDESWIPE: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::CreatureOrVehicle {
-            relation: 0,
+            relation: -1,
         })),
         &[
             Instruction::Destroy,
@@ -337,8 +337,9 @@ fn lotus_source_tap_self_sacrifice_tokens_and_redirected_sacrifice_freeze_actual
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
         let source = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);
-        let token = put(&mut g, p, "Soul-Guide Lantern", Zone::Battlefield);
-        g.state.objects[token as usize].copy_kind = CopyKind::Token;
+        let token = g.state.objects.len() as CardId;
+        g.create_tokens(p, named("Treasure Token"), 1, false);
+        assert!(g.object_view(token).is_token());
         put(&mut g, p, "Rest in Peace", Zone::Battlefield);
         g.state.players[p.index()].mana = [0; 6];
         g.state.players[p.other().index()].mana = [0; 6];
@@ -707,7 +708,7 @@ fn disjunctive_external_mana_cost_has_the_same_projected_and_real_destination() 
             },
             TargetPlan::NONE,
             &[Instruction::AddMana(ManaProduction::Fixed([
-                0, 0, 1, 0, 0, 0,
+                0, 0, 2, 0, 0, 0,
             ]))],
         )],
         ..CardRules::EMPTY
@@ -731,7 +732,7 @@ fn disjunctive_external_mana_cost_has_the_same_projected_and_real_destination() 
     select(&mut g, material);
     pay(&mut g);
     assert_eq!(g.object_view(material).zone, Zone::Graveyard);
-    assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 0, 0]);
+    assert_eq!(g.state.players[p.index()].mana, [0, 0, 2, 0, 0, 0]);
     pay(&mut g);
     drain(&mut g);
     assert_eq!(g.object_view(spell).zone, Zone::Battlefield);

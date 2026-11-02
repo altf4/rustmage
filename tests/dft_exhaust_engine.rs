@@ -244,6 +244,9 @@ fn refueler_permission_is_own_turn_before_first_event_and_never_clears_spent_his
             "new provider cannot reset player history"
         );
         g.finish_cleanup();
+        // Cleanup advanced the turn and emptied mana; the printed {1} cost
+        // still needs funding when this fixture returns to its own-turn phase.
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
         assert!(!fact(&g, p));
         g.state.active = p.other();
         g.state.priority = p;
@@ -522,6 +525,7 @@ fn copied_or_countered_exhaust_packets_do_not_emit_extra_events_and_cleanup_expi
     direct(&mut g, copier, 0);
     drain(&mut g);
     g.finish_cleanup();
+    g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
     g.state.active = p;
     g.state.priority = p;
     g.state.pending = Pending::Priority;
@@ -726,6 +730,7 @@ fn distinct_borrowed_exhaust_abilities_retain_donor_slot_history_and_reuse_indep
         "borrowed slots do not consume recipient printed bits"
     );
     g.finish_cleanup();
+    g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
     g.state.active = p;
     g.state.priority = p;
     g.state.pending = Pending::Priority;
@@ -786,7 +791,9 @@ fn kept_mana_rollback_preserves_exhaust_event_fact_and_exact_original_observer_p
         );
         drain(&mut g);
         let source = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
-        put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        g.state.objects[source as usize].growth.power = -1;
+        let observer = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        g.state.objects[observer as usize].growth.power = -3;
         let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 1, 0, 1, 0];
         act(&mut g, Action::AnnounceCast { card: spell });
